@@ -519,8 +519,55 @@ class dimTracker(Tracker):
 				p3 = p4.add(fcvec.neg(proj))
 			points = [fcvec.tup(p1),fcvec.tup(p2),fcvec.tup(p3),fcvec.tup(p4)]
 			self.coords.point.setValues(0,4,points)
-		
+
 class arcTracker(Tracker):
+        "An arc tracker"
+        def __init__(self,dotted=False,scolor=None,swidth=None,start=0,end=math.pi*2):
+                self.circle = None
+                self.startangle = math.degrees(start)
+                self.endangle = math.degrees(end)
+		self.trans = coin.SoTransform()
+		self.trans.translation.setValue([0,0,0])
+                self.sep = coin.SoSeparator()
+                self.recompute()
+		Tracker.__init__(self,dotted,scolor,swidth,[self.trans, self.sep])
+
+        def setCenter(self,cen):
+                self.trans.translation.setValue([cen.x,cen.y,cen.z])
+
+        def setRadius(self,rad):
+                self.trans.scaleFactor.setValue([rad,rad,rad])
+
+        def setStartAngle(self,ang):
+                self.startangle = math.degrees(ang)
+                self.recompute()
+
+        def setEndAngle(self,ang):
+                self.endangle = math.degrees(ang)
+                self.recompute()
+
+        def setApertureAngle(self,ang):
+                ap = math.degrees(ang)
+                self.endangle = self.startangle + ap
+                self.recompute()
+
+        def recompute(self):
+                if self.circle: self.sep.removeChild(self.circle)
+                self.circle = None
+                if self.endangle < self.startangle:
+                        c = Part.makeCircle(1,Vector(0,0,0),plane.axis,self.endangle,self.startangle)
+                else:
+                        c = Part.makeCircle(1,Vector(0,0,0),plane.axis,self.startangle,self.endangle)
+                ivin = coin.SoInput()
+                ivin.setBuffer(c.writeInventor())
+                ivob = coin.SoDB.readAll(ivin)
+                if ivob:
+                        self.circle = ivob.getChild(1).getChild(0)
+                        self.circle.removeChild(self.circle.getChild(0))
+                        self.circle.removeChild(self.circle.getChild(0))
+                        self.sep.addChild(self.circle)
+		
+class oldarcTracker(Tracker):
 	"An Arc tracker, used by tools that need to draw temporary arcs"
 	def __init__(self,dotted=False,scolor=None,swidth=None):
 		self.center = Vector(0,0,0)
@@ -688,15 +735,15 @@ class PlaneTracker(Tracker):
 class wireTracker(Tracker):                
         "A wire tracker"
 	def __init__(self,wire):
-		line = coin.SoLineSet()
+                line = coin.SoLineSet()
                 self.closed = fcgeo.isReallyClosed(wire)
                 if self.closed:
                         line.numVertices.setValue(len(wire.Vertexes)+1)
                 else:
                         line.numVertices.setValue(len(wire.Vertexes))
-		self.coords = coin.SoCoordinate3()
+                self.coords = coin.SoCoordinate3()
                 self.update(wire)
-		Tracker.__init__(self,children=[self.coords,line])
+                Tracker.__init__(self,children=[self.coords,line])
 
         def update(self,wire):
                 for i in range(len(wire.Vertexes)):
@@ -1182,11 +1229,11 @@ class Arc(Creator):
 				if len(self.tangents) == 2:
 					cir = fcgeo.circleFrom2tan1pt(self.tangents[0], self.tangents[1], point)
 					self.center = fcgeo.findClosestCircle(point,cir).Center
-					self.arctrack.centerPoint(self.center)
+					self.arctrack.setCenter(self.center)
 				elif self.tangents and self.tanpoints:
 					cir = fcgeo.circleFrom1tan2pt(self.tangents[0], self.tanpoints[0], point)
 					self.center = fcgeo.findClosestCircle(point,cir).Center
-					self.arctrack.centerPoint(self.center)
+					self.arctrack.setCenter(self.center)
 				if arg["AltDown"]:
 					if not self.altdown:
 						self.ui.cross(False)
@@ -1201,7 +1248,7 @@ class Arc(Creator):
 							cl = fcgeo.findClosestCircle(point,cir)
 							self.center = cl.Center
 							self.rad = cl.Radius
-							self.arctrack.centerPoint(self.center)
+							self.arctrack.setCenter(self.center)
 						else:
 							self.rad = self.center.add(fcgeo.findDistance(self.center,ed).sub(self.center)).Length
 					else:
@@ -1212,9 +1259,7 @@ class Arc(Creator):
 						self.altdown = False
 					self.rad = fcvec.dist(point,self.center)
 				self.ui.radiusValue.setText("%.2f" % self.rad)
-				self.arctrack.startPoint(point)
-				self.arctrack.changeRadius(self.rad)
-				self.arctrack.update(math.radians(360))
+				self.arctrack.setRadius(self.rad)
 				self.ui.radiusValue.setFocus()
 				self.ui.radiusValue.selectAll()
 				# Draw constraint tracker line.
@@ -1256,7 +1301,7 @@ class Arc(Creator):
 				else: self.constraintrack.off()
 				self.ui.radiusValue.setText("%.2f" % math.degrees(angle))
 				self.updateAngle(angle)
-				self.arctrack.update(self.angle)
+				self.arctrack.setApertureAngle(self.angle)
 				self.ui.radiusValue.setFocus()
 				self.ui.radiusValue.selectAll()
 
@@ -1288,7 +1333,7 @@ class Arc(Creator):
 						else:
 							self.center = point
 							self.node = [point]
-							self.arctrack.centerPoint(self.center)
+							self.arctrack.setCenter(self.center)
 							self.linetrack.p1(self.center)
 							self.linetrack.p2(self.view.getPoint(arg["Position"][0],arg["Position"][1]))
 						self.arctrack.on()
@@ -1313,7 +1358,7 @@ class Arc(Creator):
 					self.step = 3
 					# scale center->point vector for proper display
 					u = fcvec.scaleTo(point.sub(self.center), self.rad)
-					self.arctrack.startPoint(u.add(self.center))
+					self.arctrack.setStartAngle(self.firstangle)
 					msg(translate("draft", "Pick aperture:\n"))
 				else: # choose second angle
 					self.step = 4
@@ -1339,7 +1384,7 @@ class Arc(Creator):
 		"this function gets called by the toolbar when valid x, y, and z have been entered there"
 		self.center = Vector(numx,numy,numz)
 		self.node = [self.center]
-		self.arctrack.centerPoint(self.center)
+		self.arctrack.setCenter(self.center)
 		self.arctrack.on()
 		self.ui.radiusUi()
 		self.step = 1
@@ -1366,14 +1411,7 @@ class Arc(Creator):
 				self.drawArc()
 			else:
 				self.step = 2
-				self.arctrack.centerPoint(self.center)
-				# synthesize a vector in the arc's plane 
-				# ??? At this point, (1,0,0) might be good enough.  This code
-				# shows one way to guess an orthogonal vector.
-				if fcvec.equals(plane.axis, Vector(1,0,0)): ortho = Vector(0,self.rad,0)
-				else: ortho = fcvec.scaleTo(Vector(1,0,0).cross(plane.axis), self.rad)
-				self.arctrack.startPoint(ortho.add(self.center))
-				self.arctrack.update(math.radians(360))
+				self.arctrack.setCenter(self.center)
 				self.ui.labelRadius.setText("Start angle")
 				self.linetrack.p1(self.center)
 				self.linetrack.on()
@@ -1386,7 +1424,7 @@ class Arc(Creator):
 			if fcvec.equals(plane.axis, Vector(1,0,0)): u = Vector(0,self.rad,0)
 			else: u = fcvec.scaleTo(Vector(1,0,0).cross(plane.axis), self.rad)
 			urotated = fcvec.rotate(u, math.radians(rad), plane.axis)
-			self.arctrack.startPoint(urotated)
+			self.arctrack.setStartAngle(self.firstangle)
 			self.step = 3
                         self.ui.radiusValue.setText("")
                         self.ui.radiusValue.setFocus()
@@ -1473,11 +1511,11 @@ class Polygon(Creator):
 				if len(self.tangents) == 2:
 					cir = fcgeo.circleFrom2tan1pt(self.tangents[0], self.tangents[1], point)
 					self.center = fcgeo.findClosestCircle(point,cir).Center
-					self.arctrack.centerPoint(self.center)
+					self.arctrack.setCenter(self.center)
 				elif self.tangents and self.tanpoints:
 					cir = fcgeo.circleFrom1tan2pt(self.tangents[0], self.tanpoints[0], point)
 					self.center = fcgeo.findClosestCircle(point,cir).Center
-					self.arctrack.centerPoint(self.center)
+					self.arctrack.setCenter(self.center)
 				if arg["AltDown"]:
 					if not self.altdown:
 						self.ui.cross(False)
@@ -1492,7 +1530,7 @@ class Polygon(Creator):
 							cl = fcgeo.findClosestCircle(point,cir)
 							self.center = cl.Center
 							self.rad = cl.Radius
-							self.arctrack.centerPoint(self.center)
+							self.arctrack.setCenter(self.center)
 						else:
 							self.rad = self.center.add(fcgeo.findDistance(self.center,ed).sub(self.center)).Length
 					else:
@@ -1503,9 +1541,7 @@ class Polygon(Creator):
 						self.altdown = False
 					self.rad = fcvec.dist(point,self.center)
 				self.ui.radiusValue.setText("%.2f" % self.rad)
-				self.arctrack.startPoint(point)
-				self.arctrack.changeRadius(self.rad)
-				self.arctrack.update(math.radians(360))
+				self.arctrack.setRadius(self.rad)
 				self.ui.radiusValue.setFocus()
 				self.ui.radiusValue.selectAll()
 				# Draw constraint tracker line.
@@ -1546,7 +1582,7 @@ class Polygon(Creator):
 						else:
 							self.center = point
 							self.node = [point]
-							self.arctrack.centerPoint(self.center)
+							self.arctrack.setCenter(self.center)
 							self.linetrack.p1(self.center)
 							self.linetrack.p2(self.view.getPoint(arg["Position"][0],arg["Position"][1]))
 						self.arctrack.on()
@@ -1573,7 +1609,7 @@ class Polygon(Creator):
 		"this function gets called by the toolbar when valid x, y, and z have been entered there"
 		self.center = Vector(numx,numy,numz)
 		self.node = [self.center]
-		self.arctrack.centerPoint(self.center)
+		self.arctrack.setCenter(self.center)
 		self.arctrack.on()
 		self.ui.radiusUi()
 		self.step = 1
@@ -2075,7 +2111,7 @@ class Rotate(Modifier):
 					sweep = (2*math.pi-self.firstangle)+angle
 				else:
 					sweep = angle - self.firstangle
-				self.arctrack.update(sweep)
+				self.arctrack.setApertureAngle(sweep)
 				self.ghost.trans.rotation.setValue(coin.SbVec3f(fcvec.tup(plane.axis)),sweep)
 				self.linetrack.p2(point)
 				# Draw constraint tracker line.
@@ -2097,19 +2133,17 @@ class Rotate(Modifier):
 				if (self.step == 0):
 					self.center = point
 					self.node = [point]
-					self.arctrack.startPoint(point)
 					self.ui.radiusUi()
 					self.ui.labelRadius.setText("Base angle")
 					self.linetrack.p1(self.center)
-					self.arctrack.centerPoint(self.center)
-					self.ghost.trans.center.setValue(self.center.x,self.center.y,self.center.z)
+					self.arctrack.setCenter(self.center)
+					#self.ghost.trans.center.setValue(self.center.x,self.center.y,self.center.z)
 					self.linetrack.on()
 					self.step = 1
 					msg(translate("draft", "Pick base angle:\n"))
                                         self.planetrack.set(point)
 				elif (self.step == 1):
 					self.ui.labelRadius.setText("Rotation")
-					self.arctrack.startPoint(point)
 					self.rad = fcvec.dist(point,self.center)
 					self.arctrack.on()
 					self.ghost.on()
@@ -2198,6 +2232,7 @@ class Offset(Modifier):
                         self.finish()
                 else:
                         self.step = 0
+                        self.dvec = None
                         self.constrainSeg = None
                         self.ui.radiusUi()
                         self.ui.isCopy.show()
@@ -2210,7 +2245,17 @@ class Offset(Modifier):
                         self.constraintrack = lineTracker(dotted=True)
                         self.faces = False
                         self.shape = self.sel.Shape
-                        self.ghost = wireTracker(self.shape)
+                        self.mode = None
+                        if "Radius" in self.sel.PropertiesList:
+                                self.ghost = arcTracker()
+                                self.mode = "Circle"
+                                self.center = self.shape.Edges[0].Curve.Center
+                                self.ghost.setCenter(self.center)
+                                self.ghost.setStartAngle(math.radians(self.sel.FirstAngle))
+                                self.ghost.setEndAngle(math.radians(self.sel.LastAngle))
+                        else:
+                                self.ghost = wireTracker(self.shape)
+                                self.mode = "Wire"
                         self.call = self.view.addEventCallback("SoEvent",self.action)
                         msg(translate("draft", "Pick distance:\n"))
                         self.ui.cross(True)
@@ -2232,13 +2277,17 @@ class Offset(Modifier):
 				dist = fcgeo.findPerpendicular(point,self.shape.Edges)
 				self.constraintrack.off()
 			if dist:
-                                d = fcvec.neg(dist[0])
-                                v1 = fcgeo.vec(self.shape.Edges[0])
-                                v2 = fcgeo.vec(self.shape.Edges[dist[1]])
-                                a = -fcvec.angle(v1,v2)
-                                self.dvec = fcvec.rotate(d,a,plane.axis)
                                 self.ghost.on()
-                                self.ghost.update(fcgeo.offsetWire(self.shape,self.dvec))
+                                if self.mode == "Wire":
+                                        d = fcvec.neg(dist[0])
+                                        v1 = fcgeo.getTangent(self.shape.Edges[0],point)
+                                        v2 = fcgeo.getTangent(self.shape.Edges[dist[1]],point)
+                                        a = -fcvec.angle(v1,v2)
+                                        self.dvec = fcvec.rotate(d,a,plane.axis)
+                                        self.ghost.update(fcgeo.offsetWire(self.shape,self.dvec))
+                                elif self.mode == "Circle":
+                                        self.dvec = point.sub(self.center).Length
+                                        self.ghost.setRadius(self.dvec)
                                 self.constrainSeg = dist
 				self.linetrack.on()
 				self.linetrack.p1(point)
@@ -3474,24 +3523,34 @@ class Edit(Modifier):
                                                 self.editpoints.append(self.obj.Placement.Base)
                                                 self.editpoints.append(self.obj.Shape.Vertexes[0].Point)
                                         self.trackers = []
-                                        for ep in range(len(self.editpoints)):
-                                                self.trackers.append(editTracker(self.editpoints[ep],self.obj.Name,ep))
-                                        self.snap = snapTracker()
-                                        self.constraintrack = lineTracker(dotted=True)
-                                        self.call = self.view.addEventCallback("SoEvent",self.action)
-                                        self.running = True
-                                        plane.save()
-                                        plane.alignToFace(self.obj.Shape)
-                                        self.planetrack.set(self.editpoints[0])
+                                        self.snap = None
+                                        self.constraintrack = None
+                                        if self.editpoints:
+                                                for ep in range(len(self.editpoints)):
+                                                        self.trackers.append(editTracker(self.editpoints[ep],self.obj.Name,ep))
+                                                self.snap = snapTracker()
+                                                self.constraintrack = lineTracker(dotted=True)
+                                                self.call = self.view.addEventCallback("SoEvent",self.action)
+                                                self.running = True
+                                                plane.save()
+                                                plane.alignToFace(self.obj.Shape)
+                                                self.planetrack.set(self.editpoints[0])
+                                        else:
+                                                msg(translate("draft", "This object type is not editable\n"),'warning')
+                                                self.finish()
                                 else:
                                         self.finish()
 
 	def finish(self,closed=False):
-		"terminates the operation and closes the poly if asked"
+		"terminates the operation"
                 if self.ui:
-                        self.snap.finalize()
-                        for t in self.trackers: t.finalize()
-                        self.constraintrack.finalize()
+                        if self.snap:
+                                self.snap.finalize()
+                        if self.trackers:
+                                for t in self.trackers:
+                                        t.finalize()
+                        if self.constraintrack:
+                                self.constraintrack.finalize()
 		Modifier.finish(self)
                 plane.restore()
                 self.running = False
@@ -3618,7 +3677,7 @@ FreeCADGui.addCommand('Draft_Draftify',Draftify())
 FreeCADGui.addCommand('Draft_Move',Move())
 FreeCADGui.addCommand('Draft_ApplyStyle',ApplyStyle())
 FreeCADGui.addCommand('Draft_Rotate',Rotate())
-FreeCADGui.addCommand('Draft_Offset',oldOffset())
+FreeCADGui.addCommand('Draft_Offset',Offset())
 FreeCADGui.addCommand('Draft_Upgrade',Upgrade())
 FreeCADGui.addCommand('Draft_Downgrade',Downgrade())
 FreeCADGui.addCommand('Draft_Trimex',Trimex())

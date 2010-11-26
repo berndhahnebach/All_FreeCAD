@@ -593,9 +593,12 @@ def offset(obj,delta,copy=False):
                 if obj.Height < 0: h = -nh.Length
                 else: h = nh.Length
                 return l,h,pl
-        
-        newwire = fcgeo.offsetWire(obj.Shape,delta)
-        p = fcgeo.getVerts(newwire)
+
+        if "Radius" in obj.PropertiesList:
+                pass
+        else:
+                newwire = fcgeo.offsetWire(obj.Shape,delta)
+                p = fcgeo.getVerts(newwire)
         if copy:
                 if "Points" in obj.PropertiesList:
                         newobj = makeWire(p)
@@ -605,6 +608,12 @@ def offset(obj,delta,copy=False):
                         pl.Base = p[0]
                         length,height,plac = getRect(p,obj)
                         newobj = makeRectangle(length,height,plac)
+                elif "Radius" in obj.PropertiesList:
+                        pl = obj.Placement
+                        newobj = makeCircle(delta)
+                        newobj.FirstAngle = obj.FirstAngle
+                        newobj.LastAngle = obj.LastAngle
+                        newobj.Placement = pl
                 formatObject(newobj,obj)
         else:
                 if "Points" in obj.PropertiesList:
@@ -614,6 +623,8 @@ def offset(obj,delta,copy=False):
                         obj.Placement = plac
                         obj.Length = length
                         obj.Height = height
+                elif "Radius" in obj.PropertiesList:
+                        obj.Radius = delta
                 newobj = obj
         return newobj
 
