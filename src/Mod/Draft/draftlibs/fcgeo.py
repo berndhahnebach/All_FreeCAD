@@ -512,7 +512,8 @@ def offsetWire(wire,dvec,bind=False):
         edges = sortEdges(wire.Edges)
         norm = getNormal(wire)
         closed = isReallyClosed(wire)
-        if norm.getAngle(FreeCADGui.ActiveDocument.ActiveView.getViewDirection()) < 0.78: norm = fcvec.neg(norm)
+        vdir = FreeCADGui.ActiveDocument.ActiveView.getViewDirection()
+        if norm.getAngle(vdir) < 0.78: norm = fcvec.neg(norm)
         nedges = []
         for i in range(len(edges)):
                 curredge = edges[i]
@@ -697,6 +698,20 @@ def findWires(edges):
                 edgeSet = result[1]
         return result[1]
 
+def getTangent(edge,frompoint=None):
+        '''
+        returns the tangent to an edge. If from point is given, it is used to
+        calculate the tangent (only useful for an arc of course).
+        '''
+        if isinstance(edge.Curve,Part.Line):
+                return vec(edge)
+        elif isinstance(edge.Curve,Part.Circle):
+                if not frompoint:
+                        v1 = edge.Vertexes[0].Point.sub(edge.Curve.Center)
+                else:
+                        v1 = frompoint.sub(edge.Curve.Center)
+                return v1.cross(edge.Curve.Axis)
+        return None
    
 # circle functions *********************************************************
 
