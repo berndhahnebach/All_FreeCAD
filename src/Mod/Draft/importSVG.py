@@ -237,6 +237,8 @@ class svgHandler(xml.sax.ContentHandler):
 		"retrieving Draft parameters"
 		params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
 		self.style = params.GetInt("svgstyle")
+                self.count = 0
+                self.translate = None
 	
 		if gui and draftui:
 			r = float(draftui.color.red()/255.0)
@@ -262,6 +264,10 @@ class svgHandler(xml.sax.ContentHandler):
 	def startElement(self, name, attrs):
 
 		# reorganizing data into a nice clean dictionary
+
+                self.count += 1
+
+                print "processing element ",self.count
 		
 		data = {}
 		for (keyword,content) in attrs.items():
@@ -291,7 +297,6 @@ class svgHandler(xml.sax.ContentHandler):
 		self.color = None
 		self.width = None
 		self.text = None
-		self.translate = None
 		
 		if 'fill' in data:
 			if data['fill'][0] != 'none':
@@ -307,15 +312,26 @@ class svgHandler(xml.sax.ContentHandler):
 			t = t.split('(')
 			t.append(data['transform'][1].replace(')',''))
 			if t[0] == "translate":
-				self.translate = Vector(float(t[1]),-float(t[2]),0)
+                                if self.translate:
+                                        self.translate = self.translate.add(Vector(float(t[1]),-float(t[2]),0))
+                                else:
+                                        self.translate = Vector(float(t[1]),-float(t[2]),0)
 
 		if (self.style == 1):
 			self.color = self.col
 			self.width = self.lw
 
+                pathname = None
+                if 'id' in data:
+                        pathname = data['id'][0]
+                        print "name: ",pathname
+                        
 		# processing paths
-
+                        
 		if name == "path":
+                        print data
+                        
+                        if not pathname: pathname = 'Path'
 
 			path = []
 			point = []
@@ -405,10 +421,11 @@ class svgHandler(xml.sax.ContentHandler):
 						sh = Part.Wire(path)
 						if self.fill: sh = Part.Face(sh)
 						if self.translate: sh.translate(self.translate)
-						obj = self.doc.addObject("Part::Feature","Path")
+						obj = self.doc.addObject("Part::Feature",pathname)
 						obj.Shape = sh
 						self.format(obj)
 						path = []
+                                                self.translate = None
 					if relative:
 						lastvec = lastvec.add(Vector(point[0],-point[1],0))
 						command="line"
@@ -475,10 +492,11 @@ class svgHandler(xml.sax.ContentHandler):
 						sh = Part.Wire(path)
 						if self.fill: sh = Part.Face(sh)
 						if self.translate: sh.translate(self.translate)
-						obj = self.doc.addObject("Part::Feature","Path")
+						obj = self.doc.addObject("Part::Feature",pathname)
 						obj.Shape = sh
 						self.format(obj)
 						path = []
+                                                self.translate = None
 					point = []
 					command = None
 				elif (len(point)==6) and (command=="curve"):
@@ -497,13 +515,15 @@ class svgHandler(xml.sax.ContentHandler):
 				sh = Part.Wire(path)
 				if self.fill: sh = Part.Face(sh)
 				if self.translate: sh.translate(self.translate)
-				obj = self.doc.addObject("Part::Feature","Path")
+				obj = self.doc.addObject("Part::Feature",pathname)
 				obj.Shape = sh
 				self.format(obj)
+                                self.translate = None
 
 		# processing rects
 
 		if name == "rect":
+                        if not pathname: pathname = 'Rectangle'
 			p1 = Vector(data['x'],-data['y'],0)
 			p2 = Vector(data['x']+data['width'],-data['y'],0)
 			p3 = Vector(data['x']+data['width'],-data['y']-data['height'],0)
@@ -516,31 +536,48 @@ class svgHandler(xml.sax.ContentHandler):
 			sh = Part.Wire(edges)
 			if self.fill: sh = Part.Face(sh)
 			if self.translate: sh.translate(self.translate)
-			obj = self.doc.addObject("Part::Feature","Rectangle")
+			obj = self.doc.addObject("Part::Feature",pathname)
 			obj.Shape = sh
 			self.format(obj)
+                        self.translate = None
 				     
-#		processing lines
+                # processing lines
 
 		if name == "line":
+                        if not pathname: pathname = 'Line'
 			p1 = Vector(data['x1'],-data['y1'],0)
 			p2 = Vector(data['x2'],-data['y2'],0)
 			sh = Part.Line(p1,p2).toShape()
 			if self.translate: sh.translate(self.translate)
-			obj = self.doc.addObject("Part::Feature","Line")
+			obj = self.doc.addObject("Part::Feature",pathname)
 			obj.Shape = sh
 			self.format(obj)
+                        self.translate = None
+
+                # processing texts
 
 		if (name == "text") or (name == "tspan"):
-			self.x = data['x']
-			self.y = data['y']
+                        print "processing a text"
+			if 'x' in data:
+                                self.x = data['x']
+                        else:
+                                self.x = 0
+                        if 'y' in data:
+                                self.y = data['y']
+                        else:
+                                self.y = 0
 			if 'font-size' in data:
 				if data['font-size'] != 'none':
 					self.text = getsize(data['font-size'])
+                        else:
+                                self.text = 1
 
+                print "done processing element ",self.count
+                
 	def characters(self,content):
 		if self.text:
-			obj=self.doc.addObject("App::Annotation","Text")
+                        print "reading characters", str(content)
+			obj=self.doc.addObject("App::Annotation",'Text')
 			obj.LabelText = content.encode('latin1')
 			obj.Position = Vector(self.x,-self.y,0)
 			if self.translate: obj.Position = obj.Position.add(self.translate)
@@ -549,7 +586,7 @@ class svgHandler(xml.sax.ContentHandler):
 				if self.fill: obj.ViewObject.TextColor = self.fill
 				else: obj.ViewObject.TextColor = (0.0,0.0,0.0,0.0)
 			self.text = None
-			
+                        self.translate = None
 			
 def decodeName(name):
 	"decodes encoded strings"
@@ -590,8 +627,11 @@ def open(filename):
 	parser = xml.sax.make_parser()
 	parser.setContentHandler(svgHandler())
 	parser._cont_handler.doc = doc
-	parser.parse(pythonopen(filename))
+        f = pythonopen(filename)
+	parser.parse(f)
+        f.close()
 	doc.recompute()
+        print "done!"
 
 def insert(filename,docname):
 	try:
