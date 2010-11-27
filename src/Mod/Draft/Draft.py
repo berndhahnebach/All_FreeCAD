@@ -769,7 +769,7 @@ def getSVG(obj,modifier=100,textmodifier=100,plane=None):
                                 svg += ','+ str(p.x) + ',' + str(p.y) + ') '
                 svg += 'translate(' + str(p.x) + ',' + str(p.y) + ') '
                 svg +='scale('+str(tmod/2000)+','+str(-tmod/2000)+')">\n'
-                svg += textcontents
+                svg += '<tspan>'+textcontents+'</tspan>\n'
                 svg += '</text>\n'
 
         elif obj.isDerivedFrom('Part::Feature'):
