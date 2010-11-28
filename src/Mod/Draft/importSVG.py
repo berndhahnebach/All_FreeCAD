@@ -268,7 +268,7 @@ class svgHandler(xml.sax.ContentHandler):
 
                 self.count += 1
 
-                print "processing element ",self.count
+                print "processing element ",self.count,": ",name
 		
 		data = {}
 		for (keyword,content) in attrs.items():
@@ -337,10 +337,10 @@ class svgHandler(xml.sax.ContentHandler):
                         if "scale" in tr:
                                 i0 = tr.index("scale")
                                 if "scale" in self.transform:
-                                        self.transform['scale'] = self.transform['scale'].add(Vector(float(tr[i0+1]),float(tr[i0+2]),1))
+                                        self.transform['scale'] = self.transform['scale'].add(Vector(float(tr[i0+1]),float(tr[i0+2]),0))
                                 else:
                                         print tr
-                                        self.transform['scale'] = Vector(float(tr[i0+1]),float(tr[i0+2]),1)
+                                        self.transform['scale'] = Vector(float(tr[i0+1]),float(tr[i0+2]),0)
                                 if "scale" in self.grouptransform:
                                         self.transform['scale'] = self.transform['scale'].add(self.grouptransform['scale'])
                         else:
@@ -611,16 +611,16 @@ class svgHandler(xml.sax.ContentHandler):
 			obj.LabelText = content.encode('latin1')
 			obj.Position = Vector(self.x,-self.y,0)
 			if 'translate' in self.transform:
+                                print "applying translate ",self.transform['translate']
                                 obj.Position = obj.Position.add(self.transform['translate'])
 			if gui:
 				obj.ViewObject.FontSize = int(self.text)
 				if self.fill: obj.ViewObject.TextColor = self.fill
 				else: obj.ViewObject.TextColor = (0.0,0.0,0.0,0.0)
 			self.text = None
-                        self.transform = {}
 
         def endElement(self, name):
-                self.transform = {}
+                if not name in ["tspan"]: self.transform = {}
                 if name == "g":
                         print "closing group"
                         self.grouptransform = {}

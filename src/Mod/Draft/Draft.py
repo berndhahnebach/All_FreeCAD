@@ -752,10 +752,6 @@ def getSVG(obj,modifier=100,textmodifier=100,plane=None):
         elif obj.Type == 'App::Annotation':
                 "returns an svg representation of a document annotation"
                 p = getProj(obj.Position)
-                textcontents = ''
-                for l in obj.LabelText:
-                        textcontents+=l
-                        textcontents+='\n'
                 svg = '<text id="' + obj.Name + '" fill="'
                 svg += getrgb(obj.ViewObject.TextColor)
                 svg += '" font-size="'
@@ -769,7 +765,8 @@ def getSVG(obj,modifier=100,textmodifier=100,plane=None):
                                 svg += ','+ str(p.x) + ',' + str(p.y) + ') '
                 svg += 'translate(' + str(p.x) + ',' + str(p.y) + ') '
                 svg +='scale('+str(tmod/2000)+','+str(-tmod/2000)+')">\n'
-                svg += '<tspan>'+textcontents+'</tspan>\n'
+                for l in obj.LabelText:
+                        svg += '<tspan>'+l+'</tspan>\n'
                 svg += '</text>\n'
 
         elif obj.isDerivedFrom('Part::Feature'):
