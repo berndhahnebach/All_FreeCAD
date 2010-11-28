@@ -41,6 +41,8 @@ class SoCoordinate3;
 class SoIndexedFaceSet;
 class SoShapeHints;
 class SoMaterialBinding;
+class SoQtViewer;
+class SoAction;
 
 namespace App {
   class Color;
@@ -134,6 +136,7 @@ public:
     void getFacetsFromPolygon(const std::vector<SbVec2f>& picked,
                               Gui::View3DInventorViewer &Viewer, SbBool inner,
                               std::vector<unsigned long>& indices) const;
+    std::vector<unsigned long> getVisibleFacets(SoQtViewer*) const;
     //@}
 
 protected:
@@ -155,6 +158,7 @@ protected:
     void unhighlightSelection();
 
     virtual SoShape* getShapeNode() const;
+    virtual SoNode* getCoordNode() const;
 
 public:
     static void faceInfoCallback(void * ud, SoEventCallback * n);
@@ -164,6 +168,7 @@ public:
     static void partMeshCallback(void * ud, SoEventCallback * n);
     static void segmMeshCallback(void * ud, SoEventCallback * n);
     static void selectGLCallback(void * ud, SoEventCallback * n);
+    static void renderGLCallback(void * ud, SoAction * a);
     /// Creates a tool mesh from the previous picked polygon on the viewer
     static bool createToolMesh(const std::vector<SbVec2f>& rclPoly, const SbViewVolume& vol,
             const Base::Vector3f& rcNormal, std::vector<MeshCore::MeshGeomFacet>&);
@@ -204,6 +209,7 @@ public:
 protected:
     void showOpenEdges(bool);
     SoShape* getShapeNode() const;
+    SoNode* getCoordNode() const;
 
 private:
     SoCoordinate3       * pcMeshCoord;
@@ -228,6 +234,7 @@ public:
 
 protected:
     SoShape* getShapeNode() const;
+    SoNode* getCoordNode() const;
     void showOpenEdges(bool);
 
 private:

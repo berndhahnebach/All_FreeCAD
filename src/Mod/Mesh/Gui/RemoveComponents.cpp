@@ -385,24 +385,11 @@ void RemoveComponents::selectGLCallback(void * ud, SoEventCallback * n)
         // if the selected are is split into several segments then identify that
         // with the nearest triangle to the user
         if (that->ui->frontTriangles->isChecked()) {
-            // get the nearest facet to the user (using front clipping plane)
-            MeshCore::MeshNearestIndexToPlane<MeshCore::MeshFaceIterator> p =
-                std::for_each(gl.indices.begin(), gl.indices.end(),
-                    MeshCore::MeshNearestIndexToPlane<MeshCore::MeshFaceIterator>
-                    (kernel, point, normal));
-
-            // succeeded
-            if (p.nearest_index != ULONG_MAX) {
-                // set VISIT flag to all outer facets
-                MeshCore::MeshAlgorithm alg(kernel);
-                alg.SetFacetFlag(MeshCore::MeshFacet::VISIT);
-                alg.ResetFacetsFlag(gl.indices, MeshCore::MeshFacet::VISIT);
-
-                MeshCore::MeshTopFacetVisitor visitor(faces);
-                kernel.VisitNeighbourFacets(visitor, p.nearest_index);
-                // append also the start facet
-                faces.push_back(p.nearest_index);
-            }
+            std::vector<unsigned long> vf = vp->getVisibleFacets(view);
+            std::sort(vf.begin(), vf.end());
+            std::sort(gl.indices.begin(), gl.indices.end());
+            std::back_insert_iterator<std::vector<unsigned long> > biit(faces);
+            std::set_intersection(vf.begin(), vf.end(), gl.indices.begin(), gl.indices.end(), biit);
         }
         else {
             // simply get all triangles under the rubberband

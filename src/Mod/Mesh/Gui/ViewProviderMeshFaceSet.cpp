@@ -91,7 +91,7 @@ PROPERTY_SOURCE(MeshGui::ViewProviderMeshFaceSet, MeshGui::ViewProviderMesh)
 ViewProviderMeshFaceSet::ViewProviderMeshFaceSet()
 {
     directRendering = false;
-    triangleCount = 500000;
+    triangleCount = 2500000;
 
     pcMeshNode = new SoFCMeshObjectNode;
     pcMeshNode->ref();
@@ -212,4 +212,11 @@ SoShape* ViewProviderMeshFaceSet::getShapeNode() const
     if (directRendering)
         return this->pcMeshShape;
     return this->pcMeshFaces;
+}
+
+SoNode* ViewProviderMeshFaceSet::getCoordNode() const
+{
+    if (directRendering)
+        return this->pcMeshNode;
+    return this->pcMeshCoord;
 }

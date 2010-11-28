@@ -216,6 +216,28 @@ void SoFCIndexedFaceSet::doAction(SoAction * action)
         renderSelectionGeometry(static_cast<SoCoordinate3*>(coords)->point.getValues(0));
         stopSelection(action);
     }
+    else if (action->getTypeId() == Gui::SoVisibleFaceAction::getClassTypeId()) {
+        SoNode* node = action->getNodeAppliedTo();
+        if (!node) return; // on no node applied
+
+        // The node we have is the parent of this node and the coordinate node
+        // thus we search there for it.
+        SoSearchAction sa;
+        sa.setInterest(SoSearchAction::FIRST);
+        sa.setSearchingAll(FALSE);
+        sa.setType(SoCoordinate3::getClassTypeId(), 1);
+        sa.apply(node);
+        SoPath * path = sa.getPath();
+        if (!path) return;
+
+        // make sure we got the node we wanted
+        SoNode* coords = path->getNodeFromTail(0);
+        if (!(coords && coords->getTypeId().isDerivedFrom(SoCoordinate3::getClassTypeId())))
+            return;
+        startVisibility(action);
+        renderVisibleFaces(static_cast<SoCoordinate3*>(coords)->point.getValues(0));
+        stopVisibility(action);
+    }
 
     inherited::doAction(action);
 }
@@ -303,5 +325,69 @@ void SoFCIndexedFaceSet::renderSelectionGeometry(const SbVec3f * coords3d)
             glVertex3fv((const GLfloat*)(coords3d + v3));
         glEnd();
         fcnt++;
+    }
+}
+
+void SoFCIndexedFaceSet::startVisibility(SoAction * action)
+{
+    Gui::SoVisibleFaceAction *doaction = static_cast<Gui::SoVisibleFaceAction*>(action);
+    int x = doaction->x;
+    int y = doaction->y;
+    int w = doaction->w;
+    int h = doaction->h;
+
+    //double mp[16];
+    glMatrixMode(GL_PROJECTION);
+    //glGetDoublev(GL_PROJECTION_MATRIX ,mp);
+    glPushMatrix();
+    glLoadIdentity();
+    glMultMatrixf(/*mp*/this->projection);
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadMatrixf(this->modelview);
+}
+
+void SoFCIndexedFaceSet::stopVisibility(SoAction * action)
+{
+    // restoring the original projection matrix
+    glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glFlush();
+}
+
+void SoFCIndexedFaceSet::renderVisibleFaces(const SbVec3f * coords3d)
+{
+    GLint redBits, greenBits, blueBits;
+
+    glGetIntegerv (GL_RED_BITS, &redBits);
+    glGetIntegerv (GL_GREEN_BITS, &greenBits);
+    glGetIntegerv (GL_BLUE_BITS, &blueBits);
+    glDisable (GL_BLEND);
+    glDisable (GL_DITHER);
+    glDisable (GL_FOG);
+    glDisable (GL_LIGHTING);
+    glDisable (GL_TEXTURE_1D);
+    glDisable (GL_TEXTURE_2D);
+    glShadeModel (GL_FLAT);
+
+    uint32_t numfaces = this->coordIndex.getNum()/4;
+    const int32_t * cindices = this->coordIndex.getValues(0);
+
+    int32_t v1, v2, v3;
+    for (uint32_t index=0; index<numfaces;index++,cindices++) {
+        glBegin(GL_TRIANGLES);
+            float t;
+            SbColor c;
+            c.setPackedValue(index<<8,t);
+            glColor3f(c[0],c[1],c[2]);
+            v1 = *cindices++;
+            glVertex3fv((const GLfloat*)(coords3d + v1));
+            v2 = *cindices++;
+            glVertex3fv((const GLfloat*)(coords3d + v2));
+            v3 = *cindices++;
+            glVertex3fv((const GLfloat*)(coords3d + v3));
+        glEnd();
     }
 }

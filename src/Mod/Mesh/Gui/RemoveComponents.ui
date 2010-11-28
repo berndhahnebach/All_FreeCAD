@@ -195,7 +195,7 @@
       <item row="0" column="0">
        <widget class="QCheckBox" name="frontTriangles">
         <property name="text">
-         <string>Respect only front triangles</string>
+         <string>Respect only visible triangles</string>
         </property>
         <property name="checked">
          <bool>true</bool>

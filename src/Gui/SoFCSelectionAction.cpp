@@ -753,6 +753,89 @@ SbBool SoGLSelectAction::isHandled() const
 
 // ---------------------------------------------------------------
 
+SO_ACTION_SOURCE(SoVisibleFaceAction);
+
+/**
+ * The order of the defined SO_ACTION_ADD_METHOD statements is very important. First the base 
+ * classes and afterwards subclasses of them must be listed, otherwise the registered methods 
+ * of subclasses will be overridden. For more details see the thread in the Coin3d forum 
+ * https://www.coin3d.org/pipermail/coin-discuss/2004-May/004346.html.
+ * This means that \c SoSwitch must be listed after \c SoGroup and \c SoFCSelection after 
+ * \c SoSeparator because both classes inherits the others.
+ */
+void SoVisibleFaceAction::initClass()
+{
+  SO_ACTION_INIT_CLASS(SoVisibleFaceAction,SoAction);
+
+  SO_ENABLE(SoVisibleFaceAction, SoSwitchElement);
+
+  SO_ACTION_ADD_METHOD(SoNode,nullAction);
+
+  SO_ENABLE(SoVisibleFaceAction, SoModelMatrixElement);
+  SO_ENABLE(SoVisibleFaceAction, SoShapeStyleElement);
+  SO_ENABLE(SoVisibleFaceAction, SoComplexityElement);
+  SO_ENABLE(SoVisibleFaceAction, SoComplexityTypeElement);
+  SO_ENABLE(SoVisibleFaceAction, SoCoordinateElement);
+  SO_ENABLE(SoVisibleFaceAction, SoFontNameElement);
+  SO_ENABLE(SoVisibleFaceAction, SoFontSizeElement);
+  SO_ENABLE(SoVisibleFaceAction, SoProfileCoordinateElement);
+  SO_ENABLE(SoVisibleFaceAction, SoProfileElement);
+  SO_ENABLE(SoVisibleFaceAction, SoSwitchElement);
+  SO_ENABLE(SoVisibleFaceAction, SoUnitsElement);
+  SO_ENABLE(SoVisibleFaceAction, SoViewVolumeElement);
+  SO_ENABLE(SoVisibleFaceAction, SoViewingMatrixElement);
+  SO_ENABLE(SoVisibleFaceAction, SoViewportRegionElement);
+
+  SO_ACTION_ADD_METHOD(SoCallback,callDoAction);
+  SO_ACTION_ADD_METHOD(SoComplexity,callDoAction);
+  SO_ACTION_ADD_METHOD(SoCoordinate3,callDoAction);
+  SO_ACTION_ADD_METHOD(SoCoordinate4,callDoAction);
+  SO_ACTION_ADD_METHOD(SoFont,callDoAction);
+  SO_ACTION_ADD_METHOD(SoGroup,callDoAction);
+  SO_ACTION_ADD_METHOD(SoProfile,callDoAction);
+  SO_ACTION_ADD_METHOD(SoProfileCoordinate2,callDoAction);
+  SO_ACTION_ADD_METHOD(SoProfileCoordinate3,callDoAction);
+  SO_ACTION_ADD_METHOD(SoTransformation,callDoAction);
+  SO_ACTION_ADD_METHOD(SoSwitch,callDoAction);
+  SO_ACTION_ADD_METHOD(SoShape,callDoAction);
+  SO_ACTION_ADD_METHOD(SoIndexedFaceSet,callDoAction);
+
+  SO_ACTION_ADD_METHOD(SoSeparator,callDoAction);
+  SO_ACTION_ADD_METHOD(SoFCSelection,callDoAction);
+}
+
+SoVisibleFaceAction::SoVisibleFaceAction () : _handled(FALSE)
+{
+  x = y = w = h = 0;
+  SO_ACTION_CONSTRUCTOR(SoVisibleFaceAction);
+}
+
+SoVisibleFaceAction::~SoVisibleFaceAction()
+{
+}
+
+void SoVisibleFaceAction::beginTraversal(SoNode *node)
+{
+  traverse(node);
+}
+
+void SoVisibleFaceAction::callDoAction(SoAction *action,SoNode *node)
+{
+  node->doAction(action);
+}
+
+void SoVisibleFaceAction::setHandled()
+{
+  this->_handled = TRUE;
+}
+
+SbBool SoVisibleFaceAction::isHandled() const
+{
+  return this->_handled;
+}
+
+// ---------------------------------------------------------------
+
 namespace Gui {
 class SoBoxSelectionRenderActionP {
 public:
