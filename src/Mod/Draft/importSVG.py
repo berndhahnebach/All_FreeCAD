@@ -238,7 +238,8 @@ class svgHandler(xml.sax.ContentHandler):
 		params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
 		self.style = params.GetInt("svgstyle")
                 self.count = 0
-                self.translate = None
+                self.transform = {}
+                self.grouptransform = {}
 	
 		if gui and draftui:
 			r = float(draftui.color.red()/255.0)
@@ -308,15 +309,44 @@ class svgHandler(xml.sax.ContentHandler):
 			if data['stroke-width'] != 'none':
 				self.width = getsize(data['stroke-width'])
 		if 'transform' in data:
-			t = data['transform'][0]
-			t = t.split('(')
-			t.append(data['transform'][1].replace(')',''))
-			if t[0] == "translate":
-                                if self.translate:
-                                        self.translate = self.translate.add(Vector(float(t[1]),-float(t[2]),0))
+                        li=data['transform']
+                        s = ""
+                        for l in li:
+                                s += l
+                                s += " "
+                        s=s.replace("("," ")
+                        s=s.replace(")"," ")
+                        s = s.strip()
+                        tr = s.split()
+                        print "existing grouptransform: ",self.grouptransform
+                        print "existing transform: ",self.transform
+			if "translate" in tr:
+                                i0 = tr.index("translate")
+                                print "getting translate ",tr
+                                if "translate" in self.transform:
+                                        self.transform['translate'] = self.transform['translate'].add(Vector(float(tr[i0+1]),-float(tr[i0+2]),0))
                                 else:
-                                        self.translate = Vector(float(t[1]),-float(t[2]),0)
-
+                                        self.transform['translate'] = Vector(float(tr[i0+1]),-float(tr[i0+2]),0)
+                                if "translate" in self.grouptransform:
+                                        print "adding to group ",self.grouptransform['translate']
+                                        self.transform['translate'] = self.grouptransform['translate'].add(self.transform['translate'])
+                        else:
+                                if "translate" in self.grouptransform:
+                                        print "adding to group ",self.grouptransform['translate']
+                                        self.transform['translate'] = self.grouptransform['translate']
+                        if "scale" in tr:
+                                i0 = tr.index("scale")
+                                if "scale" in self.transform:
+                                        self.transform['scale'] = self.transform['scale'].add(Vector(float(tr[i0+1]),float(tr[i0+2]),1))
+                                else:
+                                        print tr
+                                        self.transform['scale'] = Vector(float(tr[i0+1]),float(tr[i0+2]),1)
+                                if "scale" in self.grouptransform:
+                                        self.transform['scale'] = self.transform['scale'].add(self.grouptransform['scale'])
+                        else:
+                                if "scale" in self.grouptransform:
+                                        self.transform['scale'] = self.grouptransform['scale']
+ 
 		if (self.style == 1):
 			self.color = self.col
 			self.width = self.lw
@@ -327,6 +357,11 @@ class svgHandler(xml.sax.ContentHandler):
                         print "name: ",pathname
                         
 		# processing paths
+
+                if name == "g":
+                        print "opening group"
+                        if self.transform:
+                                self.grouptransform = self.transform.copy()
                         
 		if name == "path":
                         print data
@@ -420,12 +455,11 @@ class svgHandler(xml.sax.ContentHandler):
 					if path:
 						sh = Part.Wire(path)
 						if self.fill: sh = Part.Face(sh)
-						if self.translate: sh.translate(self.translate)
+                                                sh = self.applyTrans(sh)
 						obj = self.doc.addObject("Part::Feature",pathname)
 						obj.Shape = sh
 						self.format(obj)
 						path = []
-                                                self.translate = None
 					if relative:
 						lastvec = lastvec.add(Vector(point[0],-point[1],0))
 						command="line"
@@ -491,12 +525,11 @@ class svgHandler(xml.sax.ContentHandler):
 					if path:
 						sh = Part.Wire(path)
 						if self.fill: sh = Part.Face(sh)
-						if self.translate: sh.translate(self.translate)
+                                                sh = self.applyTrans(sh)
 						obj = self.doc.addObject("Part::Feature",pathname)
 						obj.Shape = sh
 						self.format(obj)
 						path = []
-                                                self.translate = None
 					point = []
 					command = None
 				elif (len(point)==6) and (command=="curve"):
@@ -514,11 +547,10 @@ class svgHandler(xml.sax.ContentHandler):
 			if path:
 				sh = Part.Wire(path)
 				if self.fill: sh = Part.Face(sh)
-				if self.translate: sh.translate(self.translate)
+                                sh = self.applyTrans(sh)
 				obj = self.doc.addObject("Part::Feature",pathname)
 				obj.Shape = sh
 				self.format(obj)
-                                self.translate = None
 
 		# processing rects
 
@@ -535,11 +567,10 @@ class svgHandler(xml.sax.ContentHandler):
 			edges.append(Part.Line(p4,p1).toShape())
 			sh = Part.Wire(edges)
 			if self.fill: sh = Part.Face(sh)
-			if self.translate: sh.translate(self.translate)
+                        sh = self.applyTrans(sh)
 			obj = self.doc.addObject("Part::Feature",pathname)
 			obj.Shape = sh
 			self.format(obj)
-                        self.translate = None
 				     
                 # processing lines
 
@@ -548,11 +579,10 @@ class svgHandler(xml.sax.ContentHandler):
 			p1 = Vector(data['x1'],-data['y1'],0)
 			p2 = Vector(data['x2'],-data['y2'],0)
 			sh = Part.Line(p1,p2).toShape()
-			if self.translate: sh.translate(self.translate)
+                        sh = self.applyTrans(sh)
 			obj = self.doc.addObject("Part::Feature",pathname)
 			obj.Shape = sh
 			self.format(obj)
-                        self.translate = None
 
                 # processing texts
 
@@ -580,13 +610,32 @@ class svgHandler(xml.sax.ContentHandler):
 			obj=self.doc.addObject("App::Annotation",'Text')
 			obj.LabelText = content.encode('latin1')
 			obj.Position = Vector(self.x,-self.y,0)
-			if self.translate: obj.Position = obj.Position.add(self.translate)
+			if 'translate' in self.transform:
+                                obj.Position = obj.Position.add(self.transform['translate'])
 			if gui:
 				obj.ViewObject.FontSize = int(self.text)
 				if self.fill: obj.ViewObject.TextColor = self.fill
 				else: obj.ViewObject.TextColor = (0.0,0.0,0.0,0.0)
 			self.text = None
-                        self.translate = None
+                        self.transform = {}
+
+        def endElement(self, name):
+                self.transform = {}
+                if name == "g":
+                        print "closing group"
+                        self.grouptransform = {}
+
+        def applyTrans(self,sh):
+                if 'scale' in self.transform:
+                        print "applying scale factor: ",self.transform['scale']
+                        m = FreeCAD.Matrix()
+                        m.scale(self.transform['scale'])
+                        sh = sh.transformGeometry(m)
+                if 'translate' in self.transform:
+                        print "applying translation: ",self.transform['translate']
+                        sh.translate(self.transform['translate'])
+                self.transform = {}
+                return sh
 			
 def decodeName(name):
 	"decodes encoded strings"

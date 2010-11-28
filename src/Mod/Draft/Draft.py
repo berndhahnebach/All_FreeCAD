@@ -657,7 +657,7 @@ def draftify(objectslist):
         return newobjlist
 
 def getrgb(color):
-        "returns a rgb value #000000 from a freecad color"
+        "getRGB(color): returns a rgb value #000000 from a freecad color"
         r = str(hex(int(color[0]*255)))[2:].zfill(2)
         g = str(hex(int(color[1]*255)))[2:].zfill(2)
         b = str(hex(int(color[2]*255)))[2:].zfill(2)
@@ -745,7 +745,7 @@ def getSVG(obj,modifier=100,textmodifier=100,plane=None):
 		svg += 'transform="rotate('+str(math.degrees(angle))
 		svg += ','+ str(tbase.x) + ',' + str(tbase.y) + ') '
 		svg += 'translate(' + str(tbase.x) + ',' + str(tbase.y) + ') '
-                svg += 'scale('+str(tmod/2000)+',-'+str(tmod/2000)+')">\n'
+                svg += 'scale('+str(tmod/2000)+',-'+str(tmod/2000)+')">'
 		svg += "%.2f" % p3.sub(p2).Length
 		svg += '</text>\n</g>\n'
 
