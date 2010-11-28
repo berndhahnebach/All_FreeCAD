@@ -59,6 +59,7 @@ public:
 protected:
     void showOpenEdges(bool);
     SoShape* getShapeNode() const;
+    SoNode* getCoordNode() const;
 
 private:
     bool directRendering;

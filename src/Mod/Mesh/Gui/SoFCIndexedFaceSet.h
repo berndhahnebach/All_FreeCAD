@@ -74,6 +74,9 @@ private:
     void startSelection(SoAction * action);
     void stopSelection(SoAction * action);
     void renderSelectionGeometry(const SbVec3f *);
+    void startVisibility(SoAction * action);
+    void stopVisibility(SoAction * action);
+    void renderVisibleFaces(const SbVec3f *);
 
     GLuint *selectBuf;
     GLfloat modelview[16];

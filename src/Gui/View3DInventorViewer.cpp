@@ -1809,6 +1809,17 @@ static unsigned char cross_mask_bitmap[] = {
 // Set cursor graphics according to mode.
 void View3DInventorViewer::setCursorRepresentation(int modearg)
 {
+    // There is a synchronization problem between Qt and SoQt which
+    // happens when popping up a context-menu. In this case the
+    // Qt::WA_UnderMouse attribute is resetted and never set again
+    // even if the mouse is still in the canvas. Thus, the cursor
+    // won't be changed as long as the user doesn't leave and enter
+    // the canvas. To fix this we explicitly set Qt::WA_UnderMouse
+    // if the mouse is inside the canvas.
+    QWidget* w = this->getGLWidget();
+    if (w && w->rect().contains(QCursor::pos()))
+        w->setAttribute(Qt::WA_UnderMouse);
+
     if (!this->isCursorEnabled()) {
         this->setComponentCursor(SoQtCursor::getBlankCursor());
         return;

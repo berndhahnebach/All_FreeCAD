@@ -29,7 +29,9 @@
 # include <Inventor/details/SoFaceDetail.h>
 # include <Inventor/events/SoMouseButtonEvent.h>
 # include <Inventor/nodes/SoBaseColor.h>
+# include <Inventor/nodes/SoCallback.h>
 # include <Inventor/nodes/SoCoordinate3.h>
+# include <Inventor/nodes/SoLightModel.h>
 # include <Inventor/nodes/SoIndexedFaceSet.h>
 # include <Inventor/nodes/SoIndexedLineSet.h>
 # include <Inventor/nodes/SoDrawStyle.h>
@@ -56,6 +58,7 @@
 #include <Gui/BitmapFactory.h>
 #include <Gui/Command.h>
 #include <Gui/Document.h>
+#include <Gui/SoFCOffscreenRenderer.h>
 #include <Gui/SoFCSelection.h>
 #include <Gui/SoFCSelectionAction.h>
 #include <Gui/MainWindow.h>
@@ -353,6 +356,11 @@ void ViewProviderMesh::setOpenEdgeColorFrom(const App::Color& c)
 }
 
 SoShape* ViewProviderMesh::getShapeNode() const
+{
+    return 0;
+}
+
+SoNode* ViewProviderMesh::getCoordNode() const
 {
     return 0;
 }
@@ -808,6 +816,79 @@ void ViewProviderMesh::getFacetsFromPolygon(const std::vector<SbVec2f>& picked,
 
     if (!ok) // note: the mouse grabbing needs to be released
         Base::Console().Message("The picked polygon seems to have self-overlappings. This could lead to strange results.");
+}
+
+void ViewProviderMesh::renderGLCallback(void * ud, SoAction * action)
+{
+    if (action->isOfType(SoGLRenderAction::getClassTypeId())) {
+        ViewProviderMesh* mesh = reinterpret_cast<ViewProviderMesh*>(ud);
+        Gui::SoVisibleFaceAction fa;
+        fa.apply(mesh->getRoot());
+    }
+}
+
+std::vector<unsigned long> ViewProviderMesh::getVisibleFacets(SoQtViewer* view) const
+{
+    const Mesh::PropertyMeshKernel& meshProp = static_cast<Mesh::Feature*>(pcObject)->Mesh;
+    const Mesh::MeshObject& mesh = meshProp.getValue();
+    uint32_t count = (uint32_t)mesh.countFacets();
+    SoSeparator* root = new SoSeparator;
+    root->ref();
+    root->addChild(view->getCamera());
+
+#if 1
+    SoCallback* cb = new SoCallback;
+    cb->setCallback(renderGLCallback, const_cast<ViewProviderMesh*>(this));
+    root->addChild(cb);
+#else
+    SoLightModel* lm = new SoLightModel();
+    lm->model = SoLightModel::BASE_COLOR;
+    root->addChild(lm);
+    SoMaterial* mat = new SoMaterial();
+    mat->diffuseColor.setNum(count);
+    SbColor* diffcol = mat->diffuseColor.startEditing();
+    for (uint32_t i=0; i<count; i++) {
+        float t;
+        diffcol[i].setPackedValue(i<<8,t);
+    }
+
+    mat->diffuseColor.finishEditing();
+    SoMaterialBinding* bind = new SoMaterialBinding();
+    bind->value = SoMaterialBinding::PER_FACE;
+    root->addChild(mat);
+    root->addChild(bind);
+#endif
+    root->addChild(this->getCoordNode());
+    root->addChild(this->getShapeNode());
+
+    Gui::SoFCOffscreenRenderer& renderer = Gui::SoFCOffscreenRenderer::instance();
+    renderer.setViewportRegion(view->getViewportRegion());
+    renderer.setBackgroundColor(SbColor(0.0f, 0.0f, 0.0f));
+
+    QImage img;
+    renderer.render(root);
+    renderer.writeToImage(img);
+    root->unref();
+
+    int width = img.width();
+    int height = img.height();
+    QRgb color=0;
+    std::vector<unsigned long> faces;
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            QRgb rgb = img.pixel(x,y);
+            rgb = rgb-(0xff << 24);
+            if (rgb != 0 && rgb != color) {
+                color = rgb;
+                faces.push_back((unsigned long)rgb);
+            }
+        }
+    }
+
+    std::sort(faces.begin(), faces.end());
+    faces.erase(std::unique(faces.begin(), faces.end()), faces.end());
+
+    return faces;
 }
 
 void ViewProviderMesh::cutMesh(const std::vector<SbVec2f>& picked, 
@@ -1373,6 +1454,11 @@ SoShape* ViewProviderIndexedFaceSet::getShapeNode() const
     return this->pcMeshFaces;
 }
 
+SoNode* ViewProviderIndexedFaceSet::getCoordNode() const
+{
+    return this->pcMeshCoord;
+}
+
 // ------------------------------------------------------
 
 PROPERTY_SOURCE(MeshGui::ViewProviderMeshObject, MeshGui::ViewProviderMesh)
@@ -1436,4 +1522,9 @@ void ViewProviderMeshObject::showOpenEdges(bool show)
 SoShape* ViewProviderMeshObject::getShapeNode() const
 {
     return this->pcMeshShape;
+}
+
+SoNode* ViewProviderMeshObject::getCoordNode() const
+{
+    return this->pcMeshNode;
 }

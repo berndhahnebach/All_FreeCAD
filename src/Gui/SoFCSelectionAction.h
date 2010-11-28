@@ -253,6 +253,36 @@ private:
     SbBool _handled;
 };
 
+/**
+ * @author Werner Mayer
+ */
+class GuiExport SoVisibleFaceAction : public SoAction
+{
+    SO_ACTION_HEADER(SoVisibleFaceAction);
+
+public:
+    SoVisibleFaceAction ();
+    ~SoVisibleFaceAction();
+
+    void setHandled();
+    SbBool isHandled() const;
+
+    static void initClass();
+
+protected:
+    virtual void beginTraversal(SoNode *node);
+
+private:
+    static void callDoAction(SoAction *action,SoNode *node);
+
+public:
+    std::vector<int32_t> indices;
+    int x,y,w,h;
+
+private:
+    SbBool _handled;
+};
+
 class SoBoxSelectionRenderActionP;
 /**
  * The SoBoxSelectionRenderAction class renders the scene with highlighted boxes around selections.

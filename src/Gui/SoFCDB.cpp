@@ -78,6 +78,7 @@ void Gui::SoFCDB::init()
     SoFCHighlightColorAction        ::initClass();
     SoFCDocumentObjectAction        ::initClass();
     SoGLSelectAction                ::initClass();
+    SoVisibleFaceAction             ::initClass();
     SoBoxSelectionRenderAction      ::initClass();
     SoFCVectorizeSVGAction          ::initClass();
     SoFCVectorizeU3DAction          ::initClass();
