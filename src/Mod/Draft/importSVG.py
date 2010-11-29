@@ -238,8 +238,8 @@ class svgHandler(xml.sax.ContentHandler):
 		params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
 		self.style = params.GetInt("svgstyle")
                 self.count = 0
-                self.transform = {}
-                self.grouptransform = {}
+                self.transform = None
+                self.grouptransform = []
 	
 		if gui and draftui:
 			r = float(draftui.color.red()/255.0)
@@ -269,6 +269,7 @@ class svgHandler(xml.sax.ContentHandler):
                 self.count += 1
 
                 print "processing element ",self.count,": ",name
+                print "existing group transform: ", self.grouptransform
 		
 		data = {}
 		for (keyword,content) in attrs.items():
@@ -309,15 +310,16 @@ class svgHandler(xml.sax.ContentHandler):
 			if data['stroke-width'] != 'none':
 				self.width = getsize(data['stroke-width'])
 		if 'transform' in data:
-                        li=data['transform']
-                        s = ""
-                        for l in li:
-                                s += l
-                                s += " "
-                        s=s.replace("("," ")
-                        s=s.replace(")"," ")
-                        s = s.strip()
-                        tr = s.split()
+                        m = self.getMatrix(data['transform'])
+                        if name == "g":
+                                self.grouptransform.append(m)
+                        else:
+                                self.transform = m
+                else:
+                        if name == "g":
+                                self.grouptransform.append(FreeCAD.Matrix())
+                                
+                        '''
                         print "existing grouptransform: ",self.grouptransform
                         print "existing transform: ",self.transform
 			if "translate" in tr:
@@ -346,6 +348,7 @@ class svgHandler(xml.sax.ContentHandler):
                         else:
                                 if "scale" in self.grouptransform:
                                         self.transform['scale'] = self.grouptransform['scale']
+                        '''
  
 		if (self.style == 1):
 			self.color = self.col
@@ -357,11 +360,6 @@ class svgHandler(xml.sax.ContentHandler):
                         print "name: ",pathname
                         
 		# processing paths
-
-                if name == "g":
-                        print "opening group"
-                        if self.transform:
-                                self.grouptransform = self.transform.copy()
                         
 		if name == "path":
                         print data
@@ -505,14 +503,14 @@ class svgHandler(xml.sax.ContentHandler):
 						currentvec = lastvec.add(Vector(point[-2],-point[-1],0))
 					else:
 						currentvec = Vector(point[-2],-point[-1],0)
-					chord = fcvec.new(lastvec,currentvec)
-					perp = fcvec.crossproduct(chord)
+					chord = currentvec.sub(lastvec)
+					perp = chord.cross(Vector(0,0,-1))
 					chord = fcvec.scale(chord,.5)
 					if chord.Length > point[0]: a = 0
 					else: a = math.sqrt(point[0]**2-chord.Length**2)
 					s = point[0] - a
 					perp = fcvec.scale(perp,s/perp.Length)
-					midpoint = fcvec.add(lastvec,fcvec.add(chord,perp))
+					midpoint = lastvec.add(chord.add(perp))
 					seg = Part.Arc(lastvec,midpoint,currentvec).toShape()
 					lastvec = currentvec
 					path.append(seg)
@@ -576,9 +574,25 @@ class svgHandler(xml.sax.ContentHandler):
 
 		if name == "line":
                         if not pathname: pathname = 'Line'
-			p1 = Vector(data['x1'],-data['y1'],0)
-			p2 = Vector(data['x2'],-data['y2'],0)
+			p1 = Vector(float(data['x1'][0]),-float(data['y1'][0]),0)
+			p2 = Vector(float(data['x2'][0]),-float(data['y2'][0]),0)
 			sh = Part.Line(p1,p2).toShape()
+                        sh = self.applyTrans(sh)
+			obj = self.doc.addObject("Part::Feature",pathname)
+			obj.Shape = sh
+			self.format(obj)
+
+                # processing circles
+
+                if name == "circle":
+                        if not pathname: pathname = 'Circle'
+                        c = Vector(float(data['cx'][0]),-float(data['cy'][0]),0)
+                        r = float(data['r'][0])
+                        sh = Part.makeCircle(r)
+                        if self.fill:
+                                sh = Part.Wire([sh])
+                                sh = Part.Face(sh)
+                        sh.translate(c)
                         sh = self.applyTrans(sh)
 			obj = self.doc.addObject("Part::Feature",pathname)
 			obj.Shape = sh
@@ -586,7 +600,7 @@ class svgHandler(xml.sax.ContentHandler):
 
                 # processing texts
 
-		if (name == "text") or (name == "tspan"):
+		if (name in ["text","tspan"]):
                         print "processing a text"
 			if 'x' in data:
                                 self.x = data['x']
@@ -609,23 +623,35 @@ class svgHandler(xml.sax.ContentHandler):
                         print "reading characters", str(content)
 			obj=self.doc.addObject("App::Annotation",'Text')
 			obj.LabelText = content.encode('latin1')
-			obj.Position = Vector(self.x,-self.y,0)
-			if 'translate' in self.transform:
-                                print "applying translate ",self.transform['translate']
-                                obj.Position = obj.Position.add(self.transform['translate'])
+			vec = Vector(self.x,-self.y,0)
+                        if self.transform:
+                                vec = self.translateVec(vec,self.transform)
+                                print "own transform: ",self.transform, vec
+                        for i in range(len(self.grouptransform)):
+                                #vec = self.translateVec(vec,self.grouptransform[-i-1])
+                                vec = self.grouptransform[-i-1].multiply(vec)
+                        print "applying vector: ",vec
+                        obj.Position = vec
 			if gui:
 				obj.ViewObject.FontSize = int(self.text)
 				if self.fill: obj.ViewObject.TextColor = self.fill
 				else: obj.ViewObject.TextColor = (0.0,0.0,0.0,0.0)
-			self.text = None
 
         def endElement(self, name):
-                if not name in ["tspan"]: self.transform = {}
+                if not name in ["tspan"]:
+                        self.transform = None
+                        self.text = None
                 if name == "g":
                         print "closing group"
-                        self.grouptransform = {}
+                        self.grouptransform.pop()
 
         def applyTrans(self,sh):
+                if self.transform:
+                        print "applying transform: ",self.transform
+                        sh = sh.transformGeometry(self.transform)
+                for i in range(len(self.grouptransform)):
+                        sh = sh.transformGeometry(self.grouptransform[-i-1])
+                '''
                 if 'scale' in self.transform:
                         print "applying scale factor: ",self.transform['scale']
                         m = FreeCAD.Matrix()
@@ -635,7 +661,35 @@ class svgHandler(xml.sax.ContentHandler):
                         print "applying translation: ",self.transform['translate']
                         sh.translate(self.transform['translate'])
                 self.transform = {}
+                '''
                 return sh
+
+        def translateVec(self,vec,mat):
+                v = Vector(mat.A14,mat.A24,mat.A34)
+                return vec.add(v)
+
+        def getMatrix(self,tr):
+                "returns a FreeCAD matrix from a svg transform attribute"
+                s = ""
+                for l in tr:
+                        s += l
+                        s += " "
+                s=s.replace("("," ")
+                s=s.replace(")"," ")
+                s = s.strip()
+                tr = s.split()
+                m = FreeCAD.Matrix()
+                for i in range(len(tr)):
+                        if tr[i] == 'translate':
+                                vec = Vector(float(tr[i+1]),-float(tr[i+2]),0)
+                                m.move(vec)
+                        elif tr[i] == 'scale':
+                                vec = Vector(float(tr[i+1]),float(tr[i+2]),0)
+                                m.scale(vec)
+                        #elif tr[i] == 'rotate':
+                        #        m.rotateZ(float(tr[i+1]))
+                print "generating transformation: ",m
+                return m
 			
 def decodeName(name):
 	"decodes encoded strings"
