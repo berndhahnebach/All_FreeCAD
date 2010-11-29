@@ -746,9 +746,10 @@ def getWire(wire):
 		else:
 			bul = 0.0
 			points.append((v1.x,v1.y,v1.z,None,None,bul))
-	if not wire.isClosed():
+	if not fcgeo.isReallyClosed(wire):
 		v = edges[-1].Vertexes[-1].Point
 		points.append(fcvec.tup(v))
+        print "wire verts: ",points
 	return points
 
 def getBlock(obj):
@@ -762,7 +763,7 @@ def writeShape(ob,dxfobject):
 	processededges = []
 	for wire in ob.Shape.Wires: # polylines
 		for e in wire.Edges: processededges.append(e.hashCode())
-                if len(wire.Edges) == 1:
+                if (len(wire.Edges) == 1) and isinstance(wire.Edges[0].Curve,Part.Circle):
                         center = fcvec.tup(wire.Edges[0].Curve.Center)
                         radius = wire.Edges[0].Curve.Radius
                         dxfobject.append(dxfLibrary.Circle(center, radius,
@@ -770,7 +771,7 @@ def writeShape(ob,dxfobject):
                                                            layer=getGroup(ob,exportList)))
                 else:
                         dxfobject.append(dxfLibrary.PolyLine(getWire(wire), [0.0,0.0,0.0],
-                                                             int(wire.isClosed()), color=getACI(ob),
+                                                             int(fcgeo.isReallyClosed(wire)), color=getACI(ob),
                                                              layer=getGroup(ob,exportList)))
 	if len(processededges) < len(ob.Shape.Edges): # lone edges
 		loneedges = []
@@ -792,7 +793,7 @@ def writeShape(ob,dxfobject):
 				dxfobject.append(dxfLibrary.PolyLine(points, [0.0,0.0,0.0],
 								     0, color=getACI(ob),
 								     layer=getGroup(ob,exportList)))
-			elif (len(edge.Vertexes) == 1): # circles
+			elif (len(edge.Vertexes) == 1) and (isinstance(edge.Curve,Part.Circle)): # circles
 				center = fcvec.tup(edge.Curve.Center)
 				radius = ob.Shape.Edges[0].Curve.Radius
 				dxfobject.append(dxfLibrary.Circle(center, radius,
@@ -822,23 +823,24 @@ def export(objectslist,filename):
 	for ob in exportList:
 		print "processing ",ob.Name
 		if ob.isDerivedFrom("Part::Feature"):
-			if ob.Shape.ShapeType == 'Compound':
-				if (len(ob.Shape.Wires) == 1):
-					# only one wire in this compound, no lone edge -> polyline
-					if (len(ob.Shape.Wires[0].Edges) == len(ob.Shape.Edges)):
-						writeShape(ob,dxf)
-					else:
-						# 1 wire + lone edges -> block
-						block = getBlock(ob)
-						dxf.blocks.append(block)
-						dxf.append(dxfLibrary.Insert(name=ob.Name.upper()))
-				else:
-					# all other cases: block
-					block = getBlock(ob)
-					dxf.blocks.append(block)
-					dxf.append(dxfLibrary.Insert(name=ob.Name.upper()))
-			else:
-				writeShape(ob,dxf)
+                        if not ob.Shape.isNull():
+                                if ob.Shape.ShapeType == 'Compound':
+                                        if (len(ob.Shape.Wires) == 1):
+                                                # only one wire in this compound, no lone edge -> polyline
+                                                if (len(ob.Shape.Wires[0].Edges) == len(ob.Shape.Edges)):
+                                                        writeShape(ob,dxf)
+                                                else:
+                                                        # 1 wire + lone edges -> block
+                                                        block = getBlock(ob)
+                                                        dxf.blocks.append(block)
+                                                        dxf.append(dxfLibrary.Insert(name=ob.Name.upper()))
+                                        else:
+                                                # all other cases: block
+                                                block = getBlock(ob)
+                                                dxf.blocks.append(block)
+                                                dxf.append(dxfLibrary.Insert(name=ob.Name.upper()))
+                                else:
+                                        writeShape(ob,dxf)
 				
 		elif (ob.Type == "App::Annotation"):
 
