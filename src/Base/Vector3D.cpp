@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #include "Vector3D.h"
+#include "Matrix.h"
 
 using namespace Base;
 
@@ -142,6 +143,16 @@ template <class _Precision>
 Vector3<_Precision> Vector3<_Precision>::operator * (_Precision fScale) const
 {
     return Vector3<_Precision>(this->x*fScale,this->y*fScale,this->z*fScale);
+}
+
+//Multiplication of vector with 4D Matrix
+template <class _Precision>
+Vector3<_Precision> Vector3<_Precision>::operator * (const Base::Matrix4D &dMtrx4D) const 
+{
+  return Vector3<_Precision> ((dMtrx4D[0][0]*x + dMtrx4D[0][1]*y + dMtrx4D[0][2]*z + dMtrx4D[0][3]),
+                              (dMtrx4D[1][0]*x + dMtrx4D[1][1]*y + dMtrx4D[1][2]*z + dMtrx4D[1][3]),
+                              (dMtrx4D[2][0]*x + dMtrx4D[2][1]*y + dMtrx4D[2][2]*z + dMtrx4D[2][3]));
+ 
 }
 
 template <class _Precision>
