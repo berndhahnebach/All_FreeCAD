@@ -1105,9 +1105,7 @@ void CmdMeshRemoveComponents::activated(int iMsg)
 {
     Gui::TaskView::TaskDialog* dlg = Gui::Control().activeDialog();
     if (!dlg) {
-        std::vector<Mesh::Feature*> meshes =
-        Gui::Selection().getObjectsOfType<Mesh::Feature>();
-        dlg = new MeshGui::TaskRemoveComponents(meshes);
+        dlg = new MeshGui::TaskRemoveComponents();
         dlg->setButtonPosition(Gui::TaskView::TaskDialog::South);
     }
     Gui::Control().showDialog(dlg);
@@ -1116,7 +1114,8 @@ void CmdMeshRemoveComponents::activated(int iMsg)
 bool CmdMeshRemoveComponents::isActive(void)
 {
     // Check for the selected mesh feature (all Mesh types)
-    return (getSelection().countObjectsOfType
+    App::Document* doc = getDocument();
+    return (doc && doc->countObjectsOfType
             (Mesh::Feature::getClassTypeId()) > 0
             && !Gui::Control().activeDialog());
 }

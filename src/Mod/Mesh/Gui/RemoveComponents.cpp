@@ -90,11 +90,6 @@ RemoveComponents::~RemoveComponents()
     delete ui;
 }
 
-void RemoveComponents::cancelObservation()
-{
-    close();
-}
-
 void RemoveComponents::on_selectRegion_clicked()
 {
     // a rubberband to select a rectangle area of the meshes
@@ -136,7 +131,9 @@ void RemoveComponents::on_deselectRegion_clicked()
 void RemoveComponents::on_selectAll_clicked()
 {
     // select the complete meshes
-    std::list<ViewProviderMesh*> views = getViewProviders();
+    Gui::Document* doc = Gui::Application::Instance->activeDocument();
+    if (!doc) return;
+    std::list<ViewProviderMesh*> views = getViewProviders(doc);
     for (std::list<ViewProviderMesh*>::iterator it = views.begin(); it != views.end(); ++it) {
         Mesh::Feature* mf = static_cast<Mesh::Feature*>((*it)->getObject());
         const Mesh::MeshObject* mo = mf->Mesh.getValuePtr();
@@ -149,7 +146,9 @@ void RemoveComponents::on_selectAll_clicked()
 void RemoveComponents::on_deselectAll_clicked()
 {
     // deselect all meshes
-    std::list<ViewProviderMesh*> views = getViewProviders();
+    Gui::Document* doc = Gui::Application::Instance->activeDocument();
+    if (!doc) return;
+    std::list<ViewProviderMesh*> views = getViewProviders(doc);
     for (std::list<ViewProviderMesh*>::iterator it = views.begin(); it != views.end(); ++it) {
         (*it)->clearSelection();
     }
@@ -159,7 +158,9 @@ void RemoveComponents::on_selectComponents_clicked()
 {
     // select components upto a certain size
     int size = ui->spSelectComp->value();
-    std::list<ViewProviderMesh*> views = getViewProviders();
+    Gui::Document* doc = Gui::Application::Instance->activeDocument();
+    if (!doc) return;
+    std::list<ViewProviderMesh*> views = getViewProviders(doc);
     for (std::list<ViewProviderMesh*>::iterator it = views.begin(); it != views.end(); ++it) {
         Mesh::Feature* mf = static_cast<Mesh::Feature*>((*it)->getObject());
         const Mesh::MeshObject* mo = mf->Mesh.getValuePtr();
@@ -182,7 +183,9 @@ void RemoveComponents::on_deselectComponents_clicked()
 {
     // deselect components from a certain size on
     int size = ui->spDeselectComp->value();
-    std::list<ViewProviderMesh*> views = getViewProviders();
+    Gui::Document* doc = Gui::Application::Instance->activeDocument();
+    if (!doc) return;
+    std::list<ViewProviderMesh*> views = getViewProviders(doc);
     for (std::list<ViewProviderMesh*>::iterator it = views.begin(); it != views.end(); ++it) {
         Mesh::Feature* mf = static_cast<Mesh::Feature*>((*it)->getObject());
         const Mesh::MeshObject* mo = mf->Mesh.getValuePtr();
@@ -205,7 +208,9 @@ void RemoveComponents::deleteSelection()
 {
     // delete all selected faces
     bool selected = false;
-    std::list<ViewProviderMesh*> views = getViewProviders();
+    Gui::Document* doc = Gui::Application::Instance->activeDocument();
+    if (!doc) return;
+    std::list<ViewProviderMesh*> views = getViewProviders(doc);
     for (std::list<ViewProviderMesh*>::iterator it = views.begin(); it != views.end(); ++it) {
         Mesh::Feature* mf = static_cast<Mesh::Feature*>((*it)->getObject());
         unsigned long ct = MeshCore::MeshAlgorithm(mf->Mesh.getValue().getKernel()).
@@ -217,7 +222,6 @@ void RemoveComponents::deleteSelection()
     }
     if (!selected) return; // nothing todo
 
-    Gui::Document* doc = Gui::Application::Instance->getDocument(this->getDocument());
     doc->openCommand("Delete selection");
     for (std::list<ViewProviderMesh*>::iterator it = views.begin(); it != views.end(); ++it) {
         (*it)->deleteSelection();
@@ -227,7 +231,9 @@ void RemoveComponents::deleteSelection()
 
 void RemoveComponents::invertSelection()
 {
-    std::list<ViewProviderMesh*> views = getViewProviders();
+    Gui::Document* doc = Gui::Application::Instance->activeDocument();
+    if (!doc) return;
+    std::list<ViewProviderMesh*> views = getViewProviders(doc);
     for (std::list<ViewProviderMesh*>::iterator it = views.begin(); it != views.end(); ++it) {
         Mesh::Feature* mf = static_cast<Mesh::Feature*>((*it)->getObject());
         const Mesh::MeshObject* mo = mf->Mesh.getValuePtr();
@@ -279,13 +285,14 @@ void RemoveComponents::reject()
     on_deselectAll_clicked();
 }
 
-std::list<ViewProviderMesh*> RemoveComponents::getViewProviders() const
+std::list<ViewProviderMesh*> RemoveComponents::getViewProviders(const Gui::Document* doc) const
 {
     std::list<ViewProviderMesh*> vps;
-    for (RemoveComponents::const_iterator it = this->begin(); it != this->end(); ++it) {
-        App::Document* ad = (*it)->getDocument();
-        Gui::Document* gd = Gui::Application::Instance->getDocument(ad);
-        vps.push_back(static_cast<ViewProviderMesh*>(gd->getViewProvider(*it)));
+    std::vector<Mesh::Feature*> mesh = doc->getDocument()->getObjectsOfType<Mesh::Feature>();
+    for (std::vector<Mesh::Feature*>::iterator it = mesh.begin(); it != mesh.end(); ++it) {
+        Gui::ViewProvider* vp = doc->getViewProvider(*it);
+        if (vp->isVisible())
+            vps.push_back(static_cast<ViewProviderMesh*>(vp));
     }
 
     return vps;
@@ -293,9 +300,7 @@ std::list<ViewProviderMesh*> RemoveComponents::getViewProviders() const
 
 Gui::View3DInventorViewer* RemoveComponents::getViewer() const
 {
-    App::Document* app = this->getDocument();
-    if (!app) return 0;
-    Gui::Document* doc = Gui::Application::Instance->getDocument(app);
+    Gui::Document* doc = Gui::Application::Instance->activeDocument();
     if (!doc) return 0;
     Gui::MDIView* view = doc->getActiveView();
     if (view && view->getTypeId().isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
@@ -370,7 +375,9 @@ void RemoveComponents::selectGLCallback(void * ud, SoEventCallback * n)
     Base::Vector3f point (pnt[0],pnt[1],pnt[2]);
     Base::Vector3f normal(dir[0],dir[1],dir[2]);
 
-    std::list<ViewProviderMesh*> views = that->getViewProviders();
+    Gui::Document* doc = Gui::Application::Instance->activeDocument();
+    if (!doc) return;
+    std::list<ViewProviderMesh*> views = that->getViewProviders(doc);
     for (std::list<ViewProviderMesh*>::iterator it = views.begin(); it != views.end(); ++it) {
         ViewProviderMesh* vp = static_cast<ViewProviderMesh*>(*it);
         Gui::SoGLSelectAction gl;
@@ -445,7 +452,9 @@ void RemoveComponents::pickFaceCallback(void * ud, SoEventCallback * n)
                 return;
             ViewProviderMesh* that = static_cast<ViewProviderMesh*>(vp);
             RemoveComponents* dlg = reinterpret_cast<RemoveComponents*>(ud);
-            std::list<ViewProviderMesh*> views = dlg->getViewProviders();
+            Gui::Document* doc = Gui::Application::Instance->activeDocument();
+            if (!doc) return;
+            std::list<ViewProviderMesh*> views = dlg->getViewProviders(doc);
             if (std::find(views.begin(), views.end(), that) == views.end())
                 return;
             const SoDetail* detail = point->getDetail(/*that->getShapeNode()*/);
@@ -472,8 +481,7 @@ void RemoveComponents::pickFaceCallback(void * ud, SoEventCallback * n)
 
 // ---------------------------------------
 
-RemoveComponentsDialog::RemoveComponentsDialog(const std::vector<Mesh::Feature*>& mesh,
-                                               QWidget* parent, Qt::WFlags fl)
+RemoveComponentsDialog::RemoveComponentsDialog(QWidget* parent, Qt::WFlags fl)
   : QDialog(parent, fl)
 {
     widget = new RemoveComponents(this);
@@ -492,13 +500,6 @@ RemoveComponentsDialog::RemoveComponentsDialog(const std::vector<Mesh::Feature*>
 
     hboxLayout->addWidget(widget);
     hboxLayout->addWidget(buttonBox);
-
-    //std::vector<App::DocumentObject*> meshes =
-    //Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-
-    std::for_each(mesh.begin(), mesh.end(), 
-        boost::bind(&RemoveComponents::addToObservation, widget, _1));
-    widget->attachDocument(App::GetApplication().getActiveDocument());
 }
 
 RemoveComponentsDialog::~RemoveComponentsDialog()
@@ -528,17 +529,13 @@ void RemoveComponentsDialog::clicked(QAbstractButton* btn)
 
 // ---------------------------------------
 
-TaskRemoveComponents::TaskRemoveComponents(const std::vector<Mesh::Feature*>& mesh)
+TaskRemoveComponents::TaskRemoveComponents()
 {
     widget = new RemoveComponents();
     taskbox = new Gui::TaskView::TaskBox(
         QPixmap(), widget->windowTitle(), false, 0);
     taskbox->groupLayout()->addWidget(widget);
     Content.push_back(taskbox);
-
-    std::for_each(mesh.begin(), mesh.end(), 
-        boost::bind(&RemoveComponents::addToObservation, widget, _1));
-    widget->attachDocument(App::GetApplication().getActiveDocument());
 }
 
 TaskRemoveComponents::~TaskRemoveComponents()
