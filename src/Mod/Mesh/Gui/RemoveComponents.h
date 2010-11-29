@@ -26,7 +26,6 @@
 
 #include <QDialog>
 #include <Inventor/nodes/SoEventCallback.h>
-#include <App/DocumentObserver.h>
 #include <Gui/TaskView/TaskDialog.h>
 #include <Gui/TaskView/TaskView.h>
 
@@ -34,6 +33,7 @@
 class SoEventCallback;
 namespace App { class DocumentObject; }
 namespace Gui { class View3DInventorViewer; }
+namespace Gui { class Document; }
 namespace Mesh { class Feature; }
 
 namespace MeshGui {
@@ -45,7 +45,7 @@ class Ui_RemoveComponents;
  * of a mesh and delete them.
  * @author Werner Mayer
  */
-class MeshGuiExport RemoveComponents : public QWidget, public App::DocumentObjectObserver
+class MeshGuiExport RemoveComponents : public QWidget
 {
     Q_OBJECT
 
@@ -67,8 +67,7 @@ public Q_SLOTS:
     void on_deselectTriangle_clicked();
 
 private:
-    void cancelObservation();
-    std::list<ViewProviderMesh*> getViewProviders() const;
+    std::list<ViewProviderMesh*> getViewProviders(const Gui::Document*) const;
     Gui::View3DInventorViewer* getViewer() const;
     void startInteractiveCallback(Gui::View3DInventorViewer* ,SoEventCallbackCB *);
     void stopInteractiveCallback(Gui::View3DInventorViewer*);
@@ -90,8 +89,7 @@ class MeshGuiExport RemoveComponentsDialog : public QDialog
     Q_OBJECT
 
 public:
-    RemoveComponentsDialog(const std::vector<Mesh::Feature*>& mesh,
-        QWidget* parent = 0, Qt::WFlags fl = 0);
+    RemoveComponentsDialog(QWidget* parent = 0, Qt::WFlags fl = 0);
     ~RemoveComponentsDialog();
     void reject();
 
@@ -110,7 +108,7 @@ class TaskRemoveComponents : public Gui::TaskView::TaskDialog
     Q_OBJECT
 
 public:
-    TaskRemoveComponents(const std::vector<Mesh::Feature*>&);
+    TaskRemoveComponents();
     ~TaskRemoveComponents();
 
 public:
