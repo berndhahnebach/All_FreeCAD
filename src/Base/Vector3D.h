@@ -51,7 +51,7 @@
 
 
 namespace Base {
-
+class Matrix4D;
 template <class numT>
 struct float_traits { };
 
@@ -111,6 +111,7 @@ public:
     Vector3 & operator -= (const Vector3<_Precision>& rcVct);
     /// Vector scaling
     Vector3 operator * (_Precision fScale) const;
+    Vector3 operator * (const Base::Matrix4D &dMtrx4D) const;
     Vector3 operator / (_Precision fDiv) const;
     Vector3 & operator *= (_Precision fScale);
     Vector3 & operator /= (_Precision fDiv);
