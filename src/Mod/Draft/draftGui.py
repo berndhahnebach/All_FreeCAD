@@ -196,11 +196,12 @@ class toolBar:
                                         self.layout.addWidget(sbox)
                                         return sbox
 
-                                def _combo (name, hide=True, editable = True):
+                                def _combo (name, hide=True, editable=True, width=None):
                                         cbox = QtGui.QComboBox(draftToolbar)
                                         cbox.setObjectName(name)
                                         if editable: cbox.setEditable(True)
                                         if hide: cbox.hide()
+                                        if width: cbox.setMinimumSize(QtCore.QSize(width,22))
                                         self.layout.addWidget(cbox)
                                         return cbox
 
@@ -275,7 +276,7 @@ class toolBar:
                                 self.pageBox = _combo("pageBox")
                                 self.pageBox.addItem("Add New")
                                 self.labelScale = _label("labelScale")
-                                self.scaleBox = _combo("scaleBox")
+                                self.scaleBox = _combo("scaleBox",width=60)
                                 self.scaleBox.addItem("5")
                                 self.scaleBox.addItem("10")
                                 self.scaleBox.addItem("20")

@@ -683,6 +683,7 @@ def open(filename):
 	doc = FreeCAD.newDocument(docname)
 	doc.Label = decodeName(docname)
 	processdxf(doc,filename)
+        return doc
 
 def insert(filename,docname):
 	"called when freecad imports a file"
@@ -875,6 +876,14 @@ def export(objectslist,filename):
 	FreeCAD.Console.PrintMessage("successfully exported "+filename+"\r\n")
 
 def exportPage(page,filename):
+        "special export for pages"
+        import importSVG
+        tempdoc = importSVG.open(page.PageResult)
+        tempobj = tempdoc.Objects
+        export(tempobj,filename)
+        FreeCAD.closeDocument(tempdoc.Name)
+        
+def exportPage2(page,filename):
         "special export for pages, using inkscape"
         print "Exporting page object..."
         import tempfile
