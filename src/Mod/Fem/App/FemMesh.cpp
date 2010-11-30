@@ -361,6 +361,7 @@ void FemMesh::compute()
     myGen->Compute(*myMesh, myMesh->GetShapeToMesh());
 }
 
+
 void FemMesh::readNastran(const std::string &Filename)
 {
 	std::ifstream inputfile;
@@ -627,6 +628,16 @@ void FemMesh::RestoreDocFile(Base::Reader &reader)
 
 void FemMesh::setTransform(const Base::Matrix4D& rclTrf)
 {
+	//We perform a translation and rotation of the current active Mesh object
+	Base::Matrix4D clMatrix(rclTrf);
+	SMDS_NodeIteratorPtr aNodeIter = myMesh->GetMeshDS()->nodesIterator();
+	Base::Vector3d current_node;
+	for (;aNodeIter->more();) {
+		const SMDS_MeshNode* aNode = aNodeIter->next();
+		current_node.Set(aNode->X(),aNode->Y(),aNode->Z());
+		current_node = current_node * clMatrix;
+		myMesh->GetMeshDS()->MoveNode(aNode,current_node.x,current_node.y,current_node.z);
+	}
  /*   gp_Trsf mov;
     mov.SetValues(rclTrf[0][0],rclTrf[0][1],rclTrf[0][2],rclTrf[0][3],
                   rclTrf[1][0],rclTrf[1][1],rclTrf[1][2],rclTrf[1][3],
