@@ -245,10 +245,11 @@ void SoFCIndexedFaceSet::doAction(SoAction * action)
 void SoFCIndexedFaceSet::startSelection(SoAction * action)
 {
     Gui::SoGLSelectAction *doaction = static_cast<Gui::SoGLSelectAction*>(action);
-    int x = doaction->x;
-    int y = doaction->y;
-    int w = doaction->w;
-    int h = doaction->h;
+    const SbViewportRegion& vp = doaction->getViewportRegion();
+    int x = vp.getViewportOriginPixels()[0];
+    int y = vp.getViewportOriginPixels()[1];
+    int w = vp.getViewportSizePixels()[0];
+    int h = vp.getViewportSizePixels()[1];
 
     int bufSize = 5*(this->coordIndex.getNum()/4); // make the buffer big enough
     this->selectBuf = new GLuint[bufSize];
@@ -331,10 +332,6 @@ void SoFCIndexedFaceSet::renderSelectionGeometry(const SbVec3f * coords3d)
 void SoFCIndexedFaceSet::startVisibility(SoAction * action)
 {
     Gui::SoVisibleFaceAction *doaction = static_cast<Gui::SoVisibleFaceAction*>(action);
-    int x = doaction->x;
-    int y = doaction->y;
-    int w = doaction->w;
-    int h = doaction->h;
 
     //double mp[16];
     glMatrixMode(GL_PROJECTION);
@@ -359,11 +356,11 @@ void SoFCIndexedFaceSet::stopVisibility(SoAction * action)
 
 void SoFCIndexedFaceSet::renderVisibleFaces(const SbVec3f * coords3d)
 {
-    GLint redBits, greenBits, blueBits;
+    //GLint redBits, greenBits, blueBits;
 
-    glGetIntegerv (GL_RED_BITS, &redBits);
-    glGetIntegerv (GL_GREEN_BITS, &greenBits);
-    glGetIntegerv (GL_BLUE_BITS, &blueBits);
+    //glGetIntegerv (GL_RED_BITS, &redBits);
+    //glGetIntegerv (GL_GREEN_BITS, &greenBits);
+    //glGetIntegerv (GL_BLUE_BITS, &blueBits);
     glDisable (GL_BLEND);
     glDisable (GL_DITHER);
     glDisable (GL_FOG);

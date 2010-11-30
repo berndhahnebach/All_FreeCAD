@@ -63,7 +63,7 @@ public:
     virtual void terminate () = 0;
     void grabMouseModel(Gui::View3DInventorViewer*);
     void releaseMouseModel(void);
-    const std::vector<SbVec2f>& getPolygon() const { return _clPoly; }
+    const std::vector<SbVec2s>& getPositions() const { return _clPoly; }
     SbBool isInner() const { return m_bInner; }
 
     void redraw();
@@ -90,7 +90,7 @@ protected:
     SbBool mustRedraw;
 
 private:
-    std::vector<SbVec2f> _clPoly;
+    std::vector<SbVec2s> _clPoly;
 };
 
 // -----------------------------------------------------------------------------------

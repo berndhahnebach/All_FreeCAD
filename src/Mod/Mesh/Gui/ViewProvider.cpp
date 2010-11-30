@@ -25,6 +25,7 @@
 
 #ifndef _PreComp_
 # include <QMenu>
+# include <Inventor/SbBox2s.h>
 # include <Inventor/SoPickedPoint.h>
 # include <Inventor/details/SoFaceDetail.h>
 # include <Inventor/events/SoMouseButtonEvent.h>
@@ -39,6 +40,7 @@
 # include <Inventor/nodes/SoMaterialBinding.h>
 # include <Inventor/nodes/SoNormalBinding.h>
 # include <Inventor/nodes/SoOrthographicCamera.h>
+# include <Inventor/nodes/SoPerspectiveCamera.h>
 # include <Inventor/nodes/SoPolygonOffset.h>
 # include <Inventor/nodes/SoShapeHints.h>
 # include <Inventor/nodes/SoSeparator.h>
@@ -587,7 +589,7 @@ void ViewProviderMesh::clipMeshCallback(void * ud, SoEventCallback * n)
     n->setHandled();
 
     SbBool clip_inner;
-    std::vector<SbVec2f> clPoly = view->getPickedPolygon(&clip_inner);
+    std::vector<SbVec2f> clPoly = view->getGLPolygon(&clip_inner);
     if (clPoly.size() < 3)
         return;
     if (clPoly.front() != clPoly.back())
@@ -622,7 +624,7 @@ void ViewProviderMesh::partMeshCallback(void * ud, SoEventCallback * cb)
     cb->setHandled();
 
     SbBool clip_inner;
-    std::vector<SbVec2f> clPoly = view->getPickedPolygon(&clip_inner);
+    std::vector<SbVec2f> clPoly = view->getGLPolygon(&clip_inner);
     if (clPoly.size() < 3)
         return;
     if (clPoly.front() != clPoly.back())
@@ -679,7 +681,7 @@ void ViewProviderMesh::segmMeshCallback(void * ud, SoEventCallback * cb)
     cb->setHandled();
 
     SbBool clip_inner;
-    std::vector<SbVec2f> clPoly = view->getPickedPolygon(&clip_inner);
+    std::vector<SbVec2f> clPoly = view->getGLPolygon(&clip_inner);
     if (clPoly.size() < 3)
         return;
     if (clPoly.front() != clPoly.back())
@@ -732,7 +734,7 @@ void ViewProviderMesh::selectGLCallback(void * ud, SoEventCallback * n)
     view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), selectGLCallback,ud);
     n->setHandled();
 
-    std::vector<SbVec2f> clPoly = view->getPickedPolygon();
+    std::vector<SbVec2f> clPoly = view->getGLPolygon();
     if (clPoly.size() != 1)
         return;
     const SoEvent* ev = n->getEvent();
@@ -818,6 +820,84 @@ void ViewProviderMesh::getFacetsFromPolygon(const std::vector<SbVec2f>& picked,
         Base::Console().Message("The picked polygon seems to have self-overlappings. This could lead to strange results.");
 }
 
+std::vector<unsigned long> ViewProviderMesh::getFacetsOfRegion(const SbViewportRegion& vp) const
+{
+    Gui::SoGLSelectAction gl(vp);
+    gl.apply(const_cast<ViewProviderMesh*>(this)->getRoot());
+
+    std::vector<unsigned long> faces;
+    faces.insert(faces.end(), gl.indices.begin(), gl.indices.end());
+    return faces;
+}
+
+void ViewProviderMesh::panCamera(SoCamera * cam, float aspectratio, const SbPlane & panplane,
+                                 const SbVec2f & currpos, const SbVec2f & prevpos)
+{
+    if (cam == NULL) return; // can happen for empty scenegraph
+    if (currpos == prevpos) return; // useless invocation
+
+
+    // Find projection points for the last and current mouse coordinates.
+    SbViewVolume vv = cam->getViewVolume(aspectratio);
+    SbLine line;
+    vv.projectPointToLine(currpos, line);
+    SbVec3f current_planept;
+    panplane.intersect(line, current_planept);
+    vv.projectPointToLine(prevpos, line);
+    SbVec3f old_planept;
+    panplane.intersect(line, old_planept);
+
+    // Reposition camera according to the vector difference between the
+    // projected points.
+    cam->position = cam->position.getValue() - (current_planept - old_planept);
+}
+
+void ViewProviderMesh::boxZoom(const SbBox2s& box, const SbViewportRegion & vp, SoCamera* cam)
+{
+    SbViewVolume vv = cam->getViewVolume(vp.getViewportAspectRatio());
+
+    short sizeX,sizeY;
+    box.getSize(sizeX, sizeY);
+    SbVec2s size = vp.getViewportSizePixels();
+
+    // The bbox must not be empty i.e. width and length is zero, but it is possible that
+    // either width or length is zero
+    if (sizeX == 0 && sizeY == 0) 
+        return;
+
+    // Get the new center in normalized pixel coordinates
+    short xmin,xmax,ymin,ymax;
+    box.getBounds(xmin,ymin,xmax,ymax);
+    const SbVec2f center((float) ((xmin+xmax)/2) / (float) SoQtMax((int)(size[0] - 1), 1),
+                         (float) (size[1]-(ymin+ymax)/2) / (float) SoQtMax((int)(size[1] - 1), 1));
+
+    SbPlane plane = vv.getPlane(cam->focalDistance.getValue());
+    panCamera(cam,vp.getViewportAspectRatio(),plane, SbVec2f(0.5,0.5), center);
+
+    // Set height or height angle of the camera
+    float scaleX = (float)sizeX/(float)size[0];
+    float scaleY = (float)sizeY/(float)size[1];
+    float scale = std::max<float>(scaleX, scaleY);
+    if (cam && cam->getTypeId() == SoOrthographicCamera::getClassTypeId()) {
+        float height = static_cast<SoOrthographicCamera*>(cam)->height.getValue() * scale;
+        static_cast<SoOrthographicCamera*>(cam)->height = height;
+    }
+    else if (cam && cam->getTypeId() == SoPerspectiveCamera::getClassTypeId()) {
+        float height = static_cast<SoPerspectiveCamera*>(cam)->heightAngle.getValue() / 2.0f;
+        height = 2.0f * atan(tan(height) * scale);
+        static_cast<SoPerspectiveCamera*>(cam)->heightAngle = height;
+    }
+}
+
+std::vector<unsigned long> ViewProviderMesh::getVisibleFacetsAfterZoom(const SbBox2s& rect,
+                                                                       const SbViewportRegion& vp,
+                                                                       SoCamera* camera) const
+{
+    camera = static_cast<SoCamera*>(camera->copy());
+    boxZoom(rect,vp,camera);
+    return getVisibleFacets(vp, camera);
+}
+
 void ViewProviderMesh::renderGLCallback(void * ud, SoAction * action)
 {
     if (action->isOfType(SoGLRenderAction::getClassTypeId())) {
@@ -827,16 +907,18 @@ void ViewProviderMesh::renderGLCallback(void * ud, SoAction * action)
     }
 }
 
-std::vector<unsigned long> ViewProviderMesh::getVisibleFacets(SoQtViewer* view) const
+std::vector<unsigned long> ViewProviderMesh::getVisibleFacets(const SbViewportRegion& vp,
+                                                              SoCamera* camera) const
 {
     const Mesh::PropertyMeshKernel& meshProp = static_cast<Mesh::Feature*>(pcObject)->Mesh;
     const Mesh::MeshObject& mesh = meshProp.getValue();
     uint32_t count = (uint32_t)mesh.countFacets();
+
     SoSeparator* root = new SoSeparator;
     root->ref();
-    root->addChild(view->getCamera());
+    root->addChild(camera);
 
-#if 1
+#if 0
     SoCallback* cb = new SoCallback;
     cb->setCallback(renderGLCallback, const_cast<ViewProviderMesh*>(this));
     root->addChild(cb);
@@ -862,7 +944,7 @@ std::vector<unsigned long> ViewProviderMesh::getVisibleFacets(SoQtViewer* view) 
     root->addChild(this->getShapeNode());
 
     Gui::SoFCOffscreenRenderer& renderer = Gui::SoFCOffscreenRenderer::instance();
-    renderer.setViewportRegion(view->getViewportRegion());
+    renderer.setViewportRegion(vp);
     renderer.setBackgroundColor(SbColor(0.0f, 0.0f, 0.0f));
 
     QImage img;
@@ -1326,9 +1408,9 @@ void ViewProviderMesh::deleteSelection()
 
 void ViewProviderMesh::selectArea(short x, short y, short w, short h)
 {
-    Gui::SoGLSelectAction gl;
-    gl.x = x; gl.y = y;
-    gl.w = w; gl.h = h;
+    SbViewportRegion vp;
+    vp.setViewportPixels (x, y, w, h);
+    Gui::SoGLSelectAction gl(vp);
     gl.apply(this->pcHighlight);
 
     const Mesh::MeshObject& rMesh = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue();

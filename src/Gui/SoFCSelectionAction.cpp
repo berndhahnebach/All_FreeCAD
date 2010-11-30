@@ -721,14 +721,18 @@ void SoGLSelectAction::initClass()
   SO_ACTION_ADD_METHOD(SoFCSelection,callDoAction);
 }
 
-SoGLSelectAction::SoGLSelectAction () : _handled(FALSE)
+SoGLSelectAction::SoGLSelectAction (const SbViewportRegion& vp) : _vp(vp), _handled(FALSE)
 {
-  x = y = w = h = 0;
   SO_ACTION_CONSTRUCTOR(SoGLSelectAction);
 }
 
 SoGLSelectAction::~SoGLSelectAction()
 {
+}
+
+const SbViewportRegion& SoGLSelectAction::getViewportRegion () const
+{
+  return this->_vp;
 }
 
 void SoGLSelectAction::beginTraversal(SoNode *node)
@@ -806,7 +810,6 @@ void SoVisibleFaceAction::initClass()
 
 SoVisibleFaceAction::SoVisibleFaceAction () : _handled(FALSE)
 {
-  x = y = w = h = 0;
   SO_ACTION_CONSTRUCTOR(SoVisibleFaceAction);
 }
 

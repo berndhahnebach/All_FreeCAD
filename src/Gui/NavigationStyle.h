@@ -121,7 +121,7 @@ public:
     void startPicking(ePickMode = Lasso);
     void stopPicking();
     SbBool isPicking() const;
-    const std::vector<SbVec2f>& getPickedPolygon(SbBool* clip_inner=0) const;
+    const std::vector<SbVec2s>& getPolygon(SbBool* clip_inner=0) const;
 
 protected:
     void initialize();
@@ -180,7 +180,7 @@ protected:
     /** @name Mouse model */
     //@{
     AbstractMouseModel* pcMouseModel;
-    std::vector<SbVec2f> pcPolygon;
+    std::vector<SbVec2s> pcPolygon;
     SbBool clipInner;
     //@}
 
