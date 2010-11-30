@@ -164,7 +164,8 @@ public:
     void startPicking( ePickMode = Lasso );
     void stopPicking();
     bool isPicking() const;
-    const std::vector<SbVec2f>& getPickedPolygon(SbBool* clip_inner=0) const;
+    std::vector<SbVec2f> getGLPolygon(SbBool* clip_inner=0) const;
+    const std::vector<SbVec2s>& getPolygon(SbBool* clip_inner=0) const;
     std::vector<int> tessellate(const std::vector<SbVec2f>&) const;
     //@}
 

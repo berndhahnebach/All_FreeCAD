@@ -41,8 +41,12 @@ class SoCoordinate3;
 class SoIndexedFaceSet;
 class SoShapeHints;
 class SoMaterialBinding;
-class SoQtViewer;
+class SoCamera;
 class SoAction;
+class SbViewportRegion;
+class SbVec2f;
+class SbBox2s;
+class SbPlane;
 
 namespace App {
   class Color;
@@ -136,7 +140,9 @@ public:
     void getFacetsFromPolygon(const std::vector<SbVec2f>& picked,
                               Gui::View3DInventorViewer &Viewer, SbBool inner,
                               std::vector<unsigned long>& indices) const;
-    std::vector<unsigned long> getVisibleFacets(SoQtViewer*) const;
+    std::vector<unsigned long> getFacetsOfRegion(const SbViewportRegion&) const;
+    std::vector<unsigned long> getVisibleFacetsAfterZoom(const SbBox2s&, const SbViewportRegion&, SoCamera*) const;
+    std::vector<unsigned long> getVisibleFacets(const SbViewportRegion&, SoCamera*) const;
     //@}
 
 protected:
@@ -168,10 +174,14 @@ public:
     static void partMeshCallback(void * ud, SoEventCallback * n);
     static void segmMeshCallback(void * ud, SoEventCallback * n);
     static void selectGLCallback(void * ud, SoEventCallback * n);
-    static void renderGLCallback(void * ud, SoAction * a);
     /// Creates a tool mesh from the previous picked polygon on the viewer
     static bool createToolMesh(const std::vector<SbVec2f>& rclPoly, const SbViewVolume& vol,
             const Base::Vector3f& rcNormal, std::vector<MeshCore::MeshGeomFacet>&);
+
+private:
+    static void renderGLCallback(void * ud, SoAction * a);
+    static void boxZoom(const SbBox2s& box, const SbViewportRegion & vp, SoCamera* cam);
+    static void panCamera(SoCamera*, float, const SbPlane&, const SbVec2f&, const SbVec2f&);
 
 protected:
     SoDrawStyle         * pcLineStyle;

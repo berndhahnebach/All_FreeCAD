@@ -364,7 +364,7 @@ void ViewProviderPoints::clipPointsCallback(void * ud, SoEventCallback * n)
     view->removeEventCallback(SoMouseButtonEvent::getClassTypeId(), clipPointsCallback);
     n->setHandled();
 
-    std::vector<SbVec2f> clPoly = view->getPickedPolygon();
+    std::vector<SbVec2f> clPoly = view->getGLPolygon();
     if (clPoly.size() < 3)
         return;
     if (clPoly.front() != clPoly.back())

@@ -692,9 +692,44 @@ bool View3DInventorViewer::isPicking() const
     return navigation->isPicking();
 }
 
-const std::vector<SbVec2f>& View3DInventorViewer::getPickedPolygon(SbBool* clip_inner) const
+const std::vector<SbVec2s>& View3DInventorViewer::getPolygon(SbBool* clip_inner) const
 {
-    return navigation->getPickedPolygon(clip_inner);
+    return navigation->getPolygon(clip_inner);
+}
+
+std::vector<SbVec2f> View3DInventorViewer::getGLPolygon(SbBool* clip_inner) const
+{
+    const SbViewportRegion& vp = this->getViewportRegion();
+    const SbVec2s& sz = vp.getWindowSize();
+    short w,h; sz.getValue(w,h);
+    const SbVec2s& sp = vp.getViewportSizePixels();
+    const SbVec2s& op = vp.getViewportOriginPixels();
+    const SbVec2f& siz = vp.getViewportSize();
+    float dX, dY; siz.getValue(dX, dY);
+    float fRatio = vp.getViewportAspectRatio();
+
+    std::vector<SbVec2f> poly;
+    const std::vector<SbVec2s>& pnts = navigation->getPolygon(clip_inner);
+    for (std::vector<SbVec2s>::const_iterator it = pnts.begin(); it != pnts.end(); ++it) {
+        SbVec2s loc = *it - op;
+        SbVec2f pos((float)loc[0]/(float)sp[0], (float)loc[1]/(float)sp[1]);
+        float pX,pY; pos.getValue(pX,pY);
+
+        // now calculate the real points respecting aspect ratio information
+        //
+        if (fRatio > 1.0f) {
+            pX = (pX - 0.5f*dX) * fRatio + 0.5f*dX;
+            pos.setValue(pX,pY);
+        }
+        else if (fRatio < 1.0f) {
+            pY = (pY - 0.5f*dY) / fRatio + 0.5f*dY;
+            pos.setValue(pX,pY);
+        }
+
+        poly.push_back(pos);
+    }
+
+    return poly;
 }
 
 void View3DInventorViewer::tessCB(void * v0, void * v1, void * v2, void * cbdata)

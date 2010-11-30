@@ -737,7 +737,7 @@ SbBool NavigationStyle::isPicking() const
     return (pcMouseModel ? TRUE : FALSE);
 }
 
-const std::vector<SbVec2f>& NavigationStyle::getPickedPolygon(SbBool* clip_inner) const
+const std::vector<SbVec2s>& NavigationStyle::getPolygon(SbBool* clip_inner) const
 {
     if (clip_inner)
         *clip_inner = this->clipInner;
@@ -853,7 +853,7 @@ SbBool NavigationStyle::processEvent(const SoEvent * const ev)
             return TRUE;
         }
         else if (hd==AbstractMouseModel::Finish) {
-            pcPolygon = pcMouseModel->getPolygon();
+            pcPolygon = pcMouseModel->getPositions();
             clipInner = pcMouseModel->isInner();
             delete pcMouseModel; pcMouseModel = 0;
             return NavigationStyle::processSoEvent(ev);

@@ -231,11 +231,12 @@ class GuiExport SoGLSelectAction : public SoAction
     SO_ACTION_HEADER(SoGLSelectAction);
 
 public:
-    SoGLSelectAction ();
+    SoGLSelectAction (const SbViewportRegion&);
     ~SoGLSelectAction();
 
     void setHandled();
     SbBool isHandled() const;
+    const SbViewportRegion& getViewportRegion () const;
 
     static void initClass();
 
@@ -247,9 +248,9 @@ private:
 
 public:
     std::vector<unsigned long> indices;
-    int x,y,w,h;
 
 private:
+    const SbViewportRegion& _vp;
     SbBool _handled;
 };
 
@@ -274,10 +275,6 @@ protected:
 
 private:
     static void callDoAction(SoAction *action,SoNode *node);
-
-public:
-    std::vector<int32_t> indices;
-    int x,y,w,h;
 
 private:
     SbBool _handled;

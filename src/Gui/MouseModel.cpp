@@ -92,26 +92,7 @@ int AbstractMouseModel::handleEvent(const SoEvent * const ev, const SbViewportRe
         const SbBool press = event->getState() == SoButtonEvent::DOWN ? TRUE : FALSE;
 
         if (press) {
-            float fRatio = vp.getViewportAspectRatio();
-            SbVec2f pos = ev->getNormalizedPosition(vp);
-            float pX,pY; pos.getValue(pX,pY);
-
-            SbVec2f siz = vp.getViewportSize();
-            float dX, dY; siz.getValue( dX, dY );
-
-            // now calculate the real points respecting aspect ratio information
-            //
-            if (fRatio > 1.0f) {
-                pX = ( pX - 0.5f*dX ) * fRatio + 0.5f*dX;
-                pos.setValue(pX,pY);
-            }
-            else if (fRatio < 1.0f) {
-                pY = ( pY - 0.5f*dY ) / fRatio + 0.5f*dY;
-                pos.setValue(pX,pY);
-            }
-
-            _clPoly.push_back( pos );
-
+            _clPoly.push_back(ev->getPosition());
             ret = mouseButtonEvent(static_cast<const SoMouseButtonEvent*>(ev), QPoint(x,y));
         }
         else {
@@ -321,7 +302,7 @@ int PolyPickerMouseModel::popupMenu()
     QAction* fi = menu.addAction(QObject::tr("Finish"));
     menu.addAction(QObject::tr("Clear"));
     QAction* ca = menu.addAction(QObject::tr("Cancel"));
-    if (getPolygon().size() < 3)
+    if (getPositions().size() < 3)
         fi->setEnabled(false);
     QAction* id = menu.exec(QCursor::pos());
     if (id == fi)
@@ -443,7 +424,7 @@ int PolyClipMouseModel::popupMenu()
     QAction* ci = menu.addAction(QObject::tr("Inner"));
     QAction* co = menu.addAction(QObject::tr("Outer"));
     QAction* ca = menu.addAction(QObject::tr("Cancel"));
-    if (getPolygon().size() < 3) {
+    if (getPositions().size() < 3) {
         ci->setEnabled(false);
         co->setEnabled(false);
     }

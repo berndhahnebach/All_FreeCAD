@@ -712,10 +712,11 @@ void SoFCMeshObjectShape::doAction(SoAction * action)
 void SoFCMeshObjectShape::startSelection(SoAction * action, const Mesh::MeshObject* mesh)
 {
     Gui::SoGLSelectAction *doaction = static_cast<Gui::SoGLSelectAction*>(action);
-    int x = doaction->x;
-    int y = doaction->y;
-    int w = doaction->w;
-    int h = doaction->h;
+    const SbViewportRegion& vp = doaction->getViewportRegion();
+    int x = vp.getViewportOriginPixels()[0];
+    int y = vp.getViewportOriginPixels()[1];
+    int w = vp.getViewportSizePixels()[0];
+    int h = vp.getViewportSizePixels()[1];
 
     unsigned int bufSize = 5*mesh->countFacets(); // make the buffer big enough
     this->selectBuf = new GLuint[bufSize];

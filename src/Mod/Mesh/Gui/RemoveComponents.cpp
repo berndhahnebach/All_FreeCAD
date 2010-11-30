@@ -28,6 +28,7 @@
 # include <climits>
 # include <boost/bind.hpp>
 # include <QPushButton>
+# include <Inventor/SbBox2s.h>
 # include <Inventor/SoPickedPoint.h>
 # include <Inventor/details/SoFaceDetail.h>
 # include <Inventor/events/SoMouseButtonEvent.h>
@@ -338,27 +339,15 @@ void RemoveComponents::selectGLCallback(void * ud, SoEventCallback * n)
     RemoveComponents* that = reinterpret_cast<RemoveComponents*>(ud);
     that->stopInteractiveCallback(view);
     n->setHandled();
-    std::vector<SbVec2f> clPoly = view->getPickedPolygon();
+    std::vector<SbVec2s> clPoly = view->getPolygon();
     if (clPoly.size() != 1)
         return;
     const SoEvent* ev = n->getEvent();
 
     // get the pixel coordinates
-    SbVec2f pos = clPoly[0];
-    float pX,pY; pos.getValue(pX,pY);
-    const SbVec2s& sz = view->getViewportRegion().getViewportSizePixels();
-    float fRatio = view->getViewportRegion().getViewportAspectRatio();
-    if (fRatio > 1.0f) {
-        pX = (pX - 0.5f) / fRatio + 0.5f;
-        pos.setValue(pX,pY);
-    }
-    else if (fRatio < 1.0f) {
-        pY = (pY - 0.5f) * fRatio + 0.5f;
-        pos.setValue(pX,pY);
-    }
-
-    short x1 = (short)(pX * sz[0] + 0.5f);
-    short y1 = (short)(pY * sz[1] + 0.5f);
+    SbVec2s pos = clPoly[0];
+    short x1 = pos[0];
+    short y1 = pos[1];
     SbVec2s loc = ev->getPosition();
     short x2 = loc[0];
     short y2 = loc[1];
@@ -380,27 +369,32 @@ void RemoveComponents::selectGLCallback(void * ud, SoEventCallback * n)
     std::list<ViewProviderMesh*> views = that->getViewProviders(doc);
     for (std::list<ViewProviderMesh*>::iterator it = views.begin(); it != views.end(); ++it) {
         ViewProviderMesh* vp = static_cast<ViewProviderMesh*>(*it);
-        Gui::SoGLSelectAction gl;
-        gl.x = x; gl.y = y;
-        gl.w = w; gl.h = h;
-        gl.apply(vp->getRoot());
 
         std::vector<unsigned long> faces;
         const Mesh::MeshObject& mesh = static_cast<Mesh::Feature*>((*it)->getObject())->Mesh.getValue();
         const MeshCore::MeshKernel& kernel = mesh.getKernel();
 
-        // if the selected are is split into several segments then identify that
-        // with the nearest triangle to the user
+        // simply get all triangles under the rubberband
+        SbViewportRegion vpr;
+        vpr.setViewportPixels (x, y, w, h);
+        faces = vp->getFacetsOfRegion(vpr);
         if (that->ui->frontTriangles->isChecked()) {
-            std::vector<unsigned long> vf = vp->getVisibleFacets(view);
+            const SbVec2s& sz = view->getViewportRegion().getWindowSize();
+            short width,height; sz.getValue(width,height);
+            short xmin = std::min<short>(x1, x2);
+            short xmax = std::max<short>(x1, x2);
+            short ymin = std::min<short>(height-y1, height-y2);
+            short ymax = std::max<short>(height-y1, height-y2);
+            SbBox2s rect(xmin, ymin, xmax, ymax);
+            std::vector<unsigned long> rf; rf.swap(faces);
+            std::vector<unsigned long> vf = vp->getVisibleFacetsAfterZoom
+                (rect, view->getViewportRegion(), view->getCamera());
+
+            // get common facets of the viewport and the visible one
             std::sort(vf.begin(), vf.end());
-            std::sort(gl.indices.begin(), gl.indices.end());
+            std::sort(rf.begin(), rf.end());
             std::back_insert_iterator<std::vector<unsigned long> > biit(faces);
-            std::set_intersection(vf.begin(), vf.end(), gl.indices.begin(), gl.indices.end(), biit);
-        }
-        else {
-            // simply get all triangles under the rubberband
-            faces.insert(faces.end(), gl.indices.begin(), gl.indices.end());
+            std::set_intersection(vf.begin(), vf.end(), rf.begin(), rf.end(), biit);
         }
 
         // if set filter out all triangles which do not point into user direction
