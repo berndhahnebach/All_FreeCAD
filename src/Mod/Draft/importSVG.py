@@ -734,7 +734,7 @@ def open(filename):
 	parser.parse(f)
         f.close()
 	doc.recompute()
-        print "done!"
+        return doc
 
 def insert(filename,docname):
 	try:

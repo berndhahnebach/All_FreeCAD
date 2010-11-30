@@ -176,6 +176,21 @@ def getTranslation(languagecode):
         else:
                 return None
 
+def getType(obj):
+        "getType(object): returns the Draft type of the given object"
+        if "Length" in obj.PropertiesList:
+                if "Height" in obj.PropertiesList:
+                        return "Rectangle"
+        if "Center" in obj.PropertiesList:
+                if "Radius" in obj.PropertiesList:
+                        return "Circle"
+        if "Points" in obj.PropertiesList:
+                if "Closed" in obj.PropertiesList:
+                        return "Wire"
+        if obj.isDerivedFrom("Part::Feature"):
+                return "Part"
+        return "Unknown"
+
 def dimSymbol():
         "returns the current dim symbol from the preferences"
         s = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").\
