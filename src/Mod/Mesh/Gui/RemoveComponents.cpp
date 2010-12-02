@@ -100,7 +100,7 @@ void RemoveComponents::on_selectRegion_clicked()
         stopInteractiveCallback(viewer);
         startInteractiveCallback(viewer, selectGLCallback);
         // set cross cursor
-        viewer->startPicking(Gui::View3DInventorViewer::Lasso);
+        viewer->startSelection(Gui::View3DInventorViewer::Lasso);
         SoQtCursor::CustomCursor custom;
         custom.dim.setValue(CROSS_WIDTH, CROSS_HEIGHT);
         custom.hotspot.setValue(CROSS_HOT_X, CROSS_HOT_Y);
@@ -119,7 +119,7 @@ void RemoveComponents::on_deselectRegion_clicked()
         stopInteractiveCallback(viewer);
         startInteractiveCallback(viewer, selectGLCallback);
         // set cross cursor
-        viewer->startPicking(Gui::View3DInventorViewer::Lasso);
+        viewer->startSelection(Gui::View3DInventorViewer::Lasso);
         SoQtCursor::CustomCursor custom;
         custom.dim.setValue(CROSS_WIDTH, CROSS_HEIGHT);
         custom.hotspot.setValue(CROSS_HOT_X, CROSS_HOT_Y);
