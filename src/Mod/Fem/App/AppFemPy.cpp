@@ -114,6 +114,243 @@ static PyObject * open(PyObject *self, PyObject *args)
     Py_Return;
 }
 
+
+static PyObject * SMESH_PCA(PyObject *self, PyObject *args)
+{
+	PyObject *input;
+
+	if (!PyArg_ParseTuple(args, "O",&input))
+		return NULL;
+
+	PY_TRY {
+
+		FemMeshPy *inputMesh = static_cast<FemMeshPy*>(input); 
+		MeshCore::MeshKernel aMesh;
+		MeshCore::MeshPointArray vertices;
+		vertices.clear();
+		MeshCore::MeshFacetArray faces;
+		faces.clear();
+		MeshCore::MeshPoint current_node;
+		SMDS_NodeIteratorPtr aNodeIter = inputMesh->getFemMeshPtr()->getSMesh()->GetMeshDS()->nodesIterator();
+		for (;aNodeIter->more();) {
+			const SMDS_MeshNode* aNode = aNodeIter->next();
+			current_node.Set(aNode->X(),aNode->Y(),aNode->Z());
+			vertices.push_back(current_node);
+		}
+
+		MeshCore::MeshFacet aFacet;
+		aFacet._aulPoints[0] = 0;aFacet._aulPoints[1] = 1;aFacet._aulPoints[2] = 2;
+		faces.push_back(aFacet);
+		//Fill the Kernel with the temp smesh structure and delete the current containers
+		aMesh.Adopt(vertices,faces);
+		MeshCore::MeshEigensystem pca(aMesh);
+		pca.Evaluate();
+		Base::Matrix4D Trafo = pca.Transform();
+		/*Let´s transform the input mesh with the PCA Matrix*/
+		inputMesh->getFemMeshPtr()->setTransform(Trafo);
+		inputMesh->getFemMeshPtr()->getSMesh()->ExportUNV("C:/PCA_alignment.unv");
+	} PY_CATCH;
+
+	Py_Return;
+}
+
+static PyObject * calcMeshVolume(PyObject *self, PyObject *args)
+{
+	PyObject *input;
+
+	if (!PyArg_ParseTuple(args, "O",&input))
+		return NULL;
+
+	PY_TRY {
+
+		FemMeshPy *inputMesh = static_cast<FemMeshPy*>(input); 
+
+		SMDS_VolumeIteratorPtr aVolIter = inputMesh->getFemMeshPtr()->getSMesh()->GetMeshDS()->volumesIterator();
+		Base::Vector3d a,b,c,a_b_product,temp,temp1;
+		double volume =0.0;
+		for (;aVolIter->more();) {
+			const SMDS_MeshVolume* aVol = aVolIter->next();
+			//1,5,8,7
+			//a = ((temp.Set(aVol->GetNode(4)->X(),aVol->GetNode(4)->Y(),aVol->GetNode(4)->Z())) - (temp1.Set(aVol->GetNode(0)->X(),aVol->GetNode(0)->Y(),aVol->GetNode(0)->Z())));
+			//b = ((temp.Set(aVol->GetNode(7)->X(),aVol->GetNode(7)->Y(),aVol->GetNode(7)->Z())) - (temp1.Set(aVol->GetNode(0)->X(),aVol->GetNode(0)->Y(),aVol->GetNode(0)->Z())));
+			//c = (temp.Set(aVol->GetNode(6)->X(),aVol->GetNode(6)->Y(),aVol->GetNode(6)->Z())- temp1.Set(aVol->GetNode(0)->X(),aVol->GetNode(0)->Y(),aVol->GetNode(0)->Z()));
+			//a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
+			//volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
+			////5,9,8,7
+			//a = (temp.Set(aVol->GetNode(8)->X(),aVol->GetNode(8)->Y(),aVol->GetNode(8)->Z())- temp1.Set(aVol->GetNode(4)->X(),aVol->GetNode(4)->Y(),aVol->GetNode(4)->Z()));
+			//b = (temp.Set(aVol->GetNode(7)->X(),aVol->GetNode(7)->Y(),aVol->GetNode(7)->Z())- temp1.Set(aVol->GetNode(4)->X(),aVol->GetNode(4)->Y(),aVol->GetNode(4)->Z()));
+			//c = (temp.Set(aVol->GetNode(6)->X(),aVol->GetNode(6)->Y(),aVol->GetNode(6)->Z())- temp1.Set(aVol->GetNode(4)->X(),aVol->GetNode(4)->Y(),aVol->GetNode(4)->Z()));
+			//a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
+			//volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
+			////5,2,9,7
+			//a = (temp.Set(aVol->GetNode(1)->X(),aVol->GetNode(1)->Y(),aVol->GetNode(1)->Z())- temp1.Set(aVol->GetNode(4)->X(),aVol->GetNode(4)->Y(),aVol->GetNode(4)->Z()));
+			//b = (temp.Set(aVol->GetNode(8)->X(),aVol->GetNode(8)->Y(),aVol->GetNode(8)->Z())- temp1.Set(aVol->GetNode(4)->X(),aVol->GetNode(4)->Y(),aVol->GetNode(4)->Z()));
+			//c = (temp.Set(aVol->GetNode(6)->X(),aVol->GetNode(6)->Y(),aVol->GetNode(6)->Z())- temp1.Set(aVol->GetNode(4)->X(),aVol->GetNode(4)->Y(),aVol->GetNode(4)->Z()));
+			//a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
+			//volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
+			////2,6,9,7
+			//a = (temp.Set(aVol->GetNode(5)->X(),aVol->GetNode(5)->Y(),aVol->GetNode(5)->Z())- temp1.Set(aVol->GetNode(1)->X(),aVol->GetNode(1)->Y(),aVol->GetNode(1)->Z()));
+			//b = (temp.Set(aVol->GetNode(8)->X(),aVol->GetNode(8)->Y(),aVol->GetNode(8)->Z())- temp1.Set(aVol->GetNode(1)->X(),aVol->GetNode(1)->Y(),aVol->GetNode(1)->Z()));
+			//c = (temp.Set(aVol->GetNode(6)->X(),aVol->GetNode(6)->Y(),aVol->GetNode(6)->Z())- temp1.Set(aVol->GetNode(1)->X(),aVol->GetNode(1)->Y(),aVol->GetNode(1)->Z()));
+			//a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
+			//volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
+			////9,6,10,7
+			//a = (temp.Set(aVol->GetNode(5)->X(),aVol->GetNode(5)->Y(),aVol->GetNode(5)->Z())- temp1.Set(aVol->GetNode(8)->X(),aVol->GetNode(8)->Y(),aVol->GetNode(8)->Z()));
+			//b = (temp.Set(aVol->GetNode(9)->X(),aVol->GetNode(9)->Y(),aVol->GetNode(9)->Z())- temp1.Set(aVol->GetNode(8)->X(),aVol->GetNode(8)->Y(),aVol->GetNode(8)->Z()));
+			//c = (temp.Set(aVol->GetNode(6)->X(),aVol->GetNode(6)->Y(),aVol->GetNode(6)->Z())- temp1.Set(aVol->GetNode(8)->X(),aVol->GetNode(8)->Y(),aVol->GetNode(8)->Z()));
+			//a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
+			//volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
+			////6,3,10,7
+			//a = (temp.Set(aVol->GetNode(2)->X(),aVol->GetNode(2)->Y(),aVol->GetNode(2)->Z())- temp1.Set(aVol->GetNode(5)->X(),aVol->GetNode(5)->Y(),aVol->GetNode(5)->Z()));
+			//b = (temp.Set(aVol->GetNode(9)->X(),aVol->GetNode(9)->Y(),aVol->GetNode(9)->Z())- temp1.Set(aVol->GetNode(5)->X(),aVol->GetNode(5)->Y(),aVol->GetNode(5)->Z()));
+			//c = (temp.Set(aVol->GetNode(6)->X(),aVol->GetNode(6)->Y(),aVol->GetNode(6)->Z())- temp1.Set(aVol->GetNode(5)->X(),aVol->GetNode(5)->Y(),aVol->GetNode(5)->Z()));
+			//a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
+			//volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
+
+			////8,9,10,7
+			//a = (temp.Set(aVol->GetNode(8)->X(),aVol->GetNode(8)->Y(),aVol->GetNode(8)->Z())- temp1.Set(aVol->GetNode(7)->X(),aVol->GetNode(7)->Y(),aVol->GetNode(7)->Z()));
+			//b = (temp.Set(aVol->GetNode(9)->X(),aVol->GetNode(9)->Y(),aVol->GetNode(9)->Z())- temp1.Set(aVol->GetNode(7)->X(),aVol->GetNode(7)->Y(),aVol->GetNode(7)->Z()));
+			//c = (temp.Set(aVol->GetNode(6)->X(),aVol->GetNode(6)->Y(),aVol->GetNode(6)->Z())- temp1.Set(aVol->GetNode(7)->X(),aVol->GetNode(7)->Y(),aVol->GetNode(7)->Z()));
+			//a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
+			//volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
+
+			////8,9,10,4
+			//a = (temp.Set(aVol->GetNode(8)->X(),aVol->GetNode(8)->Y(),aVol->GetNode(8)->Z())- temp1.Set(aVol->GetNode(7)->X(),aVol->GetNode(7)->Y(),aVol->GetNode(7)->Z()));
+			//b = (temp.Set(aVol->GetNode(9)->X(),aVol->GetNode(9)->Y(),aVol->GetNode(9)->Z())- temp1.Set(aVol->GetNode(7)->X(),aVol->GetNode(7)->Y(),aVol->GetNode(7)->Z()));
+			//c = (temp.Set(aVol->GetNode(3)->X(),aVol->GetNode(3)->Y(),aVol->GetNode(3)->Z())- temp1.Set(aVol->GetNode(7)->X(),aVol->GetNode(7)->Y(),aVol->GetNode(7)->Z()));
+			//a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
+			//volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
+
+		}
+
+	} PY_CATCH;
+
+	Py_Return;
+}
+
+static PyObject * minBoundingBox(PyObject *self, PyObject *args)
+{
+	
+	PyObject *input;
+
+	if (!PyArg_ParseTuple(args, "O",&input))
+		return NULL;
+
+	PY_TRY {
+		FemMeshPy *inputMesh = static_cast<FemMeshPy*>(input); 
+		MeshCore::MeshKernel aMesh;
+		MeshCore::MeshPointArray vertices;
+		vertices.clear();
+		MeshCore::MeshFacetArray faces;
+		faces.clear();
+		MeshCore::MeshPoint current_node;
+		SMDS_NodeIteratorPtr aNodeIter = inputMesh->getFemMeshPtr()->getSMesh()->GetMeshDS()->nodesIterator();
+		for (;aNodeIter->more();) {
+			const SMDS_MeshNode* aNode = aNodeIter->next();
+			current_node.Set(aNode->X(),aNode->Y(),aNode->Z());
+			vertices.push_back(current_node);
+		}
+		MeshCore::MeshFacet aFacet;
+		aFacet._aulPoints[0] = 0;aFacet._aulPoints[1] = 1;aFacet._aulPoints[2] = 2;
+		faces.push_back(aFacet);
+		//Fill the Kernel with the temp smesh structure and delete the current containers
+		aMesh.Adopt(vertices,faces);
+
+		///////////////////////////////////////////////////////////////////////////
+		//Now do Monte Carlo to minimize the BBox of the part
+		//Use Quaternions for the rotation stuff
+		Base::Rotation rotatex,rotatey,rotatez;
+		const Base::Vector3d rotate_axis_x(1.0,0.0,0.0),rotate_axis_y(0.0,1.0,0.0),rotate_axis_z(0.0,0.0,1.0);
+
+		//Rotate around each axes and choose the settings for the min bbox
+		Base::Matrix4D final_trafo;
+		Base::BoundBox3f aBBox,min_bbox;
+		double volumeBBOX,min_volumeBBOX;
+		//Get the current min_volumeBBOX and look if we find a lower one
+		aBBox = aMesh.GetBoundBox();
+		min_volumeBBOX = aBBox.LengthX()*aBBox.LengthY()*aBBox.LengthZ();
+
+		MeshCore::MeshKernel atempkernel;
+
+		float it_steps=10.0;
+		bool minpositionfound=false,firstiteration=true;
+		double step_size;
+		double alpha_x=0.0,alpha_y=0.0,alpha_z=0.0;
+		double perfect_ax=0.0,perfect_ay=0.0,perfect_az=0.0;
+
+		//Do a Monte Carlo approach and start from the Principal Axis System
+		//and rotate +/- 60° around each axis in a first iteration
+		double	angle_range_min_x=-PI/3.0,angle_range_max_x=PI/3.0,
+			angle_range_min_y=-PI/3.0,angle_range_max_y=PI/3.0,
+			angle_range_min_z=-PI/3.0,angle_range_max_z=PI/3.0;
+
+		for (step_size = (2.0*PI/it_steps);step_size>(2.0*PI/360.0);step_size=(2.0*PI/it_steps))
+		{
+			for(alpha_x=angle_range_min_x;alpha_x<angle_range_max_x;alpha_x=alpha_x+step_size)
+			{
+				rotatex.setValue(rotate_axis_x,alpha_x);
+				for(alpha_y=angle_range_min_y;alpha_y<angle_range_max_y;alpha_y=alpha_y+step_size)
+				{
+					rotatey.setValue(rotate_axis_y,alpha_y);
+					for(alpha_z=angle_range_min_z;alpha_z<angle_range_max_z;alpha_z=alpha_z+step_size)
+					{
+						rotatez.setValue(rotate_axis_z,alpha_z);
+						(rotatex*rotatey*rotatez).getValue(final_trafo);
+						atempkernel = aMesh;
+						atempkernel.Transform(final_trafo);
+						aBBox = atempkernel.GetBoundBox();
+						volumeBBOX = aBBox.LengthX()*aBBox.LengthY()*aBBox.LengthZ();
+						if (volumeBBOX < min_volumeBBOX)
+						{ 
+							min_volumeBBOX=volumeBBOX;
+							perfect_ax=alpha_x;
+							perfect_ay=alpha_y;
+							perfect_az=alpha_z;
+						}
+					}
+				}
+			}
+			//We found a better position than the PAS, now lets fine tune this position
+			//and search only in the corridor +/- step_size for an even better one
+			angle_range_min_x = perfect_ax - step_size;
+			angle_range_max_x = perfect_ax + step_size;
+			angle_range_min_y = perfect_ay - step_size;
+			angle_range_max_y = perfect_ay + step_size;
+			angle_range_min_z = perfect_az - step_size;
+			angle_range_max_z = perfect_az + step_size;
+			it_steps = it_steps*5.0;
+		}
+
+		//////////////////////////////////////////////////////////////////////////////////////
+		//Free Memory
+		atempkernel.Clear();
+		//Transform the mesh to the evaluated perfect position right now
+		rotatex.setValue(rotate_axis_x,perfect_ax);
+		rotatey.setValue(rotate_axis_y,perfect_ay);
+		rotatez.setValue(rotate_axis_z,perfect_az);
+		(rotatex*rotatey*rotatez).getValue(final_trafo);
+		aMesh.Transform(final_trafo);
+		inputMesh->getFemMeshPtr()->setTransform(final_trafo);
+		//////////////////////////////////////////////////////////////////////////////////////
+		//Now lets also do the movement to the 1st Quadrant in this function
+		aBBox = aMesh.GetBoundBox();
+		//Get Distance vector from current lower left corner of BBox to origin
+		Base::Vector3f dist_vector;
+		dist_vector.x = -aBBox.MinX;dist_vector.y=-aBBox.MinY;dist_vector.z=-aBBox.MinZ;
+		Base::Matrix4D trans_matrix(
+			float(1.0),float(0.0),float(0.0),dist_vector.x,
+			float(0.0),float(1.0),float(0.0),dist_vector.y,
+			float(0.0),float(0.0),float(1.0),dist_vector.z,
+			float(0.0),float(0.0),float(0.0),float(1.0));
+		inputMesh->getFemMeshPtr()->setTransform(trans_matrix);
+		inputMesh->getFemMeshPtr()->getSMesh()->ExportUNV("C:/fine_tuning.unv");
+
+	} PY_CATCH;
+
+	Py_Return;
+}
+
+
 static PyObject * importer(PyObject *self, PyObject *args)
 {
     const char* Name;
@@ -146,6 +383,7 @@ static PyObject * importer(PyObject *self, PyObject *args)
 
     Py_Return;
 }
+
 
 static PyObject * import_NASTRAN(PyObject *self, PyObject *args)
 {
@@ -546,6 +784,7 @@ struct PyMethodDef Fem_methods[] = {
     {"insert"     ,importer,    METH_VARARGS, inst_doc},
     {"export"     ,exporter,    METH_VARARGS, export_doc},
     {"read"       ,read,        Py_NEWARGS,   "Read a mesh from a file and returns a Mesh object."},
-	{"import_NASTRAN" , import_NASTRAN, Py_NEWARGS, "Import a Nastran Geometry Input Deck"},
+	{"SMESH_PCA" , SMESH_PCA, Py_NEWARGS, "Get a Matrix4D related to the PCA of a Mesh Object"},
+	{"minBoundingBox",minBoundingBox,Py_NEWARGS,"Minimize the Bounding Box and reorient the mesh to the 1st Quadrant"},
     {NULL, NULL}  /* sentinel */
 };
