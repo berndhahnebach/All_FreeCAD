@@ -377,7 +377,7 @@ void RemoveComponents::selectGLCallback(void * ud, SoEventCallback * n)
         // simply get all triangles under the rubberband
         SbViewportRegion vpr;
         vpr.setViewportPixels (x, y, w, h);
-        faces = vp->getFacetsOfRegion(vpr);
+        faces = vp->getFacetsOfRegion(vpr, view->getViewportRegion(), view->getCamera());
         if (that->ui->frontTriangles->isChecked()) {
             const SbVec2s& sz = view->getViewportRegion().getWindowSize();
             short width,height; sz.getValue(width,height);

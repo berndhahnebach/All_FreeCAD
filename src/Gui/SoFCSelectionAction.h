@@ -231,7 +231,7 @@ class GuiExport SoGLSelectAction : public SoAction
     SO_ACTION_HEADER(SoGLSelectAction);
 
 public:
-    SoGLSelectAction (const SbViewportRegion&);
+    SoGLSelectAction (const SbViewportRegion& region, const SbViewportRegion& select);
     ~SoGLSelectAction();
 
     void setHandled();
@@ -250,7 +250,8 @@ public:
     std::vector<unsigned long> indices;
 
 private:
-    const SbViewportRegion& _vp;
+    const SbViewportRegion& vpregion;
+    const SbViewportRegion& vpselect;
     SbBool _handled;
 };
 

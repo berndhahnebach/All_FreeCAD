@@ -771,7 +771,7 @@ void ViewProviderMesh::selectGLCallback(void * ud, SoEventCallback * n)
         ViewProviderMesh* that = static_cast<ViewProviderMesh*>(*it);
         if (that->getEditingMode() > -1) {
             that->finishEditing();
-            that->selectArea(x, y, w, h);
+            that->selectArea(x, y, w, h, view->getViewportRegion(), view->getCamera());
         }
     }
 
@@ -820,10 +820,18 @@ void ViewProviderMesh::getFacetsFromPolygon(const std::vector<SbVec2f>& picked,
         Base::Console().Message("The picked polygon seems to have self-overlappings. This could lead to strange results.");
 }
 
-std::vector<unsigned long> ViewProviderMesh::getFacetsOfRegion(const SbViewportRegion& vp) const
+std::vector<unsigned long> ViewProviderMesh::getFacetsOfRegion(const SbViewportRegion& select,
+                                                               const SbViewportRegion& region,
+                                                               SoCamera* camera) const
 {
-    Gui::SoGLSelectAction gl(vp);
-    gl.apply(const_cast<ViewProviderMesh*>(this)->getRoot());
+    SoSeparator* root = new SoSeparator();
+    root->ref();
+    root->addChild(camera);
+    root->addChild(const_cast<ViewProviderMesh*>(this)->getCoordNode());
+    root->addChild(const_cast<ViewProviderMesh*>(this)->getShapeNode());
+    Gui::SoGLSelectAction gl(region, select);
+    gl.apply(root);
+    root->unref();
 
     std::vector<unsigned long> faces;
     faces.insert(faces.end(), gl.indices.begin(), gl.indices.end());
@@ -893,6 +901,8 @@ std::vector<unsigned long> ViewProviderMesh::getVisibleFacetsAfterZoom(const SbB
                                                                        const SbViewportRegion& vp,
                                                                        SoCamera* camera) const
 {
+    // camera copy will be deleted inside getVisibleFacets()
+    // because the ref counter reaches 0
     camera = static_cast<SoCamera*>(camera->copy());
     boxZoom(rect,vp,camera);
     return getVisibleFacets(vp, camera);
@@ -1406,15 +1416,16 @@ void ViewProviderMesh::deleteSelection()
     }
 }
 
-void ViewProviderMesh::selectArea(short x, short y, short w, short h)
+void ViewProviderMesh::selectArea(short x, short y, short w, short h,
+                                  const SbViewportRegion& region,
+                                  SoCamera* camera)
 {
     SbViewportRegion vp;
     vp.setViewportPixels (x, y, w, h);
-    Gui::SoGLSelectAction gl(vp);
-    gl.apply(this->pcHighlight);
+    std::vector<unsigned long> faces = getFacetsOfRegion(vp, region, camera);
 
     const Mesh::MeshObject& rMesh = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue();
-    rMesh.addFacetsToSelection(gl.indices);
+    rMesh.addFacetsToSelection(faces);
 
     // Colorize the selected part
     highlightSelection();
