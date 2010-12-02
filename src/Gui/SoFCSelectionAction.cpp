@@ -689,30 +689,16 @@ void SoGLSelectAction::initClass()
   SO_ACTION_ADD_METHOD(SoNode,nullAction);
 
   SO_ENABLE(SoGLSelectAction, SoModelMatrixElement);
-  SO_ENABLE(SoGLSelectAction, SoShapeStyleElement);
-  SO_ENABLE(SoGLSelectAction, SoComplexityElement);
-  SO_ENABLE(SoGLSelectAction, SoComplexityTypeElement);
+  SO_ENABLE(SoGLSelectAction, SoProjectionMatrixElement);
   SO_ENABLE(SoGLSelectAction, SoCoordinateElement);
-  SO_ENABLE(SoGLSelectAction, SoFontNameElement);
-  SO_ENABLE(SoGLSelectAction, SoFontSizeElement);
-  SO_ENABLE(SoGLSelectAction, SoProfileCoordinateElement);
-  SO_ENABLE(SoGLSelectAction, SoProfileElement);
-  SO_ENABLE(SoGLSelectAction, SoSwitchElement);
-  SO_ENABLE(SoGLSelectAction, SoUnitsElement);
   SO_ENABLE(SoGLSelectAction, SoViewVolumeElement);
   SO_ENABLE(SoGLSelectAction, SoViewingMatrixElement);
   SO_ENABLE(SoGLSelectAction, SoViewportRegionElement);
 
-  SO_ACTION_ADD_METHOD(SoCallback,callDoAction);
-  SO_ACTION_ADD_METHOD(SoComplexity,callDoAction);
+  SO_ACTION_ADD_METHOD(SoCamera,callDoAction);
   SO_ACTION_ADD_METHOD(SoCoordinate3,callDoAction);
   SO_ACTION_ADD_METHOD(SoCoordinate4,callDoAction);
-  SO_ACTION_ADD_METHOD(SoFont,callDoAction);
   SO_ACTION_ADD_METHOD(SoGroup,callDoAction);
-  SO_ACTION_ADD_METHOD(SoProfile,callDoAction);
-  SO_ACTION_ADD_METHOD(SoProfileCoordinate2,callDoAction);
-  SO_ACTION_ADD_METHOD(SoProfileCoordinate3,callDoAction);
-  SO_ACTION_ADD_METHOD(SoTransformation,callDoAction);
   SO_ACTION_ADD_METHOD(SoSwitch,callDoAction);
   SO_ACTION_ADD_METHOD(SoShape,callDoAction);
   SO_ACTION_ADD_METHOD(SoIndexedFaceSet,callDoAction);
@@ -721,7 +707,9 @@ void SoGLSelectAction::initClass()
   SO_ACTION_ADD_METHOD(SoFCSelection,callDoAction);
 }
 
-SoGLSelectAction::SoGLSelectAction (const SbViewportRegion& vp) : _vp(vp), _handled(FALSE)
+SoGLSelectAction::SoGLSelectAction (const SbViewportRegion& region,
+                                    const SbViewportRegion& select)
+  : vpregion(region), vpselect(select), _handled(FALSE)
 {
   SO_ACTION_CONSTRUCTOR(SoGLSelectAction);
 }
@@ -732,11 +720,12 @@ SoGLSelectAction::~SoGLSelectAction()
 
 const SbViewportRegion& SoGLSelectAction::getViewportRegion () const
 {
-  return this->_vp;
+  return this->vpselect;
 }
 
 void SoGLSelectAction::beginTraversal(SoNode *node)
 {
+  SoViewportRegionElement::set(this->getState(), this->vpregion);
   traverse(node);
 }
 
@@ -776,30 +765,17 @@ void SoVisibleFaceAction::initClass()
   SO_ACTION_ADD_METHOD(SoNode,nullAction);
 
   SO_ENABLE(SoVisibleFaceAction, SoModelMatrixElement);
-  SO_ENABLE(SoVisibleFaceAction, SoShapeStyleElement);
-  SO_ENABLE(SoVisibleFaceAction, SoComplexityElement);
-  SO_ENABLE(SoVisibleFaceAction, SoComplexityTypeElement);
+  SO_ENABLE(SoVisibleFaceAction, SoProjectionMatrixElement);
   SO_ENABLE(SoVisibleFaceAction, SoCoordinateElement);
-  SO_ENABLE(SoVisibleFaceAction, SoFontNameElement);
-  SO_ENABLE(SoVisibleFaceAction, SoFontSizeElement);
-  SO_ENABLE(SoVisibleFaceAction, SoProfileCoordinateElement);
-  SO_ENABLE(SoVisibleFaceAction, SoProfileElement);
-  SO_ENABLE(SoVisibleFaceAction, SoSwitchElement);
-  SO_ENABLE(SoVisibleFaceAction, SoUnitsElement);
   SO_ENABLE(SoVisibleFaceAction, SoViewVolumeElement);
   SO_ENABLE(SoVisibleFaceAction, SoViewingMatrixElement);
   SO_ENABLE(SoVisibleFaceAction, SoViewportRegionElement);
 
-  SO_ACTION_ADD_METHOD(SoCallback,callDoAction);
-  SO_ACTION_ADD_METHOD(SoComplexity,callDoAction);
+
+  SO_ACTION_ADD_METHOD(SoCamera,callDoAction);
   SO_ACTION_ADD_METHOD(SoCoordinate3,callDoAction);
   SO_ACTION_ADD_METHOD(SoCoordinate4,callDoAction);
-  SO_ACTION_ADD_METHOD(SoFont,callDoAction);
   SO_ACTION_ADD_METHOD(SoGroup,callDoAction);
-  SO_ACTION_ADD_METHOD(SoProfile,callDoAction);
-  SO_ACTION_ADD_METHOD(SoProfileCoordinate2,callDoAction);
-  SO_ACTION_ADD_METHOD(SoProfileCoordinate3,callDoAction);
-  SO_ACTION_ADD_METHOD(SoTransformation,callDoAction);
   SO_ACTION_ADD_METHOD(SoSwitch,callDoAction);
   SO_ACTION_ADD_METHOD(SoShape,callDoAction);
   SO_ACTION_ADD_METHOD(SoIndexedFaceSet,callDoAction);

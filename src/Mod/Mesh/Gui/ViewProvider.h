@@ -140,7 +140,7 @@ public:
     void getFacetsFromPolygon(const std::vector<SbVec2f>& picked,
                               Gui::View3DInventorViewer &Viewer, SbBool inner,
                               std::vector<unsigned long>& indices) const;
-    std::vector<unsigned long> getFacetsOfRegion(const SbViewportRegion&) const;
+    std::vector<unsigned long> getFacetsOfRegion(const SbViewportRegion&, const SbViewportRegion&, SoCamera*) const;
     std::vector<unsigned long> getVisibleFacetsAfterZoom(const SbBox2s&, const SbViewportRegion&, SoCamera*) const;
     std::vector<unsigned long> getVisibleFacets(const SbViewportRegion&, SoCamera*) const;
     //@}
@@ -159,7 +159,7 @@ protected:
     virtual void segmentMesh(const MeshCore::MeshKernel& toolMesh, const Base::Vector3f& normal, SbBool inner);
     virtual void faceInfo(unsigned long facet);
     virtual void fillHole(unsigned long facet);
-    virtual void selectArea(short, short, short, short);
+    virtual void selectArea(short, short, short, short, const SbViewportRegion&, SoCamera*);
     void highlightSelection();
     void unhighlightSelection();
 

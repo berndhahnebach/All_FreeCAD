@@ -79,8 +79,6 @@ private:
     void renderVisibleFaces(const SbVec3f *);
 
     GLuint *selectBuf;
-    GLfloat modelview[16];
-    GLfloat projection[16];
 };
 
 } // namespace MeshGui
