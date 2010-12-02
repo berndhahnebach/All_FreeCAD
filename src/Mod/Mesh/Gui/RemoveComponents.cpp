@@ -100,7 +100,7 @@ void RemoveComponents::on_selectRegion_clicked()
         stopInteractiveCallback(viewer);
         startInteractiveCallback(viewer, selectGLCallback);
         // set cross cursor
-        viewer->startPicking(Gui::View3DInventorViewer::Rectangle);
+        viewer->startPicking(Gui::View3DInventorViewer::Lasso);
         SoQtCursor::CustomCursor custom;
         custom.dim.setValue(CROSS_WIDTH, CROSS_HEIGHT);
         custom.hotspot.setValue(CROSS_HOT_X, CROSS_HOT_Y);
@@ -119,7 +119,7 @@ void RemoveComponents::on_deselectRegion_clicked()
         stopInteractiveCallback(viewer);
         startInteractiveCallback(viewer, selectGLCallback);
         // set cross cursor
-        viewer->startPicking(Gui::View3DInventorViewer::Rectangle);
+        viewer->startPicking(Gui::View3DInventorViewer::Lasso);
         SoQtCursor::CustomCursor custom;
         custom.dim.setValue(CROSS_WIDTH, CROSS_HEIGHT);
         custom.hotspot.setValue(CROSS_HOT_X, CROSS_HOT_Y);
@@ -339,25 +339,12 @@ void RemoveComponents::selectGLCallback(void * ud, SoEventCallback * n)
     RemoveComponents* that = reinterpret_cast<RemoveComponents*>(ud);
     that->stopInteractiveCallback(view);
     n->setHandled();
-    std::vector<SbVec2s> clPoly = view->getPolygon();
-    if (clPoly.size() != 1)
+    std::vector<SbVec2f> polygon = view->getGLPolygon();
+    if (polygon.size() < 3)
         return;
+    if (polygon.front() != polygon.back())
+        polygon.push_back(polygon.front());
     const SoEvent* ev = n->getEvent();
-
-    // get the pixel coordinates
-    SbVec2s pos = clPoly[0];
-    short x1 = pos[0];
-    short y1 = pos[1];
-    SbVec2s loc = ev->getPosition();
-    short x2 = loc[0];
-    short y2 = loc[1];
-
-    short x = (x1+x2)/2;
-    short y = (y1+y2)/2;
-    short w = (x2-x1);
-    short h = (y2-y1);
-    if (w<0) w = -w;
-    if (h<0) h = -h;
 
     SbVec3f pnt, dir;
     view->getNearPlane(pnt, dir);
@@ -374,18 +361,17 @@ void RemoveComponents::selectGLCallback(void * ud, SoEventCallback * n)
         const Mesh::MeshObject& mesh = static_cast<Mesh::Feature*>((*it)->getObject())->Mesh.getValue();
         const MeshCore::MeshKernel& kernel = mesh.getKernel();
 
-        // simply get all triangles under the rubberband
-        SbViewportRegion vpr;
-        vpr.setViewportPixels (x, y, w, h);
-        faces = vp->getFacetsOfRegion(vpr, view->getViewportRegion(), view->getCamera());
+        // simply get all triangles under the polygon
+        vp->getFacetsFromPolygon(polygon, *view, true, faces);
         if (that->ui->frontTriangles->isChecked()) {
             const SbVec2s& sz = view->getViewportRegion().getWindowSize();
             short width,height; sz.getValue(width,height);
-            short xmin = std::min<short>(x1, x2);
-            short xmax = std::max<short>(x1, x2);
-            short ymin = std::min<short>(height-y1, height-y2);
-            short ymax = std::max<short>(height-y1, height-y2);
-            SbBox2s rect(xmin, ymin, xmax, ymax);
+            std::vector<SbVec2s> pixelPoly = view->getPolygon();
+            SbBox2s rect;
+            for (std::vector<SbVec2s>::iterator it = pixelPoly.begin(); it != pixelPoly.end(); ++it) {
+                const SbVec2s& p = *it;
+                rect.extendBy(SbVec2s(p[0],height-p[1]));
+            }
             std::vector<unsigned long> rf; rf.swap(faces);
             std::vector<unsigned long> vf = vp->getVisibleFacetsAfterZoom
                 (rect, view->getViewportRegion(), view->getCamera());
