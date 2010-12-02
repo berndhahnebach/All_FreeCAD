@@ -46,7 +46,7 @@ class SbSphereSheetProjector;
 namespace Gui {
 
 class View3DInventorViewer;
-class AbstractMouseModel;
+class AbstractMouseSelection;
 
 /**
  * @author Werner Mayer
@@ -83,7 +83,7 @@ public:
         SELECTION
     };
 
-    enum ePickMode {
+    enum SelectionMode {
         Lasso       = 0,  /**< Select objects using a lasso. */
         Rectangle   = 1,  /**< Select objects using a rectangle. */
         BoxZoom     = 2,  /**< Perform a box zoom. */
@@ -118,9 +118,10 @@ public:
     void setPopupMenuEnabled(const SbBool on);
     SbBool isPopupMenuEnabled(void) const;
 
-    void startPicking(ePickMode = Lasso);
-    void stopPicking();
-    SbBool isPicking() const;
+    void startSelection(AbstractMouseSelection*);
+    void startSelection(SelectionMode = Lasso);
+    void stopSelection();
+    SbBool isSelecting() const;
     const std::vector<SbVec2s>& getPolygon(SbBool* clip_inner=0) const;
 
 protected:
@@ -179,7 +180,7 @@ protected:
 
     /** @name Mouse model */
     //@{
-    AbstractMouseModel* pcMouseModel;
+    AbstractMouseSelection* mouseSelection;
     std::vector<SbVec2s> pcPolygon;
     SbBool clipInner;
     //@}

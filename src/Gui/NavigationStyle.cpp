@@ -41,7 +41,7 @@
 #include "View3DInventorViewer.h"
 #include "Application.h"
 #include "MenuManager.h"
-#include "MouseModel.h"
+#include "MouseSelection.h"
 
 using namespace Gui;
 
@@ -80,7 +80,7 @@ const Base::Type& NavigationStyleEvent::style() const
 
 TYPESYSTEM_SOURCE_ABSTRACT(Gui::NavigationStyle,Base::BaseClass);
 
-NavigationStyle::NavigationStyle() : viewer(0), pcMouseModel(0)
+NavigationStyle::NavigationStyle() : viewer(0), mouseSelection(0)
 {
     PRIVATE(this) = new NavigationStyleP();
     PRIVATE(this)->animsensor = new SoTimerSensor(NavigationStyleP::viewAnimationCB, this);
@@ -625,8 +625,8 @@ void NavigationStyle::updateAnimation()
 
 void NavigationStyle::redraw()
 {
-    if (pcMouseModel)
-        pcMouseModel->redraw();
+    if (mouseSelection)
+        mouseSelection->redraw();
 }
 
 SbBool NavigationStyle::handleEventInForeground(const SoEvent* const e)
@@ -698,43 +698,54 @@ void NavigationStyle::stopAnimating(void)
         NavigationStyle::IDLE : NavigationStyle::INTERACT);
 }
 
-void NavigationStyle::startPicking(NavigationStyle::ePickMode mode)
+void NavigationStyle::startSelection(AbstractMouseSelection* mouse)
 {
-    if (pcMouseModel)
+    if (!mouse)
         return;
+  
+    mouseSelection = mouse;
+    mouseSelection->grabMouseModel(viewer);
+}
+
+void NavigationStyle::startSelection(NavigationStyle::SelectionMode mode)
+{
+    if (mouseSelection)
+        return;
+    if (isSelecting())
+        stopSelection();
   
     switch (mode)
     {
     case Lasso:
-        pcMouseModel = new PolyPickerMouseModel();
+        mouseSelection = new PolyPickerSelection();
         break;
     case Rectangle:
-        pcMouseModel = new SelectionMouseModel();
+        mouseSelection = new RectangleSelection();
         break;
     case BoxZoom:
-        pcMouseModel = new BoxZoomMouseModel();
+        mouseSelection = new BoxZoomSelection();
         break;
     case Clip:
-        pcMouseModel = new PolyClipMouseModel();
+        mouseSelection = new PolyClipSelection();
         break;
     default:
         break;
     }
 
-    if (pcMouseModel)
-        pcMouseModel->grabMouseModel(viewer);
+    if (mouseSelection)
+        mouseSelection->grabMouseModel(viewer);
 }
 
-void NavigationStyle::stopPicking()
+void NavigationStyle::stopSelection()
 {
     pcPolygon.clear();
-    delete pcMouseModel; 
-    pcMouseModel = 0;
+    delete mouseSelection; 
+    mouseSelection = 0;
 }
 
-SbBool NavigationStyle::isPicking() const
+SbBool NavigationStyle::isSelecting() const
 {
-    return (pcMouseModel ? TRUE : FALSE);
+    return (mouseSelection ? TRUE : FALSE);
 }
 
 const std::vector<SbVec2s>& NavigationStyle::getPolygon(SbBool* clip_inner) const
@@ -847,20 +858,21 @@ SbBool NavigationStyle::processEvent(const SoEvent * const ev)
 {
     // If we're in picking mode then all events must be redirected to the
     // appropriate mouse model.
-    if (pcMouseModel) {
-        int hd=pcMouseModel->handleEvent(ev,viewer->getViewportRegion());
-        if (hd==AbstractMouseModel::Continue||hd==AbstractMouseModel::Restart) {
+    if (mouseSelection) {
+        int hd=mouseSelection->handleEvent(ev,viewer->getViewportRegion());
+        if (hd==AbstractMouseSelection::Continue||
+            hd==AbstractMouseSelection::Restart) {
             return TRUE;
         }
-        else if (hd==AbstractMouseModel::Finish) {
-            pcPolygon = pcMouseModel->getPositions();
-            clipInner = pcMouseModel->isInner();
-            delete pcMouseModel; pcMouseModel = 0;
+        else if (hd==AbstractMouseSelection::Finish) {
+            pcPolygon = mouseSelection->getPositions();
+            clipInner = mouseSelection->isInner();
+            delete mouseSelection; mouseSelection = 0;
             return NavigationStyle::processSoEvent(ev);
         }
-        else if (hd==AbstractMouseModel::Cancel) {
+        else if (hd==AbstractMouseSelection::Cancel) {
             pcPolygon.clear();
-            delete pcMouseModel; pcMouseModel = 0;
+            delete mouseSelection; mouseSelection = 0;
             return NavigationStyle::processSoEvent(ev);
         }
     }

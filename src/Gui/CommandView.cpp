@@ -1708,8 +1708,8 @@ void StdViewBoxZoom::activated(int iMsg)
     View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
     if ( view ) {
         View3DInventorViewer* viewer = view->getViewer();
-        if (!viewer->isPicking())
-            viewer->startPicking(View3DInventorViewer::BoxZoom);
+        if (!viewer->isSelecting())
+            viewer->startSelection(View3DInventorViewer::BoxZoom);
     }
 }
 

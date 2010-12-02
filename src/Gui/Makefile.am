@@ -266,7 +266,7 @@ libFreeCADGui_la_SOURCES=\
 		MainWindow.cpp \
 		MDIView.cpp \
 		MenuManager.cpp \
-		MouseModel.cpp \
+		MouseSelection.cpp \
 		NavigationStyle.cpp \
 		NetworkRetriever.cpp \
 		OnlineDocumentation.cpp \
@@ -384,7 +384,7 @@ include_HEADERS=\
 		MainWindow.h \
 		MDIView.h \
 		MenuManager.h \
-		MouseModel.h \
+		MouseSelection.h \
 		NavigationStyle.h \
 		NetworkRetriever.h \
 		PrefWidgets.h \

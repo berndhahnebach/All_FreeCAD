@@ -55,7 +55,6 @@ namespace App {
 namespace Gui {
   class View3DInventorViewer;
   class SoFCSelection;
-  class AbstractMouseModel;
 }
 
 

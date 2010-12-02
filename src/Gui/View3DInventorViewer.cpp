@@ -677,19 +677,19 @@ void View3DInventorViewer::saveGraphic(int pagesize, int eBackgroundType, SoVect
     va->endPage();
 }
 
-void View3DInventorViewer::startPicking(View3DInventorViewer::ePickMode mode)
+void View3DInventorViewer::startSelection(View3DInventorViewer::SelectionMode mode)
 {
-    navigation->startPicking(NavigationStyle::ePickMode(mode));
+    navigation->startSelection(NavigationStyle::SelectionMode(mode));
 }
 
-void View3DInventorViewer::stopPicking()
+void View3DInventorViewer::stopSelection()
 {
-    navigation->stopPicking();
+    navigation->stopSelection();
 }
 
-bool View3DInventorViewer::isPicking() const
+bool View3DInventorViewer::isSelecting() const
 {
-    return navigation->isPicking();
+    return navigation->isSelecting();
 }
 
 const std::vector<SbVec2s>& View3DInventorViewer::getPolygon(SbBool* clip_inner) const

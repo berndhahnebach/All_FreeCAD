@@ -38,19 +38,19 @@
 
 #include <Base/Console.h>
 
-#include "MouseModel.h"
+#include "MouseSelection.h"
 #include "View3DInventor.h"
 #include "View3DInventorViewer.h"
 
 using namespace Gui; 
 
-AbstractMouseModel::AbstractMouseModel() : _pcView3D(0)
+AbstractMouseSelection::AbstractMouseSelection() : _pcView3D(0)
 {
     m_bInner = true;
     mustRedraw = false;
 }
 
-void AbstractMouseModel::grabMouseModel( Gui::View3DInventorViewer* viewer )
+void AbstractMouseSelection::grabMouseModel( Gui::View3DInventorViewer* viewer )
 {
     _pcView3D=viewer;
     m_cPrevCursor = _pcView3D->getWidget()->cursor();
@@ -59,7 +59,7 @@ void AbstractMouseModel::grabMouseModel( Gui::View3DInventorViewer* viewer )
     initialize();
 }
 
-void AbstractMouseModel::releaseMouseModel()
+void AbstractMouseSelection::releaseMouseModel()
 {
     // do termination of your mousemodel
     terminate();
@@ -68,15 +68,15 @@ void AbstractMouseModel::releaseMouseModel()
     _pcView3D = 0;
 }
 
-void AbstractMouseModel::redraw()
+void AbstractMouseSelection::redraw()
 {
     // Note: For any reason it does not work to do a redraw in the actualRedraw() method of the
     // viewer class. So, we do the redraw when the user continues moving the cursor. E.g. have
-    // a look to PolyPickerMouseModel::draw()
+    // a look to PolyPickerSelection::draw()
     mustRedraw = true;
 }
 
-int AbstractMouseModel::handleEvent(const SoEvent * const ev, const SbViewportRegion& vp)
+int AbstractMouseSelection::handleEvent(const SoEvent * const ev, const SbViewportRegion& vp)
 {
     int ret=Continue;
 
@@ -114,8 +114,8 @@ int AbstractMouseModel::handleEvent(const SoEvent * const ev, const SbViewportRe
 
 // -----------------------------------------------------------------------------------
 
-BaseMouseModel::BaseMouseModel()
-  : AbstractMouseModel()
+BaseMouseSelection::BaseMouseSelection()
+  : AbstractMouseSelection()
 {
 }
 
@@ -239,26 +239,26 @@ static const char *cursor_cut_scissors[]={
 "................................",
 "................................"};
 
-PolyPickerMouseModel::PolyPickerMouseModel() 
+PolyPickerSelection::PolyPickerSelection() 
 {
     m_iRadius    = 2;
     m_iNodes     = 0;
     m_bWorking   = false;
 }
 
-void PolyPickerMouseModel::initialize()
+void PolyPickerSelection::initialize()
 {
     QPixmap p(cursor_cut_scissors);
     QCursor cursor(p, 4, 4);
     _pcView3D->getWidget()->setCursor(cursor);
 }
 
-void PolyPickerMouseModel::terminate()
+void PolyPickerSelection::terminate()
 {
 //  _pcView3D->getGLWidget()->releaseMouse();
 }
 
-void PolyPickerMouseModel::draw ()
+void PolyPickerSelection::draw ()
 {
     if (mustRedraw){
         if (_cNodeVector.size() > 1) {
@@ -292,11 +292,11 @@ void PolyPickerMouseModel::draw ()
     }
 }
 
-PolyPickerMouseModel::~PolyPickerMouseModel()
+PolyPickerSelection::~PolyPickerSelection()
 {
 }
 
-int PolyPickerMouseModel::popupMenu()
+int PolyPickerSelection::popupMenu()
 {
     QMenu menu;
     QAction* fi = menu.addAction(QObject::tr("Finish"));
@@ -313,7 +313,7 @@ int PolyPickerMouseModel::popupMenu()
         return Restart;
 }
 
-int PolyPickerMouseModel::mouseButtonEvent( const SoMouseButtonEvent * const e, const QPoint& pos )
+int PolyPickerSelection::mouseButtonEvent( const SoMouseButtonEvent * const e, const QPoint& pos )
 {
     const int button = e->getButton();
     const SbBool press = e->getState() == SoButtonEvent::DOWN ? TRUE : FALSE;
@@ -370,7 +370,7 @@ int PolyPickerMouseModel::mouseButtonEvent( const SoMouseButtonEvent * const e, 
     return Continue;
 }
 
-int PolyPickerMouseModel::locationEvent( const SoLocation2Event * const e, const QPoint& pos )
+int PolyPickerSelection::locationEvent( const SoLocation2Event * const e, const QPoint& pos )
 {
     // do all the drawing stuff for us
     QPoint clPoint = pos;
@@ -403,22 +403,22 @@ int PolyPickerMouseModel::locationEvent( const SoLocation2Event * const e, const
     return Continue;
 }
 
-int PolyPickerMouseModel::keyboardEvent( const SoKeyboardEvent * const e )
+int PolyPickerSelection::keyboardEvent( const SoKeyboardEvent * const e )
 {
     return Continue;
 }
 
 // -----------------------------------------------------------------------------------
 
-PolyClipMouseModel::PolyClipMouseModel() 
+PolyClipSelection::PolyClipSelection() 
 {
 }
 
-PolyClipMouseModel::~PolyClipMouseModel()
+PolyClipSelection::~PolyClipSelection()
 {
 }
 
-int PolyClipMouseModel::popupMenu()
+int PolyClipSelection::popupMenu()
 {
     QMenu menu;
     QAction* ci = menu.addAction(QObject::tr("Inner"));
@@ -445,30 +445,30 @@ int PolyClipMouseModel::popupMenu()
 
 // -----------------------------------------------------------------------------------
 
-SelectionMouseModel::SelectionMouseModel()
+RectangleSelection::RectangleSelection()
 {
     m_bWorking = false;
 }
 
-SelectionMouseModel::~SelectionMouseModel()
+RectangleSelection::~RectangleSelection()
 {
 }
 
-void SelectionMouseModel::initialize()
+void RectangleSelection::initialize()
 {
 }
 
-void SelectionMouseModel::terminate()
+void RectangleSelection::terminate()
 {
 }
 
-void SelectionMouseModel::draw ()
+void RectangleSelection::draw ()
 {
     if (m_bWorking)
         _pcView3D->drawRect(m_iXold, m_iYold, m_iXnew, m_iYnew);
 }
 
-int SelectionMouseModel::mouseButtonEvent( const SoMouseButtonEvent * const e, const QPoint& pos )
+int RectangleSelection::mouseButtonEvent( const SoMouseButtonEvent * const e, const QPoint& pos )
 {
     const int button = e->getButton();
     const SbBool press = e->getState() == SoButtonEvent::DOWN ? TRUE : FALSE;
@@ -506,7 +506,7 @@ int SelectionMouseModel::mouseButtonEvent( const SoMouseButtonEvent * const e, c
     return ret;
 }
 
-int SelectionMouseModel::locationEvent( const SoLocation2Event * const e, const QPoint& pos )
+int RectangleSelection::locationEvent( const SoLocation2Event * const e, const QPoint& pos )
 {
     draw();
     m_iXnew = pos.x(); 
@@ -515,22 +515,22 @@ int SelectionMouseModel::locationEvent( const SoLocation2Event * const e, const 
     return Continue;
 }
 
-int SelectionMouseModel::keyboardEvent( const SoKeyboardEvent * const e )
+int RectangleSelection::keyboardEvent( const SoKeyboardEvent * const e )
 {
     return Continue;
 }
 
 // -----------------------------------------------------------------------------------
 
-BoxZoomMouseModel::BoxZoomMouseModel()
+BoxZoomSelection::BoxZoomSelection()
 {
 }
 
-BoxZoomMouseModel::~BoxZoomMouseModel()
+BoxZoomSelection::~BoxZoomSelection()
 {
 }
 
-void BoxZoomMouseModel::terminate()
+void BoxZoomSelection::terminate()
 {
     int xmin = std::min<int>(m_iXold, m_iXnew);
     int xmax = std::max<int>(m_iXold, m_iXnew);

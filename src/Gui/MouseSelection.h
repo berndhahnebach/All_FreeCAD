@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef MOUSEMODEL_H
-#define MOUSEMODEL_H
+#ifndef MOUSESELECTION_H
+#define MOUSESELECTION_H
 
 #include <vector>
 #include <Inventor/SbLinear.h>
@@ -44,19 +44,19 @@ namespace Gui {
 class View3DInventorViewer;
 
 /**
- * The mouse model base class
+ * The mouse selection base class
  * In derived classes you must implement the methods @ref initialize() and @ref terminate()
  * For all drawing stuff you just have to reimplement the @ref draw() method. 
  * In general you need not to do anything else.
  * \author Werner Mayer and Jürgen Riegel
  */
-class GuiExport AbstractMouseModel
+class GuiExport AbstractMouseSelection
 {
 public:
     enum { Continue=0, Restart=1, Finish=2, Cancel=3 };
 
-    AbstractMouseModel();
-    virtual ~AbstractMouseModel(void){}
+    AbstractMouseSelection();
+    virtual ~AbstractMouseSelection(void){}
     /// implement this in derived classes
     virtual void initialize() = 0;
     /// implement this in derived classes
@@ -96,28 +96,28 @@ private:
 // -----------------------------------------------------------------------------------
 
 /**
- * The standard model class
+ * The standard mouse selection class
  * \author Jürgen Riegel
  */
-class GuiExport BaseMouseModel : public AbstractMouseModel
+class GuiExport BaseMouseSelection : public AbstractMouseSelection
 {
 public:
-    BaseMouseModel();
-    virtual ~BaseMouseModel(){}
+    BaseMouseSelection();
+    virtual ~BaseMouseSelection(){}
 };
 
 // -----------------------------------------------------------------------------------
 
 /**
- * The poly picker mouse model class
+ * The poly picker mouse selection class
  * Create a polygon
  * \author Werner Mayer
  */
-class GuiExport PolyPickerMouseModel : public BaseMouseModel
+class GuiExport PolyPickerSelection : public BaseMouseSelection
 {
 public:
-    PolyPickerMouseModel();
-    virtual ~PolyPickerMouseModel();
+    PolyPickerSelection();
+    virtual ~PolyPickerSelection();
 
     /// set the new mouse cursor
     virtual void initialize();
@@ -146,11 +146,11 @@ protected:
  * Create a polygon
  * \author Werner Mayer
  */
-class GuiExport PolyClipMouseModel : public PolyPickerMouseModel
+class GuiExport PolyClipSelection : public PolyPickerSelection
 {
 public:
-    PolyClipMouseModel();
-    virtual ~PolyClipMouseModel();
+    PolyClipSelection();
+    virtual ~PolyClipSelection();
 
 protected:
     virtual int popupMenu();
@@ -163,11 +163,11 @@ protected:
  * Draws a rectangle for selection
  * \author Werner Mayer
  */
-class GuiExport SelectionMouseModel : public BaseMouseModel 
+class GuiExport RectangleSelection : public BaseMouseSelection 
 {
 public:
-    SelectionMouseModel();
-    virtual ~SelectionMouseModel();
+    RectangleSelection();
+    virtual ~RectangleSelection();
 
     /// do nothing
     virtual void initialize();
@@ -193,14 +193,14 @@ private:
  * Draws a rectangle for box zooming
  * \author Werner Mayer
  */
-class GuiExport BoxZoomMouseModel : public SelectionMouseModel 
+class GuiExport BoxZoomSelection : public RectangleSelection 
 {
 public:
-    BoxZoomMouseModel();
-    ~BoxZoomMouseModel();
+    BoxZoomSelection();
+    ~BoxZoomSelection();
     void terminate();
 };
 
 } // namespace Gui
 
-#endif // MOUSEMODEL_H 
+#endif // MOUSESELECTION_H 

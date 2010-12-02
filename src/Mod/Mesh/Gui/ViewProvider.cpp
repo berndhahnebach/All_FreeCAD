@@ -64,7 +64,6 @@
 #include <Gui/SoFCSelection.h>
 #include <Gui/SoFCSelectionAction.h>
 #include <Gui/MainWindow.h>
-#include <Gui/MouseModel.h>
 #include <Gui/Selection.h>
 #include <Gui/Window.h>
 #include <Gui/WaitCursor.h>

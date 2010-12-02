@@ -50,7 +50,6 @@ namespace Gui {
 
 class ViewProvider;
 class SoFCBackgroundGradient;
-class AbstractMouseModel;
 class NavigationStyle;
 
 
@@ -70,7 +69,7 @@ public:
         Transparent = 3,  /**< Transparent background  */
     };
     /// Pick modes for picking points in the scene
-    enum ePickMode {
+    enum SelectionMode {
         Lasso       = 0,  /**< Select objects using a lasso. */
         Rectangle   = 1,  /**< Select objects using a rectangle. */
         BoxZoom     = 2,  /**< Perform a box zoom. */
@@ -159,11 +158,11 @@ public:
      */
     bool dumpToFile(const char* filename, bool binary) const;
 
-    /** @name Picking methods */
+    /** @name Selection methods */
     //@{
-    void startPicking( ePickMode = Lasso );
-    void stopPicking();
-    bool isPicking() const;
+    void startSelection(SelectionMode = Lasso);
+    void stopSelection();
+    bool isSelecting() const;
     std::vector<SbVec2f> getGLPolygon(SbBool* clip_inner=0) const;
     const std::vector<SbVec2s>& getPolygon(SbBool* clip_inner=0) const;
     std::vector<int> tessellate(const std::vector<SbVec2f>&) const;
