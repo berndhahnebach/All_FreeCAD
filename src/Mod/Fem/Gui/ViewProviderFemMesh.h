@@ -56,12 +56,23 @@ public:
     /// destructor.
     ~ViewProviderFemMesh();
 
+    // Display properties
+    App::PropertyColor PointColor;
+    App::PropertyFloatConstraint PointSize;
+    App::PropertyMaterial PointMaterial;
+
     void attach(App::DocumentObject *pcObject);
     void setDisplayMode(const char* ModeName);
     std::vector<std::string> getDisplayModes() const;
     void updateData(const App::Property*);
 
 protected:
+    /// get called by the container whenever a property has been changed
+    virtual void onChanged(const App::Property* prop);
+
+    SoMaterial            * pcPointMaterial;
+    SoDrawStyle           * pcPointStyle;
+
     SoDrawStyle           * pcDrawStyle;
     SoShapeHints          * pShapeHints;
     SoMaterialBinding     * pcMatBinding;
