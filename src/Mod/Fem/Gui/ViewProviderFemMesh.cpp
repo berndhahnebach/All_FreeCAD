@@ -39,6 +39,7 @@
 # include <Inventor/nodes/SoDrawStyle.h>
 # include <Inventor/nodes/SoIndexedFaceSet.h>
 # include <Inventor/nodes/SoShapeHints.h>
+# include <Inventor/nodes/SoPointSet.h>
 # include <QFile>
 #endif
 
@@ -62,6 +63,17 @@ PROPERTY_SOURCE(FemGui::ViewProviderFemMesh, Gui::ViewProviderGeometryObject)
 
 ViewProviderFemMesh::ViewProviderFemMesh()
 {
+    App::Material mat;
+    mat.ambientColor.set(0.2f,0.2f,0.2f);
+    mat.diffuseColor.set(0.1f,0.1f,0.1f);
+    mat.specularColor.set(0.0f,0.0f,0.0f);
+    mat.emissiveColor.set(0.0f,0.0f,0.0f);
+    mat.shininess = 0.0f;
+    mat.transparency = 0.0f;
+    ADD_PROPERTY(PointMaterial,(mat));
+    ADD_PROPERTY(PointColor,(mat.diffuseColor));
+    ADD_PROPERTY(PointSize,(2.0f));
+
     pcDrawStyle = new SoDrawStyle();
     pcDrawStyle->ref();
     pcDrawStyle->style = SoDrawStyle::LINES;
@@ -82,6 +94,16 @@ ViewProviderFemMesh::ViewProviderFemMesh()
 
     pcFaces = new SoIndexedFaceSet;
     pcFaces->ref();
+
+    pcPointStyle = new SoDrawStyle();
+    pcPointStyle->ref();
+    pcPointStyle->style = SoDrawStyle::POINTS;
+    pcPointStyle->pointSize = PointSize.getValue();
+
+    pcPointMaterial = new SoMaterial;
+    pcPointMaterial->ref();
+    PointMaterial.touch();
+
 }
 
 ViewProviderFemMesh::~ViewProviderFemMesh()
@@ -91,6 +113,9 @@ ViewProviderFemMesh::~ViewProviderFemMesh()
     pcFaces->unref();
     pShapeHints->unref();
     pcMatBinding->unref();
+    pcPointMaterial->unref();
+    pcPointStyle->unref();
+
 }
 
 void ViewProviderFemMesh::attach(App::DocumentObject *pcObj)
@@ -122,20 +147,33 @@ void ViewProviderFemMesh::attach(App::DocumentObject *pcObj)
     //offset->styles = SoPolygonOffset::LINES;
     //offset->factor = -2.0f;
     //offset->units = 1.0f;
-    SoGroup* pcFlatWireRoot = new SoGroup();
+    SoGroup* pcFlatWireRoot = new SoSeparator();
     pcFlatWireRoot->addChild(pcFlatRoot);
     //pcFlatWireRoot->addChild(offset);
     pcFlatWireRoot->addChild(pcWireRoot);
     addDisplayMaskMode(pcFlatWireRoot, "Flat Lines");
 
+    // Points
+    SoGroup* pcPointsRoot = new SoSeparator();
+    pcPointsRoot->addChild(pcPointMaterial);  
+    pcPointsRoot->addChild(pcPointStyle);
+    pcPointsRoot->addChild(pcCoords);
+    SoPointSet * pointset = new SoPointSet;
+    pcPointsRoot->addChild(pointset);
+    addDisplayMaskMode(pcPointsRoot, "Points");
+
     pcHighlight->addChild(pcCoords);
     pcHighlight->addChild(pcFaces);
-}
 
+
+}
 void ViewProviderFemMesh::setDisplayMode(const char* ModeName)
 {
-    if (strcmp("Flat Lines",ModeName)==0)
+    if ( strcmp("Flat Lines",ModeName)==0 )
         setDisplayMaskMode("Flat Lines");
+    else if ( strcmp("Points",ModeName)==0 )
+        setDisplayMaskMode("Points");
+
     ViewProviderGeometryObject::setDisplayMode( ModeName );
 }
 
@@ -143,6 +181,7 @@ std::vector<std::string> ViewProviderFemMesh::getDisplayModes(void) const
 {
     std::vector<std::string> StrList;
     StrList.push_back("Flat Lines");
+    StrList.push_back("Points");
     return StrList;
 }
 
@@ -154,6 +193,33 @@ void ViewProviderFemMesh::updateData(const App::Property* prop)
     }
     else {
         Gui::ViewProviderGeometryObject::updateData(prop);
+    }
+}
+
+void ViewProviderFemMesh::onChanged(const App::Property* prop)
+{
+    if (prop == &PointSize) {
+        pcPointStyle->pointSize = PointSize.getValue();
+    }
+    else if (prop == &PointColor) {
+        const App::Color& c = PointColor.getValue();
+        pcPointMaterial->diffuseColor.setValue(c.r,c.g,c.b);
+        if (c != PointMaterial.getValue().diffuseColor)
+        PointMaterial.setDiffuseColor(c);
+    }
+    else if (prop == &PointMaterial) {
+        const App::Material& Mat = PointMaterial.getValue();
+        if (PointColor.getValue() != Mat.diffuseColor)
+        PointColor.setValue(Mat.diffuseColor);
+        pcPointMaterial->ambientColor.setValue(Mat.ambientColor.r,Mat.ambientColor.g,Mat.ambientColor.b);
+        pcPointMaterial->diffuseColor.setValue(Mat.diffuseColor.r,Mat.diffuseColor.g,Mat.diffuseColor.b);
+        pcPointMaterial->specularColor.setValue(Mat.specularColor.r,Mat.specularColor.g,Mat.specularColor.b);
+        pcPointMaterial->emissiveColor.setValue(Mat.emissiveColor.r,Mat.emissiveColor.g,Mat.emissiveColor.b);
+        pcPointMaterial->shininess.setValue(Mat.shininess);
+        pcPointMaterial->transparency.setValue(Mat.transparency);
+    }
+    else {
+        ViewProviderGeometryObject::onChanged(prop);
     }
 }
 
