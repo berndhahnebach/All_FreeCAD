@@ -875,7 +875,7 @@ class toolBar:
                                 pagename = str(self.pageBox.itemText(index))
                                 vobj = FreeCADGui.ActiveDocument.getObject(pagename)
                                 if vobj:
-                                        self.scaleBox.setEditText(vobj.HintScale)
+                                        self.scaleBox.setEditText(str(vobj.HintScale))
                                         self.marginXValue.setValue(float(vobj.HintOffsetX))
                                         self.marginYValue.setValue(float(vobj.HintOffsetY))
 
