@@ -60,9 +60,9 @@ ViewProviderDrawingPage::ViewProviderDrawingPage()
   : view(0)
 {
     sPixmap = "Page";
-    ADD_PROPERTY(HintScale,("10"));
-    ADD_PROPERTY(HintOffsetX,("10"));
-    ADD_PROPERTY(HintOffsetY,("10"));
+    ADD_PROPERTY(HintScale,(10.0));
+    ADD_PROPERTY(HintOffsetX,(10.0));
+    ADD_PROPERTY(HintOffsetY,(10.0));
 }
 
 ViewProviderDrawingPage::~ViewProviderDrawingPage()
