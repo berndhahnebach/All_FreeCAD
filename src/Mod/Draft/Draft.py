@@ -46,85 +46,29 @@ How it works / how to extend:
 	Suggestions are also welcome on the FreeCAD discussion forum.
 
 	If you want to have a look at the code, here is a general explanation. The
-	Draft module is divided in two files: Draft.py (this one) and draftGui.py.
-	The Draft.py file is doing all the actual cad operation, while in draftGui.py
-	you have the ui part, ie. the draft command bar. Both files are loaded at
-	module init by InitGui.py, which is called directly by FreeCAD. In Draft.py,
-	you have:
-	- General functions, like snap, constraint, format, that are shared by all tools
-	- Trackers, for drawing temporary stuff: snaps, lines, arcs or ghosts
-	- Tools that construct geometry: line, circle, rectangle, text
-	- Tools that modify geometry: move, rotate, offset, upgrade, downgrade, trimex
-	- The tools are then mapped to FreeCAD commands
+	Draft module is divided in several files:
+
+        - Draft.py: Hosts the functions that are useful for scripting outside of
+          the Draft module, it is the "Draft API"
+        - draftGui.py: Creates and manages the special Draft toolbar
+        - draftTools.py: Contains the user tools of the Draft module (the commands
+          from the Draft menu), and a couple of helpers such as the "Trackers"
+          (temporary geometry used while drawing)
+        - draftlibs/fcvec.py: a vector math library, contains functions that are not
+          implemented in the standard FreeCAD vector
+        - draftlibs/fcgeo.py: a library of misc functions to manipulate shapes.
+        
+	The Draft.py contains everything to create geometry in the scene. You
+        should start there if you intend to modify something. Then, the draftTools
+        are where the FreeCAD commands are defined, while in draftGui.py
+	you have the ui part, ie. the draft command bar. Both draftTools and
+        draftGui are loaded at module init by InitGui.py, which is called directly by FreeCAD.
 	The tools all have an Activated() function, which is called by FreeCAD when the
 	corresponding FreeCAD command is invoked. Most tools then create the trackers they
 	will need during operation, then place a callback mechanism, which will detect
 	user input and do the necessary cad operations. They also send commands to the
 	command bar, which will display the appropriate controls. While the scene event
 	callback watches mouse events, the keyboard is being watched by the command bar.
-
-ToDo list:
-
-	- Return in SelectPlane should changes the offset, keeping the current plane.
-        - Add support for meshes in SelectPlane
-	- Implement a Qt translation system
-	- Pressing ctrl should immediately update the marker displayed when picking.
-	- Shift tab should move focus to previous item (presumably a bug outside of Draft)
-	- Picking fails to notice some endpoints and midpoints.  Sometimes
-	  flashes end points on an off while the mouse moves with random state
-	  when mouse stops
-	- circle ignores length
-	- When attempting to create a circle tangent to two existing circles, fcgeo
-	  fails:  NameError: global name 'circlefrom2Circles1Point' is not defined
-	- Fix offset tool geometry calculation. Should use openCascade's offset tools.
-	  Can we use Part.OffsetCurve?  -- probably not :-(
-	- Scale applied to lines produces BSplineCurve objects, which cause
-	  fcgeo to report "Unsupported curve type" when snapping (in findIntersection)
-	- DimensionViewProvider sets norm to Vector(0,0,1).  I don't know what
-	  is going on here, but this seems dangerous.
-	- Implement a way to specify the working plane.  Make sure all tools
-	  function properly in all planes.
-	- The use of angles to specify arcs is not well defined in general.
-	  How do we specify u-direction (the x-axis may not always be the
-	  right choice)?
-	- fix arc keyboard specifications
-	- is the arctracker in rotate useful?
-	- Rectangle displays junk immediately after first point is selected.
-	- The following exception is raised by drawing a self-intersecting
-	  quadrilateral, updrading it, then trying to snap while creating a line:
-
-	  [1;33m<type 'exceptions.ReferenceError'>
-	  [0mTraceback (most recent call last):
-	  File "/Users/cline/Library/Preferences/FreeCAD/Mod/Draft/Draft.py", line 926, in action
-	  point,ctrlPoint = getPoint(self,arg)
-	  File "/Users/cline/Library/Preferences/FreeCAD/Mod/Draft/Draft.py", line 372, in getPoint
-	  point = snapPoint(target,point,args["Position"],args["CtrlDown"])
-	  File "/Users/cline/Library/Preferences/FreeCAD/Mod/Draft/Draft.py", line 190, in snapPoint
-	  if (lastObj[0].Type[:4] == "Part"):
-	  ReferenceError: Cannot access attribute 'Type' of deleted object
-
-	- Do we need to delay geometry creation until after the event
-	  callback?  The trackers do this, but it is not done for the "real"
-	  geometry.  The answer is probably yes - this could cause core dumps. Use
-	  PyQt4.QtCore.QTimer.singleShot(msec,callable) to schedule geometry
-	  creation (OCC geometry, too!)
-	- There needs to be a global facility for finishing the active
-	  command, regardless of which workbench it is in.
-
-	- Bug in fcgeo.findIntersection for line and arc (circle?) not on the same plane:
-	  [1;33m<type 'exceptions.UnboundLocalError'>
-	  [0mTraceback (most recent call last):
-	  File "/Users/cline/Library/Preferences/FreeCAD/Mod/Draft/Draft.py", line 1247, in action
-	    point,ctrlPoint = getPoint(self,arg)
-	  File "/Users/cline/Library/Preferences/FreeCAD/Mod/Draft/Draft.py", line 469, in getPoint
-	      point = snapPoint(target,point,args["Position"],args["CtrlDown"])
-	  File "/Users/cline/Library/Preferences/FreeCAD/Mod/Draft/Draft.py", line 289, in snapPoint
-	      pt = fcgeo.findIntersection(j,k)
-	  File "/Users/cline/Library/Preferences/FreeCAD/Mod/Draft/draftlibs/fcgeo.py", line 170, in findIntersection
-	      d = vec1.dot(toPlane)
-	  UnboundLocalError: local variable 'vec1' referenced before assignment
-
-	- Rectangle can produce non-planar result
 '''
 
 # import FreeCAD modules
@@ -851,15 +795,21 @@ def getSVG(obj,modifier=100,textmodifier=100,plane=None):
                 
         return svg
 
-def makeDrawingView(obj,page):
-        "makeDrawingView(object,page) - adds a View of the object to the page"
-        viewobj = FreeCAD.ActiveDocument.addObject("Drawing::FeatureViewPython",obj.Name)
+def makeDrawingView(obj,page,lwmod=None,tmod=None):
+        '''
+        makeDrawingView(object,page,[lwmod,tmod]) - adds a View of the given object to the
+        given page. lwmod modifies lineweights (in percent), tmod modifies text heights
+        (in percent). The Hint scale, X and Y of the page are used.
+        '''
+        viewobj = FreeCAD.ActiveDocument.addObject("Drawing::FeatureViewPython","View"+obj.Name)
         DrawingView(viewobj)
         page.addObject(viewobj)
-        #viewobj.Scale = page.ViewObject.HintScale
-        #viewobj.X = page.ViewObject.HintOffsetX
-        #viewobj.Y = page.ViewObjectHintOffsetY
+        viewobj.Scale = page.ViewObject.HintScale
+        viewobj.X = page.ViewObject.HintOffsetX
+        viewobj.Y = page.ViewObject.HintOffsetY
         viewobj.Source = obj
+        if lwmod: viewobj.LineweightModifier = lwmod
+        if tmod: viewobj.TextModifier = tmod
         return viewobj
 
 				
@@ -1486,17 +1436,30 @@ class ViewProviderPolygon(ViewProviderDraft):
 
 class DrawingView:
         def __init__(self, obj):
-                #obj.addProperty("App::PropertyFloat","ViewResult","Drawing view","Y offset")
                 obj.addProperty("App::PropertyVector","Direction","Shape view","Projection direction")
-                obj.addProperty("App::PropertyPercent","LinewidthModifier","Drawing view","Modifies the linewidth of the lines inside this object")
-                obj.addProperty("App::PropertyPercent","TextModifier","Drawing view","Modifies the size of the texts inside this object")
+                obj.addProperty("App::PropertyFloat","LinewidthModifier","Drawing view","Modifies the linewidth of the lines inside this object")
+                obj.addProperty("App::PropertyFloat","TextModifier","Drawing view","Modifies the size of the texts inside this object")
                 obj.addProperty("App::PropertyLink","Source","Base","The linked object")
                 obj.Proxy = self
+                obj.LinewidthModifier = 100
+                obj.TextModifier = 100
 
-        def execute(self, fp):
-                print "Executed"
-                if fp.Source:
-                        fp.ViewResult = getSVG(fp.Source)
+        def execute(self, obj):
+                if obj.Source:
+                        obj.ViewResult = self.updateSVG(obj)
 
-        def onChanged(self,fp, prop):
-                print "Changed ",prop
+        def onChanged(self, obj, prop):
+                if prop in ["X","Y","Scale","LinewidthModifier","TextModifier"]:
+                        obj.ViewResult = self.updateSVG(obj)
+
+        def updateSVG(self, obj):
+                "encapsulates a svg fragment into a transformation node"
+                svg = getSVG(obj.Source,obj.LinewidthModifier,obj.TextModifier)
+                result = '<g id="' + obj.Name + '"'
+                result += ' transform="'
+                result += ' translate('+str(obj.X)+','+str(obj.Y)+')'
+                result += ' scale('+str(obj.Scale)+','+str(obj.Scale)+')'
+                result += '">'
+                result += svg
+                result += '</g>'
+                return result

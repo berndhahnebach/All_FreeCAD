@@ -3387,9 +3387,9 @@ class PutOnSheet(Modifier):
                 else:
                         pagename = str(self.ui.pageBox.itemText(self.ui.pageBox.currentIndex()))
                         page = self.doc.findObjects('Drawing::FeaturePage',pagename)[0]
-                page.ViewObject.HintScale = str(scale)
-                page.ViewObject.HintOffsetX = str(offsetx)
-                page.ViewObject.HintOffsetY = str(offsety)
+                page.ViewObject.HintScale = scale
+                page.ViewObject.HintOffsetX = offsetx
+                page.ViewObject.HintOffsetY = offsety
                 pb = open(str(page.PageResult))
                 fb = pb.read()
                 pageheight = re.findall("height=\"(.*?)\"",fb)
