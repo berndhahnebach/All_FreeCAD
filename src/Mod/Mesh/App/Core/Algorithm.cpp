@@ -1155,6 +1155,26 @@ void MeshAlgorithm::CheckFacets(const MeshFacetGrid& rclGrid, const Base::ViewPr
     }
 }
 
+void MeshAlgorithm::CheckFacets(const Base::ViewProjMethod* pclProj, const Base::Polygon2D& rclPoly,
+                                bool bInner, std::vector<unsigned long> &raulFacets) const
+{
+    const MeshPointArray& p = _rclMesh.GetPoints();
+    const MeshFacetArray& f = _rclMesh.GetFacets();
+    Base::SequencerLauncher seq("Check facets", f.size());
+    Base::Vector3f pt2d;
+    unsigned long index=0;
+    for (MeshFacetArray::_TConstIterator it = f.begin(); it != f.end(); ++it,++index) {
+        for (int i = 0; i < 3; i++) {
+            pt2d = (*pclProj)(p[it->_aulPoints[i]]);
+            if (rclPoly.Contains(Base::Vector2D(pt2d.x, pt2d.y)) == bInner) {
+                raulFacets.push_back(index);
+                break;
+            }
+        }
+        seq.next();
+    }
+}
+
 float MeshAlgorithm::Surface (void) const
 {
   float              fTotal = 0.0f;

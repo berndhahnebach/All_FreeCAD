@@ -65,6 +65,7 @@
 #include <Gui/SoFCSelectionAction.h>
 #include <Gui/MainWindow.h>
 #include <Gui/Selection.h>
+#include <Gui/Utilities.h>
 #include <Gui/Window.h>
 #include <Gui/WaitCursor.h>
 #include <Gui/View3DInventor.h>
@@ -782,6 +783,20 @@ void ViewProviderMesh::getFacetsFromPolygon(const std::vector<SbVec2f>& picked,
                                             SbBool inner,
                                             std::vector<unsigned long>& indices) const
 {
+#if 1
+    bool ok = true;
+    SoCamera* cam = Viewer.getCamera();
+    SbViewVolume vv = cam->getViewVolume();
+    Gui::ViewVolumeProjection proj(vv);
+    Base::Polygon2D polygon;
+    for (std::vector<SbVec2f>::const_iterator it = picked.begin(); it != picked.end(); ++it)
+        polygon.Add(Base::Vector2D((*it)[0],(*it)[1]));
+
+    // Get the attached mesh property
+    Mesh::PropertyMeshKernel& meshProp = static_cast<Mesh::Feature*>(pcObject)->Mesh;
+    MeshCore::MeshAlgorithm cAlg(meshProp.getValue().getKernel());
+    cAlg.CheckFacets(&proj, polygon, true, indices);
+#else
     // get the normal of the front clipping plane
     SbVec3f b,n;
     Viewer.getNearPlane(b, n);
@@ -804,6 +819,7 @@ void ViewProviderMesh::getFacetsFromPolygon(const std::vector<SbVec2f>& picked,
     MeshCore::MeshFacetGrid cGrid(meshProp.getValue().getKernel());
     MeshCore::MeshAlgorithm cAlg(meshProp.getValue().getKernel());
     cAlg.GetFacetsFromToolMesh(cToolMesh, cNormal, cGrid, indices);
+#endif
     if (!inner) {
         // get the indices that are completely outside
         std::vector<unsigned long> complete(meshProp.getValue().countFacets());
