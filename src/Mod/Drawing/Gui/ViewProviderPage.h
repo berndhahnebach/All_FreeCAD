@@ -47,9 +47,9 @@ public:
     /// destructor
     virtual ~ViewProviderDrawingPage();
 
-    App::PropertyString         HintScale;
-    App::PropertyString         HintOffsetX;
-    App::PropertyString         HintOffsetY;
+    App::PropertyFloat         HintScale;
+    App::PropertyFloat         HintOffsetX;
+    App::PropertyFloat         HintOffsetY;
 
     virtual void attach(App::DocumentObject *);
     virtual void setDisplayMode(const char* ModeName);
