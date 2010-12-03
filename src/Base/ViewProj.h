@@ -24,7 +24,6 @@
 #ifndef BASE_VIEWPROJ_H
 #define BASE_VIEWPROJ_H
 
-#include "Tools2D.h"
 #include "Vector3D.h"
 #include "Matrix.h"
 
@@ -37,17 +36,17 @@ namespace Base {
 class BaseExport ViewProjMethod
 {
 public:
-  virtual ~ViewProjMethod(){};
-  virtual bool isValid() const { return true; };
-  /** Convert 3D Point to 2D projection plane */
-  virtual Vector3f operator()(const Vector3f &rclPt) const = 0;
-  /** Convert a 2D Point on the projection plane in 3D space */
-  virtual Vector3f inverse (const Vector2D &rclPt) const = 0;
-  /** Calculate the projection (+ mapping) matrix */
-  virtual Matrix4D getProjectionMatrix (void) const = 0; 
+    virtual ~ViewProjMethod(){};
+    virtual bool isValid() const { return true; };
+    /** Convert 3D point to 2D projection plane */
+    virtual Vector3f operator()(const Vector3f &rclPt) const = 0;
+    /** Convert a 2D point on the projection plane in 3D space */
+    virtual Vector3f inverse (const Vector3f &rclPt) const = 0;
+    /** Calculate the projection (+ mapping) matrix */
+    virtual Matrix4D getProjectionMatrix (void) const = 0; 
 
 protected:
-  ViewProjMethod(){};
+    ViewProjMethod(){};
 };
 
 /**
@@ -57,27 +56,26 @@ protected:
 class BaseExport ViewProjMatrix : public ViewProjMethod
 {
 public:
-  ViewProjMatrix (const Matrix4D &rclMtx) : _clMtx(rclMtx) {  _clMtxInv = _clMtx; _clMtxInv.inverse(); };
-  virtual ~ViewProjMatrix(){};
+    ViewProjMatrix (const Matrix4D &rclMtx) : _clMtx(rclMtx) {  _clMtxInv = _clMtx; _clMtxInv.inverse(); };
+    virtual ~ViewProjMatrix(){};
 
-  inline Vector3f operator()(const Vector3f &rclPt) const;
-  inline Vector3f inverse (const Vector2D &rclPt) const;
+    inline Vector3f operator()(const Vector3f &rclPt) const;
+    inline Vector3f inverse (const Vector3f &rclPt) const;
 
-  Matrix4D getProjectionMatrix (void) const { return _clMtx; }
+    Matrix4D getProjectionMatrix (void) const { return _clMtx; }
 
 protected:
-  Matrix4D _clMtx, _clMtxInv;
+    Matrix4D _clMtx, _clMtxInv;
 };
 
 inline Vector3f ViewProjMatrix::operator()(const Vector3f &rclPt) const
 {
-  return Vector3f(_clMtx * rclPt);
+    return Vector3f(_clMtx * rclPt);
 }
 
-inline Vector3f ViewProjMatrix::inverse (const Vector2D &rclPt) const
+inline Vector3f ViewProjMatrix::inverse (const Vector3f &rclPt) const
 {
-  Vector3f clPt(rclPt.fX, rclPt.fY, 0.0f);
-  return Vector3f(_clMtxInv * clPt);
+    return Vector3f(_clMtxInv * rclPt);
 }
 
 } // namespace Base

@@ -224,6 +224,11 @@ public:
   void CheckFacets (const MeshFacetGrid &rclGrid, const Base::ViewProjMethod* pclProj, const Base::Polygon2D& rclPoly,
                     bool bInner, std::vector<unsigned long> &rclRes) const;
   /**
+   * Does the same as the above method unless that it doesn't use a grid.
+   */
+  void CheckFacets (const Base::ViewProjMethod* pclProj, const Base::Polygon2D& rclPoly,
+                    bool bInner, std::vector<unsigned long> &rclRes) const;
+  /**
    * Determines all facets of the given array \a raclFacetIndices that lie at the edge or that
    * have at least neighbour facet that is not inside the array. The resulting array \a raclResultIndices
    * is not be deleted before the algorithm starts. \a usLevel indicates how often the algorithm is 

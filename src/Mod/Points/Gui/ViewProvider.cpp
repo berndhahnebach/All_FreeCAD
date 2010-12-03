@@ -382,7 +382,7 @@ void ViewProviderPoints::clipPointsCallback(void * ud, SoEventCallback * n)
     view->render();
 }
 
-void ViewProviderPoints::cut( const std::vector<SbVec2f>& picked, Gui::View3DInventorViewer &Viewer)
+void ViewProviderPoints::cut(const std::vector<SbVec2f>& picked, Gui::View3DInventorViewer &Viewer)
 {
     // create the polygon from the picked points
     Base::Polygon2D cPoly;
@@ -403,7 +403,7 @@ void ViewProviderPoints::cut( const std::vector<SbVec2f>& picked, Gui::View3DInv
         SbVec3f pt(jt->x,jt->y,jt->z);
 
         // project from 3d to 2d
-        vol.projectToScreen( pt, pt );
+        vol.projectToScreen(pt, pt);
         if (!cPoly.Contains(Base::Vector2D(pt[0],pt[1])))
             newKernel.push_back(*jt);
     }

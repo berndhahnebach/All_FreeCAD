@@ -699,6 +699,7 @@ SET(FreeCADGui_CPP_SRCS
     resource.cpp
     Control.cpp
     Thumbnail.cpp
+	Utilities.cpp
     WaitCursor.cpp
 )
 SET(FreeCADGui_SRCS
@@ -715,6 +716,7 @@ SET(FreeCADGui_SRCS
     Qt4All.h
     Control.h
     Thumbnail.h
+	Utilities.h
     WaitCursor.h
 )
 

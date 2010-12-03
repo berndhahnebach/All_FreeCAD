@@ -328,6 +328,7 @@ libFreeCADGui_la_SOURCES=\
 		Transform.h \
 		Tree.cpp \
 		TreeView.cpp \
+		Utilities.cpp \
 		View.cpp \
 		View3DInventor.cpp \
 		View3DInventorExamples.cpp \
@@ -426,6 +427,7 @@ include_HEADERS=\
 		ToolBoxManager.h \
 		Tree.h \
 		TreeView.h \
+		Utilities.h \
 		View.h \
 		View3DInventor.h \
 		View3DInventorViewer.h \
