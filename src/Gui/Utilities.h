@@ -24,6 +24,8 @@
 #define GUI_UTILITIES_H
 
 #include <Base/ViewProj.h>
+#include <vector>
+#include <Inventor/SbVec2f.h>
 #include <Inventor/SbViewVolume.h>
 
 class SbViewVolume;
@@ -45,6 +47,19 @@ public:
 
 protected:
     SbViewVolume viewVolume;
+};
+
+class GuiExport Tessellator
+{
+public:
+    Tessellator(const std::vector<SbVec2f>&);
+    std::vector<int> tessellate() const;
+
+private:
+    static void tessCB(void * v0, void * v1, void * v2, void * cbdata);
+
+private:
+    std::vector<SbVec2f> polygon;
 };
 
 } // namespace Gui
