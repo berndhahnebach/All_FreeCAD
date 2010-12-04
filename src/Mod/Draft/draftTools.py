@@ -3334,7 +3334,54 @@ class ToggleConstructionMode():
 	def Activated(self):
 		FreeCADGui.activeWorkbench().draftToolBar.ui.constrButton.toggle()
 
+class Drawing(Modifier):
+        "The Draft Drawing command definition"
 
+        def GetResources(self):
+		return {'Pixmap'  : 'Draft_putOnSheet',
+			'MenuText': str(translate("draft", "Drawing").toLatin1()),
+			'ToolTip': str(translate("draft", "Puts the selected objects on a Drawing sheet.").toLatin1())}
+
+	def Activated(self):
+		Modifier.Activated(self,"Drawing")
+                sel = Draft.getSelection()
+                if not sel:
+                        page = self.createDefaultPage()
+                else:
+                        page = None
+                        for obj in sel:
+                                if obj.isDerivedFrom("Drawing::FeaturePage"):
+                                        page = obj
+                                        sel.pop(sel.index(obj))
+                        if not page:
+                                for obj in self.doc.Objects:
+                                        if obj.isDerivedFrom("Drawing::FeaturePage"):
+                                                page = obj
+                        if not page:
+                                page = self.createDefaultPage()
+                        sel.reverse()
+                        for obj in sel:
+                                if obj.ViewObject.isVisible():
+                                        name = 'View'+obj.Name
+                                        oldobj = page.getObject(name)
+                                        if oldobj: self.doc.removeObject(oldobj.Name)
+                                        Draft.makeDrawingView(obj,page)
+                        self.doc.recompute()
+
+        def createDefaultPage(self):
+                template = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetString("template")
+                if not template:
+                        template = FreeCAD.getResourceDir()+'Mod/Drawing/Templates/A3_Landscape.svg'
+                page = self.doc.addObject('Drawing::FeaturePage','Page')
+                page.ViewObject.HintOffsetX = 200
+                page.ViewObject.HintOffsetY = 100
+                page.ViewObject.HintScale = 20
+                page.Template = template
+                self.doc.recompute()
+                return page
+        
+                
+                
 class PutOnSheet(Modifier):
         "The Draft_PutOnSheet FreeCAD command definition"
 
@@ -3682,6 +3729,6 @@ FreeCADGui.addCommand('Draft_Upgrade',Upgrade())
 FreeCADGui.addCommand('Draft_Downgrade',Downgrade())
 FreeCADGui.addCommand('Draft_Trimex',Trimex())
 FreeCADGui.addCommand('Draft_Scale',Scale())
-FreeCADGui.addCommand('Draft_PutOnSheet',PutOnSheet())
+FreeCADGui.addCommand('Draft_PutOnSheet',Drawing())
 FreeCADGui.addCommand('Draft_Edit',Edit())
 FreeCADGui.addCommand('Draft_ToggleDisplayMode',ToggleDisplayMode())

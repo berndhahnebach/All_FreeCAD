@@ -1458,7 +1458,7 @@ class DrawingView:
                 result = '<g id="' + obj.Name + '"'
                 result += ' transform="'
                 result += ' translate('+str(obj.X)+','+str(obj.Y)+')'
-                result += ' scale('+str(obj.Scale)+','+str(obj.Scale)+')'
+                result += ' scale('+str(obj.Scale)+','+str(-obj.Scale)+')'
                 result += '">'
                 result += svg
                 result += '</g>'
