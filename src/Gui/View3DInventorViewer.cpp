@@ -34,7 +34,6 @@
 # include <GL/gl.h>
 # endif
 # include <Inventor/SbBox.h>
-# include <Inventor/SbTesselator.h>
 # include <Inventor/actions/SoGetBoundingBoxAction.h>
 # include <Inventor/actions/SoHandleEventAction.h> 
 # include <Inventor/actions/SoToVRML2Action.h>
@@ -730,38 +729,6 @@ std::vector<SbVec2f> View3DInventorViewer::getGLPolygon(SbBool* clip_inner) cons
     }
 
     return poly;
-}
-
-void View3DInventorViewer::tessCB(void * v0, void * v1, void * v2, void * cbdata)
-{
-    int * vtx0 = (int *)v0; 
-    int * vtx1 = (int *)v1; 
-    int * vtx2 = (int *)v2;
-
-    std::vector<int>* array = (std::vector<int> *)cbdata;
-    array->push_back(*vtx0);
-    array->push_back(*vtx1);
-    array->push_back(*vtx2);
-    array->push_back(-1);
-}
-
-std::vector<int> View3DInventorViewer::tessellate(const std::vector<SbVec2f>& polygon) const
-{
-    std::vector<int> indices(polygon.size());
-    std::vector<int> face_indices;
-
-    SbTesselator tessellator(tessCB, &face_indices);
-    tessellator.beginPolygon();
-
-    int index = 0;
-    for (std::vector<SbVec2f>::const_iterator it = polygon.begin(); it != polygon.end(); ++it, index++) {
-        indices[index] = index;
-        tessellator.addVertex(SbVec3f((*it)[0], (*it)[1], 0.0f), &(indices[index]));
-    }
-
-    // run the triangulation now
-    tessellator.endPolygon();
-    return face_indices;
 }
 
 bool View3DInventorViewer::dumpToFile(const char* filename, bool binary) const

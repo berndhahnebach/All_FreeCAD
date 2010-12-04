@@ -165,7 +165,6 @@ public:
     bool isSelecting() const;
     std::vector<SbVec2f> getGLPolygon(SbBool* clip_inner=0) const;
     const std::vector<SbVec2s>& getPolygon(SbBool* clip_inner=0) const;
-    std::vector<int> tessellate(const std::vector<SbVec2f>&) const;
     //@}
 
     /** @name Edit methods */
@@ -280,7 +279,6 @@ protected:
 private:
     static void selectCB(void * closure, SoPath * p);
     static void deselectCB(void * closure, SoPath * p);
-    static void tessCB(void * v0, void * v1, void * v2, void * cbdata);
 
 private:
     std::set<ViewProvider*> _ViewProviderSet;
