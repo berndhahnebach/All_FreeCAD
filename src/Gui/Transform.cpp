@@ -76,57 +76,168 @@ public:
 }
 }
 
-/* TRANSLATOR Gui::Dialog::Transform */
+// ----------------------------------------------------------------------------
 
-Transform::Transform(QWidget* parent, Qt::WFlags fl)
-  : Gui::LocationDialog(parent, fl)
+TransformStrategy::TransformStrategy()
 {
-    ui = new Ui_TransformComp(this);
-    ui->resetButton->hide();
-    ui->applyPlacementChange->hide();
-    ui->applyIncrementalPlacement->hide();
+}
 
-    ui->angle->setSuffix(QString::fromUtf8(" \xc2\xb0"));
-    ui->yawAngle->setSuffix(QString::fromUtf8(" \xc2\xb0"));
-    ui->pitchAngle->setSuffix(QString::fromUtf8(" \xc2\xb0"));
-    ui->rollAngle->setSuffix(QString::fromUtf8(" \xc2\xb0"));
+TransformStrategy::~TransformStrategy()
+{
+}
 
-    ui->closeButton->setText(tr("Cancel"));
-    this->setWindowTitle(tr("Transform"));
+Base::Vector3d TransformStrategy::getRotationCenter() const
+{
+    // get the global bounding box of all selected objects and use its center as
+    // rotation center
+    std::set<App::DocumentObject*> objects = transformObjects();
+    if (!objects.empty()) {
+        Base::BoundBox3d bbox;
+        bool first=true;
+        for (std::set<App::DocumentObject*>::const_iterator it=objects.begin();it!=objects.end();++it) {
+            std::map<std::string,App::Property*> props;
+            (*it)->getPropertyMap(props);
+            // search for a data property
+            std::map<std::string,App::Property*>::iterator jt;
+            jt = std::find_if(props.begin(), props.end(), find_geometry_data());
+            if (jt != props.end()) {
+                if (first)
+                    bbox = (static_cast<App::PropertyGeometry*>(jt->second)->getBoundingBox());
+                else
+                    bbox.Add(static_cast<App::PropertyGeometry*>(jt->second)->getBoundingBox());
+                first = false;
+            }
+        }
 
-    // create a signal mapper in order to have one slot to perform the change
-    QSignalMapper* signalMapper = new QSignalMapper(this);
-    connect(this, SIGNAL(directionChanged()), signalMapper, SLOT(map()));
-    signalMapper->setMapping(this, 0);
-
-    int id = 1;
-    QList<QDoubleSpinBox*> sb = this->findChildren<QDoubleSpinBox*>();
-    for (QList<QDoubleSpinBox*>::iterator it = sb.begin(); it != sb.end(); ++it) {
-        connect(*it, SIGNAL(valueChanged(double)), signalMapper, SLOT(map()));
-        signalMapper->setMapping(*it, id++);
+        return Base::Vector3d((bbox.MinX+bbox.MaxX)/2,
+                              (bbox.MinY+bbox.MaxY)/2,
+                              (bbox.MinZ+bbox.MaxZ)/2);
     }
 
-    connect(signalMapper, SIGNAL(mapped(int)),
-            this, SLOT(onTransformChanged(int)));
+    return Base::Vector3d();
+}
 
+void TransformStrategy::commitTransform(const Base::Matrix4D& mat)
+{
+    std::set<App::DocumentObject*> objects = transformObjects();
+    Gui::Document* doc = Gui::Application::Instance->activeDocument();
+    if (doc) {
+        doc->openCommand("Transform");
+        for (std::set<App::DocumentObject*>::iterator it=objects.begin();it!=objects.end();++it) {
+            acceptDataTransform(mat, *it);
+        }
+        doc->commitCommand();
+    }
+}
+
+void TransformStrategy::acceptDataTransform(const Base::Matrix4D& mat, App::DocumentObject* obj)
+{
+    Gui::Document* doc = Gui::Application::Instance->getDocument(obj->getDocument());
+    std::map<std::string,App::Property*> props;
+    obj->getPropertyMap(props);
+    // search for the placement property
+    std::map<std::string,App::Property*>::iterator jt;
+    jt = std::find_if(props.begin(), props.end(), find_placement());
+    if (jt != props.end()) {
+        Base::Placement local = static_cast<App::PropertyPlacement*>(jt->second)->getValue();
+        Gui::ViewProvider* vp = doc->getViewProvider(obj);
+        if (vp) vp->setTransformation(local.toMatrix());
+    }
+    else {
+        // No placement found
+        Gui::ViewProvider* vp = doc->getViewProvider(obj);
+        if (vp) vp->setTransformation(Base::Matrix4D());
+    }
+
+    // Apply the transformation
+    jt = std::find_if(props.begin(), props.end(), find_geometry_data());
+    if (jt != props.end()) {
+        static_cast<App::PropertyGeometry*>(jt->second)->transformGeometry(mat);
+    }
+}
+
+void TransformStrategy::applyTransform(const Base::Placement& plm)
+{
+    std::set<App::DocumentObject*> objects = transformObjects();
+    for (std::set<App::DocumentObject*>::iterator it=objects.begin();it!=objects.end();++it) {
+        applyViewTransform(plm, *it);
+    }
+}
+
+void TransformStrategy::resetTransform()
+{
+    std::set<App::DocumentObject*> objects = transformObjects();
+    for (std::set<App::DocumentObject*>::iterator it=objects.begin();it!=objects.end();++it) {
+        resetViewTransform(*it);
+    }
+}
+
+void TransformStrategy::applyViewTransform(const Base::Placement& plm, App::DocumentObject* obj)
+{
+    Gui::Document* doc = Gui::Application::Instance->getDocument(obj->getDocument());
+    std::map<std::string,App::Property*> props;
+    obj->getPropertyMap(props);
+    // search for the placement property
+    std::map<std::string,App::Property*>::iterator jt;
+    jt = std::find_if(props.begin(), props.end(), find_placement());
+    if (jt != props.end()) {
+        Base::Placement local = static_cast<App::PropertyPlacement*>(jt->second)->getValue();
+        local *= plm; // in case a placement is already set
+        Gui::ViewProvider* vp = doc->getViewProvider(obj);
+        if (vp) vp->setTransformation(local.toMatrix());
+    }
+    else {
+        // No placement found, so apply the transformation directly
+        Gui::ViewProvider* vp = doc->getViewProvider(obj);
+        if (vp) vp->setTransformation(plm.toMatrix());
+    }
+}
+
+void TransformStrategy::resetViewTransform(App::DocumentObject* obj)
+{
+    Gui::Document* doc = Gui::Application::Instance->getDocument(obj->getDocument());
+    std::map<std::string,App::Property*> props;
+    obj->getPropertyMap(props);
+    // search for the placement property
+    std::map<std::string,App::Property*>::iterator jt;
+    jt = std::find_if(props.begin(), props.end(), find_placement());
+    if (jt != props.end()) {
+        Base::Placement local = static_cast<App::PropertyPlacement*>(jt->second)->getValue();
+        Gui::ViewProvider* vp = doc->getViewProvider(obj);
+        if (vp) vp->setTransformation(local.toMatrix());
+    }
+    else {
+        // No placement found
+        Gui::ViewProvider* vp = doc->getViewProvider(obj);
+        if (vp) vp->setTransformation(Base::Matrix4D());
+    }
+}
+
+// ----------------------------------------------------------------------------
+
+DefaultTransformStrategy::DefaultTransformStrategy(QWidget* w) : widget(w)
+{
     Gui::SelectionChanges mod;
     mod.Type = Gui::SelectionChanges::SetSelection;
     onSelectionChanged(mod);
-    setRotationCenter();
 }
 
-Transform::~Transform()
+DefaultTransformStrategy::~DefaultTransformStrategy()
 {
-    delete ui;
 }
 
-void Transform::onSelectionChanged(const Gui::SelectionChanges& msg)
+std::set<App::DocumentObject*> DefaultTransformStrategy::transformObjects() const
+{
+    return selection;
+}
+
+void DefaultTransformStrategy::onSelectionChanged(const Gui::SelectionChanges& msg)
 {
     if (msg.Type == SelectionChanges::SetPreselect ||
         msg.Type == SelectionChanges::RmvPreselect)
         return; // nothing to do
     if (msg.Type == SelectionChanges::ClrSelection) {
-        this->setDisabled(true);
+        widget->setDisabled(true);
         for (std::set<App::DocumentObject*>::iterator it = selection.begin();
              it != selection.end(); ++it)
              resetViewTransform(*it);
@@ -182,74 +293,64 @@ void Transform::onSelectionChanged(const Gui::SelectionChanges& msg)
          resetViewTransform(*it);
     selection = update_selection;
 
-    this->setDisabled(selection.empty());
+    widget->setDisabled(selection.empty());
 }
 
-void Transform::acceptDataTransform(const Base::Matrix4D& mat, App::DocumentObject* obj)
+// ----------------------------------------------------------------------------
+
+/* TRANSLATOR Gui::Dialog::Transform */
+
+Transform::Transform(QWidget* parent, Qt::WFlags fl)
+  : Gui::LocationDialog(parent, fl), strategy(0)
 {
-    Gui::Document* doc = Gui::Application::Instance->getDocument(obj->getDocument());
-    std::map<std::string,App::Property*> props;
-    obj->getPropertyMap(props);
-    // search for the placement property
-    std::map<std::string,App::Property*>::iterator jt;
-    jt = std::find_if(props.begin(), props.end(), find_placement());
-    if (jt != props.end()) {
-        Base::Placement local = static_cast<App::PropertyPlacement*>(jt->second)->getValue();
-        Gui::ViewProvider* vp = doc->getViewProvider(obj);
-        if (vp) vp->setTransformation(local.toMatrix());
-    }
-    else {
-        // No placement found
-        Gui::ViewProvider* vp = doc->getViewProvider(obj);
-        if (vp) vp->setTransformation(Base::Matrix4D());
+    ui = new Ui_TransformComp(this);
+    ui->resetButton->hide();
+    ui->applyPlacementChange->hide();
+    ui->applyIncrementalPlacement->hide();
+
+    ui->angle->setSuffix(QString::fromUtf8(" \xc2\xb0"));
+    ui->yawAngle->setSuffix(QString::fromUtf8(" \xc2\xb0"));
+    ui->pitchAngle->setSuffix(QString::fromUtf8(" \xc2\xb0"));
+    ui->rollAngle->setSuffix(QString::fromUtf8(" \xc2\xb0"));
+
+    ui->closeButton->setText(tr("Cancel"));
+    this->setWindowTitle(tr("Transform"));
+
+    // create a signal mapper in order to have one slot to perform the change
+    QSignalMapper* signalMapper = new QSignalMapper(this);
+    connect(this, SIGNAL(directionChanged()), signalMapper, SLOT(map()));
+    signalMapper->setMapping(this, 0);
+
+    int id = 1;
+    QList<QDoubleSpinBox*> sb = this->findChildren<QDoubleSpinBox*>();
+    for (QList<QDoubleSpinBox*>::iterator it = sb.begin(); it != sb.end(); ++it) {
+        connect(*it, SIGNAL(valueChanged(double)), signalMapper, SLOT(map()));
+        signalMapper->setMapping(*it, id++);
     }
 
-    // Apply the transformation
-    jt = std::find_if(props.begin(), props.end(), find_geometry_data());
-    if (jt != props.end()) {
-        static_cast<App::PropertyGeometry*>(jt->second)->transformGeometry(mat);
-    }
+    connect(signalMapper, SIGNAL(mapped(int)),
+            this, SLOT(onTransformChanged(int)));
+
+    setTransformStrategy(new DefaultTransformStrategy(this));
 }
 
-void Transform::applyViewTransform(const Base::Placement& plm, App::DocumentObject* obj)
+Transform::~Transform()
 {
-    Gui::Document* doc = Gui::Application::Instance->getDocument(obj->getDocument());
-    std::map<std::string,App::Property*> props;
-    obj->getPropertyMap(props);
-    // search for the placement property
-    std::map<std::string,App::Property*>::iterator jt;
-    jt = std::find_if(props.begin(), props.end(), find_placement());
-    if (jt != props.end()) {
-        Base::Placement local = static_cast<App::PropertyPlacement*>(jt->second)->getValue();
-        local *= plm; // in case a placement is already set
-        Gui::ViewProvider* vp = doc->getViewProvider(obj);
-        if (vp) vp->setTransformation(local.toMatrix());
-    }
-    else {
-        // No placement found, so apply the transformation directly
-        Gui::ViewProvider* vp = doc->getViewProvider(obj);
-        if (vp) vp->setTransformation(plm.toMatrix());
-    }
+    delete ui;
+    delete strategy;
 }
 
-void Transform::resetViewTransform(App::DocumentObject* obj)
+void Transform::setTransformStrategy(TransformStrategy* ts)
 {
-    Gui::Document* doc = Gui::Application::Instance->getDocument(obj->getDocument());
-    std::map<std::string,App::Property*> props;
-    obj->getPropertyMap(props);
-    // search for the placement property
-    std::map<std::string,App::Property*>::iterator jt;
-    jt = std::find_if(props.begin(), props.end(), find_placement());
-    if (jt != props.end()) {
-        Base::Placement local = static_cast<App::PropertyPlacement*>(jt->second)->getValue();
-        Gui::ViewProvider* vp = doc->getViewProvider(obj);
-        if (vp) vp->setTransformation(local.toMatrix());
-    }
-    else {
-        // No placement found
-        Gui::ViewProvider* vp = doc->getViewProvider(obj);
-        if (vp) vp->setTransformation(Base::Matrix4D());
-    }
+    if (!ts || ts == strategy)
+        return;
+    if (strategy)
+        delete strategy;
+    strategy = ts;
+    Base::Vector3d cnt = strategy->getRotationCenter();
+    ui->xCnt->setValue(cnt.x);
+    ui->yCnt->setValue(cnt.y);
+    ui->zCnt->setValue(cnt.z);
 }
 
 void Transform::showStandardButtons(bool b)
@@ -259,41 +360,10 @@ void Transform::showStandardButtons(bool b)
     ui->applyButton->setVisible(b);
 }
 
-void Transform::setRotationCenter()
-{
-    // get the global bounding box of all selected objects and use its center as
-    // rotation center
-    if (!selection.empty()) {
-        Base::BoundBox3d bbox;
-        bool first=true;
-        for (std::set<App::DocumentObject*>::iterator it=selection.begin();it!=selection.end();++it) {
-            std::map<std::string,App::Property*> props;
-            (*it)->getPropertyMap(props);
-            // search for a data property
-            std::map<std::string,App::Property*>::iterator jt;
-            jt = std::find_if(props.begin(), props.end(), find_geometry_data());
-            if (jt != props.end()) {
-                if (first)
-                    bbox = (static_cast<App::PropertyGeometry*>(jt->second)->getBoundingBox());
-                else
-                    bbox.Add(static_cast<App::PropertyGeometry*>(jt->second)->getBoundingBox());
-                first = false;
-            }
-        }
-
-        ui->xCnt->setValue((bbox.MinX+bbox.MaxX)/2);
-        ui->yCnt->setValue((bbox.MinY+bbox.MaxY)/2);
-        ui->zCnt->setValue((bbox.MinZ+bbox.MaxZ)/2);
-    }
-}
-
 void Transform::onTransformChanged(int)
 {
     Base::Placement plm = this->getPlacementData();
-
-    for (std::set<App::DocumentObject*>::iterator it=selection.begin();it!=selection.end();++it) {
-        applyViewTransform(plm, *it);
-    }
+    strategy->applyTransform(plm);
 }
 
 void Transform::accept()
@@ -304,10 +374,7 @@ void Transform::accept()
 
 void Transform::reject()
 {
-    for (std::set<App::DocumentObject*>::iterator it=selection.begin();it!=selection.end();++it) {
-        resetViewTransform(*it);
-    }
-
+    strategy->resetTransform();
     QDialog::reject();
 }
 
@@ -315,15 +382,7 @@ void Transform::on_applyButton_clicked()
 {
     Base::Placement plm = this->getPlacementData();
     Base::Matrix4D mat = plm.toMatrix();
-
-    Gui::Document* doc = Gui::Application::Instance->activeDocument();
-    if (doc) {
-        doc->openCommand("Transform");
-        for (std::set<App::DocumentObject*>::iterator it=selection.begin();it!=selection.end();++it) {
-            acceptDataTransform(mat, *it);
-        }
-        doc->commitCommand();
-    }
+    strategy->commitTransform(mat);
 
     // nullify the values
     QList<QDoubleSpinBox*> sb = this->findChildren<QDoubleSpinBox*>();
@@ -332,7 +391,11 @@ void Transform::on_applyButton_clicked()
         (*it)->setValue(0.0);
         (*it)->blockSignals(false);
     }
-    setRotationCenter();
+
+    Base::Vector3d cnt = strategy->getRotationCenter();
+    ui->xCnt->setValue(cnt.x);
+    ui->yCnt->setValue(cnt.y);
+    ui->zCnt->setValue(cnt.z);
 }
 
 void Transform::directionActivated(int index)
@@ -399,6 +462,11 @@ TaskTransform::TaskTransform()
 TaskTransform::~TaskTransform()
 {
     // automatically deleted in the sub-class
+}
+
+void TaskTransform::setTransformStrategy(TransformStrategy* ts)
+{
+    dialog->setTransformStrategy(ts);
 }
 
 bool TaskTransform::accept()
