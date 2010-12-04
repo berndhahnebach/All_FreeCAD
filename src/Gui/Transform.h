@@ -33,9 +33,42 @@
 namespace Gui {
 namespace Dialog {
 
+class GuiExport TransformStrategy
+{
+public:
+    TransformStrategy();
+    virtual ~TransformStrategy();
+
+    Base::Vector3d getRotationCenter() const;
+    void acceptDataTransform(const Base::Matrix4D& mat, App::DocumentObject* obj);
+    void commitTransform(const Base::Matrix4D& plm);
+    void applyTransform(const Base::Placement& plm);
+    void resetTransform();
+    void applyViewTransform(const Base::Placement& plm, App::DocumentObject* obj);
+    void resetViewTransform(App::DocumentObject* obj);
+
+protected:
+    virtual std::set<App::DocumentObject*> transformObjects() const = 0;
+};
+
+class GuiExport DefaultTransformStrategy : public TransformStrategy,
+                                           public Gui::SelectionObserver
+{
+public:
+    DefaultTransformStrategy(QWidget* widget);
+    virtual ~DefaultTransformStrategy();
+
+private:
+    std::set<App::DocumentObject*> transformObjects() const;
+    void onSelectionChanged(const Gui::SelectionChanges& msg);
+
+private:
+    std::set<App::DocumentObject*> selection;
+    QWidget* widget;
+};
+
 class Ui_Placement;
-class GuiExport Transform : public Gui::LocationDialog,
-                            public Gui::SelectionObserver
+class GuiExport Transform : public Gui::LocationDialog
 {
     Q_OBJECT
 
@@ -45,13 +78,11 @@ public:
     void accept();
     void reject();
     void showStandardButtons(bool);
+    void setTransformStrategy(TransformStrategy* ts);
 
 protected:
     Base::Vector3f getDirection() const;
     void changeEvent(QEvent *e);
-
-private:
-    void onSelectionChanged(const Gui::SelectionChanges& msg);
 
 public Q_SLOTS:
     void on_applyButton_clicked();
@@ -60,12 +91,8 @@ private Q_SLOTS:
     void onTransformChanged(int);
 
 private:
-    void acceptDataTransform(const Base::Matrix4D&, App::DocumentObject*);
-    void applyViewTransform(const Base::Placement&, App::DocumentObject*);
-    void resetViewTransform(App::DocumentObject*);
     Base::Placement getPlacementData() const;
     void directionActivated(int);
-    void setRotationCenter();
 
 Q_SIGNALS:
     void directionChanged();
@@ -75,6 +102,7 @@ private:
     Ui_TransformComp* ui;
     Base::Placement pm;
     std::set<App::DocumentObject*> selection;
+    TransformStrategy* strategy;
 };
 
 class TaskTransform : public Gui::TaskView::TaskDialog
@@ -90,6 +118,7 @@ public:
     bool reject();
     void clicked(int);
 
+    void setTransformStrategy(TransformStrategy* ts);
     virtual QDialogButtonBox::StandardButtons getStandardButtons() const
     { return QDialogButtonBox::Ok |
              QDialogButtonBox::Apply |
