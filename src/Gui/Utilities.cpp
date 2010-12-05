@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <Inventor/SbMatrix.h>
 # include <Inventor/SbTesselator.h>
 #endif
 #include "Utilities.h"

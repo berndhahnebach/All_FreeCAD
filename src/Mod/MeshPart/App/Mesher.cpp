@@ -175,12 +175,3 @@ Mesh::MeshObject* Mesher::createMesh() const
 #endif // HAVE_SMESH
 }
 
-// Weird workaround needed to solve problem with libf2c
-#if defined (HAVE_SMESH) && defined(__GNUC__)
-extern "C" {
-int MAIN__( )
-{ return 0;}
-}
-#endif
-
-
