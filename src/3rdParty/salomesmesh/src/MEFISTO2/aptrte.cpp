@@ -847,3 +847,12 @@ void MEFISTO2D_STDCALL qualitetrte( R3 *mnpxyd,
   MESSAGE(" ");
   return;
 }
+
+// Weird workaround needed to solve problem with libf2c
+#if defined(__GNUC__)
+extern "C" {
+int MAIN__( )
+{ return 0;}
+}
+#endif
+
