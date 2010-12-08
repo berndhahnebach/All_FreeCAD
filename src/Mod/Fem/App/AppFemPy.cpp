@@ -57,6 +57,7 @@
 #include <StdMeshers_NotConformAllowed.hxx>
 #include <StdMeshers_Arithmetic1D.hxx>
 
+#include <ANN/ANN.h> 
 
 #include "FemMesh.h"
 #include "FemMeshObject.h"
@@ -65,6 +66,7 @@
 #include <cstdlib>
 
 #include <Standard_Real.hxx>
+#include "Base/Vector3D.h"
 
 using namespace Fem;
 
@@ -171,62 +173,181 @@ static PyObject * calcMeshVolume(PyObject *self, PyObject *args)
 		for (;aVolIter->more();) {
 			const SMDS_MeshVolume* aVol = aVolIter->next();
 			//1,5,8,7
-			//a = ((temp.Set(aVol->GetNode(4)->X(),aVol->GetNode(4)->Y(),aVol->GetNode(4)->Z())) - (temp1.Set(aVol->GetNode(0)->X(),aVol->GetNode(0)->Y(),aVol->GetNode(0)->Z())));
-			//b = ((temp.Set(aVol->GetNode(7)->X(),aVol->GetNode(7)->Y(),aVol->GetNode(7)->Z())) - (temp1.Set(aVol->GetNode(0)->X(),aVol->GetNode(0)->Y(),aVol->GetNode(0)->Z())));
-			//c = (temp.Set(aVol->GetNode(6)->X(),aVol->GetNode(6)->Y(),aVol->GetNode(6)->Z())- temp1.Set(aVol->GetNode(0)->X(),aVol->GetNode(0)->Y(),aVol->GetNode(0)->Z()));
-			//a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
-			//volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
-			////5,9,8,7
-			//a = (temp.Set(aVol->GetNode(8)->X(),aVol->GetNode(8)->Y(),aVol->GetNode(8)->Z())- temp1.Set(aVol->GetNode(4)->X(),aVol->GetNode(4)->Y(),aVol->GetNode(4)->Z()));
-			//b = (temp.Set(aVol->GetNode(7)->X(),aVol->GetNode(7)->Y(),aVol->GetNode(7)->Z())- temp1.Set(aVol->GetNode(4)->X(),aVol->GetNode(4)->Y(),aVol->GetNode(4)->Z()));
-			//c = (temp.Set(aVol->GetNode(6)->X(),aVol->GetNode(6)->Y(),aVol->GetNode(6)->Z())- temp1.Set(aVol->GetNode(4)->X(),aVol->GetNode(4)->Y(),aVol->GetNode(4)->Z()));
-			//a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
-			//volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
-			////5,2,9,7
-			//a = (temp.Set(aVol->GetNode(1)->X(),aVol->GetNode(1)->Y(),aVol->GetNode(1)->Z())- temp1.Set(aVol->GetNode(4)->X(),aVol->GetNode(4)->Y(),aVol->GetNode(4)->Z()));
-			//b = (temp.Set(aVol->GetNode(8)->X(),aVol->GetNode(8)->Y(),aVol->GetNode(8)->Z())- temp1.Set(aVol->GetNode(4)->X(),aVol->GetNode(4)->Y(),aVol->GetNode(4)->Z()));
-			//c = (temp.Set(aVol->GetNode(6)->X(),aVol->GetNode(6)->Y(),aVol->GetNode(6)->Z())- temp1.Set(aVol->GetNode(4)->X(),aVol->GetNode(4)->Y(),aVol->GetNode(4)->Z()));
-			//a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
-			//volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
-			////2,6,9,7
-			//a = (temp.Set(aVol->GetNode(5)->X(),aVol->GetNode(5)->Y(),aVol->GetNode(5)->Z())- temp1.Set(aVol->GetNode(1)->X(),aVol->GetNode(1)->Y(),aVol->GetNode(1)->Z()));
-			//b = (temp.Set(aVol->GetNode(8)->X(),aVol->GetNode(8)->Y(),aVol->GetNode(8)->Z())- temp1.Set(aVol->GetNode(1)->X(),aVol->GetNode(1)->Y(),aVol->GetNode(1)->Z()));
-			//c = (temp.Set(aVol->GetNode(6)->X(),aVol->GetNode(6)->Y(),aVol->GetNode(6)->Z())- temp1.Set(aVol->GetNode(1)->X(),aVol->GetNode(1)->Y(),aVol->GetNode(1)->Z()));
-			//a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
-			//volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
-			////9,6,10,7
-			//a = (temp.Set(aVol->GetNode(5)->X(),aVol->GetNode(5)->Y(),aVol->GetNode(5)->Z())- temp1.Set(aVol->GetNode(8)->X(),aVol->GetNode(8)->Y(),aVol->GetNode(8)->Z()));
-			//b = (temp.Set(aVol->GetNode(9)->X(),aVol->GetNode(9)->Y(),aVol->GetNode(9)->Z())- temp1.Set(aVol->GetNode(8)->X(),aVol->GetNode(8)->Y(),aVol->GetNode(8)->Z()));
-			//c = (temp.Set(aVol->GetNode(6)->X(),aVol->GetNode(6)->Y(),aVol->GetNode(6)->Z())- temp1.Set(aVol->GetNode(8)->X(),aVol->GetNode(8)->Y(),aVol->GetNode(8)->Z()));
-			//a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
-			//volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
-			////6,3,10,7
-			//a = (temp.Set(aVol->GetNode(2)->X(),aVol->GetNode(2)->Y(),aVol->GetNode(2)->Z())- temp1.Set(aVol->GetNode(5)->X(),aVol->GetNode(5)->Y(),aVol->GetNode(5)->Z()));
-			//b = (temp.Set(aVol->GetNode(9)->X(),aVol->GetNode(9)->Y(),aVol->GetNode(9)->Z())- temp1.Set(aVol->GetNode(5)->X(),aVol->GetNode(5)->Y(),aVol->GetNode(5)->Z()));
-			//c = (temp.Set(aVol->GetNode(6)->X(),aVol->GetNode(6)->Y(),aVol->GetNode(6)->Z())- temp1.Set(aVol->GetNode(5)->X(),aVol->GetNode(5)->Y(),aVol->GetNode(5)->Z()));
-			//a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
-			//volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
-
-			////8,9,10,7
-			//a = (temp.Set(aVol->GetNode(8)->X(),aVol->GetNode(8)->Y(),aVol->GetNode(8)->Z())- temp1.Set(aVol->GetNode(7)->X(),aVol->GetNode(7)->Y(),aVol->GetNode(7)->Z()));
-			//b = (temp.Set(aVol->GetNode(9)->X(),aVol->GetNode(9)->Y(),aVol->GetNode(9)->Z())- temp1.Set(aVol->GetNode(7)->X(),aVol->GetNode(7)->Y(),aVol->GetNode(7)->Z()));
-			//c = (temp.Set(aVol->GetNode(6)->X(),aVol->GetNode(6)->Y(),aVol->GetNode(6)->Z())- temp1.Set(aVol->GetNode(7)->X(),aVol->GetNode(7)->Y(),aVol->GetNode(7)->Z()));
-			//a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
-			//volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
-
-			////8,9,10,4
-			//a = (temp.Set(aVol->GetNode(8)->X(),aVol->GetNode(8)->Y(),aVol->GetNode(8)->Z())- temp1.Set(aVol->GetNode(7)->X(),aVol->GetNode(7)->Y(),aVol->GetNode(7)->Z()));
-			//b = (temp.Set(aVol->GetNode(9)->X(),aVol->GetNode(9)->Y(),aVol->GetNode(9)->Z())- temp1.Set(aVol->GetNode(7)->X(),aVol->GetNode(7)->Y(),aVol->GetNode(7)->Z()));
-			//c = (temp.Set(aVol->GetNode(3)->X(),aVol->GetNode(3)->Y(),aVol->GetNode(3)->Z())- temp1.Set(aVol->GetNode(7)->X(),aVol->GetNode(7)->Y(),aVol->GetNode(7)->Z()));
-			//a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
-			//volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
-
+			temp.Set(aVol->GetNode(4)->X(),aVol->GetNode(4)->Y(),aVol->GetNode(4)->Z());
+			temp1.Set(aVol->GetNode(0)->X(),aVol->GetNode(0)->Y(),aVol->GetNode(0)->Z());
+			a = temp - temp1;
+			temp.Set(aVol->GetNode(7)->X(),aVol->GetNode(7)->Y(),aVol->GetNode(7)->Z());
+			temp1.Set(aVol->GetNode(0)->X(),aVol->GetNode(0)->Y(),aVol->GetNode(0)->Z());
+			b = temp - temp1;
+			temp.Set(aVol->GetNode(6)->X(),aVol->GetNode(6)->Y(),aVol->GetNode(6)->Z()); 
+			temp1.Set(aVol->GetNode(0)->X(),aVol->GetNode(0)->Y(),aVol->GetNode(0)->Z());
+			c = temp - temp1;
+			a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
+			volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
+			//5,9,8,7
+			temp.Set(aVol->GetNode(8)->X(),aVol->GetNode(8)->Y(),aVol->GetNode(8)->Z()); 
+			temp1.Set(aVol->GetNode(4)->X(),aVol->GetNode(4)->Y(),aVol->GetNode(4)->Z());
+			a = temp - temp1;
+			temp.Set(aVol->GetNode(7)->X(),aVol->GetNode(7)->Y(),aVol->GetNode(7)->Z());
+			temp1.Set(aVol->GetNode(4)->X(),aVol->GetNode(4)->Y(),aVol->GetNode(4)->Z());
+			b = temp - temp1;
+			temp.Set(aVol->GetNode(6)->X(),aVol->GetNode(6)->Y(),aVol->GetNode(6)->Z());
+			temp1.Set(aVol->GetNode(4)->X(),aVol->GetNode(4)->Y(),aVol->GetNode(4)->Z());
+			c = temp - temp1;
+			a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
+			volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
+			//5,2,9,7
+			temp.Set(aVol->GetNode(1)->X(),aVol->GetNode(1)->Y(),aVol->GetNode(1)->Z());
+			temp1.Set(aVol->GetNode(4)->X(),aVol->GetNode(4)->Y(),aVol->GetNode(4)->Z());
+			a = temp - temp1;
+			temp.Set(aVol->GetNode(8)->X(),aVol->GetNode(8)->Y(),aVol->GetNode(8)->Z()); 
+			temp1.Set(aVol->GetNode(4)->X(),aVol->GetNode(4)->Y(),aVol->GetNode(4)->Z());
+			b = temp - temp1;
+			temp.Set(aVol->GetNode(6)->X(),aVol->GetNode(6)->Y(),aVol->GetNode(6)->Z()); 
+			temp1.Set(aVol->GetNode(4)->X(),aVol->GetNode(4)->Y(),aVol->GetNode(4)->Z());
+			c = temp - temp1;
+			a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
+			volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
+			//2,6,9,7
+			temp.Set(aVol->GetNode(5)->X(),aVol->GetNode(5)->Y(),aVol->GetNode(5)->Z());
+			temp1.Set(aVol->GetNode(1)->X(),aVol->GetNode(1)->Y(),aVol->GetNode(1)->Z());
+			a = temp - temp1;
+			temp.Set(aVol->GetNode(8)->X(),aVol->GetNode(8)->Y(),aVol->GetNode(8)->Z()); 
+			temp1.Set(aVol->GetNode(1)->X(),aVol->GetNode(1)->Y(),aVol->GetNode(1)->Z());
+			b = temp - temp1;
+			temp.Set(aVol->GetNode(6)->X(),aVol->GetNode(6)->Y(),aVol->GetNode(6)->Z());
+			temp1.Set(aVol->GetNode(1)->X(),aVol->GetNode(1)->Y(),aVol->GetNode(1)->Z());
+			c = temp - temp1;
+			a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
+			volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
+			//9,6,10,7
+			temp.Set(aVol->GetNode(5)->X(),aVol->GetNode(5)->Y(),aVol->GetNode(5)->Z()); 
+			temp1.Set(aVol->GetNode(8)->X(),aVol->GetNode(8)->Y(),aVol->GetNode(8)->Z());
+			a = temp - temp1;
+			temp.Set(aVol->GetNode(9)->X(),aVol->GetNode(9)->Y(),aVol->GetNode(9)->Z()); 
+			temp1.Set(aVol->GetNode(8)->X(),aVol->GetNode(8)->Y(),aVol->GetNode(8)->Z());
+			b = temp - temp1;
+			temp.Set(aVol->GetNode(6)->X(),aVol->GetNode(6)->Y(),aVol->GetNode(6)->Z()); 
+			temp1.Set(aVol->GetNode(8)->X(),aVol->GetNode(8)->Y(),aVol->GetNode(8)->Z());
+			c = temp - temp1;
+			a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
+			volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
+			//6,3,10,7
+			temp.Set(aVol->GetNode(2)->X(),aVol->GetNode(2)->Y(),aVol->GetNode(2)->Z());
+			temp1.Set(aVol->GetNode(5)->X(),aVol->GetNode(5)->Y(),aVol->GetNode(5)->Z());
+			a = temp - temp1;
+			temp.Set(aVol->GetNode(9)->X(),aVol->GetNode(9)->Y(),aVol->GetNode(9)->Z()); 
+			temp1.Set(aVol->GetNode(5)->X(),aVol->GetNode(5)->Y(),aVol->GetNode(5)->Z());
+			b = temp - temp1;
+			temp.Set(aVol->GetNode(6)->X(),aVol->GetNode(6)->Y(),aVol->GetNode(6)->Z()); 
+			temp1.Set(aVol->GetNode(5)->X(),aVol->GetNode(5)->Y(),aVol->GetNode(5)->Z());
+			c = temp - temp1;
+			a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
+			volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
+			//8,9,10,7
+			temp.Set(aVol->GetNode(8)->X(),aVol->GetNode(8)->Y(),aVol->GetNode(8)->Z()); 
+			temp1.Set(aVol->GetNode(7)->X(),aVol->GetNode(7)->Y(),aVol->GetNode(7)->Z());
+			a = temp - temp1;
+			temp.Set(aVol->GetNode(9)->X(),aVol->GetNode(9)->Y(),aVol->GetNode(9)->Z()); 
+			temp1.Set(aVol->GetNode(7)->X(),aVol->GetNode(7)->Y(),aVol->GetNode(7)->Z());
+			b = temp - temp1;
+			temp.Set(aVol->GetNode(6)->X(),aVol->GetNode(6)->Y(),aVol->GetNode(6)->Z()); 
+			temp1.Set(aVol->GetNode(7)->X(),aVol->GetNode(7)->Y(),aVol->GetNode(7)->Z());
+			c = temp - temp1;
+			a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
+			volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
+			//8,9,10,4
+			temp.Set(aVol->GetNode(8)->X(),aVol->GetNode(8)->Y(),aVol->GetNode(8)->Z());
+			temp1.Set(aVol->GetNode(7)->X(),aVol->GetNode(7)->Y(),aVol->GetNode(7)->Z());
+			a = temp - temp1;
+			temp.Set(aVol->GetNode(9)->X(),aVol->GetNode(9)->Y(),aVol->GetNode(9)->Z()); 
+			temp1.Set(aVol->GetNode(7)->X(),aVol->GetNode(7)->Y(),aVol->GetNode(7)->Z());
+			b = temp - temp1;
+			temp.Set(aVol->GetNode(3)->X(),aVol->GetNode(3)->Y(),aVol->GetNode(3)->Z()); 
+			temp1.Set(aVol->GetNode(7)->X(),aVol->GetNode(7)->Y(),aVol->GetNode(7)->Z());
+			c = temp - temp1;
+			a_b_product.x = a.y*b.z-b.y*a.z;a_b_product.y = a.z*b.x-b.z*a.x;a_b_product.z = a.x*b.y-b.x*a.y;
+			volume += 1.0/6.0 * fabs((a_b_product.x * c.x)+ (a_b_product.y * c.y)+(a_b_product.z * c.z));
+						
+			Py::Float py_volume(volume); 
+			return Py::new_reference_to(py_volume);
 		}
 
 	} PY_CATCH;
 
 	Py_Return;
 }
+
+static PyObject * getBoundary_Conditions(PyObject *self, PyObject *args)
+{
+	PyObject *input;
+
+	if (!PyArg_ParseTuple(args, "O",&input))
+		return NULL;
+
+	PY_TRY {
+
+		FemMeshPy *inputMesh = static_cast<FemMeshPy*>(input); 
+		MeshCore::MeshKernel aMesh;
+		MeshCore::MeshPointArray vertices;
+		vertices.clear();
+		MeshCore::MeshFacetArray faces;
+		faces.clear();
+		MeshCore::MeshPoint current_node;
+		SMDS_NodeIteratorPtr aNodeIter = inputMesh->getFemMeshPtr()->getSMesh()->GetMeshDS()->nodesIterator();
+		for (;aNodeIter->more();) {
+			const SMDS_MeshNode* aNode = aNodeIter->next();
+			current_node.Set(aNode->X(),aNode->Y(),aNode->Z());
+			vertices.push_back(current_node);
+		}
+		MeshCore::MeshFacet aFacet;
+		aFacet._aulPoints[0] = 0;aFacet._aulPoints[1] = 1;aFacet._aulPoints[2] = 2;
+		faces.push_back(aFacet);
+		//Fill the Kernel with the temp smesh structure and delete the current containers
+		aMesh.Adopt(vertices,faces);
+		Base::BoundBox3f aBBox;
+		aBBox = aMesh.GetBoundBox();
+
+		Base::Vector3f min_Node,max_Node,mid_Node,dist;
+		float dist_length;
+		int minNodeID,maxNodeID,midNodeID;
+		dist_length = FLOAT_MAX;
+		aNodeIter = inputMesh->getFemMeshPtr()->getSMesh()->GetMeshDS()->nodesIterator();
+		for (;aNodeIter->more();)
+		{
+			const SMDS_MeshNode* aNode = aNodeIter->next();
+			//Calc distance between the lower left corner and the most next point of the mesh
+			dist.x = aNode->X()-aBBox.MinX;dist.y = aNode->Y()-aBBox.MinY;dist.z = aNode->Z()-aBBox.MinZ;
+			if(dist.Length()<dist_length)
+			{
+				min_Node.x = aNode->X();min_Node.y = aNode->Y();min_Node.z=aNode->Z();
+				minNodeID = aNode->GetID();
+				dist_length = dist.Length();
+			}
+		}
+		dist_length = FLOAT_MAX;
+		aNodeIter = inputMesh->getFemMeshPtr()->getSMesh()->GetMeshDS()->nodesIterator();
+		for (;aNodeIter->more();)
+		{
+			const SMDS_MeshNode* aNode = aNodeIter->next();
+			//Calc distance between the highest lower right corner and the most next point of the mesh
+			dist.x = aNode->X()-aBBox.MaxX;dist.y = aNode->Y()-aBBox.MaxY;dist.z = aNode->Z()-aBBox.MinZ;
+			if(dist.Length()<dist_length)
+			{
+				max_Node.x = aNode->X();max_Node.y = aNode->Y();max_Node.z=aNode->Z();
+				maxNodeID = aNode->GetID();
+				dist_length = dist.Length();
+			}
+		}
+		
+		
+	} PY_CATCH;
+
+	Py_Return;
+}
+
+
+
 
 static PyObject * minBoundingBox(PyObject *self, PyObject *args)
 {
@@ -784,6 +905,8 @@ struct PyMethodDef Fem_methods[] = {
     {"insert"     ,importer,    METH_VARARGS, inst_doc},
     {"export"     ,exporter,    METH_VARARGS, export_doc},
     {"read"       ,read,        Py_NEWARGS,   "Read a mesh from a file and returns a Mesh object."},
+{"calcMeshVolume", calcMeshVolume, Py_NEWARGS, "Calculate Mesh Volume for C3D10"},	
+{"getBoundary_Conditions" , getBoundary_Conditions, Py_NEWARGS, "Get Boundary Conditions for Residual Stress Calculation"},
 	{"SMESH_PCA" , SMESH_PCA, Py_NEWARGS, "Get a Matrix4D related to the PCA of a Mesh Object"},
 	{"minBoundingBox",minBoundingBox,Py_NEWARGS,"Minimize the Bounding Box and reorient the mesh to the 1st Quadrant"},
     {NULL, NULL}  /* sentinel */
