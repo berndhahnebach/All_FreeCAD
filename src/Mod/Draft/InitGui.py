@@ -173,11 +173,10 @@ class DraftWorkbench (Workbench):
 	def Initialize(self):
                 Log ('Loading Draft GUI...\n')
                 try:
-					import draftTools,draftGui
+					import draftTools,draftGui,macros
+                                        self.appendMenu(["&Macro","Installed Macros"],macros.macrosList)
                 except:
                     pass
-                import macros
-                self.appendMenu(["&Macro","Installed Macros"],macros.macrosList)
                 self.draftToolBar=draftGui.toolBar()
                 self.cmdList = ["Draft_Line","Draft_Wire","Draft_Circle","Draft_Arc",
                                 "Draft_Polygon","Draft_Rectangle", "Draft_Text", "Draft_Dimension"]
