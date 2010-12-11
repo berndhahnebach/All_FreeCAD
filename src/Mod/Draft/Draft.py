@@ -125,14 +125,18 @@ def getType(obj):
         if "Length" in obj.PropertiesList:
                 if "Height" in obj.PropertiesList:
                         return "Rectangle"
-        if "Center" in obj.PropertiesList:
+        if "FirstAngle" in obj.PropertiesList:
                 if "Radius" in obj.PropertiesList:
                         return "Circle"
         if "Points" in obj.PropertiesList:
                 if "Closed" in obj.PropertiesList:
                         return "Wire"
+        if "FacesNumber" in obj.PropertiesList:
+                return "Polygon"
         if obj.isDerivedFrom("Part::Feature"):
                 return "Part"
+        if (obj.Type == "App::Annotation"):
+                return "Annotation"
         return "Unknown"
 
 def dimSymbol():
@@ -447,24 +451,23 @@ def move(objectslist,vector,copy=False):
                         sh = obj.Shape
                         sh.translate(vector)
                         newobj.Shape = sh
-                elif (obj.Type == "App::Annotation"):
+                elif getType(obj) == "Annotation":
                         if copy:
                                 newobj = FreeCAD.ActiveDocument.addObject("App::Annotation",getRealName(obj.Name))
                                 newobj.LabelText = obj.LabelText
                         else:
                                 newobj = obj
                         newobj.Position = obj.Position.add(vector)
-                elif (obj.Type == "App::FeaturePython"):
-                        if 'Dimline' in obj.PropertiesList:
-                                if copy:
-                                        newobj = FreeCAD.ActiveDocument.addObject("App::FeaturePython",getRealName(obj.Name))
-                                        Dimension(newobj)
-                                        DimensionViewProvider(newobj.ViewObject)
-                                else:
-                                        newobj = obj
-                                newobj.Start = obj.Start.add(vector)
-                                newobj.End = obj.End.add(vector)
-                                newobj.Dimline = obj.Dimline.add(vector)
+                elif getType(obj) == "Dimension":
+                        if copy:
+                                newobj = FreeCAD.ActiveDocument.addObject("App::FeaturePython",getRealName(obj.Name))
+                                Dimension(newobj)
+                                DimensionViewProvider(newobj.ViewObject)
+                        else:
+                                newobj = obj
+                        newobj.Start = obj.Start.add(vector)
+                        newobj.End = obj.End.add(vector)
+                        newobj.Dimline = obj.Dimline.add(vector)
                 else:
                         if "Placement" in obj.PropertiesList:
                                 pla = obj.Placement
@@ -553,21 +556,21 @@ def offset(obj,delta,copy=False):
                 else: h = nh.Length
                 return l,h,pl
 
-        if "Radius" in obj.PropertiesList:
+        if getType(obj) == "Circle":
                 pass
         else:
                 newwire = fcgeo.offsetWire(obj.Shape,delta)
                 p = fcgeo.getVerts(newwire)
         if copy:
-                if "Points" in obj.PropertiesList:
+                if getType(obj) == "Wire":
                         newobj = makeWire(p)
                         newobj.Closed = obj.Closed
-                elif "Length" in obj.PropertiesList:
+                elif getType(obj) == "Rectangle":
                         pl = FreeCAD.Placement()
                         pl.Base = p[0]
                         length,height,plac = getRect(p,obj)
                         newobj = makeRectangle(length,height,plac)
-                elif "Radius" in obj.PropertiesList:
+                elif getType(obj) == "Circle":
                         pl = obj.Placement
                         newobj = makeCircle(delta)
                         newobj.FirstAngle = obj.FirstAngle
@@ -575,14 +578,14 @@ def offset(obj,delta,copy=False):
                         newobj.Placement = pl
                 formatObject(newobj,obj)
         else:
-                if "Points" in obj.PropertiesList:
+                if getType(obj) == "Wire":
                         obj.Points = p
-                elif "Length" in obj.PropertiesList:
+                elif getType(obj) == "Rectangle":
                         length,height,plac = getRect(p,obj)
                         obj.Placement = plac
                         obj.Length = length
                         obj.Height = height
-                elif "Radius" in obj.PropertiesList:
+                elif getType(obj) == "Circle":
                         obj.Radius = delta
                 newobj = obj
         return newobj
@@ -671,7 +674,7 @@ def getSVG(obj,modifier=100,textmodifier=100,plane=None):
                 svg += '/>\n'
                 return svg
 
-        if 'Dimline' in obj.PropertiesList:
+        if getType(obj) == "Dimension":
 		p1,p2,p3,p4,tbase,angle,norm = obj.ViewObject.Proxy.calcGeom(obj)
                 p1 = getProj(p1)
                 p2 = getProj(p2)

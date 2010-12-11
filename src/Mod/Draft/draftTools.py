@@ -3556,17 +3556,22 @@ class Edit(Modifier):
                                         self.obj = self.obj[0]
                                         self.editing = None
                                         self.editpoints = []
-                                        if "Points" in self.obj.PropertiesList:
+                                        if Draft.getType(self.obj) == "Wire":
                                                 for p in self.obj.Points:
                                                         self.editpoints.append(p)
-                                        elif "StartAngle" in self.obj.PropertiesList:
+                                        elif Draft.getType(self.obj) == "Circle":
                                                 self.editpoints.append(self.obj.Placement.Base)
-                                                if self.obj.StartAngle == self.obj.EndAngle:
+                                                if self.obj.FirstAngle == self.obj.LastAngle:
                                                         self.editpoints.append(self.obj.Shape.Vertexes[0].Point)
-                                        elif "Length" in self.obj.PropertiesList:
+                                        elif Draft.getType(self.obj) == "Rectangle":
                                                 self.editpoints.append(self.obj.Placement.Base)
                                                 self.editpoints.append(self.obj.Shape.Vertexes[2].Point)
-                                        elif "FacesNumber" in self.obj.PropertiesList:
+                                                v = self.obj.Shape.Vertexes
+                                                self.bx = v[1].Point.sub(v[0].Point)
+                                                if self.obj.Length < 0: self.bx = fcvec.neg(self.bx)
+                                                self.by = v[2].Point.sub(v[1].Point)
+                                                if self.obj.Height < 0: self.by = fcvec.neg(self.by)
+                                        elif Draft.getType(self.obj) == "Polygon":
                                                 self.editpoints.append(self.obj.Placement.Base)
                                                 self.editpoints.append(self.obj.Shape.Vertexes[0].Point)
                                         self.trackers = []
@@ -3633,12 +3638,12 @@ class Edit(Modifier):
                                         self.numericInput(self.trackers[self.editing].get())
 
         def update(self,v):
-                if "Points" in self.obj.PropertiesList:
+                if Draft.getType(self.obj) == "Wire":
                         pts = self.obj.Points
                         pts[self.editing] = v
                         self.obj.Points = pts
                         self.trackers[self.editing].set(pts[self.editing])
-                elif "StartAngle" in self.obj.PropertiesList:
+                elif Draft.getType(self.obj) == "Circle":
                         delta = v.sub(self.obj.Placement.Base)
                         if self.editing == 0:
                                 p = self.obj.Placement
@@ -3648,7 +3653,7 @@ class Edit(Modifier):
                         elif self.editing == 1:
                                 self.obj.Radius = delta.Length
                         self.trackers[1].set(self.obj.Shape.Vertexes[0].Point)
-                elif "Length" in self.obj.PropertiesList:
+                elif Draft.getType(self.obj) == "Rectangle":
                         delta = v.sub(self.obj.Placement.Base)
                         if self.editing == 0:
                                 p = self.obj.Placement
@@ -3656,19 +3661,20 @@ class Edit(Modifier):
                                 self.obj.Placement = p
                         elif self.editing == 1:
                                 diag = v.sub(self.obj.Placement.Base)
-                                x = fcgeo.vec(self.obj.Shape.Edges[0])
-                                y = fcgeo.vec(self.obj.Shape.Edges[1])
-                                nx = fcvec.project(diag,x)
-                                ny = fcvec.project(diag,y)
+                                nx = fcvec.project(diag,self.bx)
+                                ny = fcvec.project(diag,self.by)
                                 ax = nx.Length
                                 ay = ny.Length
-                                if abs(nx.getAngle(x)) > 0.1: ax = -ax
-                                if abs(ny.getAngle(y)) > 0.1: ay = -ay
-                                self.obj.Length = ax
-                                self.obj.Height = ay
+                                if ax and ay:
+                                        if abs(nx.getAngle(self.bx)) > 0.1:
+                                                ax = -ax
+                                        if abs(ny.getAngle(self.by)) > 0.1:
+                                                ay = -ay
+                                        self.obj.Length = ax
+                                        self.obj.Height = ay
                         self.trackers[0].set(self.obj.Placement.Base)
                         self.trackers[1].set(self.obj.Shape.Vertexes[2].Point)
-                elif "FacesNumber" in self.obj.PropertiesList:
+                elif Draft.getType(self.obj) == "Polygon":
                         delta = v.sub(self.obj.Placement.Base)
                         if self.editing == 0:
                                 p = self.obj.Placement
