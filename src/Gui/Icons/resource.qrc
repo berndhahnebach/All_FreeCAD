@@ -1,6 +1,10 @@
 <RCC>
     <qresource prefix="/icons" >
         <file>freecadsplash.png</file>
+        <file>mouse_pointer.png</file>
+        <file>delete.png</file>
+        <file>edit_remove.png</file>
+        <file>add.png</file>
         <file>freecad.svg</file>
         <file>bulb.xpm</file>
         <file>button_down.xpm</file>

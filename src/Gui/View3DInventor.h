@@ -83,7 +83,10 @@ public:
     View3DInventorViewer *getViewer(void) const {return _viewer;}
   
 public Q_SLOTS:
+    /// overide the cursor in this view
     void setCursor(const QCursor&);
+    void setCursor(Qt::CursorShape s);
+
     void dump(const char* filename);
 
 protected Q_SLOTS:

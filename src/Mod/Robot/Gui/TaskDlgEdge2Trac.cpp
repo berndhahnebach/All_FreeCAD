@@ -28,6 +28,9 @@
 
 #include "TaskDlgEdge2Trac.h"
 
+#include <Gui/TaskView/TaskSelectLinkProperty.h>
+
+
 using namespace RobotGui;
 
 
@@ -40,8 +43,10 @@ TaskDlgEdge2Trac::TaskDlgEdge2Trac(void)
     : TaskDialog()
 {
     param  = new TaskEdge2TracParameter();
+    select = new Gui::TaskView::TaskSelectLinkProperty();
 
     Content.push_back(param);
+    Content.push_back(select);
 }
 
 TaskDlgEdge2Trac::~TaskDlgEdge2Trac()

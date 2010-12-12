@@ -169,7 +169,31 @@ private:
     static std::vector<SelectionObserverPython*> _instances;
 };
 
-/** The Selection singleton class
+/** SelectionGate
+ * The selection gate allow or disallow selection of certain types.
+ * It have to be registered to the selection.
+ */
+class SelectionGate 
+{
+public:
+    virtual bool allow(App::Document*,App::DocumentObject*, const char*)=0;
+};
+
+
+/** The Selection class
+ *  The selection singleton keeps track of the selection state of 
+ *  the whole application. It get messages from all enteties which can
+ *  alter the selection (e.g. tree view and 3D-view) and sends messages
+ *  to enteties which need to keep track on the selection state. 
+ * 
+ *  The selection consist mainly out of follwing information per selected object: 
+ *  - document (pointer)
+ *  - Object   (pointer)
+ *  - list of subelements (list of strings)
+ *  - 3D coordinates where the user click to select (Vector3d)
+ *
+ *  Also the preselction is managed. That mean you can add a filter to prevent selection 
+ *  of unwanted objects or subelements.
  */
 class GuiExport SelectionSingleton : public Base::Subject<const SelectionChanges&>
 {
@@ -197,6 +221,10 @@ public:
     void setPreselectCoord(float x, float y, float z);
     /// returns the present preselection 
     const SelectionChanges& getPreselection(void) const;
+    /// add a SelectionGate to control what is selectable
+    void addSelectionGate(Gui::SelectionGate *gate);
+    /// remove the active SelectionGate
+    void rmvSelectionGate(void);
 
 
     /** Returns the number of selected objects with a special object type
@@ -274,14 +302,16 @@ public:
     static PyMethodDef    Methods[];
 
 protected:
-    static PyObject *sAddSelection   (PyObject *self,PyObject *args,PyObject *kwd);
-    static PyObject *sRemoveSelection(PyObject *self,PyObject *args,PyObject *kwd);
-    static PyObject *sClearSelection (PyObject *self,PyObject *args,PyObject *kwd);
-    static PyObject *sIsSelected     (PyObject *self,PyObject *args,PyObject *kwd);
-    static PyObject *sGetSelection   (PyObject *self,PyObject *args,PyObject *kwd);
-    static PyObject *sGetSelectionEx (PyObject *self,PyObject *args,PyObject *kwd);
-    static PyObject *sAddSelObserver (PyObject *self,PyObject *args,PyObject *kwd);
-    static PyObject *sRemSelObserver (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject *sAddSelection        (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject *sRemoveSelection     (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject *sClearSelection      (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject *sIsSelected          (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject *sGetSelection        (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject *sGetSelectionEx      (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject *sAddSelObserver      (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject *sRemSelObserver      (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject *saddSelectionGate    (PyObject *self,PyObject *args,PyObject *kwd);
+    static PyObject *sremoveSelectionGate (PyObject *self,PyObject *args,PyObject *kwd);
 
 protected:
     /// Construction
@@ -315,6 +345,8 @@ protected:
     std::string FeatName;
     std::string SubName;
     float hx,hy,hz;
+
+    Gui::SelectionGate *ActiveGate;
 };
 
 /**

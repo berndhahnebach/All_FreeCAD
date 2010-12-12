@@ -21,55 +21,47 @@
  ***************************************************************************/
 
 
-#ifndef ROBOTGUI_TaskDlgEdge2Trac_H
-#define ROBOTGUI_TaskDlgEdge2Trac_H
+#ifndef GUI_TASKVIEW_TaskSelectLinkProperty_H
+#define GUI_TASKVIEW_TaskSelectLinkProperty_H
 
-#include <Gui/TaskView/TaskDialog.h>
-#include <Mod/Robot/App/RobotObject.h>
-#include <Mod/Robot/App/TrajectoryObject.h>
-
-#include "TaskEdge2TracParameter.h"
-
-// forward
-namespace Gui { namespace TaskView { class TaskSelectLinkProperty;}}
+#include "TaskView.h"
+#include <Gui/Selection.h>
+#include <boost/signals.hpp>
 
 
-namespace RobotGui {
+class Ui_TaskSelectLinkProperty;
 
+namespace App {
+class Property;
+}
 
-/// simulation dialog for the TaskView
-class RobotGuiExport TaskDlgEdge2Trac : public Gui::TaskView::TaskDialog
+namespace Gui {
+class ViewProvider;
+namespace TaskView {
+
+class GuiExport TaskSelectLinkProperty : public TaskBox, public Gui::SelectionSingleton::ObserverType
 {
     Q_OBJECT
 
 public:
-    TaskDlgEdge2Trac(void);
-    ~TaskDlgEdge2Trac();
+    TaskSelectLinkProperty(QWidget *parent = 0);
+    ~TaskSelectLinkProperty();
+    /// Observer message from the Selection
+    void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
+                  Gui::SelectionSingleton::MessageType Reason);
 
-public:
-    /// is called the TaskView when the dialog is opened
-    virtual void open();
-    /// is called by the framework if an button is clicked which has no accept or rject role
-    virtual void clicked(int);
-    /// is called by the framework if the dialog is accepted (Ok)
-    virtual bool accept();
-    /// is called by the framework if the dialog is rejected (Cancel)
-    virtual bool reject();
-    /// is called by the framework if the user press the help button 
-    virtual void helpRequested();
+private Q_SLOTS:
+    void on_Remove_clicked(bool);
+    void on_Add_clicked(bool);
+    void on_Invert_clicked(bool);
+    void on_Help_clicked(bool);
 
-    /// returns for Close and Help button 
-    virtual QDialogButtonBox::StandardButtons getStandardButtons(void) const
-    { return QDialogButtonBox::Close|QDialogButtonBox::Help; }
-
-protected:
-    TaskEdge2TracParameter                *param; 
-    Gui::TaskView::TaskSelectLinkProperty *select;
-
+private:
+    QWidget* proxy;
+    Ui_TaskSelectLinkProperty* ui;
 };
 
+} //namespace TaskView
+} //namespace Gui
 
-
-} //namespace RobotGui
-
-#endif // ROBOTGUI_TASKDLGSIMULATE_H
+#endif // GUI_TASKVIEW_TASKAPPERANCE_H

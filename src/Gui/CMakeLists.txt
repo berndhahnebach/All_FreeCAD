@@ -142,6 +142,7 @@ set(Gui_MOC_HDRS
     propertyeditor/PropertyItemDelegate.h
     propertyeditor/PropertyModel.h
     TaskView/TaskAppearance.h
+    TaskView/TaskSelectLinkProperty.h
     TaskView/TaskDialog.h
     TaskView/TaskWatcher.h
     TaskView/TaskEditControl.h
@@ -191,6 +192,7 @@ SET(Gui_UIC_SRCS
     Placement.ui
     TextureMapping.ui
     TaskView/TaskAppearance.ui
+    TaskView/TaskSelectLinkProperty.ui
 )
 
 SET(Gui_RES_SRCS
@@ -504,6 +506,9 @@ SET(Task_View_SRCS
     TaskView/TaskAppearance.cpp
     TaskView/TaskAppearance.h
     TaskView/TaskAppearance.ui
+    TaskView/TaskSelectLinkProperty.cpp
+    TaskView/TaskSelectLinkProperty.h
+    TaskView/TaskSelectLinkProperty.ui
     TaskView/TaskEditControl.cpp
     TaskView/TaskEditControl.h
     TaskView/TaskEditControl.ui
@@ -756,6 +761,7 @@ if(MSVC)
         propertyeditor/PropertyItemDelegate.cpp
         propertyeditor/PropertyModel.cpp
         TaskView/TaskAppearance.cpp
+        TaskView/TaskSelectLinkProperty.cpp
         TaskView/TaskEditControl.cpp
         TaskView/TaskView.cpp
         ${Command_CPP_SRCS}

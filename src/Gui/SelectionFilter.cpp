@@ -30,6 +30,7 @@
 
 #include <App/Application.h>
 #include <App/Document.h>
+#include <App/DocumentObjectPy.h>
 #include <App/DocumentObject.h>
 #include <Base/Interpreter.h>
 
@@ -50,16 +51,46 @@ using namespace Gui;
 
 
 
-SelectionFilter::SelectionFilter(const char* filter)
-  : Filter(filter)
+SelectionFilterGate::SelectionFilterGate(const char* filter)
 {
-    parse();
+    Filter = new SelectionFilter(filter);
+}
+
+SelectionFilterGate::~SelectionFilterGate()
+{
+    delete Filter;
+}
+
+bool SelectionFilterGate::allow(App::Document*pDoc,App::DocumentObject*pObj, const char*sSubName)
+{
+    return Filter->test(pObj,sSubName);
+}
+
+
+
+SelectionFilter::SelectionFilter(const char* filter)
+  : Ast(0)
+{
+    setFilter(filter);
 }
 
 SelectionFilter::SelectionFilter(const std::string& filter)
-  : Filter(filter)
+  : Ast(0)
 {
-     parse();
+    setFilter(filter.c_str());
+}
+
+void SelectionFilter::setFilter(const char* filter)
+{
+    if( ! filter || filter[0] == 0){
+        if (Ast)
+            delete Ast;      
+        Ast = 0;
+    }else{
+        Filter = filter;
+        if(! parse())
+            throw Base::Exception(Errors.c_str());
+    }
 }
 
 SelectionFilter::~SelectionFilter()
@@ -93,6 +124,26 @@ bool SelectionFilter::match(void)
     return true;
 }
 
+bool SelectionFilter::test(App::DocumentObject*pObj, const char*sSubName)
+{
+    if (!Ast)
+        return false;
+
+    for (std::vector< Node_Object *>::iterator it= Ast->Objects.begin();it!=Ast->Objects.end();++it){
+
+        if( pObj->getTypeId().isDerivedFrom((*it)->ObjectType) )
+        {
+            if(!sSubName)
+                return true;
+            if((*it)->SubName == "")
+                return true;
+            if( std::string(sSubName).find((*it)->SubName) == 0)
+                return true;
+        }
+    }
+    return false;
+}
+
 void SelectionFilter::addError(const char* e)
 {
     Errors+=e;
@@ -122,6 +173,7 @@ void SelectionFilterPy::init_type()
     behaviors().type_object()->tp_new = &PyMake;
     add_varargs_method("match",&SelectionFilterPy::match,"match()");
     add_varargs_method("result",&SelectionFilterPy::result,"result()");
+    add_varargs_method("test",&SelectionFilterPy::test,"test()");
 }
 
 PyObject *SelectionFilterPy::PyMake(struct _typeobject *, PyObject *args, PyObject *)
@@ -152,6 +204,18 @@ Py::Object SelectionFilterPy::repr()
 Py::Object SelectionFilterPy::match(const Py::Tuple& args)
 {
     return Py::Boolean(filter.match());
+}
+
+Py::Object SelectionFilterPy::test(const Py::Tuple& args)
+{
+    PyObject * pcObj ;
+    char* text=0;
+    if (!PyArg_ParseTuple(args.ptr(), "O!|s",&(App::DocumentObjectPy::Type),&pcObj,&text))
+        throw Py::Exception();
+
+    App::DocumentObjectPy* docObj = static_cast<App::DocumentObjectPy*>(pcObj);
+
+    return Py::Boolean(filter.test(docObj->getDocumentObjectPtr(),text));
 }
 
 Py::Object SelectionFilterPy::result(const Py::Tuple&)
@@ -218,5 +282,10 @@ bool SelectionFilter::parse(void)
     TopBlock = 0;
     SelectionParser::SelectionFilter_delete_buffer (my_string_buffer);
 
-    return true;
+    if(Errors == "")
+        return true;
+    else{
+        return false;
+        delete Ast;
+    }
 }

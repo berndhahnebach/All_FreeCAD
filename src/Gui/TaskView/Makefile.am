@@ -2,19 +2,23 @@ noinst_LTLIBRARIES=libTaskView.la
 
 BUILT_SOURCES=\
 		moc_TaskAppearance.cpp \
+		moc_TaskSelectLinkProperty.cpp \
 		moc_TaskDialog.cpp \
 		moc_TaskWatcher.cpp \
 		moc_TaskEditControl.cpp \
 		moc_TaskView.cpp \
 		ui_TaskAppearance.h \
+		ui_TaskSelectLinkProperty.h \
 		ui_TaskEditControl.h
 
 libTaskView_la_UI=\
 		TaskAppearance.ui \
+		TaskSelectLinkProperty.ui \
 		TaskEditControl.ui
 
 libTaskView_la_SOURCES=\
 		TaskAppearance.cpp \
+		TaskSelectLinkProperty.cpp \
 		TaskDialog.cpp \
 		TaskWatcher.cpp \
 		TaskEditControl.cpp \
@@ -24,6 +28,7 @@ includedir = @includedir@/Gui/TaskView
 
 include_HEADERS=\
 		TaskAppearance.h \
+		TaskSelectLinkProperty.h \
 		TaskDialog.h \
 		TaskWatcher.h \
 		TaskEditControl.h \

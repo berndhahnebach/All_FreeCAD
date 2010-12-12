@@ -41,7 +41,7 @@ using namespace RobotGui;
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 TaskWatcherRobot::TaskWatcherRobot()
-    : Gui::TaskView::TaskWatcher("FROM Robot SELECT RobotObject COUNT 1")
+    : Gui::TaskView::TaskWatcher("SELECT Robot::RobotObject COUNT 1")
 {
     rob  = new TaskRobot6Axis(0);
     ctr  = new TaskRobotControl(0);

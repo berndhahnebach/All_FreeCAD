@@ -35,8 +35,15 @@ namespace Gui {
     struct Node_Block;
     
 
-/**
- * The Selection object class
+/** Selection filter definition 
+ *  This class build up a type/count tree out of a string
+ *  to test very fast a selection or object/subelement type 
+ *  against it. 
+ *
+ *  example Strings are:
+ *  "SELECT Part::Feature SUBELEMENT Edge", 
+ *  "SELECT Robot::RobotObject", 
+ *  "SELECT Robot::RobotObject COUNT 1..5"
  */
 class GuiExport SelectionFilter 
 {
@@ -47,7 +54,20 @@ public:
     SelectionFilter(const std::string& filter);
     virtual ~SelectionFilter();
 
+    /// set a new Filter string 
+    void setFilter(const char* filter);
+    /** test to current selection
+     *  This methode test the current selection set
+     *  against the filter and returns true if the 
+     *  described object(s) are selected.
+     */
     bool match(void);
+    /** test objects
+     *  This methode test if a given object is describet in the 
+     *  filter. If SubName is not NULL the Subelement get also
+     *  tested.
+     */
+    bool test(App::DocumentObject*pObj, const char*sSubName);
 
     void addError(const char* e);
  
@@ -63,6 +83,25 @@ protected:
 
     Node_Block *Ast;
 
+};
+
+/** Filter object for the SelectionSengleton
+ * This object is a link between the selection 
+ * filter class and the selection singleton. Created with a 
+ * filter string and registered in the selection it will only 
+ * allow the descibed object types to be selected.
+ * @see SelectionFilter
+ * @see SelectionSingleton
+ */
+class GuiExport SelectionFilterGate: public SelectionGate
+{
+public:
+    /// construct with the filter string
+    SelectionFilterGate(const char* filter);
+    ~SelectionFilterGate();
+    virtual bool allow(App::Document*,App::DocumentObject*, const char*);
+protected:
+    SelectionFilter *Filter;
 };
 
 /**
@@ -84,6 +123,7 @@ public:
     Py::Object repr();
     Py::Object match(const Py::Tuple&);
     Py::Object result(const Py::Tuple&);
+    Py::Object test(const Py::Tuple&);
 
 private:
     static PyObject *PyMake(struct _typeobject *, PyObject *, PyObject *);
@@ -101,17 +141,22 @@ struct Node_Slice
 
 struct Node_Object 
 {
-    Node_Object(std::string *namespc,std::string *type,Node_Slice* slc=0)
+    Node_Object(std::string *type,std::string *subname,Node_Slice* slc )
         :Slice(slc)
     {
-        std::string type_name = *namespc + "::" + *type;
-        ObjectType = Base::Type::fromName(type_name.c_str());
-        delete (namespc);
+        ObjectType = Base::Type::fromName(type->c_str());
         delete (type);
+        if(subname){
+            SubName = *subname;
+            delete subname;
+        }
+    }
+    ~Node_Object(){
+        delete Slice;
     }
     Base::Type ObjectType;
     Node_Slice  *Slice;
-
+    std::string SubName;
 };
 
 struct Node_Block 
