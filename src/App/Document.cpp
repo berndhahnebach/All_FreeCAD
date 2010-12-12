@@ -1557,18 +1557,15 @@ std::string Document::getStandardObjectName(const char *Name, int d) const
 
 std::vector<DocumentObject*> Document::getObjects() const
 {
-    std::vector<DocumentObject*> Objects;
-    for (std::map<std::string,DocumentObject*>::const_iterator it = d->objectMap.begin(); it != d->objectMap.end(); ++it)
-        Objects.push_back(it->second);
-    return Objects;
+    return d->objectArray;
 }
 
 std::vector<DocumentObject*> Document::getObjectsOfType(const Base::Type& typeId) const
 {
     std::vector<DocumentObject*> Objects;
-    for (std::map<std::string,DocumentObject*>::const_iterator it = d->objectMap.begin(); it != d->objectMap.end(); ++it) {
-        if (it->second->getTypeId().isDerivedFrom(typeId))
-            Objects.push_back(it->second);
+    for (std::vector<DocumentObject*>::const_iterator it = d->objectArray.begin(); it != d->objectArray.end(); ++it) {
+        if ((*it)->getTypeId().isDerivedFrom(typeId))
+            Objects.push_back(*it);
     }
     return Objects;
 }

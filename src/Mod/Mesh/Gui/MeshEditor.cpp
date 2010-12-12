@@ -30,9 +30,12 @@
 # include <Inventor/SoPickedPoint.h>
 # include <Inventor/details/SoFaceDetail.h>
 # include <Inventor/details/SoPointDetail.h>
+# include <Inventor/events/SoLocation2Event.h>
 # include <Inventor/events/SoMouseButtonEvent.h>
 # include <Inventor/nodes/SoBaseColor.h>
+# include <Inventor/nodes/SoCamera.h>
 # include <Inventor/nodes/SoCoordinate3.h>
+# include <Inventor/nodes/SoDirectionalLight.h>
 # include <Inventor/nodes/SoDrawStyle.h>
 # include <Inventor/nodes/SoFaceSet.h>
 # include <Inventor/nodes/SoLineSet.h>
@@ -42,6 +45,7 @@
 #endif
 
 #include "MeshEditor.h"
+#include "SoFCMeshObject.h"
 #include <App/Document.h>
 #include <Mod/Mesh/App/MeshFeature.h>
 #include <Gui/Application.h>
@@ -59,17 +63,22 @@ ViewProviderFace::ViewProviderFace() : mesh(0)
     pcCoords->point.setNum(0);
     pcFaces = new SoFaceSet;
     pcFaces->ref();
+    pcMeshPick = new SoFCMeshPickNode();
+    pcMeshPick->ref();
 }
 
 ViewProviderFace::~ViewProviderFace()
 {
     pcCoords->unref();
     pcFaces->unref();
+    pcMeshPick->unref();
 }
 
 void ViewProviderFace::attach(App::DocumentObject* obj)
 {
     ViewProviderDocumentObject::attach(obj);
+
+    pcMeshPick->mesh.setValue(static_cast<Mesh::Feature*>(obj)->Mesh.getValuePtr());
 
     // Draw markers
     SoGroup* markers = new SoGroup();
@@ -113,6 +122,12 @@ void ViewProviderFace::attach(App::DocumentObject* obj)
     face_marker->addChild(faces);
     face_marker->addChild(markers);
 
+    //SoFCMeshGridNode* grid = new SoFCMeshGridNode();
+    //grid->minGrid.setValue(-30.262806,-17.087866,4.5012960);
+    //grid->maxGrid.setValue(2.187220,28.081810,28.922251);
+    //grid->lenGrid.setValue(22,31,16);
+    //markers->addChild(grid);
+
     addDisplayMaskMode(markers, "Marker");
     addDisplayMaskMode(face_marker, "Face");
     setDisplayMode("Marker");
@@ -140,6 +155,25 @@ std::vector<std::string> ViewProviderFace::getDisplayModes(void) const
     return modes;
 }
 
+SoPickedPoint* ViewProviderFace::getPickedPoint(const SbVec2s& pos, const SoQtViewer* viewer) const
+{
+    SoSeparator* root = new SoSeparator;
+    root->ref();
+    root->addChild(viewer->getHeadlight());
+    root->addChild(viewer->getCamera());
+    root->addChild(this->pcMeshPick);
+
+    SoRayPickAction rp(viewer->getViewportRegion());
+    rp.setPoint(pos);
+    rp.apply(root);
+    root->unref();
+
+    // returns a copy of the point
+    SoPickedPoint* pick = rp.getPickedPoint();
+    //return (pick ? pick->copy() : 0); // needs the same instance of CRT under MS Windows
+    return (pick ? new SoPickedPoint(*pick) : 0);
+}
+
 // ----------------------------------------------------------------------
 
 MeshFaceAddition::MeshFaceAddition(Gui::View3DInventor* parent)
@@ -157,13 +191,13 @@ void MeshFaceAddition::startEditing(MeshGui::ViewProviderMesh* vp)
     Gui::View3DInventor* view = static_cast<Gui::View3DInventor*>(parent());
     Gui::View3DInventorViewer* viewer = view->getViewer();
     viewer->setEditing(true);
-    viewer->setRedirectToSceneGraph(true);
+    //viewer->setRedirectToSceneGraph(true);
 
     faceView->mesh = vp;
     faceView->attach(vp->getObject());
     viewer->addViewProvider(faceView);
-    faceView->mesh->startEditing();
-    viewer->addEventCallback(SoMouseButtonEvent::getClassTypeId(),
+    //faceView->mesh->startEditing();
+    viewer->addEventCallback(SoEvent::getClassTypeId(),
         MeshFaceAddition::addFacetCallback, this);
 }
 
@@ -175,8 +209,8 @@ void MeshFaceAddition::finishEditing()
     viewer->setRedirectToSceneGraph(false);
 
     viewer->removeViewProvider(faceView);
-    faceView->mesh->finishEditing();
-    viewer->removeEventCallback(SoMouseButtonEvent::getClassTypeId(),
+    //faceView->mesh->finishEditing();
+    viewer->removeEventCallback(SoEvent::getClassTypeId(),
         MeshFaceAddition::addFacetCallback, this);
     this->deleteLater();
 }
@@ -273,6 +307,56 @@ bool MeshFaceAddition::addFaceFromPoint(SoPickedPoint* pp)
     return false;
 }
 
+void MeshFaceAddition::showMarker(SoPickedPoint* pp)
+{
+    const SbVec3f& vec = pp->getPoint();
+    const SoDetail* detail = pp->getDetail();
+    if (detail) {
+        if (detail->isOfType(SoFaceDetail::getClassTypeId())) {
+            const SoFaceDetail* fd = static_cast<const SoFaceDetail*>(detail);
+            Mesh::Feature* mf = static_cast<Mesh::Feature*>(faceView->mesh->getObject());
+            const MeshCore::MeshFacetArray& facets = mf->Mesh.getValuePtr()->getKernel().GetFacets();
+            const MeshCore::MeshPointArray& points = mf->Mesh.getValuePtr()->getKernel().GetPoints();
+            // is the face index valid?
+            int face_index = fd->getFaceIndex();
+            if (face_index >= facets.size())
+                return;
+            // is a border facet picked? 
+            MeshCore::MeshFacet f = facets[face_index];
+            if (!f.HasOpenEdge())
+                return;
+
+            int point_index = -1;
+            float distance = FLT_MAX;
+            Base::Vector3f pnt;
+            SbVec3f face_pnt;
+
+            for (int i=0; i<3; i++) {
+                int index = (int)f._aulPoints[i];
+                if (std::find(faceView->index.begin(), faceView->index.end(), index) != faceView->index.end())
+                    continue; // already inside
+                if (f._aulNeighbours[i] == ULONG_MAX ||
+                    f._aulNeighbours[(i+2)%3] == ULONG_MAX) {
+                    pnt = points[index];
+                    float len = Base::DistanceP2(pnt, Base::Vector3f(vec[0],vec[1],vec[2]));
+                    if (len < distance) {
+                        distance = len;
+                        point_index = index;
+                        face_pnt.setValue(pnt.x,pnt.y,pnt.z);
+                    }
+                }
+            }
+
+            if (point_index < 0)
+                return; // picked point is rejected
+
+            int num = faceView->pcCoords->point.getNum();
+            faceView->pcCoords->point.set1Value(0, face_pnt);
+            return;
+        }
+    }
+}
+
 void MeshFaceAddition::addFacetCallback(void * ud, SoEventCallback * n)
 {
     MeshFaceAddition* that = reinterpret_cast<MeshFaceAddition*>(ud);
@@ -280,7 +364,20 @@ void MeshFaceAddition::addFacetCallback(void * ud, SoEventCallback * n)
     Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(n->getUserData());
 
     const SoEvent* ev = n->getEvent();
-    if (ev->getTypeId() == SoMouseButtonEvent::getClassTypeId()) {
+#if 0
+    if (ev->getTypeId() == SoLocation2Event::getClassTypeId()) {
+        // set as handled
+        n->getAction()->setHandled();
+        n->setHandled();
+        SoPickedPoint * point = face->/*mesh->*/getPickedPoint(ev->getPosition(), view);
+        if (point) {
+            that->showMarker(point);
+            delete point;
+        }
+    }
+    else
+#endif
+        if (ev->getTypeId() == SoMouseButtonEvent::getClassTypeId()) {
         // set as handled
         n->getAction()->setHandled();
         n->setHandled();

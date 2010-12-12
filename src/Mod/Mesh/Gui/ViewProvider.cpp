@@ -1452,7 +1452,8 @@ void ViewProviderMesh::highlightSelection()
     const Mesh::MeshObject& rMesh = static_cast<Mesh::Feature*>(pcObject)->Mesh.getValue();
     rMesh.getFacetsFromSelection(selection);
     if (selection.empty()) {
-        unhighlightSelection();
+        // If no faces are selected then simply return even without
+        // without calling unhighlightSelection()
         return;
     }
 

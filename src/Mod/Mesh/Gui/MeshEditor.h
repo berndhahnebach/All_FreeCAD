@@ -30,10 +30,12 @@ class SoCoordinate3;
 class SoFaceSet;
 class SoEventCallback;
 class SoPickedPoint;
+class SoQtViewer;
 
 namespace Gui { class View3DInventor; }
 
 namespace MeshGui {
+class SoFCMeshPickNode;
 
 /** The ViewProviderFace class is used to display a single face.
  * @author Werner Mayer
@@ -51,12 +53,14 @@ public:
     void setDisplayMode(const char* ModeName);
     const char* getDefaultDisplayMode() const;
     std::vector<std::string> getDisplayModes(void) const;
+    SoPickedPoint* getPickedPoint(const SbVec2s& pos, const SoQtViewer* viewer) const;
 
     ViewProviderMesh* mesh;
     std::vector<int> index;
 
     SoCoordinate3   * pcCoords;
     SoFaceSet       * pcFaces;
+    SoFCMeshPickNode* pcMeshPick;
 };
 
 /**
@@ -83,6 +87,7 @@ private Q_SLOTS:
 
 private:
     bool addFaceFromPoint(SoPickedPoint*);
+    void showMarker(SoPickedPoint*);
     static void addFacetCallback(void * ud, SoEventCallback * n);
 
 private:
