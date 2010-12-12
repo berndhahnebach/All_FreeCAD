@@ -33,8 +33,12 @@
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
+#include "Application.h"
+#include "Document.h"
 #include "Selection.h"
+#include "SelectionFilter.h"
 #include "SelectionObjectPy.h"
+#include "View3DInventor.h"
 #include <Base/Exception.h>
 #include <Base/Console.h>
 #include <Base/Interpreter.h>
@@ -456,6 +460,36 @@ bool SelectionSingleton::setPreselect(const char* pDocName, const char* pObjectN
     if (DocName != "")
         rmvPreselect();
 
+    if(ActiveGate)
+    {
+        App::Document* pDoc = getDocument(pDocName);
+
+        if (pDoc) {
+            if(pObjectName){
+                App::DocumentObject* pObject = pDoc->getObject(pObjectName);
+                if(! ActiveGate->allow(pDoc,pObject,pSubName)){
+                    snprintf(buf,512,"Not allowed: %s.%s.%s ",pDocName
+                                                       ,pObjectName
+                                                       ,pSubName
+                                                       );
+
+                    if (getMainWindow()){
+                        getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
+                        Gui::MDIView* mdi = Gui::Application::Instance->activeDocument()->getActiveView();
+                        if (mdi && mdi->isDerivedFrom(View3DInventor::getClassTypeId())) {
+                            static_cast<View3DInventor*>(mdi)->setCursor(Qt::ForbiddenCursor);
+                        }
+                    }
+                    return false;
+                }
+
+            }else
+                return ActiveGate->allow(pDoc,0,0);
+        }else
+            return false;
+
+    }
+
     DocName = pDocName;
     FeatName= pObjectName;
     SubName = pSubName;
@@ -481,9 +515,13 @@ bool SelectionSingleton::setPreselect(const char* pDocName, const char* pObjectN
                                                        ,Chng.pSubName
                                                        ,x,y,z);
 
-    if (getMainWindow())
+    if (getMainWindow()){
         getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
-
+        Gui::MDIView* mdi = Gui::Application::Instance->activeDocument()->getActiveView();
+        if (mdi && mdi->isDerivedFrom(View3DInventor::getClassTypeId())) {
+            static_cast<View3DInventor*>(mdi)->setCursor(Qt::ArrowCursor);
+        }
+    }
 
     Notify(Chng);
     signalSelectionChanged(Chng);
@@ -497,6 +535,9 @@ bool SelectionSingleton::setPreselect(const char* pDocName, const char* pObjectN
 void SelectionSingleton::setPreselectCoord( float x, float y, float z)
 {
     static char buf[513];
+
+    // if nothing is in preselect ignore
+    if(!CurrentPreselection.pObjectName) return;
 
     CurrentPreselection.x = x;
     CurrentPreselection.y = y;
@@ -541,6 +582,13 @@ void SelectionSingleton::rmvPreselect()
     hy = 0;
     hz = 0;
 
+    if (getMainWindow()){
+        Gui::MDIView* mdi = Gui::Application::Instance->activeDocument()->getActiveView();
+        if (mdi && mdi->isDerivedFrom(View3DInventor::getClassTypeId())) {
+            static_cast<View3DInventor*>(mdi)->setCursor(Qt::ArrowCursor);
+        }
+    }
+
     //Base::Console().Log("Sel : Rmv preselect \n");
 }
 
@@ -548,6 +596,25 @@ const SelectionChanges &SelectionSingleton::getPreselection(void) const
 {
     return CurrentPreselection;
 }
+
+// add a SelectionGate to control what is selectable
+void SelectionSingleton::addSelectionGate(Gui::SelectionGate *gate)
+{
+    if(ActiveGate)
+        rmvSelectionGate();
+    
+    ActiveGate = gate;
+
+}
+
+// remove the active SelectionGate
+void SelectionSingleton::rmvSelectionGate(void)
+{
+    if (ActiveGate)
+        delete ActiveGate;
+    ActiveGate=0;
+}
+
 
 App::Document* SelectionSingleton::getDocument(const char* pDocName) const
 {
@@ -563,7 +630,7 @@ bool SelectionSingleton::addSelection(const char* pDocName, const char* pObjectN
     if (isSelected(pDocName, pObjectName, pSubName))
         return true;
 
-    _SelObj temp;
+     _SelObj temp;
 
     temp.pDoc = getDocument(pDocName);
 
@@ -572,6 +639,22 @@ bool SelectionSingleton::addSelection(const char* pDocName, const char* pObjectN
             temp.pObject = temp.pDoc->getObject(pObjectName);
         else
             temp.pObject = 0;
+        
+        // check for a Selection Gate
+        if(ActiveGate)
+        {
+            if(! ActiveGate->allow(temp.pDoc,temp.pObject,pSubName)){
+                if (getMainWindow()){
+                    getMainWindow()->statusBar()->showMessage(QString::fromAscii("Selection not allowed by filter"),5000);
+                    Gui::MDIView* mdi = Gui::Application::Instance->activeDocument()->getActiveView();
+                    if (mdi && mdi->isDerivedFrom(View3DInventor::getClassTypeId())) {
+                        static_cast<View3DInventor*>(mdi)->setCursor(Qt::ForbiddenCursor);
+                    }
+                }
+                QApplication::beep();
+                return false;
+            }
+        }
 
         temp.DocName  = pDocName;
         temp.FeatName = pObjectName?pObjectName:"";
@@ -813,6 +896,7 @@ void SelectionSingleton::slotRenamedObject(const App::DocumentObject& Obj)
  */
 SelectionSingleton::SelectionSingleton()
 {
+    ActiveGate = 0;
     App::GetApplication().signalDeletedObject.connect(boost::bind(&Gui::SelectionSingleton::slotDeletedObject, this, _1));
     App::GetApplication().signalRenamedObject.connect(boost::bind(&Gui::SelectionSingleton::slotRenamedObject, this, _1));
 }
@@ -886,6 +970,14 @@ PyMethodDef SelectionSingleton::Methods[] = {
      "addObserver(Object) -- Install an observer\n"},
     {"removeObserver",      (PyCFunction) SelectionSingleton::sRemSelObserver, 1,
      "removeObserver(Object) -- Uninstall an observer\n"},
+    {"addSelectionGate",      (PyCFunction) SelectionSingleton::saddSelectionGate, 1,
+    "addSelectionGate(String) -- activate the selection gate.\n"
+    "The selection gate will prohibit all selections which do not match the\n"
+    "the given selection filter string. Examples strings are:\n"
+    "'SELECT Part::Feature SUB Edge',\n"
+    "'SELECT Robot::RobotObject'\n"},
+    {"removeSelectionGate",      (PyCFunction) SelectionSingleton::sremoveSelectionGate, 1,
+     "removeSelectionGate() -- remove the active slection gate\n"},
     {NULL, NULL, 0, NULL}		/* Sentinel */
 };
 
@@ -1018,4 +1110,29 @@ PyObject *SelectionSingleton::sRemSelObserver(PyObject * /*self*/, PyObject *arg
         SelectionObserverPython::removeObserver(Py::Object(o));
         Py_Return;
     } PY_CATCH;
+}
+
+PyObject *SelectionSingleton::saddSelectionGate(PyObject * /*self*/, PyObject *args, PyObject * /*kwd*/)
+{
+    char* filter;
+    if (!PyArg_ParseTuple(args, "s",&filter))
+        return NULL;                             // NULL triggers exception 
+
+    PY_TRY {
+        Selection().addSelectionGate(new SelectionFilterGate(filter));
+    } PY_CATCH;
+
+    Py_Return;
+}
+
+PyObject *SelectionSingleton::sremoveSelectionGate(PyObject * /*self*/, PyObject *args, PyObject * /*kwd*/)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;                             // NULL triggers exception 
+
+    PY_TRY {
+        Selection().rmvSelectionGate();
+    } PY_CATCH;
+
+    Py_Return;
 }

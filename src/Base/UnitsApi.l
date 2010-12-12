@@ -11,7 +11,7 @@
 
 /*** Flex Declarations and Options ***/
 
-/* change the name of the scanner class. results in "SelectionFilterFlexLexer" */
+/* change the name of the scanner class. */
 %option prefix="UnitsApi"
 
 /* the manual says "somewhat more optimized" */

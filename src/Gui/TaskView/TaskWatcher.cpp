@@ -124,7 +124,7 @@ bool TaskWatcherCommands::shouldShow()
 TaskWatcherCommandsEmptyDoc::TaskWatcherCommandsEmptyDoc(const char* commands[],
                                                          const char* name,
                                                          const char* pixmap )
-    :TaskWatcherCommands("",commands,name,pixmap)
+    :TaskWatcherCommands(0,commands,name,pixmap)
 {
 }
 

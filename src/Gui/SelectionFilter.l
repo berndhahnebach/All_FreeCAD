@@ -2,6 +2,8 @@
 /* Lexer for the FreeCAD selection filter language */
 /* (c) 2010 Juergen Riegel  LGPL                    */
 
+/*  flex -o lex.SelectionFilter.c SelectionFilter.l */
+
 #include <string>
 
 #include "stdio.h"
@@ -30,10 +32,11 @@
  
 [ \t]                   ;
 [\n]+                   ;
-"FROM"                  return TFROM;
+"SUBELEMENT"            return TSUB;
 "SELECT"                return TSELECT;
 "COUNT"                 return TCOUNT;
 ".."					return TSLICE;
+"::"					return TNAMESPACE;
 
 [a-zA-Z_][a-zA-Z0-9_]*  {
        yylval.string = new std::string(yytext);

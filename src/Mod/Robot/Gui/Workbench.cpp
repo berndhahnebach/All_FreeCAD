@@ -84,8 +84,8 @@ void Workbench::activated()
     std::vector<Gui::TaskView::TaskWatcher*> Watcher;
 
     Watcher.push_back(new Gui::TaskView::TaskWatcherCommands(
-        "FROM Robot SELECT TrajectoryObject COUNT 1"
-        "FROM Robot SELECT RobotObject COUNT 1",
+        "SELECT Robot::TrajectoryObject COUNT 1"
+        "SELECT Robot::RobotObject COUNT 1",
         RobotAndTrac,
         "Trajectory tools",
         "Robot_InsertWaypoint"
@@ -94,7 +94,7 @@ void Workbench::activated()
     Watcher.push_back(new TaskWatcherRobot);
 
     Watcher.push_back(new Gui::TaskView::TaskWatcherCommands(
-        "FROM Robot SELECT RobotObject COUNT 1",
+        "SELECT Robot::RobotObject COUNT 1",
         Robot,
         "Robot tools",
         "Robot_CreateRobot"

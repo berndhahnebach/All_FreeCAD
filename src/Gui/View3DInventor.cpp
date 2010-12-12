@@ -640,6 +640,11 @@ void View3DInventor::setCursor(const QCursor& aCursor)
     _viewer->getWidget()->setCursor(aCursor);
 }
 
+void View3DInventor::setCursor(Qt::CursorShape aCursor)
+{
+    _viewer->getWidget()->setCursor(aCursor);
+}
+
 void View3DInventor::dump(const char* filename)
 {
     SoGetPrimitiveCountAction action;
@@ -817,5 +822,6 @@ void View3DInventor::customEvent(QEvent * e)
         _viewer->setNavigationType(se->style());
     }
 }
+
 
 #include "moc_View3DInventor.cpp"

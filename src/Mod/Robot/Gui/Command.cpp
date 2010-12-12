@@ -186,8 +186,8 @@ void CmdRobotSimulate::activated(int iMsg)
 {
 #if 1
     const char * SelFilter = 
-        "FROM Robot SELECT RobotObject  \n"
-        "FROM Robot SELECT TrajectoryObject  ";
+        "SELECT Robot::RobotObject  \n"
+        "SELECT Robot::TrajectoryObject  ";
 
     Gui::SelectionFilter filter(SelFilter);
     Robot::RobotObject *pcRobotObject;
@@ -216,8 +216,8 @@ void CmdRobotSimulate::activated(int iMsg)
 
  
    const char * SelFilter = 
-        "FROM Robot SELECT RobotObject  \n"
-        "FROM Robot SELECT TrajectoryObject  ";
+       "SELECT Robot::RobotObject  \n"
+       "SELECT Robot::TrajectoryObject  ";
 
     Gui::SelectionFilter filter(SelFilter);
     Robot::RobotObject *pcRobotObject;
