@@ -491,12 +491,13 @@ def rotate(objectslist,angle,center=Vector(0,0,0),axis=Vector(0,0,1),copy=False)
         for obj in objectslist:
                 if copy:
                         newobj = FreeCAD.ActiveDocument.addObject("Part::Feature",getRealName(obj.Name))
+                        newobj.Shape = obj.Shape
                 else:
                         newobj = obj
                 if (obj.isDerivedFrom("Part::Feature")):
-                        shape = obj.Shape
+                        shape = obj.Shape.copy()
                         shape.rotate(fcvec.tup(center), fcvec.tup(axis), angle)
-                        newobj.Shape=shape
+                        newobj.Shape = shape
                 if copy:
                         formatObject(newobj,obj)
                 newobjlist.append(newobj)
