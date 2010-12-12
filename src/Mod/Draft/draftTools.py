@@ -1025,7 +1025,6 @@ class Wire(Line):
 			'MenuText': str(translate("draft", "Wire").toLatin1()),
 			'ToolTip': str(translate("draft", "Creates a multiple-point wire. CTRL to snap, SHIFT to constrain").toLatin1())}
 
-
 class FinishLine:
 	"a FreeCAD command to finish any running Line drawing operation"
 	def Activated(self):
@@ -1036,7 +1035,11 @@ class FinishLine:
 		return {'Pixmap'  : 'Draft_finish',
 			'MenuText': str(translate("draft", "Finish line").toLatin1()),
 			'ToolTip': str(translate("draft", "Finishes a line without closing it").toLatin1())}
-
+        def IsActive(self):
+                if FreeCAD.activeDraftCommand:
+                        if FreeCAD.activeDraftCommand.featureName == "Line":
+                                return True
+                return False
 	
 class CloseLine:
 	"a FreeCAD command to close any running Line drawing operation"
@@ -1048,6 +1051,11 @@ class CloseLine:
 		return {'Pixmap'  : 'Draft_lock',
 			'MenuText': str(translate("draft", "Close Line").toLatin1()),
 			'ToolTip': str(translate("draft", "Closes the line being drawn").toLatin1())}
+        def IsActive(self):
+                if FreeCAD.activeDraftCommand:
+                        if FreeCAD.activeDraftCommand.featureName == "Line":
+                                return True
+                return False
 
 
 class UndoLine:
@@ -1060,7 +1068,11 @@ class UndoLine:
 		return {'Pixmap'  : 'Draft_rotate',
 			'MenuText': str(translate("draft", "Undo last segment").toLatin1()),
 			'ToolTip': str(translate("draft", "Undoes the last drawn segment of the line being drawn").toLatin1())}
-
+        def IsActive(self):
+                if FreeCAD.activeDraftCommand:
+                        if FreeCAD.activeDraftCommand.featureName == "Line":
+                                return True
+                return False
 	
 class Rectangle(Creator):
 	"the Draft_Rectangle FreeCAD command definition"
