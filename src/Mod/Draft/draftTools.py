@@ -2137,7 +2137,7 @@ class Rotate(Modifier):
 					self.ui.labelRadius.setText("Base angle")
 					self.linetrack.p1(self.center)
 					self.arctrack.setCenter(self.center)
-					#self.ghost.trans.center.setValue(self.center.x,self.center.y,self.center.z)
+					self.ghost.trans.center.setValue(self.center.x,self.center.y,self.center.z)
 					self.linetrack.on()
 					self.step = 1
 					msg(translate("draft", "Pick base angle:\n"))
