@@ -183,9 +183,11 @@ class DraftWorkbench (Workbench):
                 self.modList = ["Draft_Move","Draft_Rotate","Draft_Offset",
 				"Draft_Trimex", "Draft_Upgrade", "Draft_Downgrade", "Draft_Scale",
                                 "Draft_PutOnSheet","Draft_Edit"]
-                self.treecmdList = ["Draft_ApplyStyle","Draft_Draftify","Draft_ToggleDisplayMode"]
+                self.treecmdList = ["Draft_ApplyStyle","Draft_ToggleDisplayMode"]
+                self.lineList = ["Draft_UndoLine","Draft_FinishLine","Draft_CloseLine"]
                 self.appendToolbar("Draft tools",self.cmdList+self.modList)
                 self.appendMenu("Draft",self.cmdList+self.modList+self.treecmdList)
+                self.appendMenu(["Draft","Line drawing"],self.lineList)
                 FreeCAD.activeDraftCommand = None # a global place to look for active draft Command
                         
 	def Activated(self):
@@ -206,8 +208,7 @@ class DraftWorkbench (Workbench):
                                         self.appendContextMenu("Draft",self.cmdList)
                         else:
                                 if (FreeCAD.activeDraftCommand.featureName == "Line"):
-                                        lineList = ["Draft_UndoLine","Draft_FinishLine","Draft_CloseLine"]
-                                        self.appendContextMenu("",lineList)
+                                        self.appendContextMenu("",self.lineList)
                 else:
                         if (FreeCADGui.Selection.getSelection() != []):
                                 self.appendContextMenu("",self.treecmdList)

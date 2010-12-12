@@ -758,20 +758,6 @@ class toolBar:
 				if txt.endsWith(" ") or txt.endsWith("r"):
 					self.isRelative.setChecked(not self.isRelative.isChecked())
                                         spec = True
-				if txt.endsWith("f"):
-                                        if self.hasFill.isVisible():
-                                                self.hasFill.setChecked(not self.hasFill.isChecked())
-                                        elif self.finishButton.isVisible():
-                                                self.finish()
-                                        spec = True
-				if txt.endsWith("c"):
-					if self.closeButton.isVisible():
-                                                self.closeLine()
-					elif self.isCopy.isVisible():
-						self.isCopy.setChecked(not self.isCopy.isChecked())
-                                        elif self.continueCmd.isVisible():
-                                                self.continueCmd.setChecked(not self.continueCmd.isChecked())
-                                        spec = True
                                 if spec:
                                         for i in [self.xValue,self.yValue,self.zValue]:
                                                 if (i.text() == txt): i.setText("")
