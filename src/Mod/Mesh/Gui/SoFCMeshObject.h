@@ -26,6 +26,8 @@
 #include <Inventor/fields/SoSField.h>
 #include <Inventor/fields/SoSFUInt32.h>
 #include <Inventor/fields/SoSubField.h>
+#include <Inventor/fields/SoSFVec3f.h>
+#include <Inventor/fields/SoSFVec3s.h>
 #include <Inventor/nodes/SoSubNode.h>
 #include <Inventor/nodes/SoShape.h>
 #include <Inventor/elements/SoReplacedElement.h>
@@ -35,6 +37,8 @@
 typedef unsigned int GLuint;
 typedef int GLint;
 typedef float GLfloat;
+
+namespace MeshCore { class MeshFacetGrid; }
 
 namespace MeshGui {
 
@@ -70,8 +74,52 @@ protected:
 
 // -------------------------------------------------------
 
+class MeshGuiExport SoFCMeshPickNode : public SoNode {
+    typedef SoNode inherited;
+
+    SO_NODE_HEADER(SoFCMeshPickNode);
+
+public:
+    static void initClass(void);
+    SoFCMeshPickNode(void);
+    void notify(SoNotList *);
+
+    SoSFMeshObject mesh;
+
+    virtual void rayPick(SoRayPickAction * action);
+    virtual void pick(SoPickAction * action);
+
+protected:
+    virtual ~SoFCMeshPickNode();
+
+private:
+    MeshCore::MeshFacetGrid* meshGrid;
+};
+
+// -------------------------------------------------------
+
+class MeshGuiExport SoFCMeshGridNode : public SoNode {
+    typedef SoNode inherited;
+
+    SO_NODE_HEADER(SoFCMeshGridNode);
+
+public:
+    static void initClass(void);
+    SoFCMeshGridNode(void);
+    void GLRender(SoGLRenderAction * action);
+
+    SoSFVec3f minGrid;
+    SoSFVec3f maxGrid;
+    SoSFVec3s lenGrid;
+
+protected:
+    virtual ~SoFCMeshGridNode();
+};
+
+// -------------------------------------------------------
+
 class MeshGuiExport SoFCMeshObjectNode : public SoNode {
-    typedef SoSField inherited;
+    typedef SoNode inherited;
 
     SO_NODE_HEADER(SoFCMeshObjectNode);
 

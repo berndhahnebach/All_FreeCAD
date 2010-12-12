@@ -41,6 +41,7 @@
 # include <Inventor/actions/SoGLRenderAction.h>
 # include <Inventor/actions/SoPickAction.h>
 # include <Inventor/actions/SoWriteAction.h>
+# include <Inventor/details/SoFaceDetail.h>
 # include <Inventor/errors/SoReadError.h>
 # include <Inventor/misc/SoState.h>
 #endif
@@ -50,9 +51,11 @@
 #include <Base/Exception.h>
 #include <Gui/SoFCInteractiveElement.h>
 #include <Gui/SoFCSelectionAction.h>
+#include <Mod/Mesh/App/Core/Algorithm.h>
 #include <Mod/Mesh/App/Core/MeshIO.h>
 #include <Mod/Mesh/App/Core/MeshKernel.h>
 #include <Mod/Mesh/App/Core/Elements.h>
+#include <Mod/Mesh/App/Core/Grid.h>
 
 using namespace MeshGui;
 
@@ -320,6 +323,165 @@ const SoFCMeshObjectElement * SoFCMeshObjectElement::getInstance(SoState * state
 
 void SoFCMeshObjectElement::print(FILE * /* file */) const
 {
+}
+
+// -------------------------------------------------------
+
+SO_NODE_SOURCE(SoFCMeshPickNode);
+
+/*!
+  Constructor.
+*/
+SoFCMeshPickNode::SoFCMeshPickNode(void) : meshGrid(0)
+{
+    SO_NODE_CONSTRUCTOR(SoFCMeshPickNode);
+
+    SO_NODE_ADD_FIELD(mesh, (0));
+}
+
+/*!
+  Destructor.
+*/
+SoFCMeshPickNode::~SoFCMeshPickNode()
+{
+    delete meshGrid;
+}
+
+// Doc from superclass.
+void SoFCMeshPickNode::initClass(void)
+{
+    SO_NODE_INIT_CLASS(SoFCMeshPickNode, SoNode, "Node");
+}
+
+void SoFCMeshPickNode::notify(SoNotList *list)
+{
+    SoField *f = list->getLastField();
+    if (f == &mesh) {
+        const Mesh::MeshObject* meshObject = mesh.getValue();
+        if (meshObject) {
+            MeshCore::MeshAlgorithm alg(meshObject->getKernel());
+            float fAvgLen = alg.GetAverageEdgeLength();
+            delete meshGrid;
+            meshGrid = new MeshCore::MeshFacetGrid(meshObject->getKernel(), 5.0f * fAvgLen);
+        }
+    }
+}
+
+// Doc from superclass.
+void SoFCMeshPickNode::rayPick(SoRayPickAction * action)
+{
+}
+
+// Doc from superclass.
+void SoFCMeshPickNode::pick(SoPickAction * action)
+{
+    SoRayPickAction* raypick = static_cast<SoRayPickAction*>(action);
+    raypick->setObjectSpace();
+
+    const Mesh::MeshObject* meshObject = mesh.getValue();
+    MeshCore::MeshAlgorithm alg(meshObject->getKernel());
+
+    const SbLine& line = raypick->getLine();
+    const SbVec3f& pos = line.getPosition();
+    const SbVec3f& dir = line.getDirection();
+    Base::Vector3f pt(pos[0],pos[1],pos[2]);
+    Base::Vector3f dr(dir[0],dir[1],dir[2]);
+    unsigned long index;
+    if (alg.NearestFacetOnRay(pt, dr, *meshGrid, pt, index)) {
+        SoPickedPoint* pp = raypick->addIntersection(SbVec3f(pt.x,pt.y,pt.z));
+        if (pp) {
+            SoFaceDetail* det = new SoFaceDetail();
+            det->setFaceIndex(index);
+            pp->setDetail(det, this);
+        }
+    }
+}
+
+// -------------------------------------------------------
+
+SO_NODE_SOURCE(SoFCMeshGridNode);
+
+/*!
+  Constructor.
+*/
+SoFCMeshGridNode::SoFCMeshGridNode(void)
+{
+    SO_NODE_CONSTRUCTOR(SoFCMeshGridNode);
+
+    SO_NODE_ADD_FIELD(minGrid, (SbVec3f(0,0,0)));
+    SO_NODE_ADD_FIELD(maxGrid, (SbVec3f(0,0,0)));
+    SO_NODE_ADD_FIELD(lenGrid, (SbVec3s(0,0,0)));
+}
+
+/*!
+  Destructor.
+*/
+SoFCMeshGridNode::~SoFCMeshGridNode()
+{
+}
+
+// Doc from superclass.
+void SoFCMeshGridNode::initClass(void)
+{
+    SO_NODE_INIT_CLASS(SoFCMeshGridNode, SoNode, "Node");
+}
+
+void SoFCMeshGridNode::GLRender(SoGLRenderAction * action)
+{
+    const SbVec3f& min = minGrid.getValue();
+    const SbVec3f& max = maxGrid.getValue();
+    const SbVec3s& len = lenGrid.getValue();
+    short u,v,w; len.getValue(u,v,w);
+    float minX, minY, minZ; min.getValue(minX, minY, minZ);
+    float maxX, maxY, maxZ; max.getValue(maxX, maxY, maxZ);
+    float dx = (maxX-minX)/(float)u;
+    float dy = (maxY-minY)/(float)v;
+    float dz = (maxZ-minZ)/(float)w;
+    glColor3f(0.0f,1.0f,0.0);
+    glBegin(GL_LINES);
+    for (short i=0; i<u+1; i++) {
+        for (short j=0; j<v+1; j++) {
+            float p[3];
+            p[0] = i * dx + minX;
+            p[1] = j * dy + minY;
+            p[2] = minZ;
+            glVertex3fv(p);
+
+            p[0] = i * dx + minX;
+            p[1] = j * dy + minY;
+            p[2] = maxZ;
+            glVertex3fv(p);
+        }
+    }
+    for (short i=0; i<u+1; i++) {
+        for (short j=0; j<w+1; j++) {
+            float p[3];
+            p[0] = i * dx + minX;
+            p[1] = minY;
+            p[2] = j * dz + minZ;
+            glVertex3fv(p);
+
+            p[0] = i * dx + minX;
+            p[1] = maxY;
+            p[2] = j * dz + minZ;
+            glVertex3fv(p);
+        }
+    }
+    for (short i=0; i<v+1; i++) {
+        for (short j=0; j<w+1; j++) {
+            float p[3];
+            p[0] = minX;
+            p[1] = i * dy + minY;
+            p[2] = j * dz + minZ;
+            glVertex3fv(p);
+
+            p[0] = maxX;
+            p[1] = i * dy + minY;
+            p[2] = j * dz + minZ;
+            glVertex3fv(p);
+        }
+    }
+    glEnd();
 }
 
 // -------------------------------------------------------
