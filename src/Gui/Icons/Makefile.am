@@ -17,6 +17,10 @@ EXTRA_DIST = \
 		ClassBrowser/type_class.png \
 		ClassBrowser/type_enum.png \
 		ClassBrowser/type_module.png \
+		add.png \
+		delete.png \
+		edit_remove.png \
+		mouse_pointer.png \
 		BmpFactoryIcons.cpp \
 		background.xpm \
 		bulb.xpm \

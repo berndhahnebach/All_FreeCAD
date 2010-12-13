@@ -310,7 +310,7 @@ static PyObject * getBoundary_Conditions(PyObject *self, PyObject *args)
 
 		Base::Vector3f min_Node,max_Node,mid_Node,dist;
 		float dist_length;
-		int minNodeID,maxNodeID,midNodeID;
+		int minNodeID,maxNodeID;
 		dist_length = FLOAT_MAX;
 		aNodeIter = inputMesh->getFemMeshPtr()->getSMesh()->GetMeshDS()->nodesIterator();
 		for (;aNodeIter->more();)
