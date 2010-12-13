@@ -170,8 +170,8 @@ private:
 };
 
 /** SelectionGate
- * The selection gate allow or disallow selection of certain types.
- * It have to be registered to the selection.
+ * The selection gate allows or disallows selection of certain types.
+ * It has to be registered to the selection.
  */
 class SelectionGate 
 {
@@ -182,17 +182,17 @@ public:
 
 /** The Selection class
  *  The selection singleton keeps track of the selection state of 
- *  the whole application. It get messages from all enteties which can
+ *  the whole application. It gets messages from all entities which can
  *  alter the selection (e.g. tree view and 3D-view) and sends messages
- *  to enteties which need to keep track on the selection state. 
+ *  to entities which need to keep track on the selection state. 
  * 
- *  The selection consist mainly out of follwing information per selected object: 
+ *  The selection consists mainly out of following information per selected object: 
  *  - document (pointer)
  *  - Object   (pointer)
  *  - list of subelements (list of strings)
- *  - 3D coordinates where the user click to select (Vector3d)
+ *  - 3D coordinates where the user clicks to select (Vector3d)
  *
- *  Also the preselction is managed. That mean you can add a filter to prevent selection 
+ *  Also the preselction is managed. That means you can add a filter to prevent selection 
  *  of unwanted objects or subelements.
  */
 class GuiExport SelectionSingleton : public Base::Subject<const SelectionChanges&>
