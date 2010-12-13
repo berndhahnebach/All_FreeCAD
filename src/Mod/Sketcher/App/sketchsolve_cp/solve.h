@@ -94,7 +94,7 @@ tangentToEllipse
 #define validSoltuionRough 1e-4
 #define rough             0
 #define fine              1
-#define MaxIterations     50 //Note that the total number of iterations allowed is MaxIterations *xLength
+#define MaxIterations     5000 //Note that the total number of iterations allowed is MaxIterations *xLength
 
 ///////////////////////////////////////
 /// Solve exit codes

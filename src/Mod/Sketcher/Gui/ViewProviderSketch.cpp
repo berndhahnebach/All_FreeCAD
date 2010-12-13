@@ -56,6 +56,8 @@
 #include <Gui/Control.h>
 #include <Gui/Selection.h>
 #include <Gui/MainWindow.h>
+#include <Gui/View3DInventor.h>
+#include <Gui/View3DInventorViewer.h>
 #include <Gui/DlgEditFileIncludeProptertyExternal.h>
 
 #include <Mod/Part/App/Geometry.h>
@@ -853,6 +855,12 @@ Restart:
     // delete the cloned objects 
     for(std::vector<Part::Geometry *>::iterator it=tempGeo.begin();it!=tempGeo.end();++it)
         if(*it)delete(*it);
+
+    Gui::MDIView* mdi = Gui::Application::Instance->activeDocument()->getActiveView();
+    if (mdi && mdi->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+        static_cast<Gui::View3DInventor*>(mdi)->getViewer()->render();
+    }
+
 
 }
 

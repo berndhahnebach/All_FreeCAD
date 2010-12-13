@@ -383,7 +383,7 @@ void CmdSketcherConstrainDistance::activated(int iMsg)
 
     // finish the transaction and update
     commitCommand();
-    updateActive();
+    //updateActive();
 
     // clear the selction (convenience)
     getSelection().clearSelection();

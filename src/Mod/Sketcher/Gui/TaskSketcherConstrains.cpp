@@ -162,6 +162,7 @@ void TaskSketcherConstrains::on_listWidgetConstraints_itemActivated ( QListWidge
             Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.setDatum(%f,%i)",
                       sketchView->getObject()->getNameInDocument(),
                       newDatum,it->ConstraintNbr);
+            sketchView->getSketchObject()->execute();
 
         }
 

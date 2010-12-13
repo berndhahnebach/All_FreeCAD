@@ -85,6 +85,8 @@ void SketchObject::setDatum(double Datum,int ConstrNbr)
     newVals[ConstrNbr] = constNew;
     this->Constraints.setValues(newVals);
     delete constNew;
+
+
 }
     
 int SketchObject::addGeometry(const Part::Geometry *geo)

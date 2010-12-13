@@ -170,6 +170,16 @@ protected:
     std::vector<line>   Lines;
     std::vector<circle> Circles;
 
+    // helper for the PointOnPoint constraint optimization
+    struct PoPConst {
+        PoPConst():StartPointIndex(-1),EndPointIndex(-1),MidPointIndex(-1){}
+        int StartPointIndex;
+        int EndPointIndex;
+        int MidPointIndex;
+    };
+
+    std::map<int,PoPConst> PoPMap;
+
 
 };
 
