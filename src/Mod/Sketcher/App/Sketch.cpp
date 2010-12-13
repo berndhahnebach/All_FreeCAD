@@ -55,6 +55,7 @@ using namespace Sketcher;
 using namespace Base;
 using namespace Part;
 
+#define POINT_CONSTRAIN_OPTIMIZE 1
 
 TYPESYSTEM_SOURCE(Sketcher::Sketch, Base::Persistence)
 
@@ -106,8 +107,20 @@ void Sketch::clear(void)
 void Sketch::setUpSketch(const std::vector<Part::Geometry *> &geo,const std::vector<Constraint *> &ConstraintList)
 {
     clear();
+    int rtn = -1;
 
-    // pass 1: building up internel geo list ===========================================================
+# if (POINT_CONSTRAIN_OPTIMIZE)
+
+    // pass 1 first check the PointCoincidentConstraint =================================================
+
+    for(std::vector<Constraint *>::const_iterator it = ConstraintList.begin();it!=ConstraintList.end();++it){
+        switch ((*it)->Type){
+           case Coincident: addPointCoincidentConstraint((*it)->First,(*it)->FirstPos,(*it)->Second,(*it)->SecondPos,(*it)->Name.c_str()); break;
+        }
+    }
+# endif
+
+    // pass 2: building up internel geo list ===========================================================
     for (std::vector<Part::Geometry *>::const_iterator it = geo.begin();it!=geo.end();++it){
         if ((*it)->getTypeId()== GeomLineSegment::getClassTypeId()) { // add a line
             const GeomLineSegment *lineSeg = dynamic_cast<const GeomLineSegment*>((*it));
@@ -123,18 +136,20 @@ void Sketch::setUpSketch(const std::vector<Part::Geometry *> &geo,const std::vec
         }
     }
 
-    // pass 2 building up constraints =================================================================
+    // pass 3 building up constraints =================================================================
     // constraints on nothing makes no sense 
     assert((int)Geoms.size()>0 || ConstraintList.size() == 0 );
 
-    int rtn = -1;
+    rtn = -1;
     for(std::vector<Constraint *>::const_iterator it = ConstraintList.begin();it!=ConstraintList.end();++it){
         // constraints on nothing makes no sense 
         assert((int)Geoms.size()>0  );
         switch ((*it)->Type){
            case Horizontal: addHorizontalConstraint((*it)->First,(*it)->Name.c_str()); break;
            case Vertical  : addVerticalConstraint((*it)->First,(*it)->Name.c_str());   break;
-           case Coincident: addPointCoincidentConstraint((*it)->First,(*it)->FirstPos,(*it)->Second,(*it)->SecondPos,(*it)->Name.c_str()); break;
+#          if !(POINT_CONSTRAIN_OPTIMIZE)
+              case Coincident: addPointCoincidentConstraint((*it)->First,(*it)->FirstPos,(*it)->Second,(*it)->SecondPos,(*it)->Name.c_str()); break;
+#          endif 
            case Parallel  : addParallelConstraint((*it)->First,(*it)->Second,(*it)->Name.c_str());  break;
            case Distance  :
                if((*it)->Second == -1)
@@ -147,8 +162,8 @@ void Sketch::setUpSketch(const std::vector<Part::Geometry *> &geo,const std::vec
         }
     }
 
-
-
+    // clear the optimize data structure
+    PoPMap.clear();
 }
 
 // Geometry adding ==========================================================
@@ -210,6 +225,76 @@ int Sketch::addLine(const Part::GeomLineSegment &line)
 
 int Sketch::addLineSegment(const Part::GeomLineSegment &lineSegment)
 {
+# if (POINT_CONSTRAIN_OPTIMIZE)
+
+    // create our own copy
+    GeomLineSegment *lineSeg = new GeomLineSegment(lineSegment);
+    // create the definition struct for that geom
+    GeoDef def;
+    def.geo  = lineSeg;
+    def.type = Line;
+    def.construction = false;
+
+    // get the points from the line
+    Base::Vector3d start = lineSeg->getStartPoint();
+    Base::Vector3d end   = lineSeg->getEndPoint();
+
+    // the points for later constraints
+    point p1,p2;
+    def.parameterStartIndex = Parameters.size();
+
+    // check if for the start point is already a constraint point present
+    if(PoPMap[Geoms.size()].StartPointIndex != -1){
+        // if yes, use the coincident point
+        p1.x = Parameters[PoPMap[Geoms.size()].StartPointIndex+0];
+        p1.y = Parameters[PoPMap[Geoms.size()].StartPointIndex+1];
+        // set the values
+        *(Parameters[PoPMap[Geoms.size()].StartPointIndex+0]) = start.x;
+        *(Parameters[PoPMap[Geoms.size()].StartPointIndex+1]) = start.y;
+    }else{
+        // otherwise set the parameter for the solver
+        Parameters.push_back(new double(start.x));
+        Parameters.push_back(new double(start.y));
+        // set the points for later constraints
+        p1.x = Parameters[Parameters.size()-2];
+        p1.y = Parameters[Parameters.size()-1];
+    }
+
+
+    // check if for the end point is already a constraint point present
+    if(PoPMap[Geoms.size()].EndPointIndex != -1){
+        // if yes, use the coincident point
+        p2.x = Parameters[PoPMap[Geoms.size()].EndPointIndex+0];
+        p2.y = Parameters[PoPMap[Geoms.size()].EndPointIndex+1];
+        // set the values
+        *(Parameters[PoPMap[Geoms.size()].EndPointIndex+0]) = end.x;
+        *(Parameters[PoPMap[Geoms.size()].EndPointIndex+1]) = end.y;
+    }else{
+        Parameters.push_back(new double(end.x));
+        Parameters.push_back(new double(end.y));
+        // set the points for later constraints
+        p2.x = Parameters[Parameters.size()-2];
+        p2.y = Parameters[Parameters.size()-1];
+    }
+
+    // add the points
+    def.pointStartIndex = Points.size();
+    Points.push_back(p1);
+    Points.push_back(p2);
+
+    // set the line for later constraints
+    line l;
+    l.p1 = p1;
+    l.p2 = p2;
+    def.lineStartIndex = Lines.size();
+    Lines.push_back(l);
+
+    // store complete set
+    Geoms.push_back(def);
+    
+    // return the position of the newly added geometry
+    return Geoms.size()-1;
+# else
     // create our own copy
     GeomLineSegment *lineSeg = new GeomLineSegment(lineSegment);
     // create the definition struct for that geom
@@ -250,6 +335,7 @@ int Sketch::addLineSegment(const Part::GeomLineSegment &lineSegment)
     
     // return the position of the newly added geometry
     return Geoms.size()-1;
+# endif
 }
 
 int Sketch::addArc(const Part::GeomTrimmedCurve &circleSegment)
@@ -451,7 +537,31 @@ int Sketch::addVerticalConstraint(int geoIndex, const char* name)
 }
 
 int Sketch::addPointCoincidentConstraint(int geoIndex1,PointPos Pos1,int geoIndex2,PointPos Pos2, const char* name)
-{   
+{ 
+# if (POINT_CONSTRAIN_OPTIMIZE)
+    // this optimization alter point on point constraints for e.g Line segments
+    // to one point. That means the Lines segments get altered to a polyline. 
+
+    // create one points for the constraint
+    int parameterStartIndex = Parameters.size();
+    Parameters.push_back(new double(0));
+    Parameters.push_back(new double(0));
+
+    // save the index belonging to the geo id for later usage in build up geo
+    switch(Pos1) {
+        case start: PoPMap[geoIndex1].StartPointIndex = parameterStartIndex; break;
+        case end  : PoPMap[geoIndex1].EndPointIndex = parameterStartIndex; break;
+        case mid  : PoPMap[geoIndex1].MidPointIndex = parameterStartIndex; break;
+    }
+    switch(Pos2) {
+        case start: PoPMap[geoIndex2].StartPointIndex = parameterStartIndex; break;
+        case end  : PoPMap[geoIndex2].EndPointIndex = parameterStartIndex; break;
+        case mid  : PoPMap[geoIndex2].MidPointIndex = parameterStartIndex; break;
+    }
+
+    return Const.size()-1;
+
+# else
     // index out of bounds?
     assert(geoIndex1 < (int)Geoms.size());
     assert(geoIndex2 < (int)Geoms.size());
@@ -480,6 +590,7 @@ int Sketch::addPointCoincidentConstraint(int geoIndex1,PointPos Pos1,int geoInde
     Const.push_back(constrain);
 
     return Const.size()-1;
+# endif
 }
 
 int Sketch::addParallelConstraint(int geoIndex1,int geoIndex2, const char* name)
@@ -616,12 +727,12 @@ int Sketch::solve(double * fixed[2]) {
                     GeomLineSegment *lineSeg = dynamic_cast<GeomLineSegment*>(it->geo);
                     lineSeg->setPoints(
                              Vector3d(
-                                 *Parameters[it->parameterStartIndex+0],
-                                 *Parameters[it->parameterStartIndex+1],
+                                 *Points[it->pointStartIndex+0].x,
+                                 *Points[it->pointStartIndex+0].y,
                                  0.0),
                              Vector3d(
-                                 *Parameters[it->parameterStartIndex+2],
-                                 *Parameters[it->parameterStartIndex+3],
+                                 *Points[it->pointStartIndex+1].x,
+                                 *Points[it->pointStartIndex+1].y,
                                  0.0)
                          );
                 }
