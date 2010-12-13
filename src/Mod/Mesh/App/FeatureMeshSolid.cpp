@@ -56,7 +56,7 @@ short Sphere::mustExecute() const
 {
     if (Radius.isTouched() || Sampling.isTouched())
         return 1;
-    return 0;
+    return Feature::mustExecute();
 }
 
 App::DocumentObjectExecReturn *Sphere::execute(void)
@@ -92,7 +92,7 @@ short Ellipsoid::mustExecute() const
         Radius2.isTouched() || 
         Sampling.isTouched())
         return 1;
-    return 0;
+    return Feature::mustExecute();
 }
 
 App::DocumentObjectExecReturn *Ellipsoid::execute(void)
@@ -133,7 +133,7 @@ short Cylinder::mustExecute() const
         Closed.isTouched() ||
         Sampling.isTouched())
         return 1;
-    return 0;
+    return Feature::mustExecute();
 }
 
 App::DocumentObjectExecReturn *Cylinder::execute(void)
@@ -178,7 +178,7 @@ short Cone::mustExecute() const
         Closed.isTouched()  ||
         Sampling.isTouched())
         return 1;
-    return 0;
+    return Feature::mustExecute();
 }
 
 App::DocumentObjectExecReturn *Cone::execute(void)
@@ -215,7 +215,7 @@ short Torus::mustExecute() const
         Radius2.isTouched() || 
         Sampling.isTouched())
         return 1;
-    return 0;
+    return Feature::mustExecute();
 }
 
 App::DocumentObjectExecReturn *Torus::execute(void)
@@ -251,7 +251,7 @@ short Cube::mustExecute() const
         Width.isTouched() || 
         Height.isTouched())
         return 1;
-    return 0;
+    return Feature::mustExecute();
 }
 
 App::DocumentObjectExecReturn *Cube::execute(void)
