@@ -159,6 +159,17 @@ void ViewProviderGeometryObject::updateData(const App::Property* prop)
         Base::BoundBox3d box = static_cast<const App::PropertyComplexGeoData*>(prop)->getBoundingBox();
         pcBoundingBox->minBounds.setValue(box.MinX, box.MinY, box.MinZ);
         pcBoundingBox->maxBounds.setValue(box.MaxX, box.MaxY, box.MaxZ);
+        if (pcBoundSwitch) {
+            SoGroup* grp = static_cast<SoGroup*>(pcBoundSwitch->getChild(0));
+            SoTransform* trf = static_cast<SoTransform*>(grp->getChild(2));
+            SbMatrix m;
+            m.setTransform(pcTransform->translation.getValue(),
+                           pcTransform->rotation.getValue(),
+                           pcTransform->scaleFactor.getValue(),
+                           pcTransform->scaleOrientation.getValue(),
+                           pcTransform->center.getValue());
+            trf->setMatrix(m.inverse());
+        }
     }
     else if (prop->isDerivedFrom(App::PropertyPlacement::getClassTypeId())) {
         // Note: If R is the rotation, c the rotation center and t the translation
@@ -452,6 +463,7 @@ void ViewProviderGeometryObject::showBoundingBox(bool show)
         color->rgb.setValue(1.0f, 1.0f, 1.0f);
         pBoundingSep->addChild(color);
 
+        pBoundingSep->addChild(new SoTransform());
         pBoundingSep->addChild(pcBoundingBox);
         pcBoundingBox->coordsOn.setValue(false);
         pcBoundingBox->dimensionsOn.setValue(true);
