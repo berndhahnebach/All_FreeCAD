@@ -123,15 +123,8 @@ class DraftLineEdit(QtGui.QLineEdit):
 			self.emit(QtCore.SIGNAL("down()"))
 		elif (event.key() == QtCore.Qt.Key_Z) and QtCore.Qt.ControlModifier:
 			self.emit(QtCore.SIGNAL("undo()"))
-		elif (event.key() in [QtCore.Qt.Key_0,QtCore.Qt.Key_1,QtCore.Qt.Key_2,
-                                      QtCore.Qt.Key_3,QtCore.Qt.Key_4,QtCore.Qt.Key_5,
-                                      QtCore.Qt.Key_6,QtCore.Qt.Key_7,QtCore.Qt.Key_8,
-                                      QtCore.Qt.Key_9,QtCore.Qt.Key_Comma,
-                                      QtCore.Qt.Key_Period,QtCore.Qt.Key_Minus,
-                                      QtCore.Qt.Key_Enter,QtCore.Qt.Key_Return]):
-			QtGui.QLineEdit.keyPressEvent(self, event)
                 else:
-                        event.ignore()
+			QtGui.QLineEdit.keyPressEvent(self, event)
 
 class toolBar:
 	"main draft Toolbar"
@@ -280,6 +273,8 @@ class toolBar:
 
                                 # page
 
+                                '''
+                                # OBSOLETE ##################################
                                 self.labelPage = _label("labelPage")
                                 self.pageBox = _combo("pageBox")
                                 self.pageBox.addItem("Add New")
@@ -303,6 +298,7 @@ class toolBar:
                                 self.pageWpButton.setCheckable(True)
 				self.pageWpButton.setChecked(False)
                                 self.pageButton = _pushButton("pageButton",icon=(640,128))
+                                '''
 
                                 # spacer
 
@@ -389,9 +385,6 @@ class toolBar:
                                 QtCore.QObject.connect(self.fontsizeButton,QtCore.SIGNAL("valueChanged(double)"),self.setfontsize)
 				QtCore.QObject.connect(self.applyButton,QtCore.SIGNAL("pressed()"),self.apply)
 				QtCore.QObject.connect(self.constrButton,QtCore.SIGNAL("toggled(bool)"),self.toggleConstrMode)
-                                QtCore.QObject.connect(self.pageBox,QtCore.SIGNAL("currentIndexChanged(int)"),self.changePage)
-                                QtCore.QObject.connect(self.pageButton,QtCore.SIGNAL("pressed()"),self.drawPage)
-				QtCore.QMetaObject.connectSlotsByName(draftToolbar)
 
 #---------------------------------------------------------------------------
 # language tools
@@ -442,21 +435,6 @@ class toolBar:
                                 self.fontsizeButton.setToolTip(translate("draft", "Font Size"))
 				self.applyButton.setToolTip(translate("draft", "Apply to selected objects"))
 				self.constrButton.setToolTip(translate("draft", "Toggles Construction Mode"))
-                                self.wplabel.setToolTip(translate("draft", "Current working plane"))
-                                self.labelPage.setText(translate("draft", "Page"))
-                                self.labelScale.setText(translate("draft", "Scale"))
-                                self.labelMarginX.setText(translate("draft", "offset X"))
-                                self.marginXValue.setToolTip(translate("draft", "The offset between the (0,0) point and the left page border"))
-                                self.labelMarginY.setText(translate("draft", "Y"))
-                                self.marginYValue.setToolTip(translate("draft", "The offset between the (0,0) point and the bottom page border"))
-                                self.labelLWMod.setText(translate("draft", "LW Mod"))
-                                self.pageBox.setToolTip(translate("draft", "Page to draw to. If selecting Add New, you can edit the name"))
-                                self.scaleBox.setToolTip(translate("draft", "Scale factor to apply. Drawing page is always in millimeters.\nSo if you draw in meters, a scale of 5 means 1:200, 10 means 1:100, 20 means 1:50 etc"))
-                                self.LWModValue.setToolTip(translate("draft", "Linewidth scale modifier. Higher values mean thicker lines."))
-                                self.labelTMod.setText(translate("draft", "Text Mod"))
-                                self.TModValue.setToolTip(translate("draft", "Text scale modifier. Higher values mean bigger texts."))
-                                self.pageWpButton.setToolTip(translate("draft", "Use the current Working plane as projection plane"))
-                                self.pageButton.setToolTip(translate("draft", "Apply the settings (you can also press the Put on Sheet button again)"))
 
 #---------------------------------------------------------------------------
 # Interface modes
@@ -530,20 +508,6 @@ class toolBar:
 				self.radiusValue.hide()
 				self.isCopy.hide()
 				self.textValue.hide()
-                                self.pageBox.hide()
-                                self.labelPage.hide()
-                                self.scaleBox.hide()
-                                self.labelScale.hide()
-                                self.marginXValue.hide()
-                                self.labelMarginX.hide()
-                                self.marginYValue.hide()
-                                self.labelMarginY.hide()
-                                self.pageButton.hide()
-                                self.labelLWMod.hide()
-                                self.LWModValue.hide()
-                                self.labelTMod.hide()
-                                self.pageWpButton.hide()
-                                self.TModValue.hide()
                                 self.continueCmd.hide()
 
 			def radiusUi(self):
@@ -599,22 +563,6 @@ class toolBar:
 			def selectUi(self):
 				self.labelx.setText(translate("draft", "Pick Object"))
 				self.labelx.show()
-
-                        def pageUi(self):
-				self.labelPage.show()
-                                self.pageBox.show()
-                                self.labelScale.show()
-                                self.scaleBox.show()
-                                self.marginXValue.show()
-                                self.labelMarginX.show()
-                                self.marginYValue.show()
-                                self.labelMarginY.show()
-                                self.pageButton.show()
-                                self.labelLWMod.show()
-                                self.LWModValue.show()
-                                self.labelTMod.show()
-                                self.TModValue.show()
-                                self.pageWpButton.show()
 
 			def relocate(self):
 				"relocates the right-aligned buttons depending on the toolbar size"
@@ -765,6 +713,22 @@ class toolBar:
                                 spec = False
 				if txt.endsWith(" ") or txt.endsWith("r"):
 					self.isRelative.setChecked(not self.isRelative.isChecked())
+                                        spec = True
+                                if txt.endsWith("i"):
+                                        if self.hasFill.isVisible():
+                                                self.hasFill.setChecked(not self.hasFill.isChecked())
+                                        spec = True
+                                if txt.endsWith("f"):
+                                        if self.finishButton.isVisible():
+                                                self.finish()
+                                        spec = True
+                                if txt.endsWith("c"):
+                                        if self.closeButton.isVisible():
+                                                self.closeLine()
+                                        elif self.isCopy.isVisible():
+                                                self.isCopy.setChecked(not self.isCopy.isChecked())
+                                        elif self.continueCmd.isVisible():
+                                                self.continueCmd.setChecked(not self.continueCmd.isChecked())
                                         spec = True
                                 if spec:
                                         for i in [self.xValue,self.yValue,self.zValue]:

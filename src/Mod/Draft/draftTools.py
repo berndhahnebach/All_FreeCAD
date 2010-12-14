@@ -2006,8 +2006,14 @@ class ApplyStyle(Modifier):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_apply',
-			'MenuText': str(translate("draft", "Apply Style").toLatin1()),
+			'MenuText': str(translate("draft", "Apply Current Style").toLatin1()),
 			'ToolTip': str(translate("draft", "Applies current line width and color to selected objects").toLatin1())}
+
+        def IsActive(self):
+                if Draft.getSelection():
+                        return True
+                else:
+                        return False
 
 	def Activated(self):
 		Modifier.Activated(self)
@@ -2338,339 +2344,6 @@ class Offset(Modifier):
 			self.constraintrack.finalize()
 			self.ghost.finalize()
 
-
-
-class oldOffset(Modifier):
-	"The Draft_Offset FreeCAD command definition"
-
-	def GetResources(self):
-		return {'Pixmap'  : 'Draft_offset',
-			'MenuText': str(translate("draft", "Offset").toLatin1()),
-			'ToolTip': str(translate("draft", "Offsets the active object. CTRL to snap, SHIFT to constrain, ALT to copy").toLatin1())}
-
-	def Activated(self):
-		Modifier.Activated(self,"Offset")
-		if self.ui:
-			if not Draft.getSelection():
-				self.ghost = None
-				self.snap = None
-				self.linetrack = None
-				self.arctrack = None
-				self.constraintrack = None
-				self.ui.selectUi()
-				msg(translate("draft", "Select an object to offset\n"))
-				self.call = self.view.addEventCallback("SoEvent",selectObject)
-			elif len(Draft.getSelection()) > 1:
-				msg(translate("draft", "Offset only works on one object at a time\n"))
-			else:
-				self.proceed()
-
-	def proceed(self):
-		if self.call: self.view.removeEventCallback("SoEvent",self.call)
-		self.sel = Draft.getSelection()[0]
-		self.step = 0
-		self.constrainSeg = None
-		self.ui.radiusUi()
-		self.ui.isCopy.show()
-		self.ui.labelRadius.setText("Distance")
-		self.ui.cmdlabel.setText("Offset")
-		self.ui.radiusValue.setFocus()
-		self.ui.radiusValue.selectAll()
-		self.snap = snapTracker()
-		self.linetrack = lineTracker()
-		self.constraintrack = lineTracker(dotted=True)
-		self.faces = False
-		self.edges = []
-		if len(self.sel.Shape.Faces)>1:
-			msg(translate("draft", "The offset tool cannot currently work on multi-face objects\n"))
-			self.finish()
-		c = fcgeo.complexity(self.sel)
-		self.closed = False
-		if (c >= 7): 
-			self.edges = fcgeo.getBoundary(self.sel.Shape)
-			self.faces = True
-			self.closed = True
-			self.edges = fcgeo.sortEdges(self.edges)
-		elif (c >=4): 
-			self.edges = self.sel.Shape.Wires[0].Edges
-			self.edges = fcgeo.sortEdges(self.edges)
-			self.closed = self.sel.Shape.Wires[0].isClosed()
-		else: self.edges = self.sel.Shape.Edges
-		self.ghost = []
-		self.buildBissectArray()
-		self.redraw = self.redrawFast
-		for e in self.edges:
-			if isinstance(e.Curve,Part.Line): self.ghost.append(lineTracker())
-			else:
-				self.ghost.append(arcTracker())
-				self.redraw = self.redrawSlow
-		self.call = self.view.addEventCallback("SoEvent",self.action)
-		msg(translate("draft", "Pick distance:\n"))
-		self.ui.cross(True)
-
-	def finish(self,closed=False):
-		Modifier.finish(self)
-		if self.ui:
-			self.snap.finalize()
-			self.linetrack.finalize()
-			self.constraintrack.finalize()
-			for g in self.ghost: g.finalize()
-
-        def getRect(self,p,obj):
-                "returns length,heigh,placement"
-                pl = obj.Placement
-                pl.Base = p[0]
-                diag = p[2].sub(p[0])
-                bb = p[1].sub(p[0])
-                bh = p[3].sub(p[0])
-                nb = fcvec.project(diag,bb)
-                nh = fcvec.project(diag,bh)
-                if obj.Length < 0: l = -nb.Length
-                else: l = nb.Length
-                if obj.Height < 0: h = -nh.Length
-                else: h = nh.Length
-                return l,h,pl
-
-	def action(self,arg):
-		"scene event handler"
-		if (arg["Type"] == "SoLocation2Event"):
-                        self.ui.cross(True)
-			cursor = arg["Position"]
-			point = self.view.getPoint(cursor[0],cursor[1])
-			point = snapPoint(self,point,cursor,arg["CtrlDown"])
-			if not self.ui.zValue.isEnabled(): point.z = float(self.ui.zValue.text())
-			self.node = [point]
-			if (arg["ShiftDown"]) and self.constrainSeg:
-				dist = fcgeo.findPerpendicular(point,self.edges,self.constrainSeg[1])
-				self.constraintrack.p1(self.edges[self.constrainSeg[1]].Vertexes[0].Point)
-				self.constraintrack.p2(Vector.add(point,dist[0]))
-				self.constraintrack.on()
-			else:
-				dist = fcgeo.findPerpendicular(point,self.edges)
-				self.constraintrack.off()
-			if dist:
-				self.constrainSeg = dist
-				self.linetrack.on()
-				for g in self.ghost: g.on()
-				self.linetrack.p1(point)
-				dvec = Vector.add(point,dist[0])
-				self.linetrack.p2(dvec)
-				self.redraw(dist)
-				self.ui.radiusValue.setText("%.2f" % dist[0].Length)
-			else:
-				self.constrainSeg = None
-				self.linetrack.off()
-				for g in self.ghost: g.off()
-				self.ui.radiusValue.setText("off")
-			self.ui.radiusValue.setFocus()
-			self.ui.radiusValue.selectAll()
-			if self.extendedCopy:
-				if not arg["AltDown"]: self.finish()
-
-		if (arg["Type"] == "SoMouseButtonEvent"):
-			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
-				cursor = arg["Position"]
-				point = self.view.getPoint(cursor[0],cursor[1])
-				point = snapPoint(self,point,cursor,arg["CtrlDown"])
-				if not self.ui.zValue.isEnabled(): point.z = float(self.ui.zValue.text())
-				self.node = [point]
-				if (arg["ShiftDown"]) and self.constrainSeg:
-					dist = fcgeo.findPerpendicular(point,self.edges,self.constrainSeg[1])
-				else:
-					dist = fcgeo.findPerpendicular(point,self.edges)
-				if dist:
-					newedges = self.redraw(dist,True)
-                                        p = []
-                                        for v in Part.Wire(newedges).Vertexes: p.append(v.Point)
-                                        self.doc.openTransaction("Offset")
-                                        if arg["AltDown"] or self.ui.isCopy.isChecked():
-                                                if "Points" in self.sel.PropertiesList:
-                                                        obj = Draft.makeWire(p)
-                                                elif "Length" in self.sel.PropertiesList:
-                                                        pl = FreeCAD.Placement()
-                                                        pl.Base = p[0]
-                                                        length,height,plac = self.getRect(p,self.sel)
-                                                        obj = Draft.makeRectangle(length,height,plac)
-                                                Draft.formatObject(obj,self.sel)
-                                        else:
-                                                obj = self.sel
-                                                if "Points" in obj.PropertiesList:
-                                                        obj.Points = p
-                                                elif "Length" in obj.PropertiesList:
-                                                        length,height,plac = self.getRect(p,obj)
-                                                        obj.Placement = plac
-                                                        obj.Length = length
-                                                        obj.Height = height
-					if self.faces:
-                                                if "Closed" in obj.PropertiesList:
-                                                        obj.Closed = True
-                                                        obj.ViewObject.DisplayMode = "Flat Lines"
-					else:
-                                                if "Closed" in obj.PropertiesList:
-                                                        obj.Closed = False
-                                                        obj.ViewObject.DisplayMode = "Wireframe"
-					self.doc.commitTransaction()
-				if arg["AltDown"]:
-					self.extendedCopy = True
-				else:
-					self.finish()
-
-
-	def buildBissectArray(self):
-		'''builds an array of displacement vectors for each vertex,
-		corresponding to an offset of 1 unit'''
-		self.bissectors=[]
-		basevec = fcgeo.vec(self.edges[0])
-		baseoffset = basevec.cross(plane.axis); baseoffset.normalize()
-		if self.closed: prev = self.edges[-1]
-		else: prev = None
-
-		# finding the first vector
-		if prev:
-			prevvec = fcgeo.vec(prev)
-			angle = -fcvec.angle(prevvec, basevec, plane.axis)/2
-			offset = fcvec.rotate(baseoffset, angle, plane.axis)
-			sfact = math.sqrt(math.tan(angle)**2+1)
-			self.bissectors.append(fcvec.scale(offset,sfact))
-		else:
-			self.bissectors.append(baseoffset)
-
-		for e in range(len(self.edges)):
-			if (e < len(self.edges)-1):
-				next = self.edges[e+1]
-			else:
-				if self.closed and (len(self.edges)>1): next = self.edges[0]
-				else: next = None
-			edgevec = fcgeo.vec(self.edges[e])
-			angle = -fcvec.angle(edgevec, basevec, plane.axis)
-			offset = fcvec.rotate(baseoffset, angle, plane.axis)
-			if next:
-				nextvec = fcgeo.vec(next)
-				angle2 = -fcvec.angle(nextvec, edgevec, plane.axis)/2
-				offset2 = fcvec.rotate(offset, angle2, plane.axis)
-				sfact = math.sqrt(math.tan(angle2)**2+1)
-				self.bissectors.append(fcvec.scale(offset2,sfact))
-			else:
-				self.bissectors.append(offset)
-							
-	def redrawFast(self,dist,real=False):
-		"hopefully faster method"
-		distance = dist[0].Length
-		angle = fcvec.angle(fcvec.neg(dist[0]),self.bissectors[dist[1]])
-		if abs(angle) > math.pi/2: distance = -distance
-		if real: newedges = []
-		for e in range(len(self.edges)):
-			edge = self.edges[e]
-			first = edge.Vertexes[0].Point.add(fcvec.scale(self.bissectors[e],distance))
-			last = edge.Vertexes[-1].Point.add(fcvec.scale(self.bissectors[e+1],distance))
-			self.ghost[e].p1(first)
-			self.ghost[e].p2(last)
-			if real: newedges.append(Part.Line(first,last).toShape())
-		if real: return newedges
-
-	def redrawSlow(self,dist,real=False):
-		"offsets the ghost to the given distance. if real=True, the shape itself will be redrawn too"
-		offsetVec = fcvec.neg(dist[0])
-		if real: newedges=[]
-
-		# finding the base vector, which is the segment at base of the offset vector
-		base = self.edges[dist[1]]
-		if (isinstance(base.Curve,Part.Line)):
-			baseVec = fcgeo.vec(base)
-		else:
-			baseVec = offsetVec.cross(Vector(0,0,1))
-			if self.node[0].sub(base.Curve.Center).Length > base.Curve.Radius:
-				baseVec = fcvec.neg(baseVec)
-
-		# offsetting the first vertex
-		edge = self.edges[0]
-		if self.closed and (len(self.edges)>1): prev = self.edges[-1]
-		else: prev = None
-		if isinstance(edge.Curve,Part.Line): perp = fcgeo.vec(edge)
-		else: perp = edge.Curve.Center.sub(edge.Vertexes[0].Point).cross(Vector(0,0,1))
-		angle = fcvec.angle(baseVec,perp)
-		offset1 = fcvec.rotate(offsetVec, -angle, axis=plane.axis)
-		offedge1 = fcgeo.offset(edge,offset1)
-		if prev:
-			if (isinstance(prev.Curve,Part.Line)): perp = fcgeo.vec(prev)
-			else: perp = prev.Curve.Center.sub(prev.Vertexes[0].Point).cross(Vector(0,0,1))
-			angle = -fcvec.angle(baseVec,perp)
-			offset2 = fcvec.rotate(offsetVec, angle, axis=plane.axis)
-			offedge2 = fcgeo.offset(prev,offset2)
-			inter = fcgeo.findIntersection(offedge1,offedge2,True,True)
-			first = inter[fcgeo.findClosest(edge.Vertexes[0].Point,inter)]
-		else: first = Vector.add(edge.Vertexes[0].Point,offset1)
-					
-		# iterating throught edges, offsetting the last vertex
-		for i in range(len(self.edges)):
-			edge = self.edges[i]
-			if (i < len(self.edges)-1):
-				next = self.edges[i+1]
-			else:
-				if self.closed and (len(self.edges)>1): next = self.edges[0]
-				else: next = None
-			if isinstance(edge.Curve,Part.Line): perp = fcgeo.vec(edge)
-			else: perp = edge.Curve.Center.sub(edge.Vertexes[0].Point).cross(Vector(0,0,1))
-			angle = fcvec.angle(baseVec,perp)
-			offset1 = fcvec.rotate(offsetVec, -angle, axis=plane.axis)
-			offedge1 = fcgeo.offset(edge,offset1)				     
-			if next:
-				if (isinstance(next.Curve,Part.Line)): perp = fcgeo.vec(next)
-				else: perp = next.Curve.Center.sub(next.Vertexes[0].Point).cross(Vector(0,0,1))
-				angle = fcvec.angle(baseVec,perp)
-				offset2 = fcvec.rotate(offsetVec, -angle, axis=plane.axis)
-				offedge2 = fcgeo.offset(next,offset2)
-				inter = fcgeo.findIntersection(offedge1,offedge2,True,True)
-				if inter: last = inter[fcgeo.findClosest(edge.Vertexes[-1].Point,inter)]
-				else: print "debug: offset: intersection missing!"
-			else: last = Vector.add(edge.Vertexes[-1].Point,offset1)
-			
-			if isinstance(edge.Curve,Part.Line):
-				self.ghost[i].p1(first)
-				self.ghost[i].p2(last)
-				if real: newedges.append(Part.Line(first,last).toShape())
-			else:
-				center = edge.Curve.Center
-				rad = offedge1.Curve.Radius
-				if len(edge.Vertexes) > 1:
-					chord = last.sub(first)
-					perp = chord.cross(Vector(0,0,1))
-					scaledperp = fcvec.scaleTo(perp,rad)
-					midpoint = Vector.add(center,scaledperp)
-					ang1=fcvec.angle(first.sub(center))
-					ang2=fcvec.angle(last.sub(center))
-					if ang1 > ang2: ang1,ang2 = ang2,ang1
-					self.ghost[i].update(ang1-ang2)
-					self.ghost[i].trans.rotation.setValue(coin.SbVec3f(0,0,1),-ang1)
-				self.ghost[i].trans.translation.setValue([center.x,center.y,center.z])
-				self.ghost[i].trans.scaleFactor.setValue([rad,rad,rad])
-				if real: 
-					if (len(edge.Vertexes) > 1):
-						newedges.append(Part.Arc(first,midpoint,last).toShape())
-					else:
-						newedges.append(Part.Circle(center,Vector(0,0,1),rad).toShape())
-			first = last
-		if real: return newedges
-				
-	def numericRadius(self,scale):
-		"this function gets called by the toolbar when valid distance have been entered there"
-		if self.constrainSeg:
-			scaledOffset = fcvec.scaleTo(self.constrainSeg[0],scale)
-			self.doc.openTransaction("Offset")
-			if self.ui.isCopy.isChecked():
-				targetOb = self.doc.addObject("Part::Feature",Draft.getRealName(self.sel.Name))
-				Draft.formatObject(targetOb,self.sel)
-			else:
-				targetOb = self.sel
-			newedges = self.redraw([scaledOffset,self.constrainSeg[1]],True)
-			if self.faces:
-				targetOb.Shape = Part.Face(Part.Wire(newedges))
-			else:
-				targetOb.Shape = Part.Wire(newedges)
-			self.doc.commitTransaction()
-		else: msg(translate("draft", "Couldn't determine where to apply distance!\n"))
-		self.finish()
-			
 
 class Upgrade(Modifier):
 	'''The Draft_Upgrade FreeCAD command definition.
@@ -3356,6 +3029,12 @@ class Drawing(Modifier):
 			'MenuText': str(translate("draft", "Drawing").toLatin1()),
 			'ToolTip': str(translate("draft", "Puts the selected objects on a Drawing sheet.").toLatin1())}
 
+        def IsActive(self):
+                if Draft.getSelection():
+                        return True
+                else:
+                        return False
+
 	def Activated(self):
 		Modifier.Activated(self,"Drawing")
                 sel = Draft.getSelection()
@@ -3394,131 +3073,6 @@ class Drawing(Modifier):
                 self.doc.recompute()
                 return page
         
-                
-                
-class PutOnSheet(Modifier):
-        "The Draft_PutOnSheet FreeCAD command definition"
-
-	def GetResources(self):
-		return {'Pixmap'  : 'Draft_putOnSheet',
-			'MenuText': str(translate("draft", "Put on Sheet").toLatin1()),
-			'ToolTip': str(translate("draft", "Puts the selected objects on a Drawing sheet.").toLatin1())}
-
-	def Activated(self):
-		Modifier.Activated(self,"Put on Sheet")
-                import Drawing
-		if self.ui:
-                        if self.ui.pageButton.isVisible():
-                                self.draw()
-                        else:
-                                oldindex = self.ui.pageBox.currentIndex()
-                                if oldindex == 0:
-                                        oldindex = None
-                                else:
-                                        oldindex = str(self.ui.pageBox.itemText(oldindex))
-                                self.ui.pageBox.clear()
-                                self.ui.pageBox.addItem("Add New")
-                                existingpages = self.doc.findObjects('Drawing::FeaturePage')
-                                for p in existingpages:
-                                        self.ui.pageBox.addItem(p.Name)
-                                if oldindex:
-                                        for i in range(len(existingpages)):
-                                                if existingpages[i].Name == oldindex:
-                                                        self.ui.pageBox.setCurrentIndex(i+1)
-                                self.ui.pageUi()
-                else: self.finish()
-                                
-        def draw(self):
-                modifier = self.ui.LWModValue.value()
-                textmodifier = self.ui.TModValue.value()
-                projPlane = None
-                if self.ui.pageWpButton.isChecked() and (not plane.weak):
-                        projPlane = (plane.u,plane.v)
-                template = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetString("template")
-                if not template: template = FreeCAD.getResourceDir()+'Mod/Drawing/Templates/A3_Landscape.svg'
-                offsetx = self.ui.marginXValue.value()
-                offsety = self.ui.marginYValue.value()
-                scale = float(self.ui.scaleBox.currentText())
-                if self.ui.pageBox.currentIndex() == 0:
-                        pagename = str(self.ui.pageBox.itemText(0))
-                        if pagename == 'Add New': pagename = 'Page'
-                        page = self.doc.addObject('Drawing::FeaturePage',pagename)
-                        page.Template = template
-                        self.doc.recompute()
-                else:
-                        pagename = str(self.ui.pageBox.itemText(self.ui.pageBox.currentIndex()))
-                        page = self.doc.findObjects('Drawing::FeaturePage',pagename)[0]
-                page.ViewObject.HintScale = scale
-                page.ViewObject.HintOffsetX = offsetx
-                page.ViewObject.HintOffsetY = offsety
-                pb = open(str(page.PageResult))
-                fb = pb.read()
-                pageheight = re.findall("height=\"(.*?)\"",fb)
-                if pageheight: pageheight = float(pageheight[0])
-                pb.close()
-                del pb
-                sel = Draft.getSelection()
-                sel.reverse()
-                for obj in sel:
-                        if obj.ViewObject.isVisible():
-                                self.insertPattern(obj,page)
-                                name = 'View'+obj.Name
-                                svg = Draft.getSVG(obj,modifier,textmodifier,projPlane)
-                                if svg:
-                                        oldobj = page.getObject(name)
-                                        if oldobj: self.doc.removeObject(oldobj.Name)
-                                        view = self.doc.addObject('Drawing::FeatureView',name)
-                                        view.ViewResult = self.transformSVG(name,svg,offsetx,offsety,scale,pageheight)
-                                        view.X = offsetx
-                                        view.Y = offsety
-                                        view.Scale = scale
-                                        page.addObject(view)
-                self.doc.recompute()
-                self.finish()
-
-        def insertPattern(self,obj,page):
-                "adds a given pattern to the page"
-                if obj.isDerivedFrom("Part::Feature"):
-                        if obj.Shape.Faces and (obj.ViewObject.DisplayMode != "Wireframe"):
-                                if 'FillStyle' in obj.ViewObject.PropertiesList:
-                                        try:
-                                                if obj.ViewObject.FillStyle != 'shape color':
-                                                        pattern = obj.ViewObject.FillStyle[:-6]
-                                                        vobj = page.getObject('Pattern'+pattern)
-                                                        if not vobj:
-                                                                view = self.doc.addObject('Drawing::FeatureView','Pattern'+pattern)
-                                                                svg = FreeCAD.svgpatterns[pattern]
-                                                                svg = svg.replace('DefaultColor',Draft.getrgb(obj.ViewObject.LineColor))
-                                                                view.ViewResult = svg
-                                                                view.X = 0
-                                                                view.Y = 0
-                                                                view.Scale = 1
-                                                                page.addObject(view)
-                                        except:
-                                                print "Draft:sendToDrawing: Unable to read FillStyle"
-
-        def formatSVG(self,svg,obj):
-                "applies freecad object's color and linewidth to a svg fragment"
-                svg = svg.replace('stroke-width="0.35"','stroke-width="'+str(obj.ViewObject.LineWidth/100)+'px"')
-                lc = obj.ViewObject.LineColor
-                sc = (int(math.ceil(lc[0]*255)),int(math.ceil(lc[1]*255)),int(math.ceil(lc[2]*255)))
-                svg = svg.replace('stroke="rgb(0, 0, 0)"','stroke="rgb('+str(sc[0])+','+str(sc[1])+','+str(sc[2])+')"')
-                return svg
-                                
-        def transformSVG(self,name, svg,offsetx=0,offsety=0,scale=1,pageheight=None):
-                "encapsulates a svg fragment into a transformation node"
-                result = '<g id="' + name + '"'
-                result += ' transform="'
-                if pageheight:
-                        result += ' translate('+str(offsetx)+','+str(pageheight-offsety)+')'
-                        result += ' scale('+str(scale)+','+str(-scale)+')">'
-                else:
-                        result += ' translate('+str(offsetx)+','+str(offsety)+')'
-                        result += ' scale('+str(scale)+','+str(scale)+')">'
-                result += svg
-                result += '</g>'
-                return result
-
 class Draftify():
 	"The Draftify FreeCAD command definition"
 
@@ -3538,6 +3092,12 @@ class ToggleDisplayMode():
                         'MenuText': str(translate("draft", "Toggle display mode").toLatin1()),
 			'ToolTip': str(translate("draft", "Swaps display mode of selected objects between wireframe and flatlines").toLatin1())}
 
+        def IsActive(self):
+                if Draft.getSelection():
+                        return True
+                else:
+                        return False
+        
 	def Activated(self):
                 for obj in Draft.getSelection():
                         if obj.ViewObject.DisplayMode == "Flat Lines":
@@ -3559,6 +3119,12 @@ class Edit(Modifier):
 			'MenuText': str(translate("draft", "Edit").toLatin1()),
 			'ToolTip': str(translate("draft", "Edits the active object").toLatin1())}
 
+        def IsActive(self):
+                if Draft.getSelection():
+                        return True
+                else:
+                        return False
+
 	def Activated(self):
                 if self.running:
                         self.finish()
@@ -3570,8 +3136,13 @@ class Edit(Modifier):
                                         self.obj = self.obj[0]
                                         self.editing = None
                                         self.editpoints = []
+                                        self.pl = None
+                                        if "Placement" in self.obj.PropertiesList:
+                                                self.pl = self.obj.Placement
+                                                self.invpl = self.pl.inverse()
                                         if Draft.getType(self.obj) == "Wire":
                                                 for p in self.obj.Points:
+                                                        if self.pl: p = self.pl.multVec(p)
                                                         self.editpoints.append(p)
                                         elif Draft.getType(self.obj) == "Circle":
                                                 self.editpoints.append(self.obj.Placement.Base)
@@ -3654,7 +3225,7 @@ class Edit(Modifier):
         def update(self,v):
                 if Draft.getType(self.obj) == "Wire":
                         pts = self.obj.Points
-                        pts[self.editing] = v
+                        pts[self.editing] = self.invpl.multVec(v)
                         self.obj.Points = pts
                         self.trackers[self.editing].set(pts[self.editing])
                 elif Draft.getType(self.obj) == "Circle":
@@ -3749,6 +3320,6 @@ FreeCADGui.addCommand('Draft_Upgrade',Upgrade())
 FreeCADGui.addCommand('Draft_Downgrade',Downgrade())
 FreeCADGui.addCommand('Draft_Trimex',Trimex())
 FreeCADGui.addCommand('Draft_Scale',Scale())
-FreeCADGui.addCommand('Draft_PutOnSheet',Drawing())
+FreeCADGui.addCommand('Draft_Drawing',Drawing())
 FreeCADGui.addCommand('Draft_Edit',Edit())
 FreeCADGui.addCommand('Draft_ToggleDisplayMode',ToggleDisplayMode())
