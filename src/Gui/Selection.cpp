@@ -28,6 +28,7 @@
 # include <string>
 # include <boost/signals.hpp>
 # include <boost/bind.hpp>
+# include <QApplication>
 # include <QString>
 # include <QStatusBar>
 #endif
