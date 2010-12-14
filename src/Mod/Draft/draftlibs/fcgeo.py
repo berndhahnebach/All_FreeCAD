@@ -441,6 +441,11 @@ def findPerpendicular(point,edgeslist,force=None):
 	The function will return a list	[vector_from_point_to_closest_edge,edge_index]
 	or None if no perpendicular vector could be found.
 	'''
+        if not isinstance(edgeslist,list):
+                try:
+                        edgeslist = edgeslist.Edges
+                except:
+                        return None
 	if (force == None):
 		valid = None
 		for edge in edgeslist:
@@ -456,6 +461,7 @@ def findPerpendicular(point,edgeslist,force=None):
 		dist = findDistance(point,edge)
 		if dist: return [dist,force]
 		else: return None
+        return None
 
 def offset(edge,vector):
 	'''

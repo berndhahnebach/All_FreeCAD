@@ -123,8 +123,15 @@ class DraftLineEdit(QtGui.QLineEdit):
 			self.emit(QtCore.SIGNAL("down()"))
 		elif (event.key() == QtCore.Qt.Key_Z) and QtCore.Qt.ControlModifier:
 			self.emit(QtCore.SIGNAL("undo()"))
-		else:
+		elif (event.key() in [QtCore.Qt.Key_0,QtCore.Qt.Key_1,QtCore.Qt.Key_2,
+                                      QtCore.Qt.Key_3,QtCore.Qt.Key_4,QtCore.Qt.Key_5,
+                                      QtCore.Qt.Key_6,QtCore.Qt.Key_7,QtCore.Qt.Key_8,
+                                      QtCore.Qt.Key_9,QtCore.Qt.Key_Comma,
+                                      QtCore.Qt.Key_Period,QtCore.Qt.Key_Minus,
+                                      QtCore.Qt.Key_Enter,QtCore.Qt.Key_Return]):
 			QtGui.QLineEdit.keyPressEvent(self, event)
+                else:
+                        event.ignore()
 
 class toolBar:
 	"main draft Toolbar"
@@ -227,6 +234,7 @@ class toolBar:
 				self.labelx = _label("labelx")
 				self.xValue = _lineedit("xValue", width=60)
 				self.xValue.setText("0.00")
+                                #self.xValue.setInputMask("0.00")
 				self.labely = _label("labely")
 				self.yValue = _lineedit("yValue", width=60)
 				self.yValue.setText("0.00")
