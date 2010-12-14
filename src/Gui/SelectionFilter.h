@@ -36,7 +36,7 @@ namespace Gui {
     
 
 /** Selection filter definition 
- *  This class build up a type/count tree out of a string
+ *  This class builds up a type/count tree out of a string
  *  to test very fast a selection or object/subelement type 
  *  against it. 
  *
@@ -54,17 +54,17 @@ public:
     SelectionFilter(const std::string& filter);
     virtual ~SelectionFilter();
 
-    /// set a new Filter string 
+    /// set a new filter string 
     void setFilter(const char* filter);
     /** test to current selection
-     *  This methode test the current selection set
+     *  This method tests the current selection set
      *  against the filter and returns true if the 
      *  described object(s) are selected.
      */
     bool match(void);
     /** test objects
-     *  This methode test if a given object is describet in the 
-     *  filter. If SubName is not NULL the Subelement get also
+     *  This method tests if a given object is described in the 
+     *  filter. If SubName is not NULL the Subelement gets also
      *  tested.
      */
     bool test(App::DocumentObject*pObj, const char*sSubName);
@@ -76,7 +76,6 @@ public:
     std::vector<std::vector<SelectionObject> > Result;
 
 protected:
-
     std::string Filter;
     std::string Errors;
     bool parse(void);
@@ -100,6 +99,7 @@ public:
     SelectionFilterGate(const char* filter);
     ~SelectionFilterGate();
     virtual bool allow(App::Document*,App::DocumentObject*, const char*);
+
 protected:
     SelectionFilter *Filter;
 };
@@ -169,4 +169,5 @@ struct Node_Block
 } // namespace Gui
 
 
-#endif // GUI_SelectionFilter_H 
+#endif // GUI_SelectionFilter_H
+
