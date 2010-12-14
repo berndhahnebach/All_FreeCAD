@@ -182,11 +182,12 @@ class DraftWorkbench (Workbench):
                                 "Draft_Polygon","Draft_Rectangle", "Draft_Text", "Draft_Dimension"]
                 self.modList = ["Draft_Move","Draft_Rotate","Draft_Offset",
 				"Draft_Trimex", "Draft_Upgrade", "Draft_Downgrade", "Draft_Scale",
-                                "Draft_PutOnSheet","Draft_Edit"]
+                                "Draft_Drawing","Draft_Edit"]
                 self.treecmdList = ["Draft_ApplyStyle","Draft_ToggleDisplayMode"]
                 self.lineList = ["Draft_UndoLine","Draft_FinishLine","Draft_CloseLine"]
                 self.appendToolbar("Draft tools",self.cmdList+self.modList)
-                self.appendMenu("Draft",self.cmdList+self.modList+self.treecmdList)
+                self.appendMenu("Draft",self.cmdList+self.modList)
+                self.appendMenu(["Draft","Object appearence"],self.treecmdList)
                 self.appendMenu(["Draft","Line drawing"],self.lineList)
                 FreeCAD.activeDraftCommand = None # a global place to look for active draft Command
                         
@@ -203,7 +204,8 @@ class DraftWorkbench (Workbench):
                 if (recipient == "View"):
                         if (FreeCAD.activeDraftCommand == None):
                                 if (FreeCADGui.Selection.getSelection() != []):
-                                        self.appendContextMenu("Draft",self.cmdList+self.modList+self.treecmdList)
+                                        self.appendContextMenu("Draft",self.cmdList+self.modList)
+                                        self.appendContextMenu("Object appearence",self.treecmdList)
                                 else:
                                         self.appendContextMenu("Draft",self.cmdList)
                         else:
@@ -211,7 +213,7 @@ class DraftWorkbench (Workbench):
                                         self.appendContextMenu("",self.lineList)
                 else:
                         if (FreeCADGui.Selection.getSelection() != []):
-                                self.appendContextMenu("",self.treecmdList)
+                                self.appendContextMenu("Object appearence",self.treecmdList)
 
 	def GetClassName(self): 
 		return "Gui::PythonWorkbench"

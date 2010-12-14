@@ -472,7 +472,6 @@ def move(objectslist,vector,copy=False):
                         if "Placement" in obj.PropertiesList:
                                 pla = obj.Placement
                                 pla.move(vector)
-                                obj.Placement = pla
 		if copy: formatObject(newobj,obj)
                 newobjlist.append(newobj)
         if len(newobjlist) == 1: return newobjlist[0]
@@ -543,7 +542,7 @@ def offset(obj,delta,copy=False):
 
         def getRect(p,obj):
                 "returns length,heigh,placement"
-                pl = FreeCAD.Placement(obj.Placement)
+                pl = obj.Placement.copy()
                 pl.Base = p[0]
                 diag = p[2].sub(p[0])
                 bb = p[1].sub(p[0])

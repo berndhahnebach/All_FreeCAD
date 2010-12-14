@@ -84,8 +84,17 @@ void Workbench::setupContextMenu(const char* recipient,Gui::MenuItem* item) cons
     else if (strcmp(recipient,"Tree") == 0)
     {
         if ( Gui::Selection().countObjectsOfType(App::DocumentObject::getClassTypeId()) > 0 )
+            {
+            Gui::MenuItem* DraftContext = new Gui::MenuItem();
+            DraftContext->setCommand("Object appearence");
+
+            *DraftContext << "Draft_ApplyStyle" << "Draft_ToggleDisplayMode";
+
             *item << "Std_SetAppearance" << "Std_ToggleVisibility" 
-                  << "Std_RandomColor" << "Separator" << "Std_Delete";
+                  << "Std_RandomColor" << "Separator" << "Std_Delete"
+                  << DraftContext;
+            }
+
     }
 }
 
@@ -296,8 +305,13 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 #   ifdef COMPLETE_USE_DRAFTING
     if (mgr.getCommandByName("Draft_Line")) {
         Gui::MenuItem* Drafting = new Gui::MenuItem(menuBar);
-
         Drafting->setCommand("&Drafting");
+
+        Gui::MenuItem* DraftContext = new Gui::MenuItem();
+        DraftContext->setCommand("Object appearence");
+
+        *DraftContext << "Draft_ApplyStyle" << "Draft_ToggleDisplayMode";
+
         *Drafting 
             << "Draft_Line"
             << "Draft_Wire"
@@ -315,7 +329,8 @@ Gui::MenuItem* Workbench::setupMenuBar() const
             << "Draft_Downgrade" 
             << "Draft_Scale"
             << "Draft_Edit"
-            << "Draft_PutOnSheet"
+            << "Draft_Drawing"
+            << DraftContext
         ;
     }
 #   endif
@@ -475,7 +490,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
             << "Draft_Downgrade" 
             << "Draft_Scale"
             << "Draft_Edit"
-            << "Draft_PutOnSheet"
+            << "Draft_Drawing"
         ;
     }
 #   endif
