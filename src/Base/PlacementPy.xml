@@ -27,6 +27,14 @@ Placement(Base, Axis, Angle) -- define position and rotation
 		</UserDocu>
 		<DeveloperDocu>Placement</DeveloperDocu>
 	</Documentation>
+        <Methode Name="copy">>
+            <Documentation>
+                <UserDocu>
+                    copy()
+                    Returns a copy of this Placement
+                </UserDocu>
+            </Documentation>
+        </Methode>
 		<Methode Name="move">
 			<Documentation>
 				<UserDocu>

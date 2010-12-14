@@ -146,6 +146,13 @@ PyObject* PlacementPy::multVec(PyObject * args)
     return new VectorPy(new Vector3d(pnt));
 }
 
+PyObject* PlacementPy::copy(PyObject * args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+    return new PlacementPy(new Placement(*getPlacementPtr()));
+}
+
 PyObject* PlacementPy::toMatrix(PyObject * args)
 {
     if (!PyArg_ParseTuple(args, ""))
