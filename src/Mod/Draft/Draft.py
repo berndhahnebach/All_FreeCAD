@@ -448,7 +448,7 @@ def move(objectslist,vector,copy=False):
                                 newobj = FreeCAD.ActiveDocument.addObject("Part::Feature",getRealName(obj.Name))
                         else:
                                 newobj = obj
-                        sh = obj.Shape
+                        sh = obj.Shape.copy()
                         sh.translate(vector)
                         newobj.Shape = sh
                 elif getType(obj) == "Annotation":
@@ -491,7 +491,6 @@ def rotate(objectslist,angle,center=Vector(0,0,0),axis=Vector(0,0,1),copy=False)
         for obj in objectslist:
                 if copy:
                         newobj = FreeCAD.ActiveDocument.addObject("Part::Feature",getRealName(obj.Name))
-                        newobj.Shape = obj.Shape
                 else:
                         newobj = obj
                 if (obj.isDerivedFrom("Part::Feature")):
@@ -519,7 +518,7 @@ def scale(objectslist,delta,center=Vector(0,0,0),copy=False):
                 else:
                         newobj = shapify(obj)
                 if (obj.isDerivedFrom("Part::Feature")):
-                        sh = obj.Shape
+                        sh = obj.Shape.copy()
                         m = FreeCAD.Matrix()
                         m.scale(delta)
                         sh = sh.transformGeometry(m)
@@ -544,7 +543,7 @@ def offset(obj,delta,copy=False):
 
         def getRect(p,obj):
                 "returns length,heigh,placement"
-                pl = obj.Placement
+                pl = FreeCAD.Placement(obj.Placement)
                 pl.Base = p[0]
                 diag = p[2].sub(p[0])
                 bb = p[1].sub(p[0])
@@ -567,8 +566,6 @@ def offset(obj,delta,copy=False):
                         newobj = makeWire(p)
                         newobj.Closed = obj.Closed
                 elif getType(obj) == "Rectangle":
-                        pl = FreeCAD.Placement()
-                        pl.Base = p[0]
                         length,height,plac = getRect(p,obj)
                         newobj = makeRectangle(length,height,plac)
                 elif getType(obj) == "Circle":

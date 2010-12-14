@@ -2095,7 +2095,9 @@ class Rotate(Modifier):
 				if not fcvec.isNull(viewdelta):
 					point = point.add(fcvec.neg(viewdelta))
 			if self.extendedCopy:
-				if not arg["AltDown"]: self.finish()
+				if not arg["AltDown"]:
+                                        self.step = 3
+                                        self.finish()
 			if (self.step == 0):
 				pass
 			elif (self.step == 1):
@@ -2114,7 +2116,7 @@ class Rotate(Modifier):
 				self.firstangle = angle
 				self.ui.radiusValue.setFocus()
 				self.ui.radiusValue.selectAll()
-			else:
+			elif (self.step == 2):
 				currentrad = fcvec.dist(point,self.center)
 				if (currentrad != 0):
 					angle = fcvec.angle(plane.u, point.sub(self.center), plane.axis)
