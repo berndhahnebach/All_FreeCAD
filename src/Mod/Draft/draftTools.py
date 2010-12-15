@@ -3201,6 +3201,11 @@ class Edit(Modifier):
                                         elif Draft.getType(self.obj) == "Polygon":
                                                 self.editpoints.append(self.obj.Placement.Base)
                                                 self.editpoints.append(self.obj.Shape.Vertexes[0].Point)
+                                        # DNC: to make b-splne editable
+                                        elif Draft.getType(self.obj) == "BSpline":
+                                                for p in self.obj.Nodes:
+                                                        if self.pl: p = self.pl.multVec(p)
+                                                        self.editpoints.append(p)
                                         self.trackers = []
                                         self.snap = None
                                         self.constraintrack = None
@@ -3316,6 +3321,12 @@ class Edit(Modifier):
                                         rad = math.cos(halfangle)*delta.Length
                                         self.obj.Radius = rad
                         self.trackers[1].set(self.obj.Shape.Vertexes[0].Point)
+                # DNC: to make b-splne editable
+                elif Draft.getType(self.obj) == "BSpline":
+                        pts = self.obj.Nodes
+                        pts[self.editing] = self.invpl.multVec(v)
+                        self.obj.Nodes = pts
+                        self.trackers[self.editing].set(pts[self.editing])
 
 	def numericInput(self,v,numy=None,numz=None):
 		'''this function gets called by the toolbar

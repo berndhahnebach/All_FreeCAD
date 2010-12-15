@@ -131,12 +131,19 @@ def getType(obj):
         if "Points" in obj.PropertiesList:
                 if "Closed" in obj.PropertiesList:
                         return "Wire"
+        if "Nodes" in obj.PropertiesList:
+                if "Closed" in obj.PropertiesList:
+                        return "BSpline"
         if "FacesNumber" in obj.PropertiesList:
                 return "Polygon"
+        if "Dimline" in obj.PropertiesList:
+                return "Dimension"
         if obj.isDerivedFrom("Part::Feature"):
                 return "Part"
         if (obj.Type == "App::Annotation"):
                 return "Annotation"
+        if obj.isDerivedFrom("Mesh::Feature"):
+                return "Mesh"
         return "Unknown"
 
 def dimSymbol():
@@ -734,7 +741,7 @@ def getSVG(obj,modifier=100,textmodifier=100,plane=None):
 		svg += "%.2f" % p3.sub(p2).Length
 		svg += '</text>\n</g>\n'
 
-        elif obj.Type == 'App::Annotation':
+        elif getType(obj) == "Annotation":
                 "returns an svg representation of a document annotation"
                 p = getProj(obj.Position)
                 svg = '<text id="' + obj.Name + '" fill="'
