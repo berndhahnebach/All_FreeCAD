@@ -24,7 +24,7 @@
 from __future__ import division
 
 __title__="FreeCAD Draft Workbench"
-__author__ = "Yorik van Havre, Werner Mayer, Martin Burbaum, Ken Cline"
+__author__ = "Yorik van Havre, Werner Mayer, Martin Burbaum, Ken Cline, Dmitry Chigrin"
 __url__ = "http://free-cad.sourceforge.net"
 
 '''
@@ -364,6 +364,32 @@ def makePolygon(nfaces,radius=1,inscribed=True,placement=None,face=True):
 def makeLine(p1,p2):
         '''makeLine(p1,p2): Creates a line between p1 and p2.'''
         obj = makeWire([p1,p2])
+        return obj
+
+def makeBSpline(pointslist,closed=False,placement=None,face=True):
+        '''makeBSpline(pointslist,[closed],[placement]): Creates a B-Spline object
+        from the given list of vectors. If closed is True or first
+        and last points are identical, the wire is closed. If face is
+        true (and wire is closed), the wire will appear filled. Instead of
+        a pointslist, you can also pass a Part Wire.'''
+        if not isinstance(pointslist,list):
+                nlist = []
+                for v in pointslist.Vertexes:
+                        nlist.append(v.Point)
+                pointslist = nlist
+        if placement: typecheck([(placement,FreeCAD.Placement)], "makeRectangle")
+        if len(pointslist) == 2: fname = "Line"
+        else: fname = "BSpline"
+        obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython",fname)
+        BSpline(obj)
+        ViewProviderBSpline(obj.ViewObject)
+        obj.Nodes = pointslist
+        obj.Closed = closed
+        if not face: obj.ViewObject.DisplayMode = "Wireframe"
+        if placement: obj.Placement = placement
+        formatObject(obj)
+	select(obj)
+	FreeCAD.ActiveDocument.recompute()
         return obj
 
 def makeText(stringslist,point=Vector(0,0,0),screen=False):
@@ -1463,3 +1489,109 @@ class DrawingView:
                 result += svg
                 result += '</g>'
                 return result
+
+class BSpline:
+        "The BSpline object"
+        
+	def __init__(self, obj):
+		obj.addProperty("App::PropertyVectorList","Nodes","Base",
+                                "The points of the b-spline")
+                obj.addProperty("App::PropertyBool","Closed","Base",
+                                "If the b-spline is closed or not")
+                obj.addProperty("App::PropertyLink","Base","Base",
+                                "The base object is the wire is formed from 2 objects")
+                obj.addProperty("App::PropertyLink","Tool","Base",
+                                "The tool object is the wire is formed from 2 objects")
+		obj.Proxy = self
+                obj.Closed = False
+
+	def execute(self, fp):
+                self.createGeometry(fp)
+
+        def onChanged(self, fp, prop):
+                if prop in ["Nodes","Closed","Base","Tool"]:
+                        self.createGeometry(fp)
+                        
+        def createGeometry(self,fp):
+                plm = fp.Placement
+                if fp.Base and fp.Tool:
+                        if ('Shape' in fp.Base.PropertiesList) and ('Shape' in fp.Tool.PropertiesList):
+                                sh1 = fp.Base.Shape
+                                sh2 = fp.Tool.Shape
+                                shape = sh1.fuse(sh2)
+                                if fcgeo.isCoplanar(shape.Faces):
+                                        shape = fcgeo.concatenate(shape)
+                                        fp.Shape = shape
+                                        p = []
+                                        for v in shape.Vertexes: p.append(v.Point)
+                                        if fp.Nodes != p: fp.Nodes = p
+                elif fp.Nodes:
+                        if fp.Nodes[0] == fp.Nodes[-1]:
+                                fp.Closed = True
+                                fp.Nodes.pop()
+                        if fp.Closed and (len(fp.Nodes) > 2):
+                                shape = Part.BSplineCurve(fp.Nodes+[fp.Nodes[0]]).toShape()
+                        else:   
+                                shape = Part.BSplineCurve(fp.Nodes).toShape()
+                        fp.Shape = shape
+                fp.Placement = plm
+
+class ViewProviderBSpline(ViewProviderDraft):
+        "A View Provider for the BSPline object"
+        def __init__(self, obj):
+                ViewProviderDraft.__init__(self,obj)
+                obj.addProperty("App::PropertyBool","EndArrow",
+                                "Base","Displays a dim symbol at the end of the wire")
+                col = coin.SoBaseColor()
+                col.rgb.setValue(obj.LineColor[0],
+                                 obj.LineColor[1],
+                                 obj.LineColor[2])
+                self.coords = coin.SoCoordinate3()
+                self.pt = coin.SoAnnotation()
+                self.pt.addChild(col)
+                self.pt.addChild(self.coords)
+                self.pt.addChild(dimSymbol())
+
+	def getIcon(self):
+		return """
+                       /* XPM */
+                       static char * wire_xpm[] = {
+                       "16 16 5 1",
+                       " 	c None",
+                       ".	c #000000",
+                       "+	c #0000FF",
+                       "@	c #141010",
+                       "#	c #615BD2",
+                       "        @@@@@@@@",
+                       "        @##@@#@@",
+                       "        @##@@##@",
+                       "        @##@@##@",
+                       "    ....@######@",
+                       "....++++@##@@##@",
+                       ".+++++++@##@@##@",
+                       " .++++++@######@",
+                       " .++++++@@@@@@@@"
+                       "  .++++++++++.  ",
+                       "  .+++++++++++. ",
+                       "   .++++++++++..",
+                       "   .++++++++..  ",
+                       "    .+++++..    ",
+                       "    .+++..      ",
+                       "     ...        "};
+		       """
+        
+        def updateData(self, obj, prop):
+                if prop == "Nodes":
+                        if obj.Nodes:
+                                p = obj.Nodes[-1]
+                                self.coords.point.setValue((p.x,p.y,p.z))
+		return
+
+        def onChanged(self, vp, prop):
+                if prop == "EndArrow":
+                        rn = vp.RootNode
+                        if vp.EndArrow:
+                                rn.addChild(self.pt)
+                        else:
+                                rn.removeChild(self.pt)
+		return

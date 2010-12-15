@@ -872,6 +872,7 @@ class toolBar:
 		icons['preferences-draft']=iconfile.copy(QtCore.QRect(384,0,64,64))
                 icons['Draft_Macro']=iconfile.copy(QtCore.QRect(384,128,64,64))
                 icons['Draft_polygon']=iconfile.copy(QtCore.QRect(0,192,64,64))
+                icons['Draft_bspline']=iconfile.copy(QtCore.QRect(64,192,64,64))
 		for name,icon in icons.iteritems():
 			ba = QtCore.QByteArray()
 			bu = QtCore.QBuffer(ba)
