@@ -33,9 +33,6 @@
 #include <Base/Persistence.h>
 #include <App/Document.h>
 
-class SoSelection;
-class SoPath;
-
 namespace Base
 {
   class Matrix4D;
