@@ -200,10 +200,14 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name,
     //this->foregroundroot->addChild(draggSep);
 
     // set the ViewProvider root
-    SoSelection* selectionRoot = new SoSelection();
-    selectionRoot->addSelectionCallback(View3DInventorViewer::selectCB, this);
-    selectionRoot->addDeselectionCallback(View3DInventorViewer::deselectCB, this);
-    pcViewProviderRoot = selectionRoot;
+    //SoSelection* selectionRoot = new SoSelection();
+    //selectionRoot->addSelectionCallback(View3DInventorViewer::selectCB, this);
+    //selectionRoot->addDeselectionCallback(View3DInventorViewer::deselectCB, this);
+    //pcViewProviderRoot = selectionRoot;
+    // NOTE: For every mouse click event the SoSelection searches for the picked
+    // point which causes a certain slow-down because for all objects the primitives
+    // must be created. Using an SoSeparator avoids this drawback.
+    pcViewProviderRoot = new SoSeparator();
 
     // increase refcount before passing it to setScenegraph(), to avoid
     // premature destruction

@@ -1399,7 +1399,7 @@ Py::Object View3DInventorPy::getSceneGraph(const Py::Tuple& args)
     try {
         SoNode* scene = _view->getViewer()->getSceneGraph();
         PyObject* proxy = 0;
-        proxy = Base::Interpreter().createSWIGPointerObj("pivy.coin", "SoSelection *", (void*)scene, 1);
+        proxy = Base::Interpreter().createSWIGPointerObj("pivy.coin", "SoSeparator *", (void*)scene, 1);
         scene->ref();
         return Py::Object(proxy, true);
     }
