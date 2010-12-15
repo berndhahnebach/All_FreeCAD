@@ -88,7 +88,8 @@ void Workbench::setupContextMenu(const char* recipient,Gui::MenuItem* item) cons
             Gui::MenuItem* DraftContext = new Gui::MenuItem();
             DraftContext->setCommand("Object appearence");
 
-            *DraftContext << "Draft_ApplyStyle" << "Draft_ToggleDisplayMode";
+            *DraftContext << "Draft_ApplyStyle" << "Draft_ToggleDisplayMode"
+                          << "Draft_AddToGroup";
 
             *item << "Std_SetAppearance" << "Std_ToggleVisibility" 
                   << "Std_RandomColor" << "Separator" << "Std_Delete"

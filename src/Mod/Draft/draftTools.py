@@ -3115,17 +3115,6 @@ class Drawing(Modifier):
                 self.doc.recompute()
                 return page
         
-class Draftify():
-	"The Draftify FreeCAD command definition"
-
-	def GetResources(self):
-		return {'Pixmap'  : 'Draft_makeDraftWire',
-                        'MenuText': str(translate("draft", "Draftify").toLatin1()),
-			'ToolTip': str(translate("draft", "Turns selected objects to Draft Wires").toLatin1())}
-
-	def Activated(self):
-                Draft.draftify(Draft.getSelection())
-
 class ToggleDisplayMode():
 	"The ToggleDisplayMode FreeCAD command definition"
 
@@ -3340,7 +3329,36 @@ class Edit(Modifier):
                 self.ui.offUi()
                 self.node = []
 
+class AddToGroup():
+	"The AddToGroup FreeCAD command definition"
 
+	def GetResources(self):
+		return {'Pixmap'  : 'Draft_addToGroup',
+                        'MenuText': str(translate("draft", "Add to group").toLatin1()),
+			'ToolTip': str(translate("draft", "Adds the selected object(s) to an existing group").toLatin1())}
+
+        def IsActive(self):
+                if Draft.getSelection():
+                        return True
+                else:
+                        return False
+        
+	def Activated(self):
+                groups = Draft.getGroupNames()
+                if groups:
+                        self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
+                        self.ui.sourceCmd = self
+                        self.ui.popupMenu(groups)
+
+        def proceed(self,groupname):
+                self.ui.sourceCmd = None
+                g = FreeCAD.ActiveDocument.getObject(groupname)
+                for obj in Draft.getSelection():
+                        try:
+                                g.addObject(obj)
+                        except:
+                                pass
+                        
 
 #---------------------------------------------------------------------------
 # Adds the icons & commands to the FreeCAD command manager, and sets defaults
@@ -3358,16 +3376,8 @@ FreeCADGui.addCommand('Draft_Dimension',Dimension())
 FreeCADGui.addCommand('Draft_Polygon',Polygon())
 FreeCADGui.addCommand('Draft_BSpline',BSpline())
 
-# context commands
-FreeCADGui.addCommand('Draft_FinishLine',FinishLine())
-FreeCADGui.addCommand('Draft_CloseLine',CloseLine())
-FreeCADGui.addCommand('Draft_UndoLine',UndoLine())
-FreeCADGui.addCommand('Draft_ToggleConstructionMode',ToggleConstructionMode())
-FreeCADGui.addCommand('Draft_Draftify',Draftify())
-
 # modification commands
 FreeCADGui.addCommand('Draft_Move',Move())
-FreeCADGui.addCommand('Draft_ApplyStyle',ApplyStyle())
 FreeCADGui.addCommand('Draft_Rotate',Rotate())
 FreeCADGui.addCommand('Draft_Offset',Offset())
 FreeCADGui.addCommand('Draft_Upgrade',Upgrade())
@@ -3376,4 +3386,12 @@ FreeCADGui.addCommand('Draft_Trimex',Trimex())
 FreeCADGui.addCommand('Draft_Scale',Scale())
 FreeCADGui.addCommand('Draft_Drawing',Drawing())
 FreeCADGui.addCommand('Draft_Edit',Edit())
+
+# context commands
+FreeCADGui.addCommand('Draft_FinishLine',FinishLine())
+FreeCADGui.addCommand('Draft_CloseLine',CloseLine())
+FreeCADGui.addCommand('Draft_UndoLine',UndoLine())
+FreeCADGui.addCommand('Draft_ToggleConstructionMode',ToggleConstructionMode())
+FreeCADGui.addCommand('Draft_ApplyStyle',ApplyStyle())
 FreeCADGui.addCommand('Draft_ToggleDisplayMode',ToggleDisplayMode())
+FreeCADGui.addCommand('Draft_AddToGroup',AddToGroup())
