@@ -840,6 +840,18 @@ class toolBar:
                         def selectplane(self):
                                 FreeCADGui.runCommand("Draft_SelectPlane")
 
+                        def popupMenu(self,mlist):
+                                "pops up a menu filled with the given list"
+                                self.groupmenu = QtGui.QMenu()
+                                for i in mlist:
+                                        self.groupmenu.addAction(i)
+                                pos = getMainWindow().cursor().pos()
+                                self.groupmenu.popup(pos)
+                                QtCore.QObject.connect(self.groupmenu,QtCore.SIGNAL("triggered(QAction *)"),self.popupTriggered)
+
+                        def popupTriggered(self,action):
+                                self.sourceCmd.proceed(str(action.text()))
+
 #---------------------------------------------------------------------------
 # Initialization
 #---------------------------------------------------------------------------
@@ -873,6 +885,7 @@ class toolBar:
                 icons['Draft_Macro']=iconfile.copy(QtCore.QRect(384,128,64,64))
                 icons['Draft_polygon']=iconfile.copy(QtCore.QRect(0,192,64,64))
                 icons['Draft_bspline']=iconfile.copy(QtCore.QRect(64,192,64,64))
+                icons['Draft_addToGroup']=iconfile.copy(QtCore.QRect(256,192,64,64))
 		for name,icon in icons.iteritems():
 			ba = QtCore.QByteArray()
 			bu = QtCore.QBuffer(ba)

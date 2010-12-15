@@ -144,10 +144,21 @@ def getType(obj):
                 return "Annotation"
         if obj.isDerivedFrom("Mesh::Feature"):
                 return "Mesh"
+        if (obj.Type == "App::DocumentObjectGroup"):
+                return "Group"
         return "Unknown"
 
+def getGroupNames():
+        "returns a list of existing groups in the document"
+        glist = []
+        doc = FreeCAD.ActiveDocument
+        for obj in doc.Objects:
+                if obj.Type == "App::DocumentObjectGroup":
+                        glist.append(obj.Name)
+        return glist
+                
 def dimSymbol():
-        "returns the current dim symbol from the preferences"
+        "returns the current dim symbol from the preferences as a pivy SoMarkerSet"
         s = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").\
             GetInt("dimsymbol")
         marker = coin.SoMarkerSet()
