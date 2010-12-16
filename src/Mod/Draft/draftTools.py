@@ -3195,6 +3195,12 @@ class Edit(Modifier):
                                                 for p in self.obj.Nodes:
                                                         if self.pl: p = self.pl.multVec(p)
                                                         self.editpoints.append(p)
+                                        elif Draft.getType(self.obj) == "Dimension":
+                                                p = self.obj.ViewObject.Proxy.textpos.translation.getValue()
+                                                self.editpoints.append(self.obj.Start)
+                                                self.editpoints.append(self.obj.End)
+                                                self.editpoints.append(self.obj.Dimline)
+                                                self.editpoints.append(Vector(p[0],p[1],p[2]))
                                         self.trackers = []
                                         self.snap = None
                                         self.constraintrack = None
@@ -3206,7 +3212,8 @@ class Edit(Modifier):
                                                 self.call = self.view.addEventCallback("SoEvent",self.action)
                                                 self.running = True
                                                 plane.save()
-                                                plane.alignToFace(self.obj.Shape)
+                                                if "Shape" in self.obj.PropertiesList:
+                                                        plane.alignToFace(self.obj.Shape)
                                                 self.planetrack.set(self.editpoints[0])
                                         else:
                                                 msg(translate("draft", "This object type is not editable\n"),'warning')
@@ -3316,6 +3323,16 @@ class Edit(Modifier):
                         pts[self.editing] = self.invpl.multVec(v)
                         self.obj.Nodes = pts
                         self.trackers[self.editing].set(pts[self.editing])
+                elif Draft.getType(self.obj) == "Dimension":
+                        if self.editing == 0:
+                                self.obj.Start = v
+                        elif self.editing == 1:
+                                self.obj.End = v
+                        elif self.editing == 2:
+                                self.obj.Dimline = v
+                        elif self.editing == 3:
+                                self.obj.ViewObject.TextPosition = v
+                        
 
 	def numericInput(self,v,numy=None,numz=None):
 		'''this function gets called by the toolbar
