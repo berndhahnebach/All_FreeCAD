@@ -57,6 +57,7 @@ public:
 
     ViewProviderMesh* mesh;
     std::vector<int> index;
+    int current_index;
 
     SoCoordinate3   * pcCoords;
     SoFaceSet       * pcFaces;
@@ -86,7 +87,7 @@ private Q_SLOTS:
     void flipNormal();
 
 private:
-    bool addFaceFromPoint(SoPickedPoint*);
+    bool addMarkerPoint();
     void showMarker(SoPickedPoint*);
     static void addFacetCallback(void * ud, SoEventCallback * n);
 
