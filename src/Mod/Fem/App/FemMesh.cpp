@@ -432,7 +432,7 @@ void FemMesh::readNastran(const std::string &Filename)
 		j++;
 	}
 
-	for(int i=0;i<all_elements.size();i++)
+	for(unsigned int i=0;i<all_elements.size();i++)
 	{
 		//Die Reihenfolge wie hier die Elemente hinzugefügt werden ist sehr wichtig. 
 		//Ansonsten ist eine konsistente Datenstruktur nicht möglich
@@ -502,22 +502,39 @@ void FemMesh::writeABAQUS(const std::string &Filename) const
 	anABAQUS_Output << "*Element, TYPE=C3D10, ELSET=Eall" << std::endl;
 	SMDS_VolumeIteratorPtr aVolIter = myMesh->GetMeshDS()->volumesIterator();
 
-	for (;aVolIter->more();) {
+	std::map<int,std::vector<int> > temp_map;
+	std::pair<int,std::vector<int> > apair;
+	temp_map.clear();
+	for (;aVolIter->more();) 
+	{
 		const SMDS_MeshVolume* aVol = aVolIter->next();
 		//Dont ask about the order in which we have to output the SMESH structure
 		//I absolute dont understand the scheme behind it but somehow its working like this
-		anABAQUS_Output 
-		<<aVol->GetID()<<","
-		<<aVol->GetNode(0)->GetID()<<","
-		<<aVol->GetNode(2)->GetID()<<","
-		<<aVol->GetNode(1)->GetID()<<","
-		<<aVol->GetNode(3)->GetID()<<","
-		<<aVol->GetNode(6)->GetID()<<","
-		<<aVol->GetNode(5)->GetID()<<","
-		<<aVol->GetNode(4)->GetID()<<","
-		<<aVol->GetNode(8)->GetID()<<","
-		<<aVol->GetNode(9)->GetID()<<","
-		<<aVol->GetNode(7)->GetID()<<std::endl;
+		apair.first = aVol->GetID();
+		apair.second.clear();
+		apair.second.push_back(aVol->GetNode(0)->GetID());
+		apair.second.push_back(aVol->GetNode(2)->GetID());
+		apair.second.push_back(aVol->GetNode(1)->GetID());
+		apair.second.push_back(aVol->GetNode(3)->GetID());
+		apair.second.push_back(aVol->GetNode(6)->GetID());
+		apair.second.push_back(aVol->GetNode(5)->GetID());
+		apair.second.push_back(aVol->GetNode(4)->GetID());
+		apair.second.push_back(aVol->GetNode(8)->GetID());
+		apair.second.push_back(aVol->GetNode(9)->GetID());
+		apair.second.push_back(aVol->GetNode(7)->GetID());
+		temp_map.insert(apair);
+	}
+
+	std::map<int,std::vector<int> >::iterator it_map;
+	std::vector<int>::iterator it_vector;
+	for(it_map = temp_map.begin();it_map!=temp_map.end();it_map++)
+	{
+		anABAQUS_Output << it_map->first << ",";
+		for(it_vector = it_map->second.begin();it_vector!=it_map->second.end();it_vector++)
+		{
+			anABAQUS_Output << *it_vector << ",";
+		}
+		anABAQUS_Output << std::endl;
 	}
 	anABAQUS_Output.close();
 }
