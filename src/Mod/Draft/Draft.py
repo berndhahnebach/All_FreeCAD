@@ -933,6 +933,7 @@ class ViewProviderDimension:
 		obj.addProperty("App::PropertyLength","LineWidth","Base","Line width")
 		obj.addProperty("App::PropertyColor","LineColor","Base","Line color")
 		obj.addProperty("App::PropertyLength","ExtLines","Base","Ext lines")
+                obj.addProperty("App::PropertyVector","TextPosition","Base","The position of the text. Leave (0,0,0) for automatic position")
                 obj.addProperty("App::PropertyString","TextOverride","Base","Text override. Use 'dim' to insert the dimension length")
 		obj.Proxy = self
 		self.Object = obj.Object
@@ -964,7 +965,10 @@ class ViewProviderDimension:
 		if (angle >= math.pi/2) or (angle < -math.pi/2): angle = math.pi+angle
 		offset = fcvec.rotate(FreeCAD.Vector(obj.ViewObject.FontSize*.2,0,0),
                                       angle+math.pi/2)
-		tbase = midpoint.add(offset)
+                if obj.ViewObject.TextPosition == Vector(0,0,0):
+                        tbase = midpoint.add(offset)
+                else:
+                        tbase = obj.ViewObject.TextPosition
 		if not proj: norm = Vector(0,0,1)
                 else: norm = fcvec.neg(p3.sub(p2).cross(proj))
 		return p1,p2,p3,p4,tbase,angle,norm
