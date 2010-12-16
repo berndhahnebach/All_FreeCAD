@@ -34,9 +34,15 @@
     <rect>
      <x>370</x>
      <y>120</y>
-     <width>141</width>
-     <height>17</height>
+     <width>148</width>
+     <height>18</height>
     </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>148</width>
+     <height>18</height>
+    </size>
    </property>
    <property name="text">
     <string>Calculate Buy to Fly Ratio</string>
@@ -95,6 +101,15 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="minimumSize">
+        <size>
+         <width>49</width>
+         <height>20</height>
+        </size>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
       </widget>
      </item>
      <item row="1" column="2">
@@ -144,6 +159,9 @@
          <height>20</height>
         </size>
        </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
       </widget>
      </item>
     </layout>
@@ -171,42 +189,10 @@
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout_2">
-     <item row="0" column="0">
-      <widget class="QDoubleSpinBox" name="spinBox_z_level_from">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="decimals">
-        <number>1</number>
-       </property>
-       <property name="minimum">
-        <double>-100.000000000000000</double>
-       </property>
-      </widget>
-     </item>
      <item row="0" column="2">
       <widget class="QLabel" name="label_4">
        <property name="text">
         <string>From</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QDoubleSpinBox" name="spinBox_z_level_to">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="decimals">
-        <number>1</number>
-       </property>
-       <property name="minimum">
-        <double>-100.000000000000000</double>
        </property>
       </widget>
      </item>
@@ -243,6 +229,41 @@
        </property>
       </spacer>
      </item>
+     <item row="0" column="0">
+      <widget class="QSpinBox" name="spinBox">
+       <property name="minimumSize">
+        <size>
+         <width>53</width>
+         <height>20</height>
+        </size>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="minimum">
+        <number>-99</number>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QSpinBox" name="spinBox_2">
+       <property name="minimumSize">
+        <size>
+         <width>53</width>
+         <height>20</height>
+        </size>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="minimum">
+        <number>-99</number>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
   </widget>
@@ -270,6 +291,15 @@
     <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
       <widget class="QDoubleSpinBox" name="spinBox_misalignment_x">
+       <property name="minimumSize">
+        <size>
+         <width>43</width>
+         <height>20</height>
+        </size>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
        <property name="decimals">
         <number>1</number>
        </property>
@@ -290,6 +320,15 @@
      </item>
      <item row="1" column="0">
       <widget class="QDoubleSpinBox" name="spinBox_misalignment_y">
+       <property name="minimumSize">
+        <size>
+         <width>43</width>
+         <height>20</height>
+        </size>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
        <property name="decimals">
         <number>1</number>
        </property>
@@ -307,6 +346,15 @@
      </item>
      <item row="2" column="0">
       <widget class="QDoubleSpinBox" name="spinBox_misalignment_z">
+       <property name="minimumSize">
+        <size>
+         <width>43</width>
+         <height>20</height>
+        </size>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
        <property name="decimals">
         <number>1</number>
        </property>
