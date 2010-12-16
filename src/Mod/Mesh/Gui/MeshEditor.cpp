@@ -56,7 +56,7 @@ using namespace MeshGui;
 
 PROPERTY_SOURCE(MeshGui::ViewProviderFace, Gui::ViewProviderDocumentObject)
 
-ViewProviderFace::ViewProviderFace() : mesh(0)
+ViewProviderFace::ViewProviderFace() : mesh(0), current_index(-1)
 {
     pcCoords = new SoCoordinate3();
     pcCoords->ref();
@@ -122,12 +122,6 @@ void ViewProviderFace::attach(App::DocumentObject* obj)
     face_marker->addChild(faces);
     face_marker->addChild(markers);
 
-    //SoFCMeshGridNode* grid = new SoFCMeshGridNode();
-    //grid->minGrid.setValue(-30.262806,-17.087866,4.5012960);
-    //grid->maxGrid.setValue(2.187220,28.081810,28.922251);
-    //grid->lenGrid.setValue(22,31,16);
-    //markers->addChild(grid);
-
     addDisplayMaskMode(markers, "Marker");
     addDisplayMaskMode(face_marker, "Face");
     setDisplayMode("Marker");
@@ -191,7 +185,7 @@ void MeshFaceAddition::startEditing(MeshGui::ViewProviderMesh* vp)
     Gui::View3DInventor* view = static_cast<Gui::View3DInventor*>(parent());
     Gui::View3DInventorViewer* viewer = view->getViewer();
     viewer->setEditing(true);
-    //viewer->setRedirectToSceneGraph(true);
+    viewer->setRedirectToSceneGraph(true);
 
     faceView->mesh = vp;
     faceView->attach(vp->getObject());
@@ -237,6 +231,7 @@ void MeshFaceAddition::addFace()
 void MeshFaceAddition::clearPoints()
 {
     faceView->index.clear();
+    faceView->current_index = -1;
     faceView->pcCoords->point.setNum(0);
     faceView->setDisplayMode("Marker");
 }
@@ -252,59 +247,17 @@ void MeshFaceAddition::flipNormal()
     faceView->pcCoords->point.set1Value(1, v1);
 }
 
-bool MeshFaceAddition::addFaceFromPoint(SoPickedPoint* pp)
+bool MeshFaceAddition::addMarkerPoint()
 {
-    const SbVec3f& vec = pp->getPoint();
-    const SoDetail* detail = pp->getDetail();
-    if (detail) {
-        if (detail->isOfType(SoFaceDetail::getClassTypeId())) {
-            const SoFaceDetail* fd = static_cast<const SoFaceDetail*>(detail);
-            Mesh::Feature* mf = static_cast<Mesh::Feature*>(faceView->mesh->getObject());
-            const MeshCore::MeshFacetArray& facets = mf->Mesh.getValuePtr()->getKernel().GetFacets();
-            const MeshCore::MeshPointArray& points = mf->Mesh.getValuePtr()->getKernel().GetPoints();
-            // is the face index valid?
-            int face_index = fd->getFaceIndex();
-            if (face_index >= (int)facets.size())
-                return false;
-            // is a border facet picked? 
-            MeshCore::MeshFacet f = facets[face_index];
-            if (!f.HasOpenEdge())
-                return false;
-
-            int point_index = -1;
-            float distance = FLT_MAX;
-            Base::Vector3f pnt;
-            SbVec3f face_pnt;
-
-            for (int i=0; i<3; i++) {
-                int index = (int)f._aulPoints[i];
-                if (std::find(faceView->index.begin(), faceView->index.end(), index) != faceView->index.end())
-                    continue; // already inside
-                if (f._aulNeighbours[i] == ULONG_MAX ||
-                    f._aulNeighbours[(i+2)%3] == ULONG_MAX) {
-                    pnt = points[index];
-                    float len = Base::DistanceP2(pnt, Base::Vector3f(vec[0],vec[1],vec[2]));
-                    if (len < distance) {
-                        distance = len;
-                        point_index = index;
-                        face_pnt.setValue(pnt.x,pnt.y,pnt.z);
-                    }
-                }
-            }
-
-            if (point_index < 0)
-                return false; // picked point is rejected
-
-            int num = faceView->pcCoords->point.getNum();
-            faceView->pcCoords->point.set1Value(num, face_pnt);
-            faceView->index.push_back(point_index);
-            if (faceView->index.size() == 3)
-                faceView->setDisplayMode("Face");
-            return true;
-        }
-    }
-
-    return false;
+    if (faceView->current_index < 0)
+        return false;
+    if (faceView->index.size() >= 3)
+        return false;
+    faceView->index.push_back(faceView->current_index);
+    faceView->current_index = -1;
+    if (faceView->index.size() == 3)
+        faceView->setDisplayMode("Face");
+    return true;
 }
 
 void MeshFaceAddition::showMarker(SoPickedPoint* pp)
@@ -351,7 +304,11 @@ void MeshFaceAddition::showMarker(SoPickedPoint* pp)
                 return; // picked point is rejected
 
             int num = faceView->pcCoords->point.getNum();
-            faceView->pcCoords->point.set1Value(0, face_pnt);
+            if (faceView->current_index >= 0) {
+                num = std::max<int>(num-1, 0);
+            }
+            faceView->current_index = point_index;
+            faceView->pcCoords->point.set1Value(num, face_pnt);
             return;
         }
     }
@@ -364,34 +321,25 @@ void MeshFaceAddition::addFacetCallback(void * ud, SoEventCallback * n)
     Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(n->getUserData());
 
     const SoEvent* ev = n->getEvent();
-#if 0
     if (ev->getTypeId() == SoLocation2Event::getClassTypeId()) {
         // set as handled
         n->getAction()->setHandled();
         n->setHandled();
-        SoPickedPoint * point = face->/*mesh->*/getPickedPoint(ev->getPosition(), view);
-        if (point) {
-            that->showMarker(point);
-            delete point;
+        if (face->index.size() < 3) {
+            SoPickedPoint * point = face->getPickedPoint(ev->getPosition(), view);
+            if (point) {
+                that->showMarker(point);
+                delete point;
+            }
         }
     }
-    else
-#endif
-        if (ev->getTypeId() == SoMouseButtonEvent::getClassTypeId()) {
+    else if (ev->getTypeId() == SoMouseButtonEvent::getClassTypeId()) {
         // set as handled
         n->getAction()->setHandled();
         n->setHandled();
         const SoMouseButtonEvent * mbe = static_cast<const SoMouseButtonEvent *>(ev);
         if (mbe->getButton() == SoMouseButtonEvent::BUTTON1 && mbe->getState() == SoButtonEvent::DOWN) {
-            if (face->index.size() == 3) {
-            }
-            else {
-                SoPickedPoint * point = face->mesh->getPickedPoint(ev->getPosition(), *view);
-                if (point) {
-                    that->addFaceFromPoint(point);
-                    delete point;
-                }
-            }
+            that->addMarkerPoint();
         }
         else if (mbe->getButton() == SoMouseButtonEvent::BUTTON1 && mbe->getState() == SoButtonEvent::UP) {
             if (face->index.size() == 3) {
