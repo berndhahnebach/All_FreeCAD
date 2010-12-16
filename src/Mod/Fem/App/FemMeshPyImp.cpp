@@ -30,6 +30,7 @@
 #include <TopoDS_Shape.hxx>
 
 #include <Base/VectorPy.h>
+#include <Base/MatrixPy.h>
 #include <Base/PlacementPy.h>
 
 #include <Mod/Part/App/TopoShapePy.h>
@@ -184,6 +185,24 @@ PyObject* FemMeshPy::write(PyObject *args)
         return 0;
     }
     Py_Return;
+}
+
+PyObject* FemMeshPy::setTransform(PyObject *args)
+{
+		PyObject* ptr;
+		if (!PyArg_ParseTuple(args, "O!", &(Base::PlacementPy::Type), &ptr))
+			return NULL;
+
+		try {
+			Base::Placement* placement = static_cast<Base::PlacementPy*>(ptr)->getPlacementPtr();
+			Base::Matrix4D mat = placement->toMatrix();
+			getFemMeshPtr()->setTransform(mat);
+		}
+		catch (const std::exception& e) {
+			PyErr_SetString(PyExc_Exception, e.what());
+			return 0;
+		}
+		Py_Return;
 }
 
 // ===== Atributes ============================================================

@@ -44,6 +44,11 @@
 			  <UserDocu>write out an DAT, UNV, MED or STL file.</UserDocu>
 		  </Documentation>
 	  </Methode>
+    <Methode Name="setTransform">
+      <Documentation>
+        <UserDocu>Use a Placement object to perform a translation or rotation</UserDocu>
+      </Documentation>
+    </Methode>
 		<Methode Name="copy">
 			<Documentation>
 				<UserDocu>Make a copy of this FEM mesh.</UserDocu>
