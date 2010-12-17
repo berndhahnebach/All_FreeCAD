@@ -95,13 +95,13 @@ FemMesh &FemMesh::operator=(const FemMesh& mesh)
 void FemMesh::copyMeshData(const FemMesh& mesh)
 {
     const SMDS_MeshInfo& info = mesh.myMesh->GetMeshDS()->GetMeshInfo();
-    int numPoly = info.NbPolygons();
-    int numVolu = info.NbVolumes();
-    int numTetr = info.NbTetras();
-    int numHexa = info.NbHexas();
-    int numPyrd = info.NbPyramids();
-    int numPris = info.NbPrisms();
-    int numHedr = info.NbPolyhedrons();
+    //int numPoly = info.NbPolygons();
+    //int numVolu = info.NbVolumes();
+    //int numTetr = info.NbTetras();
+    //int numHexa = info.NbHexas();
+    //int numPyrd = info.NbPyramids();
+    //int numPris = info.NbPrisms();
+    //int numHedr = info.NbPolyhedrons();
 
     SMESHDS_Mesh* meshds = this->myMesh->GetMeshDS();
     meshds->ClearMesh();

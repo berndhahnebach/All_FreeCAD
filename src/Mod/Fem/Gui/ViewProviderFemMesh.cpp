@@ -256,13 +256,13 @@ void ViewProviderFEMMeshBuilder::createMesh(const App::Property* prop, SoCoordin
     int numNode = info.NbNodes();
     int numTria = info.NbTriangles();
     int numQuad = info.NbQuadrangles();
-    int numPoly = info.NbPolygons();
-    int numVolu = info.NbVolumes();
-    int numTetr = info.NbTetras();
-    int numHexa = info.NbHexas();
-    int numPyrd = info.NbPyramids();
-    int numPris = info.NbPrisms();
-    int numHedr = info.NbPolyhedrons();
+    //int numPoly = info.NbPolygons();
+    //int numVolu = info.NbVolumes();
+    //int numTetr = info.NbTetras();
+    //int numHexa = info.NbHexas();
+    //int numPyrd = info.NbPyramids();
+    //int numPris = info.NbPrisms();
+    //int numHedr = info.NbPolyhedrons();
 
     int index=0;
     std::map<const SMDS_MeshNode*, int> mapNodeIndex;

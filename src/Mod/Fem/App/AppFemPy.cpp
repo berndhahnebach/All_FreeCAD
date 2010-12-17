@@ -414,7 +414,6 @@ static PyObject * minBoundingBox(PyObject *self, PyObject *args)
 		MeshCore::MeshKernel atempkernel;
 
 		float it_steps=10.0;
-		bool minpositionfound=false,firstiteration=true;
 		double step_size;
 		double alpha_x=0.0,alpha_y=0.0,alpha_z=0.0;
 		double perfect_ax=0.0,perfect_ay=0.0,perfect_az=0.0;
@@ -659,7 +658,6 @@ static PyObject * import_NASTRAN(PyObject *self, PyObject *args)
 		MeshCore::MeshKernel atempkernel;
 
 		float it_steps=10.0;
-		bool minpositionfound=false,firstiteration=true;
 		double step_size;
 		double alpha_x=0.0,alpha_y=0.0,alpha_z=0.0;
 		double perfect_ax=0.0,perfect_ay=0.0,perfect_az=0.0;
