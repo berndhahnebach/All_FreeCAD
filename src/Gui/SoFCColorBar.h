@@ -76,6 +76,12 @@ public:
    * This method must be implemented in subclasses.
    */
   virtual bool isVisible (float fVal) const = 0;
+  /**
+   * Sets whether values outside the range should be in gray,
+   *
+   * This method must be implemented in subclasses.
+   */
+  virtual void setOutsideGrayed (bool bVal) = 0;
   /** Returns the current minimum of the parameter range. 
    *
    * This method must be implemented in subclasses.
@@ -147,6 +153,10 @@ public:
    * Returns the associated color to the value \a fVal of the currently active color bar.
    */
   App::Color getColor(float fVal) const;
+  /**
+   * Sets whether values outside the range should be in gray,
+   */
+  void setOutsideGrayed (bool bVal);
   /**
    * Returns the return value of the currently active color bar.
    */
