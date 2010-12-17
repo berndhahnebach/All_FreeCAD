@@ -94,6 +94,7 @@ public:
 
     void setTransform(const Base::Matrix4D& rclTrf);
     Base::Matrix4D getTransform(void) const;
+    void transformGeometry(const Base::Matrix4D &rclMat);
 
     /**
      * Swaps the content of \a Kernel and the internal mesh kernel.

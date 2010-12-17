@@ -77,6 +77,7 @@ public:
     const std::vector<Base::Vector3f>& getBasicPoints() const
     { return this->_Points; }
 
+    virtual void transformGeometry(const Base::Matrix4D &rclMat);
     virtual Base::BoundBox3d getBoundBox(void)const;
 
     /** @name I/O */

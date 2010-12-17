@@ -63,6 +63,13 @@ Data::Segment* PointKernel::getSubElement(const char* Type, unsigned long n) con
     return 0;
 }
 
+void PointKernel::transformGeometry(const Base::Matrix4D &rclMat)
+{
+    std::vector<Base::Vector3f>& kernel = getBasicPoints();
+    for (std::vector<Base::Vector3f>::iterator it = kernel.begin(); it != kernel.end(); ++it)
+        *it = rclMat * (*it);
+}
+
 Base::BoundBox3d PointKernel::getBoundBox(void)const
 {
     Base::BoundBox3d bnd;

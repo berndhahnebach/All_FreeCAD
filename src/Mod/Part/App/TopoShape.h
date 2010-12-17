@@ -143,7 +143,8 @@ public:
 
     /** @name Manipulation*/
     //@{
-    TopoDS_Shape transformGeometry(const Base::Matrix4D&) const;
+    void transformGeometry(const Base::Matrix4D &rclMat);
+    TopoDS_Shape transformGShape(const Base::Matrix4D&) const;
     void transformShape(const Base::Matrix4D&);
     TopoDS_Shape mirror(const gp_Ax2&) const;
     TopoDS_Shape toNurbs() const;

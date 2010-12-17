@@ -749,7 +749,7 @@ PyObject*  TopoShapePy::transformGeometry(PyObject *args)
 
     Base::Matrix4D mat = static_cast<Base::MatrixPy*>(obj)->value();
     try {
-        TopoDS_Shape shape = this->getTopoShapePtr()->transformGeometry(mat);
+        TopoDS_Shape shape = this->getTopoShapePtr()->transformGShape(mat);
         return new TopoShapePy(new TopoShape(shape));
     }
     catch (Standard_Failure) {

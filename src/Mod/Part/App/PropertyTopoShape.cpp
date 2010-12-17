@@ -135,7 +135,9 @@ void PropertyPartShape::getFaces(std::vector<Base::Vector3d> &aPoints,
 
 void PropertyPartShape::transformGeometry(const Base::Matrix4D &rclTrf)
 {
-    setValue(_Shape.transformGeometry(rclTrf));
+    aboutToSetValue();
+    _Shape.transformGeometry(rclTrf);
+    hasSetValue();
 }
 
 PyObject *PropertyPartShape::getPyObject(void)
