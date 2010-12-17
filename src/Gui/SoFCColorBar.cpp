@@ -170,6 +170,12 @@ void SoFCColorBar::setRange( float fMin, float fMax, int prec )
         (*it)->setRange(fMin, fMax, prec);
 }
 
+void SoFCColorBar::setOutsideGrayed (bool bVal)
+{
+    for (std::vector<SoFCColorBarBase*>::const_iterator it = _colorBars.begin(); it != _colorBars.end(); ++it)
+        (*it)->setOutsideGrayed(bVal);
+}
+
 bool SoFCColorBar::isVisible (float fVal) const
 {
     return this->getActiveBar()->isVisible(fVal);

@@ -54,6 +54,7 @@ public:
    * Returns the associated color to the value \a fVal.
    */
   App::Color getColor (float fVal) const { return _cColGrad.getColor(fVal); }
+  void setOutsideGrayed (bool bVal) { _cColGrad.setOutsideGrayed(bVal); }
   /**
    * Returns always true if the gradient is in mode to show colors to arbitrary values of \a fVal,
    * otherwise true is returned if \a fVal is within the specified parameter range, if not false is

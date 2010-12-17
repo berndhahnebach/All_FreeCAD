@@ -59,6 +59,7 @@ public:
 
   unsigned short getColorIndex (float fVal) const { return _cColRamp.getColorIndex(fVal);  }
   App::Color getColor (float fVal) const { return _cColRamp.getColor(fVal); }
+  void setOutsideGrayed (bool bVal) { _cColRamp.setOutsideGrayed(bVal); }
   bool isVisible (float fVal) const { return false; }
   float getMinValue (void) const { return _cColRamp.getMinValue(); }
   float getMaxValue (void) const { return _cColRamp.getMaxValue(); }
