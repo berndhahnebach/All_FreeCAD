@@ -33,7 +33,7 @@ class MyForm(QtGui.QDialog,Ui_dialog):
 
     def select_output(self):
         self.dirname=QtGui.QFileDialog.getExistingDirectory(None, 'Open working directory', '', QtGui.QFileDialog.ShowDirsOnly)
-        self.button_start_calculation.setEnabled(True)
+        self.button_start_calculation.setEnabled(not self.dirname.isEmpty())
 
     def onAbbrechen(self):
         self.close()
