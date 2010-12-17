@@ -381,10 +381,7 @@ void PropertyMeshKernel::finishEditing()
 void PropertyMeshKernel::transformGeometry(const Base::Matrix4D &rclMat)
 {
     aboutToSetValue();
-    MeshCore::MeshKernel kernel;
-    _meshObject->swap(kernel);
-    kernel.Transform(rclMat);
-    _meshObject->swap(kernel);
+    _meshObject->transformGeometry(rclMat);
     hasSetValue();
 }
 

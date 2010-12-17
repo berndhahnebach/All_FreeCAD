@@ -133,7 +133,7 @@ PyObject* FemMeshPy::setStanardHypotheses(PyObject *args)
 
 PyObject* FemMeshPy::compute(PyObject *args)
 {
-   if (!PyArg_ParseTuple(args, ""))
+    if (!PyArg_ParseTuple(args, ""))
         return NULL;
 
     try {
@@ -189,20 +189,20 @@ PyObject* FemMeshPy::write(PyObject *args)
 
 PyObject* FemMeshPy::setTransform(PyObject *args)
 {
-		PyObject* ptr;
-		if (!PyArg_ParseTuple(args, "O!", &(Base::PlacementPy::Type), &ptr))
-			return NULL;
+    PyObject* ptr;
+    if (!PyArg_ParseTuple(args, "O!", &(Base::PlacementPy::Type), &ptr))
+        return NULL;
 
-		try {
-			Base::Placement* placement = static_cast<Base::PlacementPy*>(ptr)->getPlacementPtr();
-			Base::Matrix4D mat = placement->toMatrix();
-			getFemMeshPtr()->setTransform(mat);
-		}
-		catch (const std::exception& e) {
-			PyErr_SetString(PyExc_Exception, e.what());
-			return 0;
-		}
-		Py_Return;
+    try {
+        Base::Placement* placement = static_cast<Base::PlacementPy*>(ptr)->getPlacementPtr();
+        Base::Matrix4D mat = placement->toMatrix();
+        getFemMeshPtr()->transformGeometry(mat);
+    }
+    catch (const std::exception& e) {
+        PyErr_SetString(PyExc_Exception, e.what());
+        return 0;
+    }
+    Py_Return;
 }
 
 // ===== Atributes ============================================================

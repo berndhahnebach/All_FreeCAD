@@ -88,6 +88,12 @@ public:
     Base::BoundBox3d getBoundBox(void)const;
     //@}
 
+    /** @name Modification */
+    //@{
+    /// Applies a transformation on the real geometric data type
+    void transformGeometry(const Base::Matrix4D &rclMat);
+    //@}
+
     /// import from files
     void read(const char *FileName);
     void write(const char *FileName) const;

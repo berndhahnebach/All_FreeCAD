@@ -101,6 +101,12 @@ public:
     virtual Base::Matrix4D getTransform(void) const = 0;
     //@}
 
+    /** @name Modification */
+    //@{
+    /// Applies a transformation on the real geometric data type
+    virtual void transformGeometry(const Base::Matrix4D &rclMat) = 0;
+    //@}
+
     /** @name Getting basic geometric entities */
     //@{
     struct LineTopo {uint32_t I1; uint32_t I2;};

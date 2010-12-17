@@ -643,7 +643,7 @@ void FemMesh::RestoreDocFile(Base::Reader &reader)
     fi.deleteFile();
 }
 
-void FemMesh::setTransform(const Base::Matrix4D& rclTrf)
+void FemMesh::transformGeometry(const Base::Matrix4D& rclTrf)
 {
 	//We perform a translation and rotation of the current active Mesh object
 	Base::Matrix4D clMatrix(rclTrf);
@@ -655,42 +655,16 @@ void FemMesh::setTransform(const Base::Matrix4D& rclTrf)
 		current_node = current_node * clMatrix;
 		myMesh->GetMeshDS()->MoveNode(aNode,current_node.x,current_node.y,current_node.z);
 	}
- /*   gp_Trsf mov;
-    mov.SetValues(rclTrf[0][0],rclTrf[0][1],rclTrf[0][2],rclTrf[0][3],
-                  rclTrf[1][0],rclTrf[1][1],rclTrf[1][2],rclTrf[1][3],
-                  rclTrf[2][0],rclTrf[2][1],rclTrf[2][2],rclTrf[2][3],
-                  0.00001,0.00001);
-    TopLoc_Location loc(mov);
-    _Shape.Location(loc);*/
+}
+
+void FemMesh::setTransform(const Base::Matrix4D& rclTrf)
+{
+    // Placement handling, no geometric transformation
 }
 
 Base::Matrix4D FemMesh::getTransform(void) const
 {
     Base::Matrix4D mtrx;
-    //gp_Trsf Trf = _Shape.Location().Transformation();
-
-    //gp_Mat m = Trf._CSFDB_Getgp_Trsfmatrix();
-    //gp_XYZ p = Trf._CSFDB_Getgp_Trsfloc();
-    //Standard_Real scale = Trf._CSFDB_Getgp_Trsfscale();
-
-    //// set Rotation matrix
-    //mtrx[0][0] = scale * m._CSFDB_Getgp_Matmatrix(0,0);
-    //mtrx[0][1] = scale * m._CSFDB_Getgp_Matmatrix(0,1);
-    //mtrx[0][2] = scale * m._CSFDB_Getgp_Matmatrix(0,2);
-
-    //mtrx[1][0] = scale * m._CSFDB_Getgp_Matmatrix(1,0);
-    //mtrx[1][1] = scale * m._CSFDB_Getgp_Matmatrix(1,1);
-    //mtrx[1][2] = scale * m._CSFDB_Getgp_Matmatrix(1,2);
-
-    //mtrx[2][0] = scale * m._CSFDB_Getgp_Matmatrix(2,0);
-    //mtrx[2][1] = scale * m._CSFDB_Getgp_Matmatrix(2,1);
-    //mtrx[2][2] = scale * m._CSFDB_Getgp_Matmatrix(2,2);
-
-    //// set pos vector
-    //mtrx[0][3] = p._CSFDB_Getgp_XYZx();
-    //mtrx[1][3] = p._CSFDB_Getgp_XYZy();
-    //mtrx[2][3] = p._CSFDB_Getgp_XYZz();
-
     return mtrx;
 }
 

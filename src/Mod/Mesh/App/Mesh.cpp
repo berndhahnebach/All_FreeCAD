@@ -103,6 +103,14 @@ Data::Segment* MeshObject::getSubElement(const char* Type, unsigned long n) cons
     return 0;
 }
 
+void MeshObject::transformGeometry(const Base::Matrix4D &rclMat)
+{
+    MeshCore::MeshKernel kernel;
+    swap(kernel);
+    kernel.Transform(rclMat);
+    swap(kernel);
+}
+
 void MeshObject::setTransform(const Base::Matrix4D& rclTrf)
 {
     _Mtrx = rclTrf;

@@ -965,7 +965,12 @@ TopoDS_Shape TopoShape::makeThickSolid(const TopTools_ListOfShape& remFace,
     return mkThick.Shape();
 }
 
-TopoDS_Shape TopoShape::transformGeometry(const Base::Matrix4D& rclTrf) const
+void TopoShape::transformGeometry(const Base::Matrix4D &rclMat)
+{
+    this->_Shape = transformGShape(rclMat);
+}
+
+TopoDS_Shape TopoShape::transformGShape(const Base::Matrix4D& rclTrf) const
 {
     // There is a strange behaviour of the gp_Trsf class if rclTrf has
     // a negative determinant.

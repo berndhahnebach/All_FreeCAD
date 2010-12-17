@@ -187,8 +187,6 @@ void PropertyPointKernel::removeIndices( const std::vector<unsigned long>& uIndi
 void PropertyPointKernel::transformGeometry(const Base::Matrix4D &rclMat)
 {
     aboutToSetValue();
-    std::vector<Base::Vector3f>& kernel = _cPoints->getBasicPoints();
-    for (std::vector<Base::Vector3f>::iterator it = kernel.begin(); it != kernel.end(); ++it)
-        *it = rclMat * (*it);
+    _cPoints->transformGeometry(rclMat);
     hasSetValue();
 }
