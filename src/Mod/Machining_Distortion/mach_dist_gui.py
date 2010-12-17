@@ -17,7 +17,7 @@ import FreeCAD,Fem,Part
 
 class MyForm(QtGui.QDialog,Ui_dialog):
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self)
+        QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
 
         #Connect Signals and Slots

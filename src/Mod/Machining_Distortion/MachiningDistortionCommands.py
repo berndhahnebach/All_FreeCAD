@@ -16,7 +16,7 @@ from mach_dist_gui import MyForm
 class MachiningDistortion_ChooseFile:
     "Choose the file to work with"
     def Activated(self):
-        myapp = MyForm()
+        myapp = MyForm(QtGui.qApp.activeWindow())
         myapp.exec_()
 
     def GetResources(self):
