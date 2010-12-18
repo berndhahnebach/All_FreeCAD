@@ -57,8 +57,6 @@
 #include <StdMeshers_NotConformAllowed.hxx>
 #include <StdMeshers_Arithmetic1D.hxx>
 
-#include <ANN/ANN.h> 
-
 #include "FemMesh.h"
 #include "FemMeshObject.h"
 #include "FemMeshPy.h"

@@ -306,6 +306,52 @@ else
 fi
 
 
+dnl checking for ANN
+dnl **************************************************************************
+dnl AC_MSG_CHECKING([for ANN])
+dnl AC_ARG_WITH(ann-include,
+dnl 	AC_HELP_STRING([--with-ann-include=DIR], [Path to the ANN header files]),
+dnl 	[fc_ann_incs=$withval],
+dnl 	[fc_ann_incs=/usr/include])
+dnl 
+dnl AC_CHECK_FILE($fc_ann_incs/ANN,,
+dnl 	[AC_CHECK_FILE(/usr/local/include/ANN,[fc_ann_incs=/usr/local/include])])
+dnl 
+dnl AC_ARG_WITH(ann-lib,
+dnl 	AC_HELP_STRING([--with-ann-lib=DIR], [Path to the ANN library files]),
+dnl 	[fc_ann_libs=$withval],
+dnl 	[fc_ann_libs=/usr/lib])
+dnl 
+dnl fc_ann_ac_save_cppflags=$CPPFLAGS
+dnl fc_ann_ac_save_ldflags=$LDFLAGS
+dnl fc_ann_ac_save_libs=$LIBS
+dnl CPPFLAGS="$CPPFLAGS -I$fc_ann_incs"
+dnl LDFLAGS="$LDFLAGS -L$fc_ann_libs"
+dnl LIBS="-lann"
+dnl 
+dnl fc_cv_lib_ann_avail=no
+dnl AC_CHECK_HEADER(ANN/ANN.h,[
+dnl AC_MSG_CHECKING([whether ANN lib is available])
+dnl AC_TRY_LINK([#include <ANN/ANN.h>],
+dnl 	[ANNkd_tree ann;],
+dnl 	[fc_cv_lib_ann_avail=yes
+dnl 	AC_MSG_RESULT(yes)],
+dnl 	AC_MSG_RESULT(no))])
+dnl 
+dnl CPPFLAGS=$fc_ann_ac_save_cppflags
+dnl LDFLAGS=$fc_ann_ac_save_ldflags
+dnl LIBS=$fc_ann_ac_save_libs
+dnl 
+dnl if test x"$fc_cv_lib_ann_avail" = xyes; then
+dnl 	all_includes="$all_includes -I$fc_ann_incs"
+dnl 	all_libraries="$all_libraries -L$fc_ann_libs"
+dnl else
+dnl 	AC_MSG_ERROR([
+dnl 	**** Cannot find ANN devel files. ****
+dnl    ])
+dnl fi
+
+
 dnl checking for eigen2
 dnl **************************************************************************
 AC_MSG_CHECKING([for eigen2])
