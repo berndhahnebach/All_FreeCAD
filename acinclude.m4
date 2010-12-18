@@ -374,7 +374,7 @@ if test x"$ac_status" != x0; then
 fi
 
 # Make sure not to link against X11 libs so that configure succeeds whithout xserver started
-bnv_try_4="$CXX $fc_qt4_lib_core $LIBS -o myqt myqt.o moc_myqt.o"
+bnv_try_4="$CXX myqt.o moc_myqt.o $fc_qt4_lib_core $LIBS -o myqt"
 AC_TRY_EVAL(bnv_try_4)
 if test x"$ac_status" != x0; then
    AC_MSG_ERROR([Failed to link with Qt, bye...])
