@@ -1981,6 +1981,7 @@ class Move(Modifier):
 		else: self.doc.openTransaction("Move")
 		Draft.move(self.sel,delta,copy)
 		self.doc.commitTransaction()
+                self.doc.recompute()
 
 	def action(self,arg):
 		"scene event handler"
@@ -3270,7 +3271,7 @@ class Edit(Modifier):
                         pts = self.obj.Points
                         pts[self.editing] = self.invpl.multVec(v)
                         self.obj.Points = pts
-                        self.trackers[self.editing].set(pts[self.editing])
+                        self.trackers[self.editing].set(v)
                 elif Draft.getType(self.obj) == "Circle":
                         delta = v.sub(self.obj.Placement.Base)
                         if self.editing == 0:
@@ -3322,7 +3323,7 @@ class Edit(Modifier):
                         pts = self.obj.Nodes
                         pts[self.editing] = self.invpl.multVec(v)
                         self.obj.Nodes = pts
-                        self.trackers[self.editing].set(pts[self.editing])
+                        self.trackers[self.editing].set(v)
                 elif Draft.getType(self.obj) == "Dimension":
                         if self.editing == 0:
                                 self.obj.Start = v
