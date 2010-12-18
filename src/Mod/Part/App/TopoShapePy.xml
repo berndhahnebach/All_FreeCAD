@@ -28,22 +28,22 @@ Sub-elements such as vertices, edges or faces are accessible as:
         <UserDocu>Write the mesh in OpenInventor format to a string.</UserDocu>
       </Documentation>
     </Methode>
-    <Methode Name="exportIges">
+    <Methode Name="exportIges" Const="true">
       <Documentation>
         <UserDocu>Export the content of this shape to an IGES file.</UserDocu>
       </Documentation>
     </Methode>
-    <Methode Name="exportStep">
+    <Methode Name="exportStep" Const="true">
       <Documentation>
         <UserDocu>Export the content of this shape to an STEP file.</UserDocu>
       </Documentation>
     </Methode>
-    <Methode Name="exportBrep">
+    <Methode Name="exportBrep" Const="true">
       <Documentation>
         <UserDocu>Export the content of this shape to an BREP file. BREP is a CasCade native format.</UserDocu>
       </Documentation>
     </Methode>
-    <Methode Name="exportStl">
+    <Methode Name="exportStl" Const="true">
       <Documentation>
         <UserDocu>Export the content of this shape to an STL mesh file.</UserDocu>
       </Documentation>
@@ -60,7 +60,7 @@ Part.revolve(Vector(0,0,0),Vector(0,0,1),360) - revolves the shape around the Z 
         </UserDocu>
       </Documentation>
     </Methode>
-    <Methode Name="check">
+    <Methode Name="check" Const="true">
       <Documentation>
         <UserDocu>Checks the shape and report errors in the shape structure.
 This is a more detailed check as done in isValid().</UserDocu>
@@ -191,38 +191,38 @@ i.e. reverses the interior/exterior status of boundaries of this shape.</UserDoc
 As a result, this shape becomes null.</UserDocu>
       </Documentation>
     </Methode>
-    <Methode Name="isClosed">
+    <Methode Name="isClosed" Const="true">
       <Documentation>
         <UserDocu>Checks if the shape is closed.</UserDocu>
       </Documentation>
     </Methode>
-    <Methode Name="isSame">
+    <Methode Name="isSame" Const="true">
       <Documentation>
         <UserDocu>Checks if both shapes share the same geometry.</UserDocu>
       </Documentation>
     </Methode>
-    <Methode Name="isEqual">
+    <Methode Name="isEqual" Const="true">
       <Documentation>
         <UserDocu>Checks if both shapes are equal.</UserDocu>
       </Documentation>
     </Methode>
-    <Methode Name="isNull">
+    <Methode Name="isNull" Const="true">
       <Documentation>
         <UserDocu>Checks if the shape is null.</UserDocu>
       </Documentation>
     </Methode>
-    <Methode Name="isValid">
+    <Methode Name="isValid" Const="true">
       <Documentation>
         <UserDocu>Checks if the shape is valid, i.e. neither null, nor empty nor corrupted.</UserDocu>
       </Documentation>
     </Methode>
-    <Methode Name="hashCode">
+    <Methode Name="hashCode" Const="true">
       <Documentation>
         <UserDocu>This value is computed from the value of the underlying shape reference and the location.
 Orientation is not taken into account.</UserDocu>
       </Documentation>
     </Methode>
-    <Methode Name="tessellate">
+    <Methode Name="tessellate" Const="true">
       <Documentation>
         <UserDocu>Tessellate the the shape and return a list of vertices and face indices</UserDocu>
       </Documentation>
@@ -238,7 +238,7 @@ Orientation is not taken into account.</UserDocu>
 Note: This should be used for rather small meshes only.</UserDocu>
       </Documentation>
     </Methode>
-    <Methode Name="toNurbs">
+    <Methode Name="toNurbs" Const="true">
       <Documentation>
         <UserDocu>Conversion of the complete geometry of a shape into NURBS geometry.
 For example, all curves supporting edges of the basis shape are converted
