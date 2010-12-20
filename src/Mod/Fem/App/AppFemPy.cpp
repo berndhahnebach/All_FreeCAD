@@ -322,9 +322,8 @@ static PyObject * getBoundary_Conditions(PyObject *self, PyObject *args)
 		Base::BoundBox3f aBBox;
 		aBBox = aMesh.GetBoundBox();
 
-		Base::Vector3f min_Node,max_Node,mid_Node,dist;
 		float dist_length;
-		int minNodeID,maxNodeID;
+		int minNodeID,maxNodeID,midNodeID;
 		dist_length = FLOAT_MAX;
 		aNodeIter = inputMesh->getFemMeshPtr()->getSMesh()->GetMeshDS()->nodesIterator();
 		for (;aNodeIter->more();)
@@ -334,12 +333,27 @@ static PyObject * getBoundary_Conditions(PyObject *self, PyObject *args)
 			dist.x = float(aNode->X())-aBBox.MinX;dist.y = float(aNode->Y())-aBBox.MinY;dist.z = float(aNode->Z())-aBBox.MinZ;
 			if(dist.Length()<dist_length)
 			{
-				min_Node.x = float(aNode->X());min_Node.y = float(aNode->Y());min_Node.z=float(aNode->Z());
 				minNodeID = aNode->GetID();
 				dist_length = dist.Length();
 			}
 		}
 		boundary_nodes.append(Py::Int(minNodeID));
+		
+		dist_length = FLOAT_MAX;
+		aNodeIter = inputMesh->getFemMeshPtr()->getSMesh()->GetMeshDS()->nodesIterator();
+		for (;aNodeIter->more();)
+		{
+			const SMDS_MeshNode* aNode = aNodeIter->next();
+			//Calc distance between the lower right corner and the most next point of the mesh
+			dist.x = float(aNode->X())-aBBox.MaxX;dist.y = float(aNode->Y())-aBBox.MinY;dist.z = float(aNode->Z())-aBBox.MinZ;
+			if(dist.Length()<dist_length)
+			{
+				midNodeID = aNode->GetID();
+				dist_length = dist.Length();
+			}
+		}
+		boundary_nodes.append(Py::Int(midNodeID));
+		
 		dist_length = FLOAT_MAX;
 		aNodeIter = inputMesh->getFemMeshPtr()->getSMesh()->GetMeshDS()->nodesIterator();
 		for (;aNodeIter->more();)
@@ -349,12 +363,14 @@ static PyObject * getBoundary_Conditions(PyObject *self, PyObject *args)
 			dist.x = float(aNode->X())-aBBox.MaxX;dist.y = float(aNode->Y())-aBBox.MaxY;dist.z = float(aNode->Z())-aBBox.MinZ;
 			if(dist.Length()<dist_length)
 			{
-				max_Node.x = float(aNode->X());max_Node.y = float(aNode->Y());max_Node.z=float(aNode->Z());
 				maxNodeID = aNode->GetID();
 				dist_length = dist.Length();
 			}
 		}
 		boundary_nodes.append(Py::Int(maxNodeID));
+
+
+		
 
 		return Py::new_reference_to(boundary_nodes);
 		

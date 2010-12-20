@@ -1,8 +1,8 @@
-def ApplyingBC_IC(YoungModulus,PoissonCoeff,OUTER_GRID_No1,OUTER_GRID_No2,OUTER_GRID_No3) :
+def ApplyingBC_IC(Casedir,YoungModulus,PoissonCoeff,OUTER_GRID_No1,OUTER_GRID_No2,OUTER_GRID_No3) :
     # Variables generales
     import os
     #
-    AC_file = open ('Applied_Conditions.txt','w')
+    AC_file = open (str(Casedir + "/" + "Applied_Conditions.txt"),'w')
     #
     # a) BOUNDARY conditions in order to prevent the billet to any solid displacement
     AC_file.write("** \n")
@@ -61,8 +61,11 @@ def ApplyingBC_IC(YoungModulus,PoissonCoeff,OUTER_GRID_No1,OUTER_GRID_No2,OUTER_
     #
     AC_file.write("*END STEP")
     #
-    AC_file.close()   
-    CommandLine = "cat Applied_Conditions.txt >> TransformedMesh_File.inp"
+    AC_file.close() 
+    if os.name != "posix":
+        CommandLine = "type Applied_Conditions.txt geometry_fe_input.inp > final_fe_input.inp"
+    else:
+        CommandLine = "cat Applied_Conditions.txt >> geometry_fe_input.inp"
     os.system(CommandLine)
     #
     return
