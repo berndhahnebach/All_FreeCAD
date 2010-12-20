@@ -51,14 +51,7 @@ class MyForm(QtGui.QDialog,Ui_dialog):
 
         current_file_name = self.filenames[0]
         filename_without_suffix = self.filenames[0].split("/").takeLast().split(".")[0]
-        current_z_level = 0
-        # 0) Create a directory to dispose the resulting files for the case under consideration :
-        Case_Dir = self.dirname + filename_without_suffix + "_" + QtCore.QString.number(current_z_level)
-        if ( os.path.exists(str(Case_Dir)) ):
-          os.rmdir(str(Case_Dir))
-        os.mkdir(str(Case_Dir))
-
-        meshobject = Fem.read(str(current_file_name))
+         meshobject = Fem.read(str(current_file_name))
         #Perform PCA 
         Fem.SMESH_PCA(meshobject)
         #Do min routine
@@ -79,6 +72,7 @@ class MyForm(QtGui.QDialog,Ui_dialog):
         #1. Lets translate the geometry to the initial desired z-level
 
         #2. Generate a Folder for the current calculation z-level and output the ABAQUS Geometry and the boundary_conditions
+        intervall = 1
         i = self.z_level_from
         while i <= self_z_level_to:
             translation = FreeCAD.Base.Placement(FreeCAD.Base.Vector(0,0,self.z_level_from),FreeCAD.Base.Vector(1,0,0),0)
@@ -87,13 +81,13 @@ class MyForm(QtGui.QDialog,Ui_dialog):
             if ( os.path.exists(str(Case_Dir)) ):
               os.rmdir(str(Case_Dir))
             os.mkdir(str(Case_Dir))
-            meshobject.write(str(Case_Dir + "/" + filename_without_suffix + "_" + QtCore.QString.number(i) + ".inp"))
-            ApplyingBC_IC(YoungModulus,PoissonCoeff,node_numbers[0],node_numbers[1],node_numbers[2])
+            meshobject.write(str(Case_Dir + "/" + "geometry_fe_input.inp"))
+            ApplyingBC_IC(Case_Dir, YoungModulus,PoissonCoeff,node_numbers[0],node_numbers[1],node_numbers[2])
             i = i+intervall
         
         #3. Generate a Batch File and begin the calculation of the different steps. Use a progress bar to make the progress visible
         ##        # Edit a batch file (it may be necessary later on) :
-        batch = open ('lcmt_CALCULIX_Calculation_batch.bat','w')
+        batch = open (str(self.dirname + "/" + 'lcmt_CALCULIX_Calculation_batch.bat'),'w')
         print "writing job execution file lcmt_CALCULIX_Calculation_batch.bat"
         print "Provide a file MYcase1_sigini_input.txt if necessary !"
         print "Provide a file MYcase1.NormalInfos_txt if necessary !"
