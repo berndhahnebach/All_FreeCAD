@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <float.h>
 # include <qcheckbox.h>
 # include <qcombobox.h>
 # include <qmessagebox.h>
@@ -54,6 +55,34 @@ MeshGui::DlgRegularSolidImp::DlgRegularSolidImp(QWidget* parent, Qt::WFlags fl)
 {
     this->setupUi(this);
     Gui::Command::doCommand(Gui::Command::Doc, "import Mesh,BuildRegularGeoms");
+
+    // set limits
+    // Box
+    boxLength->setMaximum(DBL_MAX);
+    boxWidth->setMaximum(DBL_MAX);
+    boxHeight->setMaximum(DBL_MAX);
+    // Cylinder
+    cylinderRadius->setMaximum(DBL_MAX);
+    cylinderLength->setMaximum(DBL_MAX);
+    cylinderEdgeLength->setMaximum(DBL_MAX);
+    cylinderCount->setMaximum(1000);
+    // Cone
+    coneRadius1->setMaximum(DBL_MAX);
+    coneRadius2->setMaximum(DBL_MAX);
+    coneLength->setMaximum(DBL_MAX);
+    coneEdgeLength->setMaximum(DBL_MAX);
+    coneCount->setMaximum(1000);
+    // Sphere
+    sphereRadius->setMaximum(DBL_MAX);
+    sphereCount->setMaximum(1000);
+    // Ellipsoid
+    ellipsoidRadius1->setMaximum(DBL_MAX);
+    ellipsoidRadius2->setMaximum(DBL_MAX);
+    ellipsoidCount->setMaximum(1000);
+    // Torus
+    toroidRadius1->setMaximum(DBL_MAX);
+    toroidRadius2->setMaximum(DBL_MAX);
+    toroidCount->setMaximum(1000);
 }
 
 /**
