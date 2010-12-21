@@ -36,6 +36,12 @@
 				<UserDocu>Make a ruled surface of this and the given curves</UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="parameter">
+			<Documentation>
+				<UserDocu>Returns the parameter on the curve
+of the nearest orthogonal projection of the point.</UserDocu>
+			</Documentation>
+		</Methode>
 		<Attribute Name="FirstParameter" ReadOnly="true">
 			<Documentation>
 				<UserDocu>
