@@ -122,22 +122,9 @@ def getTranslation(languagecode):
 
 def getType(obj):
         "getType(object): returns the Draft type of the given object"
-        if "Length" in obj.PropertiesList:
-                if "Height" in obj.PropertiesList:
-                        return "Rectangle"
-        if "FirstAngle" in obj.PropertiesList:
-                if "Radius" in obj.PropertiesList:
-                        return "Circle"
-        if "Points" in obj.PropertiesList:
-                if "Closed" in obj.PropertiesList:
-                        return "Wire"
-        if "Nodes" in obj.PropertiesList:
-                if "Closed" in obj.PropertiesList:
-                        return "BSpline"
-        if "FacesNumber" in obj.PropertiesList:
-                return "Polygon"
-        if "Dimline" in obj.PropertiesList:
-                return "Dimension"
+        if "Proxy" in obj.PropertiesList:
+                if hasattr(obj.Proxy,"Type"):
+                        return obj.Proxy.Type
         if obj.isDerivedFrom("Part::Feature"):
                 return "Part"
         if (obj.Type == "App::Annotation"):
@@ -401,7 +388,7 @@ def makeBSpline(pointslist,closed=False,placement=None,face=True):
         obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython",fname)
         BSpline(obj)
         ViewProviderBSpline(obj.ViewObject)
-        obj.Nodes = pointslist
+        obj.Points = pointslist
         obj.Closed = closed
         if not face: obj.ViewObject.DisplayMode = "Wireframe"
         if placement: obj.Placement = placement
@@ -918,6 +905,7 @@ class Dimension:
                 obj.End = FreeCAD.Vector(1,0,0)
                 obj.Dimline = FreeCAD.Vector(0,1,0)
 		obj.Proxy = self
+                self.Type = "Dimension"
 		
 	def onChanged(self, fp, prop):
 		pass
@@ -1171,6 +1159,7 @@ class Rectangle:
 		obj.Proxy = self
                 obj.Length=1
                 obj.Height=1
+                self.Type = "Rectangle"
 
 	def execute(self, fp):
                 self.createGeometry(fp)
@@ -1253,6 +1242,7 @@ class Circle:
                 obj.addProperty("App::PropertyDistance","Radius","Base",
                                 "Radius of the circle")
 		obj.Proxy = self
+                self.Type = "Circle"
 
 	def execute(self, fp):
                 self.createGeometry(fp)
@@ -1316,6 +1306,7 @@ class Wire:
                                 "The tool object is the wire is formed from 2 objects")
 		obj.Proxy = self
                 obj.Closed = False
+                self.Type = "Wire"
 
 	def execute(self, fp):
                 self.createGeometry(fp)
@@ -1428,6 +1419,7 @@ class Polygon:
                 obj.FacesNumber = 3
                 obj.Radius = 1
                 obj.Proxy = self
+                self.Type = "Polygon"
 
 	def execute(self, fp):
                 self.createGeometry(fp)
@@ -1493,6 +1485,7 @@ class DrawingView:
                 obj.Proxy = self
                 obj.LinewidthModifier = 100
                 obj.TextModifier = 100
+                self.Type = "DrawingView"
 
         def execute(self, obj):
                 if obj.Source:
@@ -1518,45 +1511,31 @@ class BSpline:
         "The BSpline object"
         
 	def __init__(self, obj):
-		obj.addProperty("App::PropertyVectorList","Nodes","Base",
+		obj.addProperty("App::PropertyVectorList","Points","Base",
                                 "The points of the b-spline")
                 obj.addProperty("App::PropertyBool","Closed","Base",
                                 "If the b-spline is closed or not")
-                obj.addProperty("App::PropertyLink","Base","Base",
-                                "The base object is the wire is formed from 2 objects")
-                obj.addProperty("App::PropertyLink","Tool","Base",
-                                "The tool object is the wire is formed from 2 objects")
 		obj.Proxy = self
                 obj.Closed = False
+                self.Type = "BSpline"
 
 	def execute(self, fp):
                 self.createGeometry(fp)
 
         def onChanged(self, fp, prop):
-                if prop in ["Nodes","Closed","Base","Tool"]:
+                if prop in ["Points","Closed"]:
                         self.createGeometry(fp)
                         
         def createGeometry(self,fp):
                 plm = fp.Placement
-                if fp.Base and fp.Tool:
-                        if ('Shape' in fp.Base.PropertiesList) and ('Shape' in fp.Tool.PropertiesList):
-                                sh1 = fp.Base.Shape
-                                sh2 = fp.Tool.Shape
-                                shape = sh1.fuse(sh2)
-                                if fcgeo.isCoplanar(shape.Faces):
-                                        shape = fcgeo.concatenate(shape)
-                                        fp.Shape = shape
-                                        p = []
-                                        for v in shape.Vertexes: p.append(v.Point)
-                                        if fp.Nodes != p: fp.Nodes = p
-                elif fp.Nodes:
-                        if fp.Nodes[0] == fp.Nodes[-1]:
+                if fp.Points:
+                        if fp.Points[0] == fp.Points[-1]:
                                 fp.Closed = True
-                                fp.Nodes.pop()
-                        if fp.Closed and (len(fp.Nodes) > 2):
-                                shape = Part.BSplineCurve(fp.Nodes+[fp.Nodes[0]]).toShape()
+                                fp.Points.pop()
+                        if fp.Closed and (len(fp.Points) > 2):
+                                shape = Part.BSplineCurve(fp.Points+[fp.Points[0]]).toShape()
                         else:   
-                                shape = Part.BSplineCurve(fp.Nodes).toShape()
+                                shape = Part.BSplineCurve(fp.Points).toShape()
                         fp.Shape = shape
                 fp.Placement = plm
 
@@ -1605,9 +1584,9 @@ class ViewProviderBSpline(ViewProviderDraft):
 		       """
         
         def updateData(self, obj, prop):
-                if prop == "Nodes":
-                        if obj.Nodes:
-                                p = obj.Nodes[-1]
+                if prop == "Points":
+                        if obj.Points:
+                                p = obj.Points[-1]
                                 self.coords.point.setValue((p.x,p.y,p.z))
 		return
 
@@ -1634,6 +1613,7 @@ class AngularDimension:
                 obj.Center = FreeCAD.Vector(0,0,0)
                 obj.Dimline = FreeCAD.Vector(0,1,0)
 		obj.Proxy = self
+                self.Type = "AngularDimension"
 
 	def execute(self, fp):
                 self.createGeometry(fp)

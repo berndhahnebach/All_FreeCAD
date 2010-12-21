@@ -731,6 +731,12 @@ class SelectPlane:
 			'MenuText': str(translate("draft", "SelectPlane").toLatin1()),
 			'ToolTip' : str(translate("draft", "Select a working plane for geometry creation").toLatin1())}
 
+        def IsActive(self):
+                if FreeCADGui.ActiveDocument:
+                        return True
+                else:
+                        return False
+        
 	def Activated(self):
 		if FreeCAD.activeDraftCommand:
 			FreeCAD.activeDraftCommand.finish()
@@ -846,6 +852,12 @@ class Creator:
 			self.constrain = None
 			self.obj = None
                         self.planetrack = PlaneTracker()
+
+        def IsActive(self):
+                if FreeCADGui.ActiveDocument:
+                        return True
+                else:
+                        return False
 		
 	def finish(self):
 		self.node=[]
@@ -1929,6 +1941,12 @@ class Modifier:
                         self.ui.cmdlabel.setText(name)
 			self.featureName = name
                         self.planetrack = PlaneTracker()
+
+        def IsActive(self):
+                if FreeCADGui.ActiveDocument:
+                        return True
+                else:
+                        return False
 		
 	def finish(self):
 		self.node = []
@@ -3165,7 +3183,12 @@ class Edit(Modifier):
 
         def IsActive(self):
                 if Draft.getSelection():
-                        return True
+                        self.selection = Draft.getSelection()
+                        if "Proxy" in self.selection[0].PropertiesList:
+                                if hasattr(self.selection[0].Proxy,"Type"):
+                                        return True
+                        else:
+                                return False
                 else:
                         return False
 
@@ -3174,6 +3197,7 @@ class Edit(Modifier):
                         self.finish()
                 else:
                         Modifier.Activated(self,"Edit")
+                        self.ui.editUi()
                         if self.doc:
                                 self.obj = Draft.getSelection()
                                 if self.obj:
@@ -3184,7 +3208,7 @@ class Edit(Modifier):
                                         if "Placement" in self.obj.PropertiesList:
                                                 self.pl = self.obj.Placement
                                                 self.invpl = self.pl.inverse()
-                                        if Draft.getType(self.obj) == "Wire":
+                                        if Draft.getType(self.obj) in ["Wire","BSpline"]:
                                                 for p in self.obj.Points:
                                                         if self.pl: p = self.pl.multVec(p)
                                                         self.editpoints.append(p)
@@ -3203,11 +3227,6 @@ class Edit(Modifier):
                                         elif Draft.getType(self.obj) == "Polygon":
                                                 self.editpoints.append(self.obj.Placement.Base)
                                                 self.editpoints.append(self.obj.Shape.Vertexes[0].Point)
-                                        # DNC: to make b-splne editable
-                                        elif Draft.getType(self.obj) == "BSpline":
-                                                for p in self.obj.Nodes:
-                                                        if self.pl: p = self.pl.multVec(p)
-                                                        self.editpoints.append(p)
                                         elif Draft.getType(self.obj) == "Dimension":
                                                 p = self.obj.ViewObject.Proxy.textpos.translation.getValue()
                                                 self.editpoints.append(self.obj.Start)
@@ -3279,7 +3298,7 @@ class Edit(Modifier):
                                         self.numericInput(self.trackers[self.editing].get())
 
         def update(self,v):
-                if Draft.getType(self.obj) == "Wire":
+                if Draft.getType(self.obj) in ["Wire","BSpline"]:
                         pts = self.obj.Points
                         pts[self.editing] = self.invpl.multVec(v)
                         self.obj.Points = pts
@@ -3330,12 +3349,6 @@ class Edit(Modifier):
                                         rad = math.cos(halfangle)*delta.Length
                                         self.obj.Radius = rad
                         self.trackers[1].set(self.obj.Shape.Vertexes[0].Point)
-                # DNC: to make b-splne editable
-                elif Draft.getType(self.obj) == "BSpline":
-                        pts = self.obj.Nodes
-                        pts[self.editing] = self.invpl.multVec(v)
-                        self.obj.Nodes = pts
-                        self.trackers[self.editing].set(v)
                 elif Draft.getType(self.obj) == "Dimension":
                         if self.editing == 0:
                                 self.obj.Start = v
@@ -3356,7 +3369,7 @@ class Edit(Modifier):
                 self.update(v)
                 self.doc.commitTransaction()
                 self.editing = None
-                self.ui.offUi()
+                self.ui.editUi()
                 self.node = []
 
 class AddToGroup():
@@ -3388,6 +3401,232 @@ class AddToGroup():
                                 g.addObject(obj)
                         except:
                                 pass
+
+class AddPoint(Modifier):
+	"The Draft_AddPoint FreeCAD command definition"
+
+	def __init__(self):
+		self.running = False
+
+	def GetResources(self):
+		return {'Pixmap'  : 'Draft_addpoint',
+			'MenuText': str(translate("draft", "Add Point").toLatin1()),
+			'ToolTip': str(translate("draft", "Adds a point to an existing wire/bspline").toLatin1())}
+
+        def IsActive(self):
+		self.selection = Draft.getSelection()
+		if (Draft.getType(self.selection[0]) in ['Wire','BSpline']):
+			return True
+		else:
+			return False
+
+	def Activated(self):
+                if self.running:
+                        self.finish()
+                else:
+                        Modifier.Activated(self,"Add Point")
+                        self.ui.editUi()
+                        if self.doc:
+                                self.obj = Draft.getSelection()
+                                if self.obj:
+                                        self.obj = self.obj[0]
+                                        self.editing = None
+					self.pl = None
+                                        if "Placement" in self.obj.PropertiesList:
+                                                self.pl = self.obj.Placement
+                                                self.invpl = self.pl.inverse()
+					self.trackers = []
+					self.resetTrackers()
+					self.snap = snapTracker()
+					self.call = self.view.addEventCallback("SoEvent",self.action)
+					self.running = True
+					plane.save()
+					self.planetrack.set(self.obj.Points[0])
+                                else:
+                                        self.finish()
+
+	def finish(self,closed=False):
+		"terminates the operation"
+                if self.ui:
+                        if self.snap:
+                                self.snap.finalize()
+                        if self.trackers:
+                                for t in self.trackers:
+                                        t.finalize()
+		Modifier.finish(self)
+                plane.restore()
+                self.running = False
+
+	def action(self,arg):
+		"scene event handler"
+                if arg["Type"] == "SoKeyboardEvent" and arg["Key"] == "ESCAPE":
+			self.finish()
+		if (arg["Type"] == "SoLocation2Event"): #mouse movement detection
+			point,ctrlPoint = getPoint(self,arg)
+                        self.ui.cross(True)
+		if (arg["Type"] == "SoMouseButtonEvent"):
+			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
+				snapped = self.view.getObjectInfo((arg["Position"][0],arg["Position"][1]))
+				if snapped:
+					if snapped['Object'] == self.obj.Name:
+						point,ctrlPoint = getPoint(self,arg)
+						self.pos = arg["Position"]
+						self.update(point)
+				else:
+					self.finish()
+
+        def update(self,point):
+                if Draft.getType(self.obj) == "Wire":
+			pts = self.obj.Points
+			vertexes = fcgeo.getVerts(self.obj.Shape)
+			self.edges = []
+			self.edges = self.obj.Shape.Wires[0].Edges
+			for e in self.edges:
+				if ((point in vertexes) == False) and (fcgeo.isPtOnEdge(point,e)):
+					ev2 = pts.index(self.invpl.multVec(e.Vertexes[1].Point))
+					pts.insert(ev2, self.invpl.multVec(point))
+			self.obj.Points = pts
+			self.resetTrackers()
+
+	def resetTrackers(self):
+		for t in self.trackers:
+			t.finalize()
+		self.trackers = []
+		for ep in range(len(self.obj.Points)):
+			objPoints = self.obj.Points[ep]
+			if self.pl: objPoints = self.pl.multVec(objPoints)
+			self.trackers.append(editTracker(objPoints,self.obj.Name,ep))
+
+class DelPoint(Modifier):
+	"The Draft_DelPoint FreeCAD command definition"
+
+	def __init__(self):
+		self.running = False
+
+	def GetResources(self):
+		return {'Pixmap'  : 'Draft_delpoint',
+			'MenuText': str(translate("draft", "Remove Point").toLatin1()),
+			'ToolTip': str(translate("draft", "Removes a point from an existing wire or bspline").toLatin1())}
+
+        def IsActive(self):
+		self.selection = Draft.getSelection()
+		if (Draft.getType(self.selection[0]) in ['Wire','BSpline']):
+			return True
+		else:
+			return False
+
+	def Activated(self):
+                if self.running:
+                        self.finish()
+                else:
+                        Modifier.Activated(self,"Remove Point")
+                        self.ui.editUi()
+                        if self.doc:
+                                self.obj = Draft.getSelection()
+                                if self.obj:
+                                        self.obj = self.obj[0]
+                                        self.editing = None
+                                        self.pl = None
+                                        if "Placement" in self.obj.PropertiesList:
+                                                self.pl = self.obj.Placement
+                                        self.trackers = []
+					self.resetTrackers()
+					if len(self.obj.Points) > 2:
+						self.call = self.view.addEventCallback("SoEvent",self.action)
+						self.running = True
+						plane.save()
+						self.planetrack.set(self.obj.Points[0])
+					else:
+						msg(translate("draft", "Active object must have more than two points/nodes\n"),'warning')
+						self.finish()
+                                else:
+                                        self.finish()
+
+	def finish(self,closed=False):
+		"terminates the operation"
+                if self.ui:
+                        if self.trackers:
+                                for t in self.trackers:
+                                        t.finalize()
+		Modifier.finish(self)
+                plane.restore()
+                self.running = False
+
+	def action(self,arg):
+		"scene event handler"
+                if arg["Type"] == "SoKeyboardEvent" and arg["Key"] == "ESCAPE":
+			self.finish()
+		if (arg["Type"] == "SoMouseButtonEvent"):
+			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
+				snapped = self.view.getObjectInfo((arg["Position"][0],arg["Position"][1]))
+				if snapped:
+					if snapped['Object'] == self.obj.Name:
+						if 'EditNode' in snapped['Component']:
+							self.editing = int(snapped['Component'][8:])
+							self.update()
+				else:
+					self.finish()
+
+        def update(self):
+		if len(self.obj.Points) <= 2:
+			msg(translate("draft", "Active object must have more than two points/nodes\n"),'warning')
+			self.finish()
+		else: 
+			pts = self.obj.Points
+			pts.pop(self.editing)
+			self.obj.Points = pts
+			self.resetTrackers()
+
+	def resetTrackers(self):
+		for t in self.trackers:
+			t.finalize()
+		self.trackers = []
+		for ep in range(len(self.obj.Points)):
+			objPoints = self.obj.Points[ep]
+			if self.pl: objPoints = self.pl.multVec(objPoints)
+			self.trackers.append(editTracker(objPoints,self.obj.Name,ep))
+
+class WireToBSpline(Modifier):
+	"The Draft_Wire2BSpline FreeCAD command definition"
+
+	def __init__(self):
+		self.running = False
+
+	def GetResources(self):
+		return {'Pixmap'  : 'Draft_wirebspline',
+			'MenuText': str(translate("draft", "Wire to BSpline").toLatin1()),
+			'ToolTip': str(translate("draft", "Converts between Wire and BSpline").toLatin1())}
+
+	def IsActive(self):
+		self.selection = Draft.getSelection()
+		if (Draft.getType(self.selection[0]) in ['Wire','BSpline']):
+			return True
+		else:
+			return False
+
+	def Activated(self):
+                if self.running:
+                        self.finish()
+                else:
+                        Modifier.Activated(self,"Convert Curve Type")
+                        if self.doc:
+                                self.obj = Draft.getSelection()
+                                if self.obj:
+                                        self.obj = self.obj[0]
+                                        self.pl = None
+                                        if "Placement" in self.obj.PropertiesList:
+                                                self.pl = self.obj.Placement
+                                        self.Points = self.obj.Points
+                                        self.closed = self.obj.Closed
+					if (Draft.getType(self.selection[0]) == 'Wire'):
+						Draft.makeBSpline(self.Points, self.closed, self.pl)
+                                        elif (Draft.getType(self.selection[0]) == 'BSpline'):
+                                                Draft.makeWire(self.Points, self.closed, self.pl)
+                                else:
+                                        self.finish()
+	def finish(self):
+		Modifier.finish(self)
+
                         
 
 #---------------------------------------------------------------------------
@@ -3416,6 +3655,9 @@ FreeCADGui.addCommand('Draft_Trimex',Trimex())
 FreeCADGui.addCommand('Draft_Scale',Scale())
 FreeCADGui.addCommand('Draft_Drawing',Drawing())
 FreeCADGui.addCommand('Draft_Edit',Edit())
+FreeCADGui.addCommand('Draft_AddPoint',AddPoint())
+FreeCADGui.addCommand('Draft_DelPoint',DelPoint())
+FreeCADGui.addCommand('Draft_WireToBSpline',WireToBSpline())
 
 # context commands
 FreeCADGui.addCommand('Draft_FinishLine',FinishLine())
