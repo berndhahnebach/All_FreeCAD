@@ -23,6 +23,7 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <stack>
+# include <boost/bind.hpp>
 #endif
 #include "MergeDocuments.h"
 #include <Base/Console.h>
@@ -46,9 +47,9 @@ public:
     {}
 
 protected:
-    void XMLMergeReader::startElement(const XMLCh* const uri, const XMLCh* const localname,
-                                      const XMLCh* const qname,
-                                      const XERCES_CPP_NAMESPACE_QUALIFIER Attributes& attrs)
+    void startElement(const XMLCh* const uri, const XMLCh* const localname,
+                      const XMLCh* const qname,
+                      const XERCES_CPP_NAMESPACE_QUALIFIER Attributes& attrs)
     {
         Base::XMLReader::startElement(uri, localname, qname, attrs);
         if (LocalName == "Property")
