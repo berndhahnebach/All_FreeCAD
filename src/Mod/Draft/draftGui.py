@@ -271,35 +271,6 @@ class toolBar:
                                 self.layout.addWidget(self.isCopy)
 				self.isCopy.hide()
 
-                                # page
-
-                                '''
-                                # OBSOLETE ##################################
-                                self.labelPage = _label("labelPage")
-                                self.pageBox = _combo("pageBox")
-                                self.pageBox.addItem("Add New")
-                                self.labelScale = _label("labelScale")
-                                self.scaleBox = _combo("scaleBox",width=60)
-                                self.scaleBox.addItem("5")
-                                self.scaleBox.addItem("10")
-                                self.scaleBox.addItem("20")
-                                self.scaleBox.addItem("50")
-                                self.labelMarginX = _label("labelMarginX")
-                                self.marginXValue = _spinbox("marginXValue",50,999)
-                                self.labelMarginY = _label("labelMarginY")
-                                self.marginYValue = _spinbox("marginYValue",50,999)
-                                self.labelLWMod = _label("labelLWMod")
-                                self.LWModValue = _spinbox("LWModValue",100,999)
-                                self.LWModValue.setSuffix("%")
-                                self.labelTMod = _label("labelTMod")
-                                self.TModValue = _spinbox("TModValue",100,999)
-                                self.TModValue.setSuffix("%")
-                                self.pageWpButton = _pushButton("pageWpButton",icon=(576,0))
-                                self.pageWpButton.setCheckable(True)
-				self.pageWpButton.setChecked(False)
-                                self.pageButton = _pushButton("pageButton",icon=(640,128))
-                                '''
-
                                 # spacer
 
                                 spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding,
@@ -563,6 +534,18 @@ class toolBar:
 			def selectUi(self):
 				self.labelx.setText(translate("draft", "Pick Object"))
 				self.labelx.show()
+
+                        def editUi(self):
+				self.labelx.hide()
+				self.labely.hide()
+				self.labelz.hide()
+				self.xValue.hide()
+				self.yValue.hide()
+				self.zValue.hide()
+                                self.numFaces.hide()
+				self.isRelative.hide()
+                                self.hasFill.hide()
+				self.finishButton.show()
 
 			def relocate(self):
 				"relocates the right-aligned buttons depending on the toolbar size"
@@ -886,6 +869,10 @@ class toolBar:
                 icons['Draft_polygon']=iconfile.copy(QtCore.QRect(0,192,64,64))
                 icons['Draft_bspline']=iconfile.copy(QtCore.QRect(64,192,64,64))
                 icons['Draft_addToGroup']=iconfile.copy(QtCore.QRect(256,192,64,64))
+                icons['Draft_addpoint']=iconfile.copy(QtCore.QRect(128,192,64,64))
+                icons['Draft_delpoint']=iconfile.copy(QtCore.QRect(192,192,64,64))
+                icons['Draft_wirebspline']=iconfile.copy(QtCore.QRect(320,192,64,64))
+                
 		for name,icon in icons.iteritems():
 			ba = QtCore.QByteArray()
 			bu = QtCore.QBuffer(ba)
