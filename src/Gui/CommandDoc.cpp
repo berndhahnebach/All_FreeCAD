@@ -51,6 +51,7 @@
 #include "Placement.h"
 #include "WaitCursor.h"
 #include "ViewProvider.h"
+#include "MergeDocuments.h"
 
 using namespace Gui;
 
@@ -262,6 +263,55 @@ bool StdCmdExport::isActive(void)
     // at least one object should be selected otherwise it might be confusing to the user
     return Gui::Selection().countObjectsOfType(App::DocumentObject::getClassTypeId()) > 0;
     //return (getActiveGuiDocument() ? true : false);
+}
+
+//===========================================================================
+// Std_MergeProjects
+//===========================================================================
+
+DEF_STD_CMD_A(StdCmdMergeProjects);
+
+StdCmdMergeProjects::StdCmdMergeProjects()
+  : Command("Std_MergeProjects")
+{
+    sAppModule    = "File";
+    sGroup        = QT_TR_NOOP("File");
+    sMenuText     = QT_TR_NOOP("Merge project...");
+    sToolTipText  = QT_TR_NOOP("Merge project");
+    sWhatsThis    = QT_TR_NOOP("Merge project");
+    sStatusTip    = QT_TR_NOOP("Merge project");
+}
+
+void StdCmdMergeProjects::activated(int iMsg)
+{
+    QString exe = QString::fromUtf8(App::GetApplication().getExecutableName());
+    QString project = QFileDialog::getOpenFileName(Gui::getMainWindow(),
+        QString::fromUtf8(QT_TR_NOOP("Merge project")), QString(),
+        QString::fromUtf8(QT_TR_NOOP("%1 document (*.fcstd)")).arg(exe));
+    if (!project.isEmpty()) {
+        App::Document* doc = App::GetApplication().getActiveDocument();
+        QFileInfo info(QString::fromUtf8(doc->FileName.getValue()));
+        QFileInfo proj(project);
+        if (proj == info) {
+            QMessageBox::critical(Gui::getMainWindow(),
+                QString::fromUtf8(QT_TR_NOOP("Merge project")),
+                QString::fromUtf8(QT_TR_NOOP("Cannot merge project with itself.")));
+            return;
+        }
+
+        QString dir1 = proj.absoluteDir().filePath(proj.baseName());
+        QString dir2 = info.absoluteDir().filePath(info.baseName());
+
+        Base::FileInfo fi((const char*)project.toUtf8());
+        Base::ifstream str(fi, std::ios::in | std::ios::binary);
+        MergeDocuments md(doc);
+        md.importObjects(str);
+    }
+}
+
+bool StdCmdMergeProjects::isActive(void)
+{
+    return this->hasActiveDocument();
 }
 
 //===========================================================================
@@ -918,6 +968,7 @@ void CreateDocCommands(void)
     rcCmdMgr.addCommand(new StdCmdOpen());
     rcCmdMgr.addCommand(new StdCmdImport());
     rcCmdMgr.addCommand(new StdCmdExport());
+    rcCmdMgr.addCommand(new StdCmdMergeProjects());
 
     rcCmdMgr.addCommand(new StdCmdSave());
     rcCmdMgr.addCommand(new StdCmdSaveAs());

@@ -99,6 +99,7 @@
 #include "GuiInitScript.h"
 
 #include "Document.h"
+#include "MergeDocuments.h"
 #include "ViewProviderExtern.h"
 
 #if defined(Q_OS_WIN32)
@@ -1296,63 +1297,6 @@ void MainWindow::dragEnterEvent (QDragEnterEvent * e)
         e->ignore();
 }
 
-namespace Gui {
-class MimePersistence : public Base::Persistence
-{
-public:
-    MimePersistence(App::Document* doc)
-    {
-        connectExport = doc->signalExportObjects.connect
-            (boost::bind(&MimePersistence::exportObject, this, _1, _2));
-        connectImport = doc->signalImportObjects.connect
-            (boost::bind(&MimePersistence::importObject, this, _1, _2));
-        document = Gui::Application::Instance->getDocument(doc);
-    }
-    ~MimePersistence()
-    {
-        connectExport.disconnect();
-        connectImport.disconnect();
-    }
-    unsigned int getMemSize (void) const
-    {
-        return 0;
-    }
-    void importObject(const std::vector<App::DocumentObject*>& o, Base::XMLReader & r)
-    {
-        objects = o;
-        Restore(r);
-    }
-    void exportObject(const std::vector<App::DocumentObject*>& o, Base::Writer & w)
-    {
-        objects = o;
-        Save(w);
-    }
-    void Save (Base::Writer & w) const
-    {
-        w.addFile("GuiDocument.xml", this);
-    }
-    void Restore(Base::XMLReader &r)
-    {
-        r.addFile("GuiDocument.xml", this);
-    }
-    void SaveDocFile (Base::Writer & w) const
-    {
-        document->exportObjects(objects, w);
-    }
-    void RestoreDocFile(Base::Reader & r)
-    {
-        document->importObjects(objects, r);
-    }
-
-private:
-    Gui::Document* document;
-    std::vector<App::DocumentObject*> objects;
-    typedef boost::signals::connection Connection;
-    Connection connectExport;
-    Connection connectImport;
-};
-}
-
 QMimeData * MainWindow::createMimeDataFromSelection () const
 {
     std::vector<SelectionSingleton::SelObj> sel = Selection().getCompleteSelection();
@@ -1386,14 +1330,14 @@ QMimeData * MainWindow::createMimeDataFromSelection () const
         mime = QLatin1String("application/x-documentobject");
         Base::ByteArrayOStreambuf buf(res);
         std::ostream str(&buf);
-        MimePersistence mimeView(doc);
+        MergeDocuments mimeView(doc);
         doc->exportObjects(obj, str);
     }
     else {
         mime = QLatin1String("application/x-documentobject-file");
         static Base::FileInfo fi(Base::FileInfo::getTempFileName());
         Base::ofstream str(fi, std::ios::out | std::ios::binary);
-        MimePersistence mimeView(doc);
+        MergeDocuments mimeView(doc);
         doc->exportObjects(obj, str);
         str.close();
         res = fi.filePath().c_str();
@@ -1425,8 +1369,8 @@ void MainWindow::insertFromMimeData (const QMimeData * mimeData)
         Base::ByteArrayIStreambuf buf(res);
         std::istream in(0);
         in.rdbuf(&buf);
-        MimePersistence mimeView(doc);
-        doc->importObjects(in);
+        MergeDocuments mimeView(doc);
+        mimeView.importObjects(in);
     }
     else if (mimeData->hasFormat(QLatin1String("application/x-documentobject-file"))) {
         QByteArray res = mimeData->data(QLatin1String("application/x-documentobject-file"));
@@ -1435,8 +1379,8 @@ void MainWindow::insertFromMimeData (const QMimeData * mimeData)
 
         Base::FileInfo fi((const char*)res);
         Base::ifstream str(fi, std::ios::in | std::ios::binary);
-        MimePersistence mimeView(doc);
-        doc->importObjects(str);
+        MergeDocuments mimeView(doc);
+        mimeView.importObjects(str);
         str.close();
     }
     else if (mimeData->hasUrls()) {
