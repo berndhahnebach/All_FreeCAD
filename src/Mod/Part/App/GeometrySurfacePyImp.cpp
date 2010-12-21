@@ -31,6 +31,7 @@
 # include <GeomLProp_SLProps.hxx>
 # include <Precision.hxx>
 # include <Standard_Failure.hxx>
+# include <ShapeAnalysis_Surface.hxx>
 #endif
 
 #include <Base/GeometryPyCXX.h>
@@ -135,6 +136,36 @@ PyObject* GeometrySurfacePy::tangent(PyObject *args)
                 tuple.setItem(1, Py::Vector(Base::Vector3d(dir.X(),dir.Y(),dir.Z())));
             }
 
+            return Py::new_reference_to(tuple);
+        }
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
+
+    PyErr_SetString(PyExc_Exception, "Geometry is not a surface");
+    return 0;
+}
+
+PyObject* GeometrySurfacePy::parameter(PyObject *args)
+{
+    Handle_Geom_Surface surf = Handle_Geom_Surface
+        ::DownCast(getGeometryPtr()->handle());
+    try {
+        if (!surf.IsNull()) {
+            PyObject *p;
+            double prec = Precision::Confusion();
+            if (!PyArg_ParseTuple(args, "O!|d", &(Base::VectorPy::Type), &p, &prec))
+                return 0;
+            Base::Vector3d v = Py::Vector(p, false).toVector();
+            gp_Pnt pnt(v.x,v.y,v.z);
+            ShapeAnalysis_Surface as(surf);
+            gp_Pnt2d uv = as.ValueOfUV(pnt, prec);
+            Py::Tuple tuple(2);
+            tuple.setItem(0, Py::Float(uv.X()));
+            tuple.setItem(1, Py::Float(uv.Y()));
             return Py::new_reference_to(tuple);
         }
     }

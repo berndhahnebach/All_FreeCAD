@@ -34,6 +34,7 @@
 # include <Handle_Geom_RectangularTrimmedSurface.hxx>
 # include <Handle_Geom_BSplineSurface.hxx>
 # include <Precision.hxx>
+# include <GeomAPI_ProjectPointOnCurve.hxx>
 # include <Standard_Failure.hxx>
 #endif
 
@@ -139,6 +140,32 @@ PyObject* GeometryCurvePy::tangent(PyObject *args)
             }
 
             return Py::new_reference_to(tuple);
+        }
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
+
+    PyErr_SetString(PyExc_Exception, "Geometry is not a curve");
+    return 0;
+}
+
+PyObject* GeometryCurvePy::parameter(PyObject *args)
+{
+    Handle_Geom_Geometry g = getGeometryPtr()->handle();
+    Handle_Geom_Curve c = Handle_Geom_Curve::DownCast(g);
+    try {
+        if (!c.IsNull()) {
+            PyObject *p;
+            if (!PyArg_ParseTuple(args, "O!", &(Base::VectorPy::Type), &p))
+                return 0;
+            Base::Vector3d v = Py::Vector(p, false).toVector();
+            gp_Pnt pnt(v.x,v.y,v.z);
+            GeomAPI_ProjectPointOnCurve ppc(pnt, c);
+            double val = ppc.LowerDistanceParameter();
+            return Py::new_reference_to(Py::Float(val));
         }
     }
     catch (Standard_Failure) {
