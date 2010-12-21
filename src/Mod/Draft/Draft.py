@@ -856,6 +856,9 @@ def makeDrawingView(obj,page,lwmod=None,tmod=None):
         if tmod: viewobj.TextModifier = tmod
         return viewobj
 
+def makeAngularDimension(center,angledata,placement=None):
+        pass
+
 				
 #---------------------------------------------------------------------------
 # Python Features definitions
@@ -911,7 +914,6 @@ class Dimension:
                                 "The base object this dimension is linked to")
                 obj.addProperty("App::PropertyIntegerList","LinkedVertices","Base",
                                 "The indices of the vertices from the base object to measure")
-		self.Type = "Dimension"
                 obj.Start = FreeCAD.Vector(0,0,0)
                 obj.End = FreeCAD.Vector(1,0,0)
                 obj.Dimline = FreeCAD.Vector(0,1,0)
@@ -1617,3 +1619,228 @@ class ViewProviderBSpline(ViewProviderDraft):
                         else:
                                 rn.removeChild(self.pt)
 		return
+
+class AngularDimension:
+        "The AngularDimension object"
+	def __init__(self, obj):
+		obj.addProperty("App::PropertyVector","Center","Base",
+                                "Center point of dimension")
+		obj.addProperty("App::PropertyAngle","Start","Base",
+                                "Start angle of the dimension")
+                obj.addProperty("App::PropertyAngle","End","Base",
+                                "End angle of the dimension")
+		obj.addProperty("App::PropertyVector","Dimline","Base",
+                                "Point through which the dimension line passes")
+                obj.Center = FreeCAD.Vector(0,0,0)
+                obj.Dimline = FreeCAD.Vector(0,1,0)
+		obj.Proxy = self
+
+	def execute(self, fp):
+                self.createGeometry(fp)
+
+        def onChanged(self, fp, prop):
+                if prop in ["Dimline","FirstAngle","LastAngle","Center"]:
+                        self.createGeometry(fp)
+                        
+        def createGeometry(self,fp):
+                rad = fp.Dimline.sub(fp.Center)
+                plm = fp.Placement
+                shape = Part.makeCircle(rad.Length,Vector(0,0,0),
+                                        Vector(0,0,1),fp.FirstAngle,fp.LastAngle)
+		fp.Shape = shape
+                fp.Placement = plm
+
+class ViewProviderAngularDimension:
+	"A View Provider for the AngularDimension object"
+	def __init__(self, obj):
+		prm = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
+		obj.addProperty("App::PropertyLength","FontSize","Base","Font size")
+		obj.addProperty("App::PropertyString","FontName","Base","Font name")
+		obj.addProperty("App::PropertyLength","LineWidth","Base","Line width")
+		obj.addProperty("App::PropertyColor","LineColor","Base","Line color")
+                obj.addProperty("App::PropertyVector","TextPosition","Base","The position of the text. Leave (0,0,0) for automatic position")
+                obj.addProperty("App::PropertyString","TextOverride","Base","Text override. Use 'dim' to insert the dimension length")
+		obj.Proxy = self
+		self.Object = obj.Object
+                obj.FontSize=prm.GetFloat("textheight")
+                obj.FontName=prm.GetString("textfont")
+                obj.TextOverride = ''
+
+	def attach(self, obj):
+
+                col = coin.SoBaseColor()
+                col.rgb.setValue(obj.LineColor[0],
+                                 obj.LineColor[1],
+                                 obj.LineColor[2])
+                self.coords = coin.SoCoordinate3()
+                self.pt = coin.SoAnnotation()
+                self.pt.addChild(col)
+                self.pt.addChild(self.coords)
+                self.pt.addChild(dimSymbol())
+     
+		p1,p2,p3,p4,tbase,angle,norm = self.calcGeom(obj.Object)
+		self.color = coin.SoBaseColor()
+		self.color.rgb.setValue(obj.LineColor[0],
+                                        obj.LineColor[1],
+                                        obj.LineColor[2])
+		self.font = coin.SoFont()
+                self.font3d = coin.SoFont()
+		self.text = coin.SoAsciiText()
+                self.text3d = coin.SoText2()
+		self.text.justification = self.text3d.justification = coin.SoAsciiText.CENTER
+		self.text.string = self.text3d.string = ''
+		self.textpos = coin.SoTransform()
+		self.textpos.translation.setValue([tbase.x,tbase.y,tbase.z])
+                tm = fcvec.getPlaneRotation(p3.sub(p2),norm)
+                rm = coin.SbRotation()
+                self.textpos.rotation = rm
+		label = coin.SoSeparator()
+		label.addChild(self.textpos)
+		label.addChild(self.color)
+		label.addChild(self.font)
+		label.addChild(self.text)
+                label3d = coin.SoSeparator()
+                label3d.addChild(self.textpos)
+		label3d.addChild(self.color)
+		label3d.addChild(self.font3d)
+		label3d.addChild(self.text3d)
+		self.coord1 = coin.SoCoordinate3()
+		self.coord1.point.setValue((p2.x,p2.y,p2.z))
+		self.coord2 = coin.SoCoordinate3()
+		self.coord2.point.setValue((p3.x,p3.y,p3.z))
+		marks = coin.SoAnnotation()
+		marks.addChild(self.color)
+		marks.addChild(self.coord1)
+		marks.addChild(dimSymbol())
+		marks.addChild(self.coord2)
+		marks.addChild(dimSymbol())       
+		self.drawstyle = coin.SoDrawStyle()
+		self.drawstyle.lineWidth = 1       
+		line = coin.SoLineSet()
+		line.numVertices.setValue(4)
+		self.coords = coin.SoCoordinate3()
+		selnode=coin.SoType.fromName("SoFCSelection").createInstance()
+		selnode.documentName.setValue(FreeCAD.ActiveDocument.Name)
+		selnode.objectName.setValue(obj.Object.Name)
+		selnode.subElementName.setValue("Line")
+		selnode.addChild(line)
+		self.node = coin.SoGroup()
+		self.node.addChild(self.color)
+		self.node.addChild(self.drawstyle)
+		self.node.addChild(self.coords)
+		self.node.addChild(selnode)
+		self.node.addChild(marks)
+		self.node.addChild(label)
+                self.node3d = coin.SoGroup()
+                self.node3d.addChild(self.color)
+                self.node3d.addChild(self.drawstyle)
+                self.node3d.addChild(self.coords)
+                self.node3d.addChild(selnode)
+                self.node3d.addChild(marks)
+                self.node3d.addChild(label3d)
+		obj.addDisplayMode(self.node,"2D")
+                obj.addDisplayMode(self.node3d,"3D")
+		self.onChanged(obj,"FontSize")
+		self.onChanged(obj,"FontName")
+                self.Object = obj.Object
+
+	def updateData(self, obj, prop):
+
+                if prop == "EndArrow":
+                        rn = vp.RootNode
+                        if vp.EndArrow:
+                                rn.addChild(self.pt)
+                        else:
+                                rn.removeChild(self.pt)
+		return
+
+        
+                text = None
+                if obj.Base and obj.LinkedVertices:
+                        if "Shape" in obj.Base.PropertiesList:
+                                v1 = obj.Base.Shape.Vertexes[obj.LinkedVertices[0]].Point
+                                v2 = obj.Base.Shape.Vertexes[obj.LinkedVertices[1]].Point
+                                if v1 != obj.Start: obj.Start = v1
+                                if v2 != obj.End: obj.End = v2
+		p1,p2,p3,p4,tbase,angle,norm = self.calcGeom(obj)
+                if 'TextOverride' in obj.ViewObject.PropertiesList:
+                        text = str(obj.ViewObject.TextOverride)
+                dtext = ("%.2f" % p3.sub(p2).Length)
+                if text:
+                        text = text.replace("dim",dtext)
+                else:
+                        text = dtext
+		self.text.string = self.text3d.string = text
+                u = p3.sub(p2)
+                v = p2.sub(p1)
+                u.normalize()
+                v.normalize()
+                u = fcvec.reorient(u,"x")
+                v = fcvec.reorient(v,"y")
+                w = fcvec.reorient(u.cross(v),"z")
+                tm = FreeCAD.Placement(fcvec.getPlaneRotation(u,v,w)).Rotation.Q
+                self.textpos.rotation = coin.SbRotation(tm[0],tm[1],tm[2],tm[3])
+		self.coords.point.setValues(0,4,[[p1.x,p1.y,p1.z],
+                                                 [p2.x,p2.y,p2.z],
+                                                 [p3.x,p3.y,p3.z],
+                                                 [p4.x,p4.y,p4.z]])
+		self.textpos.translation.setValue([tbase.x,tbase.y,tbase.z])
+		self.coord1.point.setValue((p2.x,p2.y,p2.z))
+		self.coord2.point.setValue((p3.x,p3.y,p3.z))
+
+	def onChanged(self, vp, prop):
+		if prop == "FontSize":
+			self.font.size = vp.FontSize
+                        self.font3d.size = vp.FontSize*100
+		elif prop == "FontName":
+			self.font.name = self.font3d.name = str(vp.FontName)
+		elif prop == "LineColor":
+			c = vp.LineColor
+			self.color.rgb.setValue(c[0],c[1],c[2])
+		elif prop == "LineWidth":
+			self.drawstyle.lineWidth = vp.LineWidth
+                elif prop == "DisplayMode":
+                        pass
+		else:
+			self.updateData(vp.Object, None)
+
+	def getDisplayModes(self,obj):
+		modes=[]
+		modes.extend(["2D","3D"])
+		return modes
+
+	def getDefaultDisplayMode(self):
+		return "2D"
+
+	def getIcon(self):
+                return """
+                        /* XPM */
+                        static char * dim_xpm[] = {
+                        "16 16 4 1",
+                        " 	c None",
+                        ".	c #000000",
+                        "+	c #FFFF00",
+                        "@	c #FFFFFF",
+                        "                ",
+                        "                ",
+                        "     .    .     ",
+                        "    ..    ..    ",
+                        "   .+.    .+.   ",
+                        "  .++.    .++.  ",
+                        " .+++. .. .+++. ",
+                        ".++++. .. .++++.",
+                        " .+++. .. .+++. ",
+                        "  .++.    .++.  ",
+                        "   .+.    .+.   ",
+                        "    ..    ..    ",
+                        "     .    .     ",
+                        "                ",
+                        "                ",
+                        "                "};
+                        """
+
+	def __getstate__(self):
+		return None
+
+	def __setstate__(self,state):
+		return None

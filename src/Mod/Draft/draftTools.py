@@ -533,20 +533,45 @@ class arcTracker(Tracker):
 		Tracker.__init__(self,dotted,scolor,swidth,[self.trans, self.sep])
 
         def setCenter(self,cen):
+                "sets the center point"
                 self.trans.translation.setValue([cen.x,cen.y,cen.z])
 
         def setRadius(self,rad):
+                "sets the radius"
                 self.trans.scaleFactor.setValue([rad,rad,rad])
 
         def setStartAngle(self,ang):
+                "sets the start angle"
                 self.startangle = math.degrees(ang)
                 self.recompute()
 
         def setEndAngle(self,ang):
+                "sets the end angle"
                 self.endangle = math.degrees(ang)
                 self.recompute()
 
+        def getAngle(self,pt):
+                "returns the angle of a given vector"
+                c = self.trans.translation.getValue()
+                center = Vector(c[0],c[1],c[2])
+                base = plane.u
+                rad = pt.sub(center)
+                return(fcvec.angle(rad,base,plane.axis))
+
+        def getAngles(self):
+                "returns the start and end angles"
+                return(self.startangle,self.endangle)
+                
+        def setStartPoint(self,pt):
+                "sets the start angle from a point"
+                self.setStartAngle(self.getAngle(pt))
+
+        def setEndPoint(self,pt):
+                "sets the end angle from a point"
+                self.setEndAngle(self.getAngle(pt))
+                
         def setApertureAngle(self,ang):
+                "sets the end angle by giving the aperture angle"
                 ap = math.degrees(ang)
                 self.endangle = self.startangle + ap
                 self.recompute()
@@ -566,66 +591,6 @@ class arcTracker(Tracker):
                         self.circle.removeChild(self.circle.getChild(0))
                         self.circle.removeChild(self.circle.getChild(0))
                         self.sep.addChild(self.circle)
-		
-class oldarcTracker(Tracker):
-	"An Arc tracker, used by tools that need to draw temporary arcs"
-	def __init__(self,dotted=False,scolor=None,swidth=None):
-		self.center = Vector(0,0,0)
-		self.start = Vector(0,0,0)
-		self.angle = 0
-
-		self.trans = coin.SoTransform()
-		self.trans.translation.setValue([0,0,0])
-
-		self.coords = coin.SoCoordinate4()
-		self.circle = coin.SoNurbsCurve()
-
-		container = coin.SoSeparator()
-		container.addChild(self.coords)
-		container.addChild(self.circle)
-
-		Tracker.__init__(self,dotted,scolor,swidth,[self.trans, container])
-		self.on()
-
-	def centerPoint(self, v):
-		self.center = v
-		self.trans.translation.setValue(v.x, v.y, v.z)
-
-	def startPoint(self, v):
-		self.start = v
-
-	def changeRadius(self, r):
-		v = fcvec.scaleTo(self.start.sub(self.center), r)
-		self.start = v.add(self.center)
-
-	def update(self, angle):
-		# This function creates a nurbs representation of the arc.
-		'''
-		Display the arc using a NURBS curve comprising three
-		equal sections joined by double knots.  For example,
-		to span 270 degrees, the contol point might be:
-		[(1,0,0,1), (s,s,0,s), (0,1,0,1), (-s,s,0,s), (-1,0,0,1),
-                (-s,-s,0,s), (0,-1,0,1)], where s = sqrt(2)
-		For reasons I do not understand, the arc's shape
-		changes when the control points are translated, so a
-		coin translation is used instead.
-		'''
-		u = self.start.sub(self.center) # translate start for rotation
-		w = math.cos(angle/6)
-		def makepoint(i):
-			v = fcvec.rotate(u, i*angle/6, plane.axis)
-			if i%2==0:
-				return (v.x, v.y, v.z, 1)
-			else:
-				return (v.x, v.y, v.z, w)
-		control = [makepoint(i) for i in range(0,7)]
-		knots = [0,0,0,1,1,2,2,3,3,3]
-		self.coords.point.setValues(control)
-		self.circle.numControlPoints.setValue(len(control))
-		self.circle.knotVector.setValues(0,len(knots),knots)
-		self.circle.knotVector.setNum(len(knots))
-		self.on()
-
 
 class ghostTracker(Tracker):
 	'''A Ghost tracker, that allows to copy whole object representations.
@@ -1770,7 +1735,12 @@ class Dimension(Creator):
                                 self.call = self.view.addEventCallback("SoEvent",self.action)
                                 self.snap = snapTracker()
                                 self.dimtrack = dimTracker()
+                                self.arctrack = arcTracker()
                                 self.link = None
+                                self.edges = []
+                                self.pts = []
+                                self.angledata = None
+                                self.center = None
                                 self.constraintrack = lineTracker(dotted=True)
                                 msg(translate("draft", "Pick first point:\n"))
                                 FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
@@ -1788,7 +1758,9 @@ class Dimension(Creator):
 	def createObject(self):
 		"creates an object in the current doc"
 		self.doc.openTransaction("Create "+self.featureName)
-                if self.link:
+                if self.angledata:
+                        Draft.makeAngularDimension(self.center,self.angledata)
+                elif self.link:
                         Draft.makeDimension(self.link[0],self.link[1],self.link[2],self.node[2])
                 else:
                         Draft.makeDimension(self.node[0],self.node[1],self.node[2])
@@ -1811,8 +1783,9 @@ class Dimension(Creator):
 			point,ctrlPoint = getPoint(self,arg)
                         self.ui.cross(True)
 			if arg["AltDown"] and (len(self.node)<3):
+                                self.ui.cross(False)
+                                self.dimtrack.off()
 				if not self.altdown:
-					self.ui.cross(False)
 					self.altdown = True
 					self.ui.switchUi(True)
 				snapped = self.view.getObjectInfo((arg["Position"][0],arg["Position"][1]))
@@ -1825,13 +1798,28 @@ class Dimension(Creator):
                                                 v2 = ed.Vertexes[-1].Point
                                                 self.dimtrack.update([v1,v2],self.cont)
 			else:
+                                self.ui.cross(True)
+                                if self.node and (len(self.edges) < 2):
+                                        self.dimtrack.on()
+                                if len(self.edges) == 2:
+                                        self.dimtrack.off()
+                                        r = point.sub(self.center)
+                                        self.arctrack.setRadius(r.Length)
+                                        a = self.arctrack.getAngle(point)
+                                        pair = fcgeo.getBoundaryAngles(a,self.pts)
+                                        if not (pair[0] < a < pair[1]):
+                                                self.angledata = [4*math.pi-pair[0],2*math.pi-pair[1]]
+                                        else:
+                                                self.angledata = [2*math.pi-pair[0],2*math.pi-pair[1]]
+                                        self.arctrack.setStartAngle(self.angledata[0])
+                                        self.arctrack.setEndAngle(self.angledata[1])
 				if self.altdown:
-					self.ui.cross(True)
 					self.altdown = False
 					self.ui.switchUi(False)
                                 if self.dir:
                                         point = self.node[0].add(fcvec.project(point.sub(self.node[0]),self.dir))
-				self.dimtrack.update(self.node+[point],self.cont)
+				if len(self.node) == 2:
+                                        self.dimtrack.update(self.node+[point],self.cont)
 				# Draw constraint tracker line.
 				if (arg["ShiftDown"]):
 					self.constraintrack.p1(point)
@@ -1856,9 +1844,30 @@ class Dimension(Creator):
                                                                         i1 = i
                                                                 if v2 == ob.Shape.Vertexes[i].Point:
                                                                         i2 = i
-                                                        self.node = [v1,v2]
                                                         if (i1 != None) and (i2 != None):
-                                                                self.link = [ob,i1,i2]
+                                                                if not self.edges:
+                                                                        self.node = [v1,v2]
+                                                                        self.link = [ob,i1,i2]
+                                                                        self.edges.append(ed)
+                                                                else:
+                                                                        self.edges.append(ed)
+                                                                        self.node.extend([v1,v2])
+                                                                        c = fcgeo.findIntersection(self.node[0],
+                                                                                                             self.node[1],
+                                                                                                             self.node[2],
+                                                                                                             self.node[3],
+                                                                                                             True,True)
+                                                                        if c:
+                                                                                self.center = c[0]
+                                                                                self.arctrack.setCenter(self.center)
+                                                                                self.arctrack.on()
+                                                                                for e in self.edges:
+                                                                                        for v in e.Vertexes:
+                                                                                                self.pts.append(self.arctrack.getAngle(v.Point))
+                                                                        else:
+                                                                                msg(translate("draft", "Edges don't intersect!\n"))
+                                                                                self.finish()
+                                                                        
                                                         self.dimtrack.on()
 				else:
                                         if self.dir:
@@ -1875,6 +1884,9 @@ class Dimension(Creator):
 				elif (len(self.node) == 3):
 					self.createObject()
 					if not self.cont: self.finish()
+                                elif self.angledata:
+					self.createObject()
+					self.finish()
 
 	def numericInput(self,numx,numy,numz):
 		"this function gets called by the toolbar when valid x, y, and z have been entered there"

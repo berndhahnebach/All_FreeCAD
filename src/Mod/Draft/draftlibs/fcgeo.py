@@ -112,19 +112,33 @@ def findEdge(anEdge,aList):
         return None
 	
 
-def findIntersection(edge1,edge2,infinite1=False,infinite2=False) :
+def findIntersection(edge1,edge2,infinite1=False,infinite2=False,ex1=False,ex2=False) :
 	'''findIntersection(edge1,edge2,infinite1=False,infinite2=False):
-	returns a list containing the intersection point(s) of 2 edges'''
+	returns a list containing the intersection point(s) of 2 edges.
+        You can also feed 4 points instead of edge1 and edge2'''
+
+        pt1 = None
 	
-	if isinstance(edge1.Curve,Part.Line) and isinstance(edge2.Curve,Part.Line) :	
-		# deals with 2 lines	
+        if isinstance(edge1,FreeCAD.Vector) and isinstance(edge2,FreeCAD.Vector):
+                # we got points directly
+                pt1 = edge1
+                pt2 = edge2
+                pt3 = infinite1
+                pt4 = infinite2
+                infinite1 = ex1
+                infinite2 = ex2
+
+        elif isinstance(edge1.Curve,Part.Line) and isinstance(edge2.Curve,Part.Line) :	
+		# we have 2 edges	
 		pt1, pt2, pt3, pt4 = [edge1.Vertexes[0].Point,
                                       edge1.Vertexes[1].Point,
                                       edge2.Vertexes[0].Point,
                                       edge2.Vertexes[1].Point]
-							  
+
+        if pt1:
+                #we have 2 straight lines		  
 		if fcvec.isNull(pt2.sub(pt1).cross(pt3.sub(pt1)).cross(pt2.sub(pt4).cross(pt3.sub(pt4)))):
-			vec1 = vec(edge1) ; vec2 = vec(edge2)
+			vec1 = pt2.sub(pt1) ; vec2 = pt4.sub(pt3)
                         if fcvec.isNull(vec1) or fcvec.isNull(vec2):
                                 return []
 			vec1.normalize()  ; vec2.normalize()
@@ -721,6 +735,47 @@ def getTangent(edge,frompoint=None):
    
 # circle functions *********************************************************
 
+def getBoundaryAngles(angle,alist):
+        '''returns the 2 closest angles from the list that
+        encompass the given angle'''
+        negs = True
+        while negs:
+                negs = False
+                for i in range(len(alist)):
+                        if alist[i] < 0:
+                                alist[i] = 2*math.pi + alist[i]
+                                negs = True
+                if angle < 0:
+                        angle = 2*math.pi + angle
+                        negs = True
+        lower = None
+        for a in alist:
+                if a < angle:
+                        if lower == None:
+                                lower = a
+                        else:
+                                if a > lower:
+                                        lower = a
+        if lower == None:
+                lower = 0
+                for a in alist:
+                        if a > lower:
+                                lower = a
+        higher = None
+        for a in alist:
+                if a > angle:
+                        if higher == None:
+                                higher = a
+                        else:
+                                if a < higher:
+                                        higher = a
+        if higher == None:
+                higher = 2*math.pi
+                for a in alist:
+                        if a < higher:
+                                higher = a
+        return (lower,higher)
+                        
 
 def circleFrom2tan1pt(tan1, tan2, point):
 	"circleFrom2tan1pt(edge, edge, Vector)"
