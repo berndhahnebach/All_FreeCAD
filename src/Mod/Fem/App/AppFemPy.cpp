@@ -323,6 +323,7 @@ static PyObject * getBoundary_Conditions(PyObject *self, PyObject *args)
 		aBBox = aMesh.GetBoundBox();
 
 		float dist_length;
+        Base::Vector3f dist;
 		int minNodeID,maxNodeID,midNodeID;
 		dist_length = FLOAT_MAX;
 		aNodeIter = inputMesh->getFemMeshPtr()->getSMesh()->GetMeshDS()->nodesIterator();
