@@ -86,7 +86,7 @@ void Workbench::setupContextMenu(const char* recipient,Gui::MenuItem* item) cons
         if ( Gui::Selection().countObjectsOfType(App::DocumentObject::getClassTypeId()) > 0 )
             {
             Gui::MenuItem* DraftContext = new Gui::MenuItem();
-            DraftContext->setCommand("Object appearence");
+            DraftContext->setCommand("Draft tools");
 
             *DraftContext << "Draft_ApplyStyle" << "Draft_ToggleDisplayMode"
                           << "Draft_AddToGroup";
@@ -313,6 +313,11 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 
         *DraftContext << "Draft_ApplyStyle" << "Draft_ToggleDisplayMode";
 
+        Gui::MenuItem* DraftWireTools = new Gui::MenuItem();
+        DraftWireTools->setCommand("Wire tools");
+
+        *DraftWireTools << "Draft_WireToBSpline" << "Draft_AddPoint" << "Draft_DelPoint";
+
         *Drafting 
             << "Draft_Line"
             << "Draft_Wire"
@@ -333,6 +338,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
             << "Draft_Scale"
             << "Draft_Edit"
             << "Draft_Drawing"
+            << DraftWireTools
             << DraftContext
         ;
     }
@@ -496,6 +502,9 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
             << "Draft_Scale"
             << "Draft_Edit"
             << "Draft_Drawing"
+            << "Draft_WireToBSpline"
+            << "Draft_AddPoint"
+            << "Draft_DelPoint"
         ;
     }
 #   endif
