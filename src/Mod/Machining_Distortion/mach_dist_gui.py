@@ -51,7 +51,7 @@ class MyForm(QtGui.QDialog,Ui_dialog):
 
         current_file_name = self.filenames[0]
         filename_without_suffix = self.filenames[0].split("/").takeLast().split(".")[0]
-         meshobject = Fem.read(str(current_file_name))
+        meshobject = Fem.read(str(current_file_name))
         #Perform PCA 
         Fem.SMESH_PCA(meshobject)
         #Do min routine
