@@ -3477,16 +3477,28 @@ class AddPoint(Modifier):
 
         def update(self,point):
                 if Draft.getType(self.obj) == "Wire":
-			pts = self.obj.Points
-			vertexes = fcgeo.getVerts(self.obj.Shape)
-			self.edges = []
-			self.edges = self.obj.Shape.Wires[0].Edges
-			for e in self.edges:
-				if ((point in vertexes) == False) and (fcgeo.isPtOnEdge(point,e)):
-					ev2 = pts.index(self.invpl.multVec(e.Vertexes[1].Point))
-					pts.insert(ev2, self.invpl.multVec(point))
-			self.obj.Points = pts
-			self.resetTrackers()
+                        pts = self.obj.Points
+                        vertexes = fcgeo.getVerts(self.obj.Shape)
+                        self.edges = []
+                        self.edges = self.obj.Shape.Wires[0].Edges
+                        for e in self.edges:
+                                if ((point in vertexes) == False) and (fcgeo.isPtOnEdge(point,e)):
+                                        i = pts.index(self.invpl.multVec(e.Vertexes[1].Point))
+                                        pts.insert(i, self.invpl.multVec(point))
+                        self.obj.Points = pts
+                        self.resetTrackers()
+                if Draft.getType(self.obj) == "BSpline":
+                        uNewPoint = self.obj.Shape.Curve.parameter(point)
+                        pts = self.obj.Points
+                        uPoints = []
+                        for p in self.obj.Points:
+                                uPoints.append(self.obj.Shape.Curve.parameter(p))
+                        for i in range(len(uPoints)-1):
+                                if ( uNewPoint > uPoints[i] ) and ( uNewPoint < uPoints[i+1] ):
+                                        pts.insert(i+1, self.invpl.multVec(point))
+                                        break
+                        self.obj.Points = pts
+                        self.resetTrackers()
 
 	def resetTrackers(self):
 		for t in self.trackers:
