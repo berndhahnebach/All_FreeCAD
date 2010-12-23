@@ -886,6 +886,7 @@ class Line(Creator):
 	def Activated(self):
 		Creator.Activated(self,"Line")
 		if self.doc:
+                        self.obj = None
 			self.ui.lineUi()
 			self.snap = snapTracker()
 			self.linetrack = lineTracker()
@@ -946,11 +947,15 @@ class Line(Creator):
 			self.node.pop()
 			last = self.node[len(self.node)-1]
 			self.linetrack.p1(last)
-			if (len(self.node) > 2):
+			if self.obj.Shape.Edges:
 				edges = self.obj.Shape.Edges
-				edges.pop()
-				newshape = Part.Wire(edges)
+                                if len(edges) > 1:
+                                        edges.pop()
+                                        newshape = Part.Wire(edges)
+                                else:
+                                        newshape = Part.Shape()
 				self.obj.Shape = newshape
+                print self.node
 
 	def drawSegment(self,point):
 		"draws a new segment"
@@ -959,7 +964,7 @@ class Line(Creator):
 			msg(translate("draft", "Pick next point:\n"))
                         self.planetrack.set(self.node[0])
 		elif (len(self.node) == 2):
-			self.createTempObject()
+			if not self.obj: self.createTempObject()
 			last = self.node[len(self.node)-2]
 			newseg = Part.Line(last,point).toShape()
 			self.obj.Shape = newseg
