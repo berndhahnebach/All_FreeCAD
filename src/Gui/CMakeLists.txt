@@ -445,6 +445,7 @@ SOURCE_GROUP("Help" FILES ${Help_SRCS})
 
 # The Inventor sources
 SET(Inventor_CPP_SRCS
+    Inventor/SoDrawingGrid.cpp
     SoFCBackgroundGradient.cpp
     SoFCBoundingBox.cpp
     SoFCColorBar.cpp
@@ -463,6 +464,7 @@ SET(Inventor_CPP_SRCS
 )
 SET(Inventor_SRCS
     ${Inventor_CPP_SRCS}
+    Inventor/SoDrawingGrid.h
     SoFCBackgroundGradient.h
     SoFCBoundingBox.h
     SoFCColorBar.h

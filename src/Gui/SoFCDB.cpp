@@ -41,11 +41,13 @@
 #include "SoAxisCrossKit.h"
 #include "SoTextLabel.h"
 #include "SoNavigationDragger.h"
+#include "Inventor/SoDrawingGrid.h"
 
 #include "propertyeditor/PropertyItem.h"
 #include "NavigationStyle.h"
 
 using namespace Gui;
+using namespace Gui::Inventor;
 using namespace Gui::PropertyEditor;
 
 static SbBool init_done = FALSE;
@@ -88,7 +90,7 @@ void Gui::SoFCDB::init()
     TranslateManip                  ::initClass();
     SoShapeScale                    ::initClass();
     SoAxisCrossKit                  ::initClass();
-
+    SoDrawingGrid                   ::initClass();
 
     PropertyItem                    ::init();
     PropertySeparatorItem           ::init();

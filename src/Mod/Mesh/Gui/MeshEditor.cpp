@@ -272,7 +272,7 @@ void MeshFaceAddition::showMarker(SoPickedPoint* pp)
             const MeshCore::MeshPointArray& points = mf->Mesh.getValuePtr()->getKernel().GetPoints();
             // is the face index valid?
             int face_index = fd->getFaceIndex();
-            if (face_index >= facets.size())
+            if (face_index >= (int)facets.size())
                 return;
             // is a border facet picked? 
             MeshCore::MeshFacet f = facets[face_index];
