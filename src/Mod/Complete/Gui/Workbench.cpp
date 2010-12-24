@@ -110,7 +110,8 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     file->setCommand("&File");
     *file << "Std_New" << "Std_Open" << "Separator" << "Std_CloseActiveWindow"
           << "Std_CloseAllWindows" << "Separator" << "Std_Save" << "Std_SaveAs"
-          << "Separator" << "Std_Import" << "Std_Export" << "Std_ProjectInfo" 
+          << "Separator" << "Std_Import" << "Std_Export"
+          << "Std_MergeProjects" << "Std_ProjectInfo" 
           << "Separator" << "Std_Print" << "Std_PrintPdf"
           << "Separator" << "Std_RecentFiles" << "Separator" << "Std_Quit";
 
