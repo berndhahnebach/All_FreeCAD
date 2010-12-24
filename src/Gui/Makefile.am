@@ -169,6 +169,7 @@ libFreeCADGui_la_BUILT=\
 		WorkbenchPy.h 
 
 libFreeCADGui_la_SOURCES=\
+		Inventor/SoDrawingGrid.cpp \
 		Action.cpp \
 		Application.cpp \
 		ApplicationPy.cpp \
@@ -366,6 +367,7 @@ nodist_include_HEADERS=\
 		$(libFreeCADGui_la_BUILT)
 
 include_HEADERS=\
+		Inventor/SoDrawingGrid.h \
 		Qt4All.h \
 		InventorAll.h \
 		Action.h \
