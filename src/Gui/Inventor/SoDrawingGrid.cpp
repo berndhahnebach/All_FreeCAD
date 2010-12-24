@@ -74,6 +74,7 @@ SoDrawingGrid::renderGrid(SoGLRenderAction *action)
                                    SoProjectionMatrixElement::get(state));
     const SbViewportRegion & vp = SoViewportRegionElement::get(state);
     SbVec2s vpsize = vp.getViewportSizePixels();
+    float fRatio = vp.getViewportAspectRatio();
 
     float width = vv.getWidth();
     float height = vv.getHeight();
@@ -91,7 +92,7 @@ SoDrawingGrid::renderGrid(SoGLRenderAction *action)
     float p[3];
     p[2] = 0.0f;
 
-    int numX = width;
+    int numX = 20;
     for (int i=-numX; i<numX; i++) {
         p[0] = (float)i/numX;
         p[1] = -1.0f;
@@ -99,7 +100,7 @@ SoDrawingGrid::renderGrid(SoGLRenderAction *action)
         p[1] = 1.0f;
         glVertex3fv(p);
     }
-    int numY = height;
+    int numY = numX / fRatio;
     for (int i=-numY; i<numY; i++) {
         p[0] = -1.0f;
         p[1] = (float)i/numY;
