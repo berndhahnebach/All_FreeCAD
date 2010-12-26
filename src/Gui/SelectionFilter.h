@@ -75,6 +75,9 @@ public:
 
     std::vector<std::vector<SelectionObject> > Result;
 
+    /// true if a valid filter is set
+    bool isValid(void){return Ast;}
+
 protected:
     std::string Filter;
     std::string Errors;
@@ -97,6 +100,7 @@ class GuiExport SelectionFilterGate: public SelectionGate
 public:
     /// construct with the filter string
     SelectionFilterGate(const char* filter);
+    SelectionFilterGate(SelectionFilter* filter);
     ~SelectionFilterGate();
     virtual bool allow(App::Document*,App::DocumentObject*, const char*);
 

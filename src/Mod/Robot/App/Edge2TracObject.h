@@ -52,12 +52,7 @@ public:
     virtual const char* getViewProviderName(void) const {
         return "RobotGui::ViewProviderTrajectory";
     }
-    virtual App::DocumentObjectExecReturn *execute(void) {
-        return App::DocumentObject::StdReturn;
-    }
-    virtual short mustExecute(void) const;
-
-
+    virtual App::DocumentObjectExecReturn *execute(void);
 
 protected:
     /// get called by the container when a property has changed

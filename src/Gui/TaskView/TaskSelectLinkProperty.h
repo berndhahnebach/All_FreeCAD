@@ -27,6 +27,7 @@
 #include "TaskView.h"
 #include <Gui/Selection.h>
 #include <boost/signals.hpp>
+#include <App/PropertyLinks.h>
 
 
 class Ui_TaskSelectLinkProperty;
@@ -39,16 +40,39 @@ namespace Gui {
 class ViewProvider;
 namespace TaskView {
 
+/** General Link/Selction editor for the Task view
+ *  This can be used as part of a TaskDialog to alter
+ *  the content of a LinkProperty by user input/selection.
+ *  If set active it reflects the selection to the Property 
+ *  given and acts due the selection filter given to the constructor. 
+ *  It will allow only allowed elements to be selected (SelectionFilter)
+ *  and shows by the background color if the selection criterion is met. 
+ *  With the call of accept() or reject() the result gets permanent or
+ *  discarded in the given Property.
+ */
+
+
 class GuiExport TaskSelectLinkProperty : public TaskBox, public Gui::SelectionSingleton::ObserverType
 {
     Q_OBJECT
 
 public:
-    TaskSelectLinkProperty(QWidget *parent = 0);
+    TaskSelectLinkProperty(const char *,App::Property *,QWidget *parent = 0);
     ~TaskSelectLinkProperty();
     /// Observer message from the Selection
     void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
                   Gui::SelectionSingleton::MessageType Reason);
+
+    /// set the filter criterion (same as in constructor)
+    bool setFilter(const char*);
+
+    /// set the TaskSelectLinkProperty active, means seting the selection and controls it
+    void activate(void);
+
+    /// call this to accept the changes the user have made and put back to the Propterty (Ok)
+    bool accept(void);
+    /// This discard the changes of the user and leaf the Property untouched (Cancel)
+    bool reject(void);
 
 private Q_SLOTS:
     void on_Remove_clicked(bool);
@@ -56,9 +80,23 @@ private Q_SLOTS:
     void on_Invert_clicked(bool);
     void on_Help_clicked(bool);
 
+Q_SIGNALS:
+    void on_selectionFit(void);
+    void on_selectionMisfit(void);
+
 private:
+    // checks for selection and set background color and signals
+    void checkSelectionStatus(void);
+
     QWidget* proxy;
     Ui_TaskSelectLinkProperty* ui;
+
+    // posible used propetry types, only one is used
+    App::PropertyLinkSub  *LinkSub;
+    App::PropertyLinkList *LinkList;
+
+    // selection filter for the session 
+    Gui::SelectionFilter *Filter;
 };
 
 } //namespace TaskView

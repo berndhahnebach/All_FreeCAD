@@ -39,6 +39,7 @@
 
 #include <Mod/Robot/App/RobotObject.h>
 #include <Mod/Robot/App/TrajectoryObject.h>
+#include <Mod/Robot/App/Edge2TracObject.h>
 #include "TaskDlgEdge2Trac.h"
 
 #include "TrajectorySimulate.h"
@@ -328,7 +329,16 @@ CmdRobotEdge2Trac::CmdRobotEdge2Trac()
 
 void CmdRobotEdge2Trac::activated(int iMsg)
 {
-    Gui::TaskView::TaskDialog* dlg = new TaskDlgEdge2Trac();
+    std::string FeatName = getUniqueObjectName("EdgeTrajectory");
+ 
+    openCommand("Create trajectory");
+    doCommand(Doc,"App.activeDocument().addObject(\"Robot::Edge2TracObject\",\"%s\")",FeatName.c_str());
+    commitCommand();
+    
+    App::DocumentObject *obj = this->getDocument()->getObject(FeatName.c_str());
+    App::Property *prop = &(dynamic_cast<Robot::Edge2TracObject *>(obj)->Source); 
+
+    Gui::TaskView::TaskDialog* dlg = new TaskDlgEdge2Trac(dynamic_cast<Robot::Edge2TracObject *>(obj));
     Gui::Control().showDialog(dlg);
 
 
