@@ -56,6 +56,11 @@ SelectionFilterGate::SelectionFilterGate(const char* filter)
     Filter = new SelectionFilter(filter);
 }
 
+SelectionFilterGate::SelectionFilterGate(SelectionFilter* filter)
+{
+    Filter = filter;
+}
+
 SelectionFilterGate::~SelectionFilterGate()
 {
     delete Filter;

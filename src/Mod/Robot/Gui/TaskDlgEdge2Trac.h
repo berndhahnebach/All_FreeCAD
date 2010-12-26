@@ -27,6 +27,7 @@
 #include <Gui/TaskView/TaskDialog.h>
 #include <Mod/Robot/App/RobotObject.h>
 #include <Mod/Robot/App/TrajectoryObject.h>
+#include <Mod/Robot/App/Edge2TracObject.h>
 
 #include "TaskEdge2TracParameter.h"
 
@@ -43,7 +44,7 @@ class RobotGuiExport TaskDlgEdge2Trac : public Gui::TaskView::TaskDialog
     Q_OBJECT
 
 public:
-    TaskDlgEdge2Trac(void);
+    TaskDlgEdge2Trac(Robot::Edge2TracObject *);
     ~TaskDlgEdge2Trac();
 
 public:
@@ -60,12 +61,12 @@ public:
 
     /// returns for Close and Help button 
     virtual QDialogButtonBox::StandardButtons getStandardButtons(void) const
-    { return QDialogButtonBox::Close|QDialogButtonBox::Help; }
+    { return QDialogButtonBox::Ok|QDialogButtonBox::Cancel; }
 
 protected:
     TaskEdge2TracParameter                *param; 
     Gui::TaskView::TaskSelectLinkProperty *select;
-
+    Robot::Edge2TracObject                *Edge2TaskObject;
 };
 
 

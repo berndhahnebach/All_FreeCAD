@@ -35,12 +35,13 @@
 #include <Gui/BitmapFactory.h>
 #include <Gui/ViewProvider.h>
 #include <Gui/WaitCursor.h>
+#include <Gui/SelectionFilter.h>
 #include <Base/Console.h>
 
 using namespace Gui::TaskView;
 
-TaskSelectLinkProperty::TaskSelectLinkProperty(QWidget *parent)
-    : TaskBox(Gui::BitmapFactory().pixmap("mouse_pointer"),tr("edit selection"),true, parent)
+TaskSelectLinkProperty::TaskSelectLinkProperty(const char *sFilter,App::Property *prop,QWidget *parent)
+    : TaskBox(Gui::BitmapFactory().pixmap("mouse_pointer"),tr("edit selection"),true, parent),Filter(0),LinkSub(0),LinkList(0)
 {
     // we need a separate container widget to add all controls to
     proxy = new QWidget(this);
@@ -57,6 +58,15 @@ TaskSelectLinkProperty::TaskSelectLinkProperty(QWidget *parent)
     ui->Invert->setIcon(Gui::BitmapFactory().pixmap("edit_remove"));
     ui->Help->setIcon(Gui::BitmapFactory().pixmap("help-browser"));
 
+    // property have to be set! 
+    assert(prop);
+    if(prop->getTypeId().isDerivedFrom(App::PropertyLinkSub::getClassTypeId())){
+        LinkSub = dynamic_cast<App::PropertyLinkSub *>(prop);
+    }
+
+
+    setFilter(sFilter);
+
 }
 
 TaskSelectLinkProperty::~TaskSelectLinkProperty()
@@ -66,6 +76,71 @@ TaskSelectLinkProperty::~TaskSelectLinkProperty()
 }
 
 /// @cond DOXERR
+
+
+bool TaskSelectLinkProperty::setFilter(const char * sFilter)
+{
+    Filter = new SelectionFilter(sFilter);
+    return Filter->isValid();
+}
+
+
+void TaskSelectLinkProperty::activate(void)
+{
+    // first clear the selection
+    Gui::Selection().clearSelection();
+    // set the gate for the filter 
+    Gui::Selection().addSelectionGate(new SelectionFilterGate(Filter));
+
+    // In case of LinkSub property 
+    if(LinkSub){
+
+
+
+    }
+
+    checkSelectionStatus();
+
+}
+
+
+bool TaskSelectLinkProperty::accept(void)
+{
+
+
+    // clear selection and remove gate (return to normal operation)
+    Gui::Selection().clearSelection();
+    Gui::Selection().rmvSelectionGate();
+    return true;
+}
+
+bool TaskSelectLinkProperty::reject(void)
+{
+
+
+    // clear selection and remove gate (return to normal operation)
+    Gui::Selection().clearSelection();
+    Gui::Selection().rmvSelectionGate();
+    return true;
+}
+
+void TaskSelectLinkProperty::checkSelectionStatus(void)
+{
+    QPalette palette;
+
+    if(Filter->match()){
+        palette.setBrush(QPalette::Base,QColor(200,250,200));
+        on_selectionFit();
+    }else{
+        palette.setBrush(QPalette::Base,QColor(250,200,200));
+        on_selectionMisfit();
+    }
+    //ui->listWidget->setAutoFillBackground(true);
+    ui->listWidget->setPalette(palette);
+
+}
+
+
 void TaskSelectLinkProperty::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
                               Gui::SelectionSingleton::MessageType Reason)
 {
@@ -73,7 +148,16 @@ void TaskSelectLinkProperty::OnChange(Gui::SelectionSingleton::SubjectType &rCal
         Reason.Type == SelectionChanges::RmvSelection ||
         Reason.Type == SelectionChanges::SetSelection ||
         Reason.Type == SelectionChanges::ClrSelection) {
-        //std::vector<Gui::ViewProvider*> views = getSelection();
+            ui->listWidget->clear();
+            std::vector<Gui::SelectionSingleton::SelObj> sel = Gui::Selection().getSelection();
+            for( std::vector<Gui::SelectionSingleton::SelObj>::const_iterator it=sel.begin();it!=sel.end();++it){
+                std::string temp;
+                temp += it->FeatName;
+                temp += "::";
+                temp += it->SubName;
+                new QListWidgetItem(QString::fromAscii(temp.c_str()), ui->listWidget);
+            }
+            checkSelectionStatus();
     }
 }
 /// @endcond

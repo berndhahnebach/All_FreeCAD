@@ -39,11 +39,11 @@ using namespace RobotGui;
 // TaskDialog
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-TaskDlgEdge2Trac::TaskDlgEdge2Trac(void)
-    : TaskDialog()
+TaskDlgEdge2Trac::TaskDlgEdge2Trac(Robot::Edge2TracObject *obj)
+    : TaskDialog(),Edge2TaskObject(obj)
 {
     param  = new TaskEdge2TracParameter();
-    select = new Gui::TaskView::TaskSelectLinkProperty();
+    select = new Gui::TaskView::TaskSelectLinkProperty("SELECT Part::Feature SUBELEMENT Edge",&(obj->Source));
 
     Content.push_back(param);
     Content.push_back(select);
@@ -59,6 +59,7 @@ TaskDlgEdge2Trac::~TaskDlgEdge2Trac()
 
 void TaskDlgEdge2Trac::open()
 {
+    select->activate();
 
 }
 
@@ -69,11 +70,13 @@ void TaskDlgEdge2Trac::clicked(int)
 
 bool TaskDlgEdge2Trac::accept()
 {
+    select->accept();
     return true;
 }
 
 bool TaskDlgEdge2Trac::reject()
 {
+    select->reject();
     return true;
 }
 

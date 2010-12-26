@@ -67,16 +67,18 @@ TaskSketcherGeneral::~TaskSketcherGeneral()
 
 void TaskSketcherGeneral::slotSolved(int type,float time)
 {
+    QPalette palette;
     switch(type){
         case 0: 
             ui->labelSolverStatus->setText(QString::fromLatin1("Solved (%1)").arg(time));
-            //ui->labelSolverStatus->P
+            palette.setBrush(QPalette::Base,QColor(200,250,200));
             break;
         case 1: 
             ui->labelSolverStatus->setText(QString::fromLatin1("Unsolved (%1)").arg(time));
-            //ui->labelSolverStatus->P
+            palette.setBrush(QPalette::Base,QColor(200,250,200));
             break;
     }
+    ui->labelSolverStatus->setPalette(palette);
 }
 
 void TaskSketcherGeneral::changeEvent(QEvent *e)
