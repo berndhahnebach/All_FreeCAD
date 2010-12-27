@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2010 Jürgen Riegel (juergen.riegel@web.de)              *
+ *   Copyright (c) 2008 Jürgen Riegel (juergen.riegel@web.de)              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,46 +21,25 @@
  ***************************************************************************/
 
 
-#ifndef ROBOT_Edge2TracObject_H
-#define ROBOT_Edge2TracObject_H
+#include "PreCompiled.h"
 
-#include <App/GeoFeature.h>
-#include <App/PropertyFile.h>
-#include <App/PropertyGeo.h>
+#ifndef _PreComp_
+#endif
 
-#include "Trajectory.h"
-#include "TrajectoryObject.h"
-#include "PropertyTrajectory.h"
+#include "ViewProviderEdge2TracObject.h"
+#include <Gui/Control.h>
+#include <Mod/Robot/Gui/TaskDlgEdge2Trac.h>
 
-namespace Robot
+using namespace Gui;
+using namespace RobotGui;
+
+PROPERTY_SOURCE(RobotGui::ViewProviderEdge2TracObject, RobotGui::ViewProviderTrajectory)
+
+bool ViewProviderEdge2TracObject::doubleClicked(void)
 {
-
-class AppRobotExport Edge2TracObject : public TrajectoryObject
-{
-    PROPERTY_HEADER(Robot::TrajectoryObject);
-
-public:
-    /// Constructor
-    Edge2TracObject(void);
-    virtual ~Edge2TracObject();
-
-    App::PropertyLinkSub         Source;
-    App::PropertyFloatConstraint SegValue;
+    Gui::TaskView::TaskDialog* dlg = new TaskDlgEdge2Trac(dynamic_cast<Robot::Edge2TracObject *>(getObject()));
+    Gui::Control().showDialog(dlg);
+    return true;
+}
 
 
-    /// returns the type name of the ViewProvider
-    virtual const char* getViewProviderName(void) const {
-        return "RobotGui::ViewProviderEdge2TracObject";
-    }
-    virtual App::DocumentObjectExecReturn *execute(void);
-
-protected:
-    /// get called by the container when a property has changed
-    virtual void onChanged (const App::Property* prop);
-
-};
-
-} //namespace Robot
-
-
-#endif // ROBOT_ROBOTOBJECT_H

@@ -73,6 +73,10 @@ public:
     bool accept(void);
     /// This discard the changes of the user and leaf the Property untouched (Cancel)
     bool reject(void);
+    /// send the selection to the Property for e.g. forced recomputation of a feature
+    void sendSelection2Property(void);
+    /// checkes if the filter is current met
+    inline bool isSelectionValid(void) const {return Filter->match();}
 
 private Q_SLOTS:
     void on_Remove_clicked(bool);
@@ -97,6 +101,10 @@ private:
 
     // selection filter for the session 
     Gui::SelectionFilter *Filter;
+
+    // string stores the Property at the beginning (for Cancel)
+    std::vector<std::string> StartValueBuffer;
+    App::DocumentObject      *StartObject;
 };
 
 } //namespace TaskView

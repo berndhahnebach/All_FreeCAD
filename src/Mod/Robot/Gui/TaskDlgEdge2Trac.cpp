@@ -63,20 +63,35 @@ void TaskDlgEdge2Trac::open()
 
 }
 
-void TaskDlgEdge2Trac::clicked(int)
+void TaskDlgEdge2Trac::clicked(int button)
 {
+    if(QDialogButtonBox::Apply == button)
+    {
+        if(select->isSelectionValid()){
+            select->sendSelection2Property();
+            Edge2TaskObject->execute();
+        }else
+            QApplication::beep();
+    }
     
 }
 
 bool TaskDlgEdge2Trac::accept()
 {
-    select->accept();
-    return true;
+    if(select->isSelectionValid()){
+        select->accept();
+        Edge2TaskObject->execute();
+        return true;
+    }else
+        QApplication::beep();
+
+    return false;
 }
 
 bool TaskDlgEdge2Trac::reject()
 {
     select->reject();
+    Edge2TaskObject->execute();
     return true;
 }
 

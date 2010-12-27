@@ -73,6 +73,8 @@ SET(RobotGui_SRCS
     ViewProviderRobotObject.h
     ViewProviderTrajectory.cpp
     ViewProviderTrajectory.h
+    ViewProviderEdge2TracObject.cpp
+    ViewProviderEdge2TracObject.h
     TaskRobot6Axis.ui
     TaskRobot6Axis.cpp
     TaskRobot6Axis.h
