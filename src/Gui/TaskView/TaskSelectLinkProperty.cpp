@@ -58,6 +58,12 @@ TaskSelectLinkProperty::TaskSelectLinkProperty(const char *sFilter,App::Property
     ui->Invert->setIcon(Gui::BitmapFactory().pixmap("edit_remove"));
     ui->Help->setIcon(Gui::BitmapFactory().pixmap("help-browser"));
 
+    // deactivate not implemented stuff
+    ui->Remove->setDisabled(true);
+    ui->Add->setDisabled(true);
+    ui->Invert->setDisabled(true);
+    ui->Help->setDisabled(true);
+
     // property have to be set! 
     assert(prop);
     if(prop->getTypeId().isDerivedFrom(App::PropertyLinkSub::getClassTypeId())){
@@ -94,9 +100,20 @@ void TaskSelectLinkProperty::activate(void)
 
     // In case of LinkSub property 
     if(LinkSub){
+        // save the start values for a cnacel operation (reject())
+        StartValueBuffer = LinkSub->getSubValues();
+        StartObject      = LinkSub->getValue();
+        if(StartObject)
+        {
+            std::string ObjName = StartObject->getNameInDocument();
+            std::string DocName = StartObject->getDocument()->getName();
 
-
-
+            for(std::vector<std::string>::const_iterator it = StartValueBuffer.begin();it!=StartValueBuffer.end();++it)
+            {
+                Gui::Selection().addSelection(DocName.c_str(),ObjName.c_str(),it->c_str());
+            }
+        }
+        
     }
 
     checkSelectionStatus();
@@ -106,7 +123,8 @@ void TaskSelectLinkProperty::activate(void)
 
 bool TaskSelectLinkProperty::accept(void)
 {
-
+    // set the proptery with the selection
+    sendSelection2Property();
 
     // clear selection and remove gate (return to normal operation)
     Gui::Selection().clearSelection();
@@ -116,12 +134,25 @@ bool TaskSelectLinkProperty::accept(void)
 
 bool TaskSelectLinkProperty::reject(void)
 {
-
+    if(LinkSub){
+        // restore the old values
+        LinkSub->setValue(StartObject,StartValueBuffer);
+    }
 
     // clear selection and remove gate (return to normal operation)
     Gui::Selection().clearSelection();
     Gui::Selection().rmvSelectionGate();
     return true;
+}
+
+void TaskSelectLinkProperty::sendSelection2Property(void)
+{
+    if(LinkSub){
+        std::vector<Gui::SelectionObject> temp = Gui::Selection().getSelectionEx();
+        assert(temp.size() >= 1);
+        LinkSub->setValue(temp[0].getObject(),temp[0].getSubNames());
+    }
+
 }
 
 void TaskSelectLinkProperty::checkSelectionStatus(void)

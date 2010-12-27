@@ -21,46 +21,24 @@
  ***************************************************************************/
 
 
-#ifndef ROBOT_Edge2TracObject_H
-#define ROBOT_Edge2TracObject_H
+#ifndef ROBOT_VIEWPROVIDEREDGE2TRACOBJECT_H
+#define ROBOT_VIEWPROVIDEREDGE2TRACOBJECT_H
 
-#include <App/GeoFeature.h>
-#include <App/PropertyFile.h>
-#include <App/PropertyGeo.h>
+#include "ViewProviderTrajectory.h"
 
-#include "Trajectory.h"
-#include "TrajectoryObject.h"
-#include "PropertyTrajectory.h"
-
-namespace Robot
+namespace RobotGui
 {
 
-class AppRobotExport Edge2TracObject : public TrajectoryObject
+class RobotGuiExport ViewProviderEdge2TracObject : public ViewProviderTrajectory
 {
-    PROPERTY_HEADER(Robot::TrajectoryObject);
+    PROPERTY_HEADER(RobotGui::ViewProviderEdge2TracObject);
 
 public:
-    /// Constructor
-    Edge2TracObject(void);
-    virtual ~Edge2TracObject();
-
-    App::PropertyLinkSub         Source;
-    App::PropertyFloatConstraint SegValue;
-
-
-    /// returns the type name of the ViewProvider
-    virtual const char* getViewProviderName(void) const {
-        return "RobotGui::ViewProviderEdge2TracObject";
-    }
-    virtual App::DocumentObjectExecReturn *execute(void);
-
-protected:
-    /// get called by the container when a property has changed
-    virtual void onChanged (const App::Property* prop);
+    virtual bool doubleClicked(void);
 
 };
 
-} //namespace Robot
+} //namespace RobotGui
 
 
-#endif // ROBOT_ROBOTOBJECT_H
+#endif // ROBOT_VIEWPROVIDEREDGE2TRACOBJECT_H

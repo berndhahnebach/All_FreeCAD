@@ -61,7 +61,7 @@ public:
 
     /// returns for Close and Help button 
     virtual QDialogButtonBox::StandardButtons getStandardButtons(void) const
-    { return QDialogButtonBox::Ok|QDialogButtonBox::Cancel; }
+    { return QDialogButtonBox::Ok|QDialogButtonBox::Apply|QDialogButtonBox::Cancel; }
 
 protected:
     TaskEdge2TracParameter                *param; 
