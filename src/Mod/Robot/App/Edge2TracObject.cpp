@@ -35,6 +35,8 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <CPnts_AbscissaPoint.hxx>
 #include <TopExp.hxx>
 #include "Waypoint.h"
 #include "Trajectory.h"
@@ -89,6 +91,7 @@ App::DocumentObjectExecReturn *Edge2TracObject::execute(void)
 
     // trajectory to fill
     Robot::Trajectory trac;
+    bool first = true;
 
     // cycle trough the cluster
     for(std::vector<std::vector<TopoDS_Edge> >::const_iterator it=aclusteroutput.begin();it!=aclusteroutput.end();++it)
@@ -96,22 +99,56 @@ App::DocumentObjectExecReturn *Edge2TracObject::execute(void)
         // cycle through the edges of the cluster
         for(std::vector<TopoDS_Edge>::const_iterator it2=it->begin();it2!=it->end();++it2)
         {
-            // get start and end point
-            TopoDS_Vertex V1,V2;
-            TopExp::Vertices(*it2,V1,V2);
-            gp_Pnt P1 = BRep_Tool::Pnt(V1);
-            gp_Pnt P2 = BRep_Tool::Pnt(V2);
-            // if reverse orintation, switch the points
-            if ( it2->Orientation() == TopAbs_REVERSED )
+            BRepAdaptor_Curve adapt(*it2);
+            
+            switch(adapt.GetType())
             {
-                 //switch the points
-                 gp_Pnt tmpP = P1;
-                 P1 = P2;
-                 P2 = tmpP;
-            }
+            case GeomAbs_Line:
+                {
+                // get start and end point
+                gp_Pnt P1 = adapt.Value(adapt.FirstParameter());
+                gp_Pnt P2 = adapt.Value(adapt.LastParameter());
 
-            Waypoint wp("Pt",Base::Placement(Base::Vector3d(P2.X(),P2.Y(),P2.Z()),Base::Rotation()));
-            trac.addWaypoint(wp);
+                // if reverse orintation, switch the points
+                if ( it2->Orientation() == TopAbs_REVERSED )
+                {
+                     //switch the points
+                     gp_Pnt tmpP = P1;
+                     P1 = P2;
+                     P2 = tmpP;
+                }
+                if(first){
+                    Waypoint wp("Pt",Base::Placement(Base::Vector3d(P1.X(),P1.Y(),P1.Z()),Base::Rotation()));
+                    trac.addWaypoint(wp);
+                    first = false;
+                }
+                Waypoint wp("Pt",Base::Placement(Base::Vector3d(P2.X(),P2.Y(),P2.Z()),Base::Rotation()));
+                trac.addWaypoint(wp);
+                break;
+                }
+            case GeomAbs_Circle:
+                {
+                Standard_Real Length    = CPnts_AbscissaPoint::Length(adapt);
+                Standard_Real ParLength = adapt.LastParameter()-adapt.FirstParameter();
+                Standard_Real NbrSegments = Round(Length / SegValue.getValue());
+                Standard_Real SegLength   = ParLength / NbrSegments;
+
+                float i = adapt.FirstParameter();
+                if(first) 
+                    first=false;
+                else
+                    i += SegLength;
+                for (;i<adapt.LastParameter();i+= SegLength){
+                    gp_Pnt P = adapt.Value(i);
+                    Waypoint wp("Pt",Base::Placement(Base::Vector3d(P.X(),P.Y(),P.Z()),Base::Rotation()));
+                    trac.addWaypoint(wp);
+                }
+                break;
+                }
+
+            }
+           
+
 
         }
     }
