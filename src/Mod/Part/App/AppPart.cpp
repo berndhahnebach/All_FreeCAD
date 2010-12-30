@@ -139,6 +139,7 @@ void AppPartExport initPart()
     Part::Box                   ::init();
     Part::Boolean               ::init();
     Part::Common                ::init();
+    Part::MultiCommon           ::init();
     Part::Cut                   ::init();
     Part::Fuse                  ::init();
     Part::MultiFuse             ::init();

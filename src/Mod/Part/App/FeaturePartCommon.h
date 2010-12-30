@@ -45,6 +45,23 @@ protected:
     //@}
 };
 
+class MultiCommon : public Part::Feature
+{
+    PROPERTY_HEADER(Part::MultiCommon);
+
+public:
+    MultiCommon();
+
+    App::PropertyLinkList Shapes;
+
+    /** @name methods override feature */
+    //@{
+    /// recalculate the Feature
+    App::DocumentObjectExecReturn *execute(void);
+    short mustExecute() const;
+    //@}
+};
+
 }
 
 #endif // PART_FEATUREPARTCOMMON_H

@@ -40,7 +40,7 @@ namespace Gui {
  *  to test very fast a selection or object/subelement type 
  *  against it. 
  *
- *  example Strings are:
+ *  Example strings are:
  *  "SELECT Part::Feature SUBELEMENT Edge", 
  *  "SELECT Robot::RobotObject", 
  *  "SELECT Robot::RobotObject COUNT 1..5"
@@ -54,15 +54,15 @@ public:
     SelectionFilter(const std::string& filter);
     virtual ~SelectionFilter();
 
-    /// set a new filter string 
+    /// Set a new filter string 
     void setFilter(const char* filter);
-    /** test to current selection
+    /** Test to current selection
      *  This method tests the current selection set
      *  against the filter and returns true if the 
      *  described object(s) are selected.
      */
     bool match(void);
-    /** test objects
+    /** Test objects
      *  This method tests if a given object is described in the 
      *  filter. If SubName is not NULL the Subelement gets also
      *  tested.
@@ -76,7 +76,7 @@ public:
     std::vector<std::vector<SelectionObject> > Result;
 
     /// true if a valid filter is set
-    bool isValid(void){return Ast;}
+    bool isValid(void) const {return Ast;}
 
 protected:
     std::string Filter;
