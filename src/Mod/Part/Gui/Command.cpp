@@ -241,7 +241,6 @@ CmdPartCut::CmdPartCut()
     iAccel        = 0;
 }
 
-
 void CmdPartCut::activated(int iMsg)
 {
     unsigned int n = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
@@ -291,9 +290,9 @@ CmdPartCommon::CmdPartCommon()
 void CmdPartCommon::activated(int iMsg)
 {
     unsigned int n = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
-    if (n != 2) {
+    if (n < 2) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
-            QObject::tr("Select two shapes please."));
+            QObject::tr("Select two shapes or more, please."));
         return;
     }
 
@@ -302,18 +301,19 @@ void CmdPartCommon::activated(int iMsg)
     std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
 
     openCommand("Common");
-    doCommand(Doc,"App.activeDocument().addObject(\"Part::Common\",\"%s\")",FeatName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Base = App.activeDocument().%s",FeatName.c_str(),Sel[0].FeatName);
-    doCommand(Doc,"App.activeDocument().%s.Tool = App.activeDocument().%s",FeatName.c_str(),Sel[1].FeatName);
-    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[0].FeatName);
-    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[1].FeatName);
+    doCommand(Doc,"App.activeDocument().addObject(\"Part::MultiCommon\",\"%s\")",FeatName.c_str());
+    doCommand(Doc,"__s__=[]");
+    for (std::vector<Gui::SelectionSingleton::SelObj>::iterator it = Sel.begin(); it != Sel.end(); ++it)
+        doCommand(Doc,"__s__.append(App.activeDocument().%s)", it->FeatName);
+    doCommand(Doc,"App.activeDocument().%s.Shapes = __s__",FeatName.c_str());
+    doCommand(Doc,"del __s__");
     updateActive();
     commitCommand();
 }
 
 bool CmdPartCommon::isActive(void)
 {
-    return getSelection().countObjectsOfType(Part::Feature::getClassTypeId())==2;
+    return getSelection().countObjectsOfType(Part::Feature::getClassTypeId())>=2;
 }
 
 //===========================================================================
@@ -339,7 +339,7 @@ void CmdPartFuse::activated(int iMsg)
     unsigned int n = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
     if (n < 2) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
-            QObject::tr("Select at least two shapes please."));
+            QObject::tr("Select two shapes or more, please."));
         return;
     }
 
