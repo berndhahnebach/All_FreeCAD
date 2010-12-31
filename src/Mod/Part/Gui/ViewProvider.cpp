@@ -423,7 +423,8 @@ void ViewProviderPart::updateData(const App::Property* prop)
             computeFaces   (FaceRoot,cShape,deflection);
             computeEdges   (EdgeRoot,cShape);
             computeVertices(VertexRoot,cShape);
-            BRepTools::Clean(cShape); // remove triangulation
+            // NOTE: Cleaning the triangulation may cause problems on some algorithms like BOP
+            //BRepTools::Clean(cShape); // remove triangulation
 
             // update control points if there
             if (pcControlPoints) {

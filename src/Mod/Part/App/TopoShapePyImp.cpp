@@ -252,7 +252,8 @@ PyObject* TopoShapePy::writeInventor(PyObject * args)
         getTopoShapePtr()->exportFaceSet(dev, angle, result);
         getTopoShapePtr()->exportLineSet(result);
     }
-    BRepTools::Clean(getTopoShapePtr()->_Shape); // remove triangulation
+    // NOTE: Cleaning the triangulation may cause problems on some algorithms like BOP
+    //BRepTools::Clean(getTopoShapePtr()->_Shape); // remove triangulation
     return Py::new_reference_to(Py::String(result.str()));
 }
 
