@@ -236,8 +236,9 @@ void PropertyPartShape::SaveDocFile (Base::Writer &writer) const
     // can be checked when reading in the data.
     if (_Shape._Shape.IsNull())
         return;
+    // NOTE: Cleaning the triangulation may cause problems on some algorithms like BOP
     // Before writing to the project we clean all triangulation data to save memory
-    BRepTools::Clean(_Shape._Shape);
+    // BRepTools::Clean(_Shape._Shape);
 
     // create a temporary file and copy the content to the zip stream
     // once the tmp. filename is known use always the same because otherwise
