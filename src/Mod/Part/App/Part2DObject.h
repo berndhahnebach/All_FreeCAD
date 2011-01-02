@@ -40,6 +40,10 @@ class AppPartExport Part2DObject :public Part::Feature
 public:
     Part2DObject();
 
+    /// if the 2DObject lies on the Face of an other object this links to it
+    App::PropertyLinkSub        Support;
+
+
     /** @name methods overide Feature */
     //@{
     /// recalculate the Feature

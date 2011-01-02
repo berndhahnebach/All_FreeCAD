@@ -201,11 +201,6 @@ MARK_AS_ADVANCED(FORCE FREECAD_LIBPACK_CHECKFILE6X FREECAD_LIBPACK_CHECKFILE7X)
         MESSAGE("SWIG was not found, build no SWIG binding for pivy")
     ENDIF(NOT SWIG_FOUND)
 
-    if(FREECAD_BUILD_GUI)	
-# -------------------------------- OpenGL --------------------------------
-
-    find_package(OpenGL)
-
 # -------------------------------- Eigen --------------------------------
 
     find_package(Eigen2)
@@ -213,18 +208,20 @@ MARK_AS_ADVANCED(FORCE FREECAD_LIBPACK_CHECKFILE6X FREECAD_LIBPACK_CHECKFILE7X)
 # -------------------------------- ODE ----------------------------------
 
     find_package(ODE)
-
+	
 # -------------------------------- Qt --------------------------------
 
 # sets ${QT_LIBRARIES}
 
     SET(QT_MIN_VERSION 4.1.4)
     set(QT_USE_QTNETWORK TRUE)
-    set(QT_USE_QTOPENGL TRUE)
-    set(QT_USE_QTSVG TRUE)
-    set(QT_USE_QTUITOOLS TRUE)
     set(QT_USE_QTXML TRUE)
-    set(QT_USE_QTWEBKIT TRUE)
+	if(FREECAD_BUILD_GUI)
+		set(QT_USE_QTOPENGL TRUE)
+		set(QT_USE_QTSVG TRUE)
+		set(QT_USE_QTUITOOLS TRUE)
+		set(QT_USE_QTWEBKIT TRUE)
+	endif(FREECAD_BUILD_GUI)
     find_package(Qt4)
 
     include(${QT_USE_FILE})
@@ -256,11 +253,18 @@ MARK_AS_ADVANCED(FORCE FREECAD_LIBPACK_CHECKFILE6X FREECAD_LIBPACK_CHECKFILE7X)
             add_file_dependencies(${it} ${outfile})
         endforeach(it)
     endmacro(fc_wrap_cpp)
+	
+    if(FREECAD_BUILD_GUI)	
+# -------------------------------- OpenGL --------------------------------
+
+		find_package(OpenGL)
+
+
 
 # -------------------------------- Coin3D --------------------------------
 
-    find_package(Coin3D REQUIRED)
-    find_package(SoQt REQUIRED)
+		find_package(Coin3D REQUIRED)
+		find_package(SoQt REQUIRED)
 
     endif(FREECAD_BUILD_GUI)
 
