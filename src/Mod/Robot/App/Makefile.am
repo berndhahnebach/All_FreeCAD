@@ -153,6 +153,10 @@ libRobot_la_SOURCES=\
 		AppRobotPy.cpp \
 		Edge2TracObject.cpp \
 		Edge2TracObject.h \
+		TrajectoryDressUpObject.cpp \
+		TrajectoryDressUpObject.h \
+		TrajectoryCompound.cpp \
+		TrajectoryCompound.h \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		PropertyTrajectory.cpp \
