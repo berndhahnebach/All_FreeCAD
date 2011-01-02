@@ -144,42 +144,44 @@ else(WIN32)
 endif(WIN32)
 
 ######################## FreeCADGuiPy ########################
+if(FREECAD_BUILD_GUI)
 
-SET(FreeCADGuiPy_SRCS
-    FreeCADGuiPy.cpp
-)
+	SET(FreeCADGuiPy_SRCS
+		FreeCADGuiPy.cpp
+	)
 
-add_library(FreeCADGuiPy SHARED ${FreeCADGuiPy_SRCS})
+	add_library(FreeCADGuiPy SHARED ${FreeCADGuiPy_SRCS})
 
-target_link_libraries(FreeCADGuiPy FreeCADGui)
+	target_link_libraries(FreeCADGuiPy FreeCADGui)
 
-# Note this is IDE specific, not necessarily platform specific
-if(MSVC)
-    set_target_properties(FreeCADGuiPy PROPERTIES OUTPUT_NAME "FreeCADGui")
-    set_target_properties(FreeCADGuiPy PROPERTIES DEBUG_OUTPUT_NAME "FreeCADGui_d")
-    set_target_properties(FreeCADGuiPy PROPERTIES SUFFIX ".pyd")
-    # dirty hack to avoid Debug/Release subdirectory
-    set_target_properties(FreeCADGuiPy PROPERTIES PREFIX "../")
-    set_target_properties(FreeCADGuiPy PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-elseif(MINGW)
-    set_target_properties(FreeCADGuiPy PROPERTIES OUTPUT_NAME "FreeCADGui")
-    set_target_properties(FreeCADGuiPy PROPERTIES DEBUG_OUTPUT_NAME "FreeCADGui_d")
-    set_target_properties(FreeCADGuiPy PROPERTIES SUFFIX ".pyd")
-    set_target_properties(FreeCADGuiPy PROPERTIES PREFIX "")
-    set_target_properties(FreeCADGuiPy PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-else(MSVC)
-    set_target_properties(FreeCADGuiPy PROPERTIES OUTPUT_NAME "FreeCADGui")
-    set_target_properties(FreeCADGuiPy PROPERTIES PREFIX "")
-    set_target_properties(FreeCADGuiPy PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-endif(MSVC)
+	# Note this is IDE specific, not necessarily platform specific
+	if(MSVC)
+		set_target_properties(FreeCADGuiPy PROPERTIES OUTPUT_NAME "FreeCADGui")
+		set_target_properties(FreeCADGuiPy PROPERTIES DEBUG_OUTPUT_NAME "FreeCADGui_d")
+		set_target_properties(FreeCADGuiPy PROPERTIES SUFFIX ".pyd")
+		# dirty hack to avoid Debug/Release subdirectory
+		set_target_properties(FreeCADGuiPy PROPERTIES PREFIX "../")
+		set_target_properties(FreeCADGuiPy PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+	elseif(MINGW)
+		set_target_properties(FreeCADGuiPy PROPERTIES OUTPUT_NAME "FreeCADGui")
+		set_target_properties(FreeCADGuiPy PROPERTIES DEBUG_OUTPUT_NAME "FreeCADGui_d")
+		set_target_properties(FreeCADGuiPy PROPERTIES SUFFIX ".pyd")
+		set_target_properties(FreeCADGuiPy PROPERTIES PREFIX "")
+		set_target_properties(FreeCADGuiPy PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+	else(MSVC)
+		set_target_properties(FreeCADGuiPy PROPERTIES OUTPUT_NAME "FreeCADGui")
+		set_target_properties(FreeCADGuiPy PROPERTIES PREFIX "")
+		set_target_properties(FreeCADGuiPy PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+	endif(MSVC)
 
-if(WIN32)
-    INSTALL(TARGETS FreeCADGuiPy
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-    )
-else(WIN32)
-    INSTALL(TARGETS FreeCADGuiPy
-        LIBRARY DESTINATION lib
-    )
-endif(WIN32)
+	if(WIN32)
+		INSTALL(TARGETS FreeCADGuiPy
+			RUNTIME DESTINATION bin
+			LIBRARY DESTINATION lib
+		)
+	else(WIN32)
+		INSTALL(TARGETS FreeCADGuiPy
+			LIBRARY DESTINATION lib
+		)
+	endif(WIN32)
+endif(FREECAD_BUILD_GUI)
