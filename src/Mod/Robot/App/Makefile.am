@@ -180,8 +180,9 @@ libRobot_la_SOURCES=\
 	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $<
 
 # the library search path.
-libRobot_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) $(QT4_CORE_LIBS) \
-	-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libRobot_la_LDFLAGS = -L../../../Base -L../../../App -L../../Part/App \
+	$(all_libraries) $(QT4_CORE_LIBS) \
+	-L$(OCC_LIB) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libRobot_la_CPPFLAGS = -DRobotAppExport=
 #libkdl_la_CPPFLAGS = -Wno-sign-compare -Wno-reorder
 
@@ -190,6 +191,23 @@ libRobot_la_LIBADD   = \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
 		-lkdl \
+		-lTKBRep \
+		-lTKernel \
+		-lTKFillet \
+		-lTKG2d \
+		-lTKG3d \
+		-lTKMath \
+		-lTKMesh \
+		-lTKSTEP \
+		-lTKSTEPAttr \
+		-lTKSTEPBase \
+		-lTKXSBase \
+		-lTKTopAlgo \
+		-lTKGeomAlgo \
+		-lTKGeomBase \
+		-lTKOffset \
+		-lTKPrim \
+		-lPart \
 		-lFreeCADBase \
 		-lFreeCADApp
 
@@ -214,7 +232,7 @@ Robot_la_DEPENDENCIES = libRobot.la
 
 # set the include path found by configure
 AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src -I$(top_srcdir)/src/Mod/Robot/App \
-		$(all_includes) -I$(EIGEN2_INC) $(QT4_CORE_CXXFLAGS)
+		$(all_includes) -I$(EIGEN2_INC) $(QT4_CORE_CXXFLAGS) -I$(OCC_INC)
 
 
 libdir = $(prefix)/Mod/Robot
