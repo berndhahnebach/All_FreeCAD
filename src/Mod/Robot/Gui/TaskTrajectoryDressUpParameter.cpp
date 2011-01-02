@@ -28,8 +28,8 @@
 
 #include <QString>
 #include <QSlider>
-#include "ui_TaskEdge2TracParameter.h"
-#include "TaskEdge2TracParameter.h"
+#include "ui_TaskTrajectoryDressUpParameter.h"
+#include "TaskTrajectoryDressUpParameter.h"
 #include <Gui/Application.h>
 #include <Gui/Document.h>
 #include <Gui/BitmapFactory.h>
@@ -42,87 +42,31 @@
 using namespace RobotGui;
 using namespace Gui;
 
-TaskEdge2TracParameter::TaskEdge2TracParameter(Robot::Edge2TracObject *pcObject,QWidget *parent)
+TaskTrajectoryDressUpParameter::TaskTrajectoryDressUpParameter(QWidget *parent)
     : TaskBox(Gui::BitmapFactory().pixmap("Robot_Edge2Trac"),
-      tr("TaskEdge2TracParameter"),
+      tr("Dress Up Parameter"),
       true, 
-      parent),
-      pcObject(pcObject),
-      HideShowObj(0)
+      parent)
 {
     // we need a separate container widget to add all controls to
     proxy = new QWidget(this);
-    ui = new Ui_TaskEdge2TracParameter();
+    ui = new Ui_TaskTrajectoryDressUpParameter();
     ui->setupUi(proxy);
     QMetaObject::connectSlotsByName(this);
 
     this->groupLayout()->addWidget(proxy);
 
-    QObject::connect(ui->pushButton_HideShow,SIGNAL(clicked()),this,SLOT(hideShow()));
-
-    setHideShowObject();
-
-}
-void TaskEdge2TracParameter::setHideShowObject(void)
-{
-    HideShowObj = pcObject->Source.getValue();
-
-    if(HideShowObj){
-        QString ObjectName = QString::fromUtf8(HideShowObj->Label.getValue());
-        ui->lineEdit_ObjectName->setText(ObjectName);
-    }else{
-        ui->lineEdit_ObjectName->setText(QString());
-    }
-}
-
-void TaskEdge2TracParameter::hideShow(void)
-{
-    setHideShowObject();
-
-    Gui::Application;
-
-
-
-}
-
-void TaskEdge2TracParameter::setEdgeAndClusterNbr(int NbrEdges,int NbrClusters)
-{
-    QPalette palette(QApplication::palette());
-    QString  text;
-
-    const int a=200,p=0;
-
-    // set the text and the background color for the Edges label
-    if(NbrEdges > 0){
-        palette.setBrush(QPalette::WindowText,QColor(p,a,p));
-    }else{
-        palette.setBrush(QPalette::WindowText,QColor(a,p,p));
-    }
-
-    text = QString::fromAscii("Edges: %1").arg(NbrEdges);
-    ui->label_Edges->setPalette(palette);
-    ui->label_Edges->setText(text);
-
-    // set the text and the background color for the Clusters label
-    if(NbrClusters == 1){
-        palette.setBrush(QPalette::WindowText,QColor(p,a,p));
-    }else{
-        palette.setBrush(QPalette::WindowText,QColor(a,p,p));
-    }
-
-    text = QString::fromAscii("Cluster: %1").arg(NbrClusters);
-    ui->label_Cluster->setPalette(palette);
-    ui->label_Cluster->setText(text);
-
+    //QObject::connect(ui->pushButton_HideShow,SIGNAL(clicked()),this,SLOT(hideShow()));
 
 
 }
 
 
-TaskEdge2TracParameter::~TaskEdge2TracParameter()
+
+TaskTrajectoryDressUpParameter::~TaskTrajectoryDressUpParameter()
 {
     delete ui;
 }
 
 
-#include "moc_TaskEdge2TracParameter.cpp"
+#include "moc_TaskTrajectoryDressUpParameter.cpp"

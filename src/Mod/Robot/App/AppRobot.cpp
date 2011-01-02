@@ -40,6 +40,8 @@
 #include "RobotObject.h"
 #include "TrajectoryObject.h"
 #include "Edge2TracObject.h"
+#include "TrajectoryCompound.h"
+#include "TrajectoryDressUpObject.h"
 
 extern struct PyMethodDef Robot_methods[];
 
@@ -74,13 +76,15 @@ void AppRobotExport initRobot()
     // call PyType_Ready, otherwise we run into a segmentation fault, later on.
     // This function is responsible for adding inherited slots from a type's base class.
  
-    Robot::Robot6Axis         ::init();
-    Robot::RobotObject        ::init();
-    Robot::TrajectoryObject   ::init();
-    Robot::Edge2TracObject    ::init();
-    Robot::Waypoint           ::init();
-    Robot::Trajectory         ::init();
-    Robot::PropertyTrajectory ::init();
+    Robot::Robot6Axis              ::init();
+    Robot::RobotObject             ::init();
+    Robot::TrajectoryObject        ::init();
+    Robot::Edge2TracObject         ::init();
+    Robot::Waypoint                ::init();
+    Robot::Trajectory              ::init();
+    Robot::PropertyTrajectory      ::init();
+    Robot::TrajectoryCompound      ::init();
+    Robot::TrajectoryDressUpObject ::init();
 }
 
 } // extern "C"
