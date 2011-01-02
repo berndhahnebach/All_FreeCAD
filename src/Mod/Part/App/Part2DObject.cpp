@@ -38,6 +38,7 @@ PROPERTY_SOURCE(Part::Part2DObject, Part::Feature)
 
 Part2DObject::Part2DObject()
 {
+     ADD_PROPERTY_TYPE(Support,(0),   "2D",(App::PropertyType)(App::Prop_None),"Support of the 2D geometry");
 }
 
 
