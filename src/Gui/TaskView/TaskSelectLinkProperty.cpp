@@ -157,7 +157,7 @@ void TaskSelectLinkProperty::sendSelection2Property(void)
 
 void TaskSelectLinkProperty::checkSelectionStatus(void)
 {
-    QPalette palette;
+    QPalette palette(QApplication::palette());
 
     if(Filter->match()){
         palette.setBrush(QPalette::Base,QColor(200,250,200));

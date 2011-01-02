@@ -42,8 +42,13 @@
 using namespace RobotGui;
 using namespace Gui;
 
-TaskEdge2TracParameter::TaskEdge2TracParameter(QWidget *parent)
-    : TaskBox(Gui::BitmapFactory().pixmap("Robot_Edge2Trac"),tr("TaskEdge2TracParameter"),true, parent)
+TaskEdge2TracParameter::TaskEdge2TracParameter(Robot::Edge2TracObject *pcObject,QWidget *parent)
+    : TaskBox(Gui::BitmapFactory().pixmap("Robot_Edge2Trac"),
+      tr("TaskEdge2TracParameter"),
+      true, 
+      parent),
+      pcObject(pcObject),
+      HideShowObj(0)
 {
     // we need a separate container widget to add all controls to
     proxy = new QWidget(this);
@@ -53,12 +58,66 @@ TaskEdge2TracParameter::TaskEdge2TracParameter(QWidget *parent)
 
     this->groupLayout()->addWidget(proxy);
 
+    QObject::connect(ui->pushButton_HideShow,SIGNAL(clicked()),this,SLOT(hideShow()));
+
+    setHideShowObject();
+
+}
+void TaskEdge2TracParameter::setHideShowObject(void)
+{
+    HideShowObj = pcObject->Source.getValue();
+
+    if(HideShowObj){
+        QString ObjectName = QString::fromUtf8(HideShowObj->Label.getValue());
+        ui->lineEdit_ObjectName->setText(ObjectName);
+    }else{
+        ui->lineEdit_ObjectName->setText(QString());
+    }
 }
 
-void TaskEdge2TracParameter::setRobot(Robot::RobotObject *pcRobotObject)
+void TaskEdge2TracParameter::hideShow(void)
 {
-    
+    setHideShowObject();
+
+    Gui::Application;
+
+
+
 }
+
+void TaskEdge2TracParameter::setEdgeAndClusterNbr(int NbrEdges,int NbrClusters)
+{
+    QPalette palette(QApplication::palette());
+    QString  text;
+
+    const int a=150,p=0;
+
+    // set the text and the background color for the Edges label
+    if(NbrEdges > 0){
+        palette.setBrush(QPalette::WindowText,QColor(p,a,p));
+    }else{
+        palette.setBrush(QPalette::WindowText,QColor(a,p,p));
+    }
+
+    text = QString::fromAscii("Edges: %1").arg(NbrEdges);
+    ui->label_Edges->setPalette(palette);
+    ui->label_Edges->setText(text);
+
+    // set the text and the background color for the Clusters label
+    if(NbrClusters == 1){
+        palette.setBrush(QPalette::WindowText,QColor(p,a,p));
+    }else{
+        palette.setBrush(QPalette::WindowText,QColor(a,p,p));
+    }
+
+    text = QString::fromAscii("Cluster: %1").arg(NbrClusters);
+    ui->label_Cluster->setPalette(palette);
+    ui->label_Cluster->setText(text);
+
+
+
+}
+
 
 TaskEdge2TracParameter::~TaskEdge2TracParameter()
 {

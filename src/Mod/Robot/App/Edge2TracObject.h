@@ -47,6 +47,10 @@ public:
     App::PropertyLinkSub         Source;
     App::PropertyFloatConstraint SegValue;
 
+    /// set by execute with the number of clusters found
+    int NbrOfCluster;
+    /// set by execute with the number of all edges
+    int NbrOfEdges;
 
     /// returns the type name of the ViewProvider
     virtual const char* getViewProviderName(void) const {

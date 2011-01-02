@@ -27,7 +27,7 @@
 #include <Gui/TaskView/TaskView.h>
 #include <Gui/Selection.h>
 
-#include <Mod/Robot/App/RobotObject.h>
+#include <Mod/Robot/App/Edge2TracObject.h>
 #include <Mod/Robot/App/TrajectoryObject.h>
 
 
@@ -50,17 +50,19 @@ class TaskEdge2TracParameter : public Gui::TaskView::TaskBox
     Q_OBJECT
 
 public:
-    TaskEdge2TracParameter(QWidget *parent = 0);
+    TaskEdge2TracParameter(Robot::Edge2TracObject *pcObject,QWidget *parent = 0);
     ~TaskEdge2TracParameter();
 
-    void setRobot(Robot::RobotObject *pcRobotObject);
+    void setEdgeAndClusterNbr(int NbrEdges,int NbrClusters);
 
 private Q_SLOTS:
-    
+    void hideShow(void);
 
 protected:
-    Robot::RobotObject *pcRobot;
+    Robot::Edge2TracObject *pcObject;
+    App::DocumentObject *HideShowObj;
 
+    void setHideShowObject(void);
 private:
 
 private:

@@ -42,7 +42,7 @@ using namespace RobotGui;
 TaskDlgEdge2Trac::TaskDlgEdge2Trac(Robot::Edge2TracObject *obj)
     : TaskDialog(),Edge2TaskObject(obj)
 {
-    param  = new TaskEdge2TracParameter();
+    param  = new TaskEdge2TracParameter(obj);
     select = new Gui::TaskView::TaskSelectLinkProperty("SELECT Part::Feature SUBELEMENT Edge",&(obj->Source));
 
     Content.push_back(param);
@@ -60,6 +60,8 @@ TaskDlgEdge2Trac::~TaskDlgEdge2Trac()
 void TaskDlgEdge2Trac::open()
 {
     select->activate();
+    Edge2TaskObject->execute();
+    param->setEdgeAndClusterNbr(Edge2TaskObject->NbrOfEdges,Edge2TaskObject->NbrOfCluster);
 
 }
 
@@ -70,8 +72,10 @@ void TaskDlgEdge2Trac::clicked(int button)
         if(select->isSelectionValid()){
             select->sendSelection2Property();
             Edge2TaskObject->execute();
+            param->setEdgeAndClusterNbr(Edge2TaskObject->NbrOfCluster,Edge2TaskObject->NbrOfEdges);
         }else
             QApplication::beep();
+            param->setEdgeAndClusterNbr(0,0);
     }
     
 }

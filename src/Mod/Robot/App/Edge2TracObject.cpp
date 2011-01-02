@@ -89,6 +89,12 @@ App::DocumentObjectExecReturn *Edge2TracObject::execute(void)
     if(aclusteroutput.size() == 0)
         return new App::DocumentObjectExecReturn("No Edges specified");
 
+    // set the number of cluster and edges 
+    NbrOfCluster = aclusteroutput.size();
+    NbrOfEdges = 0;
+    for(std::vector<std::vector<TopoDS_Edge> >::const_iterator it=aclusteroutput.begin();it!=aclusteroutput.end();++it)
+        NbrOfEdges += it->size();
+
     // trajectory to fill
     Robot::Trajectory trac;
     bool first = true;
@@ -133,7 +139,7 @@ App::DocumentObjectExecReturn *Edge2TracObject::execute(void)
                 Standard_Real NbrSegments = Round(Length / SegValue.getValue());
                 Standard_Real SegLength   = ParLength / NbrSegments;
 
-                float i = adapt.FirstParameter();
+                double i = adapt.FirstParameter();
                 if(first) 
                     first=false;
                 else
@@ -146,6 +152,8 @@ App::DocumentObjectExecReturn *Edge2TracObject::execute(void)
                 break;
                 }
 
+            default:
+                throw Base::Exception("Unknown Edge type in Robot::Edge2TracObject::execute()");
             }
            
 
