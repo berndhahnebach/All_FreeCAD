@@ -8,9 +8,8 @@ Prerequisites
 On Windows we use the IDE MS VisualStudio 9 with the highest service pack.
 In case you don't want to use MS products you can also use the MinGW compiler,
 alternatively. In this case continue on reading the manual README.MinGW.
-If you use the Express Edition you need to download the Windows Platform SDK
-to get system headers as e.g. Windows.h. Also you need all the 3rd party
-libraries to succsefully compile FreeCAD.
+You need cMake 2.6 or higher to generate the project files for VisualStudio.
+Also you need all the 3rd party libraries to succsefully compile FreeCAD.
 
 Using LibPack
 -------------
