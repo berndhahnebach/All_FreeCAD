@@ -23,11 +23,11 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include "TopoDS_Shape.hxx"
-# include "TopoDS_Face.hxx"
-# include "TopoDS.hxx"
-# include "BRepAdaptor_Surface.hxx"
-# include "QMessageBox.h"
+# include <TopoDS_Shape.hxx>
+# include <TopoDS_Face.hxx>
+# include <TopoDS.hxx>
+# include <BRepAdaptor_Surface.hxx>
+# include <QMessageBox.h>
 #endif
 
 #include <Gui/Application.h>
