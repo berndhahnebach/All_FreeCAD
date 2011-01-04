@@ -57,6 +57,23 @@ libSketcherGui_la_LIBADD   = \
 		@BOOST_SIGNALS_LIB@ \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
+		-lTKernel \
+		-lTKG2d \
+		-lTKG3d \
+		-lTKMath \
+		-lTKSTEP \
+		-lTKIGES \
+		-lTKSTL \
+		-lTKShHealing \
+		-lTKXSBase \
+		-lTKBool \
+		-lTKBO \
+		-lTKBRep \
+		-lTKTopAlgo \
+		-lTKGeomAlgo \
+		-lTKGeomBase \
+		-lTKOffset \
+		-lTKPrim \
 		-lFreeCADBase \
 		-lFreeCADApp \
 		-lFreeCADGui \

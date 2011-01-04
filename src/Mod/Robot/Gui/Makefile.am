@@ -14,6 +14,7 @@ BUILT_SOURCES=\
 		moc_TaskWatcher.cpp \
 		moc_TaskDlgTrajectoryDressUp.cpp \
 		moc_TaskDlgTrajectoryCompound.cpp \
+		moc_TaskTrajectoryDressUpParameter.cpp \
 		ui_TaskEdge2TracParameter.h \
 		ui_TaskRobot6Axis.h \
 		ui_TaskTrajectoryDressUpParameter.h \
@@ -56,10 +57,10 @@ libRobotGui_la_SOURCES=\
 		TaskTrajectory.h \
 		TaskTrajectoryDressUpParameter.cpp \
 		TaskTrajectoryDressUpParameter.h \
-		TaskDlgTrajectoryCompound.h \
 		TaskDlgTrajectoryCompound.cpp \
-		TaskDlgTrajectoryDressUp.h \
+		TaskDlgTrajectoryCompound.h \
 		TaskDlgTrajectoryDressUp.cpp \
+		TaskDlgTrajectoryDressUp.h \
 		TrajectorySimulate.cpp \
 		TrajectorySimulate.h \
 		ViewProviderEdge2TracObject.cpp \
