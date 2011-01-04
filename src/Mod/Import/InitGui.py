@@ -30,7 +30,7 @@
 #***************************************************************************/
 
 
-
+"""
 class ImportWorkbench ( Workbench ):
 	"Import workbench object"
 	def Activate(self):
@@ -67,3 +67,4 @@ class ImportWorkbench ( Workbench ):
 			"\"...........aaaaa\"};\n"]
 
 Gui.addWorkbench("Import",ImportWorkbench())
+"""

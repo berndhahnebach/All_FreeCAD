@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2005 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2005 Werner Mayer <wmayer[at]users.sourceforge.net>     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -24,9 +24,6 @@
 #ifndef IMPORT_WORKBENCH_H
 #define IMPORT_WORKBENCH_H
 
-#ifndef _PreComp_
-#endif
-
 #include <Gui/Workbench.h>
 
 namespace ImportGui {
@@ -36,13 +33,15 @@ namespace ImportGui {
  */
 class Workbench : public Gui::StdWorkbench
 {
+    TYPESYSTEM_HEADER();
+
 public:
-  Workbench();
-  virtual ~Workbench();
+    Workbench();
+    virtual ~Workbench();
 
 protected:
-  Gui::ToolBarItem* setupToolBars() const;
-  Gui::ToolBarItem* setupCommandBars() const;
+    Gui::ToolBarItem* setupToolBars() const;
+    Gui::ToolBarItem* setupCommandBars() const;
 };
 
 } // namespace ImportGui

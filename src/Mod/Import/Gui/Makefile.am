@@ -4,7 +4,7 @@ lib_LTLIBRARIES=libImportGui.la
 # BUILT_SOURCES=\
 #
 libImportGui_la_SOURCES=\
-		AppImportGui.cpp \
+		AppImportGuiPy.cpp \
 		Command.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \
@@ -23,40 +23,56 @@ libImportGui_la_LDFLAGS = \
 libImportGui_la_CPPFLAGS = -DAppPartExport= -DAppPartGuiExport=
 
 libImportGui_la_LIBADD   = \
+		-l@PYTHON_LIB@ \
+		-lTKXCAF \
+		-lTKLCAF \
+		-lTKXDESTEP \
 		-lTKPrim \
 		-lTKV2d \
 		-lTKV3d \
 		-lFreeCADGui \
-		-lPartGui \
-		-lImport
+		-lPartGui
+
+#--------------------------------------------------------------------------------------
+# Loader of libImportGui
+
+ImportGui_la_SOURCES=\
+		AppImportGui.cpp
+
+# the library search path.
+ImportGui_la_LDFLAGS = $(libImportGui_la_LDFLAGS) -module -avoid-version
+ImportGui_la_CPPFLAGS = $(libImportGui_la_CPPFLAGS)
+
+ImportGui_la_LIBADD   = \
+		$(libImportGui_la_LIBADD) \
+		-lImportGui
+
+ImportGui_la_DEPENDENCIES = libImportGui.la
+
+#--------------------------------------------------------------------------------------
 
 # rule for Qt MetaObject Compiler:
 moc_%.cpp: %.h
-	cd $(@D) && $(QT_MOC) $(<F) -o $(@F)
+	$(QT_MOC) $< -o $(@F)
 
 # rule for Qt MetaObject Compiler:
 %.moc: %.h
-	cd $(@D) && $(QT_MOC) $(<F) -o $(@F)
+	$(QT_MOC) $< -o $(@F)
 
 # rules for Qt User Interface Compiler:
-# (it adds path to #include automatically, so cd before calling it)
-%.h: %.ui
-	cd $(@D) && $(QT_UIC) $(<F) -o $(@F)
-%.cpp: %.h %.ui
-	cd $(@D) && $(QT_UIC) -o $(@F) -impl $(*F).h $(*F).ui
+ui_%.h: %.ui
+	$(QT_UIC) $< -o $(@F)
+
+# rules for Qt Resource Compiler:
+qrc_%.cpp: Resources/%.qrc
+	$(QT_RCC) -name $(*F) $< -o $(@F)
 
 # set the include path found by configure
-AM_CXXFLAGS = $(all_includes) $(QT_CXXFLAGS) -I../../../ -I../App
+AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS)
 
 libdir = $(prefix)/Mod/Import
 
-# We need this softlink for Python to load
-install-data-local:
-		cd $(DESTDIR)$(libdir) && \
-		rm -f ImportGui.so && \
-		$(LN_S) libImportGui.so ImportGui.so
+#CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
-		AppImportGui.dsp \
-		AppImportGui.vcproj \
-		Libs.cpp
+		CMakeLists.txt

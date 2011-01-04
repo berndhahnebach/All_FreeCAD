@@ -27,16 +27,6 @@
 
 
 
-# Get the Parameter Group of this module
-ParGrp = App.ParamGet("System parameter:Modules").GetGroup("Import")
-
-# Set the needed information
-ParGrp.SetString("HelpIndex",        "Import/Help/index.html")
-ParGrp.SetString("DocTemplateName",  "Import")
-ParGrp.SetString("DocTemplateScript","TemplImport.py")
-ParGrp.SetString("WorkBenchName",    "Import Design")
-ParGrp.SetString("WorkBenchModule",  "ImportWorkbench.py")
-
 # Append the open handler
-
-
+#FreeCAD.addImportType("STEP 214 (*.step *.stp)","ImportGui")
+FreeCAD.addExportType("STEP 214 (*.step *.stp)","ImportGui")

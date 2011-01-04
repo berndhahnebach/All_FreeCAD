@@ -21,6 +21,7 @@ add_subdirectory(Robot)
 add_subdirectory(Web)
 add_subdirectory(Start)
 add_subdirectory(Idf)
+add_subdirectory(Import)
 
 if(FREECAD_BUILD_ASSEMBLY)
 	add_subdirectory(Assembly)
