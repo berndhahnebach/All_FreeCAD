@@ -138,18 +138,37 @@ App::DocumentObjectExecReturn *Edge2TracObject::execute(void)
                 Standard_Real ParLength = adapt.LastParameter()-adapt.FirstParameter();
                 Standard_Real NbrSegments = Round(Length / SegValue.getValue());
                 Standard_Real SegLength   = ParLength / NbrSegments;
-
-                double i = adapt.FirstParameter();
-                if(first) 
-                    first=false;
-                else
-                    i += SegLength;
-                for (;i<adapt.LastParameter();i+= SegLength){
-                    gp_Pnt P = adapt.Value(i);
-                    Waypoint wp("Pt",Base::Placement(Base::Vector3d(P.X(),P.Y(),P.Z()),Base::Rotation()));
-                    trac.addWaypoint(wp);
-                }
-                break;
+				
+				if ( it2->Orientation() == TopAbs_REVERSED )
+				{
+					//Beginning and End switch
+					double i = adapt.LastParameter();
+					if(first) 
+						first=false;
+					else
+						i -= SegLength;
+					for (;i>adapt.FirstParameter();i-= SegLength){
+						gp_Pnt P = adapt.Value(i);
+						Waypoint wp("Pt",Base::Placement(Base::Vector3d(P.X(),P.Y(),P.Z()),Base::Rotation()));
+						trac.addWaypoint(wp);
+					}
+				}
+				else
+				{
+					double i = adapt.FirstParameter();
+					if(first) 
+						first=false;
+					else
+						i += SegLength;
+					for (;i<adapt.LastParameter();i+= SegLength)
+					{
+						gp_Pnt P = adapt.Value(i);
+						Waypoint wp("Pt",Base::Placement(Base::Vector3d(P.X(),P.Y(),P.Z()),Base::Rotation()));
+						trac.addWaypoint(wp);
+					}
+					
+				}
+				break;
                 }
 
             default:

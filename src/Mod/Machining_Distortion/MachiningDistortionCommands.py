@@ -4,6 +4,7 @@
 # import FreeCAD modules
 import FreeCAD, FreeCADGui, Fem, sys
 from PyQt4 import QtGui,QtCore
+from FreeCAD import Base
 
 # globals
 from mach_dist_gui import MyForm

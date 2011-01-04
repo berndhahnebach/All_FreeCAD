@@ -85,7 +85,18 @@ void Edgecluster::Perform()
     do
     {
         m_edges.clear();
-        tMapPntEdge::iterator iter = m_vertices.begin();
+		//Lets start with a vertice that only has one edge (that means start or end point of the merged edges!)
+        tMapPntEdge::iterator iter; 
+		bool closed = true;
+		for(iter=m_vertices.begin();iter!=m_vertices.end();iter++)
+		{
+			if (iter->second.size()==1)
+			{
+				closed = false;
+				break;
+			}
+		}
+		if(closed)iter = m_vertices.begin();
         const gp_Pnt& firstPoint = iter->first;
         gp_Pnt currentPoint = firstPoint;
         Standard_Boolean toContinue;
