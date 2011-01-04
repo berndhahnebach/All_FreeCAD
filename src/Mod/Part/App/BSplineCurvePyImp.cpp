@@ -25,10 +25,13 @@
 #ifndef _PreComp_
 # include <Geom_BSplineCurve.hxx>
 # include <GeomAPI_PointsToBSpline.hxx>
+# include <GeomAPI_Interpolate.hxx>
 # include <gp_Pnt.hxx>
 # include <TColStd_Array1OfReal.hxx>
 # include <TColgp_Array1OfPnt.hxx>
+# include <TColgp_HArray1OfPnt.hxx>
 # include <TColStd_Array1OfInteger.hxx>
+# include <Handle_TColgp_HArray1OfPnt.hxx>
 #endif
 
 #include <Base/VectorPy.h>
@@ -716,7 +719,42 @@ Py::List BSplineCurvePy::getKnotSequence(void) const
     return list;
 }
 
-PyObject *BSplineCurvePy::getCustomAttributes(const char* /*attr*/) const
+PyObject* BSplineCurvePy::interpolate(PyObject *args)
+{
+    PyObject* obj;
+    double tol3d = 0.0001;
+    if (!PyArg_ParseTuple(args, "O!|d",&(PyList_Type), &obj, &tol3d))
+        return 0;
+    try {
+        Py::List list(obj);
+        Handle_TColgp_HArray1OfPnt interpolationPoints = new TColgp_HArray1OfPnt(1, list.size());
+        Standard_Integer index = 1;
+        for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+            Py::Vector v(*it);
+            Base::Vector3d pnt = v.toVector();
+            interpolationPoints->SetValue(index++, gp_Pnt(pnt.x,pnt.y,pnt.z));
+        }
+
+        GeomAPI_Interpolate aBSplineInterpolation(interpolationPoints, Standard_False, tol3d);
+        aBSplineInterpolation.Perform();
+        if (aBSplineInterpolation.IsDone()) {
+            Handle_Geom_BSplineCurve aBSplineCurve(aBSplineInterpolation.Curve());
+            this->getGeomBSplineCurvePtr()->setHandle(aBSplineCurve);
+            Py_Return;
+        }
+        else {
+            Standard_Failure::Raise("failed to interpolate points");
+            return 0; // goes to the catch block
+        }
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
+}
+
+PyObject* BSplineCurvePy::getCustomAttributes(const char* /*attr*/) const
 {
     return 0;
 }
