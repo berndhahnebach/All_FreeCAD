@@ -864,6 +864,8 @@ src/Mod/Makefile
 src/Mod/Part/Makefile
 src/Mod/Part/App/Makefile
 src/Mod/Part/Gui/Makefile
+src/Mod/Import/Makefile
+src/Mod/Import/Gui/Makefile
 src/Mod/Raytracing/Makefile
 src/Mod/Raytracing/App/Makefile
 src/Mod/Raytracing/Gui/Makefile

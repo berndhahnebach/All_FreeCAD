@@ -16,21 +16,26 @@ libImportGui_la_LDFLAGS = \
 		-L../../../Base \
 		-L../../../App  \
 		-L../../../Gui  \
+		-L../../Part/App \
 		-L../../Part/Gui \
-		-L../App \
-		$(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+		$(all_libraries) $(QT4_CORE_LIBS) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libImportGui_la_CPPFLAGS = -DAppPartExport= -DAppPartGuiExport=
 
 libImportGui_la_LIBADD   = \
+		@BOOST_SYSTEM_LIB@ \
 		-l@PYTHON_LIB@ \
+		-lTKernel \
 		-lTKXCAF \
 		-lTKLCAF \
 		-lTKXDESTEP \
 		-lTKPrim \
 		-lTKV2d \
 		-lTKV3d \
+		-lFreeCADBase \
+		-lFreeCADApp \
 		-lFreeCADGui \
+		-lPart \
 		-lPartGui
 
 #--------------------------------------------------------------------------------------
@@ -68,7 +73,7 @@ qrc_%.cpp: Resources/%.qrc
 	$(QT_RCC) -name $(*F) $< -o $(@F)
 
 # set the include path found by configure
-AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS)
+AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS) -I$(OCC_INC)
 
 libdir = $(prefix)/Mod/Import
 

@@ -27,7 +27,7 @@
 # include <TopoDS_Face.hxx>
 # include <TopoDS.hxx>
 # include <BRepAdaptor_Surface.hxx>
-# include <QMessageBox.h>
+# include <QMessageBox>
 #endif
 
 #include <Gui/Application.h>

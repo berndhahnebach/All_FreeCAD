@@ -10,7 +10,7 @@ SUBDIRS += Mesh
 #endif
 
 if HAVE_OPENCASCADE
-SUBDIRS += Part PartDesign Raytracing Drawing Sketcher
+SUBDIRS += Part Import PartDesign Raytracing Drawing Sketcher
 endif
 
 if HAVE_EIGEN2
