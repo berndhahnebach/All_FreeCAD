@@ -1,12 +1,13 @@
-add_subdirectory(App)
-add_subdirectory(Gui)
 
-copy_to_local_output_paths(Init.py)
-copy_to_local_output_paths(InitGui.py)
+#add_subdirectory(App)
+if(FREECAD_BUILD_GUI)
+    add_subdirectory(Gui)
+endif(FREECAD_BUILD_GUI)
 
 install(
-		 FILES
-		 		 Init.py
-		 		 InitGui.py
-		 DESTINATION
-		 		 Mod/Import)
+    FILES
+        Init.py
+        InitGui.py
+    DESTINATION
+        Mod/Import
+)

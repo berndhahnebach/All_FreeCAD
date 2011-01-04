@@ -32,14 +32,6 @@
 #include <Base/Interpreter.h>
 
 #include <Gui/Application.h>
-#include <Gui/Macro.h>
-#include <Gui/Application.h>
-#include <Gui/ViewProvider.h>
-#include <Gui/Macro.h>
-#include <Gui/WorkbenchFactory.h>
-#include <Gui/WidgetFactory.h>
-
-#include <Mod/Part/Gui/ViewProvider.h>
 
 #include "Workbench.h"
 
@@ -47,59 +39,29 @@
 void CreateImportCommands(void);
 
 
-/* module functions */
-static PyObject *                                 /* returns object */
-message(PyObject *self, PyObject *args)           /* self unused in modules */
-{                                                 /* args from python call */
-    char *fromPython, result[64];
-    if (! PyArg_ParseTuple(args, "(s)", &fromPython))  /* convert Python -> C */
-        return NULL;                              /* null=raise exception */
-    else {
-        strcpy(result, "Hello, ");                /* build up C string */
-        strcat(result, fromPython);               /* add passed Python string */
-        return Py_BuildValue("s", result);        /* convert C -> Python */
-    }
-}
-
 /* registration table  */
-static struct PyMethodDef hello_methods[] = {
-    {"message", message, 1},       /* method name, C func ptr, always-tuple */
-    {NULL, NULL}                   /* end of table marker */
-};
+extern struct PyMethodDef ImportGui_Import_methods[];
 
-
-
-
-
-// python intry
-// python entry
-#ifdef FC_OS_WIN32
-#	define ModuleExport __declspec(dllexport)
-#else
-#	define ModuleExport
-#endif
 extern "C" {
-void ModuleExport initImportGui() {
+void ImportGuiExport initImportGui()
+{
+    if (!Gui::Application::Instance) {
+        PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");
+        return;
+    }
+    (void) Py_InitModule("ImportGui", ImportGui_Import_methods);   /* mod name, table ptr */
+    Base::Console().Log("Loading GUI of Import module... done\n");
 
-	(void) Py_InitModule("ImportGui", hello_methods);   /* mod name, table ptr */
+    try {
+        Base::Interpreter().loadModule("PartGui");
+    }
+    catch(const Base::Exception& e) {
+        PyErr_SetString(PyExc_ImportError, e.what());
+        return;
+    }
 
-  Base::Interpreter().loadModule("Import");
-  Base::Interpreter().loadModule("PartGui");
-
-	Base::Console().Log("ImportGui loaded\n");
-
-  Gui::ViewProviderFeatureFactory().AddProducer("ImportStep",new Gui::ViewProviderFeatureProducer<PartGui::ViewProviderPart>);
-  Gui::ViewProviderFeatureFactory().AddProducer("ImportIges",new Gui::ViewProviderFeatureProducer<PartGui::ViewProviderPart>);
-
-
-	// instanciating the commands
-	CreateImportCommands();
-  Gui::WorkbenchFactory().AddProducer("Import", new Gui::WorkbenchProducer<ImportGui::Workbench>);
-
-
-	return;
+    CreateImportCommands();
+    ImportGui::Workbench::init();
 }
+
 } // extern "C" {
-
-
-
