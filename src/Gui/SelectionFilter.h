@@ -26,6 +26,7 @@
 
 #include <string>
 #include <CXX/Extensions.hxx>
+#include "Selection.h"
 
 namespace App {
     class DocumentObject;

@@ -35,8 +35,11 @@
 # include <TopoDS_Face.hxx>
 # include <TopoDS_Wire.hxx>
 # include <TopExp_Explorer.hxx>
+# include <BRepAlgoAPI_Common.hxx>
 #endif
 
+#include <Base/Placement.h>
+#include <Mod/Part/App/Part2DObject.h>
 
 #include "FeaturePad.h"
 
@@ -65,26 +68,26 @@ PROPERTY_SOURCE(PartDesign::Pad, Part::Feature)
 
 Pad::Pad()
 {
-    ADD_PROPERTY(Base,(0));
-    ADD_PROPERTY(Dir,(Base::Vector3f(0.0f,0.0f,1.0f)));
+    ADD_PROPERTY(Sketch,(0));
+    ADD_PROPERTY(Length,(100.0));
 }
 
 short Pad::mustExecute() const
 {
-    if (Base.isTouched() ||
-        Dir.isTouched())
+    if (Sketch.isTouched() ||
+        Length.isTouched())
         return 1;
     return 0;
 }
 
 App::DocumentObjectExecReturn *Pad::execute(void)
 {
-    App::DocumentObject* link = Base.getValue();
+    App::DocumentObject* link = Sketch.getValue();
     if (!link)
-        return new App::DocumentObjectExecReturn("No object linked");
-    if (!link->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
-        return new App::DocumentObjectExecReturn("Linked object is not a Part object");
-    TopoDS_Shape shape = static_cast<Part::Feature*>(link)->Shape.getShape()._Shape;
+        return new App::DocumentObjectExecReturn("No sketch linked");
+    if (!link->getTypeId().isDerivedFrom(Part::Part2DObject::getClassTypeId()))
+        return new App::DocumentObjectExecReturn("Linked object is not a Sketch or Part2DObject");
+    TopoDS_Shape shape = static_cast<Part::Part2DObject*>(link)->Shape.getShape()._Shape;
     if (shape.IsNull())
         return new App::DocumentObjectExecReturn("Linked shape object is empty");
     TopExp_Explorer ex;
@@ -94,6 +97,18 @@ App::DocumentObjectExecReturn *Pad::execute(void)
     }
     if (/*shape.ShapeType() != TopAbs_WIRE*/wires.empty()) // there can be several wires
         return new App::DocumentObjectExecReturn("Linked shape object is not a wire");
+
+    // get the Sketch plane
+    Base::Placement SketchPos = static_cast<Part::Part2DObject*>(link)->Placement.getValue();
+    Base::Rotation SketchOrientation = SketchPos.getRotation();
+    Base::Vector3d SketchOrientationVector(0,0,1);
+    SketchOrientation.multVec(SketchOrientationVector,SketchOrientationVector);
+
+    // get the support of the Sketch if any
+    App::DocumentObject* SupportLink = static_cast<Part::Part2DObject*>(link)->Support.getValue();
+    Part::Feature *SupportObject = 0;
+    if(SupportLink && SupportLink->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
+        SupportObject = static_cast<Part::Feature*>(SupportLink);
 
 	/* Version from the blog
 	Handle(Geom_Surface) aSurf = new Geom_Plane (gp::XOY());
@@ -148,15 +163,26 @@ App::DocumentObjectExecReturn *Pad::execute(void)
     }
     TopoDS_Face aFace = mkFace.Face();
 #endif
+    // lengthen the vector
+    SketchOrientationVector *= Length.getValue();
 
     // extrude the face to a solid
-    Base::Vector3f v = Dir.getValue();
-    gp_Vec vec(v.x,v.y,v.z);
+    gp_Vec vec(SketchOrientationVector.x,SketchOrientationVector.y,SketchOrientationVector.z);
 	BRepPrimAPI_MakePrism PrismMaker(aFace,vec,0,1);
 	if(PrismMaker.IsDone()){
-		this->Shape.setValue(PrismMaker.Shape());
+        // if the sketch has a support fuse them to get one result object (PAD!)
+        if(SupportObject){
+            BRepAlgoAPI_Common mkCommon(SupportObject->Shape.getShape()._Shape, PrismMaker.Shape());
+            // Let's check if the common has been successful
+            if (!mkCommon.IsDone()) 
+                throw Base::Exception("Intersection failed");
+            this->Shape.setValue(mkCommon.Shape());
+        }else{
+		    this->Shape.setValue(PrismMaker.Shape());
+        }
+
 	}else
-        this->Shape.setValue(aFace);
+        return new App::DocumentObjectExecReturn("Could not extrude the sketch!");
 
     return App::DocumentObject::StdReturn;
 }

@@ -37,8 +37,8 @@ class Pad : public Part::Feature
 public:
     Pad();
 
-    App::PropertyLink Base;
-    App::PropertyVector Dir;
+    App::PropertyLink   Sketch;
+    App::PropertyLength Length;
 
     /** @name methods override feature */
     //@{
