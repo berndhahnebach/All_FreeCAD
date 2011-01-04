@@ -41,7 +41,7 @@
 #include <App/Document.h>
 #include <App/DocumentObjectPy.h>
 #include <Gui/Application.h>
-#include <MOd/Part/Gui/ViewProvider.h>
+#include <Mod/Part/Gui/ViewProvider.h>
 #include <Mod/Part/App/PartFeature.h>
 
 
