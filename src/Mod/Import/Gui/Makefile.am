@@ -1,5 +1,5 @@
 
-lib_LTLIBRARIES=libImportGui.la
+lib_LTLIBRARIES=libImportGui.la ImportGui.la
 
 # BUILT_SOURCES=\
 #
