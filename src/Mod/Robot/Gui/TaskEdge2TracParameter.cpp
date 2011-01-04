@@ -79,10 +79,13 @@ void TaskEdge2TracParameter::hideShow(void)
 {
     setHideShowObject();
 
-    Gui::Application;
-
-
-
+    if(HideShowObj){
+        Gui::Document* doc = Gui::Application::Instance->activeDocument();
+        if(doc->getViewProvider(HideShowObj)->isVisible())
+            doc->getViewProvider(HideShowObj)->setVisible(false);
+        else
+            doc->getViewProvider(HideShowObj)->setVisible(true);
+    }
 }
 
 void TaskEdge2TracParameter::setEdgeAndClusterNbr(int NbrEdges,int NbrClusters)
