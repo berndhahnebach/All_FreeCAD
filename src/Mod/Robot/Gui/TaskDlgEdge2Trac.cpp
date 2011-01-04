@@ -72,10 +72,11 @@ void TaskDlgEdge2Trac::clicked(int button)
         if(select->isSelectionValid()){
             select->sendSelection2Property();
             Edge2TaskObject->execute();
-            param->setEdgeAndClusterNbr(Edge2TaskObject->NbrOfCluster,Edge2TaskObject->NbrOfEdges);
-        }else
+            param->setEdgeAndClusterNbr(Edge2TaskObject->NbrOfEdges,Edge2TaskObject->NbrOfCluster);
+        }else{
             QApplication::beep();
             param->setEdgeAndClusterNbr(0,0);
+        }
     }
     
 }
