@@ -361,6 +361,8 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
 
 bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, const SoPickedPoint* pp)
 {
+    if(!edit)
+        return false;
     assert(edit);
 
     double x,y;
@@ -1207,6 +1209,14 @@ void ViewProviderSketch::unsetEdit(int ModNum)
     // when pressing ESC make sure to close the dialog
     // and update the sketch
     getSketchObject()->getDocument()->recompute();
+
+    // clear the selction and set the new/edited sketch(convenience)
+    Gui::Selection().clearSelection();
+    std::string ObjName = getSketchObject()->getNameInDocument();
+    std::string DocName = getSketchObject()->getDocument()->getName();
+    Gui::Selection().addSelection(DocName.c_str(),ObjName.c_str());
+
+
     Gui::Control().closeDialog();
 }
 

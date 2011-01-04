@@ -29,9 +29,23 @@
 
 #include "PartFeature.h"
 
+class TopoDS_Face;
+
 namespace Part
 {
 
+/** 2D Shape 
+  * This is a specialiced Version of the PartShape for use with 
+  * Flat (2D) geometry. The Z direction have always to be 0.
+  * The position and orientation of the Plane this 2D geomtry is
+  * referenced in is defined by the Placement property. It allso
+  * has a link to a supporting Face which defines the position 
+  * in space where its located. If the support is changed the
+  * static methode positionBySupport() is used to calculate a 
+  * new position for the Part2DObject.
+  * This object can be used stand alone or for constraint 
+  * geometry as its descend Sketcher::SketchObject .
+  */
 
 class AppPartExport Part2DObject :public Part::Feature
 {
@@ -43,6 +57,15 @@ public:
     /// if the 2DObject lies on the Face of an other object this links to it
     App::PropertyLinkSub        Support;
 
+    /** calculate a position out of a support face
+      * this methode will calculate the position of the 
+      * 2D shape on a supporting Face. The Normal(Orientation) get 
+      * extracted from the Face and for the position an educated guess is made,
+      * by examining the placement of the support object (not only the face).
+      * If the support is changed this methode is called do determine a new 
+      * postion of the 2D shape on the supporting Face
+      */
+    static Base::Placement positionBySupport(const TopoDS_Face &face,const Base::Placement &Place );
 
     /** @name methods overide Feature */
     //@{

@@ -54,11 +54,6 @@ void Workbench::activated()
 {
     Gui::Workbench::activated();
 
-    const char* Empty[] = {
-        "PartDesign_NewSketch",
-        "Part_Box",
-        "Part_Cylinder",
-        0};
 
     std::vector<Gui::TaskView::TaskWatcher*> Watcher;
 
@@ -72,13 +67,34 @@ void Workbench::activated()
 
     //Watcher.push_back(new TaskWatcherRobot);
 
-    //Watcher.push_back(new Gui::TaskView::TaskWatcherCommands(
-    //    "FROM Robot SELECT RobotObject COUNT 1",
-    //    Robot,
-    //    "Robot tools",
-    //    "Robot_CreateRobot"
-    //));
+    const char* Face[] = {
+        "Sketcher_NewSketch",
+        "PartDesign_Fillet",
+        "PartDesign_Chamfer",
+        0};
+    Watcher.push_back(new Gui::TaskView::TaskWatcherCommands(
+        "SELECT Part::Feature SUBELEMENT Face COUNT 1",
+        Face,
+        "Face tools",
+        "Part_Box"
+    ));
 
+    const char* Sketch[] = {
+        "Sketcher_NewSketch",
+        "PartDesign_Pad",
+        0};
+    Watcher.push_back(new Gui::TaskView::TaskWatcherCommands(
+        "SELECT Sketcher::SketchObject COUNT 1",
+        Sketch,
+        "Sketch tools",
+        "Part_Box"
+    ));
+
+    const char* Empty[] = {
+        "Sketcher_NewSketch",
+        "Part_Box",
+        "Part_Cylinder",
+        0};
    Watcher.push_back(new Gui::TaskView::TaskWatcherCommandsEmptyDoc(
          Empty,
         "Create Geometry",
@@ -112,7 +128,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     Gui::MenuItem* part = new Gui::MenuItem;
     root->insertItem(item, part);
     part->setCommand("&Part Design");
-    *part << "PartDesign_NewSketch" 
+    *part << "Sketcher_NewSketch" 
           << "Separator" 
           << "PartDesign_Pad" 
           << "PartDesign_Fillet"
@@ -126,7 +142,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
     Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
     part->setCommand("Part Design");
-    *part << "PartDesign_NewSketch" 
+    *part << "Sketcher_NewSketch" 
           << "Separator" 
           << "PartDesign_Pad" 
           << "PartDesign_Fillet"

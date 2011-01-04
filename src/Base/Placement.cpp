@@ -36,6 +36,11 @@ Placement::Placement()
 
 }
 
+Placement::Placement(const Base::Matrix4D& matrix)
+{
+    fromMatrix(matrix);
+}
+
 Placement::Placement(const Placement& that)
 {
     this->_pos = that._pos;
