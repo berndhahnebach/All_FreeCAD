@@ -613,7 +613,7 @@ void PropertyLinkSubList::Save (Base::Writer &writer) const
             "sub=\"" <<  _lSubList[i] <<
         "\"/>" << endl; ;
     writer.decInd();
-    writer.Stream() << writer.ind() << "</LinkList>" << endl ;
+    writer.Stream() << writer.ind() << "</LinkSubList>" << endl ;
 }
 
 void PropertyLinkSubList::Restore(Base::XMLReader &reader)
@@ -646,7 +646,7 @@ void PropertyLinkSubList::Restore(Base::XMLReader &reader)
         SubNames.push_back(subName);
     }
 
-    reader.readEndElement("LinkList");
+    reader.readEndElement("LinkSubList");
 
     // assignment
     setValues(values,SubNames);
