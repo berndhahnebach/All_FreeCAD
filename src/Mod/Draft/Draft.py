@@ -1506,20 +1506,19 @@ class DrawingView:
                 result += svg
                 result += '</g>'
                 return result
-
 class BSpline:
         "The BSpline object"
         
-	def __init__(self, obj):
-		obj.addProperty("App::PropertyVectorList","Points","Base",
+        def __init__(self, obj):
+                obj.addProperty("App::PropertyVectorList","Points","Base",
                                 "The points of the b-spline")
                 obj.addProperty("App::PropertyBool","Closed","Base",
                                 "If the b-spline is closed or not")
-		obj.Proxy = self
+                obj.Proxy = self
                 obj.Closed = False
                 self.Type = "BSpline"
 
-	def execute(self, fp):
+        def execute(self, fp):
                 self.createGeometry(fp)
 
         def onChanged(self, fp, prop):
@@ -1533,10 +1532,13 @@ class BSpline:
                                 fp.Closed = True
                                 fp.Points.pop()
                         if fp.Closed and (len(fp.Points) > 2):
-                                shape = Part.BSplineCurve(fp.Points+[fp.Points[0]]).toShape()
+                                spline = Part.BSplineCurve()
+                                spline.interpolate(fp.Points, True)
+                                fp.Shape = spline.toShape()
                         else:   
-                                shape = Part.BSplineCurve(fp.Points).toShape()
-                        fp.Shape = shape
+                                spline = Part.BSplineCurve()
+                                spline.interpolate(fp.Points, False)
+                                fp.Shape = spline.toShape()
                 fp.Placement = plm
 
 class ViewProviderBSpline(ViewProviderDraft):

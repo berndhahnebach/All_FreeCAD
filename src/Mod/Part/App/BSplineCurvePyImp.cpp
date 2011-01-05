@@ -62,34 +62,8 @@ int BSplineCurvePy::PyInit(PyObject* args, PyObject* /*kwd*/)
         return 0;
     }
 
-    PyErr_Clear();
-    PyObject *plist;
-    if (PyArg_ParseTuple(args, "O!", &(PyList_Type), &plist)) {
-        Py::List list(plist);
-        TColgp_Array1OfPnt pnts(1,list.size());
-        int index=1;
-        for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
-            Base::Vector3d vec = Py::Vector(*it).toVector();
-            pnts(index++) = gp_Pnt(vec.x,vec.y,vec.z);
-        }
-
-        try {
-            GeomAPI_PointsToBSpline fit(pnts);
-            Handle_Geom_BSplineCurve spline = fit.Curve();
-            if (!spline.IsNull()) {
-                this->getGeomBSplineCurvePtr()->setHandle(spline);
-            }
-            return 0;
-        }
-        catch (Standard_Failure) {
-            PyErr_SetString(PyExc_Exception, "cannot create B-Spline curve from points");
-            return -1;
-        }
-    }
-
     PyErr_SetString(PyExc_TypeError, "B-Spline constructor accepts:\n"
-        "-- empty parameter list\n"
-        "-- list of points to fit curve into");
+        "-- empty parameter list\n");
     return -1;
 }
 
@@ -719,11 +693,44 @@ Py::List BSplineCurvePy::getKnotSequence(void) const
     return list;
 }
 
+PyObject* BSplineCurvePy::approximate(PyObject *args)
+{
+    PyObject* obj;
+    if (!PyArg_ParseTuple(args, "O!",&(PyList_Type), &obj))
+        return 0;
+    try {
+        Py::List list(obj);
+        TColgp_Array1OfPnt pnts(1,list.size());
+        Standard_Integer index = 1;
+        for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+            Base::Vector3d vec = Py::Vector(*it).toVector();
+            pnts(index++) = gp_Pnt(vec.x,vec.y,vec.z);
+        }
+
+        GeomAPI_PointsToBSpline fit(pnts);
+        Handle_Geom_BSplineCurve spline = fit.Curve();
+        if (!spline.IsNull()) {
+            this->getGeomBSplineCurvePtr()->setHandle(spline);
+            Py_Return;
+        }
+        else {
+            Standard_Failure::Raise("failed to approximate points");
+            return 0; // goes to the catch block
+        }
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
+}
+
 PyObject* BSplineCurvePy::interpolate(PyObject *args)
 {
     PyObject* obj;
     double tol3d = 0.0001;
-    if (!PyArg_ParseTuple(args, "O!|d",&(PyList_Type), &obj, &tol3d))
+    PyObject* closed = Py_False;
+    if (!PyArg_ParseTuple(args, "O!|O!d",&(PyList_Type), &obj, &PyBool_Type, &closed, &tol3d ))
         return 0;
     try {
         Py::List list(obj);
@@ -735,7 +742,7 @@ PyObject* BSplineCurvePy::interpolate(PyObject *args)
             interpolationPoints->SetValue(index++, gp_Pnt(pnt.x,pnt.y,pnt.z));
         }
 
-        GeomAPI_Interpolate aBSplineInterpolation(interpolationPoints, Standard_False, tol3d);
+        GeomAPI_Interpolate aBSplineInterpolation(interpolationPoints, (closed == Py_True), tol3d);
         aBSplineInterpolation.Perform();
         if (aBSplineInterpolation.IsDone()) {
             Handle_Geom_BSplineCurve aBSplineCurve(aBSplineInterpolation.Curve());
