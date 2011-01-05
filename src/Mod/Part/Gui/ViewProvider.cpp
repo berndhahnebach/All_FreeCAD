@@ -120,7 +120,7 @@ ViewProviderPart::ViewProviderPart() : pcControlPoints(0)
     mat.diffuseColor.set(0.1f,0.1f,0.1f);
     mat.specularColor.set(0.0f,0.0f,0.0f);
     mat.emissiveColor.set(0.0f,0.0f,0.0f);
-    mat.shininess = 0.0f;
+    mat.shininess = 1.0f;
     mat.transparency = 0.0f;
     ADD_PROPERTY(LineMaterial,(mat));
     ADD_PROPERTY(PointMaterial,(mat));
