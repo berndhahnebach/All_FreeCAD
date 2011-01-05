@@ -23,6 +23,7 @@ set(ImportGui_LIBS
     TKXCAF
     TKLCAF
     TKXDESTEP
+    TKXDEIGES
 )
 
 SET(ImportGui_SRCS
