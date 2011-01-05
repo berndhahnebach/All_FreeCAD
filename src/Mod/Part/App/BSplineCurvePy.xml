@@ -250,6 +250,13 @@ from the knots table of this B-Spline curve.</UserDocu>
 				</UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="approximate">
+			<Documentation>
+				<UserDocu>
+					Replaces this B-Spline curve by approximating a set of points.
+				</UserDocu>
+			</Documentation>
+		</Methode>
 		<Methode Name="interpolate">
 			<Documentation>
 				<UserDocu>
