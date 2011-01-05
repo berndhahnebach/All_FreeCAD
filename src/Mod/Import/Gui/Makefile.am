@@ -29,9 +29,7 @@ libImportGui_la_LIBADD   = \
 		-lTKXCAF \
 		-lTKLCAF \
 		-lTKXDESTEP \
-		-lTKPrim \
-		-lTKV2d \
-		-lTKV3d \
+		-lTKXDEIGES \
 		-lFreeCADBase \
 		-lFreeCADApp \
 		-lFreeCADGui \

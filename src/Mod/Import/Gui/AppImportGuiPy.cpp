@@ -32,8 +32,12 @@
 # include <XCAFDoc_ShapeTool.hxx>
 # include <XCAFDoc_ColorTool.hxx>
 # include <TDF_Label.hxx>
+# include <TDF_LabelSequence.hxx>
 # include <Quantity_Color.hxx>
+# include <STEPCAFControl_Reader.hxx>
 # include <STEPCAFControl_Writer.hxx>
+# include <IGESCAFControl_Reader.hxx>
+# include <IGESCAFControl_Writer.hxx>
 #endif
 
 #include <Base/PyObjectBase.h>
@@ -46,6 +50,92 @@
 
 
 /* module functions */
+static PyObject * importer(PyObject *self, PyObject *args)
+{
+    const char* Name;
+    const char* DocName;
+    if (!PyArg_ParseTuple(args, "ss",&Name,&DocName))
+        return 0;
+
+    //Base::Console().Log("Insert in Part with %s",Name);
+    Base::FileInfo file(Name);
+
+    App::Document *pcDoc = App::GetApplication().getDocument(DocName);
+    if (!pcDoc) {
+        pcDoc = App::GetApplication().newDocument(DocName);
+    }
+
+    Handle(XCAFApp_Application) hApp = XCAFApp_Application::GetApplication();
+    Handle(TDocStd_Document) hDoc;
+    hApp->NewDocument(TCollection_ExtendedString("MDTV-CAF"), hDoc);
+
+    if (file.hasExtension("stp") || file.hasExtension("step")) {
+        STEPCAFControl_Reader aReader;
+        aReader.SetColorMode(true);
+        aReader.SetNameMode(true);
+        aReader.SetLayerMode(true);
+        if (aReader.ReadFile((Standard_CString)Name) != IFSelect_RetDone) {
+            PyErr_SetString(PyExc_Exception, "cannot read STEP file");
+            return 0;
+        }
+
+        aReader.Transfer(hDoc);
+    }
+    else if (file.hasExtension("igs") || file.hasExtension("iges")) {
+        IGESCAFControl_Reader aReader;
+        if (aReader.ReadFile((Standard_CString)Name) != IFSelect_RetDone) {
+            PyErr_SetString(PyExc_Exception, "cannot read IGES file");
+            return 0;
+        }
+
+        aReader.Transfer(hDoc);
+    }
+    else {
+        PyErr_SetString(PyExc_Exception, "no supported file format");
+    }
+
+    TDF_Label anAccess = hDoc->GetData()->Root();
+    // collect sequence of labels to display
+    Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool (hDoc->Main());
+    Handle_XCAFDoc_ColorTool hColors = XCAFDoc_DocumentTool::ColorTool(hDoc->Main());
+    TDF_LabelSequence shapeLabels, colorLabels;
+    aShapeTool->GetFreeShapes (shapeLabels);
+    hColors->GetColors(colorLabels);
+    
+    // set presentations and show
+    std::map<Standard_Integer, Part::Feature*> tagPart;
+    for (Standard_Integer i=1; i <= shapeLabels.Length(); i++ ) {
+        const TDF_Label& label = shapeLabels.Value(i);
+        TopoDS_Shape shape;
+        if (aShapeTool->GetShape(label, shape) && !shape.IsNull()) {
+            Part::Feature* part = static_cast<Part::Feature*>(pcDoc->addObject("Part::Feature", "Shape"));
+            part->Shape.setValue(shape);
+            tagPart[label.Tag()] = part;
+        }
+    }
+
+    // get colors if available
+    for (Standard_Integer i=1; i <= colorLabels.Length(); i++ ) {
+        const TDF_Label& label = colorLabels.Value(i);
+        Quantity_Color col;
+        if (hColors->GetColor(label, col)) {
+            App::Color color;
+            color.r = col.Red();
+            color.g = col.Green();
+            color.b = col.Blue();
+            std::map<Standard_Integer, Part::Feature*>::iterator it = tagPart.find(label.Tag());
+            if (it != tagPart.end()) {
+                Gui::ViewProvider* vp = Gui::Application::Instance->getViewProvider(it->second);
+                if (vp && vp->isDerivedFrom(PartGui::ViewProviderPart::getClassTypeId())) {
+                    static_cast<PartGui::ViewProviderPart*>(vp)->ShapeColor.setValue(color);
+                }
+            }
+        }
+    }
+
+    Py_Return;
+}
+
 static PyObject * exporter(PyObject *self, PyObject *args)
 {
     PyObject* object;
@@ -58,7 +148,6 @@ static PyObject * exporter(PyObject *self, PyObject *args)
     hApp->NewDocument(TCollection_ExtendedString("MDTV-CAF"), hDoc);
     Handle_XCAFDoc_ShapeTool hShapeTool = XCAFDoc_DocumentTool::ShapeTool(hDoc->Main());
     Handle_XCAFDoc_ColorTool hColors = XCAFDoc_DocumentTool::ColorTool(hDoc->Main());
-    TDF_Label top_label = hShapeTool->NewShape(); // this is the "root" label for the assembly
 
     Py::List list(object);
     for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
@@ -88,15 +177,25 @@ static PyObject * exporter(PyObject *self, PyObject *args)
         }
     }
 
-    STEPCAFControl_Writer writer;
-    writer.Transfer(hDoc, STEPControl_AsIs);
-    writer.Write(filename);
+    Base::FileInfo file(filename);
+    if (file.hasExtension("stp") || file.hasExtension("step")) {
+        STEPCAFControl_Writer writer;
+        writer.Transfer(hDoc, STEPControl_AsIs);
+        writer.Write(filename);
+    }
+    else if (file.hasExtension("igs") || file.hasExtension("iges")) {
+        IGESCAFControl_Writer writer;
+        writer.Transfer(hDoc);
+        writer.Write(filename);
+    }
 
     Py_Return;
 }
 
 /* registration table  */
 struct PyMethodDef ImportGui_Import_methods[] = {
+    {"insert"     ,importer  ,METH_VARARGS,
+     "insert(string,string) -- Insert the file into the given document."},
     {"export"     ,exporter  ,METH_VARARGS,
      "export(list,string) -- Export a list of objects into a single file."},
     {NULL, NULL}                   /* end of table marker */
