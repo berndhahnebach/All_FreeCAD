@@ -227,7 +227,7 @@ void View3DInventor::OnChange(ParameterGrp::SubjectType &rCaller,ParameterGrp::M
     }
     else if (strcmp(Reason,"HighlightColor") == 0) {
         float transparency;
-        SbColor highlightColor(0.1f, 0.1f, 0.8f);
+        SbColor highlightColor(0.8f, 0.1f, 0.1f);
         unsigned long highlight = (unsigned long)(highlightColor.getPackedValue());
         highlight = rGrp.GetUnsigned("HighlightColor", highlight);
         highlightColor.setPackedValue((uint32_t)highlight, transparency);
@@ -237,7 +237,7 @@ void View3DInventor::OnChange(ParameterGrp::SubjectType &rCaller,ParameterGrp::M
     }
     else if (strcmp(Reason,"SelectionColor") == 0) {
         float transparency;
-        SbColor selectionColor(0.1f, 0.5f, 0.1f);
+        SbColor selectionColor(0.1f, 0.8f, 0.1f);
         unsigned long selection = (unsigned long)(selectionColor.getPackedValue());
         selection = rGrp.GetUnsigned("SelectionColor", selection);
         selectionColor.setPackedValue((uint32_t)selection, transparency);
