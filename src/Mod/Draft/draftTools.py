@@ -471,7 +471,7 @@ class rectangleTracker(Tracker):
 		line = coin.SoLineSet()
 		line.numVertices.setValue(5)
 		self.coords = coin.SoCoordinate3() # this is the coordinate
-		self.coords.point.setValues(0,5,[[0,0,0],[1,0,0],[1,1,0],[0,1,0],[0,0,0]])
+		self.coords.point.setValues(0,50,[[0,0,0],[2,0,0],[2,2,0],[0,2,0],[0,0,0]])
 		Tracker.__init__(self,dotted,scolor,swidth,[self.coords,line])
 
 	def setorigin(self,point):
@@ -1009,45 +1009,46 @@ class Wire(Line):
 
 class BSpline(Line):
         "a FreeCAD command for creating a b-spline"
-   def __init__(self):
-      Line.__init__(self,wiremode=True)
-   def GetResources(self):
-      return {'Pixmap'  : 'Draft_bspline',
-         'MenuText': str(translate("draft", "B-Spline").toLatin1()),
-         'ToolTip': str(translate("draft", "Creates a multiple-point b-spline. CTRL to snap, SHIFT to constrain").toLatin1())}
+	def __init__(self):
+		Line.__init__(self,wiremode=True)
 
-   def drawSegment(self,point):
-      "draws a new segment"
-      if (len(self.node) == 1):
-         self.linetrack.on()
-         msg(translate("draft", "Pick next point:\n"))
+	def GetResources(self):
+		return {'Pixmap'  : 'Draft_bspline',
+			'MenuText': str(translate("draft", "B-Spline").toLatin1()),
+			'ToolTip': str(translate("draft", "Creates a multiple-point b-spline. CTRL to snap, SHIFT to constrain").toLatin1())}
+
+	def drawSegment(self,point):
+		"draws a new segment"
+		if (len(self.node) == 1):
+			self.linetrack.on()
+			msg(translate("draft", "Pick next point:\n"))
                         self.planetrack.set(self.node[0])
-      elif (len(self.node) == 2):
-         self.createTempObject()
-         last = self.node[len(self.node)-2]
-         newseg = Part.Line(last,point).toShape()
-         self.obj.Shape = newseg
-         if self.isWire:
-            msg(translate("draft", "Pick next point, or (F)inish or (C)lose:\n"))
-      else:
-         spline = Part.BSplineCurve()
-         spline.interpolate(self.node, False)
-         self.obj.Shape = spline.toShape()
-         msg(translate("draft", "Pick next point, or (F)inish or (C)lose:\n"))
-         
-   def finish(self,closed=False):
-      "terminates the operation and closes the poly if asked"
-      if (len(self.node) > 1):
+		elif (len(self.node) == 2):
+			self.createTempObject()
+			last = self.node[len(self.node)-2]
+			newseg = Part.Line(last,point).toShape()
+			self.obj.Shape = newseg
+			if self.isWire:
+				msg(translate("draft", "Pick next point, or (F)inish or (C)lose:\n"))
+		else:
+			spline = Part.BSplineCurve()
+			spline.interpolate(self.node, False)
+			self.obj.Shape = spline.toShape()
+			msg(translate("draft", "Pick next point, or (F)inish or (C)lose:\n"))
+			
+	def finish(self,closed=False):
+		"terminates the operation and closes the poly if asked"
+		if (len(self.node) > 1):
                         old = self.obj.Name
                         self.doc.removeObject(old)
                         self.doc.openTransaction("Create "+self.featureName)
                         Draft.makeBSpline(self.node,closed)
                         self.doc.commitTransaction()
-      if self.ui:
-         self.linetrack.finalize()
-         self.constraintrack.finalize()
-         self.snap.finalize()
-      Creator.finish(self)
+		if self.ui:
+			self.linetrack.finalize()
+			self.constraintrack.finalize()
+			self.snap.finalize()
+		Creator.finish(self)
 
 class FinishLine:
 	"a FreeCAD command to finish any running Line drawing operation"
