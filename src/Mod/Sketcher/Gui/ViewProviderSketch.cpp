@@ -1206,7 +1206,6 @@ void ViewProviderSketch::unsetEdit(int ModNum)
  
     this->show();
 
-    // when pressing ESC make sure to close the dialog
     // and update the sketch
     getSketchObject()->getDocument()->recompute();
 
@@ -1216,7 +1215,7 @@ void ViewProviderSketch::unsetEdit(int ModNum)
     std::string DocName = getSketchObject()->getDocument()->getName();
     Gui::Selection().addSelection(DocName.c_str(),ObjName.c_str());
 
-
+    // when pressing ESC make sure to close the dialog
     Gui::Control().closeDialog();
 }
 

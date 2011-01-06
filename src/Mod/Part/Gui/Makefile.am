@@ -72,6 +72,7 @@ libPartGui_la_SOURCES=\
 		ViewProviderMirror.cpp \
 		ViewProvider2DObject.cpp \
 		ViewProviderPython.cpp \
+		ViewProviderBoolean.cpp \
 		Workbench.cpp
 
 include_HEADERS=\
@@ -85,6 +86,7 @@ include_HEADERS=\
 		ViewProviderMirror.h \
 		ViewProvider2DObject.h \
 		ViewProviderPython.h \
+		ViewProviderBoolean.h \
 		Workbench.h
 
 # the library search path.

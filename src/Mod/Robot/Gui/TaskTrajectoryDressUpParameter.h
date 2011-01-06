@@ -29,6 +29,7 @@
 
 #include <Mod/Robot/App/Edge2TracObject.h>
 #include <Mod/Robot/App/TrajectoryObject.h>
+#include <Mod/Robot/App/TrajectoryDressUpObject.h>
 
 
 class Ui_TaskTrajectoryDressUpParameter;
@@ -43,7 +44,7 @@ class TaskTrajectoryDressUpParameter : public Gui::TaskView::TaskBox
     Q_OBJECT
 
 public:
-    TaskTrajectoryDressUpParameter(QWidget *parent = 0);
+    TaskTrajectoryDressUpParameter(Robot::TrajectoryDressUpObject *obj,QWidget *parent = 0);
     ~TaskTrajectoryDressUpParameter();
 
  
@@ -55,6 +56,7 @@ protected:
 private:
     QWidget* proxy;
     Ui_TaskTrajectoryDressUpParameter* ui;
+    Robot::TrajectoryDressUpObject *pcObject;
 };
 
 } //namespace PartDesignGui

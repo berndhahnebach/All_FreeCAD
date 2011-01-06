@@ -10,5 +10,7 @@
 		<file>icons/Robot_Simulate.svg</file>
     <file>icons/Robot_Export.svg</file>
     <file>icons/Robot_Edge2Trac.svg</file>
+    <file>icons/Robot_TrajectoryCompound.svg</file>
+    <file>icons/Robot_TrajectoryDressUp.svg</file>
   </qresource>
 </RCC>

@@ -258,8 +258,8 @@ void CmdPartCut::activated(int iMsg)
     doCommand(Doc,"App.activeDocument().addObject(\"Part::Cut\",\"%s\")",FeatName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Base = App.activeDocument().%s",FeatName.c_str(),Sel[0].FeatName);
     doCommand(Doc,"App.activeDocument().%s.Tool = App.activeDocument().%s",FeatName.c_str(),Sel[1].FeatName);
-    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[0].FeatName);
-    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[1].FeatName);
+    doCommand(Gui,"Gui.activeDocument().hide('%s')",Sel[0].FeatName);
+    doCommand(Gui,"Gui.activeDocument().hide('%s')",Sel[1].FeatName);
     updateActive();
     commitCommand();
 }
@@ -299,14 +299,14 @@ void CmdPartCommon::activated(int iMsg)
     std::string FeatName = getUniqueObjectName("Common");
 
     std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
+    std::string ObjectBuf;
+    for (std::vector<Gui::SelectionSingleton::SelObj>::iterator it = Sel.begin(); it != Sel.end(); ++it)
+        ObjectBuf += std::string("App.activeDocument().") + it->FeatName + ",";
+    ObjectBuf.erase(--ObjectBuf.end());
 
     openCommand("Common");
     doCommand(Doc,"App.activeDocument().addObject(\"Part::MultiCommon\",\"%s\")",FeatName.c_str());
-    doCommand(Doc,"__s__=[]");
-    for (std::vector<Gui::SelectionSingleton::SelObj>::iterator it = Sel.begin(); it != Sel.end(); ++it)
-        doCommand(Doc,"__s__.append(App.activeDocument().%s)", it->FeatName);
-    doCommand(Doc,"App.activeDocument().%s.Shapes = __s__",FeatName.c_str());
-    doCommand(Doc,"del __s__");
+    doCommand(Doc,"App.activeDocument().%s.Shapes = [%s]",FeatName.c_str(),ObjectBuf.c_str());
     updateActive();
     commitCommand();
 }
@@ -399,8 +399,8 @@ void CmdPartSection::activated(int iMsg)
     doCommand(Doc,"App.activeDocument().addObject(\"Part::Section\",\"%s\")",FeatName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Base = App.activeDocument().%s",FeatName.c_str(),Sel[0].FeatName);
     doCommand(Doc,"App.activeDocument().%s.Tool = App.activeDocument().%s",FeatName.c_str(),Sel[1].FeatName);
-    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[0].FeatName);
-    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Sel[1].FeatName);
+    doCommand(Gui,"Gui.activeDocument().hide('%s')",Sel[0].FeatName);
+    doCommand(Gui,"Gui.activeDocument().hide('%s')",Sel[1].FeatName);
     updateActive();
     commitCommand();
 }

@@ -118,6 +118,11 @@ void ViewProviderDocumentObjectGroup::updateData(const App::Property* prop)
 #endif
 }
 
+std::vector<App::DocumentObject*> ViewProviderDocumentObjectGroup::claimChildren(void)const
+{
+    return std::vector<App::DocumentObject*>(static_cast<App::DocumentObjectGroup*>(getObject())->Group.getValues());
+}
+
 std::vector<std::string> ViewProviderDocumentObjectGroup::getDisplayModes(void) const
 {
     // empty

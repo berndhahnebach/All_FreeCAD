@@ -44,13 +44,7 @@ public:
     TrajectoryCompound(void);
     virtual ~TrajectoryCompound();
 
-    App::PropertyLinkSub         Source;
-    App::PropertyFloatConstraint SegValue;
-
-    /// set by execute with the number of clusters found
-    int NbrOfCluster;
-    /// set by execute with the number of all edges
-    int NbrOfEdges;
+    App::PropertyLinkList     Source;
 
     /// returns the type name of the ViewProvider
     virtual const char* getViewProviderName(void) const {
@@ -60,7 +54,7 @@ public:
 
 protected:
     /// get called by the container when a property has changed
-    virtual void onChanged (const App::Property* prop);
+    //virtual void onChanged (const App::Property* prop);
 
 };
 

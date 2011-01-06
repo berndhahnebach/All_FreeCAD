@@ -42,11 +42,12 @@
 using namespace RobotGui;
 using namespace Gui;
 
-TaskTrajectoryDressUpParameter::TaskTrajectoryDressUpParameter(QWidget *parent)
-    : TaskBox(Gui::BitmapFactory().pixmap("Robot_Edge2Trac"),
+TaskTrajectoryDressUpParameter::TaskTrajectoryDressUpParameter(Robot::TrajectoryDressUpObject *obj,QWidget *parent)
+    : TaskBox(Gui::BitmapFactory().pixmap("Robot_TrajectoryDressUp"),
       tr("Dress Up Parameter"),
       true, 
-      parent)
+      parent),
+      pcObject(obj)
 {
     // we need a separate container widget to add all controls to
     proxy = new QWidget(this);

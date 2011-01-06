@@ -37,7 +37,7 @@ class Chamfer : public Part::Feature
 public:
     Chamfer();
 
-    App::PropertyLinkWeak Base;
+    App::PropertyLink   Base;
     PropertyFilletEdges Edges;
 
     /** @name methods override feature */

@@ -64,7 +64,13 @@ class ViewProviderPy;
 class ObjectItem;
 
 
-
+/** general interface for all visual stuff in FreeCAD
+  * This class is used to generate and handle all around 
+  * visualizing and presenting objects from the FreeCAD 
+  * App layer to the user. This class and its descendends 
+  * have to be implemented for any object type in order to 
+  * show them in the 3DView and TreeView.
+  */
 class GuiExport ViewProvider : public App::PropertyContainer
 {
     PROPERTY_HEADER(Gui::ViewProvider);
@@ -86,10 +92,23 @@ public:
     virtual SoSeparator* getBackRoot(void) const {return 0;}
     virtual void select(SoPath*) {}
     virtual void deselect(SoPath*) {}
+
     /** @name Methods used by the Tree
+      * If you whant to take control over the 
+      * apperance of your object in the tree you
+      * can reimplemnt this methodes.
      */
     //@{
+    /// deliver the icon shown in the tree view
     virtual QIcon getIcon(void) const;
+    /** deliver the children belonging to this object
+      * this methode is used to deliver the objects to 
+      * the tree framework which sould grouped under its 
+      * label. Obvious is the usage in the group but it can
+      * be used for any kind of grouping needed for a special 
+      * purpose.
+      */
+    virtual std::vector<App::DocumentObject*> claimChildren(void)const{return std::vector<App::DocumentObject*>();}
     //@}
 
     /** @name Signals of the view provider */

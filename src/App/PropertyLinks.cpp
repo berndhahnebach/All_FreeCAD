@@ -157,27 +157,6 @@ void PropertyLink::Paste(const Property &from)
 }
 
 //**************************************************************************
-// PropertyLinkWeak
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-TYPESYSTEM_SOURCE(App::PropertyLinkWeak , App::PropertyLink);
-
-//**************************************************************************
-// Construction/Destruction
-
-
-PropertyLinkWeak::PropertyLinkWeak()
-{
-
-}
-
-
-PropertyLinkWeak::~PropertyLinkWeak()
-{
-
-}
-
-//**************************************************************************
 // PropertyLinkSub
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 

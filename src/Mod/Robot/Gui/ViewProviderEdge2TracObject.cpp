@@ -35,11 +35,23 @@ using namespace RobotGui;
 
 PROPERTY_SOURCE(RobotGui::ViewProviderEdge2TracObject, RobotGui::ViewProviderTrajectory)
 
-bool ViewProviderEdge2TracObject::doubleClicked(void)
+//bool ViewProviderEdge2TracObject::doubleClicked(void)
+//{
+//    Gui::TaskView::TaskDialog* dlg = new TaskDlgEdge2Trac(dynamic_cast<Robot::Edge2TracObject *>(getObject()));
+//    Gui::Control().showDialog(dlg);
+//    return true;
+//}
+
+
+bool ViewProviderEdge2TracObject::setEdit(int ModNum)
 {
     Gui::TaskView::TaskDialog* dlg = new TaskDlgEdge2Trac(dynamic_cast<Robot::Edge2TracObject *>(getObject()));
     Gui::Control().showDialog(dlg);
     return true;
 }
 
+void ViewProviderEdge2TracObject::unsetEdit(int ModNum)
+{
 
+
+}

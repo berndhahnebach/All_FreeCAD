@@ -39,6 +39,8 @@ public:
     /// destructor.
     virtual ~ViewProviderDocumentObjectGroup();
 
+    virtual std::vector<App::DocumentObject*> claimChildren(void)const;
+
     void attach(App::DocumentObject *pcObject);
     void updateData(const App::Property*);
     void Restore(Base::XMLReader &reader);

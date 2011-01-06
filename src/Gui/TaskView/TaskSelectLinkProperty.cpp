@@ -30,13 +30,14 @@
 
 #include "ui_TaskSelectLinkProperty.h"
 #include "TaskSelectLinkProperty.h"
+#include <Base/Console.h>
+#include <App/DocumentObject.h>
 #include <Gui/Application.h>
 #include <Gui/Document.h>
 #include <Gui/BitmapFactory.h>
 #include <Gui/ViewProvider.h>
 #include <Gui/WaitCursor.h>
 #include <Gui/SelectionFilter.h>
-#include <Base/Console.h>
 
 using namespace Gui::TaskView;
 
@@ -68,7 +69,11 @@ TaskSelectLinkProperty::TaskSelectLinkProperty(const char *sFilter,App::Property
     assert(prop);
     if(prop->getTypeId().isDerivedFrom(App::PropertyLinkSub::getClassTypeId())){
         LinkSub = dynamic_cast<App::PropertyLinkSub *>(prop);
-    }
+    }else
+    if(prop->getTypeId().isDerivedFrom(App::PropertyLinkList::getClassTypeId())){
+        LinkList = dynamic_cast<App::PropertyLinkList *>(prop);
+    }else
+        Base::Exception("Unknown Link property type in Gui::TaskView::TaskSelectLinkProperty::TaskSelectLinkProperty()");
 
 
     setFilter(sFilter);
@@ -114,6 +119,19 @@ void TaskSelectLinkProperty::activate(void)
             }
         }
         
+    }else
+    // In case of LinkList property 
+    if(LinkList){
+        // save the start values for a cnacel operation (reject())
+        const std::vector<App::DocumentObject*> &Values = LinkList->getValues();
+
+
+        for(std::vector<App::DocumentObject*>::const_iterator it = Values.begin();it!=Values.end();++it)
+        {
+            std::string ObjName = (*it)->getNameInDocument();
+            std::string DocName = (*it)->getDocument()->getName();
+            Gui::Selection().addSelection(DocName.c_str(),ObjName.c_str());
+        }
     }
 
     checkSelectionStatus();
@@ -151,6 +169,14 @@ void TaskSelectLinkProperty::sendSelection2Property(void)
         std::vector<Gui::SelectionObject> temp = Gui::Selection().getSelectionEx();
         assert(temp.size() >= 1);
         LinkSub->setValue(temp[0].getObject(),temp[0].getSubNames());
+    }else
+    if(LinkList){
+        std::vector<Gui::SelectionObject> sel = Gui::Selection().getSelectionEx();
+        std::vector<App::DocumentObject*> temp;
+        for(std::vector<Gui::SelectionObject>::iterator it=sel.begin();it!=sel.end();++it)
+            temp.push_back(it->getObject());
+        
+        LinkList->setValues(temp);
     }
 
 }
@@ -184,8 +210,10 @@ void TaskSelectLinkProperty::OnChange(Gui::SelectionSingleton::SubjectType &rCal
             for( std::vector<Gui::SelectionSingleton::SelObj>::const_iterator it=sel.begin();it!=sel.end();++it){
                 std::string temp;
                 temp += it->FeatName;
-                temp += "::";
-                temp += it->SubName;
+                if(it->SubName != ""){
+                    temp += "::";
+                    temp += it->SubName;
+                }
                 new QListWidgetItem(QString::fromAscii(temp.c_str()), ui->listWidget);
             }
             checkSelectionStatus();
