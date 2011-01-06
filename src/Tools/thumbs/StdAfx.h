@@ -32,6 +32,9 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+// Disable warnings
+#pragma warning(disable : 4996)
+
 #define _ATL_APARTMENT_THREADED
 
 #include <atlbase.h>

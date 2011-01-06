@@ -30,8 +30,8 @@
 #include <shlobj.h>
 
 #include <iostream>
-#include <Base/zipios/zipinputstream.h>
-#include <Base/zipios/zipfile.h>
+#include <zipios++/zipinputstream.h>
+#include <zipios++/zipfile.h>
 #include <CxImage/xmemfile.h>
 #include <CxImage/ximapng.h>
 
