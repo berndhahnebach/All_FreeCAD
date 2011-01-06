@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2009 Jürgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) 2008 Werner Mayer <wmayer[at]users.sourceforge.net>     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -26,61 +26,26 @@
 #ifndef _PreComp_
 #endif
 
-#include "TaskDlgTrajectoryDressUp.h"
-#include <Gui/TaskView/TaskSelectLinkProperty.h>
+#include "ViewProviderBoolean.h"
+#include <Mod/Part/App/FeaturePartBoolean.h>
 
-#include <Gui/Document.h>
-#include <Gui/Application.h>
+using namespace PartGui;
 
+PROPERTY_SOURCE(PartGui::ViewProviderBoolean,PartGui::ViewProviderPart)
 
-using namespace RobotGui;
-
-
-//**************************************************************************
-//**************************************************************************
-// TaskDialog
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-TaskDlgTrajectoryDressUp::TaskDlgTrajectoryDressUp(Robot::TrajectoryDressUpObject *obj)
-    : TaskDialog(),pcObject(obj)
+ViewProviderBoolean::ViewProviderBoolean()
 {
-    param  = new TaskTrajectoryDressUpParameter(obj);
-
-    Content.push_back(param);
 }
 
-TaskDlgTrajectoryDressUp::~TaskDlgTrajectoryDressUp()
+ViewProviderBoolean::~ViewProviderBoolean()
 {
-
 }
 
-//==== calls from the TaskView ===============================================================
-
-
-void TaskDlgTrajectoryDressUp::open()
+std::vector<App::DocumentObject*> ViewProviderBoolean::claimChildren(void)const
 {
+    std::vector<App::DocumentObject*> temp;
+    temp.push_back(static_cast<Part::Boolean*>(getObject())->Base.getValue());
+    temp.push_back(static_cast<Part::Boolean*>(getObject())->Tool.getValue());
 
+    return temp;
 }
-
-bool TaskDlgTrajectoryDressUp::accept()
-{
-        Gui::Document* doc = Gui::Application::Instance->activeDocument();
-        if(doc) doc->resetEdit();
-    return false;
- 
-}
-
-bool TaskDlgTrajectoryDressUp::reject()
-{
-        Gui::Document* doc = Gui::Application::Instance->activeDocument();
-        if(doc) doc->resetEdit();
-    return true;
-}
-
-void TaskDlgTrajectoryDressUp::helpRequested()
-{
-
-}
-
-
-#include "moc_TaskDlgTrajectoryDressUp.cpp"

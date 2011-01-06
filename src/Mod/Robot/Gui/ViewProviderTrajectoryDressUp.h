@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2009 Jürgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) 2010 Jürgen Riegel (juergen.riegel@web.de)              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,66 +21,31 @@
  ***************************************************************************/
 
 
-#include "PreCompiled.h"
+#ifndef ROBOT_ViewProviderTrajectoryDressUp_H
+#define ROBOT_ViewProviderTrajectoryDressUp_H
 
-#ifndef _PreComp_
-#endif
+#include "ViewProviderTrajectory.h"
 
-#include "TaskDlgTrajectoryDressUp.h"
-#include <Gui/TaskView/TaskSelectLinkProperty.h>
-
-#include <Gui/Document.h>
-#include <Gui/Application.h>
-
-
-using namespace RobotGui;
-
-
-//**************************************************************************
-//**************************************************************************
-// TaskDialog
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-TaskDlgTrajectoryDressUp::TaskDlgTrajectoryDressUp(Robot::TrajectoryDressUpObject *obj)
-    : TaskDialog(),pcObject(obj)
-{
-    param  = new TaskTrajectoryDressUpParameter(obj);
-
-    Content.push_back(param);
-}
-
-TaskDlgTrajectoryDressUp::~TaskDlgTrajectoryDressUp()
+namespace RobotGui
 {
 
-}
-
-//==== calls from the TaskView ===============================================================
-
-
-void TaskDlgTrajectoryDressUp::open()
+class RobotGuiExport ViewProviderTrajectoryDressUp : public ViewProviderTrajectory
 {
+    PROPERTY_HEADER(RobotGui::ViewProviderTrajectoryDressUp);
 
-}
+public:
+    //virtual bool doubleClicked(void);
 
-bool TaskDlgTrajectoryDressUp::accept()
-{
-        Gui::Document* doc = Gui::Application::Instance->activeDocument();
-        if(doc) doc->resetEdit();
-    return false;
- 
-}
+    /// grouping handling 
+    std::vector<App::DocumentObject*> claimChildren(void)const;
 
-bool TaskDlgTrajectoryDressUp::reject()
-{
-        Gui::Document* doc = Gui::Application::Instance->activeDocument();
-        if(doc) doc->resetEdit();
-    return true;
-}
+protected:
+    virtual bool setEdit(int ModNum);
+    virtual void unsetEdit(int ModNum);
 
-void TaskDlgTrajectoryDressUp::helpRequested()
-{
+};
 
-}
+} //namespace RobotGui
 
 
-#include "moc_TaskDlgTrajectoryDressUp.cpp"
+#endif // ROBOT_ViewProviderTrajectoryDressUp_H

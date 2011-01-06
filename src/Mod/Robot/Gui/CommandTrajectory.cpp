@@ -37,9 +37,12 @@
 #include <Gui/Control.h>
 
 
+#include <Mod/Part/App/PartFeature.h>
 #include <Mod/Robot/App/RobotObject.h>
 #include <Mod/Robot/App/TrajectoryObject.h>
 #include <Mod/Robot/App/Edge2TracObject.h>
+#include <Mod/Robot/App/TrajectoryDressUpObject.h>
+#include <Mod/Robot/App/TrajectoryCompound.h>
 #include "TaskDlgEdge2Trac.h"
 
 #include "TrajectorySimulate.h"
@@ -329,17 +332,53 @@ CmdRobotEdge2Trac::CmdRobotEdge2Trac()
 
 void CmdRobotEdge2Trac::activated(int iMsg)
 {
-    std::string FeatName = getUniqueObjectName("EdgeTrajectory");
- 
-    openCommand("Create trajectory");
-    doCommand(Doc,"App.activeDocument().addObject(\"Robot::Edge2TracObject\",\"%s\")",FeatName.c_str());
-    commitCommand();
-    
-    App::DocumentObject *obj = this->getDocument()->getObject(FeatName.c_str());
+     
+ /*   App::DocumentObject *obj = this->getDocument()->getObject(FeatName.c_str());
     App::Property *prop = &(dynamic_cast<Robot::Edge2TracObject *>(obj)->Source); 
 
     Gui::TaskView::TaskDialog* dlg = new TaskDlgEdge2Trac(dynamic_cast<Robot::Edge2TracObject *>(obj));
-    Gui::Control().showDialog(dlg);
+    Gui::Control().showDialog(dlg);*/
+
+
+    Gui::SelectionFilter ObjectFilter("SELECT Robot::Edge2TracObject COUNT 1");
+    Gui::SelectionFilter EdgeFilter  ("SELECT Part::Feature SUBELEMENT Edge COUNT 1..");
+
+    if (ObjectFilter.match()) {
+        Robot::Edge2TracObject *EdgeObj = static_cast<Robot::Edge2TracObject*>(ObjectFilter.Result[0][0].getObject());
+        openCommand("Edit Edge2TracObject");
+        doCommand(Gui,"Gui.activeDocument().setEdit('%s')",EdgeObj->getNameInDocument());
+    }else if (EdgeFilter.match()) {
+        // get the selected object
+        Part::Feature *part = static_cast<Part::Feature*>(EdgeFilter.Result[0][0].getObject());
+        const std::vector<std::string> &sub = EdgeFilter.Result[0][0].getSubNames();
+        //assert (sub.size()==1);
+        //// get the selected sub shape (a Face)
+        //const Part::TopoShape &shape = part->Shape.getValue();
+        //TopoDS_Shape sh = shape.getSubShape(sub[0].c_str());
+        //TopoDS_Face face = TopoDS::Face(sh);
+        //assert(!face.IsNull());
+
+         // create Sketch on Face
+        //std::string FeatName = getUniqueObjectName("Sketch");
+
+        //openCommand("Create a Sketch on Face");
+        //doCommand(Doc,"App.activeDocument().addObject('Sketcher::SketchObject','%s')",FeatName.c_str());
+        //doCommand(Gui,"App.activeDocument().%s.Placement = FreeCAD.Placement(FreeCAD.Vector(%f,%f,%f),FreeCAD.Rotation(%f,%f,%f))",FeatName.c_str(),placement.getPosition().x,placement.getPosition().y,placement.getPosition().z,a,b,c);
+        ////doCommand(Gui,"Gui.activeDocument().activeView().setCamera('%s')",cam.c_str());
+        //doCommand(Gui,"Gui.activeDocument().setEdit('%s')",FeatName.c_str());
+
+    }else {
+        // do the standard Z+ new Sketch
+        const char camstring[] = "#Inventor V2.1 ascii \\n OrthographicCamera { \\n viewportMapping ADJUST_CAMERA \\n position 0 0 87 \\n orientation 0 0 1  0 \\n nearDistance 37 \\n farDistance 137 \\n aspectRatio 1 \\n focalDistance 87 \\n height 119 }";
+        std::string FeatName = getUniqueObjectName("Edge2Trac");
+
+        std::string cam(camstring);
+
+        openCommand("Create a new Edge2TracObject");
+        doCommand(Doc,"App.activeDocument().addObject('Robot::Edge2TracObject','%s')",FeatName.c_str());
+        doCommand(Gui,"Gui.activeDocument().setEdit('%s')",FeatName.c_str());
+    }
+ 
 
 
 }
@@ -348,6 +387,90 @@ bool CmdRobotEdge2Trac::isActive(void)
 {
     return true;
 }
+
+// #####################################################################################################
+
+DEF_STD_CMD_A(CmdRobotTrajectoryDressUp);
+
+CmdRobotTrajectoryDressUp::CmdRobotTrajectoryDressUp()
+	:Command("Robot_TrajectoryDressUp")
+{
+    sAppModule      = "Robot";
+    sGroup          = QT_TR_NOOP("Robot");
+    sMenuText       = QT_TR_NOOP("Dress up trajectory...");
+    sToolTipText    = QT_TR_NOOP("Create a dress up object which overide som aspects of a trajectory");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Robot_TrajectoryDressUp";
+    iAccel          = 0;
+
+}
+
+
+void CmdRobotTrajectoryDressUp::activated(int iMsg)
+{
+    Gui::SelectionFilter ObjectFilter("SELECT Robot::TrajectoryDressUpObject COUNT 1");
+
+    if (ObjectFilter.match()) {
+        Robot::TrajectoryDressUpObject *Object = static_cast<Robot::TrajectoryDressUpObject*>(ObjectFilter.Result[0][0].getObject());
+        openCommand("Edit Sketch");
+        doCommand(Gui,"Gui.activeDocument().setEdit('%s')",Object->getNameInDocument());
+    }else {
+        std::string FeatName = getUniqueObjectName("DressUpObject");
+
+        openCommand("Create a new TrajectoryDressUp");
+        doCommand(Doc,"App.activeDocument().addObject('Robot::TrajectoryDressUpObject','%s')",FeatName.c_str());
+        doCommand(Gui,"Gui.activeDocument().setEdit('%s')",FeatName.c_str());
+    }
+ }
+
+bool CmdRobotTrajectoryDressUp::isActive(void)
+{
+    return true;
+}
+
+// #####################################################################################################
+
+DEF_STD_CMD_A(CmdRobotTrajectoryCompound);
+
+CmdRobotTrajectoryCompound::CmdRobotTrajectoryCompound()
+	:Command("Robot_TrajectoryCompound")
+{
+    sAppModule      = "Robot";
+    sGroup          = QT_TR_NOOP("Robot");
+    sMenuText       = QT_TR_NOOP("Trajectory compound...");
+    sToolTipText    = QT_TR_NOOP("Group and connect some trajectories to one");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Robot_TrajectoryCompound";
+    iAccel          = 0;
+
+}
+
+
+void CmdRobotTrajectoryCompound::activated(int iMsg)
+{
+    Gui::SelectionFilter ObjectFilter("SELECT Robot::TrajectoryCompound COUNT 1");
+
+    if (ObjectFilter.match()) {
+        Robot::TrajectoryCompound *Object = static_cast<Robot::TrajectoryCompound*>(ObjectFilter.Result[0][0].getObject());
+        openCommand("Edit Sketch");
+        doCommand(Gui,"Gui.activeDocument().setEdit('%s')",Object->getNameInDocument());
+    }else {
+        std::string FeatName = getUniqueObjectName("TrajectoryCompound");
+
+        openCommand("Create a new TrajectoryDressUp");
+        doCommand(Doc,"App.activeDocument().addObject('Robot::TrajectoryCompound','%s')",FeatName.c_str());
+        doCommand(Gui,"Gui.activeDocument().setEdit('%s')",FeatName.c_str());
+    }
+
+}
+
+bool CmdRobotTrajectoryCompound::isActive(void)
+{
+    return true;
+}
+
 
 
 // #####################################################################################################
@@ -364,4 +487,6 @@ void CreateRobotCommandsTrajectory(void)
     rcCmdMgr.addCommand(new CmdRobotSetDefaultOrientation());
     rcCmdMgr.addCommand(new CmdRobotSetDefaultValues());
     rcCmdMgr.addCommand(new CmdRobotEdge2Trac());
+    rcCmdMgr.addCommand(new CmdRobotTrajectoryDressUp());
+    rcCmdMgr.addCommand(new CmdRobotTrajectoryCompound());
  }

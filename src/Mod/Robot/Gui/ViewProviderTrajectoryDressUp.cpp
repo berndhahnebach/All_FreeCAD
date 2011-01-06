@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2009 Jürgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) 2008 Jürgen Riegel (juergen.riegel@web.de)              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -26,61 +26,42 @@
 #ifndef _PreComp_
 #endif
 
-#include "TaskDlgTrajectoryDressUp.h"
-#include <Gui/TaskView/TaskSelectLinkProperty.h>
+#include "ViewProviderTrajectoryDressUp.h"
+#include <Gui/Control.h>
+#include <Mod/Robot/Gui/TaskDlgTrajectoryDressUp.h>
 
-#include <Gui/Document.h>
-#include <Gui/Application.h>
-
-
+using namespace Gui;
 using namespace RobotGui;
 
+PROPERTY_SOURCE(RobotGui::ViewProviderTrajectoryDressUp, RobotGui::ViewProviderTrajectory)
 
-//**************************************************************************
-//**************************************************************************
-// TaskDialog
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//bool ViewProviderTrajectoryDressUp::doubleClicked(void)
+//{
+//    Gui::TaskView::TaskDialog* dlg = new TaskDlgTrajectoryDressUp(dynamic_cast<Robot::TrajectoryDressUpObject *>(getObject()));
+//    Gui::Control().showDialog(dlg);
+//    return true;
+//}
+//
 
-TaskDlgTrajectoryDressUp::TaskDlgTrajectoryDressUp(Robot::TrajectoryDressUpObject *obj)
-    : TaskDialog(),pcObject(obj)
+bool ViewProviderTrajectoryDressUp::setEdit(int ModNum)
 {
-    param  = new TaskTrajectoryDressUpParameter(obj);
-
-    Content.push_back(param);
-}
-
-TaskDlgTrajectoryDressUp::~TaskDlgTrajectoryDressUp()
-{
-
-}
-
-//==== calls from the TaskView ===============================================================
-
-
-void TaskDlgTrajectoryDressUp::open()
-{
-
-}
-
-bool TaskDlgTrajectoryDressUp::accept()
-{
-        Gui::Document* doc = Gui::Application::Instance->activeDocument();
-        if(doc) doc->resetEdit();
-    return false;
- 
-}
-
-bool TaskDlgTrajectoryDressUp::reject()
-{
-        Gui::Document* doc = Gui::Application::Instance->activeDocument();
-        if(doc) doc->resetEdit();
+    Gui::TaskView::TaskDialog* dlg = new TaskDlgTrajectoryDressUp(dynamic_cast<Robot::TrajectoryDressUpObject *>(getObject()));
+    Gui::Control().showDialog(dlg);
     return true;
 }
 
-void TaskDlgTrajectoryDressUp::helpRequested()
+void ViewProviderTrajectoryDressUp::unsetEdit(int ModNum)
 {
+    // when pressing ESC make sure to close the dialog
+    Gui::Control().closeDialog();
+
 
 }
 
-
-#include "moc_TaskDlgTrajectoryDressUp.cpp"
+std::vector<App::DocumentObject*> ViewProviderTrajectoryDressUp::claimChildren(void)const
+{
+    std::vector<App::DocumentObject*> temp;
+    temp.push_back(static_cast<Robot::TrajectoryDressUpObject*>(getObject())->Source.getValue());
+ 
+    return temp;
+}

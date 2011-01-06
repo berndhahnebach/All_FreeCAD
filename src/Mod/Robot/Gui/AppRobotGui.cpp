@@ -33,6 +33,8 @@
 #include "ViewProviderRobotObject.h"
 #include "ViewProviderTrajectory.h"
 #include "ViewProviderEdge2TracObject.h"
+#include "ViewProviderTrajectoryDressUp.h"
+#include "ViewProviderTrajectoryCompound.h"
 #include "Workbench.h"
 //#include "resources/qrc_Robot.cpp"
 
@@ -91,10 +93,12 @@ void RobotGuiExport initRobotGui()
     CreateRobotCommandsTrajectory();
 
     // addition objects
-    RobotGui::Workbench                   ::init();
-	RobotGui::ViewProviderRobotObject     ::init();
-	RobotGui::ViewProviderTrajectory      ::init();
-	RobotGui::ViewProviderEdge2TracObject ::init();
+    RobotGui::Workbench                      ::init();
+	RobotGui::ViewProviderRobotObject        ::init();
+	RobotGui::ViewProviderTrajectory         ::init();
+	RobotGui::ViewProviderEdge2TracObject    ::init();
+	RobotGui::ViewProviderTrajectoryCompound ::init();
+	RobotGui::ViewProviderTrajectoryDressUp  ::init();
 
      // add resources and reloads the translators
     loadRobotResource();

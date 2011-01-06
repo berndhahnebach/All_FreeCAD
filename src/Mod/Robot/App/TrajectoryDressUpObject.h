@@ -44,17 +44,11 @@ public:
     TrajectoryDressUpObject(void);
     virtual ~TrajectoryDressUpObject();
 
-    App::PropertyLinkSub         Source;
-    App::PropertyFloatConstraint SegValue;
-
-    /// set by execute with the number of clusters found
-    int NbrOfCluster;
-    /// set by execute with the number of all edges
-    int NbrOfEdges;
+    App::PropertyLink         Source;
 
     /// returns the type name of the ViewProvider
     virtual const char* getViewProviderName(void) const {
-        return "RobotGui::ViewProviderTrajectoryDressUpObject";
+        return "RobotGui::ViewProviderTrajectoryDressUp";
     }
     virtual App::DocumentObjectExecReturn *execute(void);
 

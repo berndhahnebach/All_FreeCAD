@@ -130,6 +130,8 @@ SET(PartGui_SRCS
     ViewProviderMirror.h
     ViewProviderPython.cpp
     ViewProviderPython.h
+    ViewProviderBoolean.cpp
+    ViewProviderBoolean.h
     Workbench.cpp
     Workbench.h
 )

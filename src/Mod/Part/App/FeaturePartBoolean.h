@@ -47,6 +47,11 @@ public:
     short mustExecute() const;
     //@}
 
+    /// returns the type name of the ViewProvider
+    const char* getViewProviderName(void) const {
+        return "PartGui::ViewProviderBoolean";
+    }
+
 protected:
     virtual TopoDS_Shape runOperation(const TopoDS_Shape&, const TopoDS_Shape&) const = 0;
 };

@@ -34,7 +34,10 @@ class RobotGuiExport ViewProviderEdge2TracObject : public ViewProviderTrajectory
     PROPERTY_HEADER(RobotGui::ViewProviderEdge2TracObject);
 
 public:
-    virtual bool doubleClicked(void);
+    //virtual bool doubleClicked(void);
+protected:
+    virtual bool setEdit(int ModNum);
+    virtual void unsetEdit(int ModNum);
 
 };
 

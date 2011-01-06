@@ -65,6 +65,10 @@ libRobotGui_la_SOURCES=\
 		TrajectorySimulate.h \
 		ViewProviderEdge2TracObject.cpp \
 		ViewProviderEdge2TracObject.h \
+		ViewProviderTrajectoryDressUp.cpp \
+		ViewProviderTrajectoryDressUp.h \
+		ViewProviderTrajectoryCompound.cpp \
+		ViewProviderTrajectoryCompound.h \
 		ViewProviderRobotObject.cpp \
 		ViewProviderRobotObject.h \
 		ViewProviderTrajectory.cpp \

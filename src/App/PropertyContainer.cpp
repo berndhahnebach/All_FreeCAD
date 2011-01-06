@@ -169,20 +169,6 @@ std::vector<DocumentObject*> PropertyContainer::getOutList(void) const
     return ret;
 }
 
-std::vector<DocumentObject*> PropertyContainer::getWeakOutList(void) const
-{
-    std::vector<Property*> List;
-    std::vector<DocumentObject*> ret;
-    getPropertyList(List);
-    for(std::vector<Property*>::const_iterator It = List.begin();It != List.end(); ++It)
-    {
-        if ((*It)->isDerivedFrom(PropertyLinkWeak::getClassTypeId()))
-        {
-            ret.push_back(static_cast<PropertyLinkWeak*>(*It)->getValue() );
-        }
-    }
-    return ret;
-}
 
 const PropertyData * PropertyContainer::getPropertyDataPtr(void){return &propertyData;} 
 const PropertyData & PropertyContainer::getPropertyData(void) const{return propertyData;} 

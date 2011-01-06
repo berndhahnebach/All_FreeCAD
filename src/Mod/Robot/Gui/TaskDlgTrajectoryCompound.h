@@ -25,11 +25,8 @@
 #define ROBOTGUI_TaskDlgTrajectoryCompound_H
 
 #include <Gui/TaskView/TaskDialog.h>
-#include <Mod/Robot/App/RobotObject.h>
-#include <Mod/Robot/App/TrajectoryObject.h>
-#include <Mod/Robot/App/Edge2TracObject.h>
+#include <Mod/Robot/App/TrajectoryCompound.h>
 
-#include "TaskEdge2TracParameter.h"
 
 // forward
 namespace Gui { namespace TaskView { class TaskSelectLinkProperty;}}
@@ -44,14 +41,12 @@ class RobotGuiExport TaskDlgTrajectoryCompound : public Gui::TaskView::TaskDialo
     Q_OBJECT
 
 public:
-    TaskDlgTrajectoryCompound(Robot::Edge2TracObject *);
+    TaskDlgTrajectoryCompound(Robot::TrajectoryCompound *);
     ~TaskDlgTrajectoryCompound();
 
 public:
     /// is called the TaskView when the dialog is opened
     virtual void open();
-    /// is called by the framework if an button is clicked which has no accept or rject role
-    virtual void clicked(int);
     /// is called by the framework if the dialog is accepted (Ok)
     virtual bool accept();
     /// is called by the framework if the dialog is rejected (Cancel)
@@ -61,12 +56,11 @@ public:
 
     /// returns for Close and Help button 
     virtual QDialogButtonBox::StandardButtons getStandardButtons(void) const
-    { return QDialogButtonBox::Ok|QDialogButtonBox::Apply|QDialogButtonBox::Cancel; }
+    { return QDialogButtonBox::Ok|QDialogButtonBox::Cancel; }
 
 protected:
-    TaskEdge2TracParameter                *param; 
     Gui::TaskView::TaskSelectLinkProperty *select;
-    Robot::Edge2TracObject                *Edge2TaskObject;
+    Robot::TrajectoryCompound             *TrajectoryCompound;
 };
 
 

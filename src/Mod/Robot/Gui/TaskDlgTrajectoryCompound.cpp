@@ -29,6 +29,8 @@
 #include "TaskDlgTrajectoryCompound.h"
 
 #include <Gui/TaskView/TaskSelectLinkProperty.h>
+#include <Gui/Document.h>
+#include <Gui/Application.h>
 
 
 using namespace RobotGui;
@@ -39,13 +41,11 @@ using namespace RobotGui;
 // TaskDialog
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-TaskDlgTrajectoryCompound::TaskDlgTrajectoryCompound(Robot::Edge2TracObject *obj)
-    : TaskDialog(),Edge2TaskObject(obj)
+TaskDlgTrajectoryCompound::TaskDlgTrajectoryCompound(Robot::TrajectoryCompound *obj)
+    : TaskDialog(),TrajectoryCompound(obj)
 {
-    param  = new TaskEdge2TracParameter(obj);
-    select = new Gui::TaskView::TaskSelectLinkProperty("SELECT Part::Feature SUBELEMENT Edge",&(obj->Source));
+    select = new Gui::TaskView::TaskSelectLinkProperty("SELECT Robot::TrajectoryObject COUNT 1..",&(obj->Source));
 
-    Content.push_back(param);
     Content.push_back(select);
 }
 
@@ -60,31 +60,17 @@ TaskDlgTrajectoryCompound::~TaskDlgTrajectoryCompound()
 void TaskDlgTrajectoryCompound::open()
 {
     select->activate();
-    Edge2TaskObject->execute();
-    param->setEdgeAndClusterNbr(Edge2TaskObject->NbrOfEdges,Edge2TaskObject->NbrOfCluster);
 
 }
 
-void TaskDlgTrajectoryCompound::clicked(int button)
-{
-    if(QDialogButtonBox::Apply == button)
-    {
-        if(select->isSelectionValid()){
-            select->sendSelection2Property();
-            Edge2TaskObject->execute();
-            param->setEdgeAndClusterNbr(Edge2TaskObject->NbrOfCluster,Edge2TaskObject->NbrOfEdges);
-        }else
-            QApplication::beep();
-            param->setEdgeAndClusterNbr(0,0);
-    }
-    
-}
 
 bool TaskDlgTrajectoryCompound::accept()
 {
     if(select->isSelectionValid()){
         select->accept();
-        Edge2TaskObject->execute();
+        TrajectoryCompound->execute();
+        Gui::Document* doc = Gui::Application::Instance->activeDocument();
+        if(doc) doc->resetEdit();
         return true;
     }else
         QApplication::beep();
@@ -95,7 +81,9 @@ bool TaskDlgTrajectoryCompound::accept()
 bool TaskDlgTrajectoryCompound::reject()
 {
     select->reject();
-    Edge2TaskObject->execute();
+    TrajectoryCompound->execute();
+    Gui::Document* doc = Gui::Application::Instance->activeDocument();
+    if(doc) doc->resetEdit();
     return true;
 }
 

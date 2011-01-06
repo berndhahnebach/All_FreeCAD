@@ -971,7 +971,6 @@ void Application::initTypes(void)
     App ::PropertyFont              ::init();
     App ::PropertyStringList        ::init();
     App ::PropertyLink              ::init();
-    App ::PropertyLinkWeak          ::init();
     App ::PropertyLinkSub           ::init();
     App ::PropertyLinkList          ::init();
     App ::PropertyLinkSubList       ::init();

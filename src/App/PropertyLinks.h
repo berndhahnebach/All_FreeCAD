@@ -96,28 +96,6 @@ protected:
     App::DocumentObject *_pcLink;
 };
 
-/** A special Link Poperty
- * Does basically the same as its parent class unless that referenced objects
- * are not sorted hierarchically in the tree view in the GUI.
- */
-class AppExport PropertyLinkWeak : public PropertyLink
-{
-    TYPESYSTEM_HEADER();
-
-public:
-    /**
-     * A constructor.
-     * A more elaborate description of the constructor.
-     */
-    PropertyLinkWeak();
-
-    /**
-     * A destructor.
-     * A more elaborate description of the destructor.
-     */
-    ~PropertyLinkWeak();
-};
-
 
 /** the Link Poperty with sub elements
  *  This property links a object and a defined sequence of

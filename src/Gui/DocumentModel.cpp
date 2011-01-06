@@ -459,8 +459,6 @@ const Document* DocumentModel::getDocument(const QModelIndex& index) const
 
 bool DocumentModel::isPropertyLink(const App::Property& prop) const
 {
-    if (prop.isDerivedFrom(App::PropertyLinkWeak::getClassTypeId()))
-        return false;
     if (prop.isDerivedFrom(App::PropertyLink::getClassTypeId()))
         return true;
     if (prop.isDerivedFrom(App::PropertyLinkList::getClassTypeId()))
@@ -472,8 +470,6 @@ std::vector<ViewProviderDocumentObject*>
 DocumentModel::getLinkedObjects(const Gui::Document& doc, const App::Property& prop) const
 {
     std::vector<ViewProviderDocumentObject*> links;
-    if (prop.isDerivedFrom(App::PropertyLinkWeak::getClassTypeId()))
-        return links;
     if (prop.isDerivedFrom(App::PropertyLink::getClassTypeId())) {
         App::DocumentObject* obj;
         obj = static_cast<const App::PropertyLink&>(prop).getValue();

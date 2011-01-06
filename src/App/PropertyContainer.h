@@ -147,7 +147,6 @@ public:
 
   /// returns a list of objects this object is pointing to by Links
   std::vector<DocumentObject*> getOutList(void) const;
-  std::vector<DocumentObject*> getWeakOutList(void) const;
 
   virtual void Save (Base::Writer &writer) const;
   virtual void Restore(Base::XMLReader &reader);
