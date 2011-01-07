@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008 Jürgen Riegel (juergen.riegel@web.de)              *
+ *   Copyright (c) 2009 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,63 +21,38 @@
  ***************************************************************************/
 
 
-#ifndef __PRECOMPILED_GUI__
-#define __PRECOMPILED_GUI__
+#ifndef PARTDESIGN_Pocket_H
+#define PARTDESIGN_Pocket_H
 
-#include <FCConfig.h>
+#include <App/PropertyStandard.h>
+#include <Mod/Part/App/PartFeature.h>
 
-// Importing of App classes
-#ifdef FC_OS_WIN32
-# define PartDesignAppExport __declspec(dllimport)
-# define PartDesignGuiExport __declspec(dllexport)
-# define AppPartExport       __declspec(dllimport)
-# define AppPartGuiExport    __declspec(dllimport)
-#else // for Linux
-# define PartDesignAppExport
-# define PartDesignGuiExport
-# define AppPartExport     
-# define AppPartGuiExport     
-#endif
+namespace PartDesign
+{
 
+class Pocket : public Part::Feature
+{
+    PROPERTY_HEADER(PartDesign::Pocket);
 
-#ifdef _PreComp_
+public:
+    Pocket();
 
-// Python
-#include <Python.h>
+    App::PropertyLink   Sketch;
+    App::PropertyLength Length;
 
-// standard
-#include <iostream>
-#include <assert.h>
-#include <math.h>
+    /** @name methods override feature */
+    //@{
+    /// recalculate the feature
+    App::DocumentObjectExecReturn *execute(void);
+    short mustExecute() const;
+    /// returns the type name of the view provider
+    const char* getViewProviderName(void) const {
+        return "PartGui::ViewProviderPocket";
+    }
+    //@}
+};
 
-// OCC
-#include <Standard_math.hxx>
-
-// STL
-#include <vector>
-#include <map>
-#include <string>
-#include <list>
-#include <set>
-#include <algorithm>
-#include <stack>
-#include <queue>
-#include <bitset>
-
-#ifdef FC_OS_WIN32
-# include <windows.h>
-#endif
+} //namespace PartDesign
 
 
-// Qt Toolkit
-#ifndef __Qt4All__
-# include <Gui/Qt4All.h>
-#endif
-
-// Inventor
-#ifndef __InventorAll__
-# include <Gui/InventorAll.h>
-#endif
-
-#endif // _PreComp_
-#endif // __PRECOMPILED_GUI__
+#endif // PART_Pocket_H

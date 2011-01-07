@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008 Jürgen Riegel (juergen.riegel@web.de)              *
+ *   Copyright (c) 2008 Werner Mayer <wmayer[at]users.sourceforge.net>     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -22,65 +22,31 @@
 
 
 #include "PreCompiled.h"
+
 #ifndef _PreComp_
-# include <Python.h>
 #endif
 
-#include <Base/Console.h>
-#include <Base/Interpreter.h>
-#include <Gui/Application.h>
-#include <Gui/Language/Translator.h>
-
-#include "Workbench.h"
-#include "ViewProviderPocket.h"
 #include "ViewProviderPad.h"
+#include <Mod/PartDesign/App/FeaturePad.h>
 
-//#include "resources/qrc_PartDesign.cpp"
+using namespace PartDesignGui;
 
-// use a different name to CreateCommand()
-void CreatePartDesignCommands(void);
+PROPERTY_SOURCE(PartDesignGui::ViewProviderPad,PartGui::ViewProviderPart)
 
-void loadPartDesignResource()
+ViewProviderPad::ViewProviderPad()
 {
-    // add resources and reloads the translators
-    Q_INIT_RESOURCE(PartDesign);
-    Gui::Translator::instance()->refresh();
 }
 
-/* registration table  */
-extern struct PyMethodDef PartDesignGui_Import_methods[];
-
-
-/* Python entry */
-extern "C" {
-void PartDesignGuiExport initPartDesignGui()
+ViewProviderPad::~ViewProviderPad()
 {
-    if (!Gui::Application::Instance) {
-        PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");
-        return;
-    }
-
-    try {
-        Base::Interpreter().runString("import PartGui");
-        Base::Interpreter().runString("import SketcherGui");
-    }
-    catch(const Base::Exception& e) {
-        PyErr_SetString(PyExc_ImportError, e.what());
-        return;
-    }
-
-    (void) Py_InitModule("PartDesignGui", PartDesignGui_Import_methods);   /* mod name, table ptr */
-    Base::Console().Log("Loading GUI of PartDesign module... done\n");
-
-    // instantiating the commands
-    CreatePartDesignCommands();
-
-    PartDesignGui::Workbench           ::init();
-    PartDesignGui::ViewProviderPocket  ::init();
-    PartDesignGui::ViewProviderPad     ::init();
-
-     // add resources and reloads the translators
-    loadPartDesignResource();
 }
 
-} // extern "C" {
+std::vector<App::DocumentObject*> ViewProviderPad::claimChildren(void)const
+{
+    std::vector<App::DocumentObject*> temp;
+    temp.push_back(static_cast<PartDesign::Pad*>(getObject())->Sketch.getValue());
+
+    return temp;
+}
+
+

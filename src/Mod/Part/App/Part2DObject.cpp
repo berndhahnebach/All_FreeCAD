@@ -63,6 +63,10 @@ Base::Placement Part2DObject::positionBySupport(const TopoDS_Face &face,const Ba
     if(face.IsNull())
         throw Base::Exception("Null Face in Part2DObject::positionBySupport()!");
 
+    bool Reverse = false;
+    if(face.Orientation() == TopAbs_REVERSED) 
+        Reverse=true;
+
     BRepAdaptor_Surface adapt(face);
 
     if(adapt.GetType() != GeomAbs_Plane)

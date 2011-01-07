@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef PARTDESIGN_FEATUREEXTRUSION_H
-#define PARTDESIGN_FEATUREEXTRUSION_H
+#ifndef PARTDESIGN_Pad_H
+#define PARTDESIGN_Pad_H
 
 #include <App/PropertyStandard.h>
 #include <Mod/Part/App/PartFeature.h>
@@ -47,7 +47,7 @@ public:
     short mustExecute() const;
     /// returns the type name of the view provider
     const char* getViewProviderName(void) const {
-        return "PartGui::ViewProviderPart";
+        return "PartDesignGui::ViewProviderPad";
     }
     //@}
 };
@@ -55,4 +55,4 @@ public:
 } //namespace PartDesign
 
 
-#endif // PART_FEATUREEXTRUSION_H
+#endif // PART_Pad_H
