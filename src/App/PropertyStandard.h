@@ -423,13 +423,13 @@ public:
  * This is a property for representing angles. It basicly a float
  * property. On the Gui it has a quantity like RAD.
  */
-class AppExport PropertyAngle: public PropertyFloat
+class AppExport PropertyAngle: public PropertyFloatConstraint
 {
     TYPESYSTEM_HEADER();
 public:
     PropertyAngle(void){}
     virtual ~PropertyAngle(){}
-    virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyFloatItem"; }
+    virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyAngleItem"; }
 };
 
 

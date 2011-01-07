@@ -126,9 +126,6 @@ void AppPartExport initPart()
     Part::PropertyPartShape     ::init();
     Part::PropertyGeometryList  ::init();
     Part::PropertyFilletEdges   ::init();
-#if 1
-    Part::PropertyCircle        ::init();
-#endif
 
     Part::Feature               ::init();
     Part::FeaturePython         ::init();
