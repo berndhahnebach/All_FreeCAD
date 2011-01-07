@@ -850,6 +850,19 @@ void PropertyFloatConstraint::setPyObject(PyObject *value)
         _dValue = temp;
         hasSetValue();
     } 
+    else if (PyInt_Check(value)) {
+        float temp = (float)PyInt_AsLong(value);
+        if (_ConstStruct) {
+            if (temp > _ConstStruct->UpperBound)
+                temp = _ConstStruct->UpperBound;
+            else if (temp < _ConstStruct->LowerBound)
+                temp = _ConstStruct->LowerBound;
+        }
+    
+        aboutToSetValue();
+        _dValue = temp;
+        hasSetValue();
+    } 
     else {
         std::string error = std::string("type must be float, not ");
         error += value->ob_type->tp_name;
@@ -896,7 +909,7 @@ void PropertyLength::setPyObject(PyObject *value)
 // PropertyAngle
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-TYPESYSTEM_SOURCE(App::PropertyAngle, App::PropertyFloat);
+TYPESYSTEM_SOURCE(App::PropertyAngle, App::PropertyFloatConstraint);
 
 
 //**************************************************************************

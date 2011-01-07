@@ -95,6 +95,10 @@ inline T clamp (T num, T lower, T upper)
     return std::max<T>(std::min<T>(upper,num),lower);
 }
 
+#ifndef M_PI
+#define M_PI       3.14159265358979323846
+#endif
+
 template<class T>
 inline T radians(T d)
 {

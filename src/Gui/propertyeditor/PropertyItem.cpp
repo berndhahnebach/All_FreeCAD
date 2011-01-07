@@ -533,9 +533,7 @@ QVariant PropertyFloatItem::toString(const QVariant& prop) const
     QString data = QLocale::system().toString(value, 'f', 2);
     const std::vector<App::Property*>& props = getPropertyData();
     if (!props.empty()) {
-        if (props.front()->getTypeId().isDerivedFrom(App::PropertyAngle::getClassTypeId()))
-            data += QString::fromUtf8(" \xc2\xb0");
-        else if (props.front()->getTypeId().isDerivedFrom(App::PropertyDistance::getClassTypeId())) {
+        if (props.front()->getTypeId().isDerivedFrom(App::PropertyDistance::getClassTypeId())) {
             QString unit = Base::UnitsApi::getPrefUnitOf(Base::Length);
             unit.prepend(QLatin1String(" "));
             data += unit;
@@ -583,9 +581,6 @@ void PropertyFloatItem::setEditorData(QWidget *editor, const QVariant& data) con
     const std::vector<App::Property*>& prop = getPropertyData();
     if (prop.empty())
         return;
-    else if (prop.front()->getTypeId().isDerivedFrom(App::PropertyAngle::getClassTypeId())) {
-        sb->setSuffix(QString::fromUtf8(" \xc2\xb0"));
-    }
     else if (prop.front()->getTypeId().isDerivedFrom(App::PropertyDistance::getClassTypeId())) {
         QString unit = Base::UnitsApi::getPrefUnitOf(Base::Length);
         unit.prepend(QLatin1String(" "));
@@ -681,8 +676,22 @@ PropertyAngleItem::PropertyAngleItem()
 
 void PropertyAngleItem::setEditorData(QWidget *editor, const QVariant& data) const
 {
+    const std::vector<App::Property*>& items = getPropertyData();
+    App::PropertyAngle* prop = (App::PropertyAngle*)items[0];
+
+    const App::PropertyFloatConstraint::Constraints* c = prop->getConstraints();
     QDoubleSpinBox *sb = qobject_cast<QDoubleSpinBox*>(editor);
-    sb->setRange((double)INT_MIN, (double)INT_MAX);
+    if (c) {
+        sb->setMinimum(c->LowerBound);
+        sb->setMaximum(c->UpperBound);
+        sb->setSingleStep(c->StepSize);
+    }
+    else {
+        sb->setMinimum((double)INT_MIN);
+        sb->setMaximum((double)INT_MAX);
+        sb->setSingleStep(1.0);
+    }
+
     sb->setValue(data.toDouble());
     sb->setSuffix(QString::fromUtf8(" \xc2\xb0"));
 }

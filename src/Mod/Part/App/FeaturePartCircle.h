@@ -27,53 +27,8 @@
 #include <App/PropertyStandard.h>
 #include "PrimitiveFeature.h"
 
-#if 1
-#include <App/PropertyGeo.h>
-#include <Geom_Circle.hxx>
-#endif
-
 namespace Part
 {
-#if 1
-/** The line property class.
- * @author Werner Mayer
- */
-class AppPartExport PropertyCircle : public App::Property
-{
-    TYPESYSTEM_HEADER();
-
-public:
-    PropertyCircle();
-    ~PropertyCircle();
-
-    /** @name Getter/setter */
-    //@{
-    /// set the line
-    void setValue( const Geom_Circle& circle );
-    /// get the line
-    const Geom_Circle& getValue(void) const;
-    //@}
-
-    /** @name Python interface */
-    //@{
-    PyObject* getPyObject(void);
-    void setPyObject(PyObject *value);
-    //@}
-
-    /** @name Save/restore */
-    //@{
-    void Save (Base::Writer &writer) const;
-    void Restore(Base::XMLReader &reader);
-
-    App::Property *Copy(void) const;
-    void Paste(const App::Property &from);
-    unsigned int getMemSize (void) const;
-    //@}
-
-private:
-    Geom_Circle _circle;
-};
-#endif 
 class Circle : public Part::Primitive
 {
     PROPERTY_HEADER(Part::Circle);
@@ -85,9 +40,6 @@ public:
     App::PropertyFloat Radius;
     App::PropertyAngle Angle0;
     App::PropertyAngle Angle1;
-#if 1
-    PropertyCircle Circ;
-#endif
 
     /** @name methods override feature */
     //@{
@@ -96,6 +48,9 @@ public:
     short mustExecute() const;
     void onChanged(const App::Property*);
     //@}
+
+private:
+    static App::PropertyFloatConstraint::Constraints angleRange;
 };
 
 } //namespace Part
