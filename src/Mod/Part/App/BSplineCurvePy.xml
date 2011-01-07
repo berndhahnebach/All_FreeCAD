@@ -264,5 +264,12 @@ from the knots table of this B-Spline curve.</UserDocu>
 				</UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="buildFromPoles">
+			<Documentation>
+				<UserDocu>
+					Builds a B-Spline by a list of poles.
+				</UserDocu>
+			</Documentation>
+		</Methode>
 	</PythonExport>
 </GenerateModel>
