@@ -43,6 +43,37 @@ public:
     std::vector<App::DocumentObject*> claimChildren(void)const;
 };
 
+/// ViewProvider for the MultiFuse feature
+class AppPartGuiExport ViewProviderMultiFuse : public ViewProviderPart
+{
+    PROPERTY_HEADER(PartGui::ViewProviderMultiFuse);
+
+public:
+    /// constructor
+    ViewProviderMultiFuse();
+    /// destructor
+    virtual ~ViewProviderMultiFuse();
+
+    /// grouping handling 
+    std::vector<App::DocumentObject*> claimChildren(void)const;
+};
+
+/// ViewProvider for the MultiFuse feature
+class AppPartGuiExport ViewProviderMultiCommon : public ViewProviderPart
+{
+    PROPERTY_HEADER(PartGui::ViewProviderMultiCommon);
+
+public:
+    /// constructor
+    ViewProviderMultiCommon();
+    /// destructor
+    virtual ~ViewProviderMultiCommon();
+
+    /// grouping handling 
+    std::vector<App::DocumentObject*> claimChildren(void)const;
+};
+
+
 } // namespace PartGui
 
 

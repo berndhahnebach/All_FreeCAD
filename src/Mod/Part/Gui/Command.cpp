@@ -300,13 +300,18 @@ void CmdPartCommon::activated(int iMsg)
 
     std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
     std::string ObjectBuf;
-    for (std::vector<Gui::SelectionSingleton::SelObj>::iterator it = Sel.begin(); it != Sel.end(); ++it)
+    std::vector<std::string> tempSelNames;
+    for (std::vector<Gui::SelectionSingleton::SelObj>::iterator it = Sel.begin(); it != Sel.end(); ++it){
         ObjectBuf += std::string("App.activeDocument().") + it->FeatName + ",";
+        tempSelNames.push_back(it->FeatName);
+    }
     ObjectBuf.erase(--ObjectBuf.end());
 
     openCommand("Common");
     doCommand(Doc,"App.activeDocument().addObject(\"Part::MultiCommon\",\"%s\")",FeatName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Shapes = [%s]",FeatName.c_str(),ObjectBuf.c_str());
+    for (std::vector<std::string>::iterator it = tempSelNames.begin(); it != tempSelNames.end(); ++it)
+        doCommand(Gui,"Gui.activeDocument().%s.Visibility=False",it->c_str());
     updateActive();
     commitCommand();
 }
@@ -346,14 +351,19 @@ void CmdPartFuse::activated(int iMsg)
     std::string FeatName = getUniqueObjectName("Fusion");
 
     std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
+    std::string ObjectBuf;
+    std::vector<std::string> tempSelNames;
+    for (std::vector<Gui::SelectionSingleton::SelObj>::iterator it = Sel.begin(); it != Sel.end(); ++it){
+        ObjectBuf += std::string("App.activeDocument().") + it->FeatName + ",";
+        tempSelNames.push_back(it->FeatName);
+    }
+    ObjectBuf.erase(--ObjectBuf.end());
 
     openCommand("Fusion");
     doCommand(Doc,"App.activeDocument().addObject(\"Part::MultiFuse\",\"%s\")",FeatName.c_str());
-    doCommand(Doc,"__s__=[]");
-    for (std::vector<Gui::SelectionSingleton::SelObj>::iterator it = Sel.begin(); it != Sel.end(); ++it)
-        doCommand(Doc,"__s__.append(App.activeDocument().%s)", it->FeatName);
-    doCommand(Doc,"App.activeDocument().%s.Shapes = __s__",FeatName.c_str());
-    doCommand(Doc,"del __s__");
+    doCommand(Doc,"App.activeDocument().%s.Shapes = [%s]",FeatName.c_str(),ObjectBuf.c_str());
+    for (std::vector<std::string>::iterator it = tempSelNames.begin(); it != tempSelNames.end(); ++it)
+        doCommand(Gui,"Gui.activeDocument().%s.Visibility=False",it->c_str());
     updateActive();
     commitCommand();
 }
