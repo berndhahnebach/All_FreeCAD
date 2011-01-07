@@ -761,6 +761,52 @@ PyObject* BSplineCurvePy::interpolate(PyObject *args)
     }
 }
 
+PyObject* BSplineCurvePy::buildFromPoles(PyObject *args)
+{
+    PyObject* obj;
+    int degree = 3;
+    PyObject* closed = Py_False;
+    if (!PyArg_ParseTuple(args, "O!|O!i",&(PyList_Type), &obj, &PyBool_Type, &closed, &degree))
+        return 0;
+    try {
+        Py::List list(obj);
+        TColgp_Array1OfPnt poles(1, list.size());
+        Standard_Integer index = 1;
+        for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+            Py::Vector v(*it);
+            Base::Vector3d pnt = v.toVector();
+            poles(index++) = gp_Pnt(pnt.x,pnt.y,pnt.z);
+        }
+
+        if (poles.Length() <= degree)
+             degree = poles.Length()-1;
+
+        TColStd_Array1OfReal knots(1, poles.Length()+degree+1-2*(degree));
+        TColStd_Array1OfInteger mults(1, poles.Length()+degree+1-2*(degree));
+        for (int i=1; i<=knots.Length(); i++){
+            knots.SetValue(i,(double)(i-1)/(knots.Length()-1));
+            mults.SetValue(i,1);
+        }
+        mults.SetValue(1, degree+1);
+        mults.SetValue(knots.Length(), degree+1);
+
+        Handle_Geom_BSplineCurve spline = new Geom_BSplineCurve(poles, knots, mults, degree, (closed == Py_True));
+        if (!spline.IsNull()) {
+            this->getGeomBSplineCurvePtr()->setHandle(spline);
+            Py_Return;
+        }
+        else {
+            Standard_Failure::Raise("failed to create spline");
+            return 0; // goes to the catch block
+        }
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
+}
+
 PyObject* BSplineCurvePy::getCustomAttributes(const char* /*attr*/) const
 {
     return 0;
