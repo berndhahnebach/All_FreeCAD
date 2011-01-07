@@ -14,6 +14,8 @@ EXTRA_DIST = \
 		icons/Robot_InsertWaypoint.svg \
 		icons/Robot_InsertWaypointPre.svg \
 		icons/Robot_Simulate.svg \
+		icons/Robot_TrajectoryCompound.svg \
+		icons/Robot_TrajectoryDressUp.svg \
 		translations/Robot_de.qm \
 		translations/Robot_de.ts \
 		Robot.qrc \

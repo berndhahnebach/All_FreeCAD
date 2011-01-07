@@ -64,10 +64,10 @@ class ViewProviderPy;
 class ObjectItem;
 
 
-/** general interface for all visual stuff in FreeCAD
+/** General interface for all visual stuff in FreeCAD
   * This class is used to generate and handle all around 
   * visualizing and presenting objects from the FreeCAD 
-  * App layer to the user. This class and its descendends 
+  * App layer to the user. This class and its descendents 
   * have to be implemented for any object type in order to 
   * show them in the 3DView and TreeView.
   */
@@ -94,16 +94,16 @@ public:
     virtual void deselect(SoPath*) {}
 
     /** @name Methods used by the Tree
-      * If you whant to take control over the 
-      * apperance of your object in the tree you
-      * can reimplemnt this methodes.
+      * If you want to take control over the 
+      * appearance of your object in the tree you
+      * can reimplemnt this methods.
      */
     //@{
     /// deliver the icon shown in the tree view
     virtual QIcon getIcon(void) const;
     /** deliver the children belonging to this object
-      * this methode is used to deliver the objects to 
-      * the tree framework which sould grouped under its 
+      * this method is used to deliver the objects to 
+      * the tree framework which should be grouped under its 
       * label. Obvious is the usage in the group but it can
       * be used for any kind of grouping needed for a special 
       * purpose.
