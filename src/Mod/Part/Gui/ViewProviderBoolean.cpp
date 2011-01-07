@@ -28,6 +28,8 @@
 
 #include "ViewProviderBoolean.h"
 #include <Mod/Part/App/FeaturePartBoolean.h>
+#include <Mod/Part/App/FeaturePartFuse.h>
+#include <Mod/Part/App/FeaturePartCommon.h>
 
 using namespace PartGui;
 
@@ -48,4 +50,35 @@ std::vector<App::DocumentObject*> ViewProviderBoolean::claimChildren(void)const
     temp.push_back(static_cast<Part::Boolean*>(getObject())->Tool.getValue());
 
     return temp;
+}
+
+
+PROPERTY_SOURCE(PartGui::ViewProviderMultiFuse,PartGui::ViewProviderPart)
+
+ViewProviderMultiFuse::ViewProviderMultiFuse()
+{
+}
+
+ViewProviderMultiFuse::~ViewProviderMultiFuse()
+{
+}
+
+std::vector<App::DocumentObject*> ViewProviderMultiFuse::claimChildren(void)const
+{
+    return std::vector<App::DocumentObject*>(static_cast<Part::MultiFuse*>(getObject())->Shapes.getValues());
+}
+
+PROPERTY_SOURCE(PartGui::ViewProviderMultiCommon,PartGui::ViewProviderPart)
+
+ViewProviderMultiCommon::ViewProviderMultiCommon()
+{
+}
+
+ViewProviderMultiCommon::~ViewProviderMultiCommon()
+{
+}
+
+std::vector<App::DocumentObject*> ViewProviderMultiCommon::claimChildren(void)const
+{
+    return std::vector<App::DocumentObject*>(static_cast<Part::MultiCommon*>(getObject())->Shapes.getValues());
 }

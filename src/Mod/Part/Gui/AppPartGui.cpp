@@ -95,6 +95,8 @@ void AppPartGuiExport initPartGui()
     PartGui::ViewProviderCustom         ::init();
     PartGui::ViewProviderCustomPython   ::init();
     PartGui::ViewProviderBoolean        ::init();
+    PartGui::ViewProviderMultiFuse      ::init();
+    PartGui::ViewProviderMultiCommon    ::init();
 
     PartGui::Workbench                  ::init();
 
