@@ -7,6 +7,8 @@ libPartDesign_la_SOURCES=\
 		FeatureFillet.h \
 		FeaturePad.cpp \
 		FeaturePad.h \
+		FeaturePocket.cpp \
+		FeaturePocket.h \
 		PreCompiled.cpp \
 		PreCompiled.h
 

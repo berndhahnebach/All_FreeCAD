@@ -20,6 +20,7 @@ link_directories(${OCC_LIBRARY_DIR})
 
 set(PartDesignGui_LIBS
     PartDesign
+	PartGui
     FreeCADGui
 )
 
@@ -51,6 +52,10 @@ SET(PartDesignGui_SRCS
     TaskPadParameters.ui
     TaskPadParameters.cpp
     TaskPadParameters.h
+    ViewProviderPad.cpp
+    ViewProviderPad.h
+    ViewProviderPocket.cpp
+    ViewProviderPocket.h
     PreCompiled.cpp
     PreCompiled.h
     Workbench.cpp

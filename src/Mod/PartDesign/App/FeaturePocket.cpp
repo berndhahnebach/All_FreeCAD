@@ -41,7 +41,7 @@
 #include <Base/Placement.h>
 #include <Mod/Part/App/Part2DObject.h>
 
-#include "FeaturePad.h"
+#include "FeaturePocket.h"
 
 
 using namespace PartDesign;
@@ -64,15 +64,15 @@ struct Wire_Compare {
 }
 
 
-PROPERTY_SOURCE(PartDesign::Pad, Part::Feature)
+PROPERTY_SOURCE(PartDesign::Pocket, Part::Feature)
 
-Pad::Pad()
+Pocket::Pocket()
 {
     ADD_PROPERTY(Sketch,(0));
     ADD_PROPERTY(Length,(100.0));
 }
 
-short Pad::mustExecute() const
+short Pocket::mustExecute() const
 {
     if (Sketch.isTouched() ||
         Length.isTouched())
@@ -80,7 +80,7 @@ short Pad::mustExecute() const
     return 0;
 }
 
-App::DocumentObjectExecReturn *Pad::execute(void)
+App::DocumentObjectExecReturn *Pocket::execute(void)
 {
     App::DocumentObject* link = Sketch.getValue();
     if (!link)

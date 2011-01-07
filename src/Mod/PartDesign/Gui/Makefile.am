@@ -21,6 +21,10 @@ libPartDesignGui_la_SOURCES=\
 		TaskChamfer.h \
 		TaskPadParameters.cpp \
 		TaskPadParameters.h \
+		ViewProviderPad.cpp \
+		ViewProviderPad.h \
+		ViewProviderPocket.cpp \
+		ViewProviderPocket.h \
 		Workbench.cpp \
 		Workbench.h
 

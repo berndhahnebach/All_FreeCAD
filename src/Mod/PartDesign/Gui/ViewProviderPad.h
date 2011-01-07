@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008 Jürgen Riegel (juergen.riegel@web.de)              *
+ *   Copyright (c) 2008 Werner Mayer <wmayer[at]users.sourceforge.net>     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,63 +21,30 @@
  ***************************************************************************/
 
 
-#ifndef __PRECOMPILED_GUI__
-#define __PRECOMPILED_GUI__
+#ifndef PARTGUI_ViewProviderPad_H
+#define PARTGUI_ViewProviderPad_H
 
-#include <FCConfig.h>
-
-// Importing of App classes
-#ifdef FC_OS_WIN32
-# define PartDesignAppExport __declspec(dllimport)
-# define PartDesignGuiExport __declspec(dllexport)
-# define AppPartExport       __declspec(dllimport)
-# define AppPartGuiExport    __declspec(dllimport)
-#else // for Linux
-# define PartDesignAppExport
-# define PartDesignGuiExport
-# define AppPartExport     
-# define AppPartGuiExport     
-#endif
+#include <Mod/Part/Gui/ViewProvider.h>
 
 
-#ifdef _PreComp_
+namespace PartDesignGui {
 
-// Python
-#include <Python.h>
+class PartDesignGuiExport ViewProviderPad : public PartGui::ViewProviderPart
+{
+    PROPERTY_HEADER(PartGui::ViewProviderPad);
 
-// standard
-#include <iostream>
-#include <assert.h>
-#include <math.h>
+public:
+    /// constructor
+    ViewProviderPad();
+    /// destructor
+    virtual ~ViewProviderPad();
 
-// OCC
-#include <Standard_math.hxx>
-
-// STL
-#include <vector>
-#include <map>
-#include <string>
-#include <list>
-#include <set>
-#include <algorithm>
-#include <stack>
-#include <queue>
-#include <bitset>
-
-#ifdef FC_OS_WIN32
-# include <windows.h>
-#endif
+    /// grouping handling 
+    std::vector<App::DocumentObject*> claimChildren(void)const;
+};
 
 
-// Qt Toolkit
-#ifndef __Qt4All__
-# include <Gui/Qt4All.h>
-#endif
+} // namespace PartDesignGui
 
-// Inventor
-#ifndef __InventorAll__
-# include <Gui/InventorAll.h>
-#endif
 
-#endif // _PreComp_
-#endif // __PRECOMPILED_GUI__
+#endif // PARTGUI_ViewProviderPad_H

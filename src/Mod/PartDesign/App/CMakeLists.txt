@@ -24,6 +24,8 @@ SET(Features_SRCS
     FeatureFillet.h
     FeaturePad.cpp
     FeaturePad.h
+    FeaturePocket.cpp
+    FeaturePocket.h
 )
 SOURCE_GROUP("Features" FILES ${Features_SRCS})
 

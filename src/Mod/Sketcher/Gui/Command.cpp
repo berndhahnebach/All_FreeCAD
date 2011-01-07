@@ -93,6 +93,8 @@ void CmdSketcherNewSketch::activated(int iMsg)
         Base::Placement placement = Part2DObject::positionBySupport(face,ObjectPos);
         double a,b,c;
         placement.getRotation().getYawPitchRoll(a,b,c);
+
+        std::string supportString = FaceFilter.Result[0][0].getAsPropertyLinkSubString();
  
         // create Sketch on Face
         std::string FeatName = getUniqueObjectName("Sketch");
@@ -100,6 +102,7 @@ void CmdSketcherNewSketch::activated(int iMsg)
         openCommand("Create a Sketch on Face");
         doCommand(Doc,"App.activeDocument().addObject('Sketcher::SketchObject','%s')",FeatName.c_str());
         doCommand(Gui,"App.activeDocument().%s.Placement = FreeCAD.Placement(FreeCAD.Vector(%f,%f,%f),FreeCAD.Rotation(%f,%f,%f))",FeatName.c_str(),placement.getPosition().x,placement.getPosition().y,placement.getPosition().z,a,b,c);
+        doCommand(Gui,"App.activeDocument().%s.Support = %s",FeatName.c_str(),supportString.c_str());
         //doCommand(Gui,"Gui.activeDocument().activeView().setCamera('%s')",cam.c_str());
         doCommand(Gui,"Gui.activeDocument().setEdit('%s')",FeatName.c_str());
 
