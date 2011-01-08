@@ -83,7 +83,7 @@ public:
     const char* getValue(void) const;
 
     virtual const char* getEditorName(void) const
-    { return "Gui::PropertyEditor::PropertyPathItem"; }
+    { return "Gui::PropertyEditor::PropertyTransientFileItem"; }
     virtual PyObject *getPyObject(void);
     virtual void setPyObject(PyObject *);
     
