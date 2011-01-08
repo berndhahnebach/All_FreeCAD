@@ -26,8 +26,13 @@ libImportGui_la_LIBADD   = \
 		@BOOST_SYSTEM_LIB@ \
 		-l@PYTHON_LIB@ \
 		-lTKernel \
+		-lTKMath \
+		-lTKBRep \
+		-lTKXSBase \
 		-lTKXCAF \
 		-lTKLCAF \
+		-lTKSTEP \
+		-lTKIGES \
 		-lTKXDESTEP \
 		-lTKXDEIGES \
 		-lFreeCADBase \

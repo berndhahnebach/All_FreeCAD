@@ -4,7 +4,7 @@ smeshdir = ./
 # copy some files
 targetdir = $(prefix)
 #dist_target_DATA = LICENCE.lgpl
-EXTRA_DIST = LICENCE.lgpl.txt
+EXTRA_DIST = CMakeLists.txt LICENCE.lgpl.txt
 
 # set compiler flags and include directories, -fpermissive and -ffriend-injection not needed for occ6.3
 AM_CPPFLAGS = -I$(OCC_INC) -I$(srcdir)/$(smeshdir)inc/

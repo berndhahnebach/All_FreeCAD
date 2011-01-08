@@ -30,7 +30,7 @@ libPartDesignGui_la_SOURCES=\
 
 # the library search path.
 libPartDesignGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui \
-		-L../../Part/App -L../App $(QT_LIBS) $(GL_LIBS) $(all_libraries) \
+		-L../../Part/App -L../../Part/Gui -L../App $(QT_LIBS) $(GL_LIBS) $(all_libraries) \
 		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libPartDesignGui_la_CPPFLAGS = -DPartDesignAppExport= -DPartDesignGuiExport=
@@ -44,6 +44,7 @@ libPartDesignGui_la_LIBADD   = \
 		-lFreeCADApp \
 		-lFreeCADGui \
 		-lPart \
+		-lPartGui \
 		-lTKernel \
 		-lTKMath \
 		-lTKXSBase \
