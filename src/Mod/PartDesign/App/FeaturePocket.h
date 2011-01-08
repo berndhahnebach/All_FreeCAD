@@ -37,8 +37,9 @@ class Pocket : public Part::Feature
 public:
     Pocket();
 
-    App::PropertyLink   Sketch;
-    App::PropertyLength Length;
+    App::PropertyLink           Sketch;
+    App::PropertyEnumeration    Type;
+    App::PropertyLength         Length;
 
     /** @name methods override feature */
     //@{
@@ -47,9 +48,12 @@ public:
     short mustExecute() const;
     /// returns the type name of the view provider
     const char* getViewProviderName(void) const {
-        return "PartGui::ViewProviderPocket";
+        return "PartDesignGui::ViewProviderPocket";
     }
     //@}
+private:
+    static const char* TypeEnums[];
+
 };
 
 } //namespace PartDesign

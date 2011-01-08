@@ -115,8 +115,8 @@ void CmdPartDesignPad::activated(int iMsg)
     std::string FeatName = getUniqueObjectName("Pad");
 
     std::vector<App::DocumentObject*> Sel = getSelection().getObjectsOfType(Part::Part2DObject::getClassTypeId());
-    Part::Part2DObject* part = static_cast<Part::Part2DObject*>(Sel.front());
-    const TopoDS_Shape& shape = part->Shape.getValue();
+    Part::Part2DObject* sketch = static_cast<Part::Part2DObject*>(Sel.front());
+    const TopoDS_Shape& shape = sketch->Shape.getValue();
     if (shape.IsNull()) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
             QObject::tr("The shape of the selected object is empty."));
@@ -135,11 +135,16 @@ void CmdPartDesignPad::activated(int iMsg)
         return;
     }
 
+    App::DocumentObject* support = sketch->Support.getValue();
+
+
     openCommand("Make Pad");
     doCommand(Doc,"App.activeDocument().addObject(\"PartDesign::Pad\",\"%s\")",FeatName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Sketch = App.activeDocument().%s",FeatName.c_str(),part->getNameInDocument());
-    doCommand(Doc,"App.activeDocument().%s.Length = 5.0",FeatName.c_str());
-    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",part->getNameInDocument());
+    doCommand(Doc,"App.activeDocument().%s.Sketch = App.activeDocument().%s",FeatName.c_str(),sketch->getNameInDocument());
+    doCommand(Doc,"App.activeDocument().%s.Length = 10.0",FeatName.c_str());
+    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",sketch->getNameInDocument());
+    if(support)
+        doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",support->getNameInDocument());
     updateActive();
     commitCommand();
 }
@@ -150,7 +155,73 @@ bool CmdPartDesignPad::isActive(void)
 }
 
 //===========================================================================
-// Part_Pad
+// Part_Pocket
+//===========================================================================
+DEF_STD_CMD_A(CmdPartDesignPocket);
+
+CmdPartDesignPocket::CmdPartDesignPocket()
+  : Command("PartDesign_Pocket")
+{
+    sAppModule    = "PartDesign";
+    sGroup        = QT_TR_NOOP("PartDesign");
+    sMenuText     = QT_TR_NOOP("Pocket");
+    sToolTipText  = QT_TR_NOOP("create a pocket with the selected sketch");
+    sWhatsThis    = sToolTipText;
+    sStatusTip    = sToolTipText;
+    sPixmap       = "PartDesign_Pocket";
+    iAccel        = 0;
+}
+
+void CmdPartDesignPocket::activated(int iMsg)
+{
+    unsigned int n = getSelection().countObjectsOfType(Part::Part2DObject::getClassTypeId());
+    if (n != 1) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select a sketch or 2D object."));
+        return;
+    }
+
+    std::string FeatName = getUniqueObjectName("Pocket");
+
+    std::vector<App::DocumentObject*> Sel = getSelection().getObjectsOfType(Part::Part2DObject::getClassTypeId());
+    Part::Part2DObject* sketch = static_cast<Part::Part2DObject*>(Sel.front());
+    const TopoDS_Shape& shape = sketch->Shape.getValue();
+    if (shape.IsNull()) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("The shape of the selected object is empty."));
+        return;
+    }
+
+    // count free wires
+    int ctWires=0;
+    TopExp_Explorer ex;
+    for (ex.Init(shape, TopAbs_WIRE, TopAbs_FACE); ex.More(); ex.Next()) {
+        ctWires++;
+    }
+    if (ctWires == 0) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("The shape of the selected object is not a wire."));
+        return;
+    }
+    App::DocumentObject* support = sketch->Support.getValue();
+
+    openCommand("Make Pocket");
+    doCommand(Doc,"App.activeDocument().addObject(\"PartDesign::Pocket\",\"%s\")",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Sketch = App.activeDocument().%s",FeatName.c_str(),sketch->getNameInDocument());
+    doCommand(Doc,"App.activeDocument().%s.Length = 5.0",FeatName.c_str());
+    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",sketch->getNameInDocument());
+    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",support->getNameInDocument());
+    updateActive();
+    commitCommand();
+}
+
+bool CmdPartDesignPocket::isActive(void)
+{
+    return hasActiveDocument();
+}
+
+//===========================================================================
+// PartDesign_Fillet
 //===========================================================================
 DEF_STD_CMD_A(CmdPartDesignFillet);
 
@@ -234,6 +305,7 @@ void CreatePartDesignCommands(void)
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
 
     rcCmdMgr.addCommand(new CmdPartDesignPad());
+    rcCmdMgr.addCommand(new CmdPartDesignPocket());
     rcCmdMgr.addCommand(new CmdPartDesignFillet());
     //rcCmdMgr.addCommand(new CmdPartDesignNewSketch());
     rcCmdMgr.addCommand(new CmdPartDesignChamfer());

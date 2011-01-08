@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2009 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
+ *   Copyright (c) 2010 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -35,7 +35,7 @@
 # include <TopoDS_Face.hxx>
 # include <TopoDS_Wire.hxx>
 # include <TopExp_Explorer.hxx>
-# include <BRepAlgoAPI_Fuse.hxx>
+# include <BRepAlgoAPI_Cut.hxx>
 #endif
 
 #include <Base/Placement.h>
@@ -47,6 +47,8 @@
 using namespace PartDesign;
 
 namespace PartDesign {
+
+
 // sort bounding boxes according to diagonal length
 struct Wire_Compare {
     bool operator() (const TopoDS_Wire& w1, const TopoDS_Wire& w2)
@@ -63,12 +65,15 @@ struct Wire_Compare {
 };
 }
 
+const char* Pocket::TypeEnums[]= {"Length","UpToLast","UpToFirst",NULL};
 
 PROPERTY_SOURCE(PartDesign::Pocket, Part::Feature)
 
 Pocket::Pocket()
 {
     ADD_PROPERTY(Sketch,(0));
+    ADD_PROPERTY(Type,((long)0));
+    Type.setEnums(TypeEnums);
     ADD_PROPERTY(Length,(100.0));
 }
 
@@ -110,49 +115,12 @@ App::DocumentObjectExecReturn *Pocket::execute(void)
     if(SupportLink && SupportLink->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
         SupportObject = static_cast<Part::Feature*>(SupportLink);
 
-	/* Version from the blog
-	Handle(Geom_Surface) aSurf = new Geom_Plane (gp::XOY());
-	//anti-clockwise circles if too look from surface normal
-	Handle(Geom_Curve) anExtC = new Geom_Circle (gp::XOY(), 10.);
-	Handle(Geom_Curve) anIntC = new Geom_Circle (gp::XOY(), 5.);
-	TopoDS_Edge anExtE = BRepBuilderAPI_MakeEdge (anExtC);
-	TopoDS_Edge anIntE = BRepBuilderAPI_MakeEdge (anExtC);
-	TopoDS_Wire anExtW = BRepBuilderAPI_MakeWire (anExtE);
-	TopoDS_Wire anIntW = BRepBuilderAPI_MakeWire (anIntE);
-	BRep_Builder aB;
-	TopoDS_Face aFace;
-	aB.MakeFace (aFace, aSurf, Precision::Confusion());
-	//aB. (aFace, aSurf);
-	aB.Add (aFace, anExtW);
-	//aB.Add (aFace, anIntW.Reversed()); //material should lie on the right of the inner wire
-
-	this->Shape.setValue(aFace);
-	*/
-
-	/* Version from First Application
-    Base::Vector3f v = Dir.getValue();
-    gp_Vec vec(v.x,v.y,v.z);
-	gp_Pln Pln(gp_Pnt(0,0,0),gp_Dir(0,0,1));
-
-    // Now, let's get the TopoDS_Shape
-	TopoDS_Wire theWire = TopoDS::Wire(Shape.getShape()._Shape);
-	BRepBuilderAPI_MakeFace FaceBuilder = BRepBuilderAPI_MakeFace(Pln,theWire);
-	if(FaceBuilder.IsDone()){
-		TopoDS_Face FaceProfile = FaceBuilder.Face();
-		// Make a solid out of the face
-		BRepPrimAPI_MakePrism PrismMaker = BRepPrimAPI_MakePrism(FaceProfile , vec);
-		if(PrismMaker.IsDone()){
-			this->Shape.setValue(PrismMaker.Shape());
-		}
-	}
-	*/
+    if (!SupportObject)
+        return new App::DocumentObjectExecReturn("No support in Sketch!");
 
 	Handle(Geom_Surface) aSurf = new Geom_Plane (gp_Pln(gp_Pnt(0,0,0),gp_Dir(0,0,1)));
 	//anti-clockwise circles if too look from surface normal
-#if 0
-	//TopoDS_Wire theWire = TopoDS::Wire(shape);
-	//TopoDS_Face aFace = BRepBuilderAPI_MakeFace(theWire);
-#else
+
     //FIXME: Need a safe method to sort wire that the outermost one comes last
     // Currently it's done with the diagonal lengths of the bounding boxes
     std::sort(wires.begin(), wires.end(), Wire_Compare());
@@ -162,9 +130,12 @@ App::DocumentObjectExecReturn *Pocket::execute(void)
         mkFace.Add(*it);
     }
     TopoDS_Face aFace = mkFace.Face();
-#endif
+
     // lengthen the vector
     SketchOrientationVector *= Length.getValue();
+
+    // turn around for pockes
+    SketchOrientationVector *= -1;
 
     // extrude the face to a solid
     gp_Vec vec(SketchOrientationVector.x,SketchOrientationVector.y,SketchOrientationVector.z);
@@ -173,13 +144,13 @@ App::DocumentObjectExecReturn *Pocket::execute(void)
         // if the sketch has a support fuse them to get one result object (PAD!)
         if(SupportObject){
             // Let's call algorithm computing a fuse operation:
-            BRepAlgoAPI_Fuse mkFuse(SupportObject->Shape.getShape()._Shape, PrismMaker.Shape());
+            BRepAlgoAPI_Cut mkCut(SupportObject->Shape.getShape()._Shape, PrismMaker.Shape());
             // Let's check if the fusion has been successful
-            if (!mkFuse.IsDone()) 
-                throw Base::Exception("Fusion with support failed");
-            this->Shape.setValue(mkFuse.Shape());
+            if (!mkCut.IsDone()) 
+                throw Base::Exception("cut with support failed");
+            this->Shape.setValue(mkCut.Shape());
         }else{
-		    this->Shape.setValue(PrismMaker.Shape());
+		    return new App::DocumentObjectExecReturn("Cannot create a tool out of Sketch!");
         }
 
 	}else
