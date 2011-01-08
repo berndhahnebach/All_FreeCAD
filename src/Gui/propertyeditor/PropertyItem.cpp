@@ -1486,9 +1486,9 @@ PropertyPathItem::PropertyPathItem()
 
 QVariant PropertyPathItem::value(const App::Property* prop) const
 {
-    assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyFileIncluded::getClassTypeId()));
+    assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyPath::getClassTypeId()));
 
-    std::string value = static_cast<const App::PropertyFileIncluded*>(prop)->getValue();
+    std::string value = static_cast<const App::PropertyPath*>(prop)->getValue().string();
     return QVariant(QString::fromUtf8(value.c_str()));
 }
 
@@ -1521,6 +1521,56 @@ void PropertyPathItem::setEditorData(QWidget *editor, const QVariant& data) cons
 }
 
 QVariant PropertyPathItem::editorData(QWidget *editor) const
+{
+    Gui::FileChooser *fc = qobject_cast<Gui::FileChooser*>(editor);
+    return QVariant(fc->fileName());
+}
+
+// --------------------------------------------------------------------
+
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::PropertyTransientFileItem, Gui::PropertyEditor::PropertyItem);
+
+PropertyTransientFileItem::PropertyTransientFileItem()
+{
+}
+
+QVariant PropertyTransientFileItem::value(const App::Property* prop) const
+{
+    assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyFileIncluded::getClassTypeId()));
+
+    std::string value = static_cast<const App::PropertyFileIncluded*>(prop)->getValue();
+    return QVariant(QString::fromUtf8(value.c_str()));
+}
+
+void PropertyTransientFileItem::setValue(const QVariant& value)
+{
+    if (!value.canConvert(QVariant::String))
+        return;
+    QString val = value.toString();
+    QString data = QString::fromAscii("\"%1\"").arg(val);
+    setPropertyValue(data);
+}
+
+QVariant PropertyTransientFileItem::toolTip(const App::Property* prop) const
+{
+    return value(prop);
+}
+
+QWidget* PropertyTransientFileItem::createEditor(QWidget* parent, const QObject* receiver, const char* method) const
+{
+    Gui::FileChooser *fc = new Gui::FileChooser(parent);
+    fc->setAutoFillBackground(true);
+    QObject::connect(fc, SIGNAL(fileNameSelected(const QString&)), receiver, method);
+    return fc;
+}
+
+void PropertyTransientFileItem::setEditorData(QWidget *editor, const QVariant& data) const
+{
+    Gui::FileChooser *fc = qobject_cast<Gui::FileChooser*>(editor);
+    fc->setFileName(data.toString());
+}
+
+QVariant PropertyTransientFileItem::editorData(QWidget *editor) const
 {
     Gui::FileChooser *fc = qobject_cast<Gui::FileChooser*>(editor);
     return QVariant(fc->fileName());

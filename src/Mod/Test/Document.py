@@ -667,3 +667,25 @@ class DocumentFileIncludeCases(unittest.TestCase):
   def tearDown(self):
     #closing doc
     FreeCAD.closeDocument("FileIncludeTest")
+
+
+class DocumentPropertyCases(unittest.TestCase):
+  def setUp(self):
+    self.Doc = FreeCAD.newDocument("PropertyTests")
+    self.Obj = self.Doc.addObject("App::FeaturePython","Test")
+
+  def testDescent(self):
+    # testing the up and downstream stuff
+    props=self.Obj.supportedProperties()
+    for i in props:
+        self.Obj.addProperty(i,i)
+    tempPath = tempfile.gettempdir()
+    tempFile = tempPath + os.sep + "PropertyTests.FCStd"
+    self.Doc.FileName = tempFile
+    self.Doc.save()
+    FreeCAD.closeDocument("PropertyTests")
+    self.Doc = FreeCAD.open(tempFile)
+
+  def tearDown(self):
+    #closing doc
+    FreeCAD.closeDocument("PropertyTests")

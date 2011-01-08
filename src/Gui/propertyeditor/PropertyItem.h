@@ -481,6 +481,27 @@ protected:
     virtual QVariant toolTip(const App::Property*) const;
 };
 
+/**
+ * Show path of included file.
+ * \author Werner Mayer
+ */
+class GuiExport PropertyTransientFileItem: public PropertyItem
+{
+    TYPESYSTEM_HEADER();
+
+    virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
+    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+    virtual QVariant editorData(QWidget *editor) const;
+
+protected:
+    virtual QVariant value(const App::Property*) const;
+    virtual void setValue(const QVariant&);
+
+protected:
+    PropertyTransientFileItem();
+    virtual QVariant toolTip(const App::Property*) const;
+};
+
 class PropertyItemEditorFactory : public QItemEditorFactory
 {
 public:
