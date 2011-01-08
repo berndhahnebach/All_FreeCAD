@@ -923,6 +923,11 @@ src/Mod/Test/Gui/Makefile
 src/Mod/Web/Makefile
 src/Mod/Web/Gui/Makefile
 src/Mod/Web/Gui/Resources/Makefile
+src/Mod/Start/Makefile
+src/Mod/Start/App/Makefile
+src/Mod/Start/Gui/Makefile
+src/Mod/Start/Gui/Resources/Makefile
+src/Mod/Idf/Makefile
 src/Mod/TemplatePyMod/Makefile
 src/Tools/Makefile
 src/Tools/_TEMPLATE_/Makefile

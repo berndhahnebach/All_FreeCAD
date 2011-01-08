@@ -5,6 +5,7 @@ SUBDIRS=src
 EXTRA_DIST = \
 		cMake/ConfigureChecks.cmake \
 		cMake/FindCoin3D.cmake \
+		cMake/FindCoin3DDoc.cmake \
 		cMake/FindEigen2.cmake \
 		cMake/FindODE.cmake \
 		cMake/FindOpenCasCade.cmake \

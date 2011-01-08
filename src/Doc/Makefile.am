@@ -5,6 +5,7 @@ doc_DATA = \
 
 EXTRA_DIST = \
 		$(doc_DATA) \
+		CMakeLists.txt \
 		doctips.dox \
 		mainpage.dox \
 		primary-groups.dox \
