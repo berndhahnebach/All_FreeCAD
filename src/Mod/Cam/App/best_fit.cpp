@@ -275,7 +275,7 @@ bool best_fit::Perform_PointCloud()
 
 	M.setToUnity();
 
-	for(int i=0; i<m_pntCloud_1.size(); i++)
+	for(unsigned int i=0; i<m_pntCloud_1.size(); i++)
 		m_weights.push_back(1.0);
 	
 	M[0][3] = m_cad2orig.X();
@@ -519,8 +519,8 @@ bool best_fit::LSM()
             centr_r += q;
         }
 
-		centr_l.Scale(-1.0/Sum, -1.0/Sum, -1.0/Sum);
-		centr_r.Scale(-1.0/Sum, -1.0/Sum, -1.0/Sum);
+		centr_l.Scale( -1.0f/float(Sum), -1.0f/float(Sum), -1.0f/float(Sum));
+		centr_r.Scale( -1.0f/(float)Sum, -1.0f/(float)Sum, -1.0f/(float)Sum);
 
        /* float s = (float) m_LSPnts[0].size();
         s = float(-1.0/s);
@@ -605,9 +605,9 @@ bool best_fit::LSM()
 		Base::Matrix4D R = Rx*Ry*Rz;
 		centr_l.Scale(-1.0, -1.0, -1.0);
 
-		cent.x = (R[0][0]*centr_l.x + R[0][1]*centr_l.y + R[0][2]*centr_l.z);
-		cent.y = (R[1][0]*centr_l.x + R[1][1]*centr_l.y + R[1][2]*centr_l.z);
-		cent.z = (R[2][0]*centr_l.x + R[2][1]*centr_l.y + R[2][2]*centr_l.z);
+		cent.x =(float)  (R[0][0]*centr_l.x + R[0][1]*centr_l.y + R[0][2]*centr_l.z);
+		cent.y =(float)  (R[1][0]*centr_l.x + R[1][1]*centr_l.y + R[1][2]*centr_l.z);
+		cent.z =(float)  (R[2][0]*centr_l.x + R[2][1]*centr_l.y + R[2][2]*centr_l.z);
 			 
 		TransMat(Tx, -centr_r.x - cent.x + centr_l.x, 1);
         TransMat(Ty, -centr_r.y - cent.y + centr_l.y, 2);
@@ -956,7 +956,7 @@ bool best_fit::Initialize_Mesh_Geometrie_1()
 	for(;aNodeIter->more();) {
 		const SMDS_MeshNode* aNode = aNodeIter->next();
 		Base::Vector3f a3DVector;
-		a3DVector.Set(aNode->X(), aNode->Y(), aNode->Z()),
+		a3DVector.Set((float) aNode->X(),(float)  aNode->Y(),(float)  aNode->Z()),
 		m_pntCloud_1.push_back(a3DVector);
     }
 
@@ -981,7 +981,7 @@ bool best_fit::Initialize_Mesh_Geometrie_2()
 	for(;aNodeIter->more();) {
 		const SMDS_MeshNode* aNode = aNodeIter->next();
 		Base::Vector3f a3DVector;
-		a3DVector.Set(aNode->X(), aNode->Y(), aNode->Z()),
+		a3DVector.Set((float) aNode->X(),(float)  aNode->Y(), (float) aNode->Z()),
 		m_pntCloud_2.push_back(a3DVector);
 	}
 
@@ -1161,13 +1161,13 @@ bool best_fit::PointCloud_Coarse()
 
 	// plot CAD -> local coordinate system
 
-	x.x = 50*v1.X();	x.y = 50*v1.Y();	x.z = 50*v1.Z();
-	y.x = 50*v2.X();	y.y = 50*v2.Y();	y.z = 50*v2.Z();
-	z.x = 50*v3.X();	z.y = 50*v3.Y();	z.z = 50*v3.Z();
+	x.x =  50.0f*(float)v1.X();	x.y =  50.0f*(float)v1.Y();	x.z =  50.0f*(float)v1.Z();
+	y.x =  50.0f*(float)v2.X();	y.y =  50.0f*(float)v2.Y();	y.z =  50.0f*(float)v2.Z();
+	z.x =  50.0f*(float)v3.X();	z.y =  50.0f*(float)v3.Y();	z.z =  50.0f*(float)v3.Z();
 
-	pnt.x = orig.X();
-	pnt.y = orig.Y();
-	pnt.z = orig.Z();
+	pnt.x = (float) orig.X();
+	pnt.y = (float) orig.Y();
+	pnt.z = (float) orig.Z();
 
 	log3d_cad.addSingleArrow(pnt,x,3,1,0,0);
 	log3d_cad.addSingleArrow(pnt,y,3,0,1,0);
@@ -1189,13 +1189,13 @@ bool best_fit::PointCloud_Coarse()
 	T1.inverse();
 	orig.SetX(T1[0][3]);orig.SetY(T1[1][3]);orig.SetZ(T1[2][3]);
 
-	x.x = 50*v1.X();	x.y = 50*v1.Y();	x.z = 50*v1.Z();
-	y.x = 50*v2.X();	y.y = 50*v2.Y();	y.z = 50*v2.Z();
-	z.x = 50*v3.X();	z.y = 50*v3.Y();	z.z = 50*v3.Z();
+	x.x =  50.0f*(float)v1.X();	x.y =  50.0f*(float)v1.Y();	x.z =  50.0f*(float)v1.Z();
+	y.x =  50.0f*(float)v2.X();	y.y =  50.0f*(float)v2.Y();	y.z =  50.0f*(float)v2.Z();
+	z.x =  50.0f*(float)v3.X();	z.y =  50.0f*(float)v3.Y();	z.z =  50.0f*(float)v3.Z();
 
-	pnt.x = orig.X();
-	pnt.y = orig.Y();
-	pnt.z = orig.Z();
+	pnt.x = (float) orig.X();
+	pnt.y = (float) orig.Y();
+	pnt.z = (float) orig.Z();
 
 	log3d_mesh.addSingleArrow(pnt,x,3,1,0,0);log3d_mesh.addSingleArrow(pnt,y,3,0,1,0);log3d_mesh.addSingleArrow(pnt,z,3,0,0,1);
 	log3d_mesh.addSinglePoint(0,0,0,20,1,1,1); // plotte Ursprung
@@ -1259,13 +1259,13 @@ bool best_fit::MeshFit_Coarse()
 
     // plot CAD -> local coordinate system
 
-	x.x = 50*v1.X();	x.y = 50*v1.Y();	x.z = 50*v1.Z();
-    y.x = 50*v2.X();	y.y = 50*v2.Y();	y.z = 50*v2.Z();
-    z.x = 50*v3.X();	z.y = 50*v3.Y();	z.z = 50*v3.Z();
+	x.x =  50.0f*(float)v1.X();	x.y =  50.0f*(float)v1.Y();	x.z =  50.0f*(float)v1.Z();
+    y.x =  50.0f*(float)v2.X();	y.y =  50.0f*(float)v2.Y();	y.z =  50.0f*(float)v2.Z();
+    z.x =  50.0f*(float)v3.X();	z.y =  50.0f*(float)v3.Y();	z.z =  50.0f*(float)v3.Z();
 
-    pnt.x = orig.X();
-	pnt.y = orig.Y();
-	pnt.z = orig.Z();
+    pnt.x = (float) orig.X();
+	pnt.y = (float) orig.Y();
+	pnt.z = (float) orig.Z();
 
     log3d_cad.addSingleArrow(pnt,x,3,1,0,0);
 	log3d_cad.addSingleArrow(pnt,y,3,0,1,0);
@@ -1292,13 +1292,13 @@ bool best_fit::MeshFit_Coarse()
     T1.inverse();
     orig.SetX(T1[0][3]);orig.SetY(T1[1][3]);orig.SetZ(T1[2][3]);
 
-	x.x = 50*v1.X();	x.y = 50*v1.Y();	x.z = 50*v1.Z();
-    y.x = 50*v2.X();	y.y = 50*v2.Y();	y.z = 50*v2.Z();
-    z.x = 50*v3.X();	z.y = 50*v3.Y();	z.z = 50*v3.Z();
+	x.x = 50.0f*(float)v1.X();	x.y = 50.0f*(float)v1.Y();	x.z = 50.0f*(float)v1.Z();
+    y.x = 50.0f*(float)v2.X();	y.y = 50.0f*(float)v2.Y();	y.z = 50.0f*(float)v2.Z();
+    z.x = 50.0f*(float)v3.X();	z.y = 50.0f*(float)v3.Y();	z.z = 50.0f*(float)v3.Z();
 
-    pnt.x = orig.X();
-	pnt.y = orig.Y();
-	pnt.z = orig.Z();
+    pnt.x = (float) orig.X();
+	pnt.y = (float) orig.Y();
+	pnt.z = (float) orig.Z();
 
 	log3d_mesh.addSingleArrow(pnt,x,3,1,0,0);log3d_mesh.addSingleArrow(pnt,y,3,0,1,0);log3d_mesh.addSingleArrow(pnt,z,3,0,0,1);
 	log3d_mesh.addSinglePoint(0,0,0,20,1,1,1); // plotte Ursprung
