@@ -60,107 +60,20 @@ TrajectoryCompound::~TrajectoryCompound()
 
 App::DocumentObjectExecReturn *TrajectoryCompound::execute(void)
 {
-    //App::DocumentObject* link = Source.getValue();
-    //if (!link)
-    //    return new App::DocumentObjectExecReturn("No object linked");
-    //if (!link->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
-    //    return new App::DocumentObjectExecReturn("Linked object is not a Part object");
-    //Part::Feature *base = static_cast<Part::Feature*>(Source.getValue());
-    //const Part::TopoShape& TopShape = base->Shape.getShape();
+    const std::vector<DocumentObject*> &Tracs = Source.getValues();
+    Robot::Trajectory result;
 
-    //const std::vector<std::string>& SubVals = Source.getSubValuesStartsWith("Edge");
-    //if (SubVals.size() == 0)
-    //    return new App::DocumentObjectExecReturn("No Edges specified");
+    for (std::vector<DocumentObject*>::const_iterator it= Tracs.begin();it!=Tracs.end();++it) {
+        if ((*it)->getTypeId().isDerivedFrom(Robot::TrajectoryObject::getClassTypeId())){
+            const std::vector<Waypoint*> &wps = static_cast<Robot::TrajectoryObject*>(*it)->Trajectory.getValue().getWaypoints();
+            for (std::vector<Waypoint*>::const_iterator it2= wps.begin();it2!=wps.end();++it2) {
+                result.addWaypoint(**it2);
+            }
+        }else
+            return new App::DocumentObjectExecReturn("Not all objects in compound are trajectories!");
+    }
 
-    //// container for all the edges 
-    //std::vector<TopoDS_Edge> edges;
-
-    //// run throug the edge name and get the real objects from the TopoShape
-    //for (std::vector<std::string>::const_iterator it= SubVals.begin();it!=SubVals.end();++it) {
-    //     TopoDS_Edge edge = TopoDS::Edge(TopShape.getSubShape(it->c_str()));
-    //     edges.push_back(edge);
-    //}
-
-    //// instanciate a edge cluster sorter and get the result 
-    //Part::Edgecluster acluster(edges);
-    //Part::tEdgeClusterVector aclusteroutput = acluster.GetClusters();
-
-    //if(aclusteroutput.size() == 0)
-    //    return new App::DocumentObjectExecReturn("No Edges specified");
-
-    //// set the number of cluster and edges 
-    //NbrOfCluster = aclusteroutput.size();
-    //NbrOfEdges = 0;
-    //for(std::vector<std::vector<TopoDS_Edge> >::const_iterator it=aclusteroutput.begin();it!=aclusteroutput.end();++it)
-    //    NbrOfEdges += it->size();
-
-    //// trajectory to fill
-    //Robot::Trajectory trac;
-    //bool first = true;
-
-    //// cycle trough the cluster
-    //for(std::vector<std::vector<TopoDS_Edge> >::const_iterator it=aclusteroutput.begin();it!=aclusteroutput.end();++it)
-    //{
-    //    // cycle through the edges of the cluster
-    //    for(std::vector<TopoDS_Edge>::const_iterator it2=it->begin();it2!=it->end();++it2)
-    //    {
-    //        BRepAdaptor_Curve adapt(*it2);
-    //        
-    //        switch(adapt.GetType())
-    //        {
-    //        case GeomAbs_Line:
-    //            {
-    //            // get start and end point
-    //            gp_Pnt P1 = adapt.Value(adapt.FirstParameter());
-    //            gp_Pnt P2 = adapt.Value(adapt.LastParameter());
-
-    //            // if reverse orintation, switch the points
-    //            if ( it2->Orientation() == TopAbs_REVERSED )
-    //            {
-    //                 //switch the points
-    //                 gp_Pnt tmpP = P1;
-    //                 P1 = P2;
-    //                 P2 = tmpP;
-    //            }
-    //            if(first){
-    //                Waypoint wp("Pt",Base::Placement(Base::Vector3d(P1.X(),P1.Y(),P1.Z()),Base::Rotation()));
-    //                trac.addWaypoint(wp);
-    //                first = false;
-    //            }
-    //            Waypoint wp("Pt",Base::Placement(Base::Vector3d(P2.X(),P2.Y(),P2.Z()),Base::Rotation()));
-    //            trac.addWaypoint(wp);
-    //            break;
-    //            }
-    //        case GeomAbs_Circle:
-    //            {
-    //            Standard_Real Length    = CPnts_AbscissaPoint::Length(adapt);
-    //            Standard_Real ParLength = adapt.LastParameter()-adapt.FirstParameter();
-    //            Standard_Real NbrSegments = Round(Length / SegValue.getValue());
-    //            Standard_Real SegLength   = ParLength / NbrSegments;
-
-    //            double i = adapt.FirstParameter();
-    //            if(first) 
-    //                first=false;
-    //            else
-    //                i += SegLength;
-    //            for (;i<adapt.LastParameter();i+= SegLength){
-    //                gp_Pnt P = adapt.Value(i);
-    //                Waypoint wp("Pt",Base::Placement(Base::Vector3d(P.X(),P.Y(),P.Z()),Base::Rotation()));
-    //                trac.addWaypoint(wp);
-    //            }
-    //            break;
-    //            }
-
-    //        default:
-    //            throw Base::Exception("Unknown Edge type in Robot::TrajectoryCompound::execute()");
-    //        }
-    //       
-
-
-    //    }
-    //}
-
-    //Trajectory.setValue(trac);
+    Trajectory.setValue(result);
     
     return App::DocumentObject::StdReturn;
 }

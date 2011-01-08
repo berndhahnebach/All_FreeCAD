@@ -454,7 +454,7 @@ void CmdRobotTrajectoryCompound::activated(int iMsg)
 
     if (ObjectFilter.match()) {
         Robot::TrajectoryCompound *Object = static_cast<Robot::TrajectoryCompound*>(ObjectFilter.Result[0][0].getObject());
-        openCommand("Edit Sketch");
+        openCommand("Edit TrajectoryCompound");
         doCommand(Gui,"Gui.activeDocument().setEdit('%s')",Object->getNameInDocument());
     }else {
         std::string FeatName = getUniqueObjectName("TrajectoryCompound");
@@ -463,7 +463,6 @@ void CmdRobotTrajectoryCompound::activated(int iMsg)
         doCommand(Doc,"App.activeDocument().addObject('Robot::TrajectoryCompound','%s')",FeatName.c_str());
         doCommand(Gui,"Gui.activeDocument().setEdit('%s')",FeatName.c_str());
     }
-
 }
 
 bool CmdRobotTrajectoryCompound::isActive(void)

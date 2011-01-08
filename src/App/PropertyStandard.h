@@ -432,6 +432,32 @@ public:
     virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyAngleItem"; }
 };
 
+/** Speed property
+ * This is a property for representing speed. It basicly a float
+ * property. On the Gui it has a quantity like m/s or km/h.
+ */
+class AppExport PropertySpeed: public PropertyFloat
+{
+    TYPESYSTEM_HEADER();
+public:
+    PropertySpeed(void){}
+    virtual ~PropertySpeed(){}
+    virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyFloatItem"; }
+};
+
+/** Acceleration property
+ * This is a property for representing acceleration. It basicly a float
+ * property. On the Gui it has a quantity like m/s^2.
+ */
+class AppExport PropertyAcceleration: public PropertyFloat
+{
+    TYPESYSTEM_HEADER();
+public:
+    PropertyAcceleration(void){}
+    virtual ~PropertyAcceleration(){}
+    virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyFloatItem"; }
+};
+
 
 class AppExport PropertyFloatList: public PropertyLists
 {

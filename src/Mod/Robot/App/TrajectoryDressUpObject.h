@@ -45,6 +45,14 @@ public:
     virtual ~TrajectoryDressUpObject();
 
     App::PropertyLink         Source;
+    App::PropertySpeed        Speed;
+    App::PropertyBool         UseSpeed;
+    App::PropertyAcceleration Acceleration;
+    App::PropertyBool         UseAcceleration;
+    App::PropertyEnumeration  ContType;
+    App::PropertyPlacement    PosAdd;
+    App::PropertyEnumeration  AddType;
+
 
     /// returns the type name of the ViewProvider
     virtual const char* getViewProviderName(void) const {
@@ -52,9 +60,13 @@ public:
     }
     virtual App::DocumentObjectExecReturn *execute(void);
 
+    static const char* ContTypeEnums[];
+    static const char* AddTypeEnums[];
+
 protected:
     /// get called by the container when a property has changed
     virtual void onChanged (const App::Property* prop);
+
 
 };
 
