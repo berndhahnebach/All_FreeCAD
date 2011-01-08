@@ -63,6 +63,7 @@ public:
     unsigned int getSize(void) const{return vpcWaypoints.size();}
     const Waypoint &getWaypoint(unsigned int pos)const {return *vpcWaypoints[pos];}
     std::string getUniqueWaypointName(const char *Name) const;
+    const std::vector<Waypoint*> &getWaypoints(void)const{return vpcWaypoints;}
 
     /// delete the last n waypoints
     void deleteLast(unsigned int n=1);
