@@ -564,7 +564,7 @@ class arcTracker(Tracker):
                 
         def setStartPoint(self,pt):
                 "sets the start angle from a point"
-                self.setStartAngle(self.getAngle(pt))
+                self.setStartAngle(-self.getAngle(pt))
 
         def setEndPoint(self,pt):
                 "sets the end angle from a point"
@@ -2245,6 +2245,7 @@ class Rotate(Modifier):
 					self.ui.labelRadius.setText("Rotation")
 					self.rad = fcvec.dist(point,self.center)
 					self.arctrack.on()
+                                        self.arctrack.setStartPoint(point)
 					self.ghost.on()
 					self.ui.isCopy.show()
 					self.step = 2
@@ -2271,10 +2272,10 @@ class Rotate(Modifier):
 		"this function gets called by the toolbar when valid x, y, and z have been entered there"
 		self.center = Vector(numx,numy,numz)
 		self.node = [self.center]
-		self.arctrack.centerPoint(self.center)
+		self.arctrack.setCenter(self.center)
 		self.ghost.trans.center.setValue(self.center.x,self.center.y,self.center.z)
 		self.linetrack.p1(self.center)
-		self.arctrack.on()
+		#self.arctrack.on()
 		self.linetrack.on()
 		self.ui.radiusUi()
 		self.ui.labelRadius.setText("Base angle")
@@ -2286,7 +2287,7 @@ class Rotate(Modifier):
 		if (self.step == 1):
 			self.ui.labelRadius.setText("Rotation")
 			self.firstangle = math.radians(rad)
-			self.arctrack.startPoint(fcvec.rotate(math.radians(rad)))
+			self.arctrack.setStartAngle(self.firstangle)
 			self.arctrack.on()
 			self.ghost.on()
 			self.ui.isCopy.show()
