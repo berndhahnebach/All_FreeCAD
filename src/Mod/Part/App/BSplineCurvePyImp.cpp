@@ -730,7 +730,9 @@ PyObject* BSplineCurvePy::interpolate(PyObject *args)
     PyObject* obj;
     double tol3d = 0.0001;
     PyObject* closed = Py_False;
-    if (!PyArg_ParseTuple(args, "O!|O!d",&(PyList_Type), &obj, &PyBool_Type, &closed, &tol3d ))
+    PyObject* t1=0; PyObject* t2=0;
+    if (!PyArg_ParseTuple(args, "O!|O!dO!O!",&(PyList_Type), &obj, &PyBool_Type, &closed, &tol3d,
+                                             &Base::VectorPy::Type, &t1, &Base::VectorPy::Type, &t2))
         return 0;
     try {
         Py::List list(obj);
@@ -742,7 +744,17 @@ PyObject* BSplineCurvePy::interpolate(PyObject *args)
             interpolationPoints->SetValue(index++, gp_Pnt(pnt.x,pnt.y,pnt.z));
         }
 
+        if (interpolationPoints->Length() < 2) {
+            Standard_Failure::Raise("not enough points given");
+        }
+
         GeomAPI_Interpolate aBSplineInterpolation(interpolationPoints, (closed == Py_True), tol3d);
+        if (t1 && t2) {
+            Base::Vector3d v1 = Py::Vector(t1,false).toVector();
+            Base::Vector3d v2 = Py::Vector(t1,false).toVector();
+            gp_Vec initTangent(v1.x,v1.y,v1.z), finalTangent(v2.x,v2.y,v2.z);
+            aBSplineInterpolation.Load(initTangent, finalTangent);
+        }
         aBSplineInterpolation.Perform();
         if (aBSplineInterpolation.IsDone()) {
             Handle_Geom_BSplineCurve aBSplineCurve(aBSplineInterpolation.Curve());
