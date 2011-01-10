@@ -81,18 +81,45 @@ App::DocumentObjectExecReturn *TrajectoryDressUpObject::execute(void)
 
     const std::vector<Waypoint*> &wps = static_cast<Robot::TrajectoryObject*>(link)->Trajectory.getValue().getWaypoints();
     for (std::vector<Waypoint*>::const_iterator it= wps.begin();it!=wps.end();++it) {
-        result.addWaypoint(**it);
+        Waypoint wpt = **it;
+        if(UseSpeed.getValue())
+            wpt.Velocity = Speed.getValue();
+        if(UseAcceleration.getValue())
+            wpt.Accelaration = Acceleration.getValue();
+        switch(ContType.getValue()){
+            case 0: break;
+            case 1: wpt.Cont = true;break;
+            case 2: wpt.Cont = false;break;
+            default: assert(0); // must not happen!
+        }
+        switch(AddType.getValue()){
+            // do nothing 
+            case 0: break;
+            // use orientation  
+            case 1:
+                wpt.EndPos.setRotation(PosAdd.getValue().getRotation());
+                break;
+            // add position 
+            case 2:
+                wpt.EndPos.setPosition(wpt.EndPos.getPosition() + PosAdd.getValue().getPosition());
+                break;
+            // add orientation 
+            case 3:
+                wpt.EndPos.setRotation(wpt.EndPos.getRotation() * PosAdd.getValue().getRotation());
+                break;
+            // add orientation & position 
+            case 4:
+                wpt.EndPos= wpt.EndPos * PosAdd.getValue();
+                break;
+            default: assert(0); // must not happen!
+        }
+
+        result.addWaypoint(wpt);
     }
 
     
     return App::DocumentObject::StdReturn;
 }
-
-
-//short TrajectoryDressUpObject::mustExecute(void) const
-//{
-//    return 0;
-//}
 
 void TrajectoryDressUpObject::onChanged(const Property* prop)
 {
