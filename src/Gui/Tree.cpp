@@ -824,7 +824,7 @@ void DocumentItem::slotChangeObject(const Gui::ViewProviderDocumentObject& view)
                     this->addChild(child);
                 }
             }
-            this->treeWidget()->expandItem(it->second);
+            //this->treeWidget()->expandItem(it->second);
          // old grouping style here
 #        else 
 
