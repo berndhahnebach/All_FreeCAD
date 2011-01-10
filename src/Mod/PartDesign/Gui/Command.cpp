@@ -204,14 +204,18 @@ void CmdPartDesignPocket::activated(int iMsg)
         return;
     }
     App::DocumentObject* support = sketch->Support.getValue();
+    if (support == 0) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("No Support"),
+            QObject::tr("The sketch have to have a support for the pocket feature.\nCreate the Sketch on a Face."));
+        return;
+    }
 
     openCommand("Make Pocket");
     doCommand(Doc,"App.activeDocument().addObject(\"PartDesign::Pocket\",\"%s\")",FeatName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Sketch = App.activeDocument().%s",FeatName.c_str(),sketch->getNameInDocument());
     doCommand(Doc,"App.activeDocument().%s.Length = 5.0",FeatName.c_str());
     doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",sketch->getNameInDocument());
-    if(support)
-        doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",support->getNameInDocument());
+    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",support->getNameInDocument());
     updateActive();
     commitCommand();
 }
