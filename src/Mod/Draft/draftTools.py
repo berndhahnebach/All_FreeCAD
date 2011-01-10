@@ -870,6 +870,7 @@ class Creator:
                 msg("")
 		if self.call:
 			self.view.removeEventCallback("SoEvent",self.call)
+                        self.call = None
 
 
 class Line(Creator):
@@ -1927,13 +1928,14 @@ class Modifier:
 	"A generic Modifier Tool, used by modification tools such as move"
 
 	def Activated(self,name="None"):
+                if FreeCAD.activeDraftCommand:
+                        FreeCAD.activeDraftCommand.finish()
 		self.ui = None
 		self.call = None
 		self.doc = FreeCAD.ActiveDocument
 		if not self.doc:
 			self.finish()
 		else:
-			if FreeCAD.activeDraftCommand: FreeCAD.activeDraftCommand.finish()
 			FreeCAD.activeDraftCommand = self
 			self.view = FreeCADGui.ActiveDocument.ActiveView
 			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
@@ -1965,6 +1967,7 @@ class Modifier:
                 self.planetrack.finalize()
 		if self.call:
 			self.view.removeEventCallback("SoEvent",self.call)
+                        self.call = None
 			
 class Move(Modifier):
 	"The Draft_Move FreeCAD command definition"
