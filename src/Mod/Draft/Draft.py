@@ -1319,8 +1319,8 @@ class Wire:
                 plm = fp.Placement
                 if fp.Base and fp.Tool:
                         if ('Shape' in fp.Base.PropertiesList) and ('Shape' in fp.Tool.PropertiesList):
-                                sh1 = fp.Base.Shape
-                                sh2 = fp.Tool.Shape
+                                sh1 = fp.Base.Shape.copy()
+                                sh2 = fp.Tool.Shape.copy()
                                 shape = sh1.fuse(sh2)
                                 if fcgeo.isCoplanar(shape.Faces):
                                         shape = fcgeo.concatenate(shape)
