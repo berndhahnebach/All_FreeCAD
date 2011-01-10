@@ -210,7 +210,8 @@ void CmdPartDesignPocket::activated(int iMsg)
     doCommand(Doc,"App.activeDocument().%s.Sketch = App.activeDocument().%s",FeatName.c_str(),sketch->getNameInDocument());
     doCommand(Doc,"App.activeDocument().%s.Length = 5.0",FeatName.c_str());
     doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",sketch->getNameInDocument());
-    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",support->getNameInDocument());
+    if(support)
+        doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",support->getNameInDocument());
     updateActive();
     commitCommand();
 }
