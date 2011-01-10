@@ -543,6 +543,16 @@ QVariant PropertyFloatItem::toString(const QVariant& prop) const
             unit.prepend(QLatin1String(" "));
             data += unit;
         }
+        else if (props.front()->getTypeId().isDerivedFrom(App::PropertySpeed::getClassTypeId())) {
+            //QString unit = Base::UnitsApi::getPrefUnitOf(Base::Acceleration);
+            //unit.prepend(QLatin1String(" "));
+            //data += unit;
+        }
+        else if (props.front()->getTypeId().isDerivedFrom(App::PropertyAcceleration::getClassTypeId())) {
+            QString unit = Base::UnitsApi::getPrefUnitOf(Base::Acceleration);
+            unit.prepend(QLatin1String(" "));
+            data += unit;
+        }
     }
 
     return QVariant(data);
@@ -589,6 +599,18 @@ void PropertyFloatItem::setEditorData(QWidget *editor, const QVariant& data) con
     else if (prop.front()->getTypeId().isDerivedFrom(App::PropertyLength::getClassTypeId())) {
         sb->setMinimum(0.0);
         QString unit = Base::UnitsApi::getPrefUnitOf(Base::Length);
+        unit.prepend(QLatin1String(" "));
+        sb->setSuffix(unit);
+    }
+    else if (prop.front()->getTypeId().isDerivedFrom(App::PropertySpeed::getClassTypeId())) {
+        //sb->setMinimum(0.0);
+        //QString unit = Base::UnitsApi::getPrefUnitOf(Base::Acceleration);
+        //unit.prepend(QLatin1String(" "));
+        //sb->setSuffix(unit);
+    }
+    else if (prop.front()->getTypeId().isDerivedFrom(App::PropertyAcceleration::getClassTypeId())) {
+        sb->setMinimum(0.0);
+        QString unit = Base::UnitsApi::getPrefUnitOf(Base::Acceleration);
         unit.prepend(QLatin1String(" "));
         sb->setSuffix(unit);
     }
