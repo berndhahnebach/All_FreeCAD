@@ -256,6 +256,7 @@ class AppExport PropertyIntegerList: public PropertyLists
 
 public:
     /**
+
      * A constructor.
      * A more elaborate description of the constructor.
      */
@@ -433,7 +434,7 @@ public:
 };
 
 /** Speed property
- * This is a property for representing speed. It basicly a float
+ * This is a property for representing speed. It is basically a float
  * property. On the Gui it has a quantity like m/s or km/h.
  */
 class AppExport PropertySpeed: public PropertyFloat
@@ -446,7 +447,7 @@ public:
 };
 
 /** Acceleration property
- * This is a property for representing acceleration. It basicly a float
+ * This is a property for representing acceleration. It is basically a float
  * property. On the Gui it has a quantity like m/s^2.
  */
 class AppExport PropertyAcceleration: public PropertyFloat

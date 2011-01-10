@@ -962,6 +962,8 @@ void Application::initTypes(void)
     App ::PropertyAngle             ::init();
     App ::PropertyDistance          ::init();
     App ::PropertyLength            ::init();
+    App ::PropertySpeed             ::init();
+    App ::PropertyAcceleration      ::init();
     App ::PropertyInteger           ::init();
     App ::PropertyIntegerConstraint ::init();
     App ::PropertyPercent           ::init();
