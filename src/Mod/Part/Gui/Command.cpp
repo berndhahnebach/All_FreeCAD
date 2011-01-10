@@ -250,16 +250,18 @@ void CmdPartCut::activated(int iMsg)
         return;
     }
 
-    std::string FeatName = getUniqueObjectName("Cut");
-
     std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
+
+    std::string FeatName = getUniqueObjectName("Cut");
+    std::string BaseName  = Sel[0].FeatName;
+    std::string ToolName  = Sel[1].FeatName;
 
     openCommand("Part Cut");
     doCommand(Doc,"App.activeDocument().addObject(\"Part::Cut\",\"%s\")",FeatName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Base = App.activeDocument().%s",FeatName.c_str(),Sel[0].FeatName);
-    doCommand(Doc,"App.activeDocument().%s.Tool = App.activeDocument().%s",FeatName.c_str(),Sel[1].FeatName);
-    doCommand(Gui,"Gui.activeDocument().hide('%s')",Sel[0].FeatName);
-    doCommand(Gui,"Gui.activeDocument().hide('%s')",Sel[1].FeatName);
+    doCommand(Doc,"App.activeDocument().%s.Base = App.activeDocument().%s",FeatName.c_str(),BaseName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Tool = App.activeDocument().%s",FeatName.c_str(),ToolName.c_str());
+    doCommand(Gui,"Gui.activeDocument().hide('%s')",BaseName.c_str());
+    doCommand(Gui,"Gui.activeDocument().hide('%s')",ToolName.c_str());
     updateActive();
     commitCommand();
 }

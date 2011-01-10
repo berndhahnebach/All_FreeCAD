@@ -2186,7 +2186,7 @@ bool cutting_tools::OffsetWires_Spiral()
             //At the beginning the lastPoint is the Origin
             //This represents our startPoint. If we just started, then we skip this point
 
-            int start_index = 0,adapted_start_index=0;
+            unsigned int start_index = 0,adapted_start_index=0;
             float dist,distold = FLT_MAX;
             for (unsigned int t=0;t<TempSpiralPoints.size();t++)
             {
@@ -2232,7 +2232,7 @@ bool cutting_tools::OffsetWires_Spiral()
                 }
                 Handle(TColgp_HArray1OfPnt) InterpolationPoints = new TColgp_HArray1OfPnt(1, SlavePointContainer.size());
                 adapted_start_index = start_index+1;
-                for (int t=index+1;t<SlavePointContainer.size();++t)
+                for (unsigned int t=index+1;t<SlavePointContainer.size();++t)
                 {
                     InterpolationPoints->SetValue(t+1,SlavePointContainer[t]);
                     if (t==index)
@@ -2293,7 +2293,7 @@ bool cutting_tools::OffsetWires_Spiral()
             }
             std::cout<<"Angle ="<< angle<< " Direction = "<< direction << "Start_Index: "<< adapted_start_index <<","<<start_index<<std::endl;
             double distance=0.0;
-            for (int j=adapted_start_index;j<TempSpiralPoints.size();++j)
+            for (unsigned int j=adapted_start_index;j<TempSpiralPoints.size();++j)
             {
                 distance = distance + PreviousPoint.Distance(TempSpiralPoints[j].SurfacePoint);
                 double delta_z = distance * m_UserSettings.level_distance / CurveLength;

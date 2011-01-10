@@ -597,7 +597,7 @@ void ReadDyna::PutInMesh(MeshCore::MeshKernel &mesh)
         for (unsigned int j = 0; j < 3; j++)
         {
             pnt_it = Pointlist.find(Stllist[i].PointIndex[j]);
-            Base::Vector3f Temp((*pnt_it).second.Coords[0],(*pnt_it).second.Coords[1],(*pnt_it).second.Coords[2]);
+            Base::Vector3f Temp((float)(*pnt_it).second.Coords[0],(float)(*pnt_it).second.Coords[1],(float)(*pnt_it).second.Coords[2]);
             Points[j] = Temp;
         }
         MeshCore::MeshGeomFacet Face(Points[0],Points[1],Points[2]);
