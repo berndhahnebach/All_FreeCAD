@@ -35,6 +35,10 @@
 # include <BRepAdaptor_Surface.hxx>
 #endif
 
+#ifndef M_PI
+#define M_PI       3.14159265358979323846
+#endif
+
 
 
 #include "Part2DObject.h"
@@ -75,13 +79,22 @@ Base::Placement Part2DObject::positionBySupport(const TopoDS_Face &face,const Ba
     gp_Pnt ObjOrg(Place.getPosition().x,Place.getPosition().y,Place.getPosition().z);
     gp_Pln plane = adapt.Plane();
     gp_Ax1 Normal = plane.Axis();
+    if(Reverse)
+        Normal.Reverse();
 
     Handle (Geom_Plane) gPlane = new Geom_Plane(plane);
     GeomAPI_ProjectPointOnSurf projector(ObjOrg,gPlane);
 
     gp_Pnt SketchBasePoint = projector.NearestPoint();
-    
-    gp_Ax3 SketchPos(SketchBasePoint,Normal._CSFDB_Getgp_Ax1vdir());
+
+    // check the angle against the Y Axis
+    Standard_Real a = Normal.Angle(gp_Ax1(gp_Pnt(0,0,0),gp_Dir(0,1,0)));
+
+    gp_Ax3 SketchPos;
+    if(fabs(a)<0.1 || fabs((fabs(a)-M_PI))< 0.1)
+        SketchPos = gp_Ax3(SketchBasePoint,Normal._CSFDB_Getgp_Ax1vdir(),gp_Dir(1,0,0));
+    else
+        SketchPos = gp_Ax3(SketchBasePoint,Normal._CSFDB_Getgp_Ax1vdir());
 
     gp_Trsf Trf;
     Trf.SetTransformation(SketchPos);
