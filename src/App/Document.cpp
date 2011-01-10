@@ -104,7 +104,7 @@ using namespace zipios;
 #endif
 
 #if FC_DEBUG
-//#  define FC_LOGFEATUREUPDATE
+#  define FC_LOGFEATUREUPDATE
 #endif 
 
 // typedef boost::property<boost::vertex_root_t, DocumentObject* > VertexProperty;

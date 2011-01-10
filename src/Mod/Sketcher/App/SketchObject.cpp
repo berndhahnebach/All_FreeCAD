@@ -23,6 +23,10 @@
  
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <TopoDS_Shape.hxx>
+# include <TopoDS_Face.hxx>
+# include <TopoDS.hxx>
+# include <BRepAdaptor_Surface.hxx>
 #endif
 
 #include <Base/Writer.h>
@@ -50,6 +54,29 @@ SketchObject::SketchObject()
 
 App::DocumentObjectExecReturn *SketchObject::execute(void)
 {
+    // recalculate support:
+    if(Support.getValue() && Support.getValue()->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
+    {
+        Part::Feature *part = static_cast<Part::Feature*>(Support.getValue());
+        Base::Placement ObjectPos = part->Placement.getValue();
+        const std::vector<std::string> &sub = Support.getSubValues();
+        assert (sub.size()==1);
+        // get the selected sub shape (a Face)
+        const Part::TopoShape &shape = part->Shape.getValue();
+        TopoDS_Shape sh = shape.getSubShape(sub[0].c_str());
+        TopoDS_Face face = TopoDS::Face(sh);
+        assert(!face.IsNull());
+
+        BRepAdaptor_Surface adapt(face);
+        if(adapt.GetType() != GeomAbs_Plane)
+            return new App::DocumentObjectExecReturn("Sketch has no planar support!");
+
+        // set sketch position 
+        Base::Placement placement = Part2DObject::positionBySupport(face,ObjectPos);
+        Placement.setValue(placement);
+    }
+     
+    // and now solve the sketch
     Sketch sketch;
 
     sketch.setUpSketch(Geometry.getValues(),Constraints.getValues());
