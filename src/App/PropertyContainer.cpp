@@ -165,6 +165,10 @@ std::vector<DocumentObject*> PropertyContainer::getOutList(void) const
         {
             ret.push_back(static_cast<PropertyLink*>(*It)->getValue() );
         }
+        else if ((*It)->isDerivedFrom(PropertyLinkSub::getClassTypeId()))
+        {
+            ret.push_back(static_cast<PropertyLink*>(*It)->getValue() );
+        }
     }
     return ret;
 }
