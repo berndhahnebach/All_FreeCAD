@@ -10,6 +10,7 @@ EXTRA_DIST = \
 		translations/PartDesign_de.qm \
 		translations/PartDesign_de.ts \
 		icons/PartDesign_Pad.svg \
+		icons/PartDesign_Pocket.svg \
 		PartDesign.qrc
 
 
