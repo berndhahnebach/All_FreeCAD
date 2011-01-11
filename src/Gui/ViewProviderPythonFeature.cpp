@@ -53,6 +53,7 @@
 #include "Application.h"
 #include "BitmapFactory.h"
 #include "Document.h"
+#include <App/DocumentObjectPy.h>
 #include <App/GeoFeature.h>
 #include <App/PropertyGeo.h>
 #include <Base/Console.h>
@@ -109,6 +110,36 @@ QIcon ViewProviderPythonFeatureImp::getIcon() const
     }
 
     return px;
+}
+
+std::vector<App::DocumentObject*> ViewProviderPythonFeatureImp::claimChildren() const 
+{
+    std::vector<App::DocumentObject*> children;
+    Base::PyGILStateLocker lock;
+    try {
+        App::Property* proxy = object->getPropertyByName("Proxy");
+        if (proxy && proxy->getTypeId() == App::PropertyPythonObject::getClassTypeId()) {
+            Py::Object vp = static_cast<App::PropertyPythonObject*>(proxy)->getValue();
+            if (vp.hasAttr(std::string("claimChildren"))) {
+                Py::Callable method(vp.getAttr(std::string("claimChildren")));
+                Py::Tuple args(0);
+                Py::List list(method.apply(args));
+                for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+                    PyObject* item = (*it).ptr();
+                    if (PyObject_TypeCheck(item, &(App::DocumentObjectPy::Type))) {
+                        App::DocumentObject* obj = static_cast<App::DocumentObjectPy*>(item)->getDocumentObjectPtr();
+                        children.push_back(obj);
+                    }
+                }
+            }
+        }
+    }
+    catch (Py::Exception&) {
+        Base::PyException e; // extract the Python error text
+        Base::Console().Error("ViewProviderPythonFeature::claimChildren: %s\n", e.what());
+    }
+
+    return children;
 }
 
 void ViewProviderPythonFeatureImp::attach(App::DocumentObject *pcObject)
