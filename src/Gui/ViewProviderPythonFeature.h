@@ -47,6 +47,7 @@ public:
 
     // Returns the icon
     QIcon getIcon() const;
+    std::vector<App::DocumentObject*> claimChildren() const;
 
     /** @name Update data methods*/
     //@{
@@ -92,6 +93,10 @@ public:
     // Returns the icon
     QIcon getIcon() const {
         return imp->getIcon();
+    }
+
+    std::vector<App::DocumentObject*> claimChildren() const {
+        return imp->claimChildren();
     }
 
     /** @name Update data methods*/
