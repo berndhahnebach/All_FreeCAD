@@ -586,11 +586,14 @@ class arcTracker(Tracker):
                 ivin = coin.SoInput()
                 ivin.setBuffer(c.writeInventor())
                 ivob = coin.SoDB.readAll(ivin)
-                if ivob:
+                # In debug mode we have some problems reading in the string
+                if ivob and ivob.getNumChildren() > 1:
                         self.circle = ivob.getChild(1).getChild(0)
                         self.circle.removeChild(self.circle.getChild(0))
                         self.circle.removeChild(self.circle.getChild(0))
                         self.sep.addChild(self.circle)
+                else:
+                        FreeCAD.Console.PrintWarning("arcTracker.recompute() failed to read-in Inventor string\n")
 
 class ghostTracker(Tracker):
 	'''A Ghost tracker, that allows to copy whole object representations.
