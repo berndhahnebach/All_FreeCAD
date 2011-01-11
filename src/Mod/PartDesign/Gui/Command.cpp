@@ -206,7 +206,7 @@ void CmdPartDesignPocket::activated(int iMsg)
     App::DocumentObject* support = sketch->Support.getValue();
     if (support == 0) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("No Support"),
-            QObject::tr("The sketch have to have a support for the pocket feature.\nCreate the Sketch on a Face."));
+            QObject::tr("The sketch has to have a support for the pocket feature.\nCreate the sketch on a face."));
         return;
     }
 

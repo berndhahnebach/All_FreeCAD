@@ -72,22 +72,33 @@ void CmdSketcherNewSketch::activated(int iMsg)
         Sketcher::SketchObject *Sketch = static_cast<Sketcher::SketchObject*>(SketchFilter.Result[0][0].getObject());
         openCommand("Edit Sketch");
         doCommand(Gui,"Gui.activeDocument().setEdit('%s')",Sketch->getNameInDocument());
-    }else if (FaceFilter.match()) {
+    }
+    else if (FaceFilter.match()) {
         // get the selected object
         Part::Feature *part = static_cast<Part::Feature*>(FaceFilter.Result[0][0].getObject());
         Base::Placement ObjectPos = part->Placement.getValue();
         const std::vector<std::string> &sub = FaceFilter.Result[0][0].getSubNames();
-        assert (sub.size()==1);
+        if (sub.size() > 1){
+            // No assert for wrong user input!
+            QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Several sub-elements selected"),
+                QObject::tr("You have to select a single face as support for a sketch!"));
+            return;
+        }
         // get the selected sub shape (a Face)
         const Part::TopoShape &shape = part->Shape.getValue();
         TopoDS_Shape sh = shape.getSubShape(sub[0].c_str());
-        TopoDS_Face face = TopoDS::Face(sh);
-        assert(!face.IsNull());
+        const TopoDS_Face& face = TopoDS::Face(sh);
+        if (face.IsNull()){
+            // No assert for wrong user input!
+            QMessageBox::warning(Gui::getMainWindow(), QObject::tr("No support face selected"),
+                QObject::tr("You have to select a face as support for a sketch!"));
+            return;
+        }
 
         BRepAdaptor_Surface adapt(face);
-        if(adapt.GetType() != GeomAbs_Plane){
+        if (adapt.GetType() != GeomAbs_Plane){
             QMessageBox::warning(Gui::getMainWindow(), QObject::tr("No planar support"),
-                QObject::tr("You need a planar face as support for a Sketch!"));
+                QObject::tr("You need a planar face as support for a sketch!"));
             return;
         }
         Base::Placement placement = Part2DObject::positionBySupport(face,ObjectPos);
@@ -109,7 +120,8 @@ void CmdSketcherNewSketch::activated(int iMsg)
 
 
 
-    }else {
+    }
+    else {
         // do the standard Z+ new Sketch
         const char camstring[] = "#Inventor V2.1 ascii \\n OrthographicCamera { \\n viewportMapping ADJUST_CAMERA \\n position 0 0 87 \\n orientation 0 0 1  0 \\n nearDistance 37 \\n farDistance 137 \\n aspectRatio 1 \\n focalDistance 87 \\n height 119 }";
         std::string FeatName = getUniqueObjectName("Sketch");
