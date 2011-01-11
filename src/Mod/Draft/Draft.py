@@ -1379,8 +1379,9 @@ class ViewProviderWire(ViewProviderDraft):
         "A View Provider for the Wire object"
         def __init__(self, obj):
                 ViewProviderDraft.__init__(self,obj)
-                obj.addProperty("App::PropertyBool","EndArrow",
-                                "Base","Displays a dim symbol at the end of the wire")
+                obj.addProperty("App::PropertyBool","EndArrow","Base",
+                "Displays a dim symbol at the end of the wire")
+                self.Object = obj.Object
 
         def attach(self, obj):
                 col = coin.SoBaseColor()
@@ -1436,6 +1437,9 @@ class ViewProviderWire(ViewProviderDraft):
                         else:
                                 rn.removeChild(self.pt)
 		return
+
+        def claimChildren(self):
+                return [self.Object.Base,self.Object.Tool]
         
 class Polygon:
         "The Polygon object"
