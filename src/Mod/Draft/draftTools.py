@@ -540,6 +540,10 @@ class arcTracker(Tracker):
                 "sets the radius"
                 self.trans.scaleFactor.setValue([rad,rad,rad])
 
+        def getRadius(self):
+                "returns the current radius"
+                return self.trans.scaleFactor.getValue()[0]
+
         def setStartAngle(self,ang):
                 "sets the start angle"
                 self.startangle = math.degrees(ang)
@@ -1762,6 +1766,7 @@ class Dimension(Creator):
                                 self.edges = []
                                 self.pts = []
                                 self.angledata = None
+                                self.indices = []
                                 self.center = None
                                 self.constraintrack = lineTracker(dotted=True)
                                 msg(translate("draft", "Pick first point:\n"))
@@ -1774,6 +1779,7 @@ class Dimension(Creator):
 		Creator.finish(self)
 		if self.ui:
 			self.dimtrack.finalize()
+                        self.arctrack.finalize()
 			self.constraintrack.finalize()
 			self.snap.finalize()
 
@@ -1781,7 +1787,7 @@ class Dimension(Creator):
 		"creates an object in the current doc"
 		self.doc.openTransaction("Create "+self.featureName)
                 if self.angledata:
-                        Draft.makeAngularDimension(self.center,self.angledata)
+                        Draft.makeDimension(self.link,self.indices,self.node[-1])
                 elif self.link:
                         Draft.makeDimension(self.link[0],self.link[1],self.link[2],self.node[2])
                 else:
@@ -1867,6 +1873,7 @@ class Dimension(Creator):
                                                                 if v2 == ob.Shape.Vertexes[i].Point:
                                                                         i2 = i
                                                         if (i1 != None) and (i2 != None):
+                                                                self.indices.append(num)
                                                                 if not self.edges:
                                                                         self.node = [v1,v2]
                                                                         self.link = [ob,i1,i2]
@@ -1886,6 +1893,7 @@ class Dimension(Creator):
                                                                                 for e in self.edges:
                                                                                         for v in e.Vertexes:
                                                                                                 self.pts.append(self.arctrack.getAngle(v.Point))
+                                                                                self.link = [self.link[0],ob]
                                                                         else:
                                                                                 msg(translate("draft", "Edges don't intersect!\n"))
                                                                                 self.finish()
@@ -1907,6 +1915,7 @@ class Dimension(Creator):
 					self.createObject()
 					if not self.cont: self.finish()
                                 elif self.angledata:
+                                        self.node.append(point)
 					self.createObject()
 					self.finish()
 
@@ -3643,10 +3652,13 @@ class WireToBSpline(Modifier):
                                                 self.pl = self.obj.Placement
                                         self.Points = self.obj.Points
                                         self.closed = self.obj.Closed
+                                        n = None
 					if (Draft.getType(self.selection[0]) == 'Wire'):
-						Draft.makeBSpline(self.Points, self.closed, self.pl)
+						n = Draft.makeBSpline(self.Points, self.closed, self.pl)
                                         elif (Draft.getType(self.selection[0]) == 'BSpline'):
-                                                Draft.makeWire(self.Points, self.closed, self.pl)
+                                                n = Draft.makeWire(self.Points, self.closed, self.pl)
+                                        if n:
+                                                Draft.formatObject(n,self.selection[0])
                                 else:
                                         self.finish()
 	def finish(self):
