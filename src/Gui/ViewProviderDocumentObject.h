@@ -31,6 +31,7 @@
 
 class SoMaterial;
 class SoDrawStyle;
+class SoType;
 
 namespace App
 {
