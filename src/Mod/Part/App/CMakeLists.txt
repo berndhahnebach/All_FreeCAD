@@ -95,6 +95,8 @@ SET(Features_SRCS
     FeatureMirroring.h
     FeatureRevolution.cpp
     FeatureRevolution.h
+    Features.cpp
+    Features.h
     PartFeature.cpp
     PartFeature.h
     PartFeatureReference.cpp

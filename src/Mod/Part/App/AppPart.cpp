@@ -40,6 +40,7 @@
 #include "FeatureFillet.h"
 #include "FeatureMirroring.h"
 #include "FeatureRevolution.h"
+#include "Features.h"
 #include "PrimitiveFeature.h"
 #include "Part2DObject.h"
 #include "CustomFeature.h"
@@ -160,6 +161,7 @@ void AppPartExport initPart()
     Part::Torus                 ::init();
     Part::Helix                 ::init();
     Part::Part2DObject          ::init();
+    Part::RuledSurface          ::init();
 
     // Geometry types
     Part::Geometry                ::init();

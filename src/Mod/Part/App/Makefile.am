@@ -118,6 +118,7 @@ libPart_la_SOURCES=\
 		FeatureGeometrySet.cpp \
 		FeatureRevolution.cpp \
 		FeatureMirroring.cpp \
+		Features.cpp \
 		Geometry.cpp \
 		ImportStep.cpp \
 		CustomFeature.cpp \
@@ -167,6 +168,7 @@ include_HEADERS=\
 		FeatureGeometrySet.h \
 		FeatureRevolution.h \
 		FeatureMirroring.h \
+		Features.h \
 		Geometry.h \
 		ImportStep.h \
 		PartFeature.h \

@@ -66,7 +66,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
           << "Part_MakeSolid" << "Part_ReverseShape" << "Separator"
           << "Part_Boolean" << "Part_CrossSections" << "Part_Extrude"
           << "Part_Revolve" << "Part_Mirror" << "Part_Fillet"
-          << "Separator" << "Part_ShapeInfo";
+          << "Part_RuledSurface" << "Separator" << "Part_ShapeInfo";
 
     Gui::MenuItem* partSimple = new Gui::MenuItem;
     root->insertItem(item, partSimple);
