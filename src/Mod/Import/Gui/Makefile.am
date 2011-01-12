@@ -76,8 +76,10 @@ qrc_%.cpp: Resources/%.qrc
 	$(QT_RCC) -name $(*F) $< -o $(@F)
 
 # set the include path found by configure
-AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS) -I$(OCC_INC)
+AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS) -I$(OCC_INC) \
+		-I$(sim_ac_coin_includedir) -I$(sim_ac_soqt_includedir)
 
+includedir = @includedir@/Mod/Part/Gui
 libdir = $(prefix)/Mod/Import
 
 #CLEANFILES = $(BUILT_SOURCES)
