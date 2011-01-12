@@ -923,6 +923,113 @@ bool CmdShapeInfo::isActive(void)
     return false;
 }
 
+DEF_STD_CMD_A(CmdPartRuledSurface);
+
+CmdPartRuledSurface::CmdPartRuledSurface()
+  : Command("Part_RuledSurface")
+{
+    sAppModule      = "Part";
+    sGroup          = QT_TR_NOOP("Part");
+    sMenuText       = QT_TR_NOOP("Create ruled surface");
+    sToolTipText    = QT_TR_NOOP("Create a ruled surface from two curves");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+}
+
+void CmdPartRuledSurface::activated(int iMsg)
+{
+    bool ok = false;
+    TopoDS_Shape curve1, curve2;
+    std::string link1, link2, obj1, obj2;
+    Gui::SelectionFilter edgeFilter  ("SELECT Part::Feature SUBELEMENT Edge COUNT 1..2\n"
+                                      "SELECT Part::Feature SUBELEMENT Wire COUNT 1..2");
+    Gui::SelectionFilter partFilter  ("SELECT Part::Feature COUNT 2");
+    if (edgeFilter.match()) {
+        // get the selected object
+        const std::vector<Gui::SelectionObject>& result = edgeFilter.Result[0];
+        // two edges from one object
+        if (result.size() == 1) {
+            const Part::Feature* part = static_cast<const Part::Feature*>(result[0].getObject());
+            const std::vector<std::string>& edges = result[0].getSubNames();
+            if (edges.size() != 2) {
+                ok = false;
+            }
+            else {
+                ok = true;
+                // get the selected sub-shapes
+                const Part::TopoShape& shape = part->Shape.getValue();
+                curve1 = shape.getSubShape(edges[0].c_str());
+                curve2 = shape.getSubShape(edges[1].c_str());
+                obj1 = result[0].getObject()->getNameInDocument();
+                link1 = edges[0];
+                obj2 = result[0].getObject()->getNameInDocument();
+                link2 = edges[1];
+            }
+        }
+        // two objects and one edge per object
+        else if (result.size() == 2) {
+            const Part::Feature* part1 = static_cast<const Part::Feature*>(result[0].getObject());
+            const std::vector<std::string>& edges1 = result[0].getSubNames();
+            const Part::Feature* part2 = static_cast<const Part::Feature*>(result[1].getObject());
+            const std::vector<std::string>& edges2 = result[1].getSubNames();
+            if (edges1.size() != 1 || edges2.size() != 1) {
+                ok = false;
+            }
+            else {
+                ok = true;
+                const Part::TopoShape& shape1 = part1->Shape.getValue();
+                curve1 = shape1.getSubShape(edges1[0].c_str());
+                const Part::TopoShape& shape2 = part2->Shape.getValue();
+                curve2 = shape2.getSubShape(edges2[0].c_str());
+                obj1 = result[0].getObject()->getNameInDocument();
+                link1 = edges1[0];
+                obj2 = result[1].getObject()->getNameInDocument();
+                link2 = edges2[0];
+            }
+        }
+    }
+    else if (partFilter.match()) {
+        const std::vector<Gui::SelectionObject>& result = edgeFilter.Result[0];
+        const Part::Feature* part1 = static_cast<const Part::Feature*>(result[0].getObject());
+        const Part::Feature* part2 = static_cast<const Part::Feature*>(result[1].getObject());
+        const Part::TopoShape& shape1 = part1->Shape.getValue();
+        curve1 = shape1._Shape;
+        const Part::TopoShape& shape2 = part2->Shape.getValue();
+        curve2 = shape2._Shape;
+        obj1 = part1->getNameInDocument();
+        obj2 = part2->getNameInDocument();
+
+        if (!curve1.IsNull() && !curve2.IsNull()) {
+            if (curve1.ShapeType() == TopAbs_EDGE &&
+                curve2.ShapeType() == TopAbs_EDGE)
+                ok = true;
+            if (curve1.ShapeType() == TopAbs_WIRE &&
+                curve2.ShapeType() == TopAbs_WIRE)
+                ok = true;
+        }
+    }
+
+    if (!ok) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("You have to select either two edges or two wires."));
+        return;
+    }
+
+    openCommand("Create ruled surface");
+    doCommand(Doc, "FreeCAD.ActiveDocument.addObject('Part::RuledSurface','Filled shape')");
+    doCommand(Doc, "FreeCAD.ActiveDocument.ActiveObject.Curve1=(FreeCAD.ActiveDocument.%s,['%s'])"
+                 ,obj1.c_str(), link1.c_str());
+    doCommand(Doc, "FreeCAD.ActiveDocument.ActiveObject.Curve2=(FreeCAD.ActiveDocument.%s,['%s'])"
+                 ,obj2.c_str(), link2.c_str());
+    commitCommand();
+    updateActive();
+}
+
+bool CmdPartRuledSurface::isActive(void)
+{
+    return getActiveGuiDocument();
+}
+
 
 void CreatePartCommands(void)
 {
@@ -948,5 +1055,6 @@ void CreatePartCommands(void)
     rcCmdMgr.addCommand(new CmdPartImportCurveNet());
     rcCmdMgr.addCommand(new CmdPartPickCurveNet());
     rcCmdMgr.addCommand(new CmdShapeInfo());
+    rcCmdMgr.addCommand(new CmdPartRuledSurface());
 } 
 
