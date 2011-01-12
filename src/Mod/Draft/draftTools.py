@@ -1050,7 +1050,8 @@ class BSpline(Line):
                         old = self.obj.Name
                         self.doc.removeObject(old)
                         self.doc.openTransaction("Create "+self.featureName)
-                        Draft.makeBSpline(self.node,closed)
+                        # DNC: bug fix: if closed the filled status should be communicated
+                        Draft.makeBSpline(self.node,closed,face=self.ui.hasFill.isChecked())
                         self.doc.commitTransaction()
 		if self.ui:
 			self.linetrack.finalize()
@@ -3322,9 +3323,16 @@ class Edit(Modifier):
         def update(self,v):
                 if Draft.getType(self.obj) in ["Wire","BSpline"]:
                         pts = self.obj.Points
-                        pts[self.editing] = self.invpl.multVec(v)
-                        self.obj.Points = pts
-                        self.trackers[self.editing].set(v)
+                        editPnt = self.invpl.multVec(v)
+                        # DNC: allows to close the curve by placing ends close to each other
+                        tol = 0.001
+                        if ( ( self.editing == 0 ) and ( (editPnt - pts[-1]).Length < tol) ) or ( self.editing == len(pts) - 1 ) and ( (editPnt - pts[0]).Length < tol):
+                            self.obj.Closed = True
+                        # DNC: fix error message if edited point coinsides with one of the existing points
+                        if ( editPnt in pts ) == False:
+                            pts[self.editing] = editPnt
+                            self.obj.Points = pts
+                            self.trackers[self.editing].set(v)
                 elif Draft.getType(self.obj) == "Circle":
                         delta = v.sub(self.obj.Placement.Base)
                         if self.editing == 0:
@@ -3497,30 +3505,39 @@ class AddPoint(Modifier):
 				else:
 					self.finish()
 
-        def update(self,point):
-                if Draft.getType(self.obj) == "Wire":
-                        pts = self.obj.Points
-                        vertexes = fcgeo.getVerts(self.obj.Shape)
-                        self.edges = []
-                        self.edges = self.obj.Shape.Wires[0].Edges
-                        for e in self.edges:
-                                if ((point in vertexes) == False) and (fcgeo.isPtOnEdge(point,e)):
-                                        i = pts.index(self.invpl.multVec(e.Vertexes[1].Point))
-                                        pts.insert(i, self.invpl.multVec(point))
-                        self.obj.Points = pts
-                        self.resetTrackers()
-                if Draft.getType(self.obj) == "BSpline":
-                        uNewPoint = self.obj.Shape.Curve.parameter(point)
-                        pts = self.obj.Points
-                        uPoints = []
-                        for p in self.obj.Points:
-                                uPoints.append(self.obj.Shape.Curve.parameter(p))
-                        for i in range(len(uPoints)-1):
-                                if ( uNewPoint > uPoints[i] ) and ( uNewPoint < uPoints[i+1] ):
-                                        pts.insert(i+1, self.invpl.multVec(point))
-                                        break
-                        self.obj.Points = pts
-                        self.resetTrackers()
+	def update(self,point):
+		pts = self.obj.Points
+		if ( Draft.getType(self.obj) == "Wire" ) and  ( self.obj.Closed == True):
+			# DNC: work around.... seems there is a bug in approximate method for closed wires...
+			edges = self.obj.Shape.Wires[0].Edges
+			e1 = edges[-1] # last edge
+			v1 = e1.Vertexes[0].Point
+			v2 = e1.Vertexes[1].Point
+			v2.multiply(0.9999)
+			edges[-1] = Part.makeLine(v1,v2) # reassemble edges with small openning
+			edges.reverse() # for what ever reason approximate gives wrong direction for parameter u ...
+			wire = Part.Wire(edges)
+			curve = wire.approximate(0.0001,0.0001,100,25) # opened equivalent curve
+		if ( Draft.getType(self.obj) == "Wire" ) and  ( self.obj.Closed == False):
+			# DNC: this version is much more reliable near sharp edges!
+			curve = self.obj.Shape.Wires[0].approximate(0.0001,0.0001,100,25)
+		if ( Draft.getType(self.obj) == "BSpline" ) and ( self.obj.Closed == True):
+			curve = self.obj.Shape.Edges[0].Curve
+		elif ( Draft.getType(self.obj) == "BSpline" ) and ( self.obj.Closed == False ):
+			curve = self.obj.Shape.Curve
+		uNewPoint = curve.parameter(point)
+		uPoints = []
+		for p in self.obj.Points:
+			uPoints.append(curve.parameter(p))
+		for i in range(len(uPoints)-1):
+			if ( uNewPoint > uPoints[i] ) and ( uNewPoint < uPoints[i+1] ):
+				pts.insert(i+1, self.invpl.multVec(point))
+				break
+		# DNC: fix: add points to last segment if curve is closed 
+		if ( self.obj.Closed ) and ( uNewPoint > uPoints[-1] ) :
+				pts.append(self.invpl.multVec(point))
+		self.obj.Points = pts
+		self.resetTrackers()
 
 	def resetTrackers(self):
 		for t in self.trackers:

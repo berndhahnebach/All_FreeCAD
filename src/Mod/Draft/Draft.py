@@ -1562,12 +1562,15 @@ class BSpline:
                 plm = fp.Placement
                 if fp.Points:
                         if fp.Points[0] == fp.Points[-1]:
-                                fp.Closed = True
+                                if not fp.Closed: fp.Closed = True
                                 fp.Points.pop()
                         if fp.Closed and (len(fp.Points) > 2):
                                 spline = Part.BSplineCurve()
                                 spline.interpolate(fp.Points, True)
-                                fp.Shape = spline.toShape()
+                                # DNC: bug fix: convert to face if closed
+                                shape = Part.Wire(spline.toShape())
+                                shape = Part.Face(shape)
+                                fp.Shape = shape
                         else:   
                                 spline = Part.BSplineCurve()
                                 spline.interpolate(fp.Points, False)
