@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>604</width>
-    <height>312</height>
+    <width>640</width>
+    <height>480</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>640</width>
+    <height>480</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Machining Distortion Prediction</string>
@@ -17,9 +23,9 @@
    <item row="0" column="0" rowspan="2">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QPushButton" name="button_select_files">
+      <widget class="QPushButton" name="button_select_file">
        <property name="text">
-        <string>Select Nastran Geometry Files</string>
+        <string>Select Nastran Geometry File</string>
        </property>
       </widget>
      </item>
@@ -31,12 +37,12 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="button_start_calculation">
+      <widget class="QPushButton" name="button_add_to_table">
        <property name="enabled">
         <bool>false</bool>
        </property>
        <property name="text">
-        <string>Start Calculation</string>
+        <string>Add Job</string>
        </property>
       </widget>
      </item>
@@ -109,7 +115,7 @@
            <widget class="QSpinBox" name="spinBox_z_level_from">
             <property name="minimumSize">
              <size>
-              <width>53</width>
+              <width>70</width>
               <height>20</height>
              </size>
             </property>
@@ -128,7 +134,7 @@
            <widget class="QSpinBox" name="spinBox_z_level_to">
             <property name="minimumSize">
              <size>
-              <width>53</width>
+              <width>70</width>
               <height>20</height>
              </size>
             </property>
@@ -170,12 +176,18 @@
             </property>
             <property name="minimumSize">
              <size>
-              <width>49</width>
+              <width>60</width>
               <height>20</height>
              </size>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="singleStep">
+             <double>0.100000000000000</double>
+            </property>
+            <property name="value">
+             <double>0.300000000000000</double>
             </property>
            </widget>
           </item>
@@ -222,12 +234,18 @@
             </property>
             <property name="minimumSize">
              <size>
-              <width>49</width>
+              <width>60</width>
               <height>20</height>
              </size>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="maximum">
+             <double>999.990000000000009</double>
+            </property>
+            <property name="value">
+             <double>210.000000000000000</double>
             </property>
            </widget>
           </item>
@@ -248,7 +266,7 @@
            <widget class="QDoubleSpinBox" name="spinBox_misalignment_x">
             <property name="minimumSize">
              <size>
-              <width>43</width>
+              <width>70</width>
               <height>20</height>
              </size>
             </property>
@@ -417,13 +435,42 @@
      </property>
     </spacer>
    </item>
-   <item row="2" column="0" colspan="2">
+   <item row="4" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="button_dialog">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::Close|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <widget class="QTableWidget" name="JobTable">
+     <property name="rowCount">
+      <number>0</number>
+     </property>
+     <property name="columnCount">
+      <number>9</number>
+     </property>
+     <column/>
+     <column/>
+     <column/>
+     <column/>
+     <column/>
+     <column/>
+     <column/>
+     <column/>
+     <column/>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QPushButton" name="button_start_calculation">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>Start Calculation</string>
      </property>
     </widget>
    </item>

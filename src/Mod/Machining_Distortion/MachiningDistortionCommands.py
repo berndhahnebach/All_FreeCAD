@@ -18,12 +18,12 @@ import time
 class MachiningDistortion_ChooseFile:
     "Choose the file to work with"
     def Activated(self):
-        pi=Base.ProgressIndicator()
-        pi.start("Hello, World!",100)
-        for i in range(100):
-            time.sleep(1)
-            pi.next()
-        pi.stop()
+#        pi=Base.ProgressIndicator()
+#        pi.start("Hello, World!",100)
+#        for i in range(100):
+#            time.sleep(1)
+#            pi.next()
+#        pi.stop()
         myapp = MyForm(QtGui.qApp.activeWindow())
         myapp.exec_()
 
