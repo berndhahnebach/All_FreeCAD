@@ -153,7 +153,7 @@ static PyObject * exporter(PyObject *self, PyObject *args)
         return NULL;
 
     float fTolerance = 0.1f;
-    std::vector<MeshCore::MeshGeomFacet> faces;
+    MeshObject global_mesh;
 
     PY_TRY {
         Py::List list(object);
@@ -165,10 +165,10 @@ static PyObject * exporter(PyObject *self, PyObject *args)
                 App::DocumentObject* obj = static_cast<App::DocumentObjectPy*>(item)->getDocumentObjectPtr();
                 if (obj->getTypeId().isDerivedFrom(meshId)) {
                     const MeshObject& mesh = static_cast<Mesh::Feature*>(obj)->Mesh.getValue();
-                    MeshObject::const_facet_iterator end = mesh.facets_end();
-                    for (MeshObject::const_facet_iterator jt = mesh.facets_begin(); jt != end; ++jt) {
-                        faces.push_back(*jt);
-                    }
+                    if (global_mesh.countFacets() == 0)
+                        global_mesh = mesh;
+                    else
+                        global_mesh.addMesh(mesh);
                 }
                 else if (obj->getTypeId().isDerivedFrom(partId)) {
                     App::Property* shape = obj->getPropertyByName("Shape");
@@ -178,19 +178,18 @@ static PyObject * exporter(PyObject *self, PyObject *args)
                         std::vector<Data::ComplexGeoData::FacetTopo> aTopo;
                         static_cast<App::PropertyComplexGeoData*>(shape)->getFaces(aPoints, aTopo,fTolerance);
                         mesh->addFacets(aTopo, aPoints);
-                        MeshObject::const_facet_iterator end = mesh->facets_end();
-                        for (MeshObject::const_facet_iterator jt = mesh->facets_begin(); jt != end; ++jt) {
-                            faces.push_back(*jt);
-                        }
+                        if (global_mesh.countFacets() == 0)
+                            global_mesh = *mesh;
+                        else
+                            global_mesh.addMesh(*mesh);
                     }
                 }
             }
         }
-    } PY_CATCH;
 
-    MeshObject mesh;
-    mesh.setFacets(faces);
-    mesh.save(filename);
+        // export mesh compound
+        global_mesh.save(filename);
+    } PY_CATCH;
 
     Py_Return;
 }
