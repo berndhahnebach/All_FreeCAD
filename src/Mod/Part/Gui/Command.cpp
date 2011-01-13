@@ -941,12 +941,15 @@ void CmdPartRuledSurface::activated(int iMsg)
     bool ok = false;
     TopoDS_Shape curve1, curve2;
     std::string link1, link2, obj1, obj2;
-    Gui::SelectionFilter edgeFilter  ("SELECT Part::Feature SUBELEMENT Edge COUNT 1..2\n"
-                                      "SELECT Part::Feature SUBELEMENT Wire COUNT 1..2");
+    Gui::SelectionFilter edgeFilter  ("SELECT Part::Feature SUBELEMENT Edge COUNT 1..2");
+    Gui::SelectionFilter wireFilter  ("SELECT Part::Feature SUBELEMENT Wire COUNT 1..2");
     Gui::SelectionFilter partFilter  ("SELECT Part::Feature COUNT 2");
-    if (edgeFilter.match()) {
+    bool matchEdge = edgeFilter.match();
+    bool matchWire = wireFilter.match();
+    if (matchEdge || matchWire) {
         // get the selected object
-        const std::vector<Gui::SelectionObject>& result = edgeFilter.Result[0];
+        const std::vector<Gui::SelectionObject>& result = matchEdge
+            ? edgeFilter.Result[0] : wireFilter.Result[0];
         // two edges from one object
         if (result.size() == 1) {
             const Part::Feature* part = static_cast<const Part::Feature*>(result[0].getObject());
@@ -989,7 +992,7 @@ void CmdPartRuledSurface::activated(int iMsg)
         }
     }
     else if (partFilter.match()) {
-        const std::vector<Gui::SelectionObject>& result = edgeFilter.Result[0];
+        const std::vector<Gui::SelectionObject>& result = partFilter.Result[0];
         const Part::Feature* part1 = static_cast<const Part::Feature*>(result[0].getObject());
         const Part::Feature* part2 = static_cast<const Part::Feature*>(result[1].getObject());
         const Part::TopoShape& shape1 = part1->Shape.getValue();
