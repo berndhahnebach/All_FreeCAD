@@ -6,11 +6,11 @@ from PyQt4 import QtCore, QtGui
 from User_Interface_Mach_Dist import Ui_dialog
 ##------------------------------------------------
 
-from read_generalINFOS  import  read_generalINFOS
-from determine_ElementType  import  determine_ElementType
-from mesh_bdf2inp  import mesh_bdf2inp
+#from read_generalINFOS  import  read_generalINFOS
+#from determine_ElementType  import  determine_ElementType
+#from mesh_bdf2inp  import mesh_bdf2inp
 from ApplyingBC_IC  import ApplyingBC_IC
-from calculix_output_postprocess  import calculix_output_postprocess
+#from calculix_output_postprocess  import calculix_output_postprocess
 
 import FreeCAD,Fem,Part
 
@@ -19,97 +19,135 @@ class MyForm(QtGui.QDialog,Ui_dialog):
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-
+        #Define some global variables
+        self.filename = QtCore.QString("")
+        self.dirname = QtCore.QString("")
         #Connect Signals and Slots
-        QtCore.QObject.connect(self.button_select_files, QtCore.SIGNAL("clicked()"), self.select_files)
+        QtCore.QObject.connect(self.button_select_file, QtCore.SIGNAL("clicked()"), self.select_file)
         QtCore.QObject.connect(self.button_select_output, QtCore.SIGNAL("clicked()"), self.select_output)
         QtCore.QObject.connect(self.button_dialog, QtCore.SIGNAL("accepted()"), self.onAbbrechen)
         QtCore.QObject.connect(self.button_dialog, QtCore.SIGNAL("rejected()"), self.onAbbrechen)
         QtCore.QObject.connect(self.button_start_calculation, QtCore.SIGNAL("clicked()"), self.start_calculation)
+        QtCore.QObject.connect(self.button_add_to_table, QtCore.SIGNAL("clicked()"), self.add_to_table)
 
+        #Define the table headers as we are not able to use the QT Designer for that
+        self.JobTable.clear()
+        self.JobTable.setHorizontalHeaderLabels(["Input File","Output Folder","Young Modulus","Poisson Ratio","Offset From","Offset To","RotX","RotY","RotZ"])
 
-    def select_files(self):
-        self.filenames=QtGui.QFileDialog.getOpenFileNames(None, 'Open file','','Nastran Files (*.bdf)')
+    def add_to_table(self):
+        self.JobTable.insertRow(0)
+        item = QtGui.QTableWidgetItem(self.filename)
+        self.JobTable.setItem(0,0,item)
+        item = QtGui.QTableWidgetItem(self.dirname)
+        self.JobTable.setItem(0,1,item)
+        item = QtGui.QTableWidgetItem()
+        item.setData(QtCore.Qt.DisplayRole,self.spinBox_young_modulus.value())
+        self.JobTable.setItem(0,2,item)
+        item = QtGui.QTableWidgetItem()
+        item.setData(QtCore.Qt.DisplayRole,self.spinBox_poisson_ratio.value())
+        self.JobTable.setItem(0,3,item)
+        item = QtGui.QTableWidgetItem()
+        item.setData(QtCore.Qt.DisplayRole,self.spinBox_z_level_from.value())
+        self.JobTable.setItem(0,4,item)
+        item = QtGui.QTableWidgetItem()
+        item.setData(QtCore.Qt.DisplayRole,self.spinBox_z_level_to.value())
+        self.JobTable.setItem(0,5,item)
+        item = QtGui.QTableWidgetItem()
+        item.setData(QtCore.Qt.DisplayRole,self.spinBox_misalignment_x.value())
+        self.JobTable.setItem(0,6,item)
+        item = QtGui.QTableWidgetItem()
+        item.setData(QtCore.Qt.DisplayRole,self.spinBox_misalignment_y.value())
+        self.JobTable.setItem(0,7,item)
+        item = QtGui.QTableWidgetItem()
+        item.setData(QtCore.Qt.DisplayRole,self.spinBox_misalignment_z.value())
+        self.JobTable.setItem(0,8,item)
+        # This is how to get the data back test2 = self.JobTable.item(0,1).data(QtCore.Qt.DisplayRole).toInt()
+        self.button_add_to_table.setEnabled(False)
+        self.dirname.clear()
+        self.filename.clear()
+        self.button_start_calculation.setEnabled(True)
+
+    def select_file(self):
+        self.filename=QtGui.QFileDialog.getOpenFileName(None, 'Open file','','Nastran Files (*.bdf)')
+        self.button_add_to_table.setEnabled(not self.dirname.isEmpty() and not self.filename.isEmpty())
 
     def select_output(self):
         self.dirname=QtGui.QFileDialog.getExistingDirectory(None, 'Open working directory', '', QtGui.QFileDialog.ShowDirsOnly)
-        self.button_start_calculation.setEnabled(not self.dirname.isEmpty())
+        self.button_add_to_table.setEnabled(not self.dirname.isEmpty() and not self.filename.isEmpty())
 
     def onAbbrechen(self):
         self.close()
 
     def start_calculation(self):
+        self.button_add_to_table.setEnabled(False)
+        self.button_select_file.setEnabled(False)
+        self.button_select_output.setEnabled(False)
+        self.button_start_calculation.setEnabled(False)
         ##Get values from the GUI
-        self.young_modulus = self.spinBox_young_modulus.value()
-        self.poisson_ratio = self.spinBox_poisson_ratio.value()
-        self.z_level_from = self.spinBox_z_level_from.value()
-        self.z_level_to = self.spinBox_z_level_to.value()
-        self.misalignment_x = self.spinBox_misalignment_x.value()
-        self.misalignment_y = self.spinBox_misalignment_y.value()
-        self.misalignment_z = self.spinBox_misalignment_z.value()
-        self.fly_to_buy = self.check_fly_to_buy.isChecked()
+        #Now do the calculation stuff for each row in the  table
+        for job in range (0,self.JobTable.rowCount()):
+            self.fly_to_buy = self.check_fly_to_buy.isChecked()
 
-        current_file_name = self.filenames[0]
-        filename_without_suffix = self.filenames[0].split("/").takeLast().split(".")[0]
-        meshobject = Fem.read(str(current_file_name))
-        #Perform PCA 
-        Fem.SMESH_PCA(meshobject)
-        #Do min routine
-        Fem.minBoundingBox(meshobject)
-        #Now get the Node Numbers for the Boundary Conditions
-        node_numbers = []
-        node_numbers = Fem.getBoundary_Conditions(meshobject)
-        #Now perform the user misalignment
-        rotation_around_x = FreeCAD.Base.Placement(FreeCAD.Base.Vector(0,0,0),FreeCAD.Base.Vector(1,0,0),self.misalignment_x)
-        rotation_around_y = FreeCAD.Base.Placement(FreeCAD.Base.Vector(0,0,0),FreeCAD.Base.Vector(0,1,0),self.misalignment_y)
-        rotation_around_z = FreeCAD.Base.Placement(FreeCAD.Base.Vector(0,0,0),FreeCAD.Base.Vector(0,0,1),self.misalignment_z)
-        meshobject.setTransform(rotation_around_x)
-        meshobject.setTransform(rotation_around_y)
-        meshobject.setTransform(rotation_around_z)
+            current_file_name = self.JobTable.item(job,0).text()
+            filename_without_suffix = self.JobTable.item(job,0).text().split("/").takeLast().split(".")[0]
+            meshobject = Fem.read(str(current_file_name))
+            #Perform PCA
+            Fem.SMESH_PCA(meshobject)
+            #Do min routine
+            Fem.minBoundingBox(meshobject)
+            #Now get the Node Numbers for the Boundary Conditions
+            node_numbers = []
+            node_numbers = Fem.getBoundary_Conditions(meshobject)
+            #Now perform the user misalignment
+            rotation_around_x = FreeCAD.Base.Placement(FreeCAD.Base.Vector(0,0,0),FreeCAD.Base.Vector(1,0,0),self.JobTable.item(job,6).data(QtCore.Qt.DisplayRole).toDouble()[0])
+            rotation_around_y = FreeCAD.Base.Placement(FreeCAD.Base.Vector(0,0,0),FreeCAD.Base.Vector(0,1,0),self.JobTable.item(job,7).data(QtCore.Qt.DisplayRole).toDouble()[0])
+            rotation_around_z = FreeCAD.Base.Placement(FreeCAD.Base.Vector(0,0,0),FreeCAD.Base.Vector(0,0,1),self.JobTable.item(job,8).data(QtCore.Qt.DisplayRole).toDouble()[0])
+            meshobject.setTransform(rotation_around_x)
+            meshobject.setTransform(rotation_around_y)
+            meshobject.setTransform(rotation_around_z)
 
-        #Now we have set up the initial geometry for the calculations. Lets generate an ABAQUS input file now for each z-level with exactly the same
-        #boundary conditions
-        #1. Lets translate the geometry to the initial desired z-level
+            #Now we have set up the initial geometry for the calculations. Lets generate an ABAQUS input file now for each z-level with exactly the same
+            #boundary conditions
+            #1. Lets translate the geometry to the initial desired z-level
 
-        #2. Generate a Folder for the current calculation z-level and output the ABAQUS Geometry and the boundary_conditions
-        intervall = 1
-        i = self.z_level_from
-        while i <= self_z_level_to:
-            translation = FreeCAD.Base.Placement(FreeCAD.Base.Vector(0,0,self.z_level_from),FreeCAD.Base.Vector(1,0,0),0)
-            meshobject.setTransform(translation)
-            Case_Dir = self.dirname + filename_without_suffix + "_" + QtCore.QString.number(i)
-            if ( os.path.exists(str(Case_Dir)) ):
-              os.rmdir(str(Case_Dir))
-            os.mkdir(str(Case_Dir))
-            meshobject.write(str(Case_Dir + "/" + "geometry_fe_input.inp"))
-            ApplyingBC_IC(Case_Dir, YoungModulus,PoissonCoeff,node_numbers[0],node_numbers[1],node_numbers[2])
-            i = i+intervall
-        
+            #2. Generate a Folder for the current calculation z-level and output the ABAQUS Geometry and the boundary_conditions
+
+            batch = open(str(self.JobTable.item(job,1).text() + "/" + 'lcmt_CALCULIX_Calculation_batch.bat'),'w')
+
+            intervall = 1
+            i = self.JobTable.item(job,4).data(QtCore.Qt.DisplayRole).toInt()[0]
+            while i <= self.JobTable.item(job,5).data(QtCore.Qt.DisplayRole).toInt()[0]:
+                translated_mesh = meshobject.copy()
+                translation = FreeCAD.Base.Placement(FreeCAD.Base.Vector(0,0,i),FreeCAD.Base.Vector(0,0,0),0)
+                translated_mesh.setTransform(translation)
+                Case_Dir = self.JobTable.item(job,1).text() + "/" + filename_without_suffix + "_" + QtCore.QString.number(i)
+                if ( os.path.exists(str(Case_Dir)) ):
+                  os.rmdir(str(Case_Dir))
+                os.mkdir(str(Case_Dir))
+                translated_mesh.write(str(Case_Dir + "/" + "geometry_fe_input.inp"))
+                ApplyingBC_IC(Case_Dir, self.JobTable.item(job,2).data(QtCore.Qt.DisplayRole).toDouble()[0],self.JobTable.item(job,3).data(QtCore.Qt.DisplayRole).toDouble()[0],node_numbers[0],node_numbers[1],node_numbers[2])
+                batch.write(str("cd " + Case_Dir + "\n"))
+                batch.write(str("ccx -i final_fe_input.inp > calculix_output.out\n"))
+                i = i+intervall
+
+            batch.write("exit")
+            batch.close()
+
+
+
         #3. Generate a Batch File and begin the calculation of the different steps. Use a progress bar to make the progress visible
-        ##        # Edit a batch file (it may be necessary later on) :
-        batch = open (str(self.dirname + "/" + 'lcmt_CALCULIX_Calculation_batch.bat'),'w')
-        print "writing job execution file lcmt_CALCULIX_Calculation_batch.bat"
-        print "Provide a file MYcase1_sigini_input.txt if necessary !"
-        print "Provide a file MYcase1.NormalInfos_txt if necessary !"
-        print "Provide a file MYcase1.ThicknessInfos_txt if necessary !"
-        print "Provide a file MYcase1.StressInfos_txt if necessary !"
-        #
-        CALCULIX_Input_Output = "-i TransformedMesh_File > calculix_output.out"
-        batch.write("%s %s \n" %(Path_to_FEMsoftware, CALCULIX_Input_Output))
-        #
-        batch.write("exit")
-        batch.close()
+
         # Direct submission of the CALCULIX_Calculations :
-        CommandLine = "./lcmt_CALCULIX_Calculation_batch.bat"
-        os.system("chmod +x ./lcmt_CALCULIX_Calculation_batch.bat")
-        print "Launching job; look in calculix_output.out if needed"
-        os.system(CommandLine)
-		
-		#4. After all the calculations are done we do a postprocess step to extract the displacement values at certain nodes
-        
+ #       CommandLine = "./lcmt_CALCULIX_Calculation_batch.bat"
+#        os.system("chmod +x ./lcmt_CALCULIX_Calculation_batch.bat")
+  #      print "Launching job; look in calculix_output.out if needed"
+ #       os.system(CommandLine)
+
+        #4. After all the calculations are done we do a postprocess step to extract the displacement values at certain nodes
+
         #fly to buy ratio wird, falls angeklickt im Outputfile nach dem Misalignment vermerkt
 
-        
+
 
 ##        # 1) copy the input PrincipalAxis-file (produced with the macro CATIA) into the generic file *CATPART_pointG_PrincipalAxis.txt* :
 ##        fileName1=str(FOLDER1_path)+"/"+str(file)
@@ -247,8 +285,8 @@ class MyForm(QtGui.QDialog,Ui_dialog):
 ##        CommandLine = "rm -f Nastran_originalMeshFile.bdf Nastran_originalMeshFile_HeadLines.bdf Nastran_GRIDS_in_PrincipalAxis_1overFreqlines.txt Nastran_GRIDS_in_PrincipalAxis_ALLlines.bdf tail_Nastran_originalMeshFile.bdf typeELEMENT.txt TransformedMesh_File_rot1_1overFreqlines.txt Nastran_displacedNODEs.txt Nastran_ELEMENTs.txt"
 ##        os.system(CommandLine)
 
-
-
+        self.button_select_file.setEnabled(True)
+        self.button_select_output.setEnabled(True)
 
 
 ##Main function to be used for GUI setup and entering into the main loop
@@ -257,12 +295,12 @@ if __name__ == "__main__":
     myapp = MyForm()
     myapp.show()
     sys.exit(app.exec_())
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+

@@ -62,8 +62,9 @@ def ApplyingBC_IC(Casedir,YoungModulus,PoissonCoeff,OUTER_GRID_No1,OUTER_GRID_No
     AC_file.write("*END STEP")
     #
     AC_file.close() 
+    os.chdir(str(Casedir))
     if os.name != "posix":
-        CommandLine = "type Applied_Conditions.txt geometry_fe_input.inp > final_fe_input.inp"
+        CommandLine = "type geometry_fe_input.inp Applied_Conditions.txt> final_fe_input.inp"
     else:
         CommandLine = "cat Applied_Conditions.txt >> geometry_fe_input.inp"
     os.system(CommandLine)
