@@ -92,7 +92,10 @@
         <property name="text">
          <string>Create new document at start up</string>
         </property>
-        <property name="prefEntry" stdset="0">
+         <property name="checked">
+           <bool>true</bool>
+         </property>
+         <property name="prefEntry" stdset="0">
          <cstring>CreateNewDoc</cstring>
         </property>
         <property name="prefPath" stdset="0">
@@ -131,7 +134,10 @@
         <property name="text">
          <string>Using Undo/Redo on documents (can be very memory consuming)</string>
         </property>
-        <property name="prefEntry" stdset="0">
+         <property name="checked">
+           <bool>true</bool>
+         </property>
+         <property name="prefEntry" stdset="0">
          <cstring>UsingUndo</cstring>
         </property>
         <property name="prefPath" stdset="0">

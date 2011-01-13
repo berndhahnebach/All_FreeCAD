@@ -97,7 +97,10 @@
           <property name="text">
            <string>Enable preselection highlighting</string>
           </property>
-          <property name="prefEntry" stdset="0">
+           <property name="checked">
+             <bool>true</bool>
+           </property>
+           <property name="prefEntry" stdset="0">
            <cstring>EnablePreselection</cstring>
           </property>
           <property name="prefPath" stdset="0">

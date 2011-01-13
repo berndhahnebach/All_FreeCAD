@@ -217,12 +217,12 @@ void View3DInventor::OnChange(ParameterGrp::SubjectType &rCaller,ParameterGrp::M
     }
     else if (strcmp(Reason,"EnablePreselection") == 0) {
         const ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
-        SoFCEnableHighlightAction cAct(rclGrp.GetBool("EnablePreselection", false));
+        SoFCEnableHighlightAction cAct(rclGrp.GetBool("EnablePreselection", true));
         cAct.apply(_viewer->getSceneGraph());
     }
     else if (strcmp(Reason,"EnableSelection") == 0) {
         const ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
-        SoFCEnableSelectionAction cAct(rclGrp.GetBool("EnableSelection", false));
+        SoFCEnableSelectionAction cAct(rclGrp.GetBool("EnableSelection", true));
         cAct.apply(_viewer->getSceneGraph());
     }
     else if (strcmp(Reason,"HighlightColor") == 0) {

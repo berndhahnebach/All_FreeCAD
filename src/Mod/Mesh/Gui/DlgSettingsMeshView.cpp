@@ -89,7 +89,7 @@ void DlgSettingsMeshView::loadSettings()
 {
     Base::Reference<ParameterGrp> hGrp = Gui::WindowParameter::getDefaultParameter();
     hGrp = hGrp->GetGroup("View");
-    if (!hGrp->GetBool("EnablePreselection",false) &&
+    if (!hGrp->GetBool("EnablePreselection",true) &&
         !hGrp->GetBool("EnableSelection",true))
         checkboxBoundbox->setDisabled(true);
     checkboxRendering->onRestore();

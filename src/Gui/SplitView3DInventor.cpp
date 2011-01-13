@@ -170,12 +170,12 @@ void SplitView3DInventor::OnChange(ParameterGrp::SubjectType &rCaller,ParameterG
             (*it)->getBacklight()->intensity.setValue((float)value/100.0f);
     }
     else if (strcmp(Reason,"EnablePreselection") == 0) {
-        SoFCEnableHighlightAction cAct(rGrp.GetBool("EnablePreselection", false));
+        SoFCEnableHighlightAction cAct(rGrp.GetBool("EnablePreselection", true));
         for (std::vector<View3DInventorViewer*>::iterator it = _viewer.begin(); it != _viewer.end(); ++it)
             cAct.apply((*it)->getSceneGraph());
     }
     else if (strcmp(Reason,"EnableSelection") == 0) {
-        SoFCEnableSelectionAction cAct(rGrp.GetBool("EnableSelection", false));
+        SoFCEnableSelectionAction cAct(rGrp.GetBool("EnableSelection", true));
         for (std::vector<View3DInventorViewer*>::iterator it = _viewer.begin(); it != _viewer.end(); ++it)
             cAct.apply((*it)->getSceneGraph());
     }
