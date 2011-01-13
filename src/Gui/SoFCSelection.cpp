@@ -53,7 +53,12 @@
 #include "SoFCSelectionAction.h"
 #include "SoFCInteractiveElement.h"
 
-//#define NO_FRONTBUFFER
+// For 64-bit system the method using the front buffer doesn't work at all for lines.
+// Thus, use the method which forces a redraw every time. This is a bit slower but at
+// least it works.
+#if defined(_OCC64) // is set by configure or cmake
+# define NO_FRONTBUFFER
+#endif
 
 using namespace Gui;
 
