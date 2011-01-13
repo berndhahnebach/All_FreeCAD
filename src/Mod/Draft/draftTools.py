@@ -520,17 +520,58 @@ class dimTracker(Tracker):
 			points = [fcvec.tup(p1),fcvec.tup(p2),fcvec.tup(p3),fcvec.tup(p4)]
 			self.coords.point.setValues(0,4,points)
 
+class bsplineTracker(Tracker):
+    "A bspline tracker"
+    def __init__(self,dotted=False,scolor=None,swidth=None,points = []):
+        self.bspline = None
+        self.points = points
+        self.trans = coin.SoTransform()
+        self.sep = coin.SoSeparator()
+        self.recompute()
+        Tracker.__init__(self,dotted,scolor,swidth,[self.trans,self.sep])
+        
+    def update(self, points):
+        self.points = points
+        self.recompute()
+            
+    def recompute(self):
+        if (len(self.points) >= 2):
+            if self.bspline: self.sep.removeChild(self.bspline)
+            self.bspline = None
+            c =  Part.BSplineCurve()
+            # DNC: allows to close the curve by placing ends close to each other
+            if ( len(self.points) >= 3 ) and ( (self.points[0] - self.points[-1]).Length < 0.05 ):              
+                c.interpolate(self.points[:-1], True)
+            else:
+                c.interpolate(self.points, False)
+            c = c.toShape()
+            buf=c.writeInventor(2,0.01)
+            #fp=open("spline.iv","w")
+            #fp.write(buf)
+            #fp.close()
+            ivin = coin.SoInput()
+            ivin.setBuffer(buf)
+            ivob = coin.SoDB.readAll(ivin)
+            # In case reading from buffer failed
+            if ivob and ivob.getNumChildren() > 1:
+                self.bspline = ivob.getChild(1).getChild(0)
+                self.bspline.removeChild(self.bspline.getChild(0))
+                self.bspline.removeChild(self.bspline.getChild(0))
+                self.sep.addChild(self.bspline)
+            else:
+                FreeCAD.Console.PrintWarning("bsplineTracker.recompute() failed to read-in Inventor string\n")
+
 class arcTracker(Tracker):
         "An arc tracker"
         def __init__(self,dotted=False,scolor=None,swidth=None,start=0,end=math.pi*2):
                 self.circle = None
                 self.startangle = math.degrees(start)
                 self.endangle = math.degrees(end)
-		self.trans = coin.SoTransform()
-		self.trans.translation.setValue([0,0,0])
+                self.trans = coin.SoTransform()
+                self.trans.translation.setValue([0,0,0])
                 self.sep = coin.SoSeparator()
                 self.recompute()
-		Tracker.__init__(self,dotted,scolor,swidth,[self.trans, self.sep])
+                Tracker.__init__(self,dotted,scolor,swidth,[self.trans, self.sep])
 
         def setCenter(self,cen):
                 "sets the center point"
@@ -587,10 +628,11 @@ class arcTracker(Tracker):
                         c = Part.makeCircle(1,Vector(0,0,0),plane.axis,self.endangle,self.startangle)
                 else:
                         c = Part.makeCircle(1,Vector(0,0,0),plane.axis,self.startangle,self.endangle)
+                buf=c.writeInventor(2,0.01)
                 ivin = coin.SoInput()
-                ivin.setBuffer(c.writeInventor())
+                ivin.setBuffer(buf)
                 ivob = coin.SoDB.readAll(ivin)
-                # In debug mode we have some problems reading in the string
+                # In case reading from buffer failed
                 if ivob and ivob.getNumChildren() > 1:
                         self.circle = ivob.getChild(1).getChild(0)
                         self.circle.removeChild(self.circle.getChild(0))
