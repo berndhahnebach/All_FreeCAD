@@ -122,8 +122,24 @@ bool SelectionFilter::match(void)
         }
 
         std::vector<Gui::SelectionObject> temp = Gui::Selection().getSelectionEx(0,(*it)->ObjectType);
-        if ((int)temp.size()<min || (int)temp.size()>max)
-            return false;
+
+        // test if subnames present
+        if((*it)->SubName == ""){
+            // if no subnames the count of the object get tested
+            if ((int)temp.size()<min || (int)temp.size()>max)
+                return false;
+        }else{
+            // if subnames present count all subs over the selected object of type
+            int subCount=0;
+            for(std::vector<Gui::SelectionObject>::const_iterator it2=temp.begin();it2!=temp.end();++it2){
+                for(std::vector<std::string>::const_iterator it3=it2->getSubNames().begin();it3!=it2->getSubNames().end();++it3)
+                    if( it3->find((*it)->SubName) != 0)
+                        return false;
+                subCount += it2->getSubNames().size();
+            }
+            if(subCount<min || subCount>max)
+                return false;
+        }
         Result.push_back(temp);
     }
     return true;
