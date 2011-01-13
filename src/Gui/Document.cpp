@@ -137,7 +137,7 @@ Document::Document(App::Document* pcDocument,Application * app)
     _pcDocPy = new Gui::DocumentPy(this);
 
     if (App::GetApplication().GetParameterGroupByPath
-        ("User parameter:BaseApp/Preferences/Document")->GetBool("UsingUndo",false))
+        ("User parameter:BaseApp/Preferences/Document")->GetBool("UsingUndo",true))
         d->_pcDocument->setUndoMode(1);
 }
 

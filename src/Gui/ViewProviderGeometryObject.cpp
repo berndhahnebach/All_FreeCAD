@@ -484,7 +484,7 @@ SoFCSelection* ViewProviderGeometryObject::createFromSettings() const
 
     float transparency;
     ParameterGrp::handle hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("View");
-    bool enablePre = hGrp->GetBool("EnablePreselection", false);
+    bool enablePre = hGrp->GetBool("EnablePreselection", true);
     bool enableSel = hGrp->GetBool("EnableSelection", true);
     if (!enablePre) {
         sel->highlightMode = Gui::SoFCSelection::OFF;
