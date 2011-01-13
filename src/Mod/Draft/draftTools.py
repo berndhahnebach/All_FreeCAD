@@ -540,7 +540,8 @@ class bsplineTracker(Tracker):
             self.bspline = None
             c =  Part.BSplineCurve()
             # DNC: allows to close the curve by placing ends close to each other
-            if ( len(self.points) >= 3 ) and ( (self.points[0] - self.points[-1]).Length < 0.05 ):              
+            if ( len(self.points) >= 3 ) \
+                        and ( (self.points[0] - self.points[-1]).Length < 0.05 ):
                 c.interpolate(self.points[:-1], True)
             else:
                 c.interpolate(self.points, False)
@@ -941,14 +942,18 @@ class Line(Creator):
 			self.snap = snapTracker()
 			self.linetrack = lineTracker()
 			self.constraintrack = lineTracker(dotted=True)
+                        self.obj=self.doc.addObject("Part::Feature",self.featureName)
+                        Draft.formatObject(self.obj)
 			self.call = self.view.addEventCallback("SoEvent",self.action)
 			msg(translate("draft", "Pick first point:\n"))
 
 	def finish(self,closed=False):
 		"terminates the operation and closes the poly if asked"
-		if (len(self.node) > 1):
+                if self.obj:
                         old = self.obj.Name
                         self.doc.removeObject(old)
+                self.obj = None
+		if (len(self.node) > 1):
                         self.doc.openTransaction("Create "+self.featureName)
                         Draft.makeWire(self.node,closed,face=self.ui.hasFill.isChecked())
                         self.doc.commitTransaction()
@@ -957,10 +962,6 @@ class Line(Creator):
 			self.constraintrack.finalize()
 			self.snap.finalize()
 		Creator.finish(self)
-
-	def createTempObject(self):
-		"creates a temporary object in the current doc so we can snap to it" 
-		self.obj=self.doc.addObject("Part::Feature",self.featureName)
 
 	def action(self,arg):
 		"scene event handler"
@@ -1014,7 +1015,6 @@ class Line(Creator):
 			msg(translate("draft", "Pick next point:\n"))
                         self.planetrack.set(self.node[0])
 		elif (len(self.node) == 2):
-			if not self.obj: self.createTempObject()
 			last = self.node[len(self.node)-2]
 			newseg = Part.Line(last,point).toShape()
 			self.obj.Shape = newseg
