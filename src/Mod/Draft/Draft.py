@@ -104,6 +104,11 @@ def precision():
         "precision(): returns the precision value from Draft user settings"
         params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
 	return params.GetInt("precision")
+
+def tolerance():
+        "tolerance(): returns the tolerance value from Draft user settings"
+        params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
+	return params.GetFloat("tolerance")
         
 def getRealName(name):
 	"getRealName(string): strips the trailing numbers from a string name"
