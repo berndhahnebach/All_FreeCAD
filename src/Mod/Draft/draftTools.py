@@ -540,11 +540,17 @@ class bsplineTracker(Tracker):
             self.bspline = None
             c =  Part.BSplineCurve()
             # DNC: allows to close the curve by placing ends close to each other
-            if ( len(self.points) >= 3 ) \
-                        and ( (self.points[0] - self.points[-1]).Length < 0.05 ):
-                c.interpolate(self.points[:-1], True)
-            else:
-                c.interpolate(self.points, False)
+            if ( len(self.points) >= 3 ) and ( (self.points[0] - self.points[-1]).Length < Draft.tolerance() ):
+                    # YVH: Added a try to bypass some hazardous situations
+                    try:
+                            c.interpolate(self.points[:-1], True)
+                    except:
+                            pass
+            elif self.points:
+                    try:
+                            c.interpolate(self.points, False)
+                    except:
+                            pass
             c = c.toShape()
             buf=c.writeInventor(2,0.01)
             #fp=open("spline.iv","w")
@@ -988,9 +994,15 @@ class Line(Creator):
 					if (not self.isWire and len(self.node) == 2):
 						self.finish(False)
 					if (len(self.node) > 2):
-						if fcvec.equals(point,self.node[0]):
+                                                # DNC: allows to close the curve
+                                                # by placing ends close to each other
+                                                # with tol = Draft tolerance
+                                                # old code has been to insensitive
+                                                # if fcvec.equals(point,self.node[0]):
+                                                if ((point-self.node[0]).Length < Draft.tolerance()):
 							self.undolast()
 							self.finish(True)
+                                                        msg(translate("draft", "Wire has been closed\n"))
 
 	def undolast(self):
 		"undoes last line segment"
@@ -1006,7 +1018,8 @@ class Line(Creator):
                                 else:
                                         newshape = Part.Shape()
 				self.obj.Shape = newshape
-                print self.node
+                                # DNC: report on removal
+                                msg(translate("draft", "Last point has been removed\n"))
 
 	def drawSegment(self,point):
 		"draws a new segment"
@@ -1067,19 +1080,59 @@ class BSpline(Line):
 			'MenuText': str(translate("draft", "B-Spline").toLatin1()),
 			'ToolTip': str(translate("draft", "Creates a multiple-point b-spline. CTRL to snap, SHIFT to constrain").toLatin1())}
 
-	def drawSegment(self,point):
-		"draws a new segment"
-		if (len(self.node) == 1):
-			self.linetrack.on()
-			msg(translate("draft", "Pick next point:\n"))
+        def Activated(self):
+                Line.Activated(self)
+                if self.doc:
+                        self.bsplinetrack = bsplineTracker()
+
+        def action(self,arg):
+                "scene event handler"
+                if (arg["Type"] == "SoLocation2Event"): #mouse movement detection
+                        point,ctrlPoint = getPoint(self,arg)
+                        self.ui.cross(True)
+                        self.bsplinetrack.update(self.node + [point])
+                        # Draw constraint tracker line.
+                        if (arg["ShiftDown"]):
+                                self.constraintrack.p1(point)
+                                self.constraintrack.p2(ctrlPoint)
+                                self.constraintrack.on()
+                        else: self.constraintrack.off()
+                elif (arg["Type"] == "SoMouseButtonEvent"):
+                        if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
+                                if (arg["Position"] == self.pos):
+                                        self.finish(False)
+                                else:
+                                        point,ctrlPoint = getPoint(self,arg)
+                                        self.pos = arg["Position"]
+                                        self.node.append(point)
+                                        self.drawUpdate(point)
+                                        if (not self.isWire and len(self.node) == 2):
+                                                self.finish(False)
+                                        if (len(self.node) > 2):
+                                                # DNC: allows to close the curve
+                                                # by placing ends close to each other
+                                                # with tol = Draft tolerance
+                                                # old code has been to insensitive
+                                                if ((point-self.node[0]).Length < Draft.tolerance()):
+                                                        self.undolast()
+                                                        self.finish(True)
+                                                        msg(translate("draft", "Spline has been closed\n"))
+
+        def undolast(self):
+                "undoes last line segment"
+                if (len(self.node) > 1):
+                        self.node.pop()
+                        self.bsplinetrack.update(self.node)
+                        spline = Part.BSplineCurve()
+                        spline.interpolate(self.node, False)
+                        self.obj.Shape = spline.toShape()
+                        msg(translate("draft", "Last point has been removed\n"))
+
+        def drawUpdate(self,point):
+                if (len(self.node) == 1):
+                        self.bsplinetrack.on()
                         self.planetrack.set(self.node[0])
-		elif (len(self.node) == 2):
-			self.createTempObject()
-			last = self.node[len(self.node)-2]
-			newseg = Part.Line(last,point).toShape()
-			self.obj.Shape = newseg
-			if self.isWire:
-				msg(translate("draft", "Pick next point, or (F)inish or (C)lose:\n"))
+			msg(translate("draft", "Pick next point:\n"))
 		else:
 			spline = Part.BSplineCurve()
 			spline.interpolate(self.node, False)
@@ -1092,11 +1145,10 @@ class BSpline(Line):
                         old = self.obj.Name
                         self.doc.removeObject(old)
                         self.doc.openTransaction("Create "+self.featureName)
-                        # DNC: bug fix: if closed the filled status should be communicated
                         Draft.makeBSpline(self.node,closed,face=self.ui.hasFill.isChecked())
                         self.doc.commitTransaction()
 		if self.ui:
-			self.linetrack.finalize()
+			self.bsplinetrack.finalize()
 			self.constraintrack.finalize()
 			self.snap.finalize()
 		Creator.finish(self)
@@ -3549,24 +3601,27 @@ class AddPoint(Modifier):
 
 	def update(self,point):
 		pts = self.obj.Points
-		if ( Draft.getType(self.obj) == "Wire" ) and  ( self.obj.Closed == True):
-			# DNC: work around.... seems there is a bug in approximate method for closed wires...
-			edges = self.obj.Shape.Wires[0].Edges
-			e1 = edges[-1] # last edge
-			v1 = e1.Vertexes[0].Point
-			v2 = e1.Vertexes[1].Point
-			v2.multiply(0.9999)
-			edges[-1] = Part.makeLine(v1,v2) # reassemble edges with small openning
-			edges.reverse() # for what ever reason approximate gives wrong direction for parameter u ...
-			wire = Part.Wire(edges)
-			curve = wire.approximate(0.0001,0.0001,100,25) # opened equivalent curve
-		if ( Draft.getType(self.obj) == "Wire" ) and  ( self.obj.Closed == False):
-			# DNC: this version is much more reliable near sharp edges!
-			curve = self.obj.Shape.Wires[0].approximate(0.0001,0.0001,100,25)
-		if ( Draft.getType(self.obj) == "BSpline" ) and ( self.obj.Closed == True):
-			curve = self.obj.Shape.Edges[0].Curve
-		elif ( Draft.getType(self.obj) == "BSpline" ) and ( self.obj.Closed == False ):
-			curve = self.obj.Shape.Curve
+		if ( Draft.getType(self.obj) == "Wire" ):
+                        if (self.obj.Closed == True):
+                                # DNC: work around.... seems there is a
+                                # bug in approximate method for closed wires...
+                                edges = self.obj.Shape.Wires[0].Edges
+                                e1 = edges[-1] # last edge
+                                v1 = e1.Vertexes[0].Point
+                                v2 = e1.Vertexes[1].Point
+                                v2.multiply(0.9999)
+                                edges[-1] = Part.makeLine(v1,v2)
+                                edges.reverse()
+                                wire = Part.Wire(edges)
+                                curve = wire.approximate(0.0001,0.0001,100,25)
+                        else:
+                                # DNC: this version is much more reliable near sharp edges!
+                                curve = self.obj.Shape.Wires[0].approximate(0.0001,0.0001,100,25)
+		if ( Draft.getType(self.obj) == "BSpline" ):
+                        if (self.obj.Closed == True):
+                                curve = self.obj.Shape.Edges[0].Curve
+                        else:
+                                curve = self.obj.Shape.Curve
 		uNewPoint = curve.parameter(point)
 		uPoints = []
 		for p in self.obj.Points:
