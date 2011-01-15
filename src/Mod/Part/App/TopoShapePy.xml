@@ -263,6 +263,11 @@ The parameter is in the form list of tuples with the two shapes.</UserDocu>
 The parameter is a list of shapes.</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="isInside" Const="true">
+      <Documentation>
+        <UserDocu>Checks whether a point is inside or outside a given shape</UserDocu>
+      </Documentation>
+    </Methode>
 <!--
     <Attribute Name="Location" ReadOnly="false">
       <Documentation>
