@@ -148,6 +148,14 @@ def getGroupNames():
                 if obj.Type == "App::DocumentObjectGroup":
                         glist.append(obj.Name)
         return glist
+
+def ungroup(obj):
+        "removes the current object from any group it belongs to"
+        for g in getGroupNames():
+                grp = FreeCAD.ActiveDocument.getObject(g)
+                if grp.hasObject(obj):
+                        grp.removeObject(obj)
+        
                 
 def dimSymbol():
         "returns the current dim symbol from the preferences as a pivy SoMarkerSet"
