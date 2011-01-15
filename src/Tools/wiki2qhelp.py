@@ -567,7 +567,7 @@ def output(html,page):
     file.close()
 
 def main(arg):
-	global QHELPCOMPILER,QCOLLECTIOMGENERATOR,OUTPUTPATH,PDFOUTPUT,PDFCONVERTOR
+	global QHELPCOMPILER,QCOLLECTIOMGENERATOR,OUTPUTPATH,PDFOUTPUT,PDFCONVERTOR,TMPFOLDER
 	try:
 		opts, args = getopt.getopt(sys.argv[1:], "hp:t:c:g:o:", ["help", "pdf=", "noremove", "tempfolder=", "helpcompiler-exe=", "out-path=", "helpgenerator-exe="])
 	except getopt.GetoptError:
@@ -579,14 +579,14 @@ def main(arg):
 	for o, a in opts:
 		if o == "-v":
 			VERBOSE = True
-                if o in ("-p","--pdf"):
-                        PDFOUTPUT = True
-                        if a in ['pisa','htmldoc']:
-                            print "using pdf converter:",a
-                            PDFCONVERTOR = a
-                if o in ("-t","--tempfolder"):
-                        print "using tempfolder:",a
-                        TMPFOLDER = a
+		if o in ("-p","--pdf"):
+			PDFOUTPUT = True
+			if a in ['pisa','htmldoc']:
+				print "using pdf converter:",a
+				PDFCONVERTOR = a
+		if o in ("-t","--tempfolder"):
+			print "using tempfolder:",a
+			TMPFOLDER = a
 		if o in ("-h", "--help"):
 			sys.stderr.write(usage)
 			sys.exit()
