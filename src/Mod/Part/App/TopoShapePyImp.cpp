@@ -29,6 +29,7 @@
 # include <BRepCheck_Analyzer.hxx>
 # include <BRepCheck_ListIteratorOfListOfStatus.hxx>
 # include <BRepCheck_Result.hxx>
+# include <BRepClass3d_SolidClassifier.hxx>
 # include <BRepFilletAPI_MakeFillet.hxx>
 # include <BRepOffsetAPI_MakePipe.hxx>
 # include <BRepOffsetAPI_MakePipeShell.hxx>
@@ -1199,6 +1200,33 @@ PyObject* TopoShapePy::toNurbs(PyObject *args)
     catch (Standard_Failure) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
         PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return NULL;
+    }
+}
+
+PyObject*  TopoShapePy::isInside(PyObject *args)
+{
+    PyObject *point;
+    double tolerance;
+    TopAbs_State stateIn = TopAbs_IN;
+    if (!PyArg_ParseTuple(args, "O!d", &(Base::VectorPy::Type), &point, &tolerance))
+        return NULL;
+    try {
+        TopoDS_Shape shape = getTopoShapePtr()->_Shape;
+        BRepClass3d_SolidClassifier solidClassifier(shape);
+        Base::Vector3d pnt = static_cast<Base::VectorPy*>(point)->value();
+        gp_Pnt vertex = gp_Pnt(pnt.x,pnt.y,pnt.z);
+        solidClassifier.Perform(vertex, tolerance);
+        Standard_Boolean test = (solidClassifier.State() == stateIn);
+        return Py_BuildValue("O", (test ? Py_True : Py_False));
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return NULL;
+    }
+    catch (const std::exception& e) {
+        PyErr_SetString(PyExc_Exception, e.what());
         return NULL;
     }
 }
