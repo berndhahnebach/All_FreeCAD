@@ -15,5 +15,5 @@ endif(FREECAD_BUILD_GUI)
 #endif(FREECAD_MAINTAINERS_BUILD)
 
 if(FREECAD_MAINTAINERS_BUILD AND WIN32)
-	add_subdirectory(WindowsInstaller)
+	#add_subdirectory(WindowsInstaller)
 endif(FREECAD_MAINTAINERS_BUILD AND WIN32)
