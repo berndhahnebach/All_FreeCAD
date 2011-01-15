@@ -41,6 +41,7 @@ from urllib2 import urlopen, HTTPError
 DEFAULTURL = "http://sourceforge.net/apps/mediawiki/free-cad" #default URL if no URL is passed
 INDEX = "Online_Help_Toc" # the start page from where to crawl the wiki
 NORETRIEVE = ['Manual','Developer_hub','Power_users_hub','Users_hub','Source_documentation', 'User_hub','Main_Page','About_this_site'] # pages that won't be fetched (kept online)
+GETTRANSLATIONS = True # Set true if you want to get the translations too.
 MAXFAIL = 3 # max number of retries if download fails
 VERBOSE = True # to display what's going on. Otherwise, runs totally silent.
 COMPILE = True # Wether qt assistant will be used to compile the final help file
@@ -457,6 +458,8 @@ def cleanhtml(html):
     html = re.compile('<div class="NavHead.*?</div>').sub('',html) # removing nav stuff
     html = re.compile('<div class="NavContent.*?</div>').sub('',html) # removing nav stuff
     html = re.compile('<div class="NavEnd.*?</div>').sub('',html) # removing nav stuff
+    if not GETTRANSLATIONS:
+        html = re.compile('<div class="languages.*?</div>').sub('',html) # removing translations links
     html = re.compile('Wlinebreak').sub('\n',html) # restoring original linebreaks
     return html
     
@@ -477,6 +480,9 @@ def getlinks(html):
                 NORETRIEVE.append(rg)
             if "&" in rg:
                 NORETRIEVE.append(rg)
+            if "/" in rg:
+                if not GETTRANSLATIONS:
+                    NORETRIEVE.append(rg)
             pages.append(rg)
     return pages
 
@@ -491,7 +497,7 @@ def cleanlinks(html, pages=None):
         if  page in NORETRIEVE:
             output = 'href="' + URL + wikiindex + page + '"'
         else:
-            output = 'href="' + page + '.html"'
+            output = 'href="' + page.replace("/","-") + '.html"'
         html = re.compile('href="[^"]+' + page + '"').sub(output,html)
     return html
 
@@ -561,7 +567,7 @@ def output(html,page):
     header += "</head><body>"
     footer = "</body></html>"
     html = header+html+footer
-    filename = local(page)
+    filename = local(page.replace("/","-"))
     file = open(filename,'wb')
     file.write(html)
     file.close()
