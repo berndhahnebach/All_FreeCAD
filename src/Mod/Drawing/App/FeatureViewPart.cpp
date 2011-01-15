@@ -184,21 +184,26 @@ App::DocumentObjectExecReturn *FeatureViewPart::execute(void)
     Base::Vector3f Dir = Direction.getValue();
     bool hidden = ShowHiddenLines.getValue();
 
-    ProjectionAlgos Alg(shape,Dir);
+    try {
+        ProjectionAlgos Alg(shape,Dir);
+        result  << "<g" 
+                << " id=\"" << ViewName << "\"" << endl
+                << "   transform=\"rotate("<< Rotation.getValue() << ","<< X.getValue()<<","<<Y.getValue()<<") translate("<< X.getValue()<<","<<Y.getValue()<<") scale("<< Scale.getValue()<<","<<Scale.getValue()<<")\"" << endl
+                << "  >" << endl;
 
-    result  << "<g" 
-            << " id=\"" << ViewName << "\"" << endl
-            << "   transform=\"rotate("<< Rotation.getValue() << ","<< X.getValue()<<","<<Y.getValue()<<") translate("<< X.getValue()<<","<<Y.getValue()<<") scale("<< Scale.getValue()<<","<<Scale.getValue()<<")\"" << endl
-            << "  >" << endl;
+        result << Alg.getSVG(hidden ? ProjectionAlgos::WithHidden : ProjectionAlgos::Plain, this->Scale.getValue());
 
-    result << Alg.getSVG(hidden ? ProjectionAlgos::WithHidden : ProjectionAlgos::Plain, this->Scale.getValue());
+        result << "</g>" << endl;
 
-    result << "</g>" << endl;
+        // Apply the resulting fragment
+        ViewResult.setValue(result.str().c_str());
 
-    // Apply the resulting fragment
-    ViewResult.setValue(result.str().c_str());
-
-    return App::DocumentObject::StdReturn;
+        return App::DocumentObject::StdReturn;
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        return new App::DocumentObjectExecReturn(e->GetMessageString());
+    }
 }
 
 #endif 
