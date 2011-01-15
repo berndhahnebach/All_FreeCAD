@@ -3511,20 +3511,33 @@ class AddToGroup():
                         return False
         
 	def Activated(self):
-                groups = Draft.getGroupNames()
-                if groups:
-                        self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
-                        self.ui.sourceCmd = self
-                        self.ui.popupMenu(groups)
+                self.groups = ["Ungroup"]
+                self.groups.extend(Draft.getGroupNames())
+                self.labels = ["Ungroup"]
+                for g in self.groups:
+                        o = FreeCAD.ActiveDocument.getObject(g)
+                        if o: self.labels.append(o.Label)
+                self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
+                self.ui.sourceCmd = self
+                self.ui.popupMenu(self.labels)
 
-        def proceed(self,groupname):
+        def proceed(self,labelname):
                 self.ui.sourceCmd = None
-                g = FreeCAD.ActiveDocument.getObject(groupname)
-                for obj in Draft.getSelection():
-                        try:
-                                g.addObject(obj)
-                        except:
-                                pass
+                if labelname == "Ungroup":
+                        for obj in Draft.getSelection():
+                                try:
+                                        Draft.ungroup(obj)
+                                except:
+                                        pass
+                else:
+                        if labelname in self.labels:
+                                i = self.labels.index(labelname)
+                                g = FreeCAD.ActiveDocument.getObject(self.groups[i])
+                                for obj in Draft.getSelection():
+                                        try:
+                                                g.addObject(obj)
+                                        except:
+                                                pass
 
 class AddPoint(Modifier):
 	"The Draft_AddPoint FreeCAD command definition"
