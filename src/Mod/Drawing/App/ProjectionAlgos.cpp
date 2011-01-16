@@ -128,7 +128,7 @@ void ProjectionAlgos::execute(void)
 std::string ProjectionAlgos::getSVG(SvgExtractionType type, float scale)
 {
     std::stringstream result;
-    if (!H.IsNull() && type==WithHidden) {
+    if (!H.IsNull() && (type & WithHidden)) {
         float width = 0.15f/scale;
         BRepMesh::Mesh(H,0.1);
         result  << "<g" 
@@ -143,7 +143,7 @@ std::string ProjectionAlgos::getSVG(SvgExtractionType type, float scale)
                 << Edges2SVG(H)
                 << "</g>" << endl;
     }
-    if (!HO.IsNull() && type==WithHidden) {
+    if (!HO.IsNull() && (type & WithHidden)) {
         float width = 0.15f/scale;
         BRepMesh::Mesh(HO,0.1);
         result  << "<g" 
@@ -184,6 +184,35 @@ std::string ProjectionAlgos::getSVG(SvgExtractionType type, float scale)
                 << "   fill=\"none\"" << endl
                 << "  >" << endl
                 << Edges2SVG(V)
+                << "</g>" << endl;
+    }
+    if (!V1.IsNull() && (type & WithSmooth)) {
+        float width = 0.35f/scale;
+        BRepMesh::Mesh(V1,0.1);
+        result  << "<g" 
+                //<< " id=\"" << ViewName << "\"" << endl
+                << "   stroke=\"rgb(0, 0, 0)\"" << endl 
+                << "   stroke-width=\"" << width << "\"" << endl
+                << "   stroke-linecap=\"butt\"" << endl
+                << "   stroke-linejoin=\"miter\"" << endl
+                << "   fill=\"none\"" << endl
+                << "  >" << endl
+                << Edges2SVG(V1)
+                << "</g>" << endl;
+    }
+    if (!H1.IsNull() && (type & WithSmooth) && (type & WithHidden)) {
+        float width = 0.15f/scale;
+        BRepMesh::Mesh(H1,0.1);
+        result  << "<g" 
+                //<< " id=\"" << ViewName << "\"" << endl
+                << "   stroke=\"rgb(0, 0, 0)\"" << endl 
+                << "   stroke-width=\"" << width << "\"" << endl
+                << "   stroke-linecap=\"butt\"" << endl
+                << "   stroke-linejoin=\"miter\"" << endl
+                << "   stroke-dasharray=\"5 3\"" << endl
+                << "   fill=\"none\"" << endl
+                << "  >" << endl
+                << Edges2SVG(H1)
                 << "</g>" << endl;
     }
 

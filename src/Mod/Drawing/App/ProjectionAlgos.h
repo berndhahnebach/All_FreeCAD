@@ -47,8 +47,9 @@ public:
     std::string Edges2SVG(const TopoDS_Shape &);
 
     enum SvgExtractionType { 
-        Plain,
-        WithHidden
+        Plain = 0,
+        WithHidden = 1,
+        WithSmooth = 2
     };
 
     std::string getSVG(SvgExtractionType type, float scale);
