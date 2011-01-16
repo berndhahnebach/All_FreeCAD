@@ -12,6 +12,7 @@ add_subdirectory(PartDesign)
 add_subdirectory(Raytracing)
 add_subdirectory(Drawing)
 add_subdirectory(Sketcher)
+add_subdirectory(Machining_Distortion)
 
 add_subdirectory(ReverseEngineering)
 add_subdirectory(MeshPart)
