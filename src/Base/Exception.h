@@ -21,6 +21,8 @@
  *                                                                         *
  *   Juergen Riegel 2002                                                   *
  ***************************************************************************/
+
+
 #ifndef BASE_EXCEPTION_H
 #define BASE_EXCEPTION_H
 
@@ -161,6 +163,21 @@ inline void Exception::setMessage(const std::string& sMessage)
   _sErrMsg = sMessage;
 }
 
+#if defined(__GNUC__)
+class SignalException
+{
+public:
+    SignalException();
+    ~SignalException();
+
+private:
+    static void throw_signal(int signum);
+
+private:
+    struct sigaction new_action, old_action;
+    bool ok;
+};
+#endif
 
 } //namespace Base
 

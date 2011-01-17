@@ -173,3 +173,37 @@ AbnormalProgramTermination::AbnormalProgramTermination(const AbnormalProgramTerm
 {
 }
 
+// ---------------------------------------------------------
+
+#if defined(__GNUC__)
+#include <stdexcept>
+#include <iostream>
+#include <signal.h>
+
+SignalException::SignalException()
+{
+    memset (&new_action, 0, sizeof (new_action));
+    new_action.sa_handler = throw_signal;
+    sigemptyset (&new_action.sa_mask);
+    new_action.sa_flags = 0;
+    ok = (sigaction (SIGSEGV, &new_action, &old_action) < 0);
+#ifdef _DEBUG
+    std::cout << "Set new signal handler" << std::endl;
+#endif
+}
+
+SignalException::~SignalException()
+{
+    sigaction (SIGSEGV, &old_action, NULL);
+#ifdef _DEBUG
+    std::cout << "Restore old signal handler" << std::endl;
+#endif
+}
+
+void SignalException::throw_signal(int signum)
+{
+    std::cerr << "SIGSEGV signal raised" << std::endl;
+    throw std::runtime_error ("throw_signal");
+}
+#endif
+
