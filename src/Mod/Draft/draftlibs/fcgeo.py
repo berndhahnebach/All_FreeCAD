@@ -521,6 +521,7 @@ def getNormal(shape):
                                 e2 = vec(shape.Edges[i])
                                 if 0.1 < abs(e1.getAngle(e2)) < 1.56:
                                         return e1.cross(e2).normalize()
+        return Vector(0,0,1)
 
 def offsetWire(wire,dvec,bind=False):
         '''

@@ -586,11 +586,12 @@ def scale(objectslist,delta,center=Vector(0,0,0),copy=False):
         if len(newobjlist) == 1: return newobjlist[0]
         return newobjlist
 
-def offset(obj,delta,copy=False):
-        '''offset(object,Vector,[copymode]): offsets the given wire by
+def offset(obj,delta,copy=False,bind=False):
+        '''offset(object,Vector,[copymode],[bind]): offsets the given wire by
         applying the given Vector to its first vertex. If copymode is
         True, another object is created, otherwise the same object gets
-        offsetted.'''
+        offsetted. If bind is True, and provided the wire is open, the original
+        and the offsetted wires will be bound by their endpoints, forming a face'''
 
         def getRect(p,obj):
                 "returns length,heigh,placement"
@@ -612,7 +613,16 @@ def offset(obj,delta,copy=False):
         else:
                 newwire = fcgeo.offsetWire(obj.Shape,delta)
                 p = fcgeo.getVerts(newwire)
-        if copy:
+        if bind:
+                if not fcgeo.isReallyClosed(obj.Shape):
+                        w1 = obj.Shape.Edges
+                        w2 = newwire.Edges
+                        w3 = Part.Line(obj.Shape.Vertexes[0].Point,newwire.Vertexes[0].Point).toShape()
+                        w4 = Part.Line(obj.Shape.Vertexes[-1].Point,newwire.Vertexes[-1].Point).toShape()
+                        newobj = Part.Face(Part.Wire(w1+[w3]+w2+[w4]))
+                else:
+                        newobj = Part.Face(obj.Shape.Wires[0])
+        elif copy:
                 if getType(obj) == "Wire":
                         newobj = makeWire(p)
                         newobj.Closed = obj.Closed
