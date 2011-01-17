@@ -112,6 +112,12 @@ SET(Features_SRCS
 )
 SOURCE_GROUP("Features" FILES ${Features_SRCS})
 
+# Set special compiler flag to convert a SIGSEV into an exception
+# to fix issue #0000215.
+IF(MSVC)
+SET_SOURCE_FILES_PROPERTIES(FeatureFillet.cpp PROPERTIES COMPILE_FLAGS "/EHa")
+ENDIF(MSVC)
+
 SET(Properties_SRCS
     PropertyTopoShape.cpp
     PropertyTopoShape.h
