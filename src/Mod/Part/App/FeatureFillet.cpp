@@ -33,6 +33,7 @@
 
 
 #include "FeatureFillet.h"
+#include <Base/Exception.h>
 
 
 using namespace Part;
@@ -64,6 +65,9 @@ App::DocumentObjectExecReturn *Fillet::execute(void)
     Part::Feature *base = static_cast<Part::Feature*>(Base.getValue());
 
     try {
+#ifdef __GNUC__
+        Base::SignalException se;
+#endif
         BRepFilletAPI_MakeFillet mkFillet(base->Shape.getValue());
         TopTools_IndexedMapOfShape mapOfShape;
         TopExp::MapShapes(base->Shape.getValue(), TopAbs_EDGE, mapOfShape);
