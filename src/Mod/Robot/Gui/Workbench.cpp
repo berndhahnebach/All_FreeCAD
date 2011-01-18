@@ -81,6 +81,14 @@ void Workbench::activated()
         "Robot_InsertKukaIR125",
         0};
 
+    const char* TracSingle[] = {
+        "Robot_TrajectoryDressUp",
+        0};
+
+    const char* TracMore[] = {
+        "Robot_TrajectoryCompound",
+        0};
+
     std::vector<Gui::TaskView::TaskWatcher*> Watcher;
 
     Watcher.push_back(new Gui::TaskView::TaskWatcherCommands(
@@ -97,6 +105,20 @@ void Workbench::activated()
         "SELECT Robot::RobotObject COUNT 1",
         Robot,
         "Robot tools",
+        "Robot_CreateRobot"
+    ));
+
+    Watcher.push_back(new Gui::TaskView::TaskWatcherCommands(
+        "SELECT Robot::TrajectoryObject COUNT 1",
+        TracSingle,
+        "Trajectory tools",
+        "Robot_CreateRobot"
+    ));
+
+    Watcher.push_back(new Gui::TaskView::TaskWatcherCommands(
+        "SELECT Robot::TrajectoryObject COUNT 2..",
+        TracMore,
+        "Trajectory tools",
         "Robot_CreateRobot"
     ));
 

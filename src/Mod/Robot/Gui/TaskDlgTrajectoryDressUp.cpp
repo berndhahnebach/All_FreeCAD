@@ -64,16 +64,19 @@ void TaskDlgTrajectoryDressUp::open()
 
 bool TaskDlgTrajectoryDressUp::accept()
 {
-        Gui::Document* doc = Gui::Application::Instance->activeDocument();
-        if(doc) doc->resetEdit();
-    return false;
+    param->writeValues();
+    Gui::Document* doc = Gui::Application::Instance->activeDocument();
+    if(doc) 
+        doc->resetEdit();
+    return true;
  
 }
 
 bool TaskDlgTrajectoryDressUp::reject()
 {
-        Gui::Document* doc = Gui::Application::Instance->activeDocument();
-        if(doc) doc->resetEdit();
+    Gui::Document* doc = Gui::Application::Instance->activeDocument();
+    if(doc) 
+        doc->resetEdit();
     return true;
 }
 
