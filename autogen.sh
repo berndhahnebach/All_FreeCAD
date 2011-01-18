@@ -25,7 +25,7 @@ else
 fi
 
 # create m4 subdirectory which fails for some older versions of autotools
-[[ -d m4 ]] || mkdir m4
+[ -d m4 ] || mkdir m4
 
 if which glibtoolize > /dev/null 2>&1; then
 	echo "calling glibtoolize"
