@@ -47,11 +47,17 @@ public:
     TaskTrajectoryDressUpParameter(Robot::TrajectoryDressUpObject *obj,QWidget *parent = 0);
     ~TaskTrajectoryDressUpParameter();
 
+    /// this methode write the values from the Gui to the object, usually in accept()
+    void writeValues(void);
  
 private Q_SLOTS:
-
+    /// edit the placement
+    void createPlacementDlg(void);
+    
 protected:
+    Base::Placement PosAdd;
 
+    void viewPlacement(void);
 
 private:
     QWidget* proxy;

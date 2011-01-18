@@ -37,6 +37,7 @@
 #include <Gui/WaitCursor.h>
 #include <Base/Console.h>
 #include <Gui/Selection.h>
+#include <Gui/Placement.h>
 
 
 using namespace RobotGui;
@@ -57,8 +58,19 @@ TaskTrajectoryDressUpParameter::TaskTrajectoryDressUpParameter(Robot::Trajectory
 
     this->groupLayout()->addWidget(proxy);
 
+    // pump the actual values in the Gui
+    ui->doubleSpinBoxSpeed->setValue        (pcObject->Speed.getValue() / 1000.0) ;
+    ui->doubleSpinBoxAccel->setValue        (pcObject->Acceleration.getValue() / 1000.0) ;
+    ui->checkBoxUseSpeed  ->setChecked      (pcObject->UseSpeed.getValue()) ;
+    ui->checkBoxUseAccel  ->setChecked      (pcObject->UseAcceleration.getValue()) ;
+    ui->comboBoxCont      ->setCurrentIndex (pcObject->ContType.getValue()) ;
+
+    PosAdd = pcObject->PosAdd.getValue();
+    viewPlacement();
+
     //QObject::connect(ui->pushButton_HideShow,SIGNAL(clicked()),this,SLOT(hideShow()));
 
+    QObject::connect(ui->toolButtonChoosePlacement,SIGNAL(clicked()),this,SLOT(createPlacementDlg()));
 
 }
 
@@ -69,5 +81,41 @@ TaskTrajectoryDressUpParameter::~TaskTrajectoryDressUpParameter()
     delete ui;
 }
 
+void TaskTrajectoryDressUpParameter::writeValues(void)
+{
+    pcObject->Speed.setValue          ( ui->doubleSpinBoxSpeed->value()*1000.0);
+    pcObject->Acceleration.setValue   ( ui->doubleSpinBoxAccel->value()*1000.0);
+    pcObject->UseSpeed.setValue       ( ui->checkBoxUseSpeed  ->isChecked()   );
+    pcObject->UseAcceleration.setValue( ui->checkBoxUseAccel  ->isChecked()   );
+    pcObject->ContType.setValue       ( ui->comboBoxCont      ->currentIndex());
+    pcObject->PosAdd.setValue(PosAdd);
+}
+
+void TaskTrajectoryDressUpParameter::createPlacementDlg(void)
+{
+    Gui::Dialog::Placement *plc = new Gui::Dialog::Placement();
+    plc->setPlacement(PosAdd);
+    if(plc->exec()==QDialog::Accepted){
+        PosAdd = plc->getPlacement();
+        viewPlacement();
+    }
+
+}
+
+void TaskTrajectoryDressUpParameter::viewPlacement(void)
+{
+    double A,B,C;
+    Base::Vector3d pos = PosAdd.getPosition();
+    PosAdd.getRotation().getYawPitchRoll(A,B,C);
+    QString val = QString::fromAscii("(%1,%2,%3),(%4,%5,%6)\n")
+         .arg(pos.x,0,'g',6)
+         .arg(pos.y,0,'g',6)
+         .arg(pos.z,0,'g',6)
+         .arg(A,0,'g',6)
+         .arg(B,0,'g',6)
+         .arg(C,0,'g',6);
+
+    ui->lineEditPlacement->setText(val);
+}
 
 #include "moc_TaskTrajectoryDressUpParameter.cpp"
