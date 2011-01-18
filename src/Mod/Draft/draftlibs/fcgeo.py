@@ -505,23 +505,26 @@ def isReallyClosed(wire):
 
 def getNormal(shape):
         "finds the normal of a shape, if possible"
+        n = Vector(0,0,1)
         if shape.ShapeType == "Face":
-                return shape.normalAt(0.5,0.5)
+                n = shape.normalAt(0.5,0.5)
         elif shape.ShapeType == "Edge":
                 if isinstance(shape.Curve,Part.Circle):
-                        return shape.Curve.Axis
-                else:
-                        return Vector(0,0,1)
+                        n = shape.Curve.Axis
         else:
                 for e in shape.Edges:
                         if isinstance(e.Curve,Part.Circle):
-                                return e.Curve.Axis
+                                n = e.Curve.Axis
+                                break
                         e1 = vec(shape.Edges[0])
                         for i in range(1,len(shape.Edges)):
                                 e2 = vec(shape.Edges[i])
                                 if 0.1 < abs(e1.getAngle(e2)) < 1.56:
-                                        return e1.cross(e2).normalize()
-        return Vector(0,0,1)
+                                        n = e1.cross(e2).normalize()
+                                        break
+        vdir = FreeCADGui.ActiveDocument.ActiveView.getViewDirection()
+        if n.getAngle(vdir) < 0.78: n = fcvec.neg(n)
+        return n
 
 def offsetWire(wire,dvec,bind=False):
         '''
@@ -533,8 +536,6 @@ def offsetWire(wire,dvec,bind=False):
         edges = sortEdges(wire.Edges)
         norm = getNormal(wire)
         closed = isReallyClosed(wire)
-        vdir = FreeCADGui.ActiveDocument.ActiveView.getViewDirection()
-        if norm.getAngle(vdir) < 0.78: norm = fcvec.neg(norm)
         nedges = []
         for i in range(len(edges)):
                 curredge = edges[i]
