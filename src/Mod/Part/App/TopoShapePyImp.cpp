@@ -1208,8 +1208,9 @@ PyObject*  TopoShapePy::isInside(PyObject *args)
 {
     PyObject *point;
     double tolerance;
+    PyObject* checkFace = Py_False;
     TopAbs_State stateIn = TopAbs_IN;
-    if (!PyArg_ParseTuple(args, "O!d", &(Base::VectorPy::Type), &point, &tolerance))
+    if (!PyArg_ParseTuple(args, "O!dO!", &(Base::VectorPy::Type), &point, &tolerance,  &PyBool_Type, &checkFace))
         return NULL;
     try {
         TopoDS_Shape shape = getTopoShapePtr()->_Shape;
@@ -1218,6 +1219,8 @@ PyObject*  TopoShapePy::isInside(PyObject *args)
         gp_Pnt vertex = gp_Pnt(pnt.x,pnt.y,pnt.z);
         solidClassifier.Perform(vertex, tolerance);
         Standard_Boolean test = (solidClassifier.State() == stateIn);
+        if ( (checkFace == Py_True) && (solidClassifier.IsOnAFace()) )
+            test = Standard_True;
         return Py_BuildValue("O", (test ? Py_True : Py_False));
     }
     catch (Standard_Failure) {
