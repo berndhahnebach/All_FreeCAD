@@ -178,7 +178,6 @@ AbnormalProgramTermination::AbnormalProgramTermination(const AbnormalProgramTerm
 #if defined(__GNUC__)
 #include <stdexcept>
 #include <iostream>
-#include <signal.h>
 
 SignalException::SignalException()
 {

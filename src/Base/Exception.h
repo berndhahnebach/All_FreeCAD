@@ -28,6 +28,7 @@
 
 #include <exception>
 #include <string>
+#include <signal.h>
 #include "FileInfo.h"
 #include "BaseClass.h"
 
