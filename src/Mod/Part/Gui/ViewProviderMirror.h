@@ -53,6 +53,22 @@ private:
     SoSeparator* pcEditNode;
 };
 
+class AppPartGuiExport ViewProviderFillet : public ViewProviderPart
+{
+    PROPERTY_HEADER(PartGui::ViewProviderFillet);
+
+public:
+    ViewProviderFillet();
+    virtual ~ViewProviderFillet();
+    /** @name Edit methods */
+    //@{
+    void setupContextMenu(QMenu*, QObject*, const char*);
+protected:
+    bool setEdit(int ModNum);
+    void unsetEdit(int ModNum);
+    //@}
+};
+
 } // namespace PartGui
 
 
