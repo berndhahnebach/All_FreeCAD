@@ -14,12 +14,12 @@
       <DeveloperDocu>This is the BaseClass class</DeveloperDocu>
       <UserDocu>This is the base class</UserDocu>
     </Documentation>
-    <Methode Name="isDerivedFrom">
+    <Methode Name="isDerivedFrom" Const="true">
       <Documentation>
         <UserDocu>Returns true if given type is a father</UserDocu>
       </Documentation>
     </Methode>
-    <Methode Name="getAllDerivedFrom">
+    <Methode Name="getAllDerivedFrom" Const="true">
       <Documentation>
         <UserDocu>Returns all descentences</UserDocu>
       </Documentation>
