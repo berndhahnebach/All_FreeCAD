@@ -704,7 +704,7 @@ bool MeshFixFoldsOnSurface::Fixup()
 bool MeshEvalFoldsOnBoundary::Evaluate()
 {
     // remove all boundary facets with two open edges and where
-    // the angle to the neighbour is more than 30 degree
+    // the angle to the neighbour is more than 60 degree
     this->indices.clear();
     const MeshFacetArray& rFacAry = _rclMesh.GetFacets();
     for (MeshFacetArray::_TConstIterator it = rFacAry.begin(); it != rFacAry.end(); ++it) {
@@ -713,8 +713,8 @@ bool MeshEvalFoldsOnBoundary::Evaluate()
                 if (it->_aulNeighbours[i] != ULONG_MAX) {
                     MeshGeomFacet f1 = _rclMesh.GetFacet(*it);
                     MeshGeomFacet f2 = _rclMesh.GetFacet(it->_aulNeighbours[i]);
-                    float angle = f1.GetNormal().GetAngle(f2.GetNormal());
-                    if (angle >= 0.52f) // ~ 30 degree
+                    float cos_angle = f1.GetNormal() * f2.GetNormal();
+                    if (cos_angle <= 0.5f) // ~ 60 degree
                         indices.push_back(it-rFacAry.begin());
                 }
             }
@@ -761,7 +761,7 @@ bool MeshEvalFoldOversOnSurface::Evaluate()
                     f_it->HasSameOrientation(f_beg[index2])) {
                     n1 = _rclMesh.GetFacet(index1).GetNormal();
                     n2 = _rclMesh.GetFacet(index2).GetNormal();
-                    if (n1 * n2 < 0.0f) {
+                    if (n1 * n2 < -0.5f) { // angle > 120 deg
                         this->indices.push_back(f_it-f_beg);
                         break;
                     }
