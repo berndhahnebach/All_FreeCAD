@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <algorithm>
 # include <BRep_Tool.hxx>
 # include <TopoDS.hxx>
 # include <TopoDS_Edge.hxx>
@@ -46,6 +47,7 @@
 #include "ui_DlgFilletEdges.h"
 
 #include "../App/PartFeature.h"
+#include "../App/FeatureFillet.h"
 #include <App/Application.h>
 #include <App/Document.h>
 #include <App/DocumentObject.h>
@@ -139,8 +141,8 @@ namespace PartGui {
 
 /* TRANSLATOR PartGui::DlgFilletEdges */
 
-DlgFilletEdges::DlgFilletEdges(QWidget* parent, Qt::WFlags fl)
-  : QWidget(parent, fl), ui(new Ui_DlgFilletEdges()), d(new DlgFilletEdgesP())
+DlgFilletEdges::DlgFilletEdges(Part::Fillet* fillet, QWidget* parent, Qt::WFlags fl)
+  : QWidget(parent, fl), f(fillet), ui(new Ui_DlgFilletEdges()), d(new DlgFilletEdgesP())
 {
     ui->setupUi(this);
 
@@ -302,6 +304,26 @@ void DlgFilletEdges::findShapes()
         ui->shapeObject->setCurrentIndex(current_index);
         on_shapeObject_activated(current_index);
     }
+
+    // if an existing fillet object is given start the edit mode
+    if (this->f) {
+        App::DocumentObject* base = f->Base.getValue();
+        const std::vector<Part::FilletElement>& e = f->Edges.getValues();
+        std::vector<App::DocumentObject*>::iterator it = std::find(objs.begin(), objs.end(), base);
+        if (it != objs.end()) {
+            current_index = (it - objs.begin()) + 1;
+            ui->shapeObject->setCurrentIndex(current_index);
+            on_shapeObject_activated(current_index);
+            ui->shapeObject->setEnabled(false);
+            QStandardItemModel *model = qobject_cast<QStandardItemModel*>(ui->treeView->model());
+            for (std::vector<Part::FilletElement>::const_iterator et = e.begin(); et != e.end(); ++et) {
+                int index = et->edgeid-1;
+                model->setData(model->index(index, 0), Qt::Checked, Qt::CheckStateRole);
+                model->setData(model->index(index, 1), QVariant(QLocale::system().toString(et->radius1,'f',2)));
+                model->setData(model->index(index, 2), QVariant(QLocale::system().toString(et->radius2,'f',2)));
+            }
+        }
+    }
 }
 
 void DlgFilletEdges::on_shapeObject_activated(int index)
@@ -448,14 +470,21 @@ bool DlgFilletEdges::accept()
     int index = ui->shapeObject->currentIndex();
     shape = ui->shapeObject->itemData(index).toString();
     type = QString::fromAscii("Part::Fillet");
-    name = QString::fromAscii(activeDoc->getUniqueObjectName("Fillet").c_str());
+
+    if (f)
+        name = QString::fromAscii(f->getNameInDocument());
+    else
+        name = QString::fromAscii(activeDoc->getUniqueObjectName("Fillet").c_str());
 
     activeDoc->openTransaction("Fillet");
-    QString code = QString::fromAscii(
+    QString code;
+    if (!f) {
+        code = QString::fromAscii(
         "FreeCAD.ActiveDocument.addObject(\"%1\",\"%2\")\n"
-        "FreeCAD.ActiveDocument.%2.Base = FreeCAD.ActiveDocument.%3\n"
-        "__fillets__ = []\n")
+        "FreeCAD.ActiveDocument.%2.Base = FreeCAD.ActiveDocument.%3\n")
         .arg(type).arg(name).arg(shape);
+    }
+    code += QString::fromAscii("__fillets__ = []\n");
     for (int i=0; i<model->rowCount(); ++i) {
         QVariant value = model->index(i,0).data(Qt::CheckStateRole);
         Qt::CheckState checkState = static_cast<Qt::CheckState>(value.toInt());
@@ -496,10 +525,10 @@ bool DlgFilletEdges::accept()
 
 // ---------------------------------------
 
-FilletEdgesDialog::FilletEdgesDialog(QWidget* parent, Qt::WFlags fl)
+FilletEdgesDialog::FilletEdgesDialog(Part::Fillet* fillet, QWidget* parent, Qt::WFlags fl)
   : QDialog(parent, fl)
 {
-    widget = new DlgFilletEdges(this);
+    widget = new DlgFilletEdges(fillet, this);
     this->setWindowTitle(widget->windowTitle());
 
     QVBoxLayout* hboxLayout = new QVBoxLayout(this);
@@ -525,27 +554,13 @@ void FilletEdgesDialog::accept()
 
 // ---------------------------------------
 
-TaskBoxFilletEdges::TaskBoxFilletEdges(QWidget* parent)
-    : TaskBox(Gui::BitmapFactory().pixmap("Part_Fillet"),
-        tr("Fillet"),true, parent)
+TaskFilletEdges::TaskFilletEdges(Part::Fillet* fillet)
 {
-    widget = new DlgFilletEdges(this);
-    this->groupLayout()->addWidget(widget);
-}
-
-TaskBoxFilletEdges::~TaskBoxFilletEdges()
-{
-}
-
-bool TaskBoxFilletEdges::accept()
-{
-    return widget->accept();
-}
-
-// ---------------------------------------
-
-TaskFilletEdges::TaskFilletEdges() : taskbox(new TaskBoxFilletEdges)
-{
+    widget = new DlgFilletEdges(fillet);
+    taskbox = new Gui::TaskView::TaskBox(
+        Gui::BitmapFactory().pixmap("Part_Fillet"),
+        widget->windowTitle(), true, 0);
+    taskbox->groupLayout()->addWidget(widget);
     Content.push_back(taskbox);
 }
 
@@ -564,7 +579,7 @@ void TaskFilletEdges::clicked(int)
 
 bool TaskFilletEdges::accept()
 {
-    return taskbox->accept();
+    return widget->accept();
 }
 
 bool TaskFilletEdges::reject()
