@@ -754,7 +754,7 @@ CmdPartFillet::CmdPartFillet()
 
 void CmdPartFillet::activated(int iMsg)
 {
-    Gui::Control().showDialog(new PartGui::TaskFilletEdges());
+    Gui::Control().showDialog(new PartGui::TaskFilletEdges(0));
 }
 
 bool CmdPartFillet::isActive(void)

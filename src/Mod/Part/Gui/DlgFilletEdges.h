@@ -29,6 +29,8 @@
 #include <QStandardItemModel>
 #include <QItemDelegate>
 
+namespace Part { class Fillet; }
+
 namespace PartGui {
 
 class Ui_DlgFilletEdges;
@@ -70,7 +72,7 @@ class DlgFilletEdges : public QWidget, public Gui::SelectionObserver
     Q_OBJECT
 
 public:
-    DlgFilletEdges(QWidget* parent = 0, Qt::WFlags fl = 0);
+    DlgFilletEdges(Part::Fillet*, QWidget* parent = 0, Qt::WFlags fl = 0);
     ~DlgFilletEdges();
     bool accept();
 
@@ -92,6 +94,7 @@ private Q_SLOTS:
     void toogleCheckState(const QModelIndex&);
 
 private:
+    Part::Fillet* f;
     std::auto_ptr<Ui_DlgFilletEdges> ui;
     std::auto_ptr<DlgFilletEdgesP> d;
 };
@@ -101,22 +104,9 @@ class FilletEdgesDialog : public QDialog
     Q_OBJECT
 
 public:
-    FilletEdgesDialog(QWidget* parent = 0, Qt::WFlags fl = 0);
+    FilletEdgesDialog(Part::Fillet* fillet, QWidget* parent = 0, Qt::WFlags fl = 0);
     ~FilletEdgesDialog();
     void accept();
-
-private:
-    DlgFilletEdges* widget;
-};
-
-class TaskBoxFilletEdges : public Gui::TaskView::TaskBox
-{
-    Q_OBJECT
-
-public:
-    TaskBoxFilletEdges(QWidget *parent = 0);
-    ~TaskBoxFilletEdges();
-    bool accept();
 
 private:
     DlgFilletEdges* widget;
@@ -127,7 +117,7 @@ class TaskFilletEdges : public Gui::TaskView::TaskDialog
     Q_OBJECT
 
 public:
-    TaskFilletEdges();
+    TaskFilletEdges(Part::Fillet*);
     ~TaskFilletEdges();
 
 public:
@@ -140,7 +130,8 @@ public:
     { return QDialogButtonBox::Ok|QDialogButtonBox::Cancel; }
 
 private:
-    TaskBoxFilletEdges* taskbox;
+    DlgFilletEdges* widget;
+    Gui::TaskView::TaskBox* taskbox;
 };
 
 } // namespace PartGui

@@ -37,6 +37,7 @@
 #endif
 
 #include <Mod/Part/App/FeatureMirroring.h>
+#include <Mod/Part/App/FeatureFillet.h>
 #include <Gui/Application.h>
 #include <Gui/Control.h>
 #include <Gui/Document.h>
@@ -204,7 +205,7 @@ ViewProviderFillet::~ViewProviderFillet()
 void ViewProviderFillet::setupContextMenu(QMenu* menu, QObject* receiver, const char* member)
 {
     QAction* act;
-    act = menu->addAction(QObject::tr("Fillet edges"), receiver, member);
+    act = menu->addAction(QObject::tr("Edit fillet edges"), receiver, member);
     act->setData(QVariant((int)ViewProvider::Default));
     act = menu->addAction(QObject::tr("Transform"), receiver, member);
     act->setData(QVariant((int)ViewProvider::Transform));
@@ -215,13 +216,14 @@ bool ViewProviderFillet::setEdit(int ModNum)
     if (ModNum == ViewProvider::Default) {
         if (Gui::Control().activeDialog())
             return false;
-        Gui::Control().showDialog(new PartGui::TaskFilletEdges());
+        Part::Fillet* fillet = static_cast<Part::Fillet*>(getObject());
+        Gui::Control().showDialog(new PartGui::TaskFilletEdges(fillet));
+        return false;
     }
     else {
         ViewProviderPart::setEdit(ModNum);
+        return true;
     }
-
-    return true;
 }
 
 void ViewProviderFillet::unsetEdit(int ModNum)
@@ -231,4 +233,11 @@ void ViewProviderFillet::unsetEdit(int ModNum)
     else {
         ViewProviderPart::unsetEdit(ModNum);
     }
+}
+
+std::vector<App::DocumentObject*> ViewProviderFillet::claimChildren() const
+{
+    std::vector<App::DocumentObject*> temp;
+    temp.push_back(static_cast<Part::Fillet*>(getObject())->Base.getValue());
+    return temp;
 }
