@@ -40,6 +40,7 @@
 #include <Inventor/nodes/SoLightModel.h>
 
 class SoFullPath;
+class SoPickedPoint;
 
 
 namespace Gui {
@@ -106,6 +107,7 @@ private:
     void setOverride(SoGLRenderAction * action);
     SbBool isHighlighted(SoAction *action);
     SbBool preRender(SoGLRenderAction *act, GLint &oldDepthFunc);
+    const SoPickedPoint* getPickedPoint(SoHandleEventAction*) const;
 
     static SoFullPath * currenthighlight;
 

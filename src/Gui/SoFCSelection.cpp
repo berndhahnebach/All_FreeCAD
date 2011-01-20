@@ -25,6 +25,8 @@
 #ifndef _PreComp_
 # include <qstatusbar.h>
 # include <qstring.h>
+# include <Inventor/details/SoFaceDetail.h>
+# include <Inventor/details/SoLineDetail.h>
 #endif
 
 #include <Inventor/elements/SoOverrideElement.h>
@@ -247,6 +249,32 @@ void SoFCSelection::doAction(SoAction *action)
     inherited::doAction( action );
 }
 
+const SoPickedPoint*
+SoFCSelection::getPickedPoint(SoHandleEventAction* action) const
+{
+    // To identify the picking of lines in a concave area we have to 
+    // get all intersection points. If we have two or more intersection
+    // points where the first is of a face and the second of a line with
+    // almost similar coordinates we use the second point, instead.
+    const SoPickedPointList & points = action->getPickedPointList();
+    if (points.getLength() == 0)
+        return 0;
+    else if (points.getLength() == 1)
+        return points[0];
+    const SoPickedPoint* pp0 = points[0];
+    const SoPickedPoint* pp1 = points[1];
+    const SoDetail* det0 = pp0->getDetail();
+    const SoDetail* det1 = pp1->getDetail();
+    if (det0 && det0->isOfType(SoFaceDetail::getClassTypeId()) &&
+        det1 && det1->isOfType(SoLineDetail::getClassTypeId())) {
+        const SbVec3f& pt0 = pp0->getPoint();
+        const SbVec3f& pt1 = pp1->getPoint();
+        if (pt0.equals(pt1, 0.01f))
+            return pp1;
+    }
+
+    return pp0;
+}
 
 // doc from parent
 void
@@ -262,7 +290,7 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
         // down extremely the system on really big data sets. In this case we just check for a picked point if the data
         // set has been selected.
         if (mymode == AUTO || mymode == ON) {
-            const SoPickedPoint * pp = action->getPickedPoint();
+            const SoPickedPoint * pp = this->getPickedPoint(action);
             if (pp && pp->getPath()->containsPath(action->getCurPath())) {
                 if (!highlighted) {
                     if (Gui::Selection().setPreselect(documentName.getValue().getString()
@@ -321,7 +349,7 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
         if (SoMouseButtonEvent::isButtonReleaseEvent(e,SoMouseButtonEvent::BUTTON1)) {
             //FIXME: Shouldn't we remove the preselection for newly selected objects?
             //       Otherwise the tree signals that an object is preselected even though it is hidden. (Werner)
-            const SoPickedPoint * pp = action->getPickedPoint();
+            const SoPickedPoint * pp = this->getPickedPoint(action);
             if (pp && pp->getPath()->containsPath(action->getCurPath())) {
                 if (bCtrl) {
                     if (Gui::Selection().isSelected(documentName.getValue().getString()
@@ -395,7 +423,7 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
     if (event->isOfType(SoLocation2Event::getClassTypeId())) {
         // check to see if the mouse is over our geometry...
         SbBool underTheMouse = FALSE;
-        const SoPickedPoint *pp = action->getPickedPoint();
+        const SoPickedPoint * pp = this->getPickedPoint(action);
         SoFullPath *pPath = (pp != NULL) ? (SoFullPath *) pp->getPath() : NULL;
         if (pPath && pPath->containsPath(action->getCurPath())) {
             // Make sure I'm the lowest LocHL in the pick path!
@@ -419,7 +447,7 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
             }
             else {
                 action->setHandled();
-                const SoPickedPoint * pp = action->getPickedPoint();
+                //const SoPickedPoint * pp = action->getPickedPoint();
                 Gui::Selection().setPreselectCoord(pp->getPoint()[0]
                                                  ,pp->getPoint()[1]
                                                  ,pp->getPoint()[2]);
@@ -432,7 +460,7 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
                 // draw this object highlighted
                 if (mymode != OFF)
                     redrawHighlighted(action, TRUE);
-                const SoPickedPoint * pp = action->getPickedPoint();
+                //const SoPickedPoint * pp = action->getPickedPoint();
                 Gui::Selection().setPreselect(documentName.getValue().getString()
                                                  ,objectName.getValue().getString()
                                                  ,subElementName.getValue().getString()
@@ -472,7 +500,7 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
         if (SoMouseButtonEvent::isButtonReleaseEvent(e,SoMouseButtonEvent::BUTTON1)) {
             //FIXME: Shouldn't we remove the preselection for newly selected objects?
             //       Otherwise the tree signals that an object is preselected even though it is hidden. (Werner)
-            const SoPickedPoint * pp = action->getPickedPoint();
+            const SoPickedPoint * pp = this->getPickedPoint(action);
             if (pp && pp->getPath()->containsPath(action->getCurPath())) {
                 if (bCtrl) {
                     if (Gui::Selection().isSelected(documentName.getValue().getString()
