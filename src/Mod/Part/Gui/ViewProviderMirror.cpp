@@ -38,8 +38,10 @@
 
 #include <Mod/Part/App/FeatureMirroring.h>
 #include <Gui/Application.h>
+#include <Gui/Control.h>
 #include <Gui/Document.h>
 #include "ViewProviderMirror.h"
+#include "DlgFilletEdges.h"
 
 using namespace PartGui;
 
@@ -184,4 +186,49 @@ void ViewProviderMirror::dragMotionCallback(void *data, SoDragger *drag)
     Part::Mirroring* mf = static_cast<Part::Mirroring*>(that->getObject());
     mf->Base.setValue(mat[3][0],mat[3][1],mat[3][2]);
     mf->Normal.setValue(norm[0],norm[1],norm[2]);
+}
+
+// ----------------------------------------------------------------------------
+
+PROPERTY_SOURCE(PartGui::ViewProviderFillet, PartGui::ViewProviderPart)
+
+ViewProviderFillet::ViewProviderFillet()
+{
+    sPixmap = "Part_Fillet";
+}
+
+ViewProviderFillet::~ViewProviderFillet()
+{
+}
+
+void ViewProviderFillet::setupContextMenu(QMenu* menu, QObject* receiver, const char* member)
+{
+    QAction* act;
+    act = menu->addAction(QObject::tr("Fillet edges"), receiver, member);
+    act->setData(QVariant((int)ViewProvider::Default));
+    act = menu->addAction(QObject::tr("Transform"), receiver, member);
+    act->setData(QVariant((int)ViewProvider::Transform));
+}
+
+bool ViewProviderFillet::setEdit(int ModNum)
+{
+    if (ModNum == ViewProvider::Default) {
+        if (Gui::Control().activeDialog())
+            return false;
+        Gui::Control().showDialog(new PartGui::TaskFilletEdges());
+    }
+    else {
+        ViewProviderPart::setEdit(ModNum);
+    }
+
+    return true;
+}
+
+void ViewProviderFillet::unsetEdit(int ModNum)
+{
+    if (ModNum == ViewProvider::Default) {
+    }
+    else {
+        ViewProviderPart::unsetEdit(ModNum);
+    }
 }
