@@ -381,6 +381,24 @@ PyObject* TopoShapePy::revolve(PyObject *args)
     double d=360;
     if (PyArg_ParseTuple(args, "O!O!|d", &(Base::VectorPy::Type), &pPos, &(Base::VectorPy::Type), &pDir,&d)) {
         try {
+            const TopoDS_Shape& input = this->getTopoShapePtr()->_Shape;
+            if (input.IsNull()) {
+                PyErr_SetString(PyExc_Exception, "empty shape cannot be revolved");
+                return 0;
+            }
+
+            TopExp_Explorer xp;
+            xp.Init(input,TopAbs_SOLID);
+            if (xp.More()) {
+                PyErr_SetString(PyExc_Exception, "shape must not contain solids");
+                return 0;
+            }
+            xp.Init(input,TopAbs_COMPSOLID);
+            if (xp.More()) {
+                PyErr_SetString(PyExc_Exception, "shape must not contain compound solids");
+                return 0;
+            }
+
             Base::Vector3d pos = static_cast<Base::VectorPy*>(pPos)->value();
             Base::Vector3d dir = static_cast<Base::VectorPy*>(pDir)->value();
             TopoDS_Shape shape = this->getTopoShapePtr()->revolve(
@@ -389,7 +407,7 @@ PyObject* TopoShapePy::revolve(PyObject *args)
             switch (type)
             {
             case TopAbs_COMPOUND:
-                break;
+                return new TopoShapeCompoundPy(new TopoShape(shape));
             case TopAbs_COMPSOLID:
                 return new TopoShapeCompSolidPy(new TopoShape(shape));
             case TopAbs_SOLID:
