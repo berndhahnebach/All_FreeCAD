@@ -78,6 +78,7 @@ public:
 
 protected:
     void findShapes();
+    void setupFillet(const std::vector<App::DocumentObject*>&);
 
 private:
     void onSelectionChanged(const Gui::SelectionChanges& msg);
@@ -94,7 +95,6 @@ private Q_SLOTS:
     void toogleCheckState(const QModelIndex&);
 
 private:
-    Part::Fillet* f;
     std::auto_ptr<Ui_DlgFilletEdges> ui;
     std::auto_ptr<DlgFilletEdgesP> d;
 };

@@ -56,6 +56,7 @@
 #include <Gui/Command.h>
 #include <Gui/WaitCursor.h>
 #include <Gui/Selection.h>
+#include <Gui/ViewProvider.h>
 
 using namespace PartGui;
 
@@ -133,6 +134,7 @@ namespace PartGui {
     {
     public:
         App::DocumentObject* object;
+        Part::Fillet* fillet;
         typedef boost::signals::connection Connection;
         Connection connectApplicationDeletedObject;
         Connection connectApplicationDeletedDocument;
@@ -142,11 +144,12 @@ namespace PartGui {
 /* TRANSLATOR PartGui::DlgFilletEdges */
 
 DlgFilletEdges::DlgFilletEdges(Part::Fillet* fillet, QWidget* parent, Qt::WFlags fl)
-  : QWidget(parent, fl), f(fillet), ui(new Ui_DlgFilletEdges()), d(new DlgFilletEdgesP())
+  : QWidget(parent, fl), ui(new Ui_DlgFilletEdges()), d(new DlgFilletEdgesP())
 {
     ui->setupUi(this);
 
     d->object = 0;
+    d->fillet = fillet;
     d->connectApplicationDeletedObject = App::GetApplication().signalDeletedObject
         .connect(boost::bind(&DlgFilletEdges::onDeleteObject, this, _1));
     d->connectApplicationDeletedDocument = App::GetApplication().signalDeleteDocument
@@ -216,7 +219,16 @@ void DlgFilletEdges::onSelectionChanged(const Gui::SelectionChanges& msg)
 
 void DlgFilletEdges::onDeleteObject(const App::DocumentObject& obj)
 {
-    if (d->object == &obj) {
+    if (d->fillet == &obj) {
+        d->fillet = 0;
+    }
+    else if (d->fillet && d->fillet->Base.getValue() == &obj) {
+        d->fillet = 0;
+        d->object = 0;
+        ui->shapeObject->setCurrentIndex(0);
+        on_shapeObject_activated(0);
+    }
+    else if (d->object == &obj) {
         d->object = 0;
         ui->shapeObject->removeItem(ui->shapeObject->currentIndex());
         ui->shapeObject->setCurrentIndex(0);
@@ -306,22 +318,34 @@ void DlgFilletEdges::findShapes()
     }
 
     // if an existing fillet object is given start the edit mode
-    if (this->f) {
-        App::DocumentObject* base = f->Base.getValue();
-        const std::vector<Part::FilletElement>& e = f->Edges.getValues();
-        std::vector<App::DocumentObject*>::iterator it = std::find(objs.begin(), objs.end(), base);
-        if (it != objs.end()) {
-            current_index = (it - objs.begin()) + 1;
-            ui->shapeObject->setCurrentIndex(current_index);
-            on_shapeObject_activated(current_index);
-            ui->shapeObject->setEnabled(false);
-            QStandardItemModel *model = qobject_cast<QStandardItemModel*>(ui->treeView->model());
-            for (std::vector<Part::FilletElement>::const_iterator et = e.begin(); et != e.end(); ++et) {
-                int index = et->edgeid-1;
-                model->setData(model->index(index, 0), Qt::Checked, Qt::CheckStateRole);
-                model->setData(model->index(index, 1), QVariant(QLocale::system().toString(et->radius1,'f',2)));
-                model->setData(model->index(index, 2), QVariant(QLocale::system().toString(et->radius2,'f',2)));
-            }
+    if (d->fillet) {
+        setupFillet(objs);
+    }
+}
+
+void DlgFilletEdges::setupFillet(const std::vector<App::DocumentObject*>& objs)
+{
+    App::DocumentObject* base = d->fillet->Base.getValue();
+    const std::vector<Part::FilletElement>& e = d->fillet->Edges.getValues();
+    std::vector<App::DocumentObject*>::const_iterator it = std::find(objs.begin(), objs.end(), base);
+    if (it != objs.end()) {
+        // toggle visibility
+        Gui::ViewProvider* vp;
+        vp = Gui::Application::Instance->getViewProvider(d->fillet);
+        if (vp) vp->hide();
+        vp = Gui::Application::Instance->getViewProvider(base);
+        if (vp) vp->show();
+
+        int current_index = (it - objs.begin()) + 1;
+        ui->shapeObject->setCurrentIndex(current_index);
+        on_shapeObject_activated(current_index);
+        ui->shapeObject->setEnabled(false);
+        QStandardItemModel *model = qobject_cast<QStandardItemModel*>(ui->treeView->model());
+        for (std::vector<Part::FilletElement>::const_iterator et = e.begin(); et != e.end(); ++et) {
+            int index = et->edgeid-1;
+            model->setData(model->index(index, 0), Qt::Checked, Qt::CheckStateRole);
+            model->setData(model->index(index, 1), QVariant(QLocale::system().toString(et->radius1,'f',2)));
+            model->setData(model->index(index, 2), QVariant(QLocale::system().toString(et->radius2,'f',2)));
         }
     }
 }
@@ -471,14 +495,14 @@ bool DlgFilletEdges::accept()
     shape = ui->shapeObject->itemData(index).toString();
     type = QString::fromAscii("Part::Fillet");
 
-    if (f)
-        name = QString::fromAscii(f->getNameInDocument());
+    if (d->fillet)
+        name = QString::fromAscii(d->fillet->getNameInDocument());
     else
         name = QString::fromAscii(activeDoc->getUniqueObjectName("Fillet").c_str());
 
     activeDoc->openTransaction("Fillet");
     QString code;
-    if (!f) {
+    if (!d->fillet) {
         code = QString::fromAscii(
         "FreeCAD.ActiveDocument.addObject(\"%1\",\"%2\")\n"
         "FreeCAD.ActiveDocument.%2.Base = FreeCAD.ActiveDocument.%3\n")
@@ -520,6 +544,11 @@ bool DlgFilletEdges::accept()
     Gui::Application::Instance->runPythonCode((const char*)code.toAscii());
     activeDoc->commitTransaction();
     activeDoc->recompute();
+    if (d->fillet) {
+        Gui::ViewProvider* vp;
+        vp = Gui::Application::Instance->getViewProvider(d->fillet);
+        if (vp) vp->show();
+    }
     return true;
 }
 
