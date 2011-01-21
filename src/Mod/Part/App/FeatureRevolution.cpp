@@ -32,7 +32,7 @@
 
 using namespace Part;
 
-App::PropertyFloatConstraint::Constraints Revolution::angleRangeU = {0.0f,360.0f,1.0f};
+App::PropertyFloatConstraint::Constraints Revolution::angleRangeU = {-360.0f,360.0f,1.0f};
 
 PROPERTY_SOURCE(Part::Revolution, Part::Feature)
 
