@@ -53,7 +53,7 @@ Sub-elements such as vertices, edges or faces are accessible as:
         <UserDocu>Extrude the shape along a direction.</UserDocu>
       </Documentation>
     </Methode>
-    <Methode Name="revolve">
+    <Methode Name="revolve" Const="true">
       <Documentation>
         <UserDocu>Revolve the shape around a Axis to a given degree.
 Part.revolve(Vector(0,0,0),Vector(0,0,1),360) - revolves the shape around the Z Axis 360 degree. 

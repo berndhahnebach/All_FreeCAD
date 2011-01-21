@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <QMessageBox>
+# include <TopExp_Explorer.hxx>
 #endif
 
 #include "ui_DlgRevolution.h"
@@ -86,18 +87,20 @@ void DlgRevolution::findShapes()
     std::vector<App::DocumentObject*> objs = activeDoc->getObjectsOfType
         (Part::Feature::getClassTypeId());
     for (std::vector<App::DocumentObject*>::iterator it = objs.begin(); it!=objs.end(); ++it) {
-        TopoDS_Shape shape = static_cast<Part::Feature*>(*it)->Shape.getValue();
-        TopAbs_ShapeEnum type = shape.ShapeType();
-        if (type == TopAbs_VERTEX || type == TopAbs_EDGE ||
-            type == TopAbs_WIRE || type == TopAbs_FACE ||
-            type == TopAbs_SHELL) {
-            QTreeWidgetItem* item = new QTreeWidgetItem(ui->treeWidget);
-            item->setText(0, QString::fromUtf8((*it)->Label.getValue()));
-            item->setData(0, Qt::UserRole, QString::fromAscii((*it)->getNameInDocument()));
-            Gui::ViewProvider* vp = activeGui->getViewProvider(*it);
-            if (vp)
-                item->setIcon(0, vp->getIcon());
-        }
+        const TopoDS_Shape& shape = static_cast<Part::Feature*>(*it)->Shape.getValue();
+        if (shape.IsNull()) continue;
+
+        TopExp_Explorer xp;
+        xp.Init(shape,TopAbs_SOLID);
+        if (xp.More()) continue; // solids not allowed
+        xp.Init(shape,TopAbs_COMPSOLID);
+        if (xp.More()) continue; // compound solids not allowed
+        // So allowed are: vertex, edge, wire, face, shell and compound
+        QTreeWidgetItem* item = new QTreeWidgetItem(ui->treeWidget);
+        item->setText(0, QString::fromUtf8((*it)->Label.getValue()));
+        item->setData(0, Qt::UserRole, QString::fromAscii((*it)->getNameInDocument()));
+        Gui::ViewProvider* vp = activeGui->getViewProvider(*it);
+        if (vp) item->setIcon(0, vp->getIcon());
     }
 }
 
