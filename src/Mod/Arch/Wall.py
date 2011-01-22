@@ -1,4 +1,4 @@
-import FreeCAD,Part,Draft
+import FreeCAD,FreeCADGui,Part,Draft
 from draftlibs import fcgeo
 from FreeCAD import Vector
 
@@ -11,8 +11,23 @@ def makeWall(baseobj,width=None,height=None):
     obj.Base = baseobj
     if width: obj.Width = width
     if height: obj.Height = height
+    baseobj.ViewObject.hide()
     return obj
-            
+
+class commandWall:
+    "the Arch Wall command definition"
+    def GetResources(self):
+        return {'Pixmap'  : 'Arch_Wall',
+                'MenuText': "Wall",
+                'ToolTip': "Creates a wall object from scratch or from a selected object (wire, face or solid)"}
+        
+    def Activated(self):
+        sel = FreeCADGui.Selection.getSelection()
+        if len(sel)==1:
+            makeWall(sel[0])
+        else:
+            FreeCAD.Console.PrintWarning("Not implemented! Select an object first")
+       
 class Wall:
     "The Wall object"
     def __init__(self,obj):
@@ -22,6 +37,8 @@ class Wall:
                         "The width of this wall")
         obj.addProperty("App::PropertyLength","Height","Base",
                         "The height of this wall")
+        obj.addProperty("App::PropertyVector","Normal","Base",
+                        "The normal extrusion direction of this wall (keep (0,0,0) for automatic normal)")
         obj.addProperty("App::PropertyEnumeration","Align","Base"
                         "The alignment of this wall on its base object, if applicable")
         obj.Align = ['Left','Right','Centered']
@@ -35,23 +52,36 @@ class Wall:
         
     def onChanged(self,obj,prop):
         if prop in ["Base","Height","Width"]:
+            print prop
             self.createGeometry(obj)
 
     def createGeometry(self,obj):
             plm = obj.Placement
             if obj.Base:
-                if Draft.getType(obj.Base) == "Wire":
-                    dvec = fcgeo.vec(obj.Base.Shape.Edges[0]).cross(Vector(0,0,1))
-                    dvec.normalize()
-                    dvec = dvec.multiply(obj.Width)
-                    base = Draft.offset(obj.Base,dvec,bind=True)
-                    if obj.Height:
-                        norm = fcgeo.getNormal(base)
-                        norm = norm.multiply(obj.Height)
-                        sol = base.extrude(norm)
-                        obj.Shape = sol
-                    else:
+                if obj.Base.isDerivedFrom("Part::Feature"):
+                    base = obj.Base.Shape.copy()
+                    if base.Solids:
                         obj.Shape = base
+                    elif base.Faces:
+                        if obj.Height:
+                            norm = fcgeo.getNormal(base)
+                            norm = norm.multiply(obj.Height)
+                            base = base.extrude(norm)
+                            obj.Shape = base
+                    elif base.Wires:
+                        dvec = fcgeo.vec(base.Edges[0]).cross(Vector(0,0,1))
+                        dvec.normalize()
+                        dvec = dvec.multiply(obj.Width)
+                        base = Draft.offset(obj.Base,dvec,bind=True)
+                        if obj.Height:
+                            norm = fcgeo.getNormal(base)
+                            norm = norm.multiply(obj.Height)
+                            base = base.extrude(norm)
+                            obj.Shape = base
+                        else:
+                            obj.Shape = base
+                    else:
+                        print "creating from scratch"
             obj.Placement = plm
 
 class ViewProviderWall:
@@ -116,5 +146,4 @@ class ViewProviderWall:
 
     def __setstate__(self,state):
         return None
-
 

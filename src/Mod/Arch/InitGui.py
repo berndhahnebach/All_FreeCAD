@@ -34,10 +34,15 @@ class ArchWorkbench(Workbench):
 	ToolTip = "Architecture workbench"
 	
 	def Initialize(self):
+                import Wall
+                Gui.addCommand('Arch_Wall',Wall.commandWall())
+                self.appendToolbar("Arch tools",["Arch_Wall"])
 		Log ('Loading Arch module... done\n')
 	def Activated(self):
 		Msg("ArchWorkbench::Activated()\n")
 	def Deactivated(self):
 		Msg("ArchWorkbench::Deactivated()\n")
 
+Gui.addIconPath("/home/yorik/Apps/FreeCAD/src/Mod/Arch/Resources/icons")
 Gui.addWorkbench(ArchWorkbench)
+
