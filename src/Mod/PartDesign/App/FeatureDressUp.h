@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2009 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
+ *   Copyright (c) 2010 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,41 +21,27 @@
  ***************************************************************************/
 
 
-#ifndef PARTDESIGN_Pocket_H
-#define PARTDESIGN_Pocket_H
+#ifndef PARTDESIGN_DressUp_H
+#define PARTDESIGN_DressUp_H
 
 #include <App/PropertyStandard.h>
-#include "FeatureSketchBased.h"
+#include <Mod/Part/App/PartFeature.h>
 
 namespace PartDesign
 {
 
-class Pocket : public SketchBased
+class DressUp : public Part::Feature
 {
-    PROPERTY_HEADER(PartDesign::Pocket);
+    PROPERTY_HEADER(PartDesign::DressUp);
 
 public:
-    Pocket();
+    DressUp();
 
-    App::PropertyEnumeration    Type;
-    App::PropertyLength         Length;
+    App::PropertyLinkSub Base;
 
-    /** @name methods override feature */
-    //@{
-    /// recalculate the feature
-    App::DocumentObjectExecReturn *execute(void);
-    short mustExecute() const;
-    /// returns the type name of the view provider
-    const char* getViewProviderName(void) const {
-        return "PartDesignGui::ViewProviderPocket";
-    }
-    //@}
-private:
-    static const char* TypeEnums[];
-
-};
+ };
 
 } //namespace PartDesign
 
 
-#endif // PART_Pocket_H
+#endif // PART_DressUp_H

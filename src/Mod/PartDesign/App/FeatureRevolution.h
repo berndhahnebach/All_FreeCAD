@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2009 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
+ *   Copyright (c) 2010 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef PARTDESIGN_Pocket_H
-#define PARTDESIGN_Pocket_H
+#ifndef PARTDESIGN_Revolution_H
+#define PARTDESIGN_Revolution_H
 
 #include <App/PropertyStandard.h>
 #include "FeatureSketchBased.h"
@@ -30,15 +30,14 @@
 namespace PartDesign
 {
 
-class Pocket : public SketchBased
+class Revolution : public SketchBased
 {
-    PROPERTY_HEADER(PartDesign::Pocket);
+    PROPERTY_HEADER(PartDesign::Revolution);
 
 public:
-    Pocket();
+    Revolution();
 
-    App::PropertyEnumeration    Type;
-    App::PropertyLength         Length;
+    App::PropertyAngle Angle;
 
     /** @name methods override feature */
     //@{
@@ -47,15 +46,12 @@ public:
     short mustExecute() const;
     /// returns the type name of the view provider
     const char* getViewProviderName(void) const {
-        return "PartDesignGui::ViewProviderPocket";
+        return "PartDesignGui::ViewProviderRevolution";
     }
     //@}
-private:
-    static const char* TypeEnums[];
-
 };
 
 } //namespace PartDesign
 
 
-#endif // PART_Pocket_H
+#endif // PART_Revolution_H

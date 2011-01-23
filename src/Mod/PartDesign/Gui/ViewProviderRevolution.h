@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2009 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
+ *   Copyright (c) 2010 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,41 +21,30 @@
  ***************************************************************************/
 
 
-#ifndef PARTDESIGN_Pocket_H
-#define PARTDESIGN_Pocket_H
+#ifndef PARTGUI_ViewProviderPad_H
+#define PARTGUI_ViewProviderPad_H
 
-#include <App/PropertyStandard.h>
-#include "FeatureSketchBased.h"
+#include <Mod/Part/Gui/ViewProvider.h>
 
-namespace PartDesign
+
+namespace PartDesignGui {
+
+class PartDesignGuiExport ViewProviderPad : public PartGui::ViewProviderPart
 {
-
-class Pocket : public SketchBased
-{
-    PROPERTY_HEADER(PartDesign::Pocket);
+    PROPERTY_HEADER(PartGui::ViewProviderPad);
 
 public:
-    Pocket();
+    /// constructor
+    ViewProviderPad();
+    /// destructor
+    virtual ~ViewProviderPad();
 
-    App::PropertyEnumeration    Type;
-    App::PropertyLength         Length;
-
-    /** @name methods override feature */
-    //@{
-    /// recalculate the feature
-    App::DocumentObjectExecReturn *execute(void);
-    short mustExecute() const;
-    /// returns the type name of the view provider
-    const char* getViewProviderName(void) const {
-        return "PartDesignGui::ViewProviderPocket";
-    }
-    //@}
-private:
-    static const char* TypeEnums[];
-
+    /// grouping handling 
+    std::vector<App::DocumentObject*> claimChildren(void)const;
 };
 
-} //namespace PartDesign
+
+} // namespace PartDesignGui
 
 
-#endif // PART_Pocket_H
+#endif // PARTGUI_ViewProviderPad_H

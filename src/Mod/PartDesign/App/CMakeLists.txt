@@ -19,22 +19,42 @@ set(PartDesign_LIBS
     FreeCADApp
 )
 
-SET(Features_SRCS
+SET(FeaturesDressUp_SRCS
+    FeatureDressUp.cpp
+    FeatureDressUp.h
     FeatureFillet.cpp
     FeatureFillet.h
+    FeatureChamfer.cpp
+    FeatureChamfer.h
+)
+SOURCE_GROUP("DressUpFeatures" FILES ${FeaturesDressUp_SRCS})
+
+SET(FeaturesSketchBased_SRCS
+    FeatureSketchBased.cpp
+    FeatureSketchBased.h
     FeaturePad.cpp
     FeaturePad.h
     FeaturePocket.cpp
     FeaturePocket.h
+    FeatureRevolution.cpp
+    FeatureRevolution.h
 )
-SOURCE_GROUP("Features" FILES ${Features_SRCS})
+SOURCE_GROUP("SketchBasedFeatures" FILES ${FeaturesSketchBased_SRCS})
 
-SET(PartDesign_SRCS
-    ${Features_SRCS}
+SET(Module_SRCS
+    FeatureMainPart.cpp
+    FeatureMainPart.h
     AppPartDesign.cpp
     AppPartDesignPy.cpp
     PreCompiled.cpp
     PreCompiled.h
+)
+SOURCE_GROUP("Module" FILES ${Module_SRCS})
+
+SET(PartDesign_SRCS
+    ${FeaturesSketchBased_SRCS}
+    ${FeaturesDressUp_SRCS}
+    ${Module_SRCS}
 )
 
 SET(PartDesign_Scripts

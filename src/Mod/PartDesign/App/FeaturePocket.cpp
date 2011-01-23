@@ -67,11 +67,10 @@ struct Wire_Compare {
 
 const char* Pocket::TypeEnums[]= {"Length","UpToLast","UpToFirst",NULL};
 
-PROPERTY_SOURCE(PartDesign::Pocket, Part::Feature)
+PROPERTY_SOURCE(PartDesign::Pocket, PartDesign::SketchBased)
 
 Pocket::Pocket()
 {
-    ADD_PROPERTY(Sketch,(0));
     ADD_PROPERTY(Type,((long)0));
     Type.setEnums(TypeEnums);
     ADD_PROPERTY(Length,(100.0));

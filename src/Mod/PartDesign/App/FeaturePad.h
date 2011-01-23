@@ -25,19 +25,18 @@
 #define PARTDESIGN_Pad_H
 
 #include <App/PropertyStandard.h>
-#include <Mod/Part/App/PartFeature.h>
+#include "FeatureSketchBased.h"
 
 namespace PartDesign
 {
 
-class Pad : public Part::Feature
+class Pad : public SketchBased
 {
     PROPERTY_HEADER(PartDesign::Pad);
 
 public:
     Pad();
 
-    App::PropertyLink   Sketch;
     App::PropertyLength Length;
 
     /** @name methods override feature */

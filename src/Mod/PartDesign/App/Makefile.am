@@ -9,6 +9,14 @@ libPartDesign_la_SOURCES=\
 		FeaturePad.h \
 		FeaturePocket.cpp \
 		FeaturePocket.h \
+		FeatureChamfer.cpp \
+		FeatureChamfer.h \
+		FeatureDressUp.cpp \
+		FeatureDressUp.h \
+		FeatureSketchBased.cpp \
+		FeatureSketchBased.h \
+		FeatureRevolution.cpp \
+		FeatureRevolution.h \
 		PreCompiled.cpp \
 		PreCompiled.h
 
