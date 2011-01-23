@@ -21,24 +21,23 @@
  ***************************************************************************/
 
 
-#ifndef PART_FEATUREFILLET_H
-#define PART_FEATUREFILLET_H
+#ifndef PARTDESIGN_FEATUREFILLET_H
+#define PARTDESIGN_FEATUREFILLET_H
 
 #include <App/PropertyStandard.h>
 #include <App/PropertyLinks.h>
-#include <Mod/Part/App/PartFeature.h>
+#include "FeatureDressUp.h"
 
 namespace PartDesign
 {
 
-class Fillet : public Part::Feature
+class Fillet : public DressUp
 {
     PROPERTY_HEADER(PartDesign::Fillet);
 
 public:
     Fillet();
 
-    App::PropertyLinkSub Base;
     App::PropertyFloatConstraint Radius;
 
     /** @name methods override feature */
@@ -56,4 +55,4 @@ public:
 } //namespace Part
 
 
-#endif // PART_FEATUREFILLET_H
+#endif // PARTDESIGN_FEATUREFILLET_H

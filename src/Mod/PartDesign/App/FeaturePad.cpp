@@ -64,11 +64,10 @@ struct Wire_Compare {
 }
 
 
-PROPERTY_SOURCE(PartDesign::Pad, Part::Feature)
+PROPERTY_SOURCE(PartDesign::Pad, PartDesign::SketchBased)
 
 Pad::Pad()
 {
-    ADD_PROPERTY(Sketch,(0));
     ADD_PROPERTY(Length,(100.0));
 }
 

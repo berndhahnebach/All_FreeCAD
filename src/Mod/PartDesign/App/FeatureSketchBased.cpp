@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008 Jürgen Riegel (juergen.riegel@web.de)              *
+ *   Copyright (c) 2010 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -23,56 +23,23 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <Python.h>
 #endif
 
-#include <Base/Console.h>
-#include <Base/Interpreter.h>
- 
-#include "FeaturePad.h"
-#include "FeaturePocket.h"
-#include "FeatureFillet.h"
+
 #include "FeatureSketchBased.h"
-#include "FeatureRevolution.h"
-#include "FeatureMainPart.h"
-#include "FeatureDressUp.h"
-#include "FeatureChamfer.h"
-
-extern struct PyMethodDef PartDesign_methods[];
-
-PyDoc_STRVAR(module_PartDesign_doc,
-"This module is the PartDesign module.");
 
 
-/* Python entry */
-extern "C" {
-void AppPartDesignExport initPartDesign()
+using namespace PartDesign;
+
+namespace PartDesign {
+
+PROPERTY_SOURCE(PartDesign::SketchBased, Part::Feature)
+
+SketchBased::SketchBased()
 {
-    // load dependent module
-    try {
-        Base::Interpreter().runString("import Part");
-        Base::Interpreter().runString("import Sketcher");
-    }
-    catch(const Base::Exception& e) {
-        PyErr_SetString(PyExc_ImportError, e.what());
-        return;
-    }
-    Py_InitModule3("PartDesign", PartDesign_methods, module_PartDesign_doc);   /* mod name, table ptr */
-    Base::Console().Log("Loading PartDesign module... done\n");
-
-
-    // NOTE: To finish the initialization of our own type objects we must
-    // call PyType_Ready, otherwise we run into a segmentation fault, later on.
-    // This function is responsible for adding inherited slots from a type's base class.
- 
-    PartDesign::DressUp    ::init();
-    PartDesign::SketchBased::init();
-    PartDesign::MainPart   ::init();
-    PartDesign::Pad        ::init();
-    PartDesign::Pocket     ::init();
-    PartDesign::Fillet     ::init();
-    PartDesign::Revolution ::init();
-    PartDesign::Chamfer    ::init();
+    ADD_PROPERTY(Sketch,(0));
 }
 
-} // extern "C"
+
+
+}

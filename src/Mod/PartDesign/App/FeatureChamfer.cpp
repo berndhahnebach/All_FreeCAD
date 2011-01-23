@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008 Werner Mayer <wmayer[at]users.sourceforge.net>     *
+ *   Copyright (c) 2010 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -23,7 +23,6 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <BRepFilletAPI_MakeFillet.hxx>
 # include <TopExp_Explorer.hxx>
 # include <TopoDS.hxx>
 # include <TopoDS_Edge.hxx>
@@ -31,34 +30,31 @@
 
 #include <Mod/Part/App/TopoShape.h>
 
-#include "FeatureFillet.h"
+#include "FeatureChamfer.h"
 
 
 using namespace PartDesign;
 
 
-PROPERTY_SOURCE(PartDesign::Fillet, PartDesign::DressUp)
+PROPERTY_SOURCE(PartDesign::Chamfer, PartDesign::DressUp)
 
-const App::PropertyFloatConstraint::Constraints floatRadius = {0.0f,FLT_MAX,0.1f};
-
-Fillet::Fillet()
+Chamfer::Chamfer()
 {
-    ADD_PROPERTY(Radius,(0.2f));
-    Radius.setConstraints(&floatRadius);
+    ADD_PROPERTY(Size,(1.0f));
 }
 
-short Fillet::mustExecute() const
+short Chamfer::mustExecute() const
 {
-    if (Base.isTouched() || Radius.isTouched())
+    if (Base.isTouched() || Size.isTouched())
         return 1;
     if (Base.getValue() && Base.getValue()->isTouched())
         return 1;
     return 0;
 }
 
-App::DocumentObjectExecReturn *Fillet::execute(void)
+App::DocumentObjectExecReturn *Chamfer::execute(void)
 {
-    App::DocumentObject* link = Base.getValue();
+ /*   App::DocumentObject* link = Base.getValue();
     if (!link)
         return new App::DocumentObjectExecReturn("No object linked");
     if (!link->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
@@ -73,14 +69,14 @@ App::DocumentObjectExecReturn *Fillet::execute(void)
     float radius = Radius.getValue();
 
     try {
-        BRepFilletAPI_MakeFillet mkFillet(base->Shape.getValue());
+        BRepChamferAPI_MakeChamfer mkChamfer(base->Shape.getValue());
 
         for (std::vector<std::string>::const_iterator it= SubVals.begin();it!=SubVals.end();++it) {
             TopoDS_Edge edge = TopoDS::Edge(TopShape.getSubShape(it->c_str()));
-            mkFillet.Add(radius, radius, edge);
+            mkChamfer.Add(radius, radius, edge);
         }
 
-        TopoDS_Shape shape = mkFillet.Shape();
+        TopoDS_Shape shape = mkChamfer.Shape();
         if (shape.IsNull())
             return new App::DocumentObjectExecReturn("Resulting shape is null");
         this->Shape.setValue(shape);
@@ -89,5 +85,7 @@ App::DocumentObjectExecReturn *Fillet::execute(void)
     catch (Standard_Failure) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
         return new App::DocumentObjectExecReturn(e->GetMessageString());
-    }
+    }*/
+
+    return App::DocumentObject::StdReturn;
 }

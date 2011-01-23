@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2009 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
+ *   Copyright (c) 2010 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,41 +21,32 @@
  ***************************************************************************/
 
 
-#ifndef PARTDESIGN_Pocket_H
-#define PARTDESIGN_Pocket_H
+#include "PreCompiled.h"
 
-#include <App/PropertyStandard.h>
-#include "FeatureSketchBased.h"
+#ifndef _PreComp_
+#endif
 
-namespace PartDesign
+#include "ViewProviderPad.h"
+#include <Mod/PartDesign/App/FeaturePad.h>
+
+using namespace PartDesignGui;
+
+PROPERTY_SOURCE(PartDesignGui::ViewProviderPad,PartGui::ViewProviderPart)
+
+ViewProviderPad::ViewProviderPad()
 {
+}
 
-class Pocket : public SketchBased
+ViewProviderPad::~ViewProviderPad()
 {
-    PROPERTY_HEADER(PartDesign::Pocket);
+}
 
-public:
-    Pocket();
+std::vector<App::DocumentObject*> ViewProviderPad::claimChildren(void)const
+{
+    std::vector<App::DocumentObject*> temp;
+    temp.push_back(static_cast<PartDesign::Pad*>(getObject())->Sketch.getValue());
 
-    App::PropertyEnumeration    Type;
-    App::PropertyLength         Length;
-
-    /** @name methods override feature */
-    //@{
-    /// recalculate the feature
-    App::DocumentObjectExecReturn *execute(void);
-    short mustExecute() const;
-    /// returns the type name of the view provider
-    const char* getViewProviderName(void) const {
-        return "PartDesignGui::ViewProviderPocket";
-    }
-    //@}
-private:
-    static const char* TypeEnums[];
-
-};
-
-} //namespace PartDesign
+    return temp;
+}
 
 
-#endif // PART_Pocket_H
