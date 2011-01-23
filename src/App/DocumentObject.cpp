@@ -146,9 +146,9 @@ std::vector<DocumentObject*> DocumentObject::getOutList(void) const
     return ret;
 }
 
-std::vector<App::DocumentObject*> DocumentObject::getInList(void)
+std::vector<App::DocumentObject*> DocumentObject::getInList(void) const
 {
-    if(_pDoc)
+    if (_pDoc)
         return _pDoc->getInList(this);
     else
         return std::vector<App::DocumentObject*>();

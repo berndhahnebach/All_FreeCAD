@@ -233,7 +233,7 @@ public:
     /// checks if the graph is directed and has no cycles
     bool checkOnCycle(void);
     /// get a list of all objects linking to the given object
-    std::vector<App::DocumentObject*> getInList(DocumentObject* me);
+    std::vector<App::DocumentObject*> getInList(const DocumentObject* me) const;
     // set Changed
     //void setChanged(DocumentObject* change);
     //@}

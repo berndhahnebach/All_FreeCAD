@@ -124,7 +124,7 @@ Py::List DocumentObjectPy::getInList(void) const
     std::vector<DocumentObject*> list = getDocumentObjectPtr()->getInList();
 
     for (std::vector<DocumentObject*>::iterator It=list.begin();It!=list.end();++It)
-        ret.append(Py::Object((*It)->getPyObject()));
+        ret.append(Py::Object((*It)->getPyObject(), true));
 
     return ret;
 }
@@ -135,7 +135,7 @@ Py::List DocumentObjectPy::getOutList(void) const
     std::vector<DocumentObject*> list = getDocumentObjectPtr()->getOutList();
 
     for (std::vector<DocumentObject*>::iterator It=list.begin();It!=list.end();++It)
-        ret.append(Py::Object((*It)->getPyObject()));
+        ret.append(Py::Object((*It)->getPyObject(), true));
 
     return ret;
 }
