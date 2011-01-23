@@ -1021,6 +1021,20 @@ int Document::countObjects(void) const
 {
    return static_cast<int>(d->objectArray.size());
 }
+std::vector<App::DocumentObject*> Document::getInList(DocumentObject* me)
+{   // result list
+    std::vector<App::DocumentObject*> result;
+    // go through all objects
+    for (std::map<std::string,DocumentObject*>::const_iterator It = d->objectMap.begin(); It != d->objectMap.end();++It) {
+        // get the outList and search if me is in that list
+        std::vector<DocumentObject*> OutList = It->second->getOutList();
+        for (std::vector<DocumentObject*>::const_iterator It2=OutList.begin();It2!=OutList.end();++It2)
+            if (*It2 && *It2 == me)
+                // add the parent object
+                result.push_back(It->second);
+    }
+    return result;
+}
 
 void Document::recompute()
 {

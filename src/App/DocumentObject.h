@@ -97,11 +97,21 @@ public:
     bool isValid(void) const {return !StatusBits.test(1);}
     /// remove the error from the object
     void purgeError(void){StatusBits.reset(1);}
+    /// returns true if this objects is currently recomputing
     bool isRecomputing() const {return StatusBits.test(3);}
+    /// returns true if this objects is currently recomputing
     bool isRestoring() const {return StatusBits.test(4);}
+    /// recompute only this object
     App::DocumentObjectExecReturn *recompute(void);
+    /// return the status bits
     unsigned long getStatus() const {return StatusBits.to_ulong();}
     //@}
+
+     /// returns a list of objects this object is pointing to by Links
+    std::vector<App::DocumentObject*> getOutList(void) const;
+    /// get the all objects link to this object
+    std::vector<App::DocumentObject*> getInList(void);
+
 
 public:
     /** mustExecute

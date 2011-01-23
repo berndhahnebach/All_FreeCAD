@@ -145,9 +145,6 @@ public:
       return 0;
   }
 
-  /// returns a list of objects this object is pointing to by Links
-  std::vector<DocumentObject*> getOutList(void) const;
-
   virtual void Save (Base::Writer &writer) const;
   virtual void Restore(Base::XMLReader &reader);
 
