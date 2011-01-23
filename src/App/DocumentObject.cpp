@@ -31,6 +31,7 @@
 #include "Document.h"
 #include "DocumentObject.h"
 #include "DocumentObjectPy.h"
+#include "PropertyLinks.h"
 #define new DEBUG_CLIENTBLOCK
 using namespace App;
 
@@ -115,6 +116,43 @@ const char *DocumentObject::getNameInDocument(void) const
     //assert(pcNameInDocument);
     if (!pcNameInDocument) return 0;
     return pcNameInDocument->c_str();
+}
+
+std::vector<DocumentObject*> DocumentObject::getOutList(void) const
+{
+    std::vector<Property*> List;
+    std::vector<DocumentObject*> ret;
+    getPropertyList(List);
+    for(std::vector<Property*>::const_iterator It = List.begin();It != List.end(); ++It)
+    {
+        if ((*It)->isDerivedFrom(PropertyLinkList::getClassTypeId()))
+        {
+            const std::vector<DocumentObject*> &OutList = static_cast<PropertyLinkList*>(*It)->getValues();
+            for(std::vector<DocumentObject*>::const_iterator It2 = OutList.begin();It2 != OutList.end(); ++It2)
+                if(*It2)
+                    ret.push_back(*It2 );
+        }
+        else if ((*It)->isDerivedFrom(PropertyLink::getClassTypeId()))
+        {
+            if(static_cast<PropertyLink*>(*It)->getValue())
+                ret.push_back(static_cast<PropertyLink*>(*It)->getValue() );
+        }
+        else if ((*It)->isDerivedFrom(PropertyLinkSub::getClassTypeId()))
+        {
+            if(static_cast<PropertyLink*>(*It)->getValue())
+                ret.push_back(static_cast<PropertyLink*>(*It)->getValue() );
+        }
+    }
+    return ret;
+}
+
+std::vector<App::DocumentObject*> DocumentObject::getInList(void)
+{
+    if(_pDoc)
+        return _pDoc->getInList(this);
+    else
+        return std::vector<App::DocumentObject*>();
+
 }
 
 void DocumentObject::onLostLinkToObject(DocumentObject*)

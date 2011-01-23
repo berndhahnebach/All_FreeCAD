@@ -23,7 +23,19 @@
 				<UserDocu>Mark the object as unchanged</UserDocu>
 			</Documentation>
 		</Methode>
-		<Attribute Name="Name" ReadOnly="true">
+    <Attribute Name="OutList" ReadOnly="true">
+      <Documentation>
+        <UserDocu>A list of all objects this object links to.</UserDocu>
+      </Documentation>
+      <Parameter Name="OutList" Type="List"/>
+    </Attribute>
+    <Attribute Name="InList" ReadOnly="true">
+      <Documentation>
+        <UserDocu>A list of all objects which link tobthis object.</UserDocu>
+      </Documentation>
+      <Parameter Name="InList" Type="List"/>
+    </Attribute>
+    <Attribute Name="Name" ReadOnly="true">
 			<Documentation>
 				<UserDocu>Return the internal name of this object</UserDocu>
 			</Documentation>

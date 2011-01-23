@@ -230,7 +230,10 @@ public:
     //@{
     /// write GraphViz file
     void writeDependencyGraphViz(std::ostream &out);
+    /// checks if the graph is directed and has no cycles
     bool checkOnCycle(void);
+    /// get a list of all objects linking to the given object
+    std::vector<App::DocumentObject*> getInList(DocumentObject* me);
     // set Changed
     //void setChanged(DocumentObject* change);
     //@}

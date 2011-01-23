@@ -118,6 +118,28 @@ Py::Object DocumentObjectPy::getViewObject(void) const
     }
 }
 
+Py::List DocumentObjectPy::getInList(void) const
+{
+    Py::List ret;
+    std::vector<DocumentObject*> list = getDocumentObjectPtr()->getInList();
+
+    for (std::vector<DocumentObject*>::iterator It=list.begin();It!=list.end();++It)
+        ret.append(Py::Object((*It)->getPyObject()));
+
+    return ret;
+}
+
+Py::List DocumentObjectPy::getOutList(void) const
+{
+    Py::List ret;
+    std::vector<DocumentObject*> list = getDocumentObjectPtr()->getOutList();
+
+    for (std::vector<DocumentObject*>::iterator It=list.begin();It!=list.end();++It)
+        ret.append(Py::Object((*It)->getPyObject()));
+
+    return ret;
+}
+
 PyObject *DocumentObjectPy::getCustomAttributes(const char* /*attr*/) const
 {
     return 0;

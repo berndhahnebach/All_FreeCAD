@@ -13,12 +13,12 @@
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />
       <UserDocu>This is a Persistence class</UserDocu>
     </Documentation>
-	  <Methode Name="getPropertyByName">
-		  <Documentation>
-			  <UserDocu>Return the value of a named property.</UserDocu>
-		  </Documentation>
-	  </Methode>
-	  <Methode Name="getTypeOfProperty">
+    <Methode Name="getPropertyByName">
+      <Documentation>
+        <UserDocu>Return the value of a named property.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="getTypeOfProperty">
 		  <Documentation>
 			  <UserDocu>Return the type of a named property. This can be (Hidden,ReadOnly,Output) or any combination. </UserDocu>
 		  </Documentation>
@@ -33,7 +33,7 @@
 			  <UserDocu>Return the documentation string of the property of this class.</UserDocu>
 		  </Documentation>
 	  </Methode>
-	  <Attribute Name="PropertiesList" ReadOnly="true">
+    <Attribute Name="PropertiesList" ReadOnly="true">
       <Documentation>
         <UserDocu>A list of all property names</UserDocu>
       </Documentation>
