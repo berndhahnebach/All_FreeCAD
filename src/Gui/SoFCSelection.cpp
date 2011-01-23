@@ -379,14 +379,27 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
                     }
                 }
                 else { // Ctrl
-                    Gui::Selection().clearSelection(documentName.getValue().getString());
-                    Gui::Selection().addSelection(documentName.getValue().getString()
-                                          ,objectName.getValue().getString()
-                                          ,subElementName.getValue().getString()
-                                          ,pp->getPoint()[0]
-                                          ,pp->getPoint()[1]
-                                          ,pp->getPoint()[2]);
- 
+                    if (!Gui::Selection().isSelected(documentName.getValue().getString()
+                                         ,objectName.getValue().getString()
+                                         ,subElementName.getValue().getString())) {
+                        Gui::Selection().clearSelection(documentName.getValue().getString());
+                        Gui::Selection().addSelection(documentName.getValue().getString()
+                                              ,objectName.getValue().getString()
+                                              ,subElementName.getValue().getString()
+                                              ,pp->getPoint()[0]
+                                              ,pp->getPoint()[1]
+                                              ,pp->getPoint()[2]);
+                    }
+                    else {
+                        Gui::Selection().clearSelection(documentName.getValue().getString());
+                        Gui::Selection().addSelection(documentName.getValue().getString()
+                                              ,objectName.getValue().getString()
+                                              ,0
+                                              ,pp->getPoint()[0]
+                                              ,pp->getPoint()[1]
+                                              ,pp->getPoint()[2]);
+                    }
+
                     if (mymode == OFF) {
                         snprintf(buf,512,"Selected: %s.%s.%s (%f,%f,%f)",documentName.getValue().getString()
                                                    ,objectName.getValue().getString()
@@ -541,7 +554,8 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
                                               ,pp->getPoint()[0]
                                               ,pp->getPoint()[1]
                                               ,pp->getPoint()[2]);
-                    }else{
+                    }
+                    else {
                         Gui::Selection().clearSelection(documentName.getValue().getString());
                         Gui::Selection().addSelection(documentName.getValue().getString()
                                               ,objectName.getValue().getString()
