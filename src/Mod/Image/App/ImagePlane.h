@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2005 Werner Mayer <wmayer[at]users.sourceforge.net>     *
+ *   Copyright (c) 2011 Jürgen Riegel (juergen.riegel@web.de)              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,48 +21,36 @@
  ***************************************************************************/
 
 
-#include "PreCompiled.h"
+#ifndef Image_ImagePlane_H
+#define Image_ImagePlane_H
 
-#ifndef _PreComp_
-# include <qobject.h>
-#endif
+#include <App/GeoFeature.h>
+#include <App/PropertyFile.h>
+#include <App/PropertyGeo.h>
 
-#include "Workbench.h"
-#include <Gui/ToolBarManager.h>
-
-using namespace ImageGui;
-
-#if 0 // needed for Qt's lupdate utility
-    qApp->translate("Workbench", "Image");
-#endif
-
-/// @namespace ImageGui @class Workbench
-TYPESYSTEM_SOURCE(ImageGui::Workbench, Gui::StdWorkbench)
-
-Workbench::Workbench()
+namespace Image
 {
-}
 
-Workbench::~Workbench()
+class ImageAppExport ImagePlane : public App::GeoFeature
 {
-}
+    PROPERTY_HEADER(Image::ImagePlane);
 
-Gui::ToolBarItem* Workbench::setupToolBars() const
-{
-    Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
-    Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
-    part->setCommand("Image");
-    *part << "Image_Open" << "Image_CreateImagePlane";
-    return root;
-}
+public:
+    /// Constructor
+    ImagePlane(void);
+    virtual ~ImagePlane();
 
-Gui::ToolBarItem* Workbench::setupCommandBars() const
-{
-    // Part tools
-    Gui::ToolBarItem* root = new Gui::ToolBarItem;
-    Gui::ToolBarItem* img = new Gui::ToolBarItem(root);
-    img->setCommand("Image");
-    *img << "Image_Open"/* << "Image_CapturerTest"*/;
-    return root;
-}
+    App::PropertyFileIncluded ImageFile;
+    App::PropertyLength       XSize;
+    App::PropertyLength       YSize;
 
+    /// returns the type name of the ViewProvider
+    virtual const char* getViewProviderName(void) const {
+        return "ImageGui::ViewProviderImagePlane";
+    }
+};
+
+} //namespace Image
+
+
+#endif // Image_ImagePlane_H

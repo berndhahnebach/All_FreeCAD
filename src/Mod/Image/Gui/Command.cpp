@@ -73,6 +73,47 @@ void CmdImageOpen::activated(int iMsg)
     }
 }
 
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+DEF_STD_CMD(CmdCreateImagePlane);
+
+CmdCreateImagePlane::CmdCreateImagePlane()
+    :Command("Image_CreateImagePlane")
+{
+    sAppModule      = "Image";
+    sGroup          = QT_TR_NOOP("Image");
+    sMenuText       = QT_TR_NOOP("Create image plane...");
+    sToolTipText    = QT_TR_NOOP("create a planar image in the 3D space");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "image-import";
+    iAccel          = 0;
+}
+
+void CmdCreateImagePlane::activated(int iMsg)
+{
+    // Reading an image
+    QString s = QFileDialog::getOpenFileName(Gui::getMainWindow(), QObject::tr("Choose an image file to open"), QString::null, 
+                                             QObject::tr("Images (*.png *.xpm *.jpg *.bmp)"));
+    if (!s.isEmpty()) {
+
+        QImage impQ(s);
+        if(impQ.isNull()){
+            QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Error open image"),
+                QObject::tr("Could not load the choosen image"));
+            return;
+        }
+        std::string FeatName = getUniqueObjectName("ImagePlane");
+
+        openCommand("Create ImagePlane");
+        doCommand(Doc,"App.activeDocument().addObject('Image::ImagePlane','%s\')",FeatName.c_str());
+        doCommand(Doc,"App.activeDocument().%s.ImageFile = '%s'",FeatName.c_str(),(const char*)s.toUtf8());
+        doCommand(Doc,"App.activeDocument().%s.XSize = %d",FeatName.c_str(),impQ.width () );
+        doCommand(Doc,"App.activeDocument().%s.YSize = %d",FeatName.c_str(),impQ.height() );
+
+    }
+}
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #if 0
 DEF_STD_CMD(CmdImageCapturerTest);
 
@@ -162,5 +203,6 @@ void CreateImageCommands(void)
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
 
     rcCmdMgr.addCommand(new CmdImageOpen());
+    rcCmdMgr.addCommand(new CmdCreateImagePlane());
   //rcCmdMgr.addCommand(new CmdImageCapturerTest());
 }

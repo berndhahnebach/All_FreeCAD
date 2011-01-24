@@ -15,6 +15,7 @@
 #endif
 
 #include <Base/Console.h>
+#include "ImagePlane.h"
 
 
 /* registration table  */
@@ -27,6 +28,9 @@ extern "C" {
 void ImageAppExport initImage() {
     (void) Py_InitModule("Image", Image_methods);   /* mod name, table ptr */
     Base::Console().Log("Loading Image module... done\n");
+
+    Image::ImagePlane::init();
+
     return;
 }
 

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2005 Werner Mayer <wmayer[at]users.sourceforge.net>     *
+ *   Copyright (c) 2011 Jürgen Riegel (juergen.riegel@web.de)              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -24,45 +24,28 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qobject.h>
 #endif
 
-#include "Workbench.h"
-#include <Gui/ToolBarManager.h>
+#include "ImagePlane.h"
+#include <App/DocumentObjectPy.h>
+#include <Base/Placement.h>
 
-using namespace ImageGui;
+using namespace Image;
+using namespace App;
 
-#if 0 // needed for Qt's lupdate utility
-    qApp->translate("Workbench", "Image");
-#endif
+PROPERTY_SOURCE(Image::ImagePlane, App::GeoFeature)
 
-/// @namespace ImageGui @class Workbench
-TYPESYSTEM_SOURCE(ImageGui::Workbench, Gui::StdWorkbench)
 
-Workbench::Workbench()
+ImagePlane::ImagePlane()
 {
+
+    ADD_PROPERTY_TYPE( ImageFile,(0) , "ImagePlane",Prop_None,"File of the image");
+    ADD_PROPERTY_TYPE( XSize,    (100)  , "ImagePlane",Prop_None,"Size of a pixel in X");
+    ADD_PROPERTY_TYPE( YSize,    (100)  , "ImagePlane",Prop_None,"Size of a pixel in Y");
+
 }
 
-Workbench::~Workbench()
+ImagePlane::~ImagePlane()
 {
-}
-
-Gui::ToolBarItem* Workbench::setupToolBars() const
-{
-    Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
-    Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
-    part->setCommand("Image");
-    *part << "Image_Open" << "Image_CreateImagePlane";
-    return root;
-}
-
-Gui::ToolBarItem* Workbench::setupCommandBars() const
-{
-    // Part tools
-    Gui::ToolBarItem* root = new Gui::ToolBarItem;
-    Gui::ToolBarItem* img = new Gui::ToolBarItem(root);
-    img->setCommand("Image");
-    *img << "Image_Open"/* << "Image_CapturerTest"*/;
-    return root;
 }
 

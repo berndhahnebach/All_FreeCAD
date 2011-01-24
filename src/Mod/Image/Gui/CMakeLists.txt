@@ -38,6 +38,8 @@ SET(ImageGui_SRCS
     AppImageGui.cpp
     AppImageGuiPy.cpp
     Command.cpp
+    ViewProviderImagePlane.cpp
+    ViewProviderImagePlane.h
     GLImageBox.cpp
     GLImageBox.h
     Resources/Image.qrc

@@ -19,6 +19,8 @@ set(Image_SRCS
     #CaptureClass.h
     ImageBase.cpp
     ImageBase.h
+    ImagePlane.cpp
+    ImagePlane.h
     PreCompiled.cpp
     PreCompiled.h
     AppImage.cpp

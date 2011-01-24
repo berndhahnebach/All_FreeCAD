@@ -3,6 +3,7 @@ lib_LTLIBRARIES=libImage.la Image.la
 
 libImage_la_SOURCES=\
 		ImageBase.cpp \
+		ImagePlane.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h
 
