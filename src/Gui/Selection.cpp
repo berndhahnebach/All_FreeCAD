@@ -1061,7 +1061,7 @@ PyObject *SelectionSingleton::sGetSelection(PyObject * /*self*/, PyObject *args,
     try {
         Py::List list;
         for (std::vector<SelectionSingleton::SelObj>::iterator it = sel.begin(); it != sel.end(); ++it) {
-            list.append(Py::Object(it->pObject->getPyObject()));
+            list.append(Py::asObject(it->pObject->getPyObject()));
         }
         return Py::new_reference_to(list);
     }

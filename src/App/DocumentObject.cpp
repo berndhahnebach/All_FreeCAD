@@ -156,7 +156,6 @@ std::vector<App::DocumentObject*> DocumentObject::getInList(void) const
         return _pDoc->getInList(this);
     else
         return std::vector<App::DocumentObject*>();
-
 }
 
 void DocumentObject::onLostLinkToObject(DocumentObject*)
