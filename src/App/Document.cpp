@@ -1021,8 +1021,10 @@ int Document::countObjects(void) const
 {
    return static_cast<int>(d->objectArray.size());
 }
+
 std::vector<App::DocumentObject*> Document::getInList(const DocumentObject* me) const
-{   // result list
+{
+    // result list
     std::vector<App::DocumentObject*> result;
     // go through all objects
     for (std::map<std::string,DocumentObject*>::const_iterator It = d->objectMap.begin(); It != d->objectMap.end();++It) {

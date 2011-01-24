@@ -123,24 +123,28 @@ std::vector<DocumentObject*> DocumentObject::getOutList(void) const
     std::vector<Property*> List;
     std::vector<DocumentObject*> ret;
     getPropertyList(List);
-    for(std::vector<Property*>::const_iterator It = List.begin();It != List.end(); ++It)
-    {
-        if ((*It)->isDerivedFrom(PropertyLinkList::getClassTypeId()))
-        {
+    for (std::vector<Property*>::const_iterator It = List.begin();It != List.end(); ++It) {
+        if ((*It)->isDerivedFrom(PropertyLinkList::getClassTypeId())) {
             const std::vector<DocumentObject*> &OutList = static_cast<PropertyLinkList*>(*It)->getValues();
-            for(std::vector<DocumentObject*>::const_iterator It2 = OutList.begin();It2 != OutList.end(); ++It2)
-                if(*It2)
-                    ret.push_back(*It2 );
+            for (std::vector<DocumentObject*>::const_iterator It2 = OutList.begin();It2 != OutList.end(); ++It2) {
+                if (*It2)
+                    ret.push_back(*It2);
+            }
         }
-        else if ((*It)->isDerivedFrom(PropertyLink::getClassTypeId()))
-        {
-            if(static_cast<PropertyLink*>(*It)->getValue())
-                ret.push_back(static_cast<PropertyLink*>(*It)->getValue() );
+        else if ((*It)->isDerivedFrom(PropertyLinkSubList::getClassTypeId())) {
+            const std::vector<DocumentObject*> &OutList = static_cast<PropertyLinkSubList*>(*It)->getValues();
+            for (std::vector<DocumentObject*>::const_iterator It2 = OutList.begin();It2 != OutList.end(); ++It2) {
+                if (*It2)
+                    ret.push_back(*It2);
+            }
         }
-        else if ((*It)->isDerivedFrom(PropertyLinkSub::getClassTypeId()))
-        {
-            if(static_cast<PropertyLink*>(*It)->getValue())
-                ret.push_back(static_cast<PropertyLink*>(*It)->getValue() );
+        else if ((*It)->isDerivedFrom(PropertyLink::getClassTypeId())) {
+            if (static_cast<PropertyLink*>(*It)->getValue())
+                ret.push_back(static_cast<PropertyLink*>(*It)->getValue());
+        }
+        else if ((*It)->isDerivedFrom(PropertyLinkSub::getClassTypeId())) {
+            if (static_cast<PropertyLinkSub*>(*It)->getValue())
+                ret.push_back(static_cast<PropertyLinkSub*>(*It)->getValue());
         }
     }
     return ret;
@@ -189,7 +193,7 @@ void DocumentObject::onChanged(const Property* prop)
 
 PyObject *DocumentObject::getPyObject(void)
 {
-    if (PythonObject.is(Py::_None())){
+    if (PythonObject.is(Py::_None())) {
         // ref counter is set to 1
         PythonObject = Py::Object(new DocumentObjectPy(this),true);
     }
