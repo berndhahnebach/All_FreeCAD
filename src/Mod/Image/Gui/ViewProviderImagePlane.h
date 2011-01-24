@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2005 Werner Mayer <wmayer[at]users.sourceforge.net>     *
+ *   Copyright (c) 2011 Jürgen Riegel (juergen.riegel@web.de)              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,48 +21,46 @@
  ***************************************************************************/
 
 
-#include "PreCompiled.h"
+#ifndef IMAGE_ViewProviderImagePlane_H
+#define IMAGE_ViewProviderImagePlane_H
 
-#ifndef _PreComp_
-# include <qobject.h>
-#endif
+#include <Gui/ViewProviderGeometryObject.h>
+#include <Gui/SoFCSelection.h>
 
-#include "Workbench.h"
-#include <Gui/ToolBarManager.h>
+class SoDragger;
+class SoJackDragger;
+class SoCoordinate3;
+class SoDrawStyle;  
+class SoTexture2; 
 
-using namespace ImageGui;
-
-#if 0 // needed for Qt's lupdate utility
-    qApp->translate("Workbench", "Image");
-#endif
-
-/// @namespace ImageGui @class Workbench
-TYPESYSTEM_SOURCE(ImageGui::Workbench, Gui::StdWorkbench)
-
-Workbench::Workbench()
+namespace ImageGui
 {
-}
 
-Workbench::~Workbench()
+class ImageGuiExport ViewProviderImagePlane : public Gui::ViewProviderGeometryObject
 {
-}
+    PROPERTY_HEADER(RobotGui::ViewProviderImagePlane);
 
-Gui::ToolBarItem* Workbench::setupToolBars() const
-{
-    Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
-    Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
-    part->setCommand("Image");
-    *part << "Image_Open" << "Image_CreateImagePlane";
-    return root;
-}
+public:
+    /// constructor.
+    ViewProviderImagePlane();
 
-Gui::ToolBarItem* Workbench::setupCommandBars() const
-{
-    // Part tools
-    Gui::ToolBarItem* root = new Gui::ToolBarItem;
-    Gui::ToolBarItem* img = new Gui::ToolBarItem(root);
-    img->setCommand("Image");
-    *img << "Image_Open"/* << "Image_CapturerTest"*/;
-    return root;
-}
+    /// destructor.
+    ~ViewProviderImagePlane();
 
+    void attach(App::DocumentObject *pcObject);
+    void setDisplayMode(const char* ModeName);
+    std::vector<std::string> getDisplayModes() const;
+    void updateData(const App::Property*);
+
+protected:
+ 
+    Gui::SoFCSelection    * pcImagePlaneRoot;
+    SoCoordinate3         * pcCoords;
+    SoDrawStyle           * pcDrawStyle;
+    SoTexture2            * textura;
+ };
+
+} //namespace RobotGui
+
+
+#endif // IMAGE_ViewProviderImagePlane_H

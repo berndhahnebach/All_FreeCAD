@@ -19,6 +19,7 @@
 #include <Gui/Application.h>
 #include <Gui/Language/Translator.h>
 #include "Workbench.h"
+#include "ViewProviderImagePlane.h"
 #include "qrc_Image.cpp"
 
 // use a different name to CreateCommand()
@@ -49,6 +50,8 @@ void ImageGuiExport initImageGui()
 
     // instantiating the commands
     CreateImageCommands();
+
+    ImageGui::ViewProviderImagePlane::init();
     ImageGui::Workbench::init();
 
     // add resources and reloads the translators

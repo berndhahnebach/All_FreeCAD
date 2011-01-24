@@ -13,6 +13,8 @@ libImageGui_la_SOURCES=\
 		ImageView.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \
+		ViewProviderImagePlane.cpp \
+		ViewProviderImagePlane.h \
 		Workbench.cpp \
 		XpmImages.h
 
