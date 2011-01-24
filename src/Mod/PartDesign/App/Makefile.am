@@ -13,6 +13,8 @@ libPartDesign_la_SOURCES=\
 		FeatureChamfer.h \
 		FeatureDressUp.cpp \
 		FeatureDressUp.h \
+		FeatureMainPart.cpp \
+		FeatureMainPart.h \
 		FeatureSketchBased.cpp \
 		FeatureSketchBased.h \
 		FeatureRevolution.cpp \
