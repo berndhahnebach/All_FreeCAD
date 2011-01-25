@@ -5,6 +5,7 @@ endif(WIN32)
 include_directories(
     #${OPENCV_INCLUDE_DIR}
     ${PYTHON_INCLUDE_PATH}
+    ${Boost_INCLUDE_DIRS}
     ${ZLIB_INCLUDE_DIR}
     ${XERCESC_INCLUDE_DIR}
 )
