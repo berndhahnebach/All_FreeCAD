@@ -10,7 +10,8 @@ libImage_la_SOURCES=\
 includedir = @includedir@/Mod/Image/App
 
 include_HEADERS=\
-		ImageBase.h
+		ImageBase.h \
+		ImagePlane.h
 
 # the library search path.
 libImage_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) \
@@ -19,6 +20,7 @@ libImage_la_CPPFLAGS = -DImageAppExport=
 
 #		$(opencv_LIBS)
 libImage_la_LIBADD   = \
+		@BOOST_SYSTEM_LIB@ \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
 		-lFreeCADBase \
