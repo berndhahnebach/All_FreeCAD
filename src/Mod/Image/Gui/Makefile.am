@@ -26,8 +26,11 @@ include_HEADERS=\
 		Workbench.h
 
 # the library search path.
-libImageGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(QT_LIBS) $(GL_LIBS) \
-		$(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libImageGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App \
+		$(QT_LIBS) $(GL_LIBS) $(all_libraries) \
+		$(sim_ac_coin_ldflags) $(sim_ac_coin_libs) \
+		$(sim_ac_soqt_ldflags) $(sim_ac_soqt_libs) \
+		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libImageGui_la_CPPFLAGS = -DImageAppExport= -DImageGuiExport=
 
 #		$(opencv_LIBS)
@@ -76,7 +79,8 @@ qrc_%.cpp: Resources/%.qrc
 
 # set the include path found by configure
 # $(opencv_CFLAGS)
-AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS)
+AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS) \
+		-I$(sim_ac_coin_includedir) -I$(sim_ac_soqt_includedir)
 
 libdir = $(prefix)/Mod/Image
 
