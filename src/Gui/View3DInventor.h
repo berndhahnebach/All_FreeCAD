@@ -27,9 +27,11 @@
 #include "MDIView.h"
 
 #include <Base/Parameter.h>
+#include <QImage>
 
 class SoNode;
 class QPrinter;
+class QStackedWidget;
 
 namespace Gui {
 
@@ -37,6 +39,22 @@ class Document;
 class View3DInventorViewer;
 class View3DPy;
 
+class GuiExport GLOverlayWidget : public QWidget
+{
+    Q_OBJECT;
+
+public:
+    GLOverlayWidget(QWidget* parent=0) : QWidget(parent)
+    {}
+    ~GLOverlayWidget()
+    {}
+    void setImage(const QImage& img)
+    { image = img; }
+    void paintEvent(QPaintEvent*);
+
+protected:
+    QImage image;
+};
 
 /** The 3D view window
  *  It consists out of the 3D view 
@@ -80,6 +98,9 @@ public:
     void toggleClippingPlane();
     bool hasClippingPlane() const;
 
+    void setOverlayWidget(GLOverlayWidget*);
+    void removeOverlayWidget();
+
     View3DInventorViewer *getViewer(void) const {return _viewer;}
   
 public Q_SLOTS:
@@ -115,6 +136,7 @@ private:
     View3DInventorViewer * _viewer;
     PyObject *_viewerPy;
     QTimer * stopSpinTimer;
+    QStackedWidget* stack;
 
     // friends
     friend class View3DPy;
