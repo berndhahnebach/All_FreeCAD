@@ -35,6 +35,7 @@
 # include <QPainter>
 # include <QPrinter>
 # include <QPrintDialog>
+# include <QStackedWidget>
 # include <QTimer>
 # include <QUrl>
 # include <Inventor/actions/SoWriteAction.h>
@@ -49,6 +50,7 @@
 # include <Inventor/fields/SoSFString.h>
 # include <Inventor/fields/SoSFColor.h>
 #endif
+# include <QStackedWidget>
 
 #include <Base/Exception.h>
 #include <Base/Console.h>
@@ -79,11 +81,19 @@
 
 using namespace Gui;
 
+void GLOverlayWidget::paintEvent(QPaintEvent* ev)
+{
+    QPainter paint(this);
+    paint.drawImage(0,0,image);
+    paint.end();
+}
+
 TYPESYSTEM_SOURCE_ABSTRACT(Gui::View3DInventor,Gui::BaseView);
 
 View3DInventor::View3DInventor(Gui::Document* pcDocument, QWidget* parent, Qt::WFlags wflags)
     : MDIView(pcDocument, parent, wflags), _viewerPy(0)
 {
+    stack = new QStackedWidget(this);
     // important for highlighting 
     setMouseTracking(true);
     // accept drops on the window, get handled in dropEvent, dragEnterEvent   
@@ -96,7 +106,8 @@ View3DInventor::View3DInventor(Gui::Document* pcDocument, QWidget* parent, Qt::W
     // create the inventor widget and set the defaults
 #if !defined (NO_USE_QT_MDI_AREA)
     _viewer = new View3DInventorViewer(0);
-    setCentralWidget(_viewer->getWidget());
+    stack->addWidget(_viewer->getWidget());
+    setCentralWidget(stack);
 #else
     _viewer = new View3DInventorViewer(this);
 #endif
@@ -633,6 +644,25 @@ void View3DInventor::toggleClippingPlane()
 bool View3DInventor::hasClippingPlane() const
 {
     return _viewer->hasClippingPlane();
+}
+
+void View3DInventor::setOverlayWidget(GLOverlayWidget* widget)
+{
+    removeOverlayWidget();
+    QGLWidget* w = static_cast<QGLWidget*>(_viewer->getGLWidget());
+    QImage img = w->grabFrameBuffer();
+    widget->setImage(img);
+    stack->addWidget(widget);
+    stack->setCurrentIndex(1);
+}
+
+void View3DInventor::removeOverlayWidget()
+{
+    if (stack->currentIndex() == 1) {
+        QWidget* old = stack->currentWidget();
+        stack->removeWidget(old);
+        if (old) old->deleteLater();
+    }
 }
 
 void View3DInventor::setCursor(const QCursor& aCursor)
