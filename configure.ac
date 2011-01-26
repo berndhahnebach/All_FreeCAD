@@ -911,7 +911,6 @@ src/Mod/ReverseEngineering/Gui/Resources/Makefile
 src/Mod/Inspection/Makefile
 src/Mod/Inspection/App/Makefile
 src/Mod/Inspection/Gui/Makefile
-src/Mod/Inspection/Gui/Resources/Makefile
 src/Mod/Robot/Makefile
 src/Mod/Robot/App/Makefile
 src/Mod/Robot/Gui/Makefile

@@ -11,7 +11,10 @@ libInspection_la_SOURCES=\
 includedir = @includedir@/Mod/Inspection/App
 
 # the library search path.
-libInspection_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) \
+libInspection_la_LDFLAGS = -L$(top_builddir)/src/Base -L$(top_builddir)/src/App \
+		-L$(top_builddir)/src/Mod/Mesh/App \
+		-L$(top_builddir)/src/Mod/Points/App \
+		$(QT4_CORE_LIBS) $(all_libraries) \
 		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libInspection_la_CPPFLAGS = -DInspectionAppExport=
 
@@ -20,7 +23,9 @@ libInspection_la_LIBADD   = \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
 		-lFreeCADBase \
-		-lFreeCADApp
+		-lFreeCADApp \
+		-lMesh \
+		-lPoints
 
 #--------------------------------------------------------------------------------------
 # Loader of libInspection
@@ -41,7 +46,7 @@ Inspection_la_DEPENDENCIES = libInspection.la
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes)
+AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT4_CORE_CXXFLAGS)
 
 libdir = $(prefix)/Mod/Inspection
 

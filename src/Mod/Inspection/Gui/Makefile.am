@@ -22,6 +22,8 @@ includedir = @includedir@/Mod/Inspection/Gui
 
 # the library search path.
 libInspectionGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App \
+		-L$(top_builddir)/src/Mod/Mesh/App \
+		-L$(top_builddir)/src/Mod/Points/App \
 		$(QT_LIBS) $(all_libraries) \
 		$(sim_ac_coin_ldflags) $(sim_ac_coin_libs) \
 		$(sim_ac_soqt_ldflags) $(sim_ac_soqt_libs) \
@@ -36,6 +38,8 @@ libInspectionGui_la_LIBADD   = \
 		-lFreeCADBase \
 		-lFreeCADApp \
 		-lFreeCADGui \
+		-lMesh \
+		-lPoints \
 		-lInspection
 
 #--------------------------------------------------------------------------------------
@@ -83,4 +87,5 @@ CLEANFILES = $(BUILT_SOURCES)
 EXTRA_DIST = \
 		CMakeLists.txt \
 		VisualInspection.ui \
-		Resources/Inspection.qrc \
+		Resources/Inspection.qrc
+
