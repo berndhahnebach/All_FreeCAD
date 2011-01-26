@@ -68,8 +68,6 @@ SET(RobotGui_SRCS_Module
     PreCompiled.h
     Workbench.cpp
     Workbench.h
-    TaskWatcher.h
-    TaskWatcher.cpp
 )
 SOURCE_GROUP("Module" FILES ${RobotGui_SRCS_Module})
 
