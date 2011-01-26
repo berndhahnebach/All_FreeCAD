@@ -24,15 +24,3 @@
 #*                                                                         *
 #*   Juergen Riegel 2002                                                   *
 #***************************************************************************/
-
-
-# Get the Parameter Group of this module
-ParGrp = App.ParamGet("System parameter:Modules").GetGroup("_TEMPLATE_")
-
-# Set the needed information
-ParGrp.SetString("HelpIndex",        "_TEMPLATE_/Help/index.html")
-ParGrp.SetString("WorkBenchName",    "_TEMPLATE_ Design")
-ParGrp.SetString("WorkBenchModule",  "_TEMPLATE_Workbench.py")
-
-
-

@@ -1,15 +1,13 @@
-set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
 
 add_subdirectory(App)
-add_subdirectory(Gui)
-
-copy_to_local_output_paths(Init.py)
-copy_to_local_output_paths(InitGui.py)
+if(FREECAD_BUILD_GUI)
+    add_subdirectory(Gui)
+endif(FREECAD_BUILD_GUI)
 
 install(
-		 FILES
-		 		 Init.py
-		 		 InitGui.py
-		 DESTINATION
-		 		 Mod/_TEMPLATE_
-				 )
+    FILES
+        Init.py
+        InitGui.py
+    DESTINATION
+        Mod/_TEMPLATE_
+)

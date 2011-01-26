@@ -6,6 +6,7 @@ lib_TEMPLATE__la_SOURCES=\
 		PreCompiled.cpp \
 		PreCompiled.h
 
+includedir = @includedir@/Mod/_TEMPLATE_/App
 
 # the library search path.
 lib_TEMPLATE__la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) \
@@ -13,6 +14,7 @@ lib_TEMPLATE__la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) \
 lib_TEMPLATE__la_CPPFLAGS = -D_TEMPLATE_AppExport=
 
 lib_TEMPLATE__la_LIBADD   = \
+		@BOOST_SYSTEM_LIB@ \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
 		-lFreeCADBase \

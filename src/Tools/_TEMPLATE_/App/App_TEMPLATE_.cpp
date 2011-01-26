@@ -45,8 +45,6 @@ void _TEMPLATE_AppExport init_TEMPLATE_() {
     //
     (void) Py_InitModule3("_TEMPLATE_", _TEMPLATE__methods, module__TEMPLATE__doc);   /* mod name, table ptr */
     Base::Console().Log("Loading _TEMPLATE_ module... done\n");
-
-    return;
 }
 
 } // extern "C"
