@@ -39,12 +39,17 @@
 			  <UserDocu>Read in an DAT, UNV, MED or STL file.</UserDocu>
 		  </Documentation>
 	  </Methode>
-	  <Methode Name="write">
+	  <Methode Name="write" Const="true">
 		  <Documentation>
 			  <UserDocu>write out an DAT, UNV, MED or STL file.</UserDocu>
 		  </Documentation>
 	  </Methode>
-    <Methode Name="setTransform">
+		<Methode Name="writeABAQUS" Const="true">
+			<Documentation>
+				<UserDocu>write out as ABAQUS.</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="setTransform">
       <Documentation>
         <UserDocu>Use a Placement object to perform a translation or rotation</UserDocu>
       </Documentation>

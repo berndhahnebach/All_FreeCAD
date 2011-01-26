@@ -483,21 +483,39 @@ void FemMesh::read(const char *FileName)
         throw Base::Exception("Unknown extension");
     }
 }
-void FemMesh::writeABAQUS(const std::string &Filename) const
-{
-	std::ofstream anABAQUS_Output;
-	anABAQUS_Output.open(Filename.c_str());
-	anABAQUS_Output << "*Node , NSET=Nall" << std::endl;
 
-	//Extract Nodes and Elements of the current SMESH datastructure
-	SMDS_NodeIteratorPtr aNodeIter = myMesh->GetMeshDS()->nodesIterator();
-	for (;aNodeIter->more();) {
-		const SMDS_MeshNode* aNode = aNodeIter->next();
-		anABAQUS_Output << aNode->GetID() << ","
-			<< aNode->X() << "," 
-			<< aNode->Y() << ","
-			<< aNode->Z() << std::endl;
-	}
+void FemMesh::writeABAQUS(const std::string &Filename, Base::Placement* placement) const
+{
+    std::ofstream anABAQUS_Output;
+    anABAQUS_Output.open(Filename.c_str());
+    anABAQUS_Output << "*Node , NSET=Nall" << std::endl;
+
+    //Extract Nodes and Elements of the current SMESH datastructure
+    SMDS_NodeIteratorPtr aNodeIter = myMesh->GetMeshDS()->nodesIterator();
+    if (placement)
+    {
+        Base::Vector3d current_node;
+        Base::Matrix4D matrix = placement->toMatrix();
+        for (;aNodeIter->more();) {
+            const SMDS_MeshNode* aNode = aNodeIter->next();
+            current_node.Set(aNode->X(),aNode->Y(),aNode->Z());
+            current_node = matrix * current_node;
+            anABAQUS_Output << aNode->GetID() << ","
+                << current_node.x << "," 
+                << current_node.y << ","
+                << current_node.z << std::endl;
+        }
+    }
+    else
+    {
+        for (;aNodeIter->more();) {
+            const SMDS_MeshNode* aNode = aNodeIter->next();
+            anABAQUS_Output << aNode->GetID() << ","
+                << aNode->X() << "," 
+                << aNode->Y() << ","
+                << aNode->Z() << std::endl;
+        }
+    }
 
 	anABAQUS_Output << "*Element, TYPE=C3D10, ELSET=Eall" << std::endl;
 	SMDS_VolumeIteratorPtr aVolIter = myMesh->GetMeshDS()->volumesIterator();
@@ -538,7 +556,6 @@ void FemMesh::writeABAQUS(const std::string &Filename) const
 	}
 	anABAQUS_Output.close();
 }
-
 
 void FemMesh::write(const char *FileName) const
 {

@@ -514,7 +514,7 @@ static PyObject * minBoundingBox(PyObject *self, PyObject *args)
 			float(0.0),float(0.0),float(1.0),dist_vector.z,
 			float(0.0),float(0.0),float(0.0),float(1.0));
 		inputMesh->getFemMeshPtr()->transformGeometry(trans_matrix);
-		inputMesh->getFemMeshPtr()->getSMesh()->ExportUNV("C:/fine_tuning.unv");
+		//inputMesh->getFemMeshPtr()->getSMesh()->ExportUNV("C:/fine_tuning.unv");
 
 	} PY_CATCH;
 
