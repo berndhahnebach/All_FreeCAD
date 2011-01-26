@@ -149,6 +149,7 @@
             <ComponentRef Id="CompModDraft" />
             <ComponentRef Id="CompModDraftLib" />
             <ComponentRef Id="CompModTest" />
+            <ComponentRef Id="CompModInspection" />
 			<!-- No CAM at the moment 
             <ComponentRef Id="CompModCam" />
 			-->
