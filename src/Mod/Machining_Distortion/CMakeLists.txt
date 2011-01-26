@@ -4,9 +4,9 @@ SET(MachDist_SRCS
     InitGui.py
     ApplyingBC_IC.py
     mach_dist_gui.py
+	calculix_postprocess.py
 	MachiningDistortionCommands.py
 	User_Interface_Mach_Dist.py
-	User_Interface_Mach_Dist.ui
     
 )
 SOURCE_GROUP("" FILES ${MachDist_SRCS})
