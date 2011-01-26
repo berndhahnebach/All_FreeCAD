@@ -21,7 +21,7 @@ endif
 
 #if HAVE_GTS
 if HAVE_OPENCASCADE
-SUBDIRS += ReverseEngineering MeshPart Fem
+SUBDIRS += ReverseEngineering MeshPart Fem Inspection
 endif
 #endif
 
