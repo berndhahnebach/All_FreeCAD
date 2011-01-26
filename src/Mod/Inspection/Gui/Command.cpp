@@ -28,36 +28,90 @@
 #include <Base/Console.h>
 #include <App/Document.h>
 #include <Gui/Application.h>
+#include <Gui/BitmapFactory.h>
 #include <Gui/Command.h>
+#include <Gui/Document.h>
+#include <Gui/MainWindow.h>
+#include <Gui/View3DInventor.h>
+#include <Gui/View3DInventorViewer.h>
+#include <Mod/Inspection/App/InspectionFeature.h>
+
+#include "VisualInspection.h"
+#include "ViewProviderInspection.h"
 
 
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+DEF_STD_CMD_A(CmdVisualInspection);
 
-//===========================================================================
-// CmdInspectionTest THIS IS JUST A TEST COMMAND
-//===========================================================================
-DEF_STD_CMD(CmdInspectionTest);
-
-CmdInspectionTest::CmdInspectionTest()
-  :Command("Inspection_Test")
+CmdVisualInspection::CmdVisualInspection()
+  : Command("Inspection_VisualInspection")
 {
     sAppModule    = "Inspection";
     sGroup        = QT_TR_NOOP("Inspection");
-    sMenuText     = QT_TR_NOOP("Hello");
-    sToolTipText  = QT_TR_NOOP("Inspection Test function");
-    sWhatsThis    = QT_TR_NOOP("Inspection Test function");
-    sStatusTip    = QT_TR_NOOP("Inspection Test function");
-    sPixmap       = "Test1";
-    iAccel        = Qt::CTRL+Qt::Key_H;
+    sMenuText     = QT_TR_NOOP("Visual inspection...");
+    sToolTipText  = QT_TR_NOOP("Visual inspection");
+    sStatusTip    = QT_TR_NOOP("Visual inspection");
+    sWhatsThis    = "Inspection_VisualInspection";
 }
 
-void CmdInspectionTest::activated(int iMsg)
+void CmdVisualInspection::activated(int iMsg)
 {
-    Base::Console().Message("Hello, World!\n");
+    InspectionGui::VisualInspection dlg(Gui::getMainWindow());
+    dlg.exec();
+}
+
+bool CmdVisualInspection::isActive(void)
+{
+    return App::GetApplication().getActiveDocument();
+}
+
+//--------------------------------------------------------------------------------------
+
+DEF_STD_CMD_A(CmdInspectElement);
+
+CmdInspectElement::CmdInspectElement()
+  : Command("Inspection_InspectElement")
+{
+    sAppModule    = "Inspection";
+    sGroup        = "Inspection";
+    sMenuText     = "Inspection...";
+    sToolTipText  = "Get distance information";
+    sWhatsThis    = "Inspection_InspectElement";
+    sStatusTip    = sToolTipText;
+    sPixmap       = "mesh_pipette";
+}
+
+void CmdInspectElement::activated(int iMsg)
+{
+    Gui::Document* doc = Gui::Application::Instance->activeDocument();
+    Gui::View3DInventor* view = static_cast<Gui::View3DInventor*>(doc->getActiveView());
+    if (view) {
+        Gui::View3DInventorViewer* viewer = view->getViewer();
+        viewer->setEditing(true);
+        viewer->setRedirectToSceneGraph(true);
+        viewer->setEditingCursor(QCursor(Gui::BitmapFactory().pixmap("mesh_pipette"),4,29));
+        viewer->addEventCallback(SoButtonEvent::getClassTypeId(),
+            InspectionGui::ViewProviderInspection::inspectCallback);
+     }
+}
+
+bool CmdInspectElement::isActive(void)
+{
+    App::Document* doc = App::GetApplication().getActiveDocument();
+    if (!doc || doc->countObjectsOfType(Inspection::Feature::getClassTypeId()) == 0)
+        return false;
+
+    Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
+    if (view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+        Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
+        return !viewer->isEditing();
+    }
+
+    return false;
 }
 
 void CreateInspectionCommands(void)
 {
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
-    rcCmdMgr.addCommand(new CmdInspectionTest());
+    rcCmdMgr.addCommand(new CmdVisualInspection());
+    rcCmdMgr.addCommand(new CmdInspectElement());
 }

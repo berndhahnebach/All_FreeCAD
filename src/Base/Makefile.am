@@ -2,6 +2,7 @@
 lib_LTLIBRARIES=libFreeCADBase.la
 
 BUILT_SOURCES=\
+		moc_FutureWatcherProgress.cpp \
 		BaseClassPy.cpp \
 		BoundBoxPy.cpp \
 		MatrixPy.cpp \
@@ -36,6 +37,7 @@ libFreeCADBase_la_SOURCES=\
 		FileInfo.cpp \
 		FileTemplate.cpp \
 		FileTemplate.h \
+		FutureWatcherProgress.cpp \
 		GeometryPyCXX.cpp \
 		gzstream.cpp \
 		Handle.cpp \
@@ -110,6 +112,7 @@ include_HEADERS=\
 		Factory.h \
 		FileInfo.h \
 		fdstream.hpp \
+		FutureWatcherProgress.h \
 		GeometryPyCXX.h \
 		gzstream.h \
 		Handle.h \
@@ -141,6 +144,14 @@ if HAVE_SWIG_FOUND
 swigpyrun.h:
 	$(SWIG) -python -external-runtime
 endif
+
+# rule for Qt MetaObject Compiler:
+moc_%.cpp: %.h
+	$(QT_MOC) $< -o $(@F)
+
+# rule for Qt MetaObject Compiler:
+%.moc: %.h
+	$(QT_MOC) $< -o $(@F)
 
 %.cpp: %.xml $(top_srcdir)/src/Tools/generateTemplates/templateClassPyExport.py
 	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $<

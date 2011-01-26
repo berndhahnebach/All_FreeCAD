@@ -1,19 +1,26 @@
 
 include_directories(
+    ${CMAKE_CURRENT_BINARY_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}
     ${Boost_INCLUDE_DIRS}
     ${OCC_INCLUDE_DIR}
+    ${QT_QTCORE_INCLUDE_DIR}
     ${PYTHON_INCLUDE_PATH}
     ${ZLIB_INCLUDE_DIR}
-    ${XERCES_INCLUDE_DIR}
+    ${XERCESC_INCLUDE_DIR}
 )
 
 set(Inspection_LIBS
     FreeCADApp
+    Mesh
+    Points
 )
 
 SET(Inspection_SRCS
     AppInspection.cpp
     AppInspectionPy.cpp
+    InspectionFeature.cpp
+    Inspectionfeature.h
     PreCompiled.cpp
     PreCompiled.h
 )

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) YEAR YOUR NAME         <Your e-mail address>            *
+ *   Copyright (c) 2011 Werner Mayer <wmayer[at]users.sourceforge.net>     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,34 +21,30 @@
  ***************************************************************************/
 
 
-#include "PreCompiled.h"
-#ifndef _PreComp_
-# include <Python.h>
-#endif
+#ifndef BASE_FUTUREWATCHER_H
+#define BASE_FUTUREWATCHER_H
 
-#include <Base/Console.h>
-#include "InspectionFeature.h"
+#include <QObject>
+#include <Base/Sequencer.h>
 
+namespace Base
+{
 
-/* registration table  */
-extern struct PyMethodDef Inspection_methods[];
+class BaseExport FutureWatcherProgress : public QObject
+{
+    Q_OBJECT
 
-PyDoc_STRVAR(module_Inspection_doc,
-"This module is the Inspection module.");
+public:
+    FutureWatcherProgress(const char* text, unsigned int steps);
+    ~FutureWatcherProgress();
 
+private Q_SLOTS:
+    void progressValueChanged(int v);
 
-/* Python entry */
-extern "C" {
-void InspectionAppExport initInspection() {
-
-    // ADD YOUR CODE HERE
-    //
-    //
-    (void) Py_InitModule3("Inspection", Inspection_methods, module_Inspection_doc);   /* mod name, table ptr */
-    Base::Console().Log("Loading Inspection module... done\n");
-
-    Inspection::Feature     ::init();
-    Inspection::Group       ::init();
+private:
+    Base::SequencerLauncher seq;
+    unsigned int steps, current;
+};
 }
 
-} // extern "C"
+#endif // BASE_FUTUREWATCHER_H 

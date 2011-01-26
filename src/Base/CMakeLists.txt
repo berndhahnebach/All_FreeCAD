@@ -147,6 +147,11 @@ SET(FreeCADBase_XML_SRCS
 )
 SOURCE_GROUP("XML" FILES ${FreeCADBase_XML_SRCS})
 
+set(FreeCADBase_MOC_HDRS
+    FutureWatcherProgress.h
+)
+fc_wrap_cpp(FreeCADBase_MOC_SRCS ${FreeCADBase_MOC_HDRS})
+
 SET(FreeCADBase_UNITAPI_SRCS
     UnitsApi.cpp
     UnitsApiPy.cpp
@@ -175,6 +180,7 @@ SET(FreeCADBase_CPP_SRCS
     Factory.cpp
     FileInfo.cpp
     FileTemplate.cpp
+    FutureWatcherProgress.cpp
     gzstream.cpp
     gzstream.h
     GeometryPyCXX.cpp
@@ -225,6 +231,7 @@ SET(FreeCADBase_HPP_SRCS
     Factory.h
     FileInfo.h
     FileTemplate.h
+    FutureWatcherProgress.h
     fdstream.hpp
     gzstream.h
     GeometryPyCXX.h

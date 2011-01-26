@@ -29,6 +29,7 @@
 #include <Base/Console.h>
 #include <Gui/Application.h>
 
+#include "ViewProviderInspection.h"
 #include "Workbench.h"
 
 // use a different name to CreateCommand()
@@ -53,7 +54,9 @@ void InspectionGuiExport initInspectionGui()
 
     // instanciating the commands
     CreateInspectionCommands();
-    InspectionGui::Workbench::init();
+    InspectionGui::ViewProviderInspection       ::init();
+    InspectionGui::ViewProviderInspectionGroup  ::init();
+    InspectionGui::Workbench                    ::init();
 
     // ADD YOUR CODE HERE
     //

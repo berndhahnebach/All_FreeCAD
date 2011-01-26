@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) YEAR YOUR NAME         <Your e-mail address>            *
+ *   Copyright (c) 2011 Werner Mayer <wmayer[at]users.sourceforge.net>     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,34 +21,35 @@
  ***************************************************************************/
 
 
-#include "PreCompiled.h"
-#ifndef _PreComp_
-# include <Python.h>
-#endif
+#ifndef INSPECTIONGUI_VISUALINSPECTION_H
+#define INSPECTIONGUI_VISUALINSPECTION_H
 
-#include <Base/Console.h>
-#include "InspectionFeature.h"
+#include <QDialog>
+#include <vector>
 
+class QTreeWidgetItem;
 
-/* registration table  */
-extern struct PyMethodDef Inspection_methods[];
+namespace InspectionGui {
+class Ui_VisualInspection;
+class VisualInspection : public QDialog
+{
+    Q_OBJECT
 
-PyDoc_STRVAR(module_Inspection_doc,
-"This module is the Inspection module.");
+public:
+    VisualInspection(QWidget* parent = 0, Qt::WFlags fl = 0);
+  ~ VisualInspection();
 
+    void accept();
 
-/* Python entry */
-extern "C" {
-void InspectionAppExport initInspection() {
+protected Q_SLOTS:
+    void onActivateItem(QTreeWidgetItem*);
+    void loadSettings();
+    void saveSettings();
 
-    // ADD YOUR CODE HERE
-    //
-    //
-    (void) Py_InitModule3("Inspection", Inspection_methods, module_Inspection_doc);   /* mod name, table ptr */
-    Base::Console().Log("Loading Inspection module... done\n");
+private:
+    Ui_VisualInspection* ui;
+};
 
-    Inspection::Feature     ::init();
-    Inspection::Group       ::init();
-}
+} // namespace InspectionGui
 
-} // extern "C"
+#endif // INSPECTIONGUI_VISUALINSPECTION_H
