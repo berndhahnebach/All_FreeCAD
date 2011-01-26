@@ -113,7 +113,7 @@ void ViewProviderImagePlane::attach(App::DocumentObject *pcObj)
     planesep->addChild( textCoord );
 
     // texture
-    textura->model = SoTexture2::DECAL ;
+    textura->model = SoTexture2::MODULATE  ;
     planesep->addChild( textura );
 
     //planesep->addChild( pcDrawStyle );
