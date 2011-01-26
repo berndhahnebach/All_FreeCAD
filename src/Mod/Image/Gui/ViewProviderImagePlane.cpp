@@ -75,8 +75,8 @@ ViewProviderImagePlane::ViewProviderImagePlane()
     //pcImageRoot->style = Gui::SoFCSelection::BOX;
     pcImagePlaneRoot->ref();
 
-    textura = new SoTexture2;
-    textura->ref();
+    texture = new SoTexture2;
+    texture->ref();
 
     pcCoords = new SoCoordinate3();
     pcCoords->ref();
@@ -92,8 +92,7 @@ ViewProviderImagePlane::~ViewProviderImagePlane()
     pcImagePlaneRoot->unref();
     pcCoords->unref();
     pcDrawStyle->unref();
-    textura->unref();
-
+    texture->unref();
 }
 
 void ViewProviderImagePlane::attach(App::DocumentObject *pcObj)
@@ -113,11 +112,11 @@ void ViewProviderImagePlane::attach(App::DocumentObject *pcObj)
     planesep->addChild( textCoord );
 
     // texture
-    textura->model = SoTexture2::MODULATE  ;
-    planesep->addChild( textura );
+    texture->model = SoTexture2::MODULATE;
+    planesep->addChild(texture);
 
     //planesep->addChild( pcDrawStyle );
-    // mesh
+    // plane
     pcCoords->point.set1Value(0,0,0,0);
     pcCoords->point.set1Value(1,0,1,0);
     pcCoords->point.set1Value(2,1,1,0);
@@ -169,7 +168,7 @@ void ViewProviderImagePlane::updateData(const App::Property* prop)
             SoSFImage img;
             // convert to Coin bitmap
             BitmapFactory().convert(impQ,img);
-            textura->image = img;
+            texture->image = img;
         }
     }
 
