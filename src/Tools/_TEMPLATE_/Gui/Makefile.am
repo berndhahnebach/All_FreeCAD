@@ -75,4 +75,5 @@ CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
 		CMakeLists.txt \
-		Resources/_TEMPLATE_.qrc \
+		Resources/_TEMPLATE_.qrc
+

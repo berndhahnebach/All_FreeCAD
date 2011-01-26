@@ -263,8 +263,8 @@ void ViewProviderInspection::setDistances()
 
     // distance values
     const std::vector<float>& fValues = ((App::PropertyFloatList*)pDistances)->getValues();
-    if (pcColorMat->diffuseColor.getNum() != fValues.size()) pcColorMat->diffuseColor.setNum((int)fValues.size());
-    if (pcColorMat->transparency.getNum() != fValues.size()) pcColorMat->transparency.setNum((int)fValues.size());
+    if (pcColorMat->diffuseColor.getNum() != (int)fValues.size()) pcColorMat->diffuseColor.setNum((int)fValues.size());
+    if (pcColorMat->transparency.getNum() != (int)fValues.size()) pcColorMat->transparency.setNum((int)fValues.size());
 
     SbColor * cols = pcColorMat->diffuseColor.startEditing();
     float   * tran = pcColorMat->transparency.startEditing();
