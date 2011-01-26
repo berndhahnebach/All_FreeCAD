@@ -160,17 +160,15 @@ void ViewProviderImagePlane::updateData(const App::Property* prop)
         pcCoords->point.set1Value(1,-(x/2),+(y/2),0.0);
         pcCoords->point.set1Value(2,+(x/2),+(y/2),0.0);
         pcCoords->point.set1Value(3,+(x/2),-(y/2),0.0);
-
-	}else if (prop == &pcPlaneObj->ImageFile) {
+    }
+    else if (prop == &pcPlaneObj->ImageFile) {
         QImage impQ(QString::fromUtf8(pcPlaneObj->ImageFile.getValue()));
         if(! impQ.isNull()){
-
             SoSFImage img;
             // convert to Coin bitmap
             BitmapFactory().convert(impQ,img);
             texture->image = img;
         }
     }
-
 }
 
