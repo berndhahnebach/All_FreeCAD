@@ -1,5 +1,6 @@
 import os,sys,string,math,shutil,glob
 from time import sleep
+from os.path import join
 
 ##GUI related stuff
 from PyQt4 import QtCore, QtGui
@@ -10,7 +11,7 @@ from User_Interface_Mach_Dist import Ui_dialog
 #from determine_ElementType  import  determine_ElementType
 #from mesh_bdf2inp  import mesh_bdf2inp
 from ApplyingBC_IC  import ApplyingBC_IC
-#from calculix_output_postprocess  import calculix_output_postprocess
+from calculix_postprocess import calculix_postprocess
 
 import FreeCAD,Fem,Part
 
@@ -28,11 +29,12 @@ class MyForm(QtGui.QDialog,Ui_dialog):
         QtCore.QObject.connect(self.button_dialog, QtCore.SIGNAL("accepted()"), self.onAbbrechen)
         QtCore.QObject.connect(self.button_dialog, QtCore.SIGNAL("rejected()"), self.onAbbrechen)
         QtCore.QObject.connect(self.button_start_calculation, QtCore.SIGNAL("clicked()"), self.start_calculation)
-        QtCore.QObject.connect(self.button_add_to_table, QtCore.SIGNAL("clicked()"), self.add_to_table)
+        QtCore.QObject.connect(self.button_add_to_table, QtCore.SIGNAL("clicked()"), self.start_PostProcessing)
+        
 
         #Define the table headers as we are not able to use the QT Designer for that
         self.JobTable.clear()
-        self.JobTable.setHorizontalHeaderLabels(["Input File","Output Folder","Young Modulus","Poisson Ratio","Offset From","Offset To","RotX","RotY","RotZ"])
+        self.JobTable.setHorizontalHeaderLabels(["Input File","Output Folder","Offset From","Offset To","Intervall","RotX","RotY","RotZ","Young Modulus","Poisson Ratio","LC1","LC2","LC3","LC4","LC5","LC6","LTC1","LTC2","LTC3","LTC4","LTC5","LTC6","Plate Thickness"])
 
     def add_to_table(self):
         self.JobTable.insertRow(0)
@@ -41,29 +43,70 @@ class MyForm(QtGui.QDialog,Ui_dialog):
         item = QtGui.QTableWidgetItem(self.dirname)
         self.JobTable.setItem(0,1,item)
         item = QtGui.QTableWidgetItem()
-        item.setData(QtCore.Qt.DisplayRole,self.spinBox_young_modulus.value())
+        item.setData(QtCore.Qt.DisplayRole,self.spinBox_z_level_from.value())
         self.JobTable.setItem(0,2,item)
         item = QtGui.QTableWidgetItem()
-        item.setData(QtCore.Qt.DisplayRole,self.spinBox_poisson_ratio.value())
+        item.setData(QtCore.Qt.DisplayRole,self.spinBox_z_level_to.value())
         self.JobTable.setItem(0,3,item)
         item = QtGui.QTableWidgetItem()
-        item.setData(QtCore.Qt.DisplayRole,self.spinBox_z_level_from.value())
+        item.setData(QtCore.Qt.DisplayRole,self.intervall.value())
         self.JobTable.setItem(0,4,item)
         item = QtGui.QTableWidgetItem()
-        item.setData(QtCore.Qt.DisplayRole,self.spinBox_z_level_to.value())
+        item.setData(QtCore.Qt.DisplayRole,self.spinBox_misalignment_x.value())
         self.JobTable.setItem(0,5,item)
         item = QtGui.QTableWidgetItem()
-        item.setData(QtCore.Qt.DisplayRole,self.spinBox_misalignment_x.value())
+        item.setData(QtCore.Qt.DisplayRole,self.spinBox_misalignment_y.value())
         self.JobTable.setItem(0,6,item)
         item = QtGui.QTableWidgetItem()
-        item.setData(QtCore.Qt.DisplayRole,self.spinBox_misalignment_y.value())
+        item.setData(QtCore.Qt.DisplayRole,self.spinBox_misalignment_z.value())
         self.JobTable.setItem(0,7,item)
         item = QtGui.QTableWidgetItem()
-        item.setData(QtCore.Qt.DisplayRole,self.spinBox_misalignment_z.value())
+        item.setData(QtCore.Qt.DisplayRole,self.spinBox_young_modulus.value())
         self.JobTable.setItem(0,8,item)
+        item = QtGui.QTableWidgetItem()
+        item.setData(QtCore.Qt.DisplayRole,self.spinBox_poisson_ratio.value())
+        self.JobTable.setItem(0,9,item)
+        item = QtGui.QTableWidgetItem()
+        item.setData(QtCore.Qt.DisplayRole,self.lc1.value())
+        self.JobTable.setItem(0,10,item)
+        item = QtGui.QTableWidgetItem()
+        item.setData(QtCore.Qt.DisplayRole,self.lc2.value())
+        self.JobTable.setItem(0,11,item)
+        item = QtGui.QTableWidgetItem()
+        item.setData(QtCore.Qt.DisplayRole,self.lc3.value())
+        self.JobTable.setItem(0,12,item)
+        item = QtGui.QTableWidgetItem()
+        item.setData(QtCore.Qt.DisplayRole,self.lc4.value())
+        self.JobTable.setItem(0,13,item)
+        item = QtGui.QTableWidgetItem()
+        item.setData(QtCore.Qt.DisplayRole,self.lc5.value())
+        self.JobTable.setItem(0,14,item)
+        item = QtGui.QTableWidgetItem()
+        item.setData(QtCore.Qt.DisplayRole,self.lc6.value())
+        self.JobTable.setItem(0,15,item)
+        item = QtGui.QTableWidgetItem()
+        item.setData(QtCore.Qt.DisplayRole,self.ltc1.value())
+        self.JobTable.setItem(0,16,item)
+        item = QtGui.QTableWidgetItem()
+        item.setData(QtCore.Qt.DisplayRole,self.ltc2.value())
+        self.JobTable.setItem(0,17,item)
+        item = QtGui.QTableWidgetItem()
+        item.setData(QtCore.Qt.DisplayRole,self.ltc3.value())
+        self.JobTable.setItem(0,18,item)
+        item = QtGui.QTableWidgetItem()
+        item.setData(QtCore.Qt.DisplayRole,self.ltc4.value())
+        self.JobTable.setItem(0,19,item)
+        item = QtGui.QTableWidgetItem()
+        item.setData(QtCore.Qt.DisplayRole,self.ltc5.value())
+        self.JobTable.setItem(0,20,item)
+        item = QtGui.QTableWidgetItem()
+        item.setData(QtCore.Qt.DisplayRole,self.ltc6.value())
+        self.JobTable.setItem(0,21,item)
+        item = QtGui.QTableWidgetItem()
+        item.setData(QtCore.Qt.DisplayRole,self.spinBox_Plate_Thickness.value())
+        self.JobTable.setItem(0,22,item)
         # This is how to get the data back test2 = self.JobTable.item(0,1).data(QtCore.Qt.DisplayRole).toInt()
         self.button_add_to_table.setEnabled(False)
-        self.dirname.clear()
         self.filename.clear()
         self.button_start_calculation.setEnabled(True)
 
@@ -73,17 +116,55 @@ class MyForm(QtGui.QDialog,Ui_dialog):
 
     def select_output(self):
         self.dirname=QtGui.QFileDialog.getExistingDirectory(None, 'Open working directory', '', QtGui.QFileDialog.ShowDirsOnly)
+        self.button_select_output.setEnabled(False)
         self.button_add_to_table.setEnabled(not self.dirname.isEmpty() and not self.filename.isEmpty())
 
     def onAbbrechen(self):
         self.close()
 
+    def start_PostProcessing(self):
+        outputfile = open(str(self.dirname + "/testoutput.txt"),"wb")
+        for root, dirs, files in os.walk(str(self.dirname)):
+           if 'final_fe_input.frd' in files:
+                bbox_orig,\
+                bbox_distorted,\
+                relationship,\
+                max_disp_x,\
+                min_disp_x,\
+                max_disp_y,\
+                min_disp_y,\
+                max_disp_z,\
+                min_disp_z = calculix_postprocess(os.path.join(root,'final_fe_input.frd'))
+                
+                #Get the current Offset-Level from the folder-name
+                current_z_level = int(root[(root.rfind("_")+1):])
+				#now generate an output tuple and add it to the output-list
+                output_list.append((current_z_level,relationship,max_disp_x,min_disp_x,max_disp_y,min_disp_y,max_disp_z,min_disp_z))
+				file.write(
+                str(current_z_level) + " " +
+                str(relationship) + " " +
+                str(max_disp_x) + " " +
+                str(min_disp_x) + " " +
+                str(max_disp_y) + " " +
+                str(min_disp_y) + " " +
+                str(max_disp_z) + " " +
+                str(min_disp_z) + "\n")
+                
+        outputfile.close()
+               
+        
     def start_calculation(self):
         self.button_add_to_table.setEnabled(False)
         self.button_select_file.setEnabled(False)
         self.button_select_output.setEnabled(False)
         self.button_start_calculation.setEnabled(False)
         ##Get values from the GUI
+        if ( os.path.exists(str(self.dirname)) ):
+            shutil.rmtree(str(self.dirname))
+        
+        os.mkdir(str(self.dirname))
+        batch = open(str(self.dirname + "/" + 'lcmt_CALCULIX_Calculation_batch.bat'),'wb')
+
         #Now do the calculation stuff for each row in the  table
         for job in range (0,self.JobTable.rowCount()):
             self.fly_to_buy = self.check_fly_to_buy.isChecked()
@@ -99,191 +180,65 @@ class MyForm(QtGui.QDialog,Ui_dialog):
             node_numbers = []
             node_numbers = Fem.getBoundary_Conditions(meshobject)
             #Now perform the user misalignment
-            rotation_around_x = FreeCAD.Base.Placement(FreeCAD.Base.Vector(0,0,0),FreeCAD.Base.Vector(1,0,0),self.JobTable.item(job,6).data(QtCore.Qt.DisplayRole).toDouble()[0])
-            rotation_around_y = FreeCAD.Base.Placement(FreeCAD.Base.Vector(0,0,0),FreeCAD.Base.Vector(0,1,0),self.JobTable.item(job,7).data(QtCore.Qt.DisplayRole).toDouble()[0])
-            rotation_around_z = FreeCAD.Base.Placement(FreeCAD.Base.Vector(0,0,0),FreeCAD.Base.Vector(0,0,1),self.JobTable.item(job,8).data(QtCore.Qt.DisplayRole).toDouble()[0])
+            rotation_around_x = FreeCAD.Base.Placement(FreeCAD.Base.Vector(0,0,0),FreeCAD.Base.Vector(1,0,0),self.JobTable.item(job,5).data(QtCore.Qt.DisplayRole).toDouble()[0])
+            rotation_around_y = FreeCAD.Base.Placement(FreeCAD.Base.Vector(0,0,0),FreeCAD.Base.Vector(0,1,0),self.JobTable.item(job,6).data(QtCore.Qt.DisplayRole).toDouble()[0])
+            rotation_around_z = FreeCAD.Base.Placement(FreeCAD.Base.Vector(0,0,0),FreeCAD.Base.Vector(0,0,1),self.JobTable.item(job,7).data(QtCore.Qt.DisplayRole).toDouble()[0])
             meshobject.setTransform(rotation_around_x)
             meshobject.setTransform(rotation_around_y)
             meshobject.setTransform(rotation_around_z)
-
             #Now we have set up the initial geometry for the calculations. Lets generate an ABAQUS input file now for each z-level with exactly the same
             #boundary conditions
+
+
             #1. Lets translate the geometry to the initial desired z-level
 
             #2. Generate a Folder for the current calculation z-level and output the ABAQUS Geometry and the boundary_conditions
 
-            batch = open(str(self.JobTable.item(job,1).text() + "/" + 'lcmt_CALCULIX_Calculation_batch.bat'),'w')
 
-            intervall = 1
-            i = self.JobTable.item(job,4).data(QtCore.Qt.DisplayRole).toInt()[0]
-            while i <= self.JobTable.item(job,5).data(QtCore.Qt.DisplayRole).toInt()[0]:
+
+            intervall = self.JobTable.item(job,4).data(QtCore.Qt.DisplayRole).toDouble()[0]
+            i = self.JobTable.item(job,2).data(QtCore.Qt.DisplayRole).toInt()[0]
+            while i <= self.JobTable.item(job,3).data(QtCore.Qt.DisplayRole).toInt()[0]:
                 translated_mesh = meshobject.copy()
                 translation = FreeCAD.Base.Placement(FreeCAD.Base.Vector(0,0,i),FreeCAD.Base.Vector(0,0,0),0)
                 translated_mesh.setTransform(translation)
                 Case_Dir = self.JobTable.item(job,1).text() + "/" + filename_without_suffix + "_" + QtCore.QString.number(i)
                 if ( os.path.exists(str(Case_Dir)) ):
-                  os.rmdir(str(Case_Dir))
+                  shutil.rmtree(str(Case_Dir))
                 os.mkdir(str(Case_Dir))
+                #Lets generate a sigini Input Deck for the calculix user subroutine
+                sigini_input = open (str(Case_Dir + "/" + "sigini_input.txt"),'wb')
+
+                
+                #Write plate thickness to the sigini_file
+                sigini_input.write(str(self.JobTable.item(job,22).data(QtCore.Qt.DisplayRole).toDouble()[0]) + "\n")
+                #Now write the Interpolation coefficients, first the L and then the LC ones
+                sigini_input.write(\
+                str(self.JobTable.item(job,10).data(QtCore.Qt.DisplayRole).toDouble()[0]) + "," + \
+                str(self.JobTable.item(job,11).data(QtCore.Qt.DisplayRole).toDouble()[0]) + "," + \
+                str(self.JobTable.item(job,12).data(QtCore.Qt.DisplayRole).toDouble()[0]) + "," + \
+                str(self.JobTable.item(job,13).data(QtCore.Qt.DisplayRole).toDouble()[0]) + "," + \
+                str(self.JobTable.item(job,14).data(QtCore.Qt.DisplayRole).toDouble()[0]) + "," + \
+                str(self.JobTable.item(job,15).data(QtCore.Qt.DisplayRole).toDouble()[0]) + "\n")
+                sigini_input.write(\
+                str(self.JobTable.item(job,16).data(QtCore.Qt.DisplayRole).toDouble()[0]) + "," + \
+                str(self.JobTable.item(job,17).data(QtCore.Qt.DisplayRole).toDouble()[0]) + "," + \
+                str(self.JobTable.item(job,18).data(QtCore.Qt.DisplayRole).toDouble()[0]) + "," + \
+                str(self.JobTable.item(job,19).data(QtCore.Qt.DisplayRole).toDouble()[0]) + "," + \
+                str(self.JobTable.item(job,20).data(QtCore.Qt.DisplayRole).toDouble()[0]) + "," + \
+                str(self.JobTable.item(job,21).data(QtCore.Qt.DisplayRole).toDouble()[0]) + "\n")
+                sigini_input.close()
                 translated_mesh.write(str(Case_Dir + "/" + "geometry_fe_input.inp"))
-                ApplyingBC_IC(Case_Dir, self.JobTable.item(job,2).data(QtCore.Qt.DisplayRole).toDouble()[0],self.JobTable.item(job,3).data(QtCore.Qt.DisplayRole).toDouble()[0],node_numbers[0],node_numbers[1],node_numbers[2])
-                batch.write(str("cd " + Case_Dir + "\n"))
-                batch.write(str("ccx -i final_fe_input.inp > calculix_output.out\n"))
+                ApplyingBC_IC(Case_Dir, self.JobTable.item(job,8).data(QtCore.Qt.DisplayRole).toDouble()[0],self.JobTable.item(job,9).data(QtCore.Qt.DisplayRole).toDouble()[0],node_numbers[0],node_numbers[1],node_numbers[2])
+                batch.write(str("cd " + filename_without_suffix + "_" + QtCore.QString.number(i) + "\n"))
+                batch.write(str("/home/st_fr/to81026/CCX_2_2_COMPILATION/CalculiX/ccx_2.2/src/ccx_2.2_MT -i final_fe_input > calculix_output.out\n"))
+                batch.write(str("cd ..\n"))
                 i = i+intervall
 
-            batch.write("exit")
-            batch.close()
 
+        batch.write("exit")
+        batch.close()
 
-
-        #3. Generate a Batch File and begin the calculation of the different steps. Use a progress bar to make the progress visible
-
-        # Direct submission of the CALCULIX_Calculations :
- #       CommandLine = "./lcmt_CALCULIX_Calculation_batch.bat"
-#        os.system("chmod +x ./lcmt_CALCULIX_Calculation_batch.bat")
-  #      print "Launching job; look in calculix_output.out if needed"
- #       os.system(CommandLine)
-
-        #4. After all the calculations are done we do a postprocess step to extract the displacement values at certain nodes
-
-        #fly to buy ratio wird, falls angeklickt im Outputfile nach dem Misalignment vermerkt
-
-
-
-##        # 1) copy the input PrincipalAxis-file (produced with the macro CATIA) into the generic file *CATPART_pointG_PrincipalAxis.txt* :
-##        fileName1=str(FOLDER1_path)+"/"+str(file)
-##        fileName2="  pointG_PrincipalAxis.txt"
-##        CommandLine = "cp "+str(fileName1)+str(fileName2)
-##        print "CommandLine=",CommandLine
-##        os.system(CommandLine)
-##
-##        # 2) find and copy the corresponding input (Nastran) original-Mesh-file into the generic file *Nastran_originalMeshFile.bdf* :
-##        fileName1 = str(FOLDER2_path)+"/"+str(filename_withoutSuffixe)+".bdf"
-##        if ( os.path.exists(fileName1) ) :
-##            fileName2=" Nastran_originalMeshFile.bdf"
-##            CommandLine = "cp "+str(fileName1)+str(fileName2)
-##            print "CommandLine=",CommandLine
-##            os.system(CommandLine)
-##        else :
-##            print "the corresponding input (Nastran) Mesh-file is missing ! "
-##            print "Check that matter. Exit forced from module *CALL_module.py* !!"
-##            sys.exit()
-##        #
-##        # Info = the GRID lines (of the billet) are expressed in a global coordinate system (for example attached to the aircraft reference frame) !!
-##
-##        # 3) find and copy (if any) the corresponding OtherInput files with a generic_name :
-##        fileName1 = str(FOLDER3_path)+"/"+str(filename_withoutSuffixe)+"_sigini_input.txt"
-##        if ( os.path.exists(fileName1) ) :
-##            fileName2=" sigini_input.txt"
-##            CommandLine = "cp "+str(fileName1)+str(fileName2)
-##            print "CommandLine=",CommandLine
-##            os.system(CommandLine)
-##            print ""
-##            print ">>> Information : Statements of branch_3 will be executed in *sigini* !"
-##            print ""
-##        else :
-##        # .............................................................................
-##        print "NO associated OtherInput.txt (usefull to GO in branch_3 in *sigini*) ! "
-##        #
-##        fileName1 = str(FOLDER3_path)+"/"+str(filename_withoutSuffixe)+".NormalInfos_txt"
-##        if ( os.path.exists(fileName1) ) :
-##          fileName2=" Generic_CaseName.n"
-##          CommandLine = "cp "+str(fileName1)+str(fileName2)
-##          print "CommandLine=",CommandLine
-##          os.system(CommandLine)
-##          print ""
-##          print ">>> Information : Statements of branch_2 will be executed in *sigini* !"
-##          print ""
-##        else :
-##          print "NO associated Generic_CaseName.n (usefull to GO in branch_2 in *sigini*) ! "
-##        #
-##        fileName1 = str(FOLDER3_path)+"/"+str(filename_withoutSuffixe)+".StressInfos_txt"
-##        if ( os.path.exists(fileName1) ) :
-##          fileName2=" Generic_CaseName.s"
-##          CommandLine = "cp "+str(fileName1)+str(fileName2)
-##          print "CommandLine=",CommandLine
-##          os.system(CommandLine)
-##          #  Information : Statements of branch_2 will be executed in *sigini* !
-##        else :
-##          print "NO associated Generic_CaseName.s (usefull to GO in branch_2 in *sigini*) ! "
-##        #
-##        fileName1 = str(FOLDER3_path)+"/"+str(filename_withoutSuffixe)+".ThicknessInfos_txt"
-##        if ( os.path.exists(fileName1) ) :
-##          fileName2=" Generic_CaseName.t"
-##          CommandLine = "cp "+str(fileName1)+str(fileName2)
-##          print "CommandLine=",CommandLine
-##          os.system(CommandLine)
-##          #  Information : Statements of branch_2 will be executed in *sigini* !
-##        else :
-##          print "NO associated Generic_CaseName.t (usefull to GO in branch_2 in *sigini*) ! "
-##        # ...................................................................................
-##        #    Information : IF none of them have been found, THEN
-##        #    Information : default statements of branch_1 will be executed in *sigini* !
-##
-##        # 4) Determine the type of Finite Element :
-##        CommandLine = "tail -6 Nastran_originalMeshFile.bdf > tail_Nastran_originalMeshFile.bdf"
-##        os.system(CommandLine)
-##        (ElementType,NODE_IDs_ELEMENTspecif) = determine_ElementType()
-##        print "ElementType=",ElementType,"   NODE_IDs_ELEMENTspecif=",NODE_IDs_ELEMENTspecif
-##
-##        # 5) Convert the input (Nastran) Mesh-file directly into an abaqus Mesh-file :
-##        #    NB  possible misalignement of the billet IS DEALT WITH during this subtask
-##        #        so that the produced GRIDS stored according to the abaqus format
-##        (OUTER_GRID_No1, OUTER_GRID_No1_x, OUTER_GRID_No1_y, OUTER_GRID_No1_z,\
-##        OUTER_GRID_No2, OUTER_GRID_No2_x, OUTER_GRID_No2_y, OUTER_GRID_No2_z,\
-##        OUTER_GRID_No3, OUTER_GRID_No3_x, OUTER_GRID_No3_y, OUTER_GRID_No3_z,\
-##        original_deltaXL, original_deltaXLT, original_deltaZ, ALL_ELEMENTS_VOL) = mesh_bdf2inp(ElementType,ALL_ELEMENTS_VOL_bool,Misalignement_with_Dir1,Misalignement_with_Dir2)
-##        print
-##        print "NODE_No1_ToBeConstrained = ",OUTER_GRID_No1, OUTER_GRID_No1_x, OUTER_GRID_No1_y, OUTER_GRID_No1_z
-##        print "NODE_No2_ToBeConstrained = ",OUTER_GRID_No2, OUTER_GRID_No2_x, OUTER_GRID_No2_y, OUTER_GRID_No2_z
-##        print "NODE_No3_ToBeConstrained = ",OUTER_GRID_No3, OUTER_GRID_No3_x, OUTER_GRID_No3_y, OUTER_GRID_No3_z
-##        print
-##        # If one wants to check the difference between WITH and WITHOUT accounting for Misalignements :
-##        # CommandLine = Path_to_GMESHsoftware+" Nastran_TransformedGRIDs_File_without_Misalignement.bdf"
-##        # os.system(CommandLine)
-##        # CommandLine = Path_to_GMESHsoftware+" Nastran_TransformedGRIDs_File.bdf"
-##        # os.system(CommandLine)
-##
-##        # 6) Append to the *File.inp* the Applied_Conditions in order to set the conditions of the calculation:
-##        ApplyingBC_IC(YoungModulus,PoissonCoeff,OUTER_GRID_No1,OUTER_GRID_No2,OUTER_GRID_No3)
-##
-##        # 7) CALCULIX_Calculations :
-##        # Edit a batch file (it may be necessary later on) :
-##        batch = open ('lcmt_CALCULIX_Calculation_batch.bat','w')
-##        print "writing job execution file lcmt_CALCULIX_Calculation_batch.bat"
-##        print "Provide a file MYcase1_sigini_input.txt if necessary !"
-##        print "Provide a file MYcase1.NormalInfos_txt if necessary !"
-##        print "Provide a file MYcase1.ThicknessInfos_txt if necessary !"
-##        print "Provide a file MYcase1.StressInfos_txt if necessary !"
-##        #
-##        CALCULIX_Input_Output = "-i TransformedMesh_File > calculix_output.out"
-##        batch.write("%s %s \n" %(Path_to_FEMsoftware, CALCULIX_Input_Output))
-##        #
-##        batch.write("exit")
-##        batch.close()
-##        # Direct submission of the CALCULIX_Calculations :
-##        CommandLine = "./lcmt_CALCULIX_Calculation_batch.bat"
-##        os.system("chmod +x ./lcmt_CALCULIX_Calculation_batch.bat")
-##        print "Launching job; look in calculix_output.out if needed"
-##        os.system(CommandLine)
-##
-##        # 8) Post-process the results
-##        calculix_output_postprocess(original_deltaXL,original_deltaXLT,original_deltaZ,ALL_ELEMENTS_VOL)
-##
-##        # 9)  Building-up the Nastran_deformedGRIDs_File.bdf :
-##        print "Building Nastran_deformedGRIDs_File.bdf"
-##        CommandLine = "cat Nastran_displacedNODEs.txt Nastran_ELEMENTs.txt > Nastran_deformedGRIDs_File.bdf"
-##        os.system(CommandLine)
-##
-##        # 10) Cleaning + Managing results files :
-##        print "Moving results to CASE dir"
-##        filesToBeKept = "pointG_PrincipalAxis.txt TransformedMesh_File.inp Nastran_TransformedGRIDs_File.bdf Applied_Conditions.txt lcmt_CALCULIX_Calculation_batch.bat Machining_distorsion.res Nastran_deformedGRIDs_File.bdf TransformedMesh_File.frd calculix_output.out Nastran_TransformedGRIDs_File_without_Misalignement.bdf"
-##        CommandLine = "mv "+filesToBeKept+" "+Case_Dir
-##        os.system(CommandLine)
-##        CommandLine = "cp input_generalINFOS.txt "+Case_Dir
-##        os.system(CommandLine)
-##        print "Cleaning up"
-##        CommandLine = "rm -f Nastran_originalMeshFile.bdf Nastran_originalMeshFile_HeadLines.bdf Nastran_GRIDS_in_PrincipalAxis_1overFreqlines.txt Nastran_GRIDS_in_PrincipalAxis_ALLlines.bdf tail_Nastran_originalMeshFile.bdf typeELEMENT.txt TransformedMesh_File_rot1_1overFreqlines.txt Nastran_displacedNODEs.txt Nastran_ELEMENTs.txt"
-##        os.system(CommandLine)
 
         self.button_select_file.setEnabled(True)
         self.button_select_output.setEnabled(True)
