@@ -1413,7 +1413,7 @@ DocumentObject* Document::_copyObject(DocumentObject* obj, std::map<DocumentObje
                     copy_map[link] = link_copy;
                     static_cast<PropertyLink*>(it->second)->setValue(link_copy);
                 }
-                else if (link->getDocument() == this) {
+                else if (link && link->getDocument() == this) {
                     //static_cast<PropertyLink*>(it->second)->setValue(link);
                 }
             }
