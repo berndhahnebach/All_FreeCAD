@@ -97,12 +97,11 @@ public:
     /// import from files
     void read(const char *FileName);
     void write(const char *FileName) const;
+    void writeABAQUS(const std::string &Filename, Base::Placement* = 0) const;
 
 private:
     void copyMeshData(const FemMesh&);
 	void readNastran(const std::string &Filename);
-
-	void writeABAQUS(const std::string &Filename) const;
 
 private:
     SMESH_Gen  *myGen;

@@ -228,9 +228,11 @@ class MyForm(QtGui.QDialog,Ui_dialog):
             intervall = self.JobTable.item(job,4).data(QtCore.Qt.DisplayRole).toDouble()[0]
             i = self.JobTable.item(job,2).data(QtCore.Qt.DisplayRole).toInt()[0]
             while i <= self.JobTable.item(job,3).data(QtCore.Qt.DisplayRole).toInt()[0]:
-                translated_mesh = meshobject.copy()
+                #translated_mesh = meshobject.copy()
+                translated_mesh = meshobject
                 translation = FreeCAD.Base.Placement(FreeCAD.Base.Vector(0,0,i),FreeCAD.Base.Vector(0,0,0),0)
-                translated_mesh.setTransform(translation)
+                #Use the placement as optional argument for the write() method
+                #translated_mesh.setTransform(translation)
                 Case_Dir = self.JobTable.item(job,1).text() + "/" + filename_without_suffix + "_" + QtCore.QString.number(i)
                 if ( os.path.exists(str(Case_Dir)) ):
                   shutil.rmtree(str(Case_Dir))
@@ -257,7 +259,7 @@ class MyForm(QtGui.QDialog,Ui_dialog):
                 str(self.JobTable.item(job,20).data(QtCore.Qt.DisplayRole).toDouble()[0]) + "," + \
                 str(self.JobTable.item(job,21).data(QtCore.Qt.DisplayRole).toDouble()[0]) + "\n")
                 sigini_input.close()
-                translated_mesh.write(str(Case_Dir + "/" + "geometry_fe_input.inp"))
+                translated_mesh.writeABAQUS(str(Case_Dir + "/" + "geometry_fe_input.inp"), translation)
                 ApplyingBC_IC(Case_Dir, self.JobTable.item(job,8).data(QtCore.Qt.DisplayRole).toDouble()[0],
                 self.JobTable.item(job,9).data(QtCore.Qt.DisplayRole).toDouble()[0],node_numbers[0],node_numbers[1],
                 node_numbers[2])
