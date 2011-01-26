@@ -1,13 +1,20 @@
 
 lib_LTLIBRARIES=libInspectionGui.la InspectionGui.la
 
-BUILT_SOURCES=
+BUILT_SOURCES=\
+		ui_VisualInspection.h \
+		moc_VisualInspection.cpp \
+		qrc_Inspection.cpp 
 
 libInspectionGui_la_SOURCES=\
 		AppInspectionGuiPy.cpp \
 		Command.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \
+		ViewProviderInspection.cpp \
+		ViewProviderInspection.h \
+		VisualInspection.cpp \
+		VisualInspection.h \
 		Workbench.cpp \
 		Workbench.h
 
@@ -75,4 +82,5 @@ CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
 		CMakeLists.txt \
+		VisualInspection.ui \
 		Resources/Inspection.qrc \

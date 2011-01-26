@@ -3,6 +3,8 @@ lib_LTLIBRARIES=libInspection.la Inspection.la
 
 libInspection_la_SOURCES=\
 		AppInspectionPy.cpp \
+		InspectionFeature.cpp \
+		InspectionFeature.h \
 		PreCompiled.cpp \
 		PreCompiled.h
 

@@ -28,9 +28,13 @@
 
 // Importing of App classes
 #ifdef FC_OS_WIN32
+# define MeshExport          __declspec(dllimport)
+# define PointsAppExport     __declspec(dllimport)
 # define InspectionAppExport __declspec(dllimport)
 # define InspectionGuiExport __declspec(dllexport)
 #else // for Linux
+# define MeshExport
+# define PointsAppExport
 # define InspectionAppExport
 # define InspectionGuiExport
 #endif

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) YEAR YOUR NAME         <Your e-mail address>            *
+ *   Copyright (c) 2011 Werner Mayer <wmayer[at]users.sourceforge.net>     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -22,33 +22,27 @@
 
 
 #include "PreCompiled.h"
-#ifndef _PreComp_
-# include <Python.h>
-#endif
 
-#include <Base/Console.h>
-#include "InspectionFeature.h"
+#include "FutureWatcherProgress.h"
 
+using namespace Base;
 
-/* registration table  */
-extern struct PyMethodDef Inspection_methods[];
-
-PyDoc_STRVAR(module_Inspection_doc,
-"This module is the Inspection module.");
-
-
-/* Python entry */
-extern "C" {
-void InspectionAppExport initInspection() {
-
-    // ADD YOUR CODE HERE
-    //
-    //
-    (void) Py_InitModule3("Inspection", Inspection_methods, module_Inspection_doc);   /* mod name, table ptr */
-    Base::Console().Log("Loading Inspection module... done\n");
-
-    Inspection::Feature     ::init();
-    Inspection::Group       ::init();
+FutureWatcherProgress::FutureWatcherProgress(const char* text, unsigned int steps)
+  : seq(text, 100), steps(steps), current(0)
+{
 }
 
-} // extern "C"
+FutureWatcherProgress::~FutureWatcherProgress()
+{
+}
+
+void FutureWatcherProgress::progressValueChanged(int v)
+{
+    unsigned int step = (100 * v) / steps;
+    if (step > current) {
+        current = step;
+        seq.next();
+    }
+}
+
+#include "moc_FutureWatcherProgress.cpp"
