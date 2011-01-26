@@ -4,6 +4,8 @@ SET(MachDist_SRCS
     InitGui.py
     ApplyingBC_IC.py
     mach_dist_gui.py
+    postprocess.py
+    postprocess_gui.py
 	calculix_postprocess.py
 	MachiningDistortionCommands.py
 	User_Interface_Mach_Dist.py
