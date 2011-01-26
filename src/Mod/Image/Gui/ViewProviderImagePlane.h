@@ -53,11 +53,10 @@ public:
     void updateData(const App::Property*);
 
 protected:
- 
     Gui::SoFCSelection    * pcImagePlaneRoot;
     SoCoordinate3         * pcCoords;
     SoDrawStyle           * pcDrawStyle;
-    SoTexture2            * textura;
+    SoTexture2            * texture;
  };
 
 } //namespace RobotGui
