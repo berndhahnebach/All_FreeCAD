@@ -30,11 +30,16 @@ class MyForm(QtGui.QDialog,Ui_dialog):
         QtCore.QObject.connect(self.button_dialog, QtCore.SIGNAL("rejected()"), self.onAbbrechen)
         QtCore.QObject.connect(self.button_start_calculation, QtCore.SIGNAL("clicked()"), self.start_calculation)
         QtCore.QObject.connect(self.button_add_to_table, QtCore.SIGNAL("clicked()"), self.add_to_table)
+        QtCore.QObject.connect(self.select_L_file, QtCore.SIGNAL("clicked()"), self.add_L_data)
+        QtCore.QObject.connect(self.select_LT_file, QtCore.SIGNAL("clicked()"), self.add_LT_data)
 
 
         #Define the table headers as we are not able to use the QT Designer for that
         self.JobTable.clear()
-        self.JobTable.setHorizontalHeaderLabels(["Input File","Output Folder","Offset From","Offset To","Intervall","RotX","RotY","RotZ","Young Modulus","Poisson Ratio","LC1","LC2","LC3","LC4","LC5","LC6","LTC1","LTC2","LTC3","LTC4","LTC5","LTC6","Plate Thickness"])
+        self.JobTable.setHorizontalHeaderLabels(
+        ["Input File","Output Folder","Z-Offset From","Z-Offset To","Z-Intervall","X-Rot From","X-Rot To","X-Rot Intervall",
+        "Y-Rot From","Y-Rot To","Y-Rot Intervall","Z-Rot From","Z-Rot To","Z-Rot Intervall","Young Modulus","Poisson Ratio",
+        "LC1","LC2","LC3","LC4","LC5","LC6","LTC1","LTC2","LTC3","LTC4","LTC5","LTC6","Plate Thickness"])
 
     def add_to_table(self):
         self.JobTable.insertRow(0)
@@ -49,67 +54,121 @@ class MyForm(QtGui.QDialog,Ui_dialog):
         item.setData(QtCore.Qt.DisplayRole,self.spinBox_z_level_to.value())
         self.JobTable.setItem(0,3,item)
         item = QtGui.QTableWidgetItem()
-        item.setData(QtCore.Qt.DisplayRole,self.intervall.value())
+        item.setData(QtCore.Qt.DisplayRole,self.spinBox_z_level_intervall.value())
         self.JobTable.setItem(0,4,item)
         item = QtGui.QTableWidgetItem()
-        item.setData(QtCore.Qt.DisplayRole,self.spinBox_misalignment_x.value())
+        item.setData(QtCore.Qt.DisplayRole,self.spinBox_misalignment_x_from.value())
         self.JobTable.setItem(0,5,item)
         item = QtGui.QTableWidgetItem()
-        item.setData(QtCore.Qt.DisplayRole,self.spinBox_misalignment_y.value())
+        item.setData(QtCore.Qt.DisplayRole,self.spinBox_misalignment_x_to.value())
         self.JobTable.setItem(0,6,item)
         item = QtGui.QTableWidgetItem()
-        item.setData(QtCore.Qt.DisplayRole,self.spinBox_misalignment_z.value())
+        item.setData(QtCore.Qt.DisplayRole,self.spinBox_misalignment_x_intervall.value())
         self.JobTable.setItem(0,7,item)
         item = QtGui.QTableWidgetItem()
-        item.setData(QtCore.Qt.DisplayRole,self.spinBox_young_modulus.value())
+        item.setData(QtCore.Qt.DisplayRole,self.spinBox_misalignment_y_from.value())
         self.JobTable.setItem(0,8,item)
         item = QtGui.QTableWidgetItem()
-        item.setData(QtCore.Qt.DisplayRole,self.spinBox_poisson_ratio.value())
+        item.setData(QtCore.Qt.DisplayRole,self.spinBox_misalignment_y_to.value())
         self.JobTable.setItem(0,9,item)
         item = QtGui.QTableWidgetItem()
-        item.setData(QtCore.Qt.DisplayRole,self.lc1.value())
+        item.setData(QtCore.Qt.DisplayRole,self.spinBox_misalignment_y_intervall.value())
         self.JobTable.setItem(0,10,item)
         item = QtGui.QTableWidgetItem()
-        item.setData(QtCore.Qt.DisplayRole,self.lc2.value())
+        item.setData(QtCore.Qt.DisplayRole,self.spinBox_misalignment_z_from.value())
         self.JobTable.setItem(0,11,item)
         item = QtGui.QTableWidgetItem()
-        item.setData(QtCore.Qt.DisplayRole,self.lc3.value())
+        item.setData(QtCore.Qt.DisplayRole,self.spinBox_misalignment_z_to.value())
         self.JobTable.setItem(0,12,item)
         item = QtGui.QTableWidgetItem()
-        item.setData(QtCore.Qt.DisplayRole,self.lc4.value())
+        item.setData(QtCore.Qt.DisplayRole,self.spinBox_misalignment_z_intervall.value())
         self.JobTable.setItem(0,13,item)
         item = QtGui.QTableWidgetItem()
-        item.setData(QtCore.Qt.DisplayRole,self.lc5.value())
+        item.setData(QtCore.Qt.DisplayRole,self.spinBox_young_modulus.value())
         self.JobTable.setItem(0,14,item)
         item = QtGui.QTableWidgetItem()
-        item.setData(QtCore.Qt.DisplayRole,self.lc6.value())
+        item.setData(QtCore.Qt.DisplayRole,self.spinBox_poisson_ratio.value())
         self.JobTable.setItem(0,15,item)
         item = QtGui.QTableWidgetItem()
-        item.setData(QtCore.Qt.DisplayRole,self.ltc1.value())
+        item.setData(QtCore.Qt.DisplayRole,self.lc1.value())
         self.JobTable.setItem(0,16,item)
         item = QtGui.QTableWidgetItem()
-        item.setData(QtCore.Qt.DisplayRole,self.ltc2.value())
+        item.setData(QtCore.Qt.DisplayRole,self.lc2.value())
         self.JobTable.setItem(0,17,item)
         item = QtGui.QTableWidgetItem()
-        item.setData(QtCore.Qt.DisplayRole,self.ltc3.value())
+        item.setData(QtCore.Qt.DisplayRole,self.lc3.value())
         self.JobTable.setItem(0,18,item)
         item = QtGui.QTableWidgetItem()
-        item.setData(QtCore.Qt.DisplayRole,self.ltc4.value())
+        item.setData(QtCore.Qt.DisplayRole,self.lc4.value())
         self.JobTable.setItem(0,19,item)
         item = QtGui.QTableWidgetItem()
-        item.setData(QtCore.Qt.DisplayRole,self.ltc5.value())
+        item.setData(QtCore.Qt.DisplayRole,self.lc5.value())
         self.JobTable.setItem(0,20,item)
         item = QtGui.QTableWidgetItem()
-        item.setData(QtCore.Qt.DisplayRole,self.ltc6.value())
+        item.setData(QtCore.Qt.DisplayRole,self.lc6.value())
         self.JobTable.setItem(0,21,item)
         item = QtGui.QTableWidgetItem()
-        item.setData(QtCore.Qt.DisplayRole,self.spinBox_Plate_Thickness.value())
+        item.setData(QtCore.Qt.DisplayRole,self.ltc1.value())
         self.JobTable.setItem(0,22,item)
+        item = QtGui.QTableWidgetItem()
+        item.setData(QtCore.Qt.DisplayRole,self.ltc2.value())
+        self.JobTable.setItem(0,23,item)
+        item = QtGui.QTableWidgetItem()
+        item.setData(QtCore.Qt.DisplayRole,self.ltc3.value())
+        self.JobTable.setItem(0,24,item)
+        item = QtGui.QTableWidgetItem()
+        item.setData(QtCore.Qt.DisplayRole,self.ltc4.value())
+        self.JobTable.setItem(0,25,item)
+        item = QtGui.QTableWidgetItem()
+        item.setData(QtCore.Qt.DisplayRole,self.ltc5.value())
+        self.JobTable.setItem(0,26,item)
+        item = QtGui.QTableWidgetItem()
+        item.setData(QtCore.Qt.DisplayRole,self.ltc6.value())
+        self.JobTable.setItem(0,27,item)
+        item = QtGui.QTableWidgetItem()
+        item.setData(QtCore.Qt.DisplayRole,self.spinBox_Plate_Thickness.value())
+        self.JobTable.setItem(0,28,item)
         # This is how to get the data back test2 = self.JobTable.item(0,1).data(QtCore.Qt.DisplayRole).toInt()
         self.button_add_to_table.setEnabled(False)
         self.filename.clear()
         self.button_start_calculation.setEnabled(True)
+        
 
+            
+        
+    def add_L_data(self):
+        l_filename = QtGui.QFileDialog.getOpenFileName(None, 'Open file','','R-Script File for L Coefficients (*.txt)')
+        values = self.parse_R_output(l_filename)
+        self.lc1.setValue(values[0]),self.lc2.setValue(values[1]),self.lc3.setValue(values[2]),
+        self.lc4.setValue(values[3]),self.lc5.setValue(values[4]),self.lc6.setValue(values[5])
+        
+        
+    def add_LT_data(self):
+        lt_filename = QtGui.QFileDialog.getOpenFileName(None, 'Open file','','R-Script File for LT Coefficients (*.txt)')
+        values = self.parse_R_output(lt_filename)
+        self.ltc1.setValue(values[0]),self.ltc2.setValue(values[1]),self.ltc3.setValue(values[2]),
+        self.ltc4.setValue(values[3]),self.ltc5.setValue(values[4]),self.ltc6.setValue(values[5])
+        
+
+    def parse_R_output(self,filename):
+        file = open(str(filename))
+        lines = file.readlines()
+        found = False
+        coeff = []
+        for line in lines:
+            if line[0:9] == "c0 to c5:":
+                found = True
+                coeff.append(float(line[15:]))
+                continue
+            if found and line[0:4] == "MSE:":
+                found = False
+            if found:
+                coeff.append(float(line[15:]))
+        
+        file.close()
+        return coeff[0],coeff[1],coeff[2],coeff[3],coeff[4],coeff[5]
+        
+  
     def select_file(self):
         self.filename=QtGui.QFileDialog.getOpenFileName(None, 'Open file','','Nastran Files (*.bdf)')
         self.button_add_to_table.setEnabled(not self.dirname.isEmpty() and not self.filename.isEmpty())
@@ -199,7 +258,9 @@ class MyForm(QtGui.QDialog,Ui_dialog):
                 str(self.JobTable.item(job,21).data(QtCore.Qt.DisplayRole).toDouble()[0]) + "\n")
                 sigini_input.close()
                 translated_mesh.write(str(Case_Dir + "/" + "geometry_fe_input.inp"))
-                ApplyingBC_IC(Case_Dir, self.JobTable.item(job,8).data(QtCore.Qt.DisplayRole).toDouble()[0],self.JobTable.item(job,9).data(QtCore.Qt.DisplayRole).toDouble()[0],node_numbers[0],node_numbers[1],node_numbers[2])
+                ApplyingBC_IC(Case_Dir, self.JobTable.item(job,8).data(QtCore.Qt.DisplayRole).toDouble()[0],
+                self.JobTable.item(job,9).data(QtCore.Qt.DisplayRole).toDouble()[0],node_numbers[0],node_numbers[1],
+                node_numbers[2])
                 batch.write(str("cd " + filename_without_suffix + "_" + QtCore.QString.number(i) + "\n"))
                 batch.write("-i final_fe_input > calculix_output.out\n")
                 batch.write(str("cd ..\n"))
