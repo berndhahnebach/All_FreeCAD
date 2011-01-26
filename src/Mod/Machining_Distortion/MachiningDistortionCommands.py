@@ -7,7 +7,8 @@ from PyQt4 import QtGui,QtCore
 from FreeCAD import Base
 
 # globals
-from mach_dist_gui import MyForm
+import mach_dist_gui
+import postprocess_gui
 import time
 
 
@@ -24,7 +25,7 @@ class MachiningDistortion_ChooseFile:
 #            time.sleep(1)
 #            pi.next()
 #        pi.stop()
-        myapp = MyForm(QtGui.qApp.activeWindow())
+        myapp = mach_dist_gui.MyForm(QtGui.qApp.activeWindow())
         myapp.exec_()
 
     def GetResources(self):
@@ -33,8 +34,8 @@ class MachiningDistortion_ChooseFile:
 class MachiningDistortion_ChooseDir:
     "Choose the file to work with"
     def Activated(self):
-        from PyQt4 import QtGui
-        dirname=QtGui.QFileDialog.getExistingDirectory(None, 'Open working directory', '', QtGui.QFileDialog.ShowDirsOnly)
+        app = postprocess_gui.MyForm(QtGui.qApp.activeWindow())
+        app.exec_()
 
     def GetResources(self):
         return {'Pixmap'  : 'Std_Tool2', 'MenuText': 'Open work dir...', 'ToolTip': 'Choose the working directory'}
