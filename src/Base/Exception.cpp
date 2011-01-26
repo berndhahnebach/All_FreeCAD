@@ -175,7 +175,7 @@ AbnormalProgramTermination::AbnormalProgramTermination(const AbnormalProgramTerm
 
 // ---------------------------------------------------------
 
-#if defined(__GNUC__)
+#if defined(__GNUC__) && defined (FC_OS_LINUX)
 #include <stdexcept>
 #include <iostream>
 

@@ -65,7 +65,7 @@ App::DocumentObjectExecReturn *Fillet::execute(void)
     Part::Feature *base = static_cast<Part::Feature*>(Base.getValue());
 
     try {
-#ifdef __GNUC__
+#if defined(__GNUC__) && defined (FC_OS_LINUX)
         Base::SignalException se;
 #endif
         BRepFilletAPI_MakeFillet mkFillet(base->Shape.getValue());

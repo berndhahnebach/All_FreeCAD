@@ -164,7 +164,7 @@ inline void Exception::setMessage(const std::string& sMessage)
   _sErrMsg = sMessage;
 }
 
-#if defined(__GNUC__)
+#if defined(__GNUC__) && defined (FC_OS_LINUX)
 class SignalException
 {
 public:
