@@ -62,13 +62,3 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     *test << "_TEMPLATE__Test"; 
     return root;
 }
-
-Gui::ToolBarItem* Workbench::setupCommandBars() const
-{
-    Gui::ToolBarItem* root = new Gui::ToolBarItem;
-    Gui::ToolBarItem* test = new Gui::ToolBarItem(root);
-    test->setCommand( "_TEMPLATE_ Tools" );
-    *test << "_TEMPLATE__Test"; 
-    return root;
-}
-

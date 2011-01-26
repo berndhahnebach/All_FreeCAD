@@ -61,10 +61,9 @@
 #endif
 
 // Qt Toolkit
-#include <qaction.h>
-#include <qapplication.h>
-#include <qmainwindow.h>
-#include <qworkspace.h>
+#ifndef __Qt4All__
+# include <Gui/Qt4All.h>
+#endif
 
 #endif  //_PreComp_
 

@@ -61,8 +61,6 @@ void _TEMPLATE_GuiExport init_TEMPLATE_Gui()
 
     (void) Py_InitModule3("_TEMPLATE_Gui", _TEMPLATE_Gui_methods, module__TEMPLATE_Gui_doc);   /* mod name, table ptr */
     Base::Console().Log("Loading GUI of _TEMPLATE_ module... done\n");
-
-    return;
 }
 
 } // extern "C"
