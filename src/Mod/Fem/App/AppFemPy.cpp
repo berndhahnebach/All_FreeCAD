@@ -147,8 +147,8 @@ static PyObject * SMESH_PCA(PyObject *self, PyObject *args)
 		pca.Evaluate();
 		Base::Matrix4D Trafo = pca.Transform();
 		/*Let´s transform the input mesh with the PCA Matrix*/
-		inputMesh->getFemMeshPtr()->setTransform(Trafo);
-		inputMesh->getFemMeshPtr()->getSMesh()->ExportUNV("C:/PCA_alignment.unv");
+		inputMesh->getFemMeshPtr()->transformGeometry(Trafo);
+		//inputMesh->getFemMeshPtr()->getSMesh()->ExportUNV("C:/PCA_alignment.unv");
 	} PY_CATCH;
 
 	Py_Return;
@@ -309,6 +309,7 @@ static PyObject * getBoundary_Conditions(PyObject *self, PyObject *args)
 		faces.clear();
 		MeshCore::MeshPoint current_node;
 		SMDS_NodeIteratorPtr aNodeIter = inputMesh->getFemMeshPtr()->getSMesh()->GetMeshDS()->nodesIterator();
+		SMDS_VolumeIteratorPtr aVolIter = inputMesh->getFemMeshPtr()->getSMesh()->GetMeshDS()->volumesIterator();
 		for (;aNodeIter->more();) {
 			const SMDS_MeshNode* aNode = aNodeIter->next();
 			current_node.Set(float(aNode->X()),float(aNode->Y()),float(aNode->Z()));
@@ -326,25 +327,35 @@ static PyObject * getBoundary_Conditions(PyObject *self, PyObject *args)
         Base::Vector3f dist;
 		int minNodeID,maxNodeID,midNodeID;
 		dist_length = FLOAT_MAX;
-		aNodeIter = inputMesh->getFemMeshPtr()->getSMesh()->GetMeshDS()->nodesIterator();
-		for (;aNodeIter->more();)
+		
+		aVolIter = inputMesh->getFemMeshPtr()->getSMesh()->GetMeshDS()->volumesIterator();
+		//We only search in non midside nodes (equals the first four nodes of each element)
+		for (;aVolIter->more();) 
 		{
-			const SMDS_MeshNode* aNode = aNodeIter->next();
-			//Calc distance between the lower left corner and the most next point of the mesh
-			dist.x = float(aNode->X())-aBBox.MinX;dist.y = float(aNode->Y())-aBBox.MinY;dist.z = float(aNode->Z())-aBBox.MinZ;
-			if(dist.Length()<dist_length)
+			const SMDS_MeshVolume* aVol = aVolIter->next();
+			for (unsigned j=0;j<4;j++)
 			{
-				minNodeID = aNode->GetID();
-				dist_length = dist.Length();
+				const SMDS_MeshNode* aNode = aVol->GetNode(j);
+				//Calc distance between the lower left corner and the most next point of the mesh
+				dist.x = float(aNode->X())-aBBox.MinX;dist.y = float(aNode->Y())-aBBox.MinY;dist.z = float(aNode->Z())-aBBox.MinZ;
+				if(dist.Length()<dist_length)
+				{
+					minNodeID = aNode->GetID();
+					dist_length = dist.Length();
+				}
 			}
 		}
+
 		boundary_nodes.append(Py::Int(minNodeID));
 		
 		dist_length = FLOAT_MAX;
-		aNodeIter = inputMesh->getFemMeshPtr()->getSMesh()->GetMeshDS()->nodesIterator();
-		for (;aNodeIter->more();)
+		aVolIter = inputMesh->getFemMeshPtr()->getSMesh()->GetMeshDS()->volumesIterator();
+		for (;aVolIter->more();) 
 		{
-			const SMDS_MeshNode* aNode = aNodeIter->next();
+			const SMDS_MeshVolume* aVol = aVolIter->next();
+			for (unsigned j=0;j<4;j++)
+			{
+				const SMDS_MeshNode* aNode = aVol->GetNode(j);
 			//Calc distance between the lower right corner and the most next point of the mesh
 			dist.x = float(aNode->X())-aBBox.MaxX;dist.y = float(aNode->Y())-aBBox.MinY;dist.z = float(aNode->Z())-aBBox.MinZ;
 			if(dist.Length()<dist_length)
@@ -352,20 +363,25 @@ static PyObject * getBoundary_Conditions(PyObject *self, PyObject *args)
 				midNodeID = aNode->GetID();
 				dist_length = dist.Length();
 			}
+			}
 		}
 		boundary_nodes.append(Py::Int(midNodeID));
 		
 		dist_length = FLOAT_MAX;
-		aNodeIter = inputMesh->getFemMeshPtr()->getSMesh()->GetMeshDS()->nodesIterator();
-		for (;aNodeIter->more();)
+		aVolIter = inputMesh->getFemMeshPtr()->getSMesh()->GetMeshDS()->volumesIterator();
+		for (;aVolIter->more();) 
 		{
-			const SMDS_MeshNode* aNode = aNodeIter->next();
-			//Calc distance between the highest lower right corner and the most next point of the mesh
-			dist.x = float(aNode->X())-aBBox.MaxX;dist.y = float(aNode->Y())-aBBox.MaxY;dist.z = float(aNode->Z())-aBBox.MinZ;
+			const SMDS_MeshVolume* aVol = aVolIter->next();
+			for (unsigned j=0;j<4;j++)
+			{
+				const SMDS_MeshNode* aNode = aVol->GetNode(j);
+			//Calc distance between the lowest lower right corner and the most next point of the mesh
+			dist.x = float(aNode->X())-aBBox.MinX;dist.y = float(aNode->Y())-aBBox.MaxY;dist.z = float(aNode->Z())-aBBox.MinZ;
 			if(dist.Length()<dist_length)
 			{
 				maxNodeID = aNode->GetID();
 				dist_length = dist.Length();
+			}
 			}
 		}
 		boundary_nodes.append(Py::Int(maxNodeID));
@@ -485,7 +501,7 @@ static PyObject * minBoundingBox(PyObject *self, PyObject *args)
 		rotatez.setValue(rotate_axis_z,perfect_az);
 		(rotatex*rotatey*rotatez).getValue(final_trafo);
 		aMesh.Transform(final_trafo);
-		inputMesh->getFemMeshPtr()->setTransform(final_trafo);
+		inputMesh->getFemMeshPtr()->transformGeometry(final_trafo);
 		//////////////////////////////////////////////////////////////////////////////////////
 		//Now lets also do the movement to the 1st Quadrant in this function
 		aBBox = aMesh.GetBoundBox();
@@ -497,8 +513,8 @@ static PyObject * minBoundingBox(PyObject *self, PyObject *args)
 			float(0.0),float(1.0),float(0.0),dist_vector.y,
 			float(0.0),float(0.0),float(1.0),dist_vector.z,
 			float(0.0),float(0.0),float(0.0),float(1.0));
-		inputMesh->getFemMeshPtr()->setTransform(trans_matrix);
-//		inputMesh->getFemMeshPtr()->getSMesh()->ExportUNV("C:/fine_tuning.unv");
+		inputMesh->getFemMeshPtr()->transformGeometry(trans_matrix);
+		inputMesh->getFemMeshPtr()->getSMesh()->ExportUNV("C:/fine_tuning.unv");
 
 	} PY_CATCH;
 
