@@ -78,6 +78,8 @@ FemMesh::FemMesh(const FemMesh& mesh)
 
 FemMesh::~FemMesh()
 {
+    myMesh->Clear();
+    //myMesh->ClearLog();
     delete myMesh;
 #if defined(__GNUC__)
     delete myGen; // crashes with MSVC
