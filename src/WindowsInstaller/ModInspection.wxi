@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<!--
+﻿<?xml version="1.0" encoding="utf-8"?><!--
    (c) Juergen Riegel (juergen.riegel@web.de) 2005                       
                                                                         
    This file is part of the FreeCAD CAx development system.             
@@ -20,34 +19,15 @@
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 
    USA                                                                  
                                                                         
-   Juergen Riegel 2005                                                 
+   Juergen Riegel 2005                                                  
 -->
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Fragment Id="FreeCADModules">
-		<!-- Add the 64-bit registry component to the 64-bit MSI, and add the 32-bit registry        -->
-		<!-- component to the 32-bit MSI.                                                            -->
-		<?if $(var.ProcessorArchitecture)=x64 ?>
-		<?define Win_64 = "yes" ?>
-		<?else ?>
-		<?define Win_64 = "no" ?>
-		<?endif ?>
-        <DirectoryRef Id="ModDir">
-            <?include ModMesh.wxi ?>
-            <?include ModPart.wxi ?>
-			<?include ModSketcher.wxi ?>
-            <?include ModPoints.wxi ?>
-            <?include ModImage.wxi ?>
-            <?include ModRaytracing.wxi ?>
-            <?include ModTest.wxi ?>
-            <!--include ModCam.wxi ?-->
-            <?include ModComplete.wxi ?>
-            <?include ModMeshPart.wxi ?>
-            <?include ModFem.wxi ?>
-            <?include ModPartDesign.wxi ?>
-            <?include ModDrawing.wxi ?>
-            <?include ModDraft.wxi ?>
-            <?include ModRobot.wxi ?>
-            <?include ModInspection.wxi ?>
-        </DirectoryRef>
-    </Fragment>
-</Wix>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Directory Id="ModInspection" Name="Inspection" FileSource="../../Mod/Inspection">
+        <Component Id="CompModInspection" Guid="735BA09F-6E37-47a5-87BD-A7F9762FB3CC" Win64='$(var.Win_64)' KeyPath="yes">
+            <File Id="InspectionInitPy" Name="Init.py" DiskId="1" />
+            <File Id="InspectionInitGuiPy" Name="InitGui.py" DiskId="1" />
+            <File Id="Inspectionpyd" Name="Inspection.pyd" DiskId="1" />
+            <File Id="InspectionGuipyd" Name="InspectionGui.pyd" DiskId="1" />
+        </Component>
+    </Directory>
+</Include>
