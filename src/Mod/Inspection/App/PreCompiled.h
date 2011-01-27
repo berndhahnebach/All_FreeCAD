@@ -31,10 +31,12 @@
 # define InspectionAppExport __declspec(dllexport)
 # define MeshExport          __declspec(dllimport)
 # define PointsAppExport     __declspec(dllimport)
+# define AppPartExport       __declspec(dllimport)
 #else // for Linux
 # define InspectionAppExport
 # define MeshExport
 # define PointsAppExport
+# define AppPartExport
 #endif
 
 #ifdef _MSC_VER

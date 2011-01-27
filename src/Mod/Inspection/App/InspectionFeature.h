@@ -31,6 +31,9 @@
 #include <Mod/Mesh/App/Core/Iterator.h>
 #include <Mod/Points/App/Points.h>
 
+class TopoDS_Shape;
+class BRepExtrema_DistShapeShape;
+
 namespace MeshCore
 {
 class MeshKernel;
@@ -80,6 +83,17 @@ private:
     const Points::PointKernel& _rKernel;
 };
 
+class InspectionAppExport InspectActualShape : public InspectActualGeometry
+{
+public:
+    InspectActualShape(const TopoDS_Shape&);
+    virtual unsigned long countPoints() const;
+    virtual Base::Vector3f getPoint(unsigned long);
+
+private:
+    const TopoDS_Shape& _rShape;
+};
+
 /** Calculates the shortest distance of the underlying geometry to a given point. */
 class InspectionAppExport InspectNominalGeometry
 {
@@ -126,6 +140,18 @@ public:
 private:
     const Points::PointKernel& _rKernel;
     Points::PointsGrid* _pGrid;
+};
+
+class InspectionAppExport InspectNominalShape : public InspectNominalGeometry
+{
+public:
+    InspectNominalShape(const TopoDS_Shape&, float offset);
+    ~InspectNominalShape();
+    virtual float getDistance(const Base::Vector3f&);
+
+private:
+    BRepExtrema_DistShapeShape* distss;
+    const TopoDS_Shape& _rShape;
 };
 
 // ----------------------------------------------------------------

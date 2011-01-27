@@ -22,6 +22,10 @@
 
 
 #include "PreCompiled.h"
+#include <gp_Pnt.hxx>
+#include <BRepExtrema_DistShapeShape.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
+#include <TopoDS_Vertex.hxx>
 
 #include <QEventLoop>
 #include <QFuture>
@@ -43,6 +47,7 @@
 #include <Mod/Mesh/App/Core/MeshKernel.h>
 #include <Mod/Points/App/PointsFeature.h>
 #include <Mod/Points/App/PointsGrid.h>
+#include <Mod/Part/App/PartFeature.h>
 
 #include "InspectionFeature.h"
 
@@ -84,6 +89,22 @@ Base::Vector3f InspectActualPoints::getPoint(unsigned long index)
 {
     Base::Vector3d p = _rKernel.getPoint(index);
     return Base::Vector3f((float)p.x,(float)p.y,(float)p.z);
+}
+
+// ----------------------------------------------------------------
+
+InspectActualShape::InspectActualShape(const TopoDS_Shape& shape) : _rShape(shape)
+{
+}
+
+unsigned long InspectActualShape::countPoints() const
+{
+    return 0;
+}
+
+Base::Vector3f InspectActualShape::getPoint(unsigned long index)
+{
+    return Base::Vector3f();
 }
 
 // ----------------------------------------------------------------
@@ -250,6 +271,30 @@ float InspectNominalPoints::getDistance(const Base::Vector3f& point)
 
 // ----------------------------------------------------------------
 
+InspectNominalShape::InspectNominalShape(const TopoDS_Shape& shape, float radius) : _rShape(shape)
+{
+    distss = new BRepExtrema_DistShapeShape();
+    distss->LoadS1(_rShape);
+    //distss->SetDeflection(radius);
+}
+
+InspectNominalShape::~InspectNominalShape()
+{
+    delete distss;
+}
+
+float InspectNominalShape::getDistance(const Base::Vector3f& point)
+{
+    BRepBuilderAPI_MakeVertex mkVert(gp_Pnt(point.x,point.y,point.z));
+    distss->LoadS2(mkVert.Vertex());
+    float fMinDist=FLT_MAX;
+    if (distss->Perform() && distss->NbSolution() > 0)
+        fMinDist = (float)distss->Value();
+    return fMinDist;
+}
+
+// ----------------------------------------------------------------
+
 // helper class to use Qt's concurrent framework
 struct DistanceInspection
 {
@@ -319,12 +364,16 @@ App::DocumentObjectExecReturn* Feature::execute(void)
 
     InspectActualGeometry* actual = 0;
     if (pcActual->getTypeId().isDerivedFrom(Mesh::Feature::getClassTypeId())) {
-        Mesh::Feature* mesh = (Mesh::Feature*)pcActual;
+        Mesh::Feature* mesh = static_cast<Mesh::Feature*>(pcActual);
         actual = new InspectActualMesh(mesh->Mesh.getValue().getKernel());
     }
     else if (pcActual->getTypeId().isDerivedFrom(Points::Feature::getClassTypeId())) {
-        Points::Feature* pts = (Points::Feature*)pcActual;
+        Points::Feature* pts = static_cast<Points::Feature*>(pcActual);
         actual = new InspectActualPoints(pts->Points.getValue());
+    }
+    else if (pcActual->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId())) {
+        Part::Feature* part = static_cast<Part::Feature*>(pcActual);
+        actual = new InspectActualShape(part->Shape.getValue());
     }
     else {
         throw Base::Exception("Unknown geometric type");
@@ -336,19 +385,24 @@ App::DocumentObjectExecReturn* Feature::execute(void)
     for (std::vector<App::DocumentObject*>::const_iterator it = nominals.begin(); it != nominals.end(); ++it) {
         InspectNominalGeometry* nominal = 0;
         if ((*it)->getTypeId().isDerivedFrom(Mesh::Feature::getClassTypeId())) {
-            Mesh::Feature* mesh = (Mesh::Feature*)*it;
+            Mesh::Feature* mesh = static_cast<Mesh::Feature*>(*it);
             nominal = new InspectNominalMesh(mesh->Mesh.getValue().getKernel(), this->SearchRadius.getValue());
         }
         else if ((*it)->getTypeId().isDerivedFrom(Points::Feature::getClassTypeId())) {
-            Points::Feature* pts = (Points::Feature*)*it;
+            Points::Feature* pts = static_cast<Points::Feature*>(*it);
             nominal = new InspectNominalPoints(pts->Points.getValue(), this->SearchRadius.getValue());
+        }
+        else if ((*it)->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId())) {
+            Part::Feature* part = static_cast<Part::Feature*>(*it);
+            nominal = new InspectNominalShape(part->Shape.getValue(), this->SearchRadius.getValue());
         }
 
         if (nominal)
             inspectNominal.push_back(nominal);
     }
 
-#if 1 // test with some huge data sets
+#if 0 // test with some huge data sets
+    Standard::SetReentrant(Standard_True);
     std::vector<unsigned long> index(actual->countPoints());
     std::generate(index.begin(), index.end(), Base::iotaGen<unsigned long>(0));
     DistanceInspection check(this->SearchRadius.getValue(), actual, inspectNominal);
