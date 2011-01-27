@@ -162,6 +162,7 @@ Mesh::MeshObject* Mesher::createMesh() const
 #if defined(__GNUC__)
     delete meshgen; // crashes with MSVC
 #endif
+    mesh->Clear();
     delete mesh;
     for (std::list<SMESH_Hypothesis*>::iterator it = hypoth.begin(); it != hypoth.end(); ++it)
         delete *it;

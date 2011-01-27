@@ -41,12 +41,12 @@ class SingleSelectionItem : public QTreeWidgetItem
 {
 public:
     SingleSelectionItem (QTreeWidget* parent)
-        : QTreeWidgetItem(parent)
+        : QTreeWidgetItem(parent), _compItem(0)
     {
     }
 
     SingleSelectionItem (QTreeWidgetItem* parent)
-        : QTreeWidgetItem (parent)
+        : QTreeWidgetItem (parent), _compItem(0)
     {
     }
 
@@ -103,11 +103,23 @@ VisualInspection::VisualInspection(QWidget* parent, Qt::WFlags fl)
     Gui::Document* gui = Gui::Application::Instance->getDocument(doc);
 
     std::vector<App::DocumentObject*> obj = doc->getObjects();
-    Base::Type geometry = Base::Type::fromName("App::GeoFeature");
+    Base::Type point = Base::Type::fromName("Points::Feature");
+    Base::Type mesh  = Base::Type::fromName("Mesh::Feature");
+    Base::Type shape = Base::Type::fromName("Part::Feature");
     for (std::vector<App::DocumentObject*>::iterator it = obj.begin(); it != obj.end(); ++it) {
-        if ((*it)->getTypeId().isDerivedFrom(geometry)) {
+        if ((*it)->getTypeId().isDerivedFrom(point) ||
+            (*it)->getTypeId().isDerivedFrom(mesh)  ||
+            (*it)->getTypeId().isDerivedFrom(shape)) {
             Gui::ViewProvider* view = gui->getViewProvider(*it);
             QIcon px = view->getIcon();
+            if ((*it)->getTypeId().isDerivedFrom(shape)) { // only tmp. needed
+            SingleSelectionItem* item2 = new SingleSelectionItem(ui->treeWidgetNominal);
+            item2->setText(0, QString::fromUtf8((*it)->Label.getValue()));
+            item2->setData(0, Qt::UserRole, QString::fromAscii((*it)->getNameInDocument()));
+            item2->setCheckState(0, Qt::Unchecked);
+            item2->setIcon(0, px);
+            }
+            else {
             SingleSelectionItem* item1 = new SingleSelectionItem(ui->treeWidgetActual);
             item1->setText(0, QString::fromUtf8((*it)->Label.getValue()));
             item1->setData(0, Qt::UserRole, QString::fromAscii((*it)->getNameInDocument()));
@@ -122,6 +134,7 @@ VisualInspection::VisualInspection(QWidget* parent, Qt::WFlags fl)
 
             item1->setCompetitiveItem(item2);
             item2->setCompetitiveItem(item1);
+            }
         }
     }
 
@@ -154,7 +167,7 @@ void VisualInspection::onActivateItem(QTreeWidgetItem* item)
     if (item) {
         SingleSelectionItem* sel = (SingleSelectionItem*)item;
         SingleSelectionItem* cmp = sel->getCompetitiveItem();
-        if (cmp->checkState(0) == Qt::Checked)
+        if (cmp && cmp->checkState(0) == Qt::Checked)
             cmp->setCheckState(0, Qt::Unchecked);
     }
 

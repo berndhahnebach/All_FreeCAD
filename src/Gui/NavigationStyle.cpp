@@ -950,15 +950,14 @@ void NavigationStyle::openPopupMenu(const SbVec2s& position)
     if (used && subMenuGroup.actions().indexOf(used) >= 0 && used->isChecked()) {
         QByteArray type = used->data().toByteArray();
         QWidget* widget = viewer->getWidget();
-        if (widget) {
+        while (widget && !widget->inherits("Gui::View3DInventor"))
             widget = widget->parentWidget();
-            if (widget) {
-                // this is the widget where the viewer is embedded
-                Base::Type style = Base::Type::fromName((const char*)type);
-                if (style != this->getTypeId()) {
-                    QEvent* event = new NavigationStyleEvent(style);
-                    QApplication::postEvent(widget, event);
-                }
+        if (widget) {
+            // this is the widget where the viewer is embedded
+            Base::Type style = Base::Type::fromName((const char*)type);
+            if (style != this->getTypeId()) {
+                QEvent* event = new NavigationStyleEvent(style);
+                QApplication::postEvent(widget, event);
             }
         }
     }

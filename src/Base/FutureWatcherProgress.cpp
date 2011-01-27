@@ -38,6 +38,8 @@ FutureWatcherProgress::~FutureWatcherProgress()
 
 void FutureWatcherProgress::progressValueChanged(int v)
 {
+    if (steps == 0)
+        return;
     unsigned int step = (100 * v) / steps;
     if (step > current) {
         current = step;
