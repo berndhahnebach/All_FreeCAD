@@ -26,7 +26,7 @@ SET(Inspection_SRCS
     AppInspection.cpp
     AppInspectionPy.cpp
     InspectionFeature.cpp
-    Inspectionfeature.h
+    InspectionFeature.h
     PreCompiled.cpp
     PreCompiled.h
 )
