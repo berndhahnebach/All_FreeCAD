@@ -187,8 +187,10 @@ class MyForm(QtGui.QDialog,Ui_dialog):
         self.button_select_file.setEnabled(False)
         self.button_select_output.setEnabled(False)
         self.button_start_calculation.setEnabled(False)
+        os.chdir("/")
         ##Get values from the GUI
         if ( os.path.exists(str(self.dirname)) ):
+            os.chdir("c:/")
             shutil.rmtree(str(self.dirname))
         
         os.mkdir(str(self.dirname))
@@ -196,9 +198,35 @@ class MyForm(QtGui.QDialog,Ui_dialog):
 
         #Now do the calculation stuff for each row in the  table
         for job in range (0,self.JobTable.rowCount()):
-            self.fly_to_buy = self.check_fly_to_buy.isChecked()
-
+            #Extract the data from the table
             current_file_name = self.JobTable.item(job,0).text()
+            z_offset_from = self.JobTable.item(job,2).data(QtCore.Qt.DisplayRole).toInt()[0]
+            z_offset_to = self.JobTable.item(job,3).data(QtCore.Qt.DisplayRole).toInt()[0]
+            z_offset_intervall = self.JobTable.item(job,4).data(QtCore.Qt.DisplayRole).toInt()[0]
+            x_rot_from = self.JobTable.item(job,5).data(QtCore.Qt.DisplayRole).toInt()[0]
+            x_rot_to = self.JobTable.item(job,6).data(QtCore.Qt.DisplayRole).toInt()[0]
+            x_rot_intervall = self.JobTable.item(job,7).data(QtCore.Qt.DisplayRole).toInt()[0]
+            y_rot_from = self.JobTable.item(job,8).data(QtCore.Qt.DisplayRole).toInt()[0]
+            y_rot_to = self.JobTable.item(job,9).data(QtCore.Qt.DisplayRole).toInt()[0]
+            y_rot_intervall = self.JobTable.item(job,10).data(QtCore.Qt.DisplayRole).toInt()[0]
+            z_rot_from = self.JobTable.item(job,11).data(QtCore.Qt.DisplayRole).toInt()[0]
+            z_rot_to = self.JobTable.item(job,12).data(QtCore.Qt.DisplayRole).toInt()[0]
+            z_rot_intervall = self.JobTable.item(job,13).data(QtCore.Qt.DisplayRole).toInt()[0]
+            young_modulus = self.JobTable.item(job,14).data(QtCore.Qt.DisplayRole).toDouble()[0]
+            poisson_ratio = self.JobTable.item(job,15).data(QtCore.Qt.DisplayRole).toDouble()[0]
+            lc1 = self.JobTable.item(job,16).data(QtCore.Qt.DisplayRole).toDouble()[0]
+            lc2 = self.JobTable.item(job,17).data(QtCore.Qt.DisplayRole).toDouble()[0]
+            lc3 = self.JobTable.item(job,18).data(QtCore.Qt.DisplayRole).toDouble()[0]
+            lc4 = self.JobTable.item(job,19).data(QtCore.Qt.DisplayRole).toDouble()[0]
+            lc5 = self.JobTable.item(job,20).data(QtCore.Qt.DisplayRole).toDouble()[0]
+            lc6 = self.JobTable.item(job,21).data(QtCore.Qt.DisplayRole).toDouble()[0]
+            ltc1 = self.JobTable.item(job,22).data(QtCore.Qt.DisplayRole).toDouble()[0]
+            ltc2 = self.JobTable.item(job,23).data(QtCore.Qt.DisplayRole).toDouble()[0]
+            ltc3 = self.JobTable.item(job,24).data(QtCore.Qt.DisplayRole).toDouble()[0]
+            ltc4 = self.JobTable.item(job,25).data(QtCore.Qt.DisplayRole).toDouble()[0]
+            ltc5 = self.JobTable.item(job,26).data(QtCore.Qt.DisplayRole).toDouble()[0]
+            ltc6 = self.JobTable.item(job,27).data(QtCore.Qt.DisplayRole).toDouble()[0]
+            plate_thickness = self.JobTable.item(job,28).data(QtCore.Qt.DisplayRole).toDouble()[0]
             filename_without_suffix = self.JobTable.item(job,0).text().split("/").takeLast().split(".")[0]
             meshobject = Fem.read(str(current_file_name))
             #Perform PCA
@@ -208,13 +236,7 @@ class MyForm(QtGui.QDialog,Ui_dialog):
             #Now get the Node Numbers for the Boundary Conditions
             node_numbers = []
             node_numbers = Fem.getBoundary_Conditions(meshobject)
-            #Now perform the user misalignment
-            rotation_around_x = FreeCAD.Base.Placement(FreeCAD.Base.Vector(0,0,0),FreeCAD.Base.Vector(1,0,0),self.JobTable.item(job,5).data(QtCore.Qt.DisplayRole).toDouble()[0])
-            rotation_around_y = FreeCAD.Base.Placement(FreeCAD.Base.Vector(0,0,0),FreeCAD.Base.Vector(0,1,0),self.JobTable.item(job,6).data(QtCore.Qt.DisplayRole).toDouble()[0])
-            rotation_around_z = FreeCAD.Base.Placement(FreeCAD.Base.Vector(0,0,0),FreeCAD.Base.Vector(0,0,1),self.JobTable.item(job,7).data(QtCore.Qt.DisplayRole).toDouble()[0])
-            meshobject.setTransform(rotation_around_x)
-            meshobject.setTransform(rotation_around_y)
-            meshobject.setTransform(rotation_around_z)
+
             #Now we have set up the initial geometry for the calculations. Lets generate an ABAQUS input file now for each z-level with exactly the same
             #boundary conditions
 
@@ -223,52 +245,66 @@ class MyForm(QtGui.QDialog,Ui_dialog):
 
             #2. Generate a Folder for the current calculation z-level and output the ABAQUS Geometry and the boundary_conditions
 
-
-
-            intervall = self.JobTable.item(job,4).data(QtCore.Qt.DisplayRole).toDouble()[0]
-            i = self.JobTable.item(job,2).data(QtCore.Qt.DisplayRole).toInt()[0]
-            while i <= self.JobTable.item(job,3).data(QtCore.Qt.DisplayRole).toInt()[0]:
-                #translated_mesh = meshobject.copy()
-                translated_mesh = meshobject
-                translation = FreeCAD.Base.Placement(FreeCAD.Base.Vector(0,0,i),FreeCAD.Base.Vector(0,0,0),0)
-                #Use the placement as optional argument for the write() method
-                #translated_mesh.setTransform(translation)
-                Case_Dir = self.JobTable.item(job,1).text() + "/" + filename_without_suffix + "_" + QtCore.QString.number(i)
-                if ( os.path.exists(str(Case_Dir)) ):
-                  shutil.rmtree(str(Case_Dir))
-                os.mkdir(str(Case_Dir))
-                #Lets generate a sigini Input Deck for the calculix user subroutine
-                sigini_input = open (str(Case_Dir + "/" + "sigini_input.txt"),'wb')
-
-                
-                #Write plate thickness to the sigini_file
-                sigini_input.write(str(self.JobTable.item(job,22).data(QtCore.Qt.DisplayRole).toDouble()[0]) + "\n")
-                #Now write the Interpolation coefficients, first the L and then the LC ones
-                sigini_input.write(\
-                str(self.JobTable.item(job,10).data(QtCore.Qt.DisplayRole).toDouble()[0]) + "," + \
-                str(self.JobTable.item(job,11).data(QtCore.Qt.DisplayRole).toDouble()[0]) + "," + \
-                str(self.JobTable.item(job,12).data(QtCore.Qt.DisplayRole).toDouble()[0]) + "," + \
-                str(self.JobTable.item(job,13).data(QtCore.Qt.DisplayRole).toDouble()[0]) + "," + \
-                str(self.JobTable.item(job,14).data(QtCore.Qt.DisplayRole).toDouble()[0]) + "," + \
-                str(self.JobTable.item(job,15).data(QtCore.Qt.DisplayRole).toDouble()[0]) + "\n")
-                sigini_input.write(\
-                str(self.JobTable.item(job,16).data(QtCore.Qt.DisplayRole).toDouble()[0]) + "," + \
-                str(self.JobTable.item(job,17).data(QtCore.Qt.DisplayRole).toDouble()[0]) + "," + \
-                str(self.JobTable.item(job,18).data(QtCore.Qt.DisplayRole).toDouble()[0]) + "," + \
-                str(self.JobTable.item(job,19).data(QtCore.Qt.DisplayRole).toDouble()[0]) + "," + \
-                str(self.JobTable.item(job,20).data(QtCore.Qt.DisplayRole).toDouble()[0]) + "," + \
-                str(self.JobTable.item(job,21).data(QtCore.Qt.DisplayRole).toDouble()[0]) + "\n")
-                sigini_input.close()
-                translated_mesh.writeABAQUS(str(Case_Dir + "/" + "geometry_fe_input.inp"), translation)
-                ApplyingBC_IC(Case_Dir, self.JobTable.item(job,8).data(QtCore.Qt.DisplayRole).toDouble()[0],
-                self.JobTable.item(job,9).data(QtCore.Qt.DisplayRole).toDouble()[0],node_numbers[0],node_numbers[1],
-                node_numbers[2])
-                batch.write(str("cd " + filename_without_suffix + "_" + QtCore.QString.number(i) + "\n"))
-                batch.write("-i final_fe_input > calculix_output.out\n")
-                batch.write(str("cd ..\n"))
-                i = i+intervall
-
-
+            i = z_offset_from
+            while i <= z_offset_to:
+                j = x_rot_from
+                while j <= x_rot_to:
+                    k = y_rot_from
+                    while k <= y_rot_to:
+                        l = z_rot_from
+                        while l <= z_rot_to:
+                            rotation_around_x = FreeCAD.Base.Placement(FreeCAD.Base.Vector(0,0,0),FreeCAD.Base.Vector(1,0,0),j)
+                            rotation_around_y = FreeCAD.Base.Placement(FreeCAD.Base.Vector(0,0,0),FreeCAD.Base.Vector(0,1,0),k)
+                            rotation_around_z = FreeCAD.Base.Placement(FreeCAD.Base.Vector(0,0,0),FreeCAD.Base.Vector(0,0,1),l)
+                            translate = FreeCAD.Base.Placement(FreeCAD.Base.Vector(0,0,i),FreeCAD.Base.Vector(0,0,0),0.0)
+                            translation = rotation_around_x.multiply(rotation_around_y).multiply(rotation_around_z).multiply(translate)
+                        
+                            #Use the placement as optional argument for the write() method
+                            #translated_mesh.setTransform(translation)
+                            Case_Dir = str(self.dirname) + "/" + filename_without_suffix + \
+                            "_"+"x_rot"+ str(int(j))+ \
+                            "_"+"y_rot"+ str(int(k))+ \
+                            "_"+"z_rot"+ str(int(l))+ \
+                            "_"+"z_l"+ str(int(i))
+                            if ( os.path.exists(str(Case_Dir)) ):
+                                os.chdir(str(self.dirname))
+                                shutil.rmtree(str(Case_Dir))
+                            os.mkdir(str(Case_Dir))
+                            os.chdir("c:/")
+                            #Lets generate a sigini Input Deck for the calculix user subroutine
+                            sigini_input = open (str(Case_Dir + "/" + "sigini_input.txt"),'wb')
+                            
+                            #Write plate thickness to the sigini_file
+                            sigini_input.write(str(plate_thickness) + "\n")
+                            #Now write the Interpolation coefficients, first the L and then the LC ones
+                            sigini_input.write(\
+                            str(lc1) + "," + \
+                            str(lc2) + "," + \
+                            str(lc3) + "," + \
+                            str(lc4) + "," + \
+                            str(lc5) + "," + \
+                            str(lc6) + "\n")
+                            sigini_input.write(\
+                            str(ltc1) + "," + \
+                            str(ltc2) + "," + \
+                            str(ltc3) + "," + \
+                            str(ltc4) + "," + \
+                            str(ltc5) + "," + \
+                            str(ltc6) + "\n")
+                            sigini_input.close()
+                            meshobject.writeABAQUS(str(Case_Dir + "/" + "geometry_fe_input.inp"), translation)
+                            ApplyingBC_IC(Case_Dir, young_modulus,poisson_ratio,node_numbers[0],node_numbers[1],node_numbers[2])
+                            batch.write(str("cd " + filename_without_suffix + 
+                            "_"+"x_rot"+ str(int(j))+
+                            "_"+"y_rot"+ str(int(k))+
+                            "_"+"z_rot"+ str(int(l))+
+                            "_"+"z_l"+ str(int(i)) + "\n"))
+                            batch.write(str(self.lineEdit.text())+" -i final_fe_input > calculix_output.out\n")
+                            batch.write(str("cd ..\n"))
+                            l= l + z_rot_intervall
+                        k = k + y_rot_intervall
+                    j = j + x_rot_intervall
+                i = i+ z_offset_intervall
         batch.write("exit")
         batch.close()
 

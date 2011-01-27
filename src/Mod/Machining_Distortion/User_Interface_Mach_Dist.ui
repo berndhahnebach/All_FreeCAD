@@ -100,6 +100,9 @@
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
+          <property name="minimum">
+           <number>-99</number>
+          </property>
          </widget>
         </item>
         <item row="1" column="1">
@@ -113,27 +116,8 @@
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
-         </widget>
-        </item>
-        <item row="1" column="2">
-         <widget class="QDoubleSpinBox" name="spinBox_misalignment_x_intervall">
-          <property name="minimumSize">
-           <size>
-            <width>60</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="decimals">
-           <number>1</number>
-          </property>
-          <property name="maximum">
-           <double>90.000000000000000</double>
-          </property>
-          <property name="value">
-           <double>0.000000000000000</double>
+          <property name="minimum">
+           <number>-99</number>
           </property>
          </widget>
         </item>
@@ -158,6 +142,9 @@
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
+          <property name="minimum">
+           <number>-99</number>
+          </property>
          </widget>
         </item>
         <item row="2" column="1">
@@ -171,24 +158,8 @@
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
-         </widget>
-        </item>
-        <item row="2" column="2">
-         <widget class="QDoubleSpinBox" name="spinBox_misalignment_y_intervall">
-          <property name="minimumSize">
-           <size>
-            <width>60</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="decimals">
-           <number>1</number>
-          </property>
-          <property name="maximum">
-           <double>90.000000000000000</double>
+          <property name="minimum">
+           <number>-99</number>
           </property>
          </widget>
         </item>
@@ -213,6 +184,9 @@
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
+          <property name="minimum">
+           <number>-99</number>
+          </property>
          </widget>
         </item>
         <item row="3" column="1">
@@ -226,24 +200,8 @@
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
-         </widget>
-        </item>
-        <item row="3" column="2">
-         <widget class="QDoubleSpinBox" name="spinBox_misalignment_z_intervall">
-          <property name="minimumSize">
-           <size>
-            <width>60</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="decimals">
-           <number>1</number>
-          </property>
-          <property name="maximum">
-           <double>90.000000000000000</double>
+          <property name="minimum">
+           <number>-99</number>
           </property>
          </widget>
         </item>
@@ -292,8 +250,75 @@
           </property>
          </widget>
         </item>
+        <item row="4" column="3">
+         <widget class="QLabel" name="label_27">
+          <property name="text">
+           <string>Z-Level</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QSpinBox" name="spinBox_misalignment_x_intervall">
+          <property name="minimumSize">
+           <size>
+            <width>60</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="minimum">
+           <number>-99</number>
+          </property>
+          <property name="value">
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="QSpinBox" name="spinBox_misalignment_y_intervall">
+          <property name="minimumSize">
+           <size>
+            <width>60</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="minimum">
+           <number>-99</number>
+          </property>
+          <property name="value">
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="2">
+         <widget class="QSpinBox" name="spinBox_misalignment_z_intervall">
+          <property name="minimumSize">
+           <size>
+            <width>60</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="minimum">
+           <number>-99</number>
+          </property>
+          <property name="value">
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
         <item row="4" column="2">
-         <widget class="QDoubleSpinBox" name="spinBox_z_level_intervall">
+         <widget class="QSpinBox" name="spinBox_z_level_intervall">
           <property name="minimumSize">
            <size>
             <width>60</width>
@@ -303,21 +328,11 @@
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
-          <property name="singleStep">
-           <double>0.100000000000000</double>
+          <property name="minimum">
+           <number>-99</number>
           </property>
           <property name="value">
-           <double>0.100000000000000</double>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="3">
-         <widget class="QLabel" name="label_27">
-          <property name="text">
-           <string>Z-Level</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
+           <number>1</number>
           </property>
          </widget>
         </item>
@@ -545,9 +560,6 @@
                 <width>80</width>
                 <height>0</height>
                </size>
-              </property>
-              <property name="locale">
-               <locale language="English" country="UnitedStates"/>
               </property>
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
