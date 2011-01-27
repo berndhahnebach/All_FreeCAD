@@ -658,11 +658,9 @@ void View3DInventor::setOverlayWidget(GLOverlayWidget* widget)
 
 void View3DInventor::removeOverlayWidget()
 {
-    if (stack->currentIndex() == 1) {
-        QWidget* old = stack->currentWidget();
-        stack->removeWidget(old);
-        if (old) old->deleteLater();
-    }
+    stack->setCurrentIndex(0);
+    QWidget* overlay = stack->widget(1);
+    if (overlay) stack->removeWidget(overlay);
 }
 
 void View3DInventor::setCursor(const QCursor& aCursor)
