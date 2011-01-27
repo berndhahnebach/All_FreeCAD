@@ -98,7 +98,7 @@ def main():
 		parser.parse(inpsrc)
 	except:
 		sys.stderr.write("No svn repository\n")
-		sys.exit(2)
+		return # exit normally to not stop a build where no svn is installed
 
 	#Information of the Subversion stuff
 	Url = handler.mapping["Url"]
