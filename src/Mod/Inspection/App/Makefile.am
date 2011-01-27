@@ -23,6 +23,21 @@ libInspection_la_LIBADD   = \
 		@BOOST_SYSTEM_LIB@ \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
+		-lTKernel \
+		-lTKFillet \
+		-lTKG2d \
+		-lTKG3d \
+		-lTKMath \
+		-lTKMesh \
+		-lTKXSBase \
+		-lTKBool \
+		-lTKBO \
+		-lTKBRep \
+		-lTKTopAlgo \
+		-lTKGeomAlgo \
+		-lTKGeomBase \
+		-lTKOffset \
+		-lTKPrim \
 		-lFreeCADBase \
 		-lFreeCADApp \
 		-lMesh \
@@ -48,7 +63,8 @@ Inspection_la_DEPENDENCIES = libInspection.la
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT4_CORE_CXXFLAGS)
+AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) \
+		$(QT4_CORE_CXXFLAGS) -I$(OCC_INC)
 
 libdir = $(prefix)/Mod/Inspection
 
