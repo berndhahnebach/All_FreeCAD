@@ -64,7 +64,7 @@ if( DOXYGEN_FOUND)
                    ${CMAKE_CURRENT_BINARY_DIR}/BuildDevDoc.cfg @ONLY)
 
     if( FREECAD_MAINTAINERS_BUILD )
-        ADD_CUSTOM_TARGET(SourceDocu ALL
+        ADD_CUSTOM_TARGET(SourceDocu 
             ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/BuildDevDoc.cfg 
             COMMAND ${QT_HELPCOMPILER_EXECUTABLE} "\"${CMAKE_BINARY_DIR}/Doc/SourceDocu/html/index.qhp\""
             COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/Doc/SourceDocu/html/index.qch ${CMAKE_BINARY_DIR}/Doc/FreeCADSource.qch
@@ -72,7 +72,7 @@ if( DOXYGEN_FOUND)
             DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/BuildDevDoc.cfg
         )
 
-        ADD_CUSTOM_TARGET(UserDocu ALL
+        ADD_CUSTOM_TARGET(UserDocu 
             ${PYTHON_EXECUTABLE} 
             ${CMAKE_SOURCE_DIR}/src/Tools/wiki2qhelp.py 
          -c ${QT_HELPCOMPILER_EXECUTABLE}   
