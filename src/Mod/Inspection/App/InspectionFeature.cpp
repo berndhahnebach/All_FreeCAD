@@ -22,18 +22,10 @@
 
 
 #include "PreCompiled.h"
-#include <Bnd_Box.hxx>
-#include <BRep_Tool.hxx>
-#include <BRepBndLib.hxx>
-#include <BRepMesh.hxx>
 #include <gp_Pnt.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
-#include <Poly_Triangulation.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopExp_Explorer.hxx>
 
 #include <QEventLoop>
 #include <QFuture>
@@ -103,44 +95,17 @@ Base::Vector3f InspectActualPoints::getPoint(unsigned long index)
 
 // ----------------------------------------------------------------
 
-InspectActualShape::InspectActualShape(const TopoDS_Shape& shape) : _rShape(shape)
+InspectActualShape::InspectActualShape(const Part::TopoShape& shape) : _rShape(shape)
 {
     ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath
         ("User parameter:BaseApp/Preferences/Mod/Part");
     float deviation = hGrp->GetFloat("MeshDeviation",0.2);
 
-    Bnd_Box bounds;
-    BRepBndLib::Add(_rShape, bounds);
-    bounds.SetGap(0.0);
-    Standard_Real xMin, yMin, zMin, xMax, yMax, zMax;
-    bounds.Get(xMin, yMin, zMin, xMax, yMax, zMax);
-    Standard_Real deflection = ((xMax-xMin)+(yMax-yMin)+(zMax-zMin))/300.0 * deviation;
+    Base::BoundBox3d bbox = _rShape.getBoundBox();
+    Standard_Real deflection = (bbox.LengthX() + bbox.LengthY() + bbox.LengthZ())/300.0 * deviation;
 
-    BRepMesh::Mesh(_rShape,deflection);
-    TopExp_Explorer xp;
-    for (xp.Init(_rShape, TopAbs_FACE); xp.More(); xp.Next()) {
-        const TopoDS_Face& aFace = TopoDS::Face(xp.Current());
-        TopLoc_Location aLoc;
-        Handle(Poly_Triangulation) aPoly = BRep_Tool::Triangulation(aFace,aLoc);
-        if (aPoly.IsNull()) continue;
-        gp_Trsf myTransf;
-        Standard_Boolean identity = true;
-        if (!aLoc.IsIdentity()) {
-            identity = false;
-            myTransf = aLoc.Transformation();
-        }
-
-        Standard_Integer nbNodes = aPoly->NbNodes();
-        const TColgp_Array1OfPnt& nodes = aPoly->Nodes();
-        for (Standard_Integer i=1;i<=nbNodes;i++) {
-            gp_Pnt v = nodes(i);
-            if (!identity) {
-                v.Transform(myTransf);
-            }
-
-            points.push_back(Base::Vector3f((float)v.X(),(float)v.Y(),(float)v.Z()));
-        }
-    }
+    std::vector<Data::ComplexGeoData::FacetTopo> f;
+    _rShape.getFaces(points, f, (float)deflection);
 }
 
 unsigned long InspectActualShape::countPoints() const
@@ -150,7 +115,7 @@ unsigned long InspectActualShape::countPoints() const
 
 Base::Vector3f InspectActualShape::getPoint(unsigned long index)
 {
-    return points[index];
+    return Base::toVector<float>(points[index]);
 }
 
 // ----------------------------------------------------------------
@@ -419,7 +384,7 @@ App::DocumentObjectExecReturn* Feature::execute(void)
     }
     else if (pcActual->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId())) {
         Part::Feature* part = static_cast<Part::Feature*>(pcActual);
-        actual = new InspectActualShape(part->Shape.getValue());
+        actual = new InspectActualShape(part->Shape.getShape());
     }
     else {
         throw Base::Exception("Unknown geometric type");
