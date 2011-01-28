@@ -48,7 +48,7 @@ public:
     {}
     ~GLOverlayWidget()
     {}
-    void setImage(const QImage& img)
+    virtual void setImage(const QImage& img)
     { image = img; }
     void paintEvent(QPaintEvent*);
 

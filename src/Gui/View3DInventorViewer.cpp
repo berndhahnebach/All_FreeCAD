@@ -700,7 +700,7 @@ const std::vector<SbVec2s>& View3DInventorViewer::getPolygon(SbBool* clip_inner)
     return navigation->getPolygon(clip_inner);
 }
 
-std::vector<SbVec2f> View3DInventorViewer::getGLPolygon(SbBool* clip_inner) const
+std::vector<SbVec2f> View3DInventorViewer::getGLPolygon(const std::vector<SbVec2s>& pnts) const
 {
     const SbViewportRegion& vp = this->getViewportRegion();
     const SbVec2s& sz = vp.getWindowSize();
@@ -712,7 +712,6 @@ std::vector<SbVec2f> View3DInventorViewer::getGLPolygon(SbBool* clip_inner) cons
     float fRatio = vp.getViewportAspectRatio();
 
     std::vector<SbVec2f> poly;
-    const std::vector<SbVec2s>& pnts = navigation->getPolygon(clip_inner);
     for (std::vector<SbVec2s>::const_iterator it = pnts.begin(); it != pnts.end(); ++it) {
         SbVec2s loc = *it - op;
         SbVec2f pos((float)loc[0]/(float)sp[0], (float)loc[1]/(float)sp[1]);
@@ -733,6 +732,12 @@ std::vector<SbVec2f> View3DInventorViewer::getGLPolygon(SbBool* clip_inner) cons
     }
 
     return poly;
+}
+
+std::vector<SbVec2f> View3DInventorViewer::getGLPolygon(SbBool* clip_inner) const
+{
+    const std::vector<SbVec2s>& pnts = navigation->getPolygon(clip_inner);
+    return getGLPolygon(pnts);
 }
 
 bool View3DInventorViewer::dumpToFile(const char* filename, bool binary) const

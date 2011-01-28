@@ -92,6 +92,7 @@ public:
 
 private:
     const TopoDS_Shape& _rShape;
+    std::vector<Base::Vector3f> points;
 };
 
 /** Calculates the shortest distance of the underlying geometry to a given point. */

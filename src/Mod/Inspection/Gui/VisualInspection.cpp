@@ -112,14 +112,6 @@ VisualInspection::VisualInspection(QWidget* parent, Qt::WFlags fl)
             (*it)->getTypeId().isDerivedFrom(shape)) {
             Gui::ViewProvider* view = gui->getViewProvider(*it);
             QIcon px = view->getIcon();
-            if ((*it)->getTypeId().isDerivedFrom(shape)) { // only tmp. needed
-            SingleSelectionItem* item2 = new SingleSelectionItem(ui->treeWidgetNominal);
-            item2->setText(0, QString::fromUtf8((*it)->Label.getValue()));
-            item2->setData(0, Qt::UserRole, QString::fromAscii((*it)->getNameInDocument()));
-            item2->setCheckState(0, Qt::Unchecked);
-            item2->setIcon(0, px);
-            }
-            else {
             SingleSelectionItem* item1 = new SingleSelectionItem(ui->treeWidgetActual);
             item1->setText(0, QString::fromUtf8((*it)->Label.getValue()));
             item1->setData(0, Qt::UserRole, QString::fromAscii((*it)->getNameInDocument()));
@@ -134,7 +126,6 @@ VisualInspection::VisualInspection(QWidget* parent, Qt::WFlags fl)
 
             item1->setCompetitiveItem(item2);
             item2->setCompetitiveItem(item1);
-            }
         }
     }
 
