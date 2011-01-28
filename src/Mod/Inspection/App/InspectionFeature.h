@@ -34,16 +34,13 @@
 class TopoDS_Shape;
 class BRepExtrema_DistShapeShape;
 
-namespace MeshCore
-{
+namespace MeshCore {
 class MeshKernel;
 class MeshFacetGrid;
 }
 
-namespace Points 
-{
-class PointsGrid;
-}
+namespace Points { class PointsGrid; }
+namespace Part { class TopoShape; }
 
 namespace Inspection
 {
@@ -86,13 +83,13 @@ private:
 class InspectionAppExport InspectActualShape : public InspectActualGeometry
 {
 public:
-    InspectActualShape(const TopoDS_Shape&);
+    InspectActualShape(const Part::TopoShape&);
     virtual unsigned long countPoints() const;
     virtual Base::Vector3f getPoint(unsigned long);
 
 private:
-    const TopoDS_Shape& _rShape;
-    std::vector<Base::Vector3f> points;
+    const Part::TopoShape& _rShape;
+    std::vector<Base::Vector3d> points;
 };
 
 /** Calculates the shortest distance of the underlying geometry to a given point. */
