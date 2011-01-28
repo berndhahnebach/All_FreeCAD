@@ -1,4 +1,4 @@
-import os,sys,string,math,shutil,glob
+import os,sys,string,math,shutil,glob,subprocess
 from time import sleep
 from os.path import join
 
@@ -20,6 +20,7 @@ class MyForm(QtGui.QDialog,Ui_dialog):
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
+        os.chdir("c:/")
         #Define some global variables
         self.filename = QtCore.QString("")
         self.dirname = QtCore.QString("")
@@ -175,7 +176,6 @@ class MyForm(QtGui.QDialog,Ui_dialog):
 
     def select_output(self):
         self.dirname=QtGui.QFileDialog.getExistingDirectory(None, 'Open working directory', '', QtGui.QFileDialog.ShowDirsOnly)
-        self.button_select_output.setEnabled(False)
         self.button_add_to_table.setEnabled(not self.dirname.isEmpty() and not self.filename.isEmpty())
 
     def onAbbrechen(self):
@@ -300,15 +300,37 @@ class MyForm(QtGui.QDialog,Ui_dialog):
                             "_"+"z_rot"+ str(int(l))+
                             "_"+"z_l"+ str(int(i)) + "\n"))
                             batch.write(str(self.lineEdit.text())+" -i final_fe_input > calculix_output.out\n")
-                            batch.write(str("cd ..\n"))
+                            batch.write("cd ..\n")
                             l= l + z_rot_intervall
                         k = k + y_rot_intervall
                     j = j + x_rot_intervall
                 i = i+ z_offset_intervall
+        batch.write("cd ..\n")
+        batch.write("find " + str(self.dirname + "/")[3:] + " -name \"sigini_output.txt\" | xargs /bin/rm\n")
+        batch.write("find " + str(self.dirname + "/")[3:] + " -name \"*.out\" | xargs /bin/rm\n")
+        batch.write("find " + str(self.dirname + "/")[3:] + " -name \"*.dat\" | xargs /bin/rm\n")
+        batch.write("find " + str(self.dirname + "/")[3:] + " -name \"*.sta\" | xargs /bin/rm\n")
+        batch.write("tar cf " + str(self.dirname)[3:] + ".tar " + str(self.dirname + "/")[3:] + "\n")
+        batch.write("rm -rf " + str(self.dirname + "/")[3:] + "\n")
         batch.write("exit")
         batch.close()
 
+        os.chdir("c:/")
+        fnull = open(os.devnull, 'w')
+        commandline = "7z a -tzip -mx=9 -mmt=on " + str(self.dirname)[0:2] + str(self.dirname)[str(self.dirname).rfind("/"):] + ".zip " + str(self.dirname)
+        result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
+        fnull.close()
+        #somehow we have to check for a false return code!
+        if not result:
+            shutil.rmtree(str(self.dirname))
 
+        #Reset the GUI
+        os.chdir("c:/")
+        self.JobTable.clear()
+        self.JobTable.setHorizontalHeaderLabels(
+        ["Input File","Output Folder","Z-Offset From","Z-Offset To","Z-Intervall","X-Rot From","X-Rot To","X-Rot Intervall",
+        "Y-Rot From","Y-Rot To","Y-Rot Intervall","Z-Rot From","Z-Rot To","Z-Rot Intervall","Young Modulus","Poisson Ratio",
+        "LC1","LC2","LC3","LC4","LC5","LC6","LTC1","LTC2","LTC3","LTC4","LTC5","LTC6","Plate Thickness"])
         self.button_select_file.setEnabled(True)
         self.button_select_output.setEnabled(True)
 
