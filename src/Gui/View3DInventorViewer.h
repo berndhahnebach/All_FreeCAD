@@ -164,6 +164,7 @@ public:
     void stopSelection();
     bool isSelecting() const;
     std::vector<SbVec2f> getGLPolygon(SbBool* clip_inner=0) const;
+    std::vector<SbVec2f> getGLPolygon(const std::vector<SbVec2s>&) const;
     const std::vector<SbVec2s>& getPolygon(SbBool* clip_inner=0) const;
     //@}
 
