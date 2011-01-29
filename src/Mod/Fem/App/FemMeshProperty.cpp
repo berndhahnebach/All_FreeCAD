@@ -41,7 +41,7 @@
 
 using namespace Fem;
 
-TYPESYSTEM_SOURCE(Fem::PropertyFemMesh , App::Property);
+TYPESYSTEM_SOURCE(Fem::PropertyFemMesh , App::PropertyComplexGeoData);
 
 PropertyFemMesh::PropertyFemMesh() : _FemMesh(new FemMesh)
 {
@@ -73,9 +73,28 @@ const FemMesh &PropertyFemMesh::getValue(void)const
     return *_FemMesh;
 }
 
+const Data::ComplexGeoData* PropertyFemMesh::getComplexData() const
+{
+    return (FemMesh*)_FemMesh;
+}
+
 Base::BoundBox3d PropertyFemMesh::getBoundingBox() const
 {
     return _FemMesh->getBoundBox();
+}
+
+void PropertyFemMesh::transformGeometry(const Base::Matrix4D &rclMat)
+{
+    aboutToSetValue();
+    _FemMesh->transformGeometry(rclMat);
+    hasSetValue();
+}
+
+void PropertyFemMesh::getFaces(std::vector<Base::Vector3d> &aPoints,
+                               std::vector<Data::ComplexGeoData::FacetTopo> &aTopo,
+                               float accuracy, uint16_t flags) const
+{
+    _FemMesh->getFaces(aPoints, aTopo, accuracy, flags);
 }
 
 PyObject *PropertyFemMesh::getPyObject(void)

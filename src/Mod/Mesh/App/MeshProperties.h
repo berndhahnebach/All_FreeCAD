@@ -164,6 +164,7 @@ public:
 
     /** @name Getting basic geometric entities */
     //@{
+    const Data::ComplexGeoData* getComplexData() const;
     /** Returns the bounding box around the underlying mesh kernel */
     Base::BoundBox3d getBoundingBox() const;
     /** Get faces from object with given accuracy */

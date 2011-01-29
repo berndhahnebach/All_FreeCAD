@@ -53,6 +53,7 @@ public:
     /// get the part shape
     const TopoDS_Shape& getValue(void) const;
     const TopoShape& getShape() const;
+    const Data::ComplexGeoData* getComplexData() const;
     //@}
 
     /** @name Modification */

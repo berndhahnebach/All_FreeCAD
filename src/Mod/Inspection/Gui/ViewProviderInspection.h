@@ -25,14 +25,15 @@
 #define INSPECTIOGUI_VIEWPROVIDERINSPECTION_H
 
 #include <Base/Observer.h>
-#include <App/DocumentObserver.h>
 #include <Gui/ViewProviderDocumentObject.h>
 #include <Gui/ViewProviderDocumentObjectGroup.h>
 
 class SoGroup;
 class SoMaterial;
+class SoMaterialBinding;
 class SoDrawStyle;
 class SoSeparator;
+class SoCoordinate3;
 
 namespace Gui {
     class SoFCColorBar;
@@ -45,7 +46,6 @@ namespace InspectionGui {
  * @author Werner Mayer
  */
 class ViewProviderInspection : public Gui::ViewProviderDocumentObject,
-                               public App::DocumentObserver,
                                public Base::Observer<int>{
     typedef ViewProviderDocumentObject inherited;
 
@@ -81,24 +81,14 @@ protected:
     void setDistances();
     QString inspectDistance(const SoPickedPoint* pp) const;
 
-private:
-    /** Checks if a new document was created */
-    void slotCreatedDocument(const App::Document& Doc);
-    /** Checks if the given document is about to be closed */
-    void slotDeletedDocument(const App::Document& Doc);
-    /** Checks if a new object was added. */
-    void slotCreatedObject(const App::DocumentObject& Obj);
-    /** Checks if the given object is about to be removed. */
-    void slotDeletedObject(const App::DocumentObject& Obj);
-    /** The property of an observed object has changed */
-    void slotChangedObject(const App::DocumentObject& Obj, const App::Property& Prop);
-
 protected:
     SoMaterial       * pcColorMat;
+    SoMaterialBinding* pcMatBinding;
     SoGroup          * pcLinkRoot;
     Gui::SoFCColorBar* pcColorBar;
     SoDrawStyle      * pcColorStyle;
     SoSeparator      * pcColorRoot;
+    SoCoordinate3    * pcCoords;
 
 private:
     float search_radius;

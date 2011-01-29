@@ -63,6 +63,11 @@ const PointKernel& PropertyPointKernel::getValue(void) const
     return *_cPoints;
 }
 
+const Data::ComplexGeoData* PropertyPointKernel::getComplexData() const
+{
+    return _cPoints;
+}
+
 Base::BoundBox3d PropertyPointKernel::getBoundingBox() const
 {
     Base::BoundBox3d box;

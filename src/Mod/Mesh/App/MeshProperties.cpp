@@ -347,6 +347,11 @@ const MeshObject* PropertyMeshKernel::getValuePtr(void)const
     return (MeshObject*)_meshObject;
 }
 
+const Data::ComplexGeoData* PropertyMeshKernel::getComplexData() const
+{
+    return (MeshObject*)_meshObject;
+}
+
 Base::BoundBox3d PropertyMeshKernel::getBoundingBox() const
 {
     return _meshObject->getBoundBox();

@@ -39,6 +39,10 @@ namespace Base {
 class Writer;
 }
 
+namespace Data {
+class ComplexGeoData;
+}
+
 namespace App
 {
 class Feature;
@@ -316,6 +320,7 @@ public:
 
     /** @name Getting basic geometric entities */
     //@{
+    virtual const Data::ComplexGeoData* getComplexData() const = 0;
     virtual Base::BoundBox3d getBoundingBox() const = 0;
     virtual void getFaces(std::vector<Base::Vector3d> &Points,
         std::vector<Data::ComplexGeoData::FacetTopo> &Topo,
