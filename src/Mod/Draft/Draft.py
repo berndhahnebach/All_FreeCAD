@@ -799,7 +799,7 @@ def getSVG(obj,modifier=100,textmodifier=100,plane=None):
                                         if obj.ViewObject.FillStyle == 'shape color':
                                                 fill = getrgb(obj.ViewObject.ShapeColor)
                                         else:
-                                                hatch = obj.ViewObject.FillStyle[:-6]
+                                                hatch = obj.ViewObject.FillStyle
                                                 fill = 'url(#'+hatch+')'
                                 except:
                                         print "Draft:getSVG: Unable to read FillStyle"
@@ -889,7 +889,7 @@ class ViewProviderDraft:
                 obj.LineStyle = ['continuous','dashed','dashdotted','dotted']
                 fills = ['shape color']
                 for f in FreeCAD.svgpatterns.keys():
-                        fills.append(f+' hatch')
+                        fills.append(f)
                 obj.FillStyle = fills
                 obj.Proxy = self
 
@@ -1562,6 +1562,7 @@ class DrawingView:
                 result += svg
                 result += '</g>'
                 return result
+
 class BSpline:
         "The BSpline object"
         

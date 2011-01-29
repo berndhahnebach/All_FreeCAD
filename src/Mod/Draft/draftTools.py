@@ -63,7 +63,7 @@ def msg(text=None,mode=None):
 FreeCAD.svgpatterns = importSVG.getContents(Draft.getDraftPath('icons.svg'),'pattern')
 altpat = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetString("patternFile")
 if altpat:
-        altpatterns = importSVG.getContents(atlpat,'pattern')
+        altpatterns = importSVG.getContents(altpat,'pattern')
         if altpatterns: FreeCAD.svgpatterns.update(altpatterns)
 
 # sets the default working plane
@@ -3229,27 +3229,43 @@ class Drawing(Modifier):
 		Modifier.Activated(self,"Drawing")
                 sel = Draft.getSelection()
                 if not sel:
-                        page = self.createDefaultPage()
+                        self.page = self.createDefaultPage()
                 else:
-                        page = None
+                        self.page = None
                         for obj in sel:
                                 if obj.isDerivedFrom("Drawing::FeaturePage"):
-                                        page = obj
+                                        self.page = obj
                                         sel.pop(sel.index(obj))
-                        if not page:
+                        if not self.page:
                                 for obj in self.doc.Objects:
                                         if obj.isDerivedFrom("Drawing::FeaturePage"):
-                                                page = obj
-                        if not page:
-                                page = self.createDefaultPage()
-                        sel.reverse()
+                                                self.page = obj
+                        if not self.page:
+                                self.page = self.createDefaultPage()
+                        sel.reverse() 
                         for obj in sel:
+                                self.insertPattern(obj)
                                 if obj.ViewObject.isVisible():
                                         name = 'View'+obj.Name
-                                        oldobj = page.getObject(name)
+                                        oldobj = self.page.getObject(name)
                                         if oldobj: self.doc.removeObject(oldobj.Name)
-                                        Draft.makeDrawingView(obj,page)
+                                        Draft.makeDrawingView(obj,self.page)
                         self.doc.recompute()
+
+        def insertPattern(self,obj):
+                if 'FillStyle' in obj.ViewObject.PropertiesList:
+                        if obj.ViewObject.FillStyle != 'shape color':
+                                hatch = obj.ViewObject.FillStyle
+                                vobj = self.page.getObject('Pattern'+hatch)
+                                if not vobj:
+                                        if hatch in FreeCAD.svgpatterns:
+                                                view = self.doc.addObject('Drawing::FeatureView','Pattern'+hatch)
+                                                svg = FreeCAD.svgpatterns[hatch]
+                                                view.ViewResult = svg
+                                                view.X = 0
+                                                view.Y = 0
+                                                view.Scale = 1
+                                                self.page.addObject(view)
 
         def createDefaultPage(self):
                 template = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetString("template")
