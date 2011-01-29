@@ -33,7 +33,10 @@
 #include <Inventor/lists/SoPickedPointList.h> 
 #include <Inventor/details/SoFaceDetail.h>
 #include <Inventor/events/SoMouseButtonEvent.h>
+#include <Inventor/nodes/SoCoordinate3.h>
 #include <Inventor/nodes/SoDrawStyle.h>
+#include <Inventor/nodes/SoIndexedFaceSet.h>
+#include <Inventor/nodes/SoPointSet.h>
 #include <Inventor/nodes/SoMaterial.h>
 #include <Inventor/nodes/SoShapeHints.h>
 #include <Inventor/nodes/SoOrthographicCamera.h>
@@ -51,9 +54,6 @@
 #include <Gui/ViewProviderGeometryObject.h>
 #include <Gui/View3DInventorViewer.h>
 #include <Gui/Widgets.h>
-#include <Mod/Mesh/App/MeshFeature.h>
-#include <Mod/Mesh/App/Core/Elements.h>
-//#include <Mod/Points/App/PointsFeature.h>
 #include <Mod/Inspection/App/InspectionFeature.h>
 
 #include "ViewProviderInspection.h"
@@ -71,10 +71,14 @@ ViewProviderInspection::ViewProviderInspection() : search_radius(FLT_MAX)
     ADD_PROPERTY_TYPE(OutsideGrayed,(false),"",(App::PropertyType) (App::Prop_Output|App::Prop_Hidden),"");
     pcColorRoot = new SoSeparator();
     pcColorRoot->ref();
+    pcMatBinding = new SoMaterialBinding;
+    pcMatBinding->ref();
     pcColorMat = new SoMaterial;
     pcColorMat->ref();
     pcColorStyle = new SoDrawStyle(); 
     pcColorRoot->addChild(pcColorStyle);
+    pcCoords = new SoCoordinate3;
+    pcCoords->ref();
     // simple color bar
     pcColorBar = new Gui::SoFCColorBar;
     pcColorBar->Attach(this);
@@ -87,6 +91,8 @@ ViewProviderInspection::ViewProviderInspection() : search_radius(FLT_MAX)
 ViewProviderInspection::~ViewProviderInspection()
 {
     pcColorRoot->unref();
+    pcCoords->unref();
+    pcMatBinding->unref();
     pcColorMat->unref();
     pcColorBar->Detach(this);
     pcColorBar->unref();
@@ -122,7 +128,6 @@ void ViewProviderInspection::attach(App::DocumentObject *pcFeat)
 {
     // creats the standard viewing modes
     inherited::attach(pcFeat);
-    attachDocument(pcFeat->getDocument());
 
     SoShapeHints * flathints = new SoShapeHints;
     flathints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE ;
@@ -136,8 +141,6 @@ void ViewProviderInspection::attach(App::DocumentObject *pcFeat)
     pcFlatStyle->style = SoDrawStyle::FILLED;
     pcColorShadedRoot->addChild(pcFlatStyle);
 
-    SoMaterialBinding* pcMatBinding = new SoMaterialBinding;
-    pcMatBinding->value = SoMaterialBinding::PER_VERTEX_INDEXED;
     pcColorShadedRoot->addChild(pcColorMat);
     pcColorShadedRoot->addChild(pcMatBinding);
     pcColorShadedRoot->addChild(pcLinkRoot);
@@ -168,25 +171,75 @@ void ViewProviderInspection::updateData(const App::Property* prop)
     // set to the expected size
     if (prop->getTypeId() == App::PropertyLink::getClassTypeId()) {
         App::GeoFeature* object = static_cast<const App::PropertyLink*>(prop)->getValue<App::GeoFeature*>();
-        this->pcLinkRoot->removeAllChildren();
         if (object) {
+            float accuracy=0;
+            Base::Type meshId  = Base::Type::fromName("Mesh::Feature");
+            Base::Type shapeId = Base::Type::fromName("Part::Feature");
+            Base::Type pointId = Base::Type::fromName("Points::Feature");
+            Base::Type propId  = App::PropertyComplexGeoData::getClassTypeId();
+
             // set the Distance property to the correct size to sync size of material node with number
             // of vertices/points of the referenced geometry
-            if (object->getTypeId().isDerivedFrom(Mesh::Feature::getClassTypeId())) {
-                const Mesh::MeshObject& kernel = static_cast<Mesh::Feature*>(object)->Mesh.getValue();
-                static_cast<Inspection::Feature*>(pcObject)->Distances.setSize(kernel.countPoints());
-                pcColorMat->diffuseColor.setNum((int)kernel.countPoints());
-                pcColorMat->transparency.setNum((int)kernel.countPoints());
+            const Data::ComplexGeoData* data = 0;
+            if (object->getTypeId().isDerivedFrom(meshId)) {
+                App::Property* prop = object->getPropertyByName("Mesh");
+                if (prop && prop->getTypeId().isDerivedFrom(propId)) {
+                    data = static_cast<App::PropertyComplexGeoData*>(prop)->getComplexData();
+                }
             }
-            //else if (object->getTypeId().isDerivedFrom(Points::Feature::getClassTypeId())) {
-            //    // TODO
-            //}
+            else if (object->getTypeId().isDerivedFrom(shapeId)) {
+                App::Property* prop = object->getPropertyByName("Shape");
+                if (prop && prop->getTypeId().isDerivedFrom(propId)) {
+                    data = static_cast<App::PropertyComplexGeoData*>(prop)->getComplexData();
+                    ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath
+                        ("User parameter:BaseApp/Preferences/Mod/Part");
+                    float deviation = hGrp->GetFloat("MeshDeviation",0.2);
 
-            // get the view provider of the associated mesh feature
-            App::Document* rDoc = pcObject->getDocument();
-            Gui::Document* pDoc = Gui::Application::Instance->getDocument(rDoc);
-            Gui::ViewProviderGeometryObject* view = static_cast<Gui::ViewProviderGeometryObject*>(pDoc->getViewProvider(object));
-            this->pcLinkRoot->addChild(view->getHighlightNode());
+                    Base::BoundBox3d bbox = data->getBoundBox();
+                    accuracy = (float)((bbox.LengthX() + bbox.LengthY() + bbox.LengthZ())/300.0 * deviation);
+                }
+            }
+            else if (object->getTypeId().isDerivedFrom(pointId)) {
+                App::Property* prop = object->getPropertyByName("Points");
+                if (prop && prop->getTypeId().isDerivedFrom(propId)) {
+                    data = static_cast<App::PropertyComplexGeoData*>(prop)->getComplexData();
+                }
+            }
+
+            if (data) {
+                this->pcLinkRoot->removeAllChildren();
+                std::vector<Base::Vector3d> points;
+                std::vector<Data::ComplexGeoData::FacetTopo> faces;
+                data->getFaces(points, faces, accuracy);
+
+                this->pcLinkRoot->addChild(this->pcCoords);
+                this->pcCoords->point.setNum(points.size());
+                SbVec3f* pts = this->pcCoords->point.startEditing();
+                for (size_t i=0; i < points.size(); i++) {
+                    const Base::Vector3d& p = points[i];
+                    pts[i].setValue((float)p.x,(float)p.y,(float)p.z);
+                }
+                this->pcCoords->point.finishEditing();
+
+                if (!faces.empty()) {
+                    SoIndexedFaceSet* face = new SoIndexedFaceSet();
+                    this->pcLinkRoot->addChild(face);
+                    face->coordIndex.setNum(4*faces.size());
+                    int32_t* indices = face->coordIndex.startEditing();
+                    unsigned long j=0;
+                    std::vector<Data::ComplexGeoData::FacetTopo>::iterator it;
+                    for (it = faces.begin(); it != faces.end(); ++it,j++) {
+                        indices[4*j+0] = it->I1;
+                        indices[4*j+1] = it->I2;
+                        indices[4*j+2] = it->I3;
+                        indices[4*j+3] = SO_END_FACE_INDEX;
+                    }
+                    face->coordIndex.finishEditing();
+                }
+                else {
+                    this->pcLinkRoot->addChild(new SoPointSet());
+                }
+            }
         }
     }
     else if (prop->getTypeId() == App::PropertyFloatList::getClassTypeId()) {
@@ -202,50 +255,9 @@ void ViewProviderInspection::updateData(const App::Property* prop)
     }
 }
 
-void ViewProviderInspection::slotCreatedObject(const App::DocumentObject& Obj)
-{
-}
-
-void ViewProviderInspection::slotDeletedObject(const App::DocumentObject& Obj)
-{
-}
-
-void ViewProviderInspection::slotChangedObject(const App::DocumentObject& Obj, const App::Property& Prop)
-{
-    App::DocumentObject* object = static_cast<Inspection::Feature*>
-        (pcObject)->Actual.getValue();
-    // we get this for any object for that a property has changed. Thus, we must regard that object
-    // which is linked by our link property
-    if (object == &Obj) {
-        // set the Distance property to the correct size to sync size of material node with number
-        // of vertices/points of the referenced geometry
-        if (object->getTypeId().isDerivedFrom(Mesh::Feature::getClassTypeId())) {
-            const Mesh::PropertyMeshKernel& mesh = static_cast<Mesh::Feature*>(object)->Mesh;
-            if ((&mesh) == (&Prop)) {
-                const Mesh::MeshObject& kernel = mesh.getValue();
-                static_cast<Inspection::Feature*>(pcObject)->Distances.setSize((int)kernel.countPoints());
-                pcColorMat->diffuseColor.setNum((int)kernel.countPoints());
-                pcColorMat->transparency.setNum((int)kernel.countPoints());
-            }
-        }
-        //else if (object->getTypeId().isDerivedFrom(Points::Feature::getClassTypeId())) {
-        //    // TODO
-        //}
-    }
-}
-
-void ViewProviderInspection::slotCreatedDocument(const App::Document& Doc)
-{
-}
-
-void ViewProviderInspection::slotDeletedDocument(const App::Document& Doc)
-{
-}
-
 SoSeparator* ViewProviderInspection::getFrontRoot(void) const
 {
     return pcColorRoot;
-    //return pcColorBar;
 }
 
 void ViewProviderInspection::setDistances()
@@ -263,8 +275,15 @@ void ViewProviderInspection::setDistances()
 
     // distance values
     const std::vector<float>& fValues = ((App::PropertyFloatList*)pDistances)->getValues();
-    if (pcColorMat->diffuseColor.getNum() != (int)fValues.size()) pcColorMat->diffuseColor.setNum((int)fValues.size());
-    if (pcColorMat->transparency.getNum() != (int)fValues.size()) pcColorMat->transparency.setNum((int)fValues.size());
+    if ((int)fValues.size() != this->pcCoords->point.getNum()) {
+        pcMatBinding->value = SoMaterialBinding::OVERALL;
+        return;
+    }
+
+    if (pcColorMat->diffuseColor.getNum() != (int)fValues.size())
+        pcColorMat->diffuseColor.setNum((int)fValues.size());
+    if (pcColorMat->transparency.getNum() != (int)fValues.size())
+        pcColorMat->transparency.setNum((int)fValues.size());
 
     SbColor * cols = pcColorMat->diffuseColor.startEditing();
     float   * tran = pcColorMat->transparency.startEditing();
@@ -273,16 +292,15 @@ void ViewProviderInspection::setDistances()
     for (std::vector<float>::const_iterator jt = fValues.begin(); jt != fValues.end(); ++jt, j++) {
         App::Color col = pcColorBar->getColor(*jt);
         cols[j] = SbColor(col.r, col.g, col.b);
-        if (pcColorBar->isVisible(*jt)) {
+        if (pcColorBar->isVisible(*jt))
             tran[j] = 0.0f;
-        }
-        else {
+        else
             tran[j] = 0.8f;
-        }
     }
 
     pcColorMat->diffuseColor.finishEditing();
     pcColorMat->transparency.finishEditing();
+    pcMatBinding->value = SoMaterialBinding::PER_VERTEX_INDEXED;
 }
 
 QIcon ViewProviderInspection::getIcon() const
@@ -459,33 +477,49 @@ void ViewProviderInspection::inspectCallback(void * ud, SoEventCallback * n)
     }
 }
 
+namespace InspectionGui {
+float calcArea (const SbVec3f& v1, const SbVec3f& v2, const SbVec3f& v3)
+{
+    SbVec3f a = v2-v1;
+    SbVec3f b = v3-v1;
+    return a.cross(b).length()/2.0f;
+}
+
+bool calcWeights(const SbVec3f& v1, const SbVec3f& v2, const SbVec3f& v3,
+                 const SbVec3f& p, float& w0, float& w1, float& w2)
+{
+    float fAreaABC = calcArea(v1,v2,v3);
+    float fAreaPBC = calcArea(p,v2,v3);
+    float fAreaPCA = calcArea(p,v3,v1);
+    float fAreaPAB = calcArea(p,v1,v2);
+
+    w0=fAreaPBC/fAreaABC;
+    w1=fAreaPCA/fAreaABC;
+    w2=fAreaPAB/fAreaABC;
+
+    return fabs(w0+w1+w2-1.0f)<0.001f;
+}
+}
+
 QString ViewProviderInspection::inspectDistance(const SoPickedPoint* pp) const
 {
     QString info;
     const SoDetail* detail = pp->getDetail(pp->getPath()->getTail());
     if (detail && detail->getTypeId() == SoFaceDetail::getClassTypeId()) {
         // get the distances of the three points of the picked facet
-        SoFaceDetail * facedetail = (SoFaceDetail *)detail;
-        int index1 = facedetail->getPoint(0)->getCoordinateIndex();
-        int index2 = facedetail->getPoint(1)->getCoordinateIndex();
-        int index3 = facedetail->getPoint(2)->getCoordinateIndex();
+        const SoFaceDetail * facedetail = static_cast<const SoFaceDetail*>(detail);
         App::Property* pDistance = this->pcObject->getPropertyByName("Distances");
         if (pDistance && pDistance->getTypeId() == App::PropertyFloatList::getClassTypeId()) {
             App::PropertyFloatList* dist = (App::PropertyFloatList*)pDistance;
+            int index1 = facedetail->getPoint(0)->getCoordinateIndex();
+            int index2 = facedetail->getPoint(1)->getCoordinateIndex();
+            int index3 = facedetail->getPoint(2)->getCoordinateIndex();
             float fVal1 = (*dist)[index1];
             float fVal2 = (*dist)[index2];
             float fVal3 = (*dist)[index3];
           
             App::Property* pActual = this->pcObject->getPropertyByName("Actual");
             if (pActual && pActual->getTypeId().isDerivedFrom( App::PropertyLink::getClassTypeId())) {
-                // Search for the associated view provider
-                Mesh::Feature* mesh = (Mesh::Feature*)((App::PropertyLink*)pActual)->getValue();
-                const MeshCore::MeshKernel& rcMesh = mesh->Mesh.getValue().getKernel();
-                // get the weights
-                float w1, w2, w3;
-                const SbVec3f& p = pp->getObjectPoint();
-                rcMesh.GetFacet(facedetail->getFaceIndex()).Weights(Base::Vector3f(p[0], p[1], p[2]), w1, w2, w3);
-          
                 float fSearchRadius = this->search_radius;
                 if (fVal1 > fSearchRadius || fVal2 > fSearchRadius || fVal3 > fSearchRadius) {
                     info = QObject::tr("Distance: > %1").arg(fSearchRadius);
@@ -494,6 +528,13 @@ QString ViewProviderInspection::inspectDistance(const SoPickedPoint* pp) const
                     info = QObject::tr("Distance: < %1").arg(-fSearchRadius);
                 }
                 else {
+                    const SbVec3f& v1 = this->pcCoords->point[index1];
+                    const SbVec3f& v2 = this->pcCoords->point[index2];
+                    const SbVec3f& v3 = this->pcCoords->point[index3];
+                    const SbVec3f& p = pp->getObjectPoint();
+                    // get the weights
+                    float w1, w2, w3;
+                    calcWeights(v1,v2,v3,p,w1,w2,w3);
                     float fVal = w1*fVal1+w2*fVal2+w3*fVal3;
                     info = QObject::tr("Distance: %1").arg(fVal);
                 }
@@ -502,7 +543,7 @@ QString ViewProviderInspection::inspectDistance(const SoPickedPoint* pp) const
     }
     else if (detail && detail->getTypeId() == SoPointDetail::getClassTypeId()) {
         // safe downward cast, know the type
-        SoPointDetail * pointdetail = (SoPointDetail *)detail;
+        const SoPointDetail * pointdetail = static_cast<const SoPointDetail*>(detail);
 
         // get the distance of the picked point
         int index = pointdetail->getCoordinateIndex();

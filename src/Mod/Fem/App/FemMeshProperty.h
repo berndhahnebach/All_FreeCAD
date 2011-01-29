@@ -25,7 +25,7 @@
 #define Fem_PropertyFemMesh_H
 
 #include "FemMesh.h"
-#include <App/Property.h>
+#include <App/PropertyGeo.h>
 #include <Base/BoundBox.h>
 
 namespace Fem
@@ -35,7 +35,7 @@ namespace Fem
 /** The part shape property class.
  * @author Werner Mayer
  */
-class AppFemExport PropertyFemMesh : public App::Property
+class AppFemExport PropertyFemMesh : public App::PropertyComplexGeoData
 {
     TYPESYSTEM_HEADER();
 
@@ -50,6 +50,7 @@ public:
     void setValue(const FemMesh&);
     /// get the FemMesh shape
     const FemMesh &getValue(void) const;
+    const Data::ComplexGeoData* getComplexData() const;
     //@}
 
  
@@ -57,6 +58,10 @@ public:
     //@{
     /** Returns the bounding box around the underlying mesh kernel */
     Base::BoundBox3d getBoundingBox() const;
+    void transformGeometry(const Base::Matrix4D &rclMat);
+    void getFaces(std::vector<Base::Vector3d> &Points,
+        std::vector<Data::ComplexGeoData::FacetTopo> &Topo,
+        float Accuracy, uint16_t flags=0) const;
     //@}
 
     /** @name Python interface */

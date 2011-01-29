@@ -45,6 +45,7 @@ public:
     void setValue( const PointKernel& m);
     /// get the points (only const possible!)
     const PointKernel &getValue(void) const;
+    const Data::ComplexGeoData* getComplexData() const;
     //@}
 
     /** @name Getting basic geometric entities */

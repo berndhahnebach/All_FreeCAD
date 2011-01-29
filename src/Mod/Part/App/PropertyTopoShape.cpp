@@ -100,6 +100,11 @@ const TopoShape& PropertyPartShape::getShape() const
     return this->_Shape;
 }
 
+const Data::ComplexGeoData* PropertyPartShape::getComplexData() const
+{
+    return &(this->_Shape);
+}
+
 Base::BoundBox3d PropertyPartShape::getBoundingBox() const
 {
     Base::BoundBox3d box;
