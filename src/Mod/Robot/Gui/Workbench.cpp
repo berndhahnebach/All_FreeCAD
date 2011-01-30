@@ -25,13 +25,17 @@
 
 #ifndef _PreComp_
 # include <qobject.h>
+# include <QFileInfo>
+# include <QMessageBox>
 #endif
 
 #include "Workbench.h"
+#include <App/Application.h>
 #include <Gui/ToolBarManager.h>
 #include <Gui/MenuManager.h>
 #include <Gui/MainWindow.h>
 #include <Gui/CombiView.h>
+#include <Gui/WaitCursor.h>
 #include <Gui/DockWindowManager.h>
 #include <Gui/TaskView/TaskView.h>
 #include <Gui/TaskView/TaskWatcher.h>
@@ -61,6 +65,25 @@ Workbench::~Workbench()
 
 void Workbench::activated()
 {
+    std::string res = App::Application::getResourceDir();
+    QString dir = QString::fromAscii("%1/Mod/Robot/Lib/Kuka")
+                  .arg(QString::fromUtf8(res.c_str()));
+    QFileInfo fi(dir, QString::fromAscii("kr_16.csv"));
+
+    if (!fi.exists()) {
+        Gui::WaitCursor wc;
+        wc.restoreCursor();
+        QMessageBox::warning(
+            Gui::getMainWindow(),
+            QObject::tr("No robot files installed"),
+            QObject::tr("Please visit %1 and copy the files to %2")
+            .arg(QString::fromAscii(
+            "https://free-cad.svn.sourceforge.net"
+            "/svnroot/free-cad/trunk/src/Mod/Robot/Lib/Kuka")).arg(dir)
+        );
+        wc.setWaitCursor();
+    }
+
     Gui::Workbench::activated();
 
     const char* RobotAndTrac[] = {
