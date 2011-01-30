@@ -185,6 +185,9 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     *part << "Robot_Edge2Trac";
     *part << "Robot_TrajectoryDressUp";
     *part << "Robot_TrajectoryCompound";
+    *part << "Separator"; 
+    *part << "Robot_SetHomePos";
+    *part << "Robot_RestoreHomePos";
     *part << "Separator";
     *part << "Robot_Simulate";
     return root;
@@ -223,6 +226,9 @@ Gui::MenuItem* Workbench::setupMenuBar() const
            << "Robot_InsertWaypoint"
            << "Robot_InsertWaypointPreselect"
            << "Robot_Edge2Trac"
+           << "Separator"
+           << "Robot_SetHomePos"
+           << "Robot_RestoreHomePos"
            << "Separator"
            << "Robot_SetDefaultOrientation"
            << "Robot_SetDefaultValues"

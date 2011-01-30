@@ -57,25 +57,34 @@ CmdRobotSetHomePos::CmdRobotSetHomePos()
     sToolTipText    = QT_TR_NOOP("Set the home position");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
-    sPixmap         = "Robot_CreateRobot";
+    sPixmap         = "Robot_SetHomePos";
 }
 
 
 void CmdRobotSetHomePos::activated(int iMsg)
 {
-    //std::string FeatName = getUniqueObjectName("Robot");
-    //std::string RobotPath = "Mod/Robot/Lib/Kuka/kr500_1.wrl";
-    //std::string KinematicPath = "Mod/Robot/Lib/Kuka/kr500_1.csv";
+   const char * SelFilter = 
+        "SELECT Robot::RobotObject COUNT 1 ";
 
-    //openCommand("Place robot");
-    //doCommand(Doc,"App.activeDocument().addObject(\"Robot::RobotObject\",\"%s\")",FeatName.c_str());
-    //doCommand(Doc,"App.activeDocument().%s.RobotVrmlFile = App.getResourceDir()+\"%s\"",FeatName.c_str(),RobotPath.c_str());
-    //doCommand(Doc,"App.activeDocument().%s.RobotKinematicFile = App.getResourceDir()+\"%s\"",FeatName.c_str(),KinematicPath.c_str());
-    //doCommand(Doc,"App.activeDocument().%s.Axis2 = -90",FeatName.c_str());
-    //doCommand(Doc,"App.activeDocument().%s.Axis3 = 90",FeatName.c_str());
-    //doCommand(Doc,"App.activeDocument().%s.Axis5 = 45",FeatName.c_str());
-    //updateActive();
-    //commitCommand();
+    Gui::SelectionFilter filter(SelFilter);
+    Robot::RobotObject *pcRobotObject;
+    if (filter.match()) {
+        pcRobotObject = static_cast<Robot::RobotObject*>(filter.Result[0][0].getObject());
+    }
+    else {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select one Robot to set home postion"));
+        return;
+    }
+
+
+    std::string FeatName = pcRobotObject->getNameInDocument();
+ 
+    const char* n = FeatName.c_str();
+    openCommand("Set home");
+    doCommand(Doc,"App.activeDocument().%s.Home = [App.activeDocument().%s.Axis1,App.activeDocument().%s.Axis2,App.activeDocument().%s.Axis3,App.activeDocument().%s.Axis4,App.activeDocument().%s.Axis5,App.activeDocument().%s.Axis6]",n,n,n,n,n,n,n);
+    updateActive();
+    commitCommand();
       
 }
 
@@ -97,25 +106,39 @@ CmdRobotRestoreHomePos::CmdRobotRestoreHomePos()
     sToolTipText    = QT_TR_NOOP("Move to home");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
-    sPixmap         = "Robot_CreateRobot";
+    sPixmap         = "Robot_RestoreHomePos";
 }
 
 
 void CmdRobotRestoreHomePos::activated(int iMsg)
 {
- /*   std::string FeatName = getUniqueObjectName("Robot");
-    std::string RobotPath = "Mod/Robot/Lib/Kuka/kr500_1.wrl";
-    std::string KinematicPath = "Mod/Robot/Lib/Kuka/kr500_1.csv";
+    const char * SelFilter = 
+        "SELECT Robot::RobotObject COUNT 1 ";
 
-    openCommand("Place robot");
-    doCommand(Doc,"App.activeDocument().addObject(\"Robot::RobotObject\",\"%s\")",FeatName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.RobotVrmlFile = App.getResourceDir()+\"%s\"",FeatName.c_str(),RobotPath.c_str());
-    doCommand(Doc,"App.activeDocument().%s.RobotKinematicFile = App.getResourceDir()+\"%s\"",FeatName.c_str(),KinematicPath.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Axis2 = -90",FeatName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Axis3 = 90",FeatName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Axis5 = 45",FeatName.c_str());
+    Gui::SelectionFilter filter(SelFilter);
+    Robot::RobotObject *pcRobotObject;
+    if (filter.match()) {
+        pcRobotObject = static_cast<Robot::RobotObject*>(filter.Result[0][0].getObject());
+    }
+    else {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select one Robot"));
+        return;
+    }
+
+
+    std::string FeatName = pcRobotObject->getNameInDocument();
+ 
+    const char* n = FeatName.c_str();
+    openCommand("Move to home");
+    doCommand(Doc,"App.activeDocument().%s.Axis1 = App.activeDocument().%s.Home[0]",n,n);
+    doCommand(Doc,"App.activeDocument().%s.Axis2 = App.activeDocument().%s.Home[1]",n,n);
+    doCommand(Doc,"App.activeDocument().%s.Axis3 = App.activeDocument().%s.Home[2]",n,n);
+    doCommand(Doc,"App.activeDocument().%s.Axis4 = App.activeDocument().%s.Home[3]",n,n);
+    doCommand(Doc,"App.activeDocument().%s.Axis5 = App.activeDocument().%s.Home[4]",n,n);
+    doCommand(Doc,"App.activeDocument().%s.Axis6 = App.activeDocument().%s.Home[5]",n,n);
     updateActive();
-    commitCommand();*/
+    commitCommand();
       
 }
 
