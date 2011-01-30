@@ -52,7 +52,7 @@ CmdRobotExportKukaCompact::CmdRobotExportKukaCompact()
     sToolTipText    = QT_TR_NOOP("Export the trajectory as a compact KRL subroutine.");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
-    sPixmap         = "Robot_CreateRobot";
+    sPixmap         = "Robot_Export";
 }
 
 
@@ -117,7 +117,7 @@ CmdRobotExportKukaFull::CmdRobotExportKukaFull()
     sToolTipText    = QT_TR_NOOP("Export the trajectory as a full KRL subroutine.");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
-    sPixmap         = "Robot_CreateRobot";
+    sPixmap         = "Robot_Export";
 }
 
 

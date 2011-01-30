@@ -68,9 +68,10 @@ public:
 	App::PropertyLink      ToolShape;
 	App::PropertyPlacement ToolBase;
 	App::PropertyPlacement Tcp;
-	App::PropertyPlacement Position;
+	//App::PropertyPlacement Position;
 
     App::PropertyString    Error;
+    App::PropertyFloatList Home;
 
 protected:
     /// get called by the container when a property has changed

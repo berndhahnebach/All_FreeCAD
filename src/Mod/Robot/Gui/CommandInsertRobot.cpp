@@ -70,6 +70,7 @@ void CmdRobotInsertKukaIR500::activated(int iMsg)
     doCommand(Doc,"App.activeDocument().%s.Axis2 = -90",FeatName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Axis3 = 90",FeatName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Axis5 = 45",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Home  = [0.0,-90.0,90.0,0.0,45.0,0.0]",FeatName.c_str());
     updateActive();
     commitCommand();
       

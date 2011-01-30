@@ -58,7 +58,8 @@ RobotObject::RobotObject()
     ADD_PROPERTY_TYPE(Tool,(Base::Placement()),"Robot kinematic",Prop_None,"Tool frame of the robot (Tool)");
     ADD_PROPERTY_TYPE(ToolShape,(0),"Robot definition",Prop_None,"Link to the Shape is used as Tool");
     ADD_PROPERTY_TYPE(ToolBase ,(Base::Placement()),"Robot definition",Prop_None,"Defines where to connect the ToolShape");
-    ADD_PROPERTY_TYPE(Position,(Base::Placement()),"Robot definition",Prop_None,"Position of the robot in the simulation");
+    //ADD_PROPERTY_TYPE(Position,(Base::Placement()),"Robot definition",Prop_None,"Position of the robot in the simulation");
+    ADD_PROPERTY_TYPE(Home ,(0),"Robot kinematic",Prop_None,"Axis position for home");
 
 }
 

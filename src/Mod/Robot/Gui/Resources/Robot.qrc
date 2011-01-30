@@ -12,5 +12,9 @@
     <file>icons/Robot_Edge2Trac.svg</file>
     <file>icons/Robot_TrajectoryCompound.svg</file>
     <file>icons/Robot_TrajectoryDressUp.svg</file>
+    <file>icons/Robot_RestoreHomePos.svg</file>
+    <file>icons/Robot_SetHomePos.svg</file>
+    <file>icons/Robot_SetDefaultOrientation.svg</file>
+    <file>icons/Robot_SetDefaultValues.svg</file>
   </qresource>
 </RCC>
