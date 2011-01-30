@@ -98,6 +98,16 @@ def main():
 		parser.parse(inpsrc)
 	except:
 		sys.stderr.write("No svn repository\n")
+		out  = open("%s/src/Build/Version.h" % (bindir),"w");
+		out.write("\n")
+		out.write("#define FCVersionMajor \"0\"\n")
+		out.write("#define FCVersionMinor \"11\"\n")
+		out.write("#define FCVersionName \"Dagoba\"\n")
+		out.write("#define FCRevision \"Unknown\"\n")
+		out.write("#define FCRevisionDate \"Unknown\"\n")
+		out.write("#define FCRepositoryURL \"Unknown\"\n")
+		out.write("#define FCCurrentDateT \"Unknown\"\n")
+		out.close()
 		return # exit normally to not stop a build where no svn is installed
 
 	#Information of the Subversion stuff
