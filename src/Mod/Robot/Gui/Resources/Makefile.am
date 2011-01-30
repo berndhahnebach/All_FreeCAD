@@ -13,6 +13,10 @@ EXTRA_DIST = \
 		icons/Robot_Export.svg \
 		icons/Robot_InsertWaypoint.svg \
 		icons/Robot_InsertWaypointPre.svg \
+		icons/Robot_RestoreHomePos.svg \
+		icons/Robot_SetDefaultOrientation.svg \
+		icons/Robot_SetDefaultValues.svg \
+		icons/Robot_SetHomePos.svg \
 		icons/Robot_Simulate.svg \
 		icons/Robot_TrajectoryCompound.svg \
 		icons/Robot_TrajectoryDressUp.svg \
