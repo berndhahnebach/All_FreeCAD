@@ -212,6 +212,7 @@ void ImageView::oneToOneImage()
 {
   _pGLImageBox->setNormal();
   _pGLImageBox->redraw();
+   updateStatusBar();
 }
 
 // Slot function to handle the color actions
@@ -346,6 +347,7 @@ void ImageView::clearImage()
 {
     _pGLImageBox->clearImage();
     _pGLImageBox->redraw(); // clears view
+	updateStatusBar();
 }
 
 // Load image by copying the pixel data
@@ -367,6 +369,7 @@ int ImageView::createImageCopy(void* pSrcPixelData, unsigned long width, unsigne
         showBrightened();
     else
         showOriginalColors();
+	updateStatusBar();
     return ret;
 }
 
@@ -393,6 +396,7 @@ int ImageView::pointImageTo(void* pSrcPixelData, unsigned long width, unsigned l
         showBrightened();
     else
         showOriginalColors();
+	updateStatusBar();
     return ret;
 }
 
@@ -452,6 +456,7 @@ void ImageView::mouseDoubleClickEvent(QMouseEvent* cEvent)
            //int pixY = (int)floor(icY + 0.5);
            _pGLImageBox->setZoomFactor(_pGLImageBox->getZoomFactor(), true, (int)floor(icX + 0.5), (int)floor(icY + 0.5));
            _pGLImageBox->redraw();
+		   updateStatusBar();
        }
    }
 }
