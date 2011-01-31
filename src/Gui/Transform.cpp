@@ -31,6 +31,7 @@
 #include "ui_Placement.h"
 #include "Application.h"
 #include "Document.h"
+#include "WaitCursor.h"
 #include <App/PropertyGeo.h>
 #include <App/DocumentObject.h>
 
@@ -351,6 +352,7 @@ void Transform::setTransformStrategy(TransformStrategy* ts)
     ui->xCnt->setValue(cnt.x);
     ui->yCnt->setValue(cnt.y);
     ui->zCnt->setValue(cnt.z);
+    this->setDisabled(strategy->transformObjects().empty());
 }
 
 void Transform::showStandardButtons(bool b)
@@ -380,6 +382,7 @@ void Transform::reject()
 
 void Transform::on_applyButton_clicked()
 {
+    Gui::WaitCursor wc;
     Base::Placement plm = this->getPlacementData();
     Base::Matrix4D mat = plm.toMatrix();
     strategy->commitTransform(mat);

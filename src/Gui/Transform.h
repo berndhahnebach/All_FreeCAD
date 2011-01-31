@@ -46,8 +46,6 @@ public:
     void resetTransform();
     void applyViewTransform(const Base::Placement& plm, App::DocumentObject* obj);
     void resetViewTransform(App::DocumentObject* obj);
-
-protected:
     virtual std::set<App::DocumentObject*> transformObjects() const = 0;
 };
 
@@ -57,9 +55,9 @@ class GuiExport DefaultTransformStrategy : public TransformStrategy,
 public:
     DefaultTransformStrategy(QWidget* widget);
     virtual ~DefaultTransformStrategy();
+    std::set<App::DocumentObject*> transformObjects() const;
 
 private:
-    std::set<App::DocumentObject*> transformObjects() const;
     void onSelectionChanged(const Gui::SelectionChanges& msg);
 
 private:
@@ -105,7 +103,7 @@ private:
     TransformStrategy* strategy;
 };
 
-class TaskTransform : public Gui::TaskView::TaskDialog
+class GuiExport TaskTransform : public Gui::TaskView::TaskDialog
 {
     Q_OBJECT
 
