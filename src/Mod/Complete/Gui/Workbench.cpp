@@ -166,7 +166,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     // Tools
     Gui::MenuItem* tool = new Gui::MenuItem( menuBar );
     tool->setCommand("&Tools");
-    *tool << "Std_CommandLine" << "Std_DlgParameter" << "Separator"
+    *tool << "Std_DlgParameter" << "Separator"
           << "Std_DlgMacroRecord" << "Std_MacroStopRecord"
           << "Std_DlgMacroExecute" << "Std_DlgMacroExecuteDirect" 
           << "Separator" << "Std_ViewScreenShot" << "Std_SceneInspector"

@@ -480,12 +480,12 @@ MenuItem* StdWorkbench::setupMenuBar() const
           << "Std_SetAppearance" << "Std_RandomColor" << "Separator" 
           << "Std_MeasureDistance" << "Separator" 
           << "Std_Workbench" << "Std_ToolBarMenu" << "Std_DockViewMenu" << "Separator" 
-          << "Std_ViewStatusBar" << "Std_UserInterface";
+          << "Std_ViewStatusBar";
 
     // Tools
     MenuItem* tool = new MenuItem( menuBar );
     tool->setCommand("&Tools");
-    *tool << "Std_CommandLine" << "Std_DlgParameter" << "Separator"
+    *tool << "Std_DlgParameter" << "Separator"
           << "Std_ViewScreenShot" << "Std_SceneInspector" << "Std_DemoMode" 
           << "Separator" << "Std_DlgCustomize";
 
@@ -562,7 +562,7 @@ ToolBarItem* StdWorkbench::setupCommandBars() const
     ToolBarItem* macro = new ToolBarItem( root );
     macro->setCommand("Special Ops");
     *macro << "Std_DlgParameter" << "Std_DlgPreferences" << "Std_DlgMacroRecord" << "Std_MacroStopRecord" 
-           << "Std_DlgMacroExecute" << "Std_DlgCustomize" << "Std_CommandLine";
+           << "Std_DlgMacroExecute" << "Std_DlgCustomize";
 
     return root;
 }
