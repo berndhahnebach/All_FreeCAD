@@ -30,7 +30,7 @@ This is the GUI part of the Draft module.
 Report to Draft.py for info
 '''
 
-import FreeCAD, FreeCADGui, os, Draft
+import FreeCAD, FreeCADGui, os, Draft, Draft_rc
 
 try:
 	from PyQt4 import QtCore,QtGui,QtSvg	
@@ -161,7 +161,7 @@ class toolBar:
                                         button.setMaximumSize(QtCore.QSize(width,26))
 					if hide: button.hide()
                                         if icon:
-                                                button.setIcon(QtGui.QIcon(icons.copy(QtCore.QRect(icon[0],icon[1],64,64))))
+                                                button.setIcon(QtGui.QIcon(':/icons/'+icon+'.svg'))
                                                 button.setIconSize(QtCore.QSize(16, 16))
                                         self.layout.addWidget(button)
 					return button
@@ -253,9 +253,9 @@ class toolBar:
 
                                 self.continueCmd = _checkbox("continueCmd",checked=False)
                                 
-				self.undoButton = _pushButton("undoButton", icon=(64,64))
-				self.finishButton = _pushButton("finishButton", icon=(448,64))
-				self.closeButton = _pushButton("closeButton", icon=(512,64))
+				self.undoButton = _pushButton("undoButton", icon='Draft_Rotate')
+				self.finishButton = _pushButton("finishButton", icon='Draft_Finish')
+				self.closeButton = _pushButton("closeButton", icon='Draft_Lock')
                                 
 				self.xyButton = _pushButton("xyButton")
 				self.xzButton = _pushButton("xzButton")
@@ -279,7 +279,7 @@ class toolBar:
 
                                 # settings buttons
 
-                                self.wplabel = _pushButton("wplabel", icon=(576,0),hide=False,width=120)
+                                self.wplabel = _pushButton("wplabel", icon='Draft_SelectPlane',hide=False,width=120)
                                 defaultWP = self.params.GetInt("defaultWP")
                                 if defaultWP == 1:
                                         self.wplabel.setText("Top")
@@ -289,7 +289,7 @@ class toolBar:
                                         self.wplabel.setText("Side")
                                 else:
                                         self.wplabel.setText("None")
-                                self.constrButton = _pushButton("constrButton", hide=False, icon=(640,64),width=22)
+                                self.constrButton = _pushButton("constrButton", hide=False, icon='Draft_Construction',width=22)
 				self.constrButton.setCheckable(True)
 				self.constrButton.setChecked(False)
 				self.constrColor = QtGui.QColor(paramconstr)
@@ -306,7 +306,7 @@ class toolBar:
 				self.widthButton = _spinbox("widthButton",val=paramlinewidth,hide=False,size=(50,22))
                                 self.widthButton.setSuffix("px")
                                 self.fontsizeButton = _spinbox("fontsizeButton",val=paramfontsize,hide=False,double=True,size=(50,22))
-				self.applyButton = _pushButton("applyButton", hide=False, icon=(384,64),width=22)
+				self.applyButton = _pushButton("applyButton", hide=False, icon='Draft_Apply',width=22)
 
                                 style = "#pageWpButton:Checked {background-color:rgb(255,0,0)} "
                                 style += "#constrButton:Checked {background-color: "
@@ -838,54 +838,7 @@ class toolBar:
 #---------------------------------------------------------------------------
 # Initialization
 #---------------------------------------------------------------------------
-
-		# adding command icons to FreeCAD
-		iconfile = findicons()
-		icons = {}
-		icons['Draft_line']=iconfile.copy(QtCore.QRect(0,0,64,64))
-		icons['Draft_wire']=iconfile.copy(QtCore.QRect(64,0,64,64))
-		icons['Draft_rectangle']=iconfile.copy(QtCore.QRect(128,0,64,64))
-		icons['Draft_circle']=iconfile.copy(QtCore.QRect(196,0,64,64))
-		icons['Draft_arc']=iconfile.copy(QtCore.QRect(256,0,64,64))
-		icons['Draft_text']=iconfile.copy(QtCore.QRect(320,0,64,64))
-		icons['Draft_dimension']=iconfile.copy(QtCore.QRect(448,0,64,64))
-		icons['Draft_move']=iconfile.copy(QtCore.QRect(0,64,64,64))
-		icons['Draft_rotate']=iconfile.copy(QtCore.QRect(64,64,64,64))
-		icons['Draft_offset']=iconfile.copy(QtCore.QRect(128,64,64,64))
-		icons['Draft_trimex']=iconfile.copy(QtCore.QRect(196,64,64,64))
-		icons['Draft_upgrade']=iconfile.copy(QtCore.QRect(256,64,64,64))
-		icons['Draft_downgrade']=iconfile.copy(QtCore.QRect(320,64,64,64))
-		icons['Draft_apply']=iconfile.copy(QtCore.QRect(384,64,64,64))
-		icons['Draft_finish']=iconfile.copy(QtCore.QRect(448,64,64,64))
-		icons['Draft_lock']=iconfile.copy(QtCore.QRect(512,64,64,64))
-		icons['Draft_scale']=iconfile.copy(QtCore.QRect(576,64,64,64))
-		icons['Draft_selectPlane']=iconfile.copy(QtCore.QRect(576,0,64,64))
-                icons['Draft_putOnSheet']=iconfile.copy(QtCore.QRect(640,0,64,64))
-                icons['Draft_makeDraftWire']=iconfile.copy(QtCore.QRect(576,128,64,64))
-                icons['Draft_Edit']=iconfile.copy(QtCore.QRect(512,128,64,64))
-                icons['Draft_switchMode']=iconfile.copy(QtCore.QRect(448,128,64,64))
-		icons['preferences-draft']=iconfile.copy(QtCore.QRect(384,0,64,64))
-                icons['Draft_Macro']=iconfile.copy(QtCore.QRect(384,128,64,64))
-                icons['Draft_polygon']=iconfile.copy(QtCore.QRect(0,192,64,64))
-                icons['Draft_bspline']=iconfile.copy(QtCore.QRect(64,192,64,64))
-                icons['Draft_addToGroup']=iconfile.copy(QtCore.QRect(256,192,64,64))
-                icons['Draft_addpoint']=iconfile.copy(QtCore.QRect(128,192,64,64))
-                icons['Draft_delpoint']=iconfile.copy(QtCore.QRect(192,192,64,64))
-                icons['Draft_wirebspline']=iconfile.copy(QtCore.QRect(320,192,64,64))
-                
-		for name,icon in icons.iteritems():
-			ba = QtCore.QByteArray()
-			bu = QtCore.QBuffer(ba)
-			icon.save(bu,'XPM')
-			FreeCADGui.addIcon(name,str(ba))
-
-		# loads a translation engine
-                locale = Draft.getTranslation(QtCore.QLocale(eval("QtCore.QLocale."+FreeCADGui.getLocale())).name())
-                if locale:
-                        translator = QtCore.QTranslator()
-                        translator.load(locale,Draft.getDraftPath("Languages"))
-                        QtGui.QApplication.installTranslator(translator)
-			
+	
 		# create the draft Toolbar
 		self.mw = getMainWindow()
 		self.draftWidget = QtGui.QDockWidget()

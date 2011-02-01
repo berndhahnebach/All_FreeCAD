@@ -225,8 +225,8 @@ if depsOK:
         Gui.addWorkbench(DraftWorkbench)
         Gui.addPreferencePage(getDraftPath("userprefs-base.ui"),"Draft")
         Gui.addPreferencePage(getDraftPath("userprefs-import.ui"),"Draft")
-        Gui.addLanguagePath(getDraftPath("Languages"))
-        Gui.addIconPath(getDraftPath())
+        Gui.addLanguagePath(":/translations")
+        Gui.addIconPath(":/icons")
 
 App.addImportType("Autodesk DXF (*.dxf)","importDXF") 
 App.addImportType("SVG as geometry (*.svg)","importSVG")

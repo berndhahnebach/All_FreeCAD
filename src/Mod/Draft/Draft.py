@@ -117,14 +117,6 @@ def getRealName(name):
 			return name[:len(name)-(i-1)]
 	return name
 
-def getTranslation(languagecode):
-        "returns the the translation file to use or None if not available"
-        dictname = "draft_"+str(languagecode)[:2]
-        if os.path.exists(getDraftPath("Languages")+os.sep+dictname+".qm"):
-                return dictname
-        else:
-                return None
-
 def getType(obj):
         "getType(object): returns the Draft type of the given object"
         if "Proxy" in obj.PropertiesList:

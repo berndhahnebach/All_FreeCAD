@@ -14,9 +14,9 @@ data_DATA = \
 		InitGui.py \
 		icons.svg \
 		macros.py \
-		preferences-draft.svg \
 		userprefs-base.ui \
-        userprefs-import.ui
+        userprefs-import.ui \
+		Draft_rc.py
 
 nobase_data_DATA = \
 		draftlibs/dxfColorMap.py \
@@ -25,20 +25,54 @@ nobase_data_DATA = \
 		draftlibs/dxfReader.py \
 		draftlibs/fcvec.py \
 		draftlibs/fcgeo.py \
-		draftlibs/__init__.py \
-		Languages/draft_de.qm \
-		Languages/draft_es.qm \
-		Languages/draft_fr.qm \
-		Languages/draft_it.qm \
-		Languages/draft_se.qm
+		draftlibs/__init__.py
 
 EXTRA_DIST = \
 		$(data_DATA) $(nobase_data_DATA) \
-		Languages/draft_de.ts \
-		Languages/draft_es.ts \
-		Languages/draft_fr.ts \
-		Languages/draft_it.ts \
-		Languages/draft_se.ts \
 		CMakeLists.txt \
-		draft.dox
-
+		draft.dox \
+        Resources/translations/Draft_de.ts \
+        Resources/translations/Draft_de.qm \
+        Resources/translations/Draft_es.ts \
+        Resources/translations/Draft_es.qm \
+        Resources/translations/Draft_fr.ts \
+        Resources/translations/Draft_fr.qm \
+        Resources/translations/Draft_it.ts \
+        Resources/translations/Draft_it.qm \
+        Resources/translations/Draft_se.ts \
+        Resources/translations/Draft_se.qm \
+		Resources/icons/preferences-draft.svg \
+		Resources/icons/Draft_AddPoint.svg \
+        Resources/icons/Draft_AddToGroup.svg \
+        Resources/icons/Draft_Apply.svg \
+        Resources/icons/Draft_Arc.svg \
+        Resources/icons/Draft_BSpline.svg \
+        Resources/icons/Draft_Circle.svg \
+        Resources/icons/Draft_DelPoint.svg \
+        Resources/icons/Draft_Dimension.svg \
+        Resources/icons/Draft_Downgrade.svg \
+        Resources/icons/Draft_Drawing.svg \
+        Resources/icons/Draft_Edit.svg \
+        Resources/icons/Draft_Finish.svg \
+        Resources/icons/Draft_Line.svg \
+        Resources/icons/Draft_Lock.svg \
+        Resources/icons/Draft_Macro.svg \
+        Resources/icons/Draft_Move.svg \
+        Resources/icons/Draft_Offset.svg \
+        Resources/icons/Draft_Polygon.svg \
+        Resources/icons/Draft_Rectangle.svg \
+        Resources/icons/Draft_Rotate.svg \
+        Resources/icons/Draft_Scale.svg \
+        Resources/icons/Draft_SelectPlane.svg \
+        Resources/icons/Draft_SwitchMode.svg \
+        Resources/icons/Draft_Text.svg \
+        Resources/icons/Draft_Trimex.svg \
+        Resources/icons/Draft_Upgrade.svg \
+        Resources/icons/Draft_Wire.svg \
+        Resources/icons/Draft_WireToBSpline.svg \
+        Resources/icons/Draft_Construction.svg \
+        Resources/patterns/concrete.svg \
+        Resources/patterns/cross.svg \
+        Resources/patterns/line.svg \
+        Resources/patterns/simple.svg \
+        Resources/patterns/square.svg

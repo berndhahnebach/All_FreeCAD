@@ -12,9 +12,9 @@ SET(Draft_SRCS
     importAirfoilDAT.py
     macros.py
     icons.svg
-    preferences-draft.svg
     userprefs-base.ui
     userprefs-import.ui
+    Draft_rc.py
 )
 SOURCE_GROUP("" FILES ${Draft_SRCS})
 
@@ -29,13 +29,7 @@ SET(DraftLibs_SRCS
 )
 SOURCE_GROUP("draftlibs" FILES ${DraftLibs_SRCS})
 
-SET(DraftLang_SRCS
-    Languages/draft_de.qm
-    Languages/draft_fr.qm
-    Languages/draft_it.qm
-)
-
-SET(all_files ${Draft_SRCS} ${DraftLibs_SRCS} ${DraftLang_SRCS})
+SET(all_files ${Draft_SRCS} ${DraftLibs_SRCS})
 
 ADD_CUSTOM_TARGET(Draft ALL
     SOURCES ${all_files}
@@ -48,13 +42,6 @@ install(
         ${DraftLibs_SRCS}
     DESTINATION
         Mod/Draft/draftlibs
-)
-
-install(
-    FILES
-        ${DraftLang_SRCS}
-    DESTINATION
-        Mod/Draft/Languages
 )
 
 install(
