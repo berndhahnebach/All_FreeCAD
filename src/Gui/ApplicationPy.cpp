@@ -443,7 +443,7 @@ PyObject* Application::sAddPreferencePage(PyObject * /*self*/, PyObject *args,Py
     if (!PyArg_ParseTuple(args, "ss", &fn,&grp))     // convert args: Python->C 
         return NULL;                                      // NULL triggers exception 
 
-    Base::FileInfo fi(fn);
+    QFileInfo fi(QString::fromUtf8(fn));
     if (!fi.exists()) {
         PyErr_SetString(PyExc_RuntimeError, "UI file does not exist");
         return 0;
