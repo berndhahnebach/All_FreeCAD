@@ -663,8 +663,7 @@ class DocumentFileIncludeCases(unittest.TestCase):
     self.failUnless(self.L1.File.split("/")[-1] == "Test.txt")
     file.close()
 
-  # test for bug #94 (File overlap in PropertyFileIncluded)
-  def testOverwriteCase(self):
+    # test for bug #94 (File overlap in PropertyFileIncluded)
     L2 = self.Doc.addObject("App::DocumentObjectFileIncluded","FileObject2")
     L3 = self.Doc.addObject("App::DocumentObjectFileIncluded","FileObject3")
 
