@@ -1,5 +1,5 @@
 #***************************************************************************
-#*   (c) Juergen Riegel (juergen.riegel@web.de) 2003                       *   
+#*   (c) Juergen Riegel (juergen.riegel@web.de) 2003                       *
 #*                                                                         *
 #*   This file is part of the FreeCAD CAx development system.              *
 #*                                                                         *
@@ -10,12 +10,12 @@
 #*   for detail see the LICENCE text file.                                 *
 #*                                                                         *
 #*   FreeCAD is distributed in the hope that it will be useful,            *
-#*   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+#*   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
 #*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
 #*   GNU Library General Public License for more details.                  *
 #*                                                                         *
 #*   You should have received a copy of the GNU Library General Public     *
-#*   License along with FreeCAD; if not, write to the Free Software        * 
+#*   License along with FreeCAD; if not, write to the Free Software        *
 #*   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
 #*   USA                                                                   *
 #*                                                                         *
@@ -29,7 +29,7 @@ import FreeCAD, os, unittest, tempfile
 # define the functions to test the FreeCAD Document code
 #---------------------------------------------------------------------------
 
-  
+
 class DocumentBasicCases(unittest.TestCase):
   def setUp(self):
     self.Doc = FreeCAD.newDocument("CreateTest")
@@ -102,7 +102,7 @@ class DocumentBasicCases(unittest.TestCase):
     L1.ConstraintFloat = -500.0
     self.failUnless(L1.ConstraintInt == 0)
     self.failUnless(L1.ConstraintFloat - 0.0 < 0.001)
-    
+
     # test enum property
     self.failUnless(L1.Enum  == "Four")
     L1.Enum = "One"
@@ -114,13 +114,13 @@ class DocumentBasicCases(unittest.TestCase):
       FreeCAD.Console.PrintLog("   exception thrown, OK\n")
     else:
       self.fail("no exeption thrown")
-      
+
     #self.failUnless(L1.IntegerList  == [4711]   )
-    #f = L1.FloatList 
+    #f = L1.FloatList
     #self.failUnless(f -47.11<0.001    )
     #self.failUnless(L1.Matrix  == [1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,12.0,13.0,14.0,15.0,16.0] )
     #self.failUnless(L1.Vector  == [1.0,2.0,3.0])
-    
+
     self.failUnless(L1.Label== "Label_1","Invalid object name")
     L1.Label="Label_2"
     self.Doc.recompute()
@@ -164,7 +164,7 @@ class DocumentSaveRestoreCases(unittest.TestCase):
   def setUp(self):
     self.Doc = FreeCAD.newDocument("SaveRestoreTests")
     L1 = self.Doc.addObject("App::FeatureTest","Label_1")
-    L2 = self.Doc.addObject("App::FeatureTest","Label_2")   
+    L2 = self.Doc.addObject("App::FeatureTest","Label_2")
     self.TempPath = tempfile.gettempdir()
     FreeCAD.Console.PrintLog( '  Using temp path: ' + self.TempPath + '\n')
 
@@ -190,10 +190,10 @@ class DocumentSaveRestoreCases(unittest.TestCase):
     self.failUnless(self.Doc.Label_2.Link == self.Doc.Label_1)
     self.failUnless(self.Doc.Label_1.LinkSub == (self.Doc.Label_2,["Sub1","Sub2"]))
     self.failUnless(self.Doc.Label_2.LinkSub == (self.Doc.Label_1,["Sub3","Sub4"]))
-    # do  NOT save transient properties 
+    # do  NOT save transient properties
     self.failUnless(self.Doc.Label_1.TypeTransient == 4711)
     self.failUnless(self.Doc == FreeCAD.getDocument(self.Doc.Name))
-    
+
   def testRestore(self):
     Doc = FreeCAD.newDocument("RestoreTests")
     Doc.addObject("App::FeatureTest","Label_1")
@@ -227,15 +227,15 @@ class DocumentRecomputeCases(unittest.TestCase):
   def setUp(self):
     self.Doc = FreeCAD.newDocument("RecomputeTests")
     self.L1 = self.Doc.addObject("App::FeatureTest","Label_1")
-    self.L2 = self.Doc.addObject("App::FeatureTest","Label_2")   
-    self.L3 = self.Doc.addObject("App::FeatureTest","Label_3")   
-    
+    self.L2 = self.Doc.addObject("App::FeatureTest","Label_2")
+    self.L3 = self.Doc.addObject("App::FeatureTest","Label_3")
+
   def testDescent(self):
     # testing the up and downstream stuff
     FreeCAD.Console.PrintLog("def testDescent(self):Testcase not implemented\n")
     self.L1.Link = self.L2
     self.L2.Link = self.L3
-    
+
 
   def tearDown(self):
     #closing doc
@@ -251,8 +251,8 @@ class UndoRedoCases(unittest.TestCase):
   def testUndoProperties(self):
     # switch on the Undo
     self.Doc.UndoMode = 1
-    
-    # first transaction 
+
+    # first transaction
     self.Doc.openTransaction("Transaction1")
     self.Doc.addObject("App::FeatureTest","test1")
     self.Doc.getObject("test1").Integer  = 1
@@ -265,8 +265,8 @@ class UndoRedoCases(unittest.TestCase):
 
     #self.Doc.getObject("test1").Matrix  = (1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0)
     #self.Doc.getObject("test1").Vector  = (1.0,1.0,1.0)
-    
-    # second transaction 
+
+    # second transaction
     self.Doc.openTransaction("Transaction2")
     self.Doc.getObject("test1").Integer  = 2
     self.Doc.getObject("test1").String   = "test2"
@@ -283,8 +283,8 @@ class UndoRedoCases(unittest.TestCase):
     self.assertEqual(self.Doc.UndoCount,0)
     self.assertEqual(self.Doc.RedoNames,[])
     self.assertEqual(self.Doc.RedoCount,0)
-    
-    # first transaction 
+
+    # first transaction
     self.Doc.openTransaction("Transaction1")
     self.Doc.addObject("App::FeatureTest","test1")
     self.Doc.getObject("test1").Integer  = 1
@@ -294,8 +294,8 @@ class UndoRedoCases(unittest.TestCase):
     self.assertEqual(self.Doc.UndoCount,1)
     self.assertEqual(self.Doc.RedoNames,[])
     self.assertEqual(self.Doc.RedoCount,0)
-    
-    # second transaction 
+
+    # second transaction
     self.Doc.openTransaction("Transaction2")
     self.assertEqual(self.Doc.UndoNames,['Transaction2','Transaction1'])
     self.assertEqual(self.Doc.UndoCount,2)
@@ -306,18 +306,18 @@ class UndoRedoCases(unittest.TestCase):
     self.assertEqual(self.Doc.UndoCount,2)
     self.assertEqual(self.Doc.RedoNames,[])
     self.assertEqual(self.Doc.RedoCount,0)
-    
-    # abort second transaction 
+
+    # abort second transaction
     self.Doc.abortTransaction()
     self.assertEqual(self.Doc.UndoNames,['Transaction1'])
     self.assertEqual(self.Doc.UndoCount,1)
     self.assertEqual(self.Doc.RedoNames,[])
     self.assertEqual(self.Doc.RedoCount,0)
     self.assertEqual(self.Doc.getObject("test1").Integer, 1)
-    
-    # again second transaction 
+
+    # again second transaction
     self.Doc.openTransaction("Transaction2")
-    self.Doc.getObject("test1").Integer  = 2	
+    self.Doc.getObject("test1").Integer  = 2
     self.assertEqual(self.Doc.UndoNames,['Transaction2','Transaction1'])
     self.assertEqual(self.Doc.UndoCount,2)
     self.assertEqual(self.Doc.RedoNames,[])
@@ -327,10 +327,10 @@ class UndoRedoCases(unittest.TestCase):
     self.Doc.openTransaction("Transaction3")
     self.assertEqual(self.Doc.UndoNames,['Transaction3','Transaction2','Transaction1'])
     self.assertEqual(self.Doc.UndoCount,3)
-    self.Doc.getObject("test1").Integer  = 3		
+    self.Doc.getObject("test1").Integer  = 3
     self.assertEqual(self.Doc.RedoNames,[])
     self.assertEqual(self.Doc.RedoCount,0)
-    
+
     # fourth transaction
     self.Doc.openTransaction("Transaction4")
     self.assertEqual(self.Doc.UndoNames,['Transaction4','Transaction3','Transaction2','Transaction1'])
@@ -339,7 +339,7 @@ class UndoRedoCases(unittest.TestCase):
     self.assertEqual(self.Doc.RedoCount,0)
     self.Doc.getObject("test1").Integer  = 4
 
-    # undo the fourth transaction 
+    # undo the fourth transaction
     self.Doc.undo()
     self.assertEqual(self.Doc.getObject("test1").Integer, 3)
     self.assertEqual(self.Doc.UndoNames,['Transaction3','Transaction2','Transaction1'])
@@ -347,7 +347,7 @@ class UndoRedoCases(unittest.TestCase):
     self.assertEqual(self.Doc.RedoNames,['Transaction4'])
     self.assertEqual(self.Doc.RedoCount,1)
 
-    # undo the third transaction 
+    # undo the third transaction
     self.Doc.undo()
     self.assertEqual(self.Doc.getObject("test1").Integer, 2)
     self.assertEqual(self.Doc.UndoNames,['Transaction2','Transaction1'])
@@ -355,7 +355,7 @@ class UndoRedoCases(unittest.TestCase):
     self.assertEqual(self.Doc.RedoNames,['Transaction3','Transaction4'])
     self.assertEqual(self.Doc.RedoCount,2)
 
-    # undo the second transaction 
+    # undo the second transaction
     self.Doc.undo()
     self.assertEqual(self.Doc.getObject("test1").Integer, 1)
     self.assertEqual(self.Doc.UndoNames,['Transaction1'])
@@ -363,7 +363,7 @@ class UndoRedoCases(unittest.TestCase):
     self.assertEqual(self.Doc.RedoNames,['Transaction2','Transaction3','Transaction4'])
     self.assertEqual(self.Doc.RedoCount,3)
 
-    # undo the first transaction 
+    # undo the first transaction
     self.Doc.undo()
     self.failUnless(self.Doc.getObject("test1") == None)
     self.failUnless(self.Doc.getObject("Del").Integer == 2)
@@ -372,7 +372,7 @@ class UndoRedoCases(unittest.TestCase):
     self.assertEqual(self.Doc.RedoNames,['Transaction1','Transaction2','Transaction3','Transaction4'])
     self.assertEqual(self.Doc.RedoCount,4)
 
-    # redo the first transaction 
+    # redo the first transaction
     self.Doc.redo()
     self.assertEqual(self.Doc.getObject("test1").Integer, 1)
     self.assertEqual(self.Doc.UndoNames,['Transaction1'])
@@ -380,7 +380,7 @@ class UndoRedoCases(unittest.TestCase):
     self.assertEqual(self.Doc.RedoNames,['Transaction2','Transaction3','Transaction4'])
     self.assertEqual(self.Doc.RedoCount,3)
 
-    # redo the second transaction 
+    # redo the second transaction
     self.Doc.redo()
     self.assertEqual(self.Doc.getObject("test1").Integer, 2)
     self.assertEqual(self.Doc.UndoNames,['Transaction2','Transaction1'])
@@ -388,7 +388,7 @@ class UndoRedoCases(unittest.TestCase):
     self.assertEqual(self.Doc.RedoNames,['Transaction3','Transaction4'])
     self.assertEqual(self.Doc.RedoCount,2)
 
-    # undo the second transaction 
+    # undo the second transaction
     self.Doc.undo()
     self.assertEqual(self.Doc.getObject("test1").Integer, 1)
     self.assertEqual(self.Doc.UndoNames,['Transaction1'])
@@ -416,7 +416,7 @@ class UndoRedoCases(unittest.TestCase):
     self.assertEqual(self.Doc.UndoCount,2)
     self.assertEqual(self.Doc.RedoNames,[])
     self.assertEqual(self.Doc.RedoCount,0)
-    
+
     # again new transaction nine
     self.Doc.openTransaction("Transaction9")
     self.Doc.getObject("test1").Integer  = 9
@@ -452,7 +452,7 @@ class UndoRedoCases(unittest.TestCase):
     G1 = self.Doc.addObject("App::DocumentObjectGroup","Group")
     G1.addObject(L2)
     self.failUnless(G1.hasObject(L2))
-    
+
     # Adding the group to itself must fail
     try:
       G1.addObject(G1)
@@ -460,9 +460,9 @@ class UndoRedoCases(unittest.TestCase):
       FreeCAD.Console.PrintLog("Cannot add group to itself, OK\n")
     else:
       self.fail("Adding the group to itself must not be possible")
-    
+
     self.Doc.UndoMode = 1
-    
+
     # Remove object from group
     self.Doc.openTransaction("Remove")
     self.Doc.removeObject("Label_2")
@@ -514,9 +514,9 @@ class UndoRedoCases(unittest.TestCase):
     self.Doc.undo()
     self.failUnless(G1.getObject("Label_3") != None)
     self.failUnless(G1.getObject("Label_2") != None)
-    
+
     self.Doc.UndoMode = 0
-    
+
     # Cleanup
     self.Doc.removeObject("Group")
     self.Doc.removeObject("Label_2")
@@ -596,20 +596,20 @@ class DocumentFileIncludeCases(unittest.TestCase):
     self.Doc = FreeCAD.newDocument("FileIncludeTests")
     # testing with undo
     self.Doc.UndoMode = 1
-    
+
 
   def testApplyFiles(self):
     self.Doc.openTransaction("Transaction0")
     self.L1 = self.Doc.addObject("App::DocumentObjectFileIncluded","FileObject1")
     self.failUnless(self.L1.File =="")
     self.Filename = self.L1.File
-    
+
     self.Doc.openTransaction("Transaction1")
     self.TempPath = tempfile.gettempdir()
     # creating a file in the Transient directory of the document
     file = open(self.Doc.getTempFileName("test"),"w")
     file.write("test No1")
-    file.close()  
+    file.close()
     # applying the file
     self.L1.File = (file.name,"Test.txt")
     self.failUnless(self.L1.File.split("/")[-1] == "Test.txt")
@@ -619,7 +619,7 @@ class DocumentFileIncludeCases(unittest.TestCase):
     file.close()
     file = open(self.TempPath+"/testNest.txt","w")
     file.write("test No2")
-    file.close()  
+    file.close()
     # applying the file
     self.Doc.openTransaction("Transaction2")
     self.L1.File = file.name
@@ -662,7 +662,31 @@ class DocumentFileIncludeCases(unittest.TestCase):
     self.failUnless(res=="test No2")
     self.failUnless(self.L1.File.split("/")[-1] == "Test.txt")
     file.close()
-    
+
+  # test for bug #94 (File overlap in PropertyFileIncluded)
+  def testOverwriteCase(self):
+    L2 = self.Doc.addObject("App::DocumentObjectFileIncluded","FileObject2")
+    L3 = self.Doc.addObject("App::DocumentObjectFileIncluded","FileObject3")
+
+    # creating two files in the Transient directory of the document
+    file1 = open(self.Doc.getTempFileName("test"),"w")
+    file1.write("test No1")
+    file1.close()
+    file2 = open(self.Doc.getTempFileName("test"),"w")
+    file2.write("test No2")
+    file2.close()
+
+    # applying the file with the same base name
+    L2.File = (file1.name,"Test.txt")
+    L3.File = (file2.name,"Test.txt")
+
+    file = open(L2.File,"r")
+    self.failUnless(file.read()=="test No1")
+    file.close()
+    file = open(L3.File,"r")
+    self.failUnless(file.read()=="test No2")
+    file.close()
+
 
   def tearDown(self):
     #closing doc
