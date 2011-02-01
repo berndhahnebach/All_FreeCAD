@@ -38,7 +38,7 @@
             <File Id="userprefsBaseUi" Name="userprefs-base.ui" DiskId="1" />
             <File Id="userprefsImportUi" Name="userprefs-import.ui" DiskId="1" />
             <File Id="DraftIconsSvg" Name="icons.svg" DiskId="1" />
-            <File Id="DraftPreferencesDraftSvg" Name="preferences-draft.svg" DiskId="1" />
+            <File Id="DraftRcPy" Name="Draft_rc.py" DiskId="1" />
         </Component>
 		<Directory Id="ModDraftLib" Name="draftlibs" FileSource="../../Mod/Draft/draftlibs">
 	        <Component Id="CompModDraftLib" Guid="d19c08b0-0747-11de-8c30-0800200c9a66" Win64='$(var.Win_64)' KeyPath="yes">
