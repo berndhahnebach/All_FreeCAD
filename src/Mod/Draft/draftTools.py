@@ -29,25 +29,23 @@ __url__ = "http://free-cad.sourceforge.net"
 # Generic stuff
 #---------------------------------------------------------------------------
 
-import FreeCAD, FreeCADGui, Part, WorkingPlane, math, re, importSVG, Draft
+import FreeCAD, FreeCADGui, Part, WorkingPlane, math, re, importSVG, Draft, Draft_rc
 from draftlibs import fcvec,fcgeo
 from FreeCAD import Vector
 from draftGui import todo,QtCore,QtGui
 from pivy import coin
 
 # loads a translation engine
-locale = Draft.getTranslation(QtCore.QLocale(eval("QtCore.QLocale."+FreeCADGui.getLocale())).name())
-if locale:
-        translator = QtCore.QTranslator()
-        translator.load(locale,Draft.getDraftPath("Languages"))
-        QtGui.QApplication.installTranslator(translator)
+locale = QtCore.QLocale(eval("QtCore.QLocale."+FreeCADGui.getLocale())).name()
+translator = QtCore.QTranslator()
+translator.load('Draft_'+locale+'.qm',':/translations/')
+QtGui.QApplication.installTranslator(translator)
 
 def translate(context,text):
         "convenience function for Qt translator"
         return QtGui.QApplication.translate(context, text, None,
                                             QtGui.QApplication.UnicodeUTF8)
 		
-
 def msg(text=None,mode=None):
         "prints the given message on the FreeCAD status bar"
         if not text: FreeCAD.Console.PrintMessage("")
@@ -936,7 +934,7 @@ class Line(Creator):
 		self.isWire = wiremode
 
 	def GetResources(self):
-		return {'Pixmap'  : 'Draft_line',
+		return {'Pixmap'  : 'Draft_Line',
 			'MenuText': str(translate("draft", "Line").toLatin1()),
 			'ToolTip': str(translate("draft", "Creates a 2-point line. CTRL to snap, SHIFT to constrain").toLatin1())}
 
@@ -1066,7 +1064,7 @@ class Wire(Line):
 	def __init__(self):
 		Line.__init__(self,wiremode=True)
 	def GetResources(self):
-		return {'Pixmap'  : 'Draft_wire',
+		return {'Pixmap'  : 'Draft_Wire',
 			'MenuText': str(translate("draft", "Wire").toLatin1()),
 			'ToolTip': str(translate("draft", "Creates a multiple-point wire. CTRL to snap, SHIFT to constrain").toLatin1())}
 
@@ -1076,7 +1074,7 @@ class BSpline(Line):
 		Line.__init__(self,wiremode=True)
 
 	def GetResources(self):
-		return {'Pixmap'  : 'Draft_bspline',
+		return {'Pixmap'  : 'Draft_BSpline',
 			'MenuText': str(translate("draft", "B-Spline").toLatin1()),
 			'ToolTip': str(translate("draft", "Creates a multiple-point b-spline. CTRL to snap, SHIFT to constrain").toLatin1())}
 
@@ -1160,7 +1158,7 @@ class FinishLine:
 			if (FreeCAD.activeDraftCommand.featureName == "Line"):
 				FreeCAD.activeDraftCommand.finish(False)
 	def GetResources(self):
-		return {'Pixmap'  : 'Draft_finish',
+		return {'Pixmap'  : 'Draft_Finish',
 			'MenuText': str(translate("draft", "Finish line").toLatin1()),
 			'ToolTip': str(translate("draft", "Finishes a line without closing it").toLatin1())}
         def IsActive(self):
@@ -1176,7 +1174,7 @@ class CloseLine:
 			if (FreeCAD.activeDraftCommand.featureName == "Line"):
 				FreeCAD.activeDraftCommand.finish(True)
 	def GetResources(self):
-		return {'Pixmap'  : 'Draft_lock',
+		return {'Pixmap'  : 'Draft_Lock',
 			'MenuText': str(translate("draft", "Close Line").toLatin1()),
 			'ToolTip': str(translate("draft", "Closes the line being drawn").toLatin1())}
         def IsActive(self):
@@ -1193,7 +1191,7 @@ class UndoLine:
 			if (FreeCAD.activeDraftCommand.featureName == "Line"):
 				FreeCAD.activeDraftCommand.undolast()
 	def GetResources(self):
-		return {'Pixmap'  : 'Draft_rotate',
+		return {'Pixmap'  : 'Draft_Rotate',
 			'MenuText': str(translate("draft", "Undo last segment").toLatin1()),
 			'ToolTip': str(translate("draft", "Undoes the last drawn segment of the line being drawn").toLatin1())}
         def IsActive(self):
@@ -1206,7 +1204,7 @@ class Rectangle(Creator):
 	"the Draft_Rectangle FreeCAD command definition"
 
 	def GetResources(self):
-		return {'Pixmap'  : 'Draft_rectangle',
+		return {'Pixmap'  : 'Draft_Rectangle',
 			'MenuText': str(translate("draft", "Rectangle").toLatin1()),
 			'ToolTip': str(translate("draft", "Creates a 2-point rectangle. CTRL to snap").toLatin1())}
 
@@ -1287,7 +1285,7 @@ class Arc(Creator):
 		self.featureName = "Arc"
 
 	def GetResources(self):
-		return {'Pixmap'  : 'Draft_arc',
+		return {'Pixmap'  : 'Draft_Arc',
 			'MenuText': str(translate("draft", "Arc").toLatin1()),
 			'ToolTip': str(translate("draft", "Creates an arc. CTRL to snap, SHIFT to constrain").toLatin1())}
 
@@ -1584,7 +1582,7 @@ class Circle(Arc):
 		self.featureName = "Circle"
 		
 	def GetResources(self):
-		return {'Pixmap'  : 'Draft_circle',
+		return {'Pixmap'  : 'Draft_Circle',
 			'MenuText': str(translate("draft", "Circle").toLatin1()),
 			'ToolTip': str(translate("draft", "Creates a circle. CTRL to snap, ALT to select tangent objects").toLatin1())}
 
@@ -1593,7 +1591,7 @@ class Polygon(Creator):
 	"the Draft_Polygon FreeCAD command definition"
         
 	def GetResources(self):
-		return {'Pixmap'  : 'Draft_polygon',
+		return {'Pixmap'  : 'Draft_Polygon',
 			'MenuText': str(translate("draft", "Polygon").toLatin1()),
 			'ToolTip': str(translate("draft", "Creates a regular polygon. CTRL to snap, SHIFT to constrain").toLatin1())}
 
@@ -1779,7 +1777,7 @@ class Text(Creator):
 	'''
 
 	def GetResources(self):
-		return {'Pixmap'  : 'Draft_text',
+		return {'Pixmap'  : 'Draft_Text',
 			'MenuText': str(translate("draft", "Text").toLatin1()),
 			'ToolTip': str(translate("draft", "Creates an annotation. CTRL to snap").toLatin1())}
 
@@ -1841,7 +1839,7 @@ class Dimension(Creator):
                 self.dir = None
 
 	def GetResources(self):
-		return {'Pixmap'  : 'Draft_dimension',
+		return {'Pixmap'  : 'Draft_Dimension',
 			'MenuText': str(translate("draft", "Dimension").toLatin1()),
 			'ToolTip': str(translate("draft", "Creates a dimension. CTRL to snap, SHIFT to constrain, ALT to select a segment").toLatin1())}
 
@@ -2080,7 +2078,7 @@ class Move(Modifier):
 	"The Draft_Move FreeCAD command definition"
 
 	def GetResources(self):
-		return {'Pixmap'  : 'Draft_move',
+		return {'Pixmap'  : 'Draft_Move',
 			'MenuText': str(translate("draft", "Move").toLatin1()),
 			'ToolTip': str(translate("draft", "Moves the selected objects between 2 points. CTRL to snap, SHIFT to constrain, ALT to copy").toLatin1())}
 
@@ -2194,7 +2192,7 @@ class ApplyStyle(Modifier):
 	"The Draft_ApplyStyle FreeCA command definition"
 
 	def GetResources(self):
-		return {'Pixmap'  : 'Draft_apply',
+		return {'Pixmap'  : 'Draft_Apply',
 			'MenuText': str(translate("draft", "Apply Current Style").toLatin1()),
 			'ToolTip': str(translate("draft", "Applies current line width and color to selected objects").toLatin1())}
 
@@ -2225,7 +2223,7 @@ class Rotate(Modifier):
 	"The Draft_Rotate FreeCAD command definition"
 
 	def GetResources(self):
-		return {'Pixmap'  : 'Draft_rotate',
+		return {'Pixmap'  : 'Draft_Rotate',
 			'MenuText': str(translate("draft", "Rotate").toLatin1()),
 			'ToolTip': str(translate("draft", "Rotates the selected objects. CTRL to snap, SHIFT to constrain, ALT creates a copy").toLatin1())}
 
@@ -2412,7 +2410,7 @@ class Offset(Modifier):
 	"The Draft_Offset FreeCAD command definition"
 
 	def GetResources(self):
-		return {'Pixmap'  : 'Draft_offset',
+		return {'Pixmap'  : 'Draft_Offset',
 			'MenuText': str(translate("draft", "Offset").toLatin1()),
 			'ToolTip': str(translate("draft", "Offsets the active object. CTRL to snap, SHIFT to constrain, ALT to copy").toLatin1())}
 
@@ -2547,7 +2545,7 @@ class Upgrade(Modifier):
 	'''
 
 	def GetResources(self):
-		return {'Pixmap'  : 'Draft_upgrade',
+		return {'Pixmap'  : 'Draft_Upgrade',
 			'MenuText': str(translate("draft", "Upgrade").toLatin1()),
 			'ToolTip': str(translate("draft", "Joins the selected objects into one, or converts closed wires to filled faces, or unite faces").toLatin1())}
 
@@ -2730,7 +2728,7 @@ class Downgrade(Modifier):
 	'''
 
 	def GetResources(self):
-		return {'Pixmap'  : 'Draft_downgrade',
+		return {'Pixmap'  : 'Draft_Downgrade',
 			'MenuText': str(translate("draft", "Downgrade").toLatin1()),
 			'ToolTip': str(translate("draft", "Explodes the selected objects into simpler objects, or subtract faces").toLatin1())}
 
@@ -2820,7 +2818,7 @@ class Trimex(Modifier):
 	or extrudes in direction to the face normal.'''
 
 	def GetResources(self):
-		return {'Pixmap' : 'Draft_trimex',
+		return {'Pixmap' : 'Draft_Trimex',
 			'MenuText' : str(translate("draft", "Trimex").toLatin1()),
 			'ToolTip' : str(translate("draft", "Trims or Extends the selected object, or extrudes single faces. CTRL snaps, SHIFT constrains to current segment or to normal, ALT inverts").toLatin1())}
 
@@ -3090,7 +3088,7 @@ class Scale(Modifier):
         This tool scales the selected objects from a base point.'''
 
 	def GetResources(self):
-		return {'Pixmap'  : 'Draft_scale',
+		return {'Pixmap'  : 'Draft_Scale',
 			'MenuText': str(translate("draft", "Scale").toLatin1()),
 			'ToolTip': str(translate("draft", "Scales the selected objects from a base point. CTRL to snap, SHIFT to constrain, ALT to copy").toLatin1())}
 
@@ -3215,7 +3213,7 @@ class Drawing(Modifier):
         "The Draft Drawing command definition"
 
         def GetResources(self):
-		return {'Pixmap'  : 'Draft_putOnSheet',
+		return {'Pixmap'  : 'Draft_Drawing',
 			'MenuText': str(translate("draft", "Drawing").toLatin1()),
 			'ToolTip': str(translate("draft", "Puts the selected objects on a Drawing sheet.").toLatin1())}
 
@@ -3283,7 +3281,7 @@ class ToggleDisplayMode():
 	"The ToggleDisplayMode FreeCAD command definition"
 
 	def GetResources(self):
-		return {'Pixmap'  : 'Draft_switchMode',
+		return {'Pixmap'  : 'Draft_SwitchMode',
                         'MenuText': str(translate("draft", "Toggle display mode").toLatin1()),
 			'ToolTip': str(translate("draft", "Swaps display mode of selected objects between wireframe and flatlines").toLatin1())}
 
@@ -3516,7 +3514,7 @@ class AddToGroup():
 	"The AddToGroup FreeCAD command definition"
 
 	def GetResources(self):
-		return {'Pixmap'  : 'Draft_addToGroup',
+		return {'Pixmap'  : 'Draft_AddToGroup',
                         'MenuText': str(translate("draft", "Add to group").toLatin1()),
 			'ToolTip': str(translate("draft", "Adds the selected object(s) to an existing group").toLatin1())}
 
@@ -3562,7 +3560,7 @@ class AddPoint(Modifier):
 		self.running = False
 
 	def GetResources(self):
-		return {'Pixmap'  : 'Draft_addpoint',
+		return {'Pixmap'  : 'Draft_AddPoint',
 			'MenuText': str(translate("draft", "Add Point").toLatin1()),
 			'ToolTip': str(translate("draft", "Adds a point to an existing wire/bspline").toLatin1())}
 
@@ -3681,7 +3679,7 @@ class DelPoint(Modifier):
 		self.running = False
 
 	def GetResources(self):
-		return {'Pixmap'  : 'Draft_delpoint',
+		return {'Pixmap'  : 'Draft_DelPoint',
 			'MenuText': str(translate("draft", "Remove Point").toLatin1()),
 			'ToolTip': str(translate("draft", "Removes a point from an existing wire or bspline").toLatin1())}
 
@@ -3770,7 +3768,7 @@ class WireToBSpline(Modifier):
 		self.running = False
 
 	def GetResources(self):
-		return {'Pixmap'  : 'Draft_wirebspline',
+		return {'Pixmap'  : 'Draft_WireToBSpline',
 			'MenuText': str(translate("draft", "Wire to BSpline").toLatin1()),
 			'ToolTip': str(translate("draft", "Converts between Wire and BSpline").toLatin1())}
 
