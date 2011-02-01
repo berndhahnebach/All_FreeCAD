@@ -604,7 +604,8 @@ void Document::Restore(Base::XMLReader &reader)
     Label.setValue(DocLabel.c_str());
 
     // create new transient directory
-    Base::FileInfo TransDirNew(Base::FileInfo::getTempPath() + Id.getValue());
+    std::string basePath = Base::FileInfo::getTempPath() + GetApplication().getExecutableName();
+    Base::FileInfo TransDirNew(basePath + "_Doc_"  + Id.getValue());
     if(!TransDirNew.exists())
         TransDirNew.createDirectory();
     TransientDir.setValue(TransDirNew.filePath());

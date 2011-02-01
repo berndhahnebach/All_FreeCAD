@@ -101,8 +101,24 @@ void PropertyFileIncluded::setValue(const char* sFile, const char* sName)
 
         // if a special name given, use this instead
         if (sName) {
-            _cValue = path + "/" + sName;
-            _BaseFileName = sName;
+            Base::FileInfo ExtraName(path + "/" + sName);
+            if(ExtraName.exists() ) {
+                // if a file with this name already exist search for a new one
+                int i=0;
+                
+                do{
+                    i++;
+                    std::stringstream str;
+                    str << path << "/" << sName << i;
+                    ExtraName.setFile(str.str());
+                }while (ExtraName.exists());
+                _cValue = ExtraName.filePath();
+                _BaseFileName = ExtraName.fileName();
+
+            }else{
+                _cValue = path + "/" + sName;
+                _BaseFileName = sName;
+            }
         }
         else if (value.fileName().empty()) {
             _cValue = pathTrans + "/" + file.fileName();
@@ -116,8 +132,8 @@ void PropertyFileIncluded::setValue(const char* sFile, const char* sName)
         }
         // otherwise copy from origin location 
         else {
-            /*bool done = */file.copyTo(_cValue.c_str());
-            //assert(done);
+            bool done = file.copyTo(_cValue.c_str());
+            assert(done); 
         }
 
         hasSetValue();

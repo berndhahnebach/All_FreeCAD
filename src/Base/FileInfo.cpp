@@ -434,7 +434,7 @@ bool FileInfo::copyTo(const char* NewName) const
 #if defined (FC_OS_WIN32)
     std::wstring oldname = toStdWString();
     std::wstring newname = ConvertToWideString(NewName);
-    return CopyFileW(oldname.c_str(),newname.c_str(),true) == 0;
+    return CopyFileW(oldname.c_str(),newname.c_str(),true) != 0;
 #elif defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN) || defined(FC_OS_MACOSX) || defined(FC_OS_BSD)
     FileInfo fi1(FileName);
     FileInfo fi2(NewName);
