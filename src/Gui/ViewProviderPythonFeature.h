@@ -92,7 +92,10 @@ public:
 
     // Returns the icon
     QIcon getIcon() const {
-        return imp->getIcon();
+        QIcon icon = imp->getIcon();
+        if (icon.isNull())
+            icon = ViewProviderT::getIcon();
+        return icon;
     }
 
     std::vector<App::DocumentObject*> claimChildren() const {

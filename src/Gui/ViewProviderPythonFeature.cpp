@@ -76,7 +76,7 @@ ViewProviderPythonFeatureImp::~ViewProviderPythonFeatureImp()
 QIcon ViewProviderPythonFeatureImp::getIcon() const
 {
     // default icon
-    static QPixmap px = BitmapFactory().pixmap("Tree_Python");
+    //static QPixmap px = BitmapFactory().pixmap("Tree_Python");
 
     // Run the getIcon method of the proxy object.
     Base::PyGILStateLocker lock;
@@ -109,7 +109,7 @@ QIcon ViewProviderPythonFeatureImp::getIcon() const
         Base::Console().Error("ViewProviderPythonFeature::getIcon: %s\n", e.what());
     }
 
-    return px;
+    return QIcon();
 }
 
 std::vector<App::DocumentObject*> ViewProviderPythonFeatureImp::claimChildren() const 
