@@ -1,3 +1,9 @@
+BUILT_SOURCES=\
+		Draft_rc.py
+
+# rules for Qt Resource Compiler:
+%_rc.py: Resources/%.qrc
+	$(PYRCC4) -name $(*F) $< -o $(@F)
 
 # Change data dir from default ($(prefix)/share) to $(prefix)
 datadir = $(prefix)/Mod/Draft
@@ -24,10 +30,13 @@ nobase_data_DATA = \
 		draftlibs/fcgeo.py \
 		draftlibs/__init__.py
 
+CLEANFILES = $(BUILT_SOURCES)
+
 EXTRA_DIST = \
 		$(data_DATA) $(nobase_data_DATA) \
 		CMakeLists.txt \
 		draft.dox \
+		Resources/Draft.qrc \
         Resources/translations/Draft_de.ts \
         Resources/translations/Draft_de.qm \
         Resources/translations/Draft_es.ts \
