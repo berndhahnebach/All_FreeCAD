@@ -1,9 +1,9 @@
-BUILT_SOURCES=\
-		Draft_rc.py
+#BUILT_SOURCES=\
+#		Draft_rc.py
 
 # rules for Qt Resource Compiler:
-%_rc.py: Resources/%.qrc
-	$(PYRCC4) -name $(*F) $< -o $(@F)
+#%_rc.py: Resources/%.qrc
+#	$(PYRCC4) -name $(*F) $< -o $(@F)
 
 # Change data dir from default ($(prefix)/share) to $(prefix)
 datadir = $(prefix)/Mod/Draft
