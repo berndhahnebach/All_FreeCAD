@@ -1862,7 +1862,7 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
     </message>
     <message>
         <source>User view system:</source>
-        <translation>Einheitensystem:</translation>
+        <translation type="obsolete">Einheitensystem:</translation>
     </message>
     <message>
         <source>Standard (mm/kg/s/degree)</source>
@@ -1874,11 +1874,11 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
     </message>
     <message>
         <source>Imperial</source>
-        <translation>Imperiales System</translation>
+        <translation type="obsolete">Imperiales System</translation>
     </message>
     <message>
         <source>User units:</source>
-        <translation>Benutzereinheiten:</translation>
+        <translation type="obsolete">Benutzereinheiten:</translation>
     </message>
     <message>
         <source>Magnitude</source>
@@ -1890,7 +1890,15 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
     </message>
     <message>
         <source>Set to:</source>
-        <translation>Setzen:</translation>
+        <translation type="obsolete">Setzen:</translation>
+    </message>
+    <message>
+        <source>User system:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Imperial (in/lb)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2869,6 +2877,10 @@ Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
         <source>Unhandled std C++ exception.</source>
         <translation>Unbehandelte std-C++-Ausnahme.</translation>
     </message>
+    <message>
+        <source>Word wrap</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Gui::PythonEditor</name>
@@ -3049,6 +3061,21 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     <message>
         <source>Edit</source>
         <translation>Bearbeiten</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::TaskView::TaskSelectLinkProperty</name>
+    <message>
+        <source>Appearance</source>
+        <translation type="unfinished">Erscheinungsbild</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>edit selection</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4273,6 +4300,29 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     </message>
 </context>
 <context>
+    <name>StdCmdMergeProjects</name>
+    <message>
+        <source>File</source>
+        <translation type="unfinished">Datei</translation>
+    </message>
+    <message>
+        <source>Merge project...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Merge project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 document (*.fcstd)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot merge project with itself.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>StdCmdNew</name>
     <message>
         <source>File</source>
@@ -4701,6 +4751,21 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     <message>
         <source>Toggles clipping plane for active view</source>
         <translation>Schnittebene für aktive Ansicht ein- und ausblenden</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdToggleNavigation</name>
+    <message>
+        <source>Standard-View</source>
+        <translation type="unfinished">Standardansicht</translation>
+    </message>
+    <message>
+        <source>Toggle navigation/Edit mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle between navigation and edit mode</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

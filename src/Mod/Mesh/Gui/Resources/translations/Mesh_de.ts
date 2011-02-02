@@ -2,6 +2,21 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="de_DE">
 <context>
+    <name>CmdMeshAddFacet</name>
+    <message>
+        <source>Mesh</source>
+        <translation type="unfinished">Netz</translation>
+    </message>
+    <message>
+        <source>Add triangle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add triangle manually to a mesh</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CmdMeshBoundingBox</name>
     <message>
         <source>Mesh</source>
@@ -938,6 +953,25 @@ Bitte starten Sie vorher den Befehl zum Reparieren von Falten</translation>
     </message>
 </context>
 <context>
+    <name>MeshGui::MeshFaceAddition</name>
+    <message>
+        <source>Add triangle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Flip normal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Finish</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MeshGui::RemoveComponents</name>
     <message>
         <source>Remove components</source>
@@ -989,11 +1023,15 @@ Bitte starten Sie vorher den Befehl zum Reparieren von Falten</translation>
     </message>
     <message>
         <source>Respect only front triangles</source>
-        <translation>Nur vordere Dreiecke beachten</translation>
+        <translation type="obsolete">Nur vordere Dreiecke beachten</translation>
     </message>
     <message>
         <source>Respect only triangles with normals facing screen</source>
         <translation>Nur Dreiecke mit Normalen beachten, die zum Bildschirm zeigen</translation>
+    </message>
+    <message>
+        <source>Respect only visible triangles</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

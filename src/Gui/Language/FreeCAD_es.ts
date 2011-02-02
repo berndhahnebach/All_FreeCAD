@@ -1923,23 +1923,11 @@ Especifique otro directorio, por favor.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>User view system:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Standard (mm/kg/s/degree)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>MKS (m/kg/s/degree)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Imperial</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>User units:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1951,7 +1939,11 @@ Especifique otro directorio, por favor.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Set to:</source>
+        <source>User system:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Imperial (in/lb)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2938,6 +2930,10 @@ Desea salir sin guardar sus datos?</translation>
         <source>Unhandled std C++ exception.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Word wrap</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Gui::PythonEditor</name>
@@ -3181,6 +3177,21 @@ Desea especificar otro directorio?</translation>
     <message>
         <source>Edit</source>
         <translation>Editar</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::TaskView::TaskSelectLinkProperty</name>
+    <message>
+        <source>Appearance</source>
+        <translation type="unfinished">Apariencia</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>edit selection</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4394,6 +4405,29 @@ Desea especificar otro directorio?</translation>
     </message>
 </context>
 <context>
+    <name>StdCmdMergeProjects</name>
+    <message>
+        <source>File</source>
+        <translation type="unfinished">Archivo</translation>
+    </message>
+    <message>
+        <source>Merge project...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Merge project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 document (*.fcstd)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot merge project with itself.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>StdCmdNew</name>
     <message>
         <source>File</source>
@@ -4822,6 +4856,21 @@ Desea especificar otro directorio?</translation>
     <message>
         <source>Toggles clipping plane for active view</source>
         <translation>Conmuta el plano de recorte para la vista activa</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdToggleNavigation</name>
+    <message>
+        <source>Standard-View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle navigation/Edit mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle between navigation and edit mode</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

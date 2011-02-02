@@ -2,6 +2,21 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="es">
 <context>
+    <name>CmdCreateImagePlane</name>
+    <message>
+        <source>Image</source>
+        <translation type="unfinished">Imagen</translation>
+    </message>
+    <message>
+        <source>Create image plane...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>create a planar image in the 3D space</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CmdImageOpen</name>
     <message>
         <source>Image</source>
@@ -102,6 +117,14 @@
     <message>
         <source>Choose an image file to open</source>
         <translation>Selecciona un archivo de imagen para abrir</translation>
+    </message>
+    <message>
+        <source>Error open image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not load the choosen image</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

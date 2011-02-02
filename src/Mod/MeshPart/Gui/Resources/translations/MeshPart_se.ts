@@ -5,15 +5,61 @@
     <name>CmdMeshPartConstraintAxle</name>
     <message>
         <source>MeshPart</source>
-        <translation>Nätdetalj</translation>
+        <translation type="obsolete">Nätdetalj</translation>
     </message>
     <message>
         <source>Constraint Axle...</source>
-        <translation>Axelbegränsning...</translation>
+        <translation type="obsolete">Axelbegränsning...</translation>
     </message>
     <message>
         <source>set a axle constraint between two objects</source>
-        <translation>Sätt en axelbegränsning mellan två objekt</translation>
+        <translation type="obsolete">Sätt en axelbegränsning mellan två objekt</translation>
+    </message>
+</context>
+<context>
+    <name>CmdMeshPartMesher</name>
+    <message>
+        <source>Mesh</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create mesh from shape...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tessellate shape</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>MeshPartGui::Tessellation</name>
+    <message>
+        <source>Tessellation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shapes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Surface deviation:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Max. edge length:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select a shape for meshing, first.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No such document &apos;%1&apos;.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
