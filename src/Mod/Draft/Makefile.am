@@ -12,7 +12,6 @@ data_DATA = \
 		importAirfoilDAT.py \
 		Init.py \
 		InitGui.py \
-		icons.svg \
 		macros.py \
 		Draft_rc.py
 

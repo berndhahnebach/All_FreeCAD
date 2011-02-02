@@ -11,7 +11,6 @@ SET(Draft_SRCS
     importSVG.py
     importAirfoilDAT.py
     macros.py
-    icons.svg
     Draft_rc.py
 )
 SOURCE_GROUP("" FILES ${Draft_SRCS})

@@ -593,7 +593,7 @@ such as &quot;Arial:Bold&quot;</string>
         <item>
          <widget class="QLabel" name="label_13">
           <property name="text">
-           <string>Alternate SVG Patterns file</string>
+           <string>Alternate SVG Patterns location</string>
           </property>
          </widget>
         </item>
@@ -619,7 +619,7 @@ such as &quot;Arial:Bold&quot;</string>
            </size>
           </property>
           <property name="toolTip">
-           <string>This is the location of a SVG file containing &lt;pattern&gt; definitions that can be added to the standard Draft hatch patterns</string>
+           <string>Here you can specify a directory containing SVG files containing &lt;pattern&gt; definitions that can be added to the standard Draft hatch patterns</string>
           </property>
           <property name="prefEntry" stdset="0">
            <cstring>patternFile</cstring>
