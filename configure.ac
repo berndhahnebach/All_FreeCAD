@@ -221,6 +221,20 @@ else
 fi
 
 
+dnl checking for PyQt4 utilities
+dnl **************************************************************************
+AC_PATH_PROG(PYUIC4, pyuic4, false)
+if test "$PYUIC4" = false ; then
+   AC_MSG_ERROR([Can't find pyuic4 utility])
+fi
+AC_PATH_PROG(PYRCC4, pyrcc4, true)
+if test "$PYRCC4" = false ; then
+   AC_MSG_ERROR([Can't find pyrcc4 utility])
+fi
+AC_SUBST(PYUIC4)
+AC_SUBST(PYRCC4)
+
+
 dnl checking for PyCXX & zipios++
 dnl **************************************************************************
 fc_local_pycxx_zipios=yes
