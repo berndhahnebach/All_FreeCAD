@@ -140,6 +140,12 @@
 				<File Id="LibPack98" Name="SMESH.dll"   />
 				<File Id="LibPack99" Name="SMESHDS.dll"   />
 				<File Id="LibPack100" Name="StdMeshers.dll"   />
+				<File Id="LibPack101" Name="TKCAF.dll"   />
+				<File Id="LibPack102" Name="TKCDF.dll"   />
+				<File Id="LibPack103" Name="TKLCAF.dll"   />
+				<File Id="LibPack104" Name="TKXCAF.dll"   />
+				<File Id="LibPack105" Name="TKXDEIGES.dll"   />
+				<File Id="LibPack106" Name="TKXDESTEP.dll"   />
             </Component>
 			<Directory Id="ImageFormDir" Name="imageformats" FileSource="../../bin/imageformats" >
 				<Component Id="ImageForm"  Guid="2139da00-a109-11dd-ad8b-0800200c9a66" Win64='$(var.Win_64)' KeyPath="yes">
