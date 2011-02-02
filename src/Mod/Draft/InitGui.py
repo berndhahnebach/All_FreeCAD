@@ -173,11 +173,11 @@ class DraftWorkbench (Workbench):
                                 depsOK = True
                 
                 if depsOK:
-                    from Draft import getDraftPath
-                    Gui.addPreferencePage(getDraftPath("userprefs-base.ui"),"Draft")
-                    Gui.addPreferencePage(getDraftPath("userprefs-import.ui"),"Draft")
+                    import Draft_rc
                     Gui.addLanguagePath(":/translations")
                     Gui.addIconPath(":/icons")
+                    Gui.addPreferencePage(":/ui/userprefs-base.ui","Draft")
+                    Gui.addPreferencePage(":/ui/userprefs-import.ui","Draft")
                 else:
                     return
                 Log ('Loading Draft GUI...\n')
@@ -230,7 +230,6 @@ class DraftWorkbench (Workbench):
 		return "Gui::PythonWorkbench"
 
 Gui.addWorkbench(DraftWorkbench)
-
 App.addImportType("Autodesk DXF (*.dxf)","importDXF") 
 App.addImportType("SVG as geometry (*.svg)","importSVG")
 App.addImportType("Open CAD Format (*.oca *.gcad)","importOCA")

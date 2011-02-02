@@ -45,4 +45,8 @@
         <file>patterns/simple.svg</file>
         <file>patterns/square.svg</file>
     </qresource>
+    <qresource>
+        <file>ui/userprefs-base.ui</file>
+        <file>ui/userprefs-import.ui</file>
+    </qresource>
 </RCC>
