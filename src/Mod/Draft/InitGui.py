@@ -27,25 +27,6 @@ __url__ = ["http://free-cad.sourceforge.net"]
 
 import os
 
-# run self-tests
-depsOK = False
-try:
-	from pivy import coin
-	if FreeCADGui.getSoDBVersion() != coin.SoDB.getVersion():
-		raise AssertionError("FreeCAD and Pivy use different versions of Coin. This will lead to unexpected behaviour.")
-except AssertionError:
-	FreeCAD.Console.PrintWarning("Error: FreeCAD and Pivy use different versions of Coin. This will lead to unexpected behaviour.\n")
-except ImportError:
-	FreeCAD.Console.PrintWarning("Error: Pivy not found, Draft workbench will be disabled.\n")
-except:
-	FreeCAD.Console.PrintWarning("Error: Unknown error while trying to load Pivy\n")
-else:
-        try:
-                import PyQt4
-        except ImportError:
-                FreeCAD.Console.PrintWarning("Error: PyQt4 not found, Draft workbench will be disabled.\n")
-        else:
-                depsOK = True
 
 class DraftWorkbench (Workbench):
 	"the Draft Workbench"
@@ -171,6 +152,34 @@ class DraftWorkbench (Workbench):
 	ToolTip = "The Draft module is used for basic 2D CAD Drafting"
 
 	def Initialize(self):
+                # run self-tests
+                depsOK = False
+                try:
+                	from pivy import coin
+                	if FreeCADGui.getSoDBVersion() != coin.SoDB.getVersion():
+                		raise AssertionError("FreeCAD and Pivy use different versions of Coin. This will lead to unexpected behaviour.")
+                except AssertionError:
+                	FreeCAD.Console.PrintWarning("Error: FreeCAD and Pivy use different versions of Coin. This will lead to unexpected behaviour.\n")
+                except ImportError:
+                	FreeCAD.Console.PrintWarning("Error: Pivy not found, Draft workbench will be disabled.\n")
+                except:
+                	FreeCAD.Console.PrintWarning("Error: Unknown error while trying to load Pivy\n")
+                else:
+                        try:
+                                import PyQt4
+                        except ImportError:
+                                FreeCAD.Console.PrintWarning("Error: PyQt4 not found, Draft workbench will be disabled.\n")
+                        else:
+                                depsOK = True
+                
+                if depsOK:
+                    from Draft import getDraftPath
+                    Gui.addPreferencePage(getDraftPath("userprefs-base.ui"),"Draft")
+                    Gui.addPreferencePage(getDraftPath("userprefs-import.ui"),"Draft")
+                    Gui.addLanguagePath(":/translations")
+                    Gui.addIconPath(":/icons")
+                else:
+                    return
                 Log ('Loading Draft GUI...\n')
                 try:
 					import draftTools,draftGui,macros
@@ -220,13 +229,7 @@ class DraftWorkbench (Workbench):
 	def GetClassName(self): 
 		return "Gui::PythonWorkbench"
 
-if depsOK:
-        from Draft import getDraftPath
-        Gui.addWorkbench(DraftWorkbench)
-        Gui.addPreferencePage(getDraftPath("userprefs-base.ui"),"Draft")
-        Gui.addPreferencePage(getDraftPath("userprefs-import.ui"),"Draft")
-        Gui.addLanguagePath(":/translations")
-        Gui.addIconPath(":/icons")
+Gui.addWorkbench(DraftWorkbench)
 
 App.addImportType("Autodesk DXF (*.dxf)","importDXF") 
 App.addImportType("SVG as geometry (*.svg)","importSVG")
