@@ -90,15 +90,6 @@ def typecheck (args_and_types, name="?"):
                         w += str(v) + " is not " + str(t) + "\n"
 			FreeCAD.Console.PrintWarning(w)
 			raise TypeError("Draft." + str(name))
-
-def getDraftPath(pathname=""):
-        '''getDraftPath([subpath]): returns the user or system path where the
-        Draft module is running from. If path is supplied, the full path to the
-        subpath inside the Draft module is returned'''
-        path1 = FreeCAD.ConfigGet("AppHomePath") + "Mod/Draft"
-	path2 = FreeCAD.ConfigGet("UserAppData") + "Mod/Draft"
-	if os.path.exists(path2): return path2 + os.sep + pathname
-	else: return path1 + os.sep + pathname
                 
 def precision():
         "precision(): returns the precision value from Draft user settings"

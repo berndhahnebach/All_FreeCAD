@@ -29,7 +29,7 @@ __url__ = "http://free-cad.sourceforge.net"
 # Generic stuff
 #---------------------------------------------------------------------------
 
-import FreeCAD, FreeCADGui, Part, WorkingPlane, math, re, importSVG, Draft, Draft_rc
+import os, FreeCAD, FreeCADGui, Part, WorkingPlane, math, re, importSVG, Draft, Draft_rc
 from draftlibs import fcvec,fcgeo
 from FreeCAD import Vector
 from draftGui import todo,QtCore,QtGui
@@ -58,11 +58,13 @@ def msg(text=None,mode=None):
                         FreeCAD.Console.PrintMessage(str(text.toLatin1()))
 
 # loads the fill patterns
-FreeCAD.svgpatterns = importSVG.getContents(Draft.getDraftPath('icons.svg'),'pattern')
+FreeCAD.svgpatterns = importSVG.getContents(Draft_rc.qt_resource_data,'pattern',True)
 altpat = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetString("patternFile")
-if altpat:
-        altpatterns = importSVG.getContents(altpat,'pattern')
-        if altpatterns: FreeCAD.svgpatterns.update(altpatterns)
+if os.path.isdir(altpat):
+        for f in os.listdir(altpat):
+                if '.svg' in f:
+                        p = importSVG.getContents(altpat+os.sep+f,'pattern')
+                        if p: FreeCAD.svgpatterns[p[0]]=p[1]
 
 # sets the default working plane
 plane = WorkingPlane.plane()

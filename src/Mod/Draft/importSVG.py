@@ -703,14 +703,17 @@ def decodeName(name):
 			decodedName = name
 	return decodedName
 
-def getContents(filename,tag):
+def getContents(filename,tag,stringmode=False):
         "gets the contents of all the occurences of the given tag in the given file"
         result = {}
-        f = pythonopen(filename)
-        contents = ''
-        for line in f: contents += line
+        if stringmode:
+                contents = filename
+        else:
+                f = pythonopen(filename)
+                contents = ''
+                for line in f: contents += line
+                f.close()
         contents = contents.replace('\n','_linebreak')
-        f.close()
         searchpat = '<'+tag+'.*?</'+tag+'>'
         tags = re.findall(searchpat,contents)
         for t in tags:
