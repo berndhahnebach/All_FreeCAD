@@ -14,8 +14,6 @@ data_DATA = \
 		InitGui.py \
 		icons.svg \
 		macros.py \
-		userprefs-base.ui \
-        userprefs-import.ui \
 		Draft_rc.py
 
 nobase_data_DATA = \
@@ -75,4 +73,6 @@ EXTRA_DIST = \
         Resources/patterns/cross.svg \
         Resources/patterns/line.svg \
         Resources/patterns/simple.svg \
-        Resources/patterns/square.svg
+        Resources/patterns/square.svg \
+		Resources/ui/userprefs-base.ui \
+        Resources/ui/userprefs-import.ui

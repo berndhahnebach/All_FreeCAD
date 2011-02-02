@@ -30,32 +30,13 @@ This is the GUI part of the Draft module.
 Report to Draft.py for info
 '''
 
-import FreeCAD, FreeCADGui, os, Draft, Draft_rc
+import FreeCAD, FreeCADGui, os, Draft
 
 try:
 	from PyQt4 import QtCore,QtGui,QtSvg	
 except:
 	FreeCAD.Console.PrintMessage("Error: Python-qt4 package must be installed on your system to use the Draft module.")
 
-def findicons():
-	"loads the icon file"
-	filepath = Draft.getDraftPath() + os.sep + "icons.svg"
-	iconmap = QtGui.QPixmap()
-	if not iconmap.load(filepath):
-		# If loading by plug-in fails do it the conventional way
-		file=QtCore.QFile(filepath)
-		if not file.open(QtCore.QFile.ReadOnly):
-			raise Exception("Cannot open file %s" % (filepath))
-		ba=file.readAll()
-		render=QtSvg.QSvgRenderer(ba)
-		image = QtGui.QImage(render.viewBox().size(),QtGui.QImage.Format_ARGB32_Premultiplied)
-		image.fill(0x00000000)
-		painter=QtGui.QPainter(image)
-		render.render(painter)
-		painter.end()
-		iconmap = QtGui.QPixmap.fromImage(image)
-	return iconmap
-	
 def getMainWindow():
 	"returns the main window"
 	# using QtGui.qApp.activeWindow() isn't very reliable because if another
@@ -142,7 +123,6 @@ class toolBar:
 				paramlinewidth = self.params.GetInt("linewidth")
                                 paramfontsize = self.params.GetFloat("textheight")
 				paramconstr = self.params.GetUnsigned("constructioncolor")>>8
-				icons = findicons()
 				self.constrMode = False
 				draftToolbar.setObjectName("draftToolbar")
 				self.state = None
