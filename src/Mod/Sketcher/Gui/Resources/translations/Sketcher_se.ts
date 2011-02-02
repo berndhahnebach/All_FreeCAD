@@ -142,11 +142,19 @@
     </message>
     <message>
         <source>Create line</source>
-        <translation type="unfinished">Skapa linje</translation>
+        <translation type="obsolete">Skapa linje</translation>
     </message>
     <message>
         <source>Create a line in the sketch</source>
-        <translation type="unfinished">Skapa en linje i skissen</translation>
+        <translation type="obsolete">Skapa en linje i skissen</translation>
+    </message>
+    <message>
+        <source>Create box</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create a box in the sketch</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -368,6 +376,30 @@
         <source>Do you want to close this dialog?</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Several sub-elements selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You have to select a single face as support for a sketch!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No support face selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You have to select a face as support for a sketch!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No planar support</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You need a planar face as support for a sketch!</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SketcherGui::InsertDatum</name>
@@ -494,11 +526,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Geometrical constraints</source>
+        <source>Edit controls</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Edit controls</source>
+        <source>auto constraints</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

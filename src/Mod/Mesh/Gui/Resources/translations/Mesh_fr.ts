@@ -2,6 +2,21 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="fr_FR">
 <context>
+    <name>CmdMeshAddFacet</name>
+    <message>
+        <source>Mesh</source>
+        <translation type="unfinished">Maillage</translation>
+    </message>
+    <message>
+        <source>Add triangle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add triangle manually to a mesh</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CmdMeshBoundingBox</name>
     <message>
         <source>Mesh</source>
@@ -937,6 +952,25 @@ Please run the command to repair folds first</source>
     </message>
 </context>
 <context>
+    <name>MeshGui::MeshFaceAddition</name>
+    <message>
+        <source>Add triangle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Flip normal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Finish</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MeshGui::RemoveComponents</name>
     <message>
         <source>Remove components</source>
@@ -987,11 +1021,11 @@ Please run the command to repair folds first</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Respect only front triangles</source>
+        <source>Respect only triangles with normals facing screen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Respect only triangles with normals facing screen</source>
+        <source>Respect only visible triangles</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

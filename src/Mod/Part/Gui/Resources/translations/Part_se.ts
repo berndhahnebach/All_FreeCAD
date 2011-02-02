@@ -424,6 +424,21 @@
     </message>
 </context>
 <context>
+    <name>CmdPartRuledSurface</name>
+    <message>
+        <source>Part</source>
+        <translation type="unfinished">Detalj</translation>
+    </message>
+    <message>
+        <source>Create ruled surface</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create a ruled surface from two curves</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CmdPartSection</name>
     <message>
         <source>Part</source>
@@ -1277,6 +1292,14 @@ Please select a valid shape in the drop-down box first.</source>
         <source> %</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Deviation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Setting a too small deviation causes the tessellation to take longerand thus freezes or slows down the GUI.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>PartGui::DlgSettingsGeneral</name>
@@ -1341,13 +1364,6 @@ Please select a valid shape in the drop-down box first.</source>
     </message>
 </context>
 <context>
-    <name>PartGui::TaskBoxFilletEdges</name>
-    <message>
-        <source>Fillet</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>PartGui::Workbench</name>
     <message>
         <source>&amp;Part</source>
@@ -1397,10 +1413,6 @@ Please select a valid shape in the drop-down box first.</source>
         <translation>Alla filer (*.*)</translation>
     </message>
     <message>
-        <source>Select at least two shapes please.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Sewing Tolerance</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1418,6 +1430,18 @@ Please select a valid shape in the drop-down box first.</source>
     </message>
     <message>
         <source>Part design</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select two shapes or more, please.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You have to select either two edges or two wires.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit fillet edges</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

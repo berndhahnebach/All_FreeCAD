@@ -368,6 +368,30 @@
         <source>Do you want to close this dialog?</source>
         <translation>Möchten Sie diesen Dialog schließen?</translation>
     </message>
+    <message>
+        <source>Several sub-elements selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You have to select a single face as support for a sketch!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No support face selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You have to select a face as support for a sketch!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No planar support</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You need a planar face as support for a sketch!</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SketcherGui::InsertDatum</name>
@@ -494,11 +518,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Geometrical constraints</source>
+        <source>Edit controls</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Edit controls</source>
+        <source>auto constraints</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

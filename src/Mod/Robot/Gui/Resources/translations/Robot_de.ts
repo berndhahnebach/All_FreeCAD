@@ -47,6 +47,21 @@
     </message>
 </context>
 <context>
+    <name>CmdRobotEdge2Trac</name>
+    <message>
+        <source>Robot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edge to Trajectory...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generate a Trajectory from a set of edges</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CmdRobotExportKukaCompact</name>
     <message>
         <source>Robot</source>
@@ -147,7 +162,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Insert robot TCP location into trajectory</source>
+        <source>Insert robot Tool location into trajectory</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -162,7 +177,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Insert preselection position into trajectory</source>
+        <source>Insert preselection position into trajectory (W)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -174,6 +189,36 @@
     </message>
     <message>
         <source>Move to home</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CmdRobotSetDefaultOrientation</name>
+    <message>
+        <source>Robot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set default orientation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>set the default orientation for subsequent commands for waypoint creation</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CmdRobotSetDefaultValues</name>
+    <message>
+        <source>Robot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set default values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>set the default values for speed, acceleration and continuity for subsequent commands of waypoint creation</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -200,6 +245,36 @@
     </message>
     <message>
         <source>Run a simulation on a trajectory</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CmdRobotTrajectoryCompound</name>
+    <message>
+        <source>Robot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Trajectory compound...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Group and connect some trajectories to one</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CmdRobotTrajectoryDressUp</name>
+    <message>
+        <source>Robot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dress up trajectory...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create a dress up object which overide som aspects of a trajectory</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -243,6 +318,50 @@
     </message>
     <message>
         <source>You have to hover above a geometry (Preselection) with the mouse to use this command. See documentation for details.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select one Robot to set home postion</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select one Robot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select one Trajectory object.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>set default speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>speed: (e.g. 1 m/s or 3 cm/s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>set default continuity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>continuous ?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>set default acceleration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>acceleration: (e.g. 1 m/s^2 or 3 cm/s^2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No robot files installed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please visit %1 and copy the files to %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -298,6 +417,13 @@
     </message>
     <message>
         <source>A</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>RobotGui::TaskEdge2TracParameter</name>
+    <message>
+        <source>TaskEdge2TracParameter</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -446,6 +572,36 @@
     </message>
 </context>
 <context>
+    <name>RobotGui::TaskTrajectoryDressUpParameter</name>
+    <message>
+        <source>Dress Up Parameter</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TaskEdge2TracParameter</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide / Show</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edges: 0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cluster: 0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sizing Value:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>TaskRobotControl</name>
     <message>
         <source>Form</source>
@@ -548,6 +704,69 @@
     </message>
     <message>
         <source>clear</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TaskTrajectoryDressUpParameter</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Speed &amp; Acceleration:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Speed:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Accel:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Don&apos;t change Cont</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Continues</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Discontinues</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Position and Orientation:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(0,0,0),(0,0,0)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Don&apos;t change Position &amp; Orientation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use Orientation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Position</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Orientation</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
