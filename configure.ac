@@ -237,26 +237,26 @@ dnl **************************************************************************
 
 dnl checking for PyCXX & zipios++
 dnl **************************************************************************
-fc_local_pycxx_zipios=yes
-AC_ARG_ENABLE(pycxx-zipios,
-	AC_HELP_STRING([--enable-pycxx-zipios], [Use local sources of PyCXX & zipios++ packages [[default=yes]]]),
-	[fc_local_pycxx_zipios=$enableval],[fc_local_pycxx_zipios=yes])
+fc_make_no_dfsg_package=yes
+AC_ARG_ENABLE(no-dfsg-tarball,
+	AC_HELP_STRING([--enable-no-dfsg-tarball], [Use local sources of PyCXX & zipios++ packages [[default=yes]]]),
+	[fc_make_no_dfsg_package=$enableval],[fc_make_no_dfsg_package=yes])
 # check if local versions of PyCXX & zipios++ are part of these sources
-if test x"$fc_local_pycxx_zipios" = xyes; then
+if test x"$fc_make_no_dfsg_package" = xyes; then
     fc_py_ac_save_cppflags=$CPPFLAGS
     CPPFLAGS="$CPPFLAGS -I$srcdir -I$srcdir/src"
     AC_TRY_COMPILE([#include "src/CXX/Version.hxx"], [],
-        [], [fc_local_pycxx_zipios=no])
+        [], [fc_make_no_dfsg_package=no])
     CPPFLAGS=$fc_py_ac_save_cppflags
 fi
-AM_CONDITIONAL(ENABLE_PYCXX_ZIPIOS, test x"$fc_local_pycxx_zipios" = xyes)
-AC_MSG_RESULT(Use local sources of PyCXX & zipios++... $fc_local_pycxx_zipios)
+AM_CONDITIONAL(MAKE_NO_DFSG_PACKAGE, test x"$fc_make_no_dfsg_package" = xyes)
+AC_MSG_RESULT(Use local sources of PyCXX & zipios++... $fc_make_no_dfsg_package)
 
 
 dnl checking for existence of (system-wide) PyCXX & zipios++ headers
 dnl **************************************************************************
 ZIPIOS_LIB=""
-if test x"$fc_local_pycxx_zipios" != xyes; then
+if test x"$fc_make_no_dfsg_package" != xyes; then
     fc_py_ac_save_cppflags=$CPPFLAGS
     CPPFLAGS="$CPPFLAGS -I$fc_py_incs"
     ZIPIOS_LIB="-lzipios"
