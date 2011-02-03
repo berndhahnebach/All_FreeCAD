@@ -29,6 +29,7 @@
 #include "Edge2TracObject.h"
 //#include <App/DocumentObjectPy.h>
 //#include <Base/Placement.h>
+#include <Base/Sequencer.h>
 #include <Mod/Part/App/edgecluster.h>
 #include <Mod/Part/App/PartFeature.h>
 #include <TopoDS.hxx>
@@ -132,6 +133,32 @@ App::DocumentObjectExecReturn *Edge2TracObject::execute(void)
                 trac.addWaypoint(wp);
                 break;
                 }
+            case GeomAbs_BSplineCurve:
+                {
+                Standard_Real Length    = CPnts_AbscissaPoint::Length(adapt);
+                Standard_Real ParLength = adapt.LastParameter()-adapt.FirstParameter();
+                Standard_Real NbrSegments = Round(Length / SegValue.getValue());
+
+                Standard_Real beg = adapt.FirstParameter();
+                Standard_Real end = adapt.LastParameter();
+                Standard_Real stp = ParLength / NbrSegments;
+                if (it2->Orientation() == TopAbs_REVERSED) {
+                    std::swap(beg, end);
+                    stp = - stp;
+                }
+
+                if (first) 
+                    first = false;
+                else
+                    beg += stp;
+                Base::SequencerLauncher seq("Create way points", static_cast<size_t>((end-beg)/stp));
+                for (;beg < end; beg += stp) {
+                    gp_Pnt P = adapt.Value(beg);
+                    Waypoint wp("Pt",Base::Placement(Base::Vector3d(P.X(),P.Y(),P.Z()),Base::Rotation()));
+                    trac.addWaypoint(wp);
+                    seq.next();
+                }
+                } break;
             case GeomAbs_Circle:
                 {
                 Standard_Real Length    = CPnts_AbscissaPoint::Length(adapt);

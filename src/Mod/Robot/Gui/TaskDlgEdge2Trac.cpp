@@ -28,6 +28,8 @@
 
 #include "TaskDlgEdge2Trac.h"
 
+#include <Base/Console.h>
+#include <Base/Exception.h>
 #include <Gui/TaskView/TaskSelectLinkProperty.h>
 
 
@@ -67,28 +69,39 @@ void TaskDlgEdge2Trac::open()
 
 void TaskDlgEdge2Trac::clicked(int button)
 {
-    if(QDialogButtonBox::Apply == button)
-    {
-        if(select->isSelectionValid()){
-            select->sendSelection2Property();
-            Edge2TaskObject->execute();
-            param->setEdgeAndClusterNbr(Edge2TaskObject->NbrOfEdges,Edge2TaskObject->NbrOfCluster);
-        }else{
-            QApplication::beep();
-            param->setEdgeAndClusterNbr(0,0);
+    try {
+        if(QDialogButtonBox::Apply == button)
+        {
+            if (select->isSelectionValid()){
+                select->sendSelection2Property();
+                // May throw an exception which we must handle here
+                Edge2TaskObject->execute();
+                param->setEdgeAndClusterNbr(Edge2TaskObject->NbrOfEdges,Edge2TaskObject->NbrOfCluster);
+            } else {
+                QApplication::beep();
+                param->setEdgeAndClusterNbr(0,0);
+            }
         }
     }
-    
+    catch (const Base::Exception& e) {
+        Base::Console().Warning("TaskDlgEdge2Trac::clicked(): %s\n", e.what());
+    }
 }
 
 bool TaskDlgEdge2Trac::accept()
 {
-    if(select->isSelectionValid()){
-        select->accept();
-        Edge2TaskObject->execute();
-        return true;
-    }else
-        QApplication::beep();
+    try {
+        if (select->isSelectionValid()){
+            select->accept();
+            Edge2TaskObject->execute();
+            return true;
+        }
+        else
+            QApplication::beep();
+    }
+    catch (const Base::Exception& e) {
+        Base::Console().Warning("TaskDlgEdge2Trac::accept(): %s\n", e.what());
+    }
 
     return false;
 }

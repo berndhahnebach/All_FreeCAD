@@ -85,8 +85,8 @@ private Q_SLOTS:
     void on_Help_clicked(bool);
 
 Q_SIGNALS:
-    void on_selectionFit(void);
-    void on_selectionMisfit(void);
+    void emitSelectionFit(void);
+    void emitSelectionMisfit(void);
 
 private:
     // checks for selection and set background color and signals
