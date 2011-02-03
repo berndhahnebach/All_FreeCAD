@@ -1,3 +1,6 @@
+# For Debian based system we mustn't pick up these files
+if MAKE_NO_DFSG_PACKAGE
+
 # Change data dir from default $(datadir) to $(datadir)/Mod/Robot/Lib
 datadir = @datadir@/Mod/Robot/Lib/Kuka
 data_DATA = \
@@ -21,3 +24,5 @@ doc_DATA = \
 EXTRA_DIST = \
 		$(data_DATA) \
 		$(doc_DATA)
+endif
+

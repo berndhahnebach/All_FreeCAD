@@ -201,7 +201,7 @@ distclean-compile:
 # -------------------------------------------------------------------------------
 
 # PyCXX stuff
-if ENABLE_PYCXX_ZIPIOS
+if MAKE_NO_DFSG_PACKAGE
 PYCXXSRC=../CXX
 EXTRA_DIST += \
 		$(PYCXXSRC)/Config.hxx \
@@ -224,7 +224,7 @@ nodist_libFreeCADBase_la_SOURCES=\
 		$(PYCXXSRC)/IndirectPythonInterface.cxx
 
 # zipios++ stuff
-if ENABLE_PYCXX_ZIPIOS
+if MAKE_NO_DFSG_PACKAGE
 ZIPIOS_SRC=../zipios++
 nodist_libFreeCADBase_la_SOURCES += \
 		$(ZIPIOS_SRC)/basicentry.cpp \

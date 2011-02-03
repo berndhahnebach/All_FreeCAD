@@ -99,7 +99,7 @@ EXTRA_DIST = \
 		boost/numeric/bindings/traits/vector_traits.hpp
 
 # For Debian based system we don't need these sources
-if ENABLE_PYCXX_ZIPIOS
+if MAKE_NO_DFSG_PACKAGE
 EXTRA_DIST += \
 		Pivy/gui/__init__.py \
 		Pivy/gui/soqt.py \
