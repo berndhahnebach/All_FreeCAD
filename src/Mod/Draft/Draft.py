@@ -193,7 +193,7 @@ def formatObject(target,origin=None):
 	It also places the object in construction group if needed.
 	'''
 	obrep = target.ViewObject
-	ui = FreeCADGui.activeWorkbench().draftToolBar.ui
+	ui = FreeCADGui.draftToolBar.ui
 	doc = FreeCAD.ActiveDocument
 	if ui.constrButton.isChecked():
 		col = fcol = ui.getDefaultColor("constr")
