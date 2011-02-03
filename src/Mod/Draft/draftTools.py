@@ -2647,7 +2647,7 @@ class Upgrade(Modifier):
                         elif len(self.sel) == 1:
                                 # only one object: if not parametric, we "draftify" it
                                 nodelete = True
-                                if (not("Base" in self.sel[0].PropertiesList)) and (not curves):
+                                if (not curves) and (Draft.getType(self.sel[0]) == "Part"):
                                         msg(translate("draft", "Found 1 non-parametric objects: draftifying it\n"))
                                         Draft.draftify(self.sel[0])
                                         
