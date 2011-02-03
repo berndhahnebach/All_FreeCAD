@@ -255,14 +255,14 @@
 +This manual page was written by Werner Mayer.
 --- freecad-0.11.3729.orig/debian/rules
 +++ freecad-0.11.3729/debian/rules
-@@ -0,0 +1,109 @@
+@@ -0,0 +1,107 @@
 +#!/usr/bin/make -f
 +# -*- makefile -*-
 +
 +# Uncomment this to turn on verbose mode.
 +#export DH_VERBOSE=1
 +
-+MODULES = Part Mesh MeshPart PartDesign Sketcher Points Raytracing Image Drawing ReverseEngineering Complete Fem Robot
++MODULES = Part Mesh MeshPart PartDesign Sketcher Points Raytracing Image Drawing ReverseEngineering Complete Fem Robot Import Inspection
 +
 +# These are used for cross-compiling and for saving the configure script
 +# from having to guess our platform (since we know it already)
