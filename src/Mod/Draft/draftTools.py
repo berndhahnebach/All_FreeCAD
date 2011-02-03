@@ -334,7 +334,7 @@ def getPoint(target,args,mobile=False,sym=False):
 	mouse cursor when Shift is pressed, otherwise from last entered
 	point. If sym=True, x and y values stay always equal
 	'''
-	ui = FreeCADGui.activeWorkbench().draftToolBar.ui
+	ui = FreeCADGui.draftToolBar.ui
 	view = FreeCADGui.ActiveDocument.ActiveView
 	point = view.getPoint(args["Position"][0],args["Position"][1])
 	point = snapPoint(target,point,args["Position"],args["CtrlDown"])
@@ -382,7 +382,7 @@ class Tracker:
 	def __init__(self,dotted=False,scolor=None,swidth=None,children=[],ontop=False):
                 self.ontop = ontop
 		color = coin.SoBaseColor()
-		color.rgb = scolor or FreeCADGui.activeWorkbench().draftToolBar.\
+		color.rgb = scolor or FreeCADGui.draftToolBar.\
 			ui.getDefaultColor("ui")
 		drawstyle = coin.SoDrawStyle()
 		if swidth:
@@ -429,7 +429,7 @@ class snapTracker(Tracker):
 	"A Snap Mark tracker, used by tools that support snapping"
 	def __init__(self):
 		color = coin.SoBaseColor()
-		color.rgb = FreeCADGui.activeWorkbench().draftToolBar.\
+		color.rgb = FreeCADGui.draftToolBar.\
 			ui.getDefaultColor("snap")
 		self.marker = coin.SoMarkerSet() # this is the marker symbol
 		self.marker.markerIndex = coin.SoMarkerSet.CIRCLE_FILLED_9_9
@@ -685,7 +685,7 @@ class editTracker(Tracker):
 	"A node edit tracker"
 	def __init__(self,pos=Vector(0,0,0),name="None",idx=0):
 		color = coin.SoBaseColor()
-		color.rgb = FreeCADGui.activeWorkbench().draftToolBar.\
+		color.rgb = FreeCADGui.draftToolBar.\
 			ui.getDefaultColor("snap")
 		self.marker = coin.SoMarkerSet() # this is the marker symbol
 		self.marker.markerIndex = coin.SoMarkerSet.SQUARE_FILLED_9_9
@@ -803,7 +803,7 @@ class SelectPlane:
 		if self.doc:
 			FreeCAD.activeDraftCommand = self
 			self.view = FreeCADGui.ActiveDocument.ActiveView
-			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
+			self.ui = FreeCADGui.draftToolBar.ui
 			self.ui.selectPlaneUi()
 			msg(translate("draft", "Pick a face to define the drawing plane\n"))
 			self.ui.sourceCmd = self
@@ -897,11 +897,11 @@ class Creator:
 			self.finish()
 		else:
 			FreeCAD.activeDraftCommand = self
-                        self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
+                        self.ui = FreeCADGui.draftToolBar.ui
                         self.ui.cross(True)
                         self.ui.sourceCmd = self
                         self.ui.cmdlabel.setText(name)
-			FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
+			FreeCADGui.draftToolBar.draftWidget.setVisible(True)
 			plane.setup(fcvec.neg(self.view.getViewDirection()), Vector(0,0,0))
 			self.node = []
 			self.pos = []
@@ -1795,7 +1795,7 @@ class Text(Creator):
 			self.ui.xValue.selectAll()
 			self.snap = snapTracker()
 			msg(translate("draft", "Pick location point:\n"))
-			FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
+			FreeCADGui.draftToolBar.draftWidget.setVisible(True)
 
 	def finish(self,closed=False):
 		"terminates the operation"
@@ -1865,7 +1865,7 @@ class Dimension(Creator):
                                 self.center = None
                                 self.constraintrack = lineTracker(dotted=True)
                                 msg(translate("draft", "Pick first point:\n"))
-                                FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
+                                FreeCADGui.draftToolBar.draftWidget.setVisible(True)
 
 	def finish(self,closed=False):
 		"terminates the operation"
@@ -2045,8 +2045,8 @@ class Modifier:
 		else:
 			FreeCAD.activeDraftCommand = self
 			self.view = FreeCADGui.ActiveDocument.ActiveView
-			self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
-			FreeCADGui.activeWorkbench().draftToolBar.draftWidget.setVisible(True)
+			self.ui = FreeCADGui.draftToolBar.ui
+			FreeCADGui.draftToolBar.draftWidget.setVisible(True)
 			plane.setup(fcvec.neg(self.view.getViewDirection()), Vector(0,0,0))
 			self.node = []
 			self.ui.sourceCmd = self
@@ -3209,7 +3209,7 @@ class ToggleConstructionMode():
 			'ToolTip': str(translate("draft", "Toggles the Construction Mode for next objects.").toLatin1())}
 
 	def Activated(self):
-		FreeCADGui.activeWorkbench().draftToolBar.ui.constrButton.toggle()
+		FreeCADGui.draftToolBar.ui.constrButton.toggle()
 
 class Drawing(Modifier):
         "The Draft Drawing command definition"
@@ -3533,7 +3533,7 @@ class AddToGroup():
                 for g in self.groups:
                         o = FreeCAD.ActiveDocument.getObject(g)
                         if o: self.labels.append(o.Label)
-                self.ui = FreeCADGui.activeWorkbench().draftToolBar.ui
+                self.ui = FreeCADGui.draftToolBar.ui
                 self.ui.sourceCmd = self
                 self.ui.popupMenu(self.labels)
 
