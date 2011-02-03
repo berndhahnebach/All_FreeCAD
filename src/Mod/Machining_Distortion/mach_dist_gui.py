@@ -194,7 +194,11 @@ class MyForm(QtGui.QDialog,Ui_dialog):
             shutil.rmtree(str(self.dirname))
         
         os.mkdir(str(self.dirname))
-        batch = open(str(self.dirname + "/" + 'lcmt_CALCULIX_Calculation_batch.bat'),'wb')
+        batch = open(str(self.dirname + "/" + "lcmt_CALCULIX_Calculation_batch.bat"),'wb')
+        #Tell calculixs solver spooles how many cpus to use
+        batch.write("export CCX_NPROC=4\n")
+        #If we have a tcsh
+        #batch.write("setenv CCX_NPROC 4\n")
 
         #Now do the calculation stuff for each row in the  table
         for job in range (0,self.JobTable.rowCount()):
@@ -294,36 +298,58 @@ class MyForm(QtGui.QDialog,Ui_dialog):
                             sigini_input.close()
                             meshobject.writeABAQUS(str(Case_Dir + "/" + "geometry_fe_input.inp"), translation)
                             ApplyingBC_IC(Case_Dir, young_modulus,poisson_ratio,node_numbers[0],node_numbers[1],node_numbers[2])
-                            batch.write(str("cd " + filename_without_suffix + 
+                            batch.write(str("cd \"" + self.dirname[str(self.dirname).rfind("/")+1:] + "/" + filename_without_suffix + 
                             "_"+"x_rot"+ str(int(j))+
                             "_"+"y_rot"+ str(int(k))+
                             "_"+"z_rot"+ str(int(l))+
-                            "_"+"z_l"+ str(int(i)) + "\n"))
+                            "_"+"z_l"+ str(int(i)) + "\"\n"))
                             batch.write(str(self.lineEdit.text())+" -i final_fe_input > calculix_output.out\n")
-                            batch.write("cd ..\n")
+                            batch.write("cd ~\n")
                             l= l + z_rot_intervall
                         k = k + y_rot_intervall
                     j = j + x_rot_intervall
                 i = i+ z_offset_intervall
-        batch.write("cd ..\n")
-        batch.write("find " + str(self.dirname + "/")[3:] + " -name \"sigini_output.txt\" | xargs /bin/rm\n")
-        batch.write("find " + str(self.dirname + "/")[3:] + " -name \"*.out\" | xargs /bin/rm\n")
-        batch.write("find " + str(self.dirname + "/")[3:] + " -name \"*.dat\" | xargs /bin/rm\n")
-        batch.write("find " + str(self.dirname + "/")[3:] + " -name \"*.sta\" | xargs /bin/rm\n")
-        batch.write("tar cf " + str(self.dirname)[3:] + ".tar " + str(self.dirname + "/")[3:] + "\n")
-        batch.write("rm -rf " + str(self.dirname + "/")[3:] + "\n")
-        batch.write("exit")
+        batch.write("find \"" + str(self.dirname[str(self.dirname).rfind("/")+1:] + "/") + "\" -name \"sigini_output.txt\" -exec rm -f {} \;\n")
+        batch.write("find \"" + str(self.dirname[str(self.dirname).rfind("/")+1:] + "/") + "\" -name \"*.out\" -exec rm -f {} \;\n")
+        batch.write("find \"" + str(self.dirname[str(self.dirname).rfind("/")+1:] + "/") + "\" -name \"*.dat\" -exec rm -f {} \;\n")
+        batch.write("find \"" + str(self.dirname[str(self.dirname).rfind("/")+1:] + "/") + "\" -name \"*.sta\" -exec rm -f {} \;\n")
+        batch.write("tar cf \"" + str(self.dirname[str(self.dirname).rfind("/")+1:]  + ".tar\" \"" + str(self.dirname[str(self.dirname).rfind("/")+1:] + "/") + "\"\n"))
+        batch.write("rm -rf \"" + str(self.dirname[str(self.dirname).rfind("/")+1:] + "/") + "\"\n")
         batch.close()
 
         os.chdir("c:/")
         fnull = open(os.devnull, 'w')
-        commandline = "7z a -tzip -mx=9 -mmt=on " + str(self.dirname)[0:2] + str(self.dirname)[str(self.dirname).rfind("/"):] + ".zip " + str(self.dirname)
+        commandline = "7z a -tzip -mx=0 -mmt=on \"" + str(self.dirname)[0:3] + str(self.dirname)[str(self.dirname).rfind("/")+1:] + ".zip\" \"" + str(self.dirname) + "\""
         result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
-        fnull.close()
+        
         #somehow we have to check for a false return code!
         if not result:
             shutil.rmtree(str(self.dirname))
+            
+        #Now send the zip file to the server for calculation
+        commandline = "pscp -r -l UN -pw PW " + "\"" + str(self.dirname)[0:3] + str(self.dirname)[str(self.dirname).rfind("/")+1:] + ".zip\" dynabox:/home/rmjzettl"
+        result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
+        #Now unzip, change into the directory and start the batch file
+        commandline = "plink -batch -l UN -pw PW dynabox unzip -o \'/home/rmjzettl/" + str(self.dirname)[str(self.dirname).rfind("/")+1:] + ".zip\'"
+        result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
+        commandline = "plink -batch -l UN -pw PW dynabox chmod +x \'/home/rmjzettl/" + str(self.dirname[str(self.dirname).rfind("/")+1:] + "/") + "lcmt_CALCULIX_Calculation_batch.bat\'"
+        result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
+        commandline = "plink -batch -l UN -pw PW dynabox \'/home/rmjzettl/" + str(self.dirname[str(self.dirname).rfind("/")+1:] + "/") + "lcmt_CALCULIX_Calculation_batch.bat\'"
+        result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
+        commandline = "pscp -r -l UN -pw PW dynabox:\"/home/rmjzettl/"+ str(self.dirname)[str(self.dirname).rfind("/")+1:] + ".tar\" " + str(self.dirname)[0:3]
+        result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
+        commandline = "plink -batch -l UN -pw PW dynabox rm -f \"/home/rmjzettl/"+ str(self.dirname)[str(self.dirname).rfind("/")+1:] + ".tar\""
+        result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
+        commandline = "plink -batch -l UN -pw PW dynabox rm -f \"/home/rmjzettl/"+ str(self.dirname)[str(self.dirname).rfind("/")+1:] + ".zip\""
+        result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
+        commandline = "7z x \"" + str(self.dirname)[0:3] + str(self.dirname)[str(self.dirname).rfind("/")+1:] + ".tar\" -o\"" + str(self.dirname[0:str(self.dirname).rfind("/")]) + "\""
+        result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
+        commandline = "del /Q \"" + str(self.dirname)[0:3] + str(self.dirname)[str(self.dirname).rfind("/")+1:] + ".tar\""
+        result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
+        commandline = "del /Q \"" + str(self.dirname)[0:3] + str(self.dirname)[str(self.dirname).rfind("/")+1:] + ".zip\""
+        result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
 
+        fnull.close()
         #Reset the GUI
         os.chdir("c:/")
         self.JobTable.clear()
