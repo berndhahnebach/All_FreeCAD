@@ -67,17 +67,18 @@ TaskSelectLinkProperty::TaskSelectLinkProperty(const char *sFilter,App::Property
 
     // property have to be set! 
     assert(prop);
-    if(prop->getTypeId().isDerivedFrom(App::PropertyLinkSub::getClassTypeId())){
+    if (prop->getTypeId().isDerivedFrom(App::PropertyLinkSub::getClassTypeId())) {
         LinkSub = dynamic_cast<App::PropertyLinkSub *>(prop);
-    }else
-    if(prop->getTypeId().isDerivedFrom(App::PropertyLinkList::getClassTypeId())){
+    }
+    else if (prop->getTypeId().isDerivedFrom(App::PropertyLinkList::getClassTypeId())) {
         LinkList = dynamic_cast<App::PropertyLinkList *>(prop);
-    }else
-        Base::Exception("Unknown Link property type in Gui::TaskView::TaskSelectLinkProperty::TaskSelectLinkProperty()");
-
+    }
+    else {
+        Base::Console().Warning("Unknown Link property type in "
+            "Gui::TaskView::TaskSelectLinkProperty::TaskSelectLinkProperty()");
+    }
 
     setFilter(sFilter);
-
 }
 
 TaskSelectLinkProperty::~TaskSelectLinkProperty()
@@ -104,28 +105,25 @@ void TaskSelectLinkProperty::activate(void)
     Gui::Selection().addSelectionGate(new SelectionFilterGate(Filter));
 
     // In case of LinkSub property 
-    if(LinkSub){
+    if (LinkSub) {
         // save the start values for a cnacel operation (reject())
         StartValueBuffer = LinkSub->getSubValues();
         StartObject      = LinkSub->getValue();
-        if(StartObject)
-        {
+        if(StartObject) {
             std::string ObjName = StartObject->getNameInDocument();
             std::string DocName = StartObject->getDocument()->getName();
 
-            for(std::vector<std::string>::const_iterator it = StartValueBuffer.begin();it!=StartValueBuffer.end();++it)
+            for (std::vector<std::string>::const_iterator it = StartValueBuffer.begin();it!=StartValueBuffer.end();++it)
             {
                 Gui::Selection().addSelection(DocName.c_str(),ObjName.c_str(),it->c_str());
             }
         }
         
-    }else
+    }
     // In case of LinkList property 
-    if(LinkList){
+    else if (LinkList) {
         // save the start values for a cnacel operation (reject())
         const std::vector<App::DocumentObject*> &Values = LinkList->getValues();
-
-
         for(std::vector<App::DocumentObject*>::const_iterator it = Values.begin();it!=Values.end();++it)
         {
             std::string ObjName = (*it)->getNameInDocument();
@@ -135,9 +133,7 @@ void TaskSelectLinkProperty::activate(void)
     }
 
     checkSelectionStatus();
-
 }
-
 
 bool TaskSelectLinkProperty::accept(void)
 {
@@ -165,15 +161,15 @@ bool TaskSelectLinkProperty::reject(void)
 
 void TaskSelectLinkProperty::sendSelection2Property(void)
 {
-    if(LinkSub){
+    if (LinkSub) {
         std::vector<Gui::SelectionObject> temp = Gui::Selection().getSelectionEx();
         assert(temp.size() >= 1);
         LinkSub->setValue(temp[0].getObject(),temp[0].getSubNames());
-    }else
-    if(LinkList){
+    }
+    else if (LinkList) {
         std::vector<Gui::SelectionObject> sel = Gui::Selection().getSelectionEx();
         std::vector<App::DocumentObject*> temp;
-        for(std::vector<Gui::SelectionObject>::iterator it=sel.begin();it!=sel.end();++it)
+        for (std::vector<Gui::SelectionObject>::iterator it=sel.begin();it!=sel.end();++it)
             temp.push_back(it->getObject());
         
         LinkList->setValues(temp);
@@ -185,21 +181,20 @@ void TaskSelectLinkProperty::checkSelectionStatus(void)
 {
     QPalette palette(QApplication::palette());
 
-    if(Filter->match()){
+    if (Filter->match()) {
         palette.setBrush(QPalette::Base,QColor(200,250,200));
-        on_selectionFit();
-    }else{
+        emitSelectionFit();
+    }
+    else {
         palette.setBrush(QPalette::Base,QColor(250,200,200));
-        on_selectionMisfit();
+        emitSelectionMisfit();
     }
     //ui->listWidget->setAutoFillBackground(true);
     ui->listWidget->setPalette(palette);
-
 }
 
-
 void TaskSelectLinkProperty::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
-                              Gui::SelectionSingleton::MessageType Reason)
+                                      Gui::SelectionSingleton::MessageType Reason)
 {
     if (Reason.Type == SelectionChanges::AddSelection ||
         Reason.Type == SelectionChanges::RmvSelection ||
@@ -207,7 +202,7 @@ void TaskSelectLinkProperty::OnChange(Gui::SelectionSingleton::SubjectType &rCal
         Reason.Type == SelectionChanges::ClrSelection) {
             ui->listWidget->clear();
             std::vector<Gui::SelectionSingleton::SelObj> sel = Gui::Selection().getSelection();
-            for( std::vector<Gui::SelectionSingleton::SelObj>::const_iterator it=sel.begin();it!=sel.end();++it){
+            for (std::vector<Gui::SelectionSingleton::SelObj>::const_iterator it=sel.begin();it!=sel.end();++it){
                 std::string temp;
                 temp += it->FeatName;
                 if(it->SubName != ""){
@@ -220,7 +215,6 @@ void TaskSelectLinkProperty::OnChange(Gui::SelectionSingleton::SubjectType &rCal
     }
 }
 /// @endcond
-
 
 void TaskSelectLinkProperty::on_Remove_clicked(bool)
 {
@@ -237,7 +231,6 @@ void TaskSelectLinkProperty::on_Invert_clicked(bool)
 void TaskSelectLinkProperty::on_Help_clicked(bool)
 {
 }
-
 
 
 #include "moc_TaskSelectLinkProperty.cpp"
