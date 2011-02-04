@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <sstream>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
@@ -87,35 +88,42 @@ void PropertyFileIncluded::setValue(const char* sFile, const char* sName)
         if (_cValue == sFile)
             throw Base::Exception("Not possible to set the same file!");
 
+        std::string pathTrans = getDocTransientPath();
+        Base::FileInfo file(sFile);
+        std::string path = file.dirPath();
+        if (!file.exists()) {
+            std::stringstream str;
+            str << "File " << file.filePath() << " does not exist.";
+            throw Base::Exception(str.str());
+        }
+
         aboutToSetValue(); // undo redo by move the file away with temp name
 
         // remove old file (if not moved by undo)
         Base::FileInfo value(_cValue);
+        std::string pathAct = value.dirPath();
         if (value.exists())
             value.deleteFile();
-
-        Base::FileInfo file(sFile);
-        std::string pathTrans = getDocTransientPath();
-        std::string path = file.dirPath();
-        std::string pathAct = value.dirPath();
 
         // if a special name given, use this instead
         if (sName) {
             Base::FileInfo ExtraName(path + "/" + sName);
-            if(ExtraName.exists() ) {
-                // if a file with this name already exist search for a new one
+            if (ExtraName.exists() ) {
+                // if a file with this name already exists search for a new one
                 int i=0;
                 
-                do{
+                do {
                     i++;
                     std::stringstream str;
                     str << path << "/" << sName << i;
                     ExtraName.setFile(str.str());
-                }while (ExtraName.exists());
+                }
+                while (ExtraName.exists());
                 _cValue = ExtraName.filePath();
                 _BaseFileName = ExtraName.fileName();
 
-            }else{
+            }
+            else {
                 _cValue = path + "/" + sName;
                 _BaseFileName = sName;
             }
@@ -128,12 +136,22 @@ void PropertyFileIncluded::setValue(const char* sFile, const char* sName)
         // if the files is already in transient dir of the document, just use it
         if (path == pathTrans) {
             bool done = file.renameFile(_cValue.c_str());
-            assert(done);
+            //assert(done);
+            if (!done) {
+                std::stringstream str;
+                str << "Cannot rename file " << file.filePath() << " to " << _cValue;
+                throw Base::Exception(str.str());
+            }
         }
         // otherwise copy from origin location 
         else {
             bool done = file.copyTo(_cValue.c_str());
-            assert(done); 
+            //assert(done); 
+            if (!done) {
+                std::stringstream str;
+                str << "Cannot copy file from " << file.filePath() << " to " << _cValue;
+                throw Base::Exception(str.str());
+            }
         }
 
         hasSetValue();
