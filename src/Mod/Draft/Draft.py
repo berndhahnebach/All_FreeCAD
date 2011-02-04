@@ -512,6 +512,23 @@ def move(objectslist,vector,copy=False):
         if len(newobjlist) == 1: return newobjlist[0]
         return newobjlist
 
+def rectArray(objectslist,xvector,yvector,xnum,ynum):
+        '''rectArray(objectslist,xvector,yvector,xnum,ynum): Creates an array of the
+        objects contained in list (that can be an object or a list of objects) with
+        xnum of iterations in the x direction at xvector distance between iterations.
+        Same for y direction with yvector and ynum.'''
+        typecheck([(xvector,Vector), (yvector,Vector), (xnum,int), (ynum,int)], "rectArray")
+        if not isinstance(objectslist,list): objectslist = [objectslist]
+        for xcount in range(xnum):
+            currentxvector=fcvec.scale(xvector,xcount)
+            if not xcount==0:
+                move(objectslist,currentxvector,True)
+            for ycount in range(ynum):
+                currentxvector=FreeCAD.Base.Vector(currentxvector)
+                currentyvector=currentxvector.add(fcvec.scale(yvector,ycount))
+                if not ycount==0:
+                    move(objectslist,currentyvector,True)
+
 def rotate(objectslist,angle,center=Vector(0,0,0),axis=Vector(0,0,1),copy=False):
         '''rotate(objects,angle,[center,axis,copy]): Rotates the objects contained
         in objects (that can be a list of objects or an object) of the given angle
