@@ -262,6 +262,10 @@ void View3DInventor::OnChange(ParameterGrp::SubjectType &rCaller,ParameterGrp::M
         Base::Type type = Base::Type::fromName(model.c_str());
         _viewer->setNavigationType(type);
     }
+    else if (strcmp(Reason,"InvertZoom") == 0) {
+        bool on = rGrp.GetBool("InvertZoom", false);
+        _viewer->navigationStyle()->setZoomInverted(on);
+    }
     else if (strcmp(Reason,"EyeDistance") == 0) {
         _viewer->setStereoOffset(rGrp.GetFloat("EyeDistance",65.0));
     }

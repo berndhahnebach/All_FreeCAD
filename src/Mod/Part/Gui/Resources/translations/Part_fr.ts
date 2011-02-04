@@ -122,8 +122,8 @@
         <translation type="obsolete">Créer un cube...</translation>
     </message>
     <message>
-        <source>Create a Box feature</source>
-        <translation>Crée un objet Cube</translation>
+        <source>Create a box solid</source>
+        <translation>Crée un objet cube</translation>
     </message>
     <message>
         <source>Box</source>
@@ -141,7 +141,7 @@
         <translation>Cube fix 1</translation>
     </message>
     <message>
-        <source>Create a box feature without dialog</source>
+        <source>Create a box solid without dialog</source>
         <translation>Créer un objet Cube sans fenêtre de dialogue</translation>
     </message>
 </context>
@@ -156,7 +156,7 @@
         <translation>Cube fix 2</translation>
     </message>
     <message>
-        <source>Create a box feature without dialog</source>
+        <source>Create a box solid without dialog</source>
         <translation>Créer un objet Cube sans fenêtre de dialogue</translation>
     </message>
 </context>
@@ -171,7 +171,7 @@
         <translation>Intersection</translation>
     </message>
     <message>
-        <source>Intersection of two shapes</source>
+        <source>Make an intersection of two shapes</source>
         <translation>Intersection de deux formes</translation>
     </message>
 </context>
@@ -186,7 +186,7 @@
         <translation type="unfinished">Cône</translation>
     </message>
     <message>
-        <source>Create a cone feature</source>
+        <source>Create a cone solid</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -216,7 +216,7 @@
         <translation>Couper</translation>
     </message>
     <message>
-        <source>Create a Cut feature</source>
+        <source>Make a cut of two shapes</source>
         <translation>Créer une coupure</translation>
     </message>
 </context>
@@ -299,7 +299,7 @@
         <translation type="obsolete">Définir l&apos;union de deux formes</translation>
     </message>
     <message>
-        <source>Make union of several shapes</source>
+        <source>Make a union of several shapes</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -449,7 +449,7 @@
         <translation>Coupe</translation>
     </message>
     <message>
-        <source>Make section of two shapes</source>
+        <source>Make a section of two shapes</source>
         <translation>Générer la coupe de deux objets</translation>
     </message>
 </context>
@@ -494,7 +494,7 @@
         <translation type="unfinished">Sphère</translation>
     </message>
     <message>
-        <source>Create a sphere feature</source>
+        <source>Create a sphere solid</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -509,7 +509,7 @@
         <translation type="unfinished">Tore</translation>
     </message>
     <message>
-        <source>Create a torus feature</source>
+        <source>Create a torus solid</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

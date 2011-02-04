@@ -68,6 +68,7 @@ void DlgSettings3DViewImp::saveSettings()
     QVariant data = comboNavigationStyle->itemData(comboNavigationStyle->currentIndex(), Qt::UserRole);
     hGrp->SetASCII("NavigationStyle", (const char*)data.toByteArray());
 
+    checkBoxInvertZoom->onSave();
     checkBoxAntiAliasing->onSave();
     CheckBox_CornerCoordSystem->onSave();
     CheckBox_ShowFPS->onSave();
@@ -82,6 +83,7 @@ void DlgSettings3DViewImp::saveSettings()
 
 void DlgSettings3DViewImp::loadSettings()
 {
+    checkBoxInvertZoom->onRestore();
     checkBoxAntiAliasing->onRestore();
     CheckBox_CornerCoordSystem->onRestore();
     CheckBox_ShowFPS->onRestore();

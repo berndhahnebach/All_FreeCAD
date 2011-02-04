@@ -104,6 +104,9 @@ public:
     void stopAnimating(void);
     SbBool isAnimating(void) const;
 
+    void setZoomInverted(SbBool);
+    SbBool isZoomInverted() const;
+
     void updateAnimation();
     void redraw();
 
@@ -177,6 +180,7 @@ protected:
     SbBool menuenabled;
     SbBool ctrldown, shiftdown, altdown;
     SbBool button1down, button2down, button3down;
+    SbBool invertZoom;
 
     /** @name Mouse model */
     //@{

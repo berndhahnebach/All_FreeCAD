@@ -122,7 +122,7 @@
         <translation type="obsolete">Skapa låda...</translation>
     </message>
     <message>
-        <source>Create a Box feature</source>
+        <source>Create a box solid</source>
         <translation>Skapa en kub</translation>
     </message>
     <message>
@@ -141,7 +141,7 @@
         <translation>Kub fix 1</translation>
     </message>
     <message>
-        <source>Create a box feature without dialog</source>
+        <source>Create a box solid without dialog</source>
         <translation>Skapa en kub utan dialog</translation>
     </message>
 </context>
@@ -156,7 +156,7 @@
         <translation>Kub fix 2</translation>
     </message>
     <message>
-        <source>Create a box feature without dialog</source>
+        <source>Create a box solid without dialog</source>
         <translation>Skapa en kub utan dialog</translation>
     </message>
 </context>
@@ -171,7 +171,7 @@
         <translation>Skärning</translation>
     </message>
     <message>
-        <source>Intersection of two shapes</source>
+        <source>Make an intersection of two shapes</source>
         <translation>Skärning av två former</translation>
     </message>
 </context>
@@ -186,7 +186,7 @@
         <translation type="unfinished">Kpn</translation>
     </message>
     <message>
-        <source>Create a cone feature</source>
+        <source>Create a cone solid</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -216,7 +216,7 @@
         <translation>Schneiden</translation>
     </message>
     <message>
-        <source>Create a Cut feature</source>
+        <source>Make a cut of two shapes</source>
         <translation>Skapa ett klipp</translation>
     </message>
 </context>
@@ -299,7 +299,7 @@
         <translation type="obsolete">Förena två former</translation>
     </message>
     <message>
-        <source>Make union of several shapes</source>
+        <source>Make a union of several shapes</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -449,7 +449,7 @@
         <translation>Sektionering</translation>
     </message>
     <message>
-        <source>Make section of two shapes</source>
+        <source>Make a section of two shapes</source>
         <translation>Sektionera två former</translation>
     </message>
 </context>
@@ -494,7 +494,7 @@
         <translation type="unfinished">Sfär</translation>
     </message>
     <message>
-        <source>Create a sphere feature</source>
+        <source>Create a sphere solid</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -509,7 +509,7 @@
         <translation type="unfinished">Torus</translation>
     </message>
     <message>
-        <source>Create a torus feature</source>
+        <source>Create a torus solid</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
