@@ -37,6 +37,7 @@
 #endif
 #include <Inventor/sensors/SoTimerSensor.h>
 
+#include <App/Application.h>
 #include "NavigationStyle.h"
 #include "View3DInventorViewer.h"
 #include "Application.h"
@@ -138,6 +139,8 @@ void NavigationStyle::initialize()
     this->ctrldown = FALSE;
     this->shiftdown = FALSE;
     this->altdown = FALSE;
+    this->invertZoom = App::GetApplication().GetParameterGroupByPath
+        ("User parameter:BaseApp/Preferences/View")->GetBool("InvertZoom",false);
 }
 
 void NavigationStyle::finalize()
@@ -698,6 +701,16 @@ void NavigationStyle::stopAnimating(void)
         NavigationStyle::IDLE : NavigationStyle::INTERACT);
 }
 
+void NavigationStyle::setZoomInverted(SbBool on)
+{
+    this->invertZoom = on;
+}
+
+SbBool NavigationStyle::isZoomInverted() const
+{
+    return this->invertZoom;
+}
+
 void NavigationStyle::startSelection(AbstractMouseSelection* mouse)
 {
     if (!mouse)
@@ -1165,11 +1178,17 @@ SbBool InventorNavigationStyle::processSoEvent(const SoEvent * const ev)
             this->button3down = press;
             break;
         case SoMouseButtonEvent::BUTTON4:
-            zoom(viewer->getCamera(), 0.05f);
+            if (this->invertZoom)
+                zoom(viewer->getCamera(), -0.05f);
+            else
+                zoom(viewer->getCamera(), 0.05f);
             processed = TRUE;
             break;
         case SoMouseButtonEvent::BUTTON5:
-            zoom(viewer->getCamera(), -0.05f);
+            if (this->invertZoom)
+                zoom(viewer->getCamera(), 0.05f);
+            else
+                zoom(viewer->getCamera(), -0.05f);
             processed = TRUE;
             break;
         default:
@@ -1504,11 +1523,17 @@ SbBool CADNavigationStyle::processSoEvent(const SoEvent * const ev)
             this->button3down = press;
             break;
         case SoMouseButtonEvent::BUTTON4:
-            zoom(viewer->getCamera(), 0.05f);
+            if (this->invertZoom)
+                zoom(viewer->getCamera(), -0.05f);
+            else
+                zoom(viewer->getCamera(), 0.05f);
             processed = TRUE;
             break;
         case SoMouseButtonEvent::BUTTON5:
-            zoom(viewer->getCamera(), -0.05f);
+            if (this->invertZoom)
+                zoom(viewer->getCamera(), 0.05f);
+            else
+                zoom(viewer->getCamera(), -0.05f);
             processed = TRUE;
             break;
         default:

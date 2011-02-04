@@ -119,7 +119,7 @@ CmdPartBox2::CmdPartBox2()
     sAppModule    = "Part";
     sGroup        = QT_TR_NOOP("Part");
     sMenuText     = QT_TR_NOOP("Box fix 1");
-    sToolTipText  = QT_TR_NOOP("Create a box feature without dialog");
+    sToolTipText  = QT_TR_NOOP("Create a box solid without dialog");
     sWhatsThis    = "Part_Box2";
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Box";
@@ -161,7 +161,7 @@ CmdPartBox3::CmdPartBox3()
     sAppModule    = "Part";
     sGroup        = QT_TR_NOOP("Part");
     sMenuText     = QT_TR_NOOP("Box fix 2");
-    sToolTipText  = QT_TR_NOOP("Create a box feature without dialog");
+    sToolTipText  = QT_TR_NOOP("Create a box solid without dialog");
     sWhatsThis    = "Part_Box3";
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Box";
@@ -234,7 +234,7 @@ CmdPartCut::CmdPartCut()
     sAppModule    = "Part";
     sGroup        = QT_TR_NOOP("Part");
     sMenuText     = QT_TR_NOOP("Cut");
-    sToolTipText  = QT_TR_NOOP("Create a Cut feature");
+    sToolTipText  = QT_TR_NOOP("Make a cut of two shapes");
     sWhatsThis    = "Part_Cut";
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Cut";
@@ -282,7 +282,7 @@ CmdPartCommon::CmdPartCommon()
     sAppModule    = "Part";
     sGroup        = QT_TR_NOOP("Part");
     sMenuText     = QT_TR_NOOP("Intersection");
-    sToolTipText  = QT_TR_NOOP("Intersection of two shapes");
+    sToolTipText  = QT_TR_NOOP("Make an intersection of two shapes");
     sWhatsThis    = "Part_Common";
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Common";
@@ -334,7 +334,7 @@ CmdPartFuse::CmdPartFuse()
     sAppModule    = "Part";
     sGroup        = QT_TR_NOOP("Part");
     sMenuText     = QT_TR_NOOP("Union");
-    sToolTipText  = QT_TR_NOOP("Make union of several shapes");
+    sToolTipText  = QT_TR_NOOP("Make a union of several shapes");
     sWhatsThis    = "Part_Fuse";
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Fuse";
@@ -386,7 +386,7 @@ CmdPartSection::CmdPartSection()
     sAppModule    = "Part";
     sGroup        = QT_TR_NOOP("Part");
     sMenuText     = QT_TR_NOOP("Section");
-    sToolTipText  = QT_TR_NOOP("Make section of two shapes");
+    sToolTipText  = QT_TR_NOOP("Make a section of two shapes");
     sWhatsThis    = "Part_Section";
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Section";

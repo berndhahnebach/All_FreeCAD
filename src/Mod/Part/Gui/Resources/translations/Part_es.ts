@@ -122,7 +122,7 @@
         <translation type="obsolete">Crear prisma...</translation>
     </message>
     <message>
-        <source>Create a Box feature</source>
+        <source>Create a box solid</source>
         <translation>Crea una operación de prisma</translation>
     </message>
     <message>
@@ -141,7 +141,7 @@
         <translation>Fijar prisma 1</translation>
     </message>
     <message>
-        <source>Create a box feature without dialog</source>
+        <source>Create a box solid without dialog</source>
         <translation>Crea una operación de prisma sin letrero de diálogo</translation>
     </message>
 </context>
@@ -156,7 +156,7 @@
         <translation>Fijar prisma 2</translation>
     </message>
     <message>
-        <source>Create a box feature without dialog</source>
+        <source>Create a box solid without dialog</source>
         <translation>Crea una operación de prisma sin letrero de diálogo</translation>
     </message>
 </context>
@@ -171,7 +171,7 @@
         <translation>Intersección</translation>
     </message>
     <message>
-        <source>Intersection of two shapes</source>
+        <source>Make an intersection of two shapes</source>
         <translation>Intersección de dos formas</translation>
     </message>
 </context>
@@ -186,7 +186,7 @@
         <translation type="unfinished">Cono</translation>
     </message>
     <message>
-        <source>Create a cone feature</source>
+        <source>Create a cone solid</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -216,7 +216,7 @@
         <translation>Cortar</translation>
     </message>
     <message>
-        <source>Create a Cut feature</source>
+        <source>Make a cut of two shapes</source>
         <translation>Crea una operación de corte</translation>
     </message>
 </context>
@@ -299,7 +299,7 @@
         <translation type="obsolete">Hace la unión de dos formas</translation>
     </message>
     <message>
-        <source>Make union of several shapes</source>
+        <source>Make a union of several shapes</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -449,7 +449,7 @@
         <translation>Sección</translation>
     </message>
     <message>
-        <source>Make section of two shapes</source>
+        <source>Make a section of two shapes</source>
         <translation>Hace una sección de dos formas</translation>
     </message>
 </context>
@@ -494,7 +494,7 @@
         <translation type="unfinished">Esfera</translation>
     </message>
     <message>
-        <source>Create a sphere feature</source>
+        <source>Create a sphere solid</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -509,7 +509,7 @@
         <translation type="unfinished">Toro</translation>
     </message>
     <message>
-        <source>Create a torus feature</source>
+        <source>Create a torus solid</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

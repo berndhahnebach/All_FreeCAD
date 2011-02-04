@@ -122,8 +122,8 @@
         <translation type="obsolete">Quader erstellen...</translation>
     </message>
     <message>
-        <source>Create a Box feature</source>
-        <translation>Erstellt ein Box-Feature</translation>
+        <source>Create a box solid</source>
+        <translation>Erstellt einen Quader</translation>
     </message>
     <message>
         <source>Box</source>
@@ -141,8 +141,8 @@
         <translation>Quader fix 1</translation>
     </message>
     <message>
-        <source>Create a box feature without dialog</source>
-        <translation>Erstellt oder ändert ein Box-Feature ohne Dialog</translation>
+        <source>Create a box solid without dialog</source>
+        <translation>Erstellt oder ändert einen Quader ohne Dialog</translation>
     </message>
 </context>
 <context>
@@ -156,8 +156,8 @@
         <translation>Quader fix 2</translation>
     </message>
     <message>
-        <source>Create a box feature without dialog</source>
-        <translation>Erstellt ein Box-Feature ohne Dialog</translation>
+        <source>Create a box solid without dialog</source>
+        <translation>Erstellt einen Quader ohne Dialog</translation>
     </message>
 </context>
 <context>
@@ -171,8 +171,8 @@
         <translation>Überschneidung</translation>
     </message>
     <message>
-        <source>Intersection of two shapes</source>
-        <translation>Überschneidung zweier Körper</translation>
+        <source>Make an intersection of two shapes</source>
+        <translation>Überschneidet zwei Formen</translation>
     </message>
 </context>
 <context>
@@ -186,8 +186,8 @@
         <translation>Kegel</translation>
     </message>
     <message>
-        <source>Create a cone feature</source>
-        <translation>Erstelle einen Kegel</translation>
+        <source>Create a cone solid</source>
+        <translation>Erstellt einen Kegel</translation>
     </message>
 </context>
 <context>
@@ -216,8 +216,8 @@
         <translation>Schneiden</translation>
     </message>
     <message>
-        <source>Create a Cut feature</source>
-        <translation>Erstellt ein Cut-Feature</translation>
+        <source>Make a cut of two shapes</source>
+        <translation>Schneidet zwei Formen</translation>
     </message>
 </context>
 <context>
@@ -301,8 +301,8 @@
         <translation type="obsolete">Zwei Körper vereinigen</translation>
     </message>
     <message>
-        <source>Make union of several shapes</source>
-        <translation>Vereinigung von mehreren Formen</translation>
+        <source>Make a union of several shapes</source>
+        <translation>Vereinigt mehrere Formen</translation>
     </message>
 </context>
 <context>
@@ -451,7 +451,7 @@
         <translation>Schnitt</translation>
     </message>
     <message>
-        <source>Make section of two shapes</source>
+        <source>Make a section of two shapes</source>
         <translation>Schnitt von zwei Formen erzeugen</translation>
     </message>
 </context>
@@ -496,8 +496,8 @@
         <translation>Kugel</translation>
     </message>
     <message>
-        <source>Create a sphere feature</source>
-        <translation>Erstelle eine Kugel</translation>
+        <source>Create a sphere solid</source>
+        <translation>Erstellt eine Kugel</translation>
     </message>
 </context>
 <context>
@@ -511,8 +511,8 @@
         <translation>Torus</translation>
     </message>
     <message>
-        <source>Create a torus feature</source>
-        <translation>Erstelle einen Torus</translation>
+        <source>Create a torus solid</source>
+        <translation>Erstellt einen Torus</translation>
     </message>
 </context>
 <context>
