@@ -126,8 +126,10 @@ class MyForm(QtGui.QDialog,Ui_dialog):
                                     
         gnu_plot_input_file.close()
         os.chdir(str(self.dirname))
-        process = subprocess.Popen("gnuplot gnu_plot_input.txt",shell=True)
-        process.wait()
+        fnull = open(os.devnull, 'w')
+        commandline = FreeCAD.getHomePath() + "bin/gnuplot/gnuplot gnu_plot_input.txt"
+        result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
+        fnull.close()
 
 
 
