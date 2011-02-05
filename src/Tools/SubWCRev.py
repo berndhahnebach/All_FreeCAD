@@ -36,135 +36,135 @@ import StringIO
 
 # SAX handler to parse the subversion output
 class SvnHandler(xml.sax.handler.ContentHandler):
-  def __init__(self):
-    self.inUrl = 0
-    self.inDate = 0
-    self.mapping = {}
+    def __init__(self):
+        self.inUrl = 0
+        self.inDate = 0
+        self.mapping = {}
+
+    def startElement(self, name, attributes):
+        if name == "entry":
+            self.buffer = ""
+            self.mapping["Rev"] = attributes["revision"]
+        elif name == "url":
+            self.inUrl = 1
+        elif name == "date":
+            self.inDate = 1
  
-  def startElement(self, name, attributes):
-    if name == "entry":
-      self.buffer = ""
-      self.mapping["Rev"] = attributes["revision"]
-    elif name == "url":
-      self.inUrl = 1
-    elif name == "date":
-      self.inDate = 1
- 
-  def characters(self, data):
-    if self.inUrl:
-      self.buffer += data
-    elif self.inDate:
-      self.buffer += data
- 
-  def endElement(self, name):
-    if name == "url":
-      self.inUrl = 0
-      self.mapping["Url"] = self.buffer
-      self.buffer = ""
-    elif name == "date":
-      self.inDate = 0
-      self.mapping["Date"] = self.buffer
-      self.buffer = ""
+    def characters(self, data):
+        if self.inUrl:
+            self.buffer += data
+        elif self.inDate:
+            self.buffer += data
+
+    def endElement(self, name):
+        if name == "url":
+            self.inUrl = 0
+            self.mapping["Url"] = self.buffer
+            self.buffer = ""
+        elif name == "date":
+            self.inDate = 0
+            self.mapping["Date"] = self.buffer
+            self.buffer = ""
 
 
 def main():
-	#if(len(sys.argv) != 2):
-	#    sys.stderr.write("Usage:  SubWCRev \"`svn info .. --xml`\"\n")
+    #if(len(sys.argv) != 2):
+    #    sys.stderr.write("Usage:  SubWCRev \"`svn info .. --xml`\"\n")
 
-	srcdir="."
-	bindir="."
-	try:
-		opts, args = getopt.getopt(sys.argv[1:], "sb:", ["srcdir=","bindir="])
-	except getopt.GetoptError:
-		pass
+    srcdir="."
+    bindir="."
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "sb:", ["srcdir=","bindir="])
+    except getopt.GetoptError:
+        pass
 
-	for o, a in opts:
-		if o in ("-s", "--srcdir"):
-			srcdir = a
-		if o in ("-b", "--bindir"):
-			bindir = a
+    for o, a in opts:
+        if o in ("-s", "--srcdir"):
+            srcdir = a
+        if o in ("-b", "--bindir"):
+            bindir = a
 
-	parser=xml.sax.make_parser()
-	handler=SvnHandler()
-	parser.setContentHandler(handler)
+    parser=xml.sax.make_parser()
+    handler=SvnHandler()
+    parser.setContentHandler(handler)
 
-	#Create an XML stream with the required information and read in with a SAX parser
-	Ver=os.popen("svnversion %s -n" % (srcdir)).read()
-	Info=os.popen("svn info %s --xml" % (srcdir)).read()
-	try:
-		inpsrc = xml.sax.InputSource()
-		strio=StringIO.StringIO(Info)
-		inpsrc.setByteStream(strio)
-		parser.parse(inpsrc)
-	except:
-		sys.stderr.write("No svn repository\n")
-		out  = open("%s/src/Build/Version.h" % (bindir),"w");
-		out.write("\n")
-		out.write("#define FCVersionMajor \"0\"\n")
-		out.write("#define FCVersionMinor \"11\"\n")
-		out.write("#define FCVersionName \"Dagoba\"\n")
-		out.write("#define FCRevision \"Unknown\"\n")
-		out.write("#define FCRevisionDate \"Unknown\"\n")
-		out.write("#define FCRepositoryURL \"Unknown\"\n")
-		out.write("#define FCCurrentDateT \"Unknown\"\n")
-		out.close()
-		return # exit normally to not stop a build where no svn is installed
+    #Create an XML stream with the required information and read in with a SAX parser
+    Ver=os.popen("svnversion %s -n" % (srcdir)).read()
+    Info=os.popen("svn info %s --xml" % (srcdir)).read()
+    try:
+        inpsrc = xml.sax.InputSource()
+        strio=StringIO.StringIO(Info)
+        inpsrc.setByteStream(strio)
+        parser.parse(inpsrc)
+    except:
+        sys.stderr.write("No svn repository\n")
+        out  = open("%s/src/Build/Version.h" % (bindir),"w");
+        out.write("\n")
+        out.write("#define FCVersionMajor \"0\"\n")
+        out.write("#define FCVersionMinor \"11\"\n")
+        out.write("#define FCVersionName \"Dagoba\"\n")
+        out.write("#define FCRevision \"Unknown\"\n")
+        out.write("#define FCRevisionDate \"Unknown\"\n")
+        out.write("#define FCRepositoryURL \"Unknown\"\n")
+        out.write("#define FCCurrentDateT \"Unknown\"\n")
+        out.close()
+        return # exit normally to not stop a build where no svn is installed
 
-	#Information of the Subversion stuff
-	Url = handler.mapping["Url"]
-	Rev = handler.mapping["Rev"]
-	Date = handler.mapping["Date"]
-	Date = Date[:19]
-	#Same format as SubWCRev does
-	Date = string.replace(Date,'T',' ')
-	Date = string.replace(Date,'-','/')
+    #Information of the Subversion stuff
+    Url = handler.mapping["Url"]
+    Rev = handler.mapping["Rev"]
+    Date = handler.mapping["Date"]
+    Date = Date[:19]
+    #Same format as SubWCRev does
+    Date = string.replace(Date,'T',' ')
+    Date = string.replace(Date,'-','/')
 
-	#Date is given as GMT. Now we must convert to local date.
-	m=time.strptime(Date,"%Y/%m/%d %H:%M:%S")
-	#Copy the tuple and set tm_isdst to 0 because it's GMT
-	l=(m.tm_year,m.tm_mon,m.tm_mday,m.tm_hour,m.tm_min,m.tm_sec,m.tm_wday,m.tm_yday,0)
-	#Take timezone into account
-	t=time.mktime(l)-time.timezone
-	Date=time.strftime("%Y/%m/%d %H:%M:%S",time.localtime(t))
+    #Date is given as GMT. Now we must convert to local date.
+    m=time.strptime(Date,"%Y/%m/%d %H:%M:%S")
+    #Copy the tuple and set tm_isdst to 0 because it's GMT
+    l=(m.tm_year,m.tm_mon,m.tm_mday,m.tm_hour,m.tm_min,m.tm_sec,m.tm_wday,m.tm_yday,0)
+    #Take timezone into account
+    t=time.mktime(l)-time.timezone
+    Date=time.strftime("%Y/%m/%d %H:%M:%S",time.localtime(t))
 
-	#Get the current local date
-	Time = time.strftime("%Y/%m/%d %H:%M:%S")
+    #Get the current local date
+    Time = time.strftime("%Y/%m/%d %H:%M:%S")
 
-	Mods = 'Src not modified'
-	Mixed = 'Src not mixed'
-	Range = Rev
+    Mods = 'Src not modified'
+    Mixed = 'Src not mixed'
+    Range = Rev
 
-	# if version string ends with an 'M'
-	r=re.search("M$",Ver)
-	if r != None:
-	    Mods = 'Src modified'
+    # if version string ends with an 'M'
+    r=re.search("M$",Ver)
+    if r != None:
+        Mods = 'Src modified'
 
-	# if version string contains a range
-	r=re.match("^\\d+\\:\\d+",Ver)
-	if r != None:
-	    Mixed = 'Src mixed'
-	    Range = Ver[:r.end()]
+    # if version string contains a range
+    r=re.match("^\\d+\\:\\d+",Ver)
+    if r != None:
+        Mixed = 'Src mixed'
+        Range = Ver[:r.end()]
 
-	# Open the template file and the version file
-	file = open("%s/src/Build/Version.h.in" % (srcdir))
-	lines = file.readlines()
-	file.close()
-	out  = open("%s/src/Build/Version.h" % (bindir),"w");
+    # Open the template file and the version file
+    file = open("%s/src/Build/Version.h.in" % (srcdir))
+    lines = file.readlines()
+    file.close()
+    out  = open("%s/src/Build/Version.h" % (bindir),"w");
 
-	for line in lines:
-	    line = string.replace(line,'$WCREV$',Rev)
-	    line = string.replace(line,'$WCDATE$',Date)
-	    line = string.replace(line,'$WCRANGE$',Range)
-	    line = string.replace(line,'$WCURL$',Url)
-	    line = string.replace(line,'$WCNOW$',Time)
-	    line = string.replace(line,'$WCMODS?Src modified:Src not modified$',Mods)
-	    line = string.replace(line,'$WCMIXED?Src mixed:Src not mixed$',Mixed)
-	    # output
-	    out.write(line)
+    for line in lines:
+        line = string.replace(line,'$WCREV$',Rev)
+        line = string.replace(line,'$WCDATE$',Date)
+        line = string.replace(line,'$WCRANGE$',Range)
+        line = string.replace(line,'$WCURL$',Url)
+        line = string.replace(line,'$WCNOW$',Time)
+        line = string.replace(line,'$WCMODS?Src modified:Src not modified$',Mods)
+        line = string.replace(line,'$WCMIXED?Src mixed:Src not mixed$',Mixed)
+        # output
+        out.write(line)
 
-	out.write('\n')
-	out.close()
-	sys.stdout.write("%s/src/Build/Version.h written\n" % (bindir))
+    out.write('\n')
+    out.close()
+    sys.stdout.write("%s/src/Build/Version.h written\n" % (bindir))
 if __name__ == "__main__":
-	main()
+    main()
 
