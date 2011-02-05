@@ -205,7 +205,7 @@ void TaskSelectLinkProperty::OnChange(Gui::SelectionSingleton::SubjectType &rCal
             for (std::vector<Gui::SelectionSingleton::SelObj>::const_iterator it=sel.begin();it!=sel.end();++it){
                 std::string temp;
                 temp += it->FeatName;
-                if(it->SubName != ""){
+                if (strcmp(it->SubName, "") != 0){
                     temp += "::";
                     temp += it->SubName;
                 }

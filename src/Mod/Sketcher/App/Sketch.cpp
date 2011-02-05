@@ -116,6 +116,7 @@ void Sketch::setUpSketch(const std::vector<Part::Geometry *> &geo,const std::vec
     for(std::vector<Constraint *>::const_iterator it = ConstraintList.begin();it!=ConstraintList.end();++it){
         switch ((*it)->Type){
            case Coincident: addPointCoincidentConstraint((*it)->First,(*it)->FirstPos,(*it)->Second,(*it)->SecondPos,(*it)->Name.c_str()); break;
+           default: break;
         }
     }
 # endif
@@ -159,6 +160,7 @@ void Sketch::setUpSketch(const std::vector<Part::Geometry *> &geo,const std::vec
                break;
            case Angle: break;
            case None :  break;
+           case Coincident: break;
         }
     }
 
@@ -224,6 +226,7 @@ int Sketch::addLine(const Part::GeomLineSegment &line)
 }
 
 int Sketch::addLineSegment(const Part::GeomLineSegment &lineSegment)
+
 {
 # if (POINT_CONSTRAIN_OPTIMIZE)
 
@@ -552,11 +555,13 @@ int Sketch::addPointCoincidentConstraint(int geoIndex1,PointPos Pos1,int geoInde
         case start: PoPMap[geoIndex1].StartPointIndex = parameterStartIndex; break;
         case end  : PoPMap[geoIndex1].EndPointIndex = parameterStartIndex; break;
         case mid  : PoPMap[geoIndex1].MidPointIndex = parameterStartIndex; break;
+        case none : break;
     }
     switch(Pos2) {
         case start: PoPMap[geoIndex2].StartPointIndex = parameterStartIndex; break;
         case end  : PoPMap[geoIndex2].EndPointIndex = parameterStartIndex; break;
         case mid  : PoPMap[geoIndex2].MidPointIndex = parameterStartIndex; break;
+        case none : break;
     }
 
     return Const.size()-1;

@@ -331,7 +331,6 @@ void SoFCIndexedFaceSet::renderSelectionGeometry(const SbVec3f * coords3d)
 
 void SoFCIndexedFaceSet::startVisibility(SoAction * action)
 {
-    Gui::SoVisibleFaceAction *doaction = static_cast<Gui::SoVisibleFaceAction*>(action);
     SbMatrix view = SoViewingMatrixElement::get(action->getState());
     SbMatrix proj = SoProjectionMatrixElement::get(action->getState());
 

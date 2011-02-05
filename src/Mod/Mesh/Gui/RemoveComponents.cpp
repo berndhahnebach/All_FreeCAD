@@ -344,7 +344,6 @@ void RemoveComponents::selectGLCallback(void * ud, SoEventCallback * n)
         return;
     if (polygon.front() != polygon.back())
         polygon.push_back(polygon.front());
-    const SoEvent* ev = n->getEvent();
 
     SbVec3f pnt, dir;
     view->getNearPlane(pnt, dir);
