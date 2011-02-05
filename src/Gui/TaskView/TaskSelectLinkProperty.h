@@ -95,12 +95,12 @@ private:
     QWidget* proxy;
     Ui_TaskSelectLinkProperty* ui;
 
+    // selection filter for the session 
+    Gui::SelectionFilter *Filter;
+
     // posible used propetry types, only one is used
     App::PropertyLinkSub  *LinkSub;
     App::PropertyLinkList *LinkList;
-
-    // selection filter for the session 
-    Gui::SelectionFilter *Filter;
 
     // string stores the Property at the beginning (for Cancel)
     std::vector<std::string> StartValueBuffer;

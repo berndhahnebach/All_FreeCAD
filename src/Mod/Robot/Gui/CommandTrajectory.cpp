@@ -349,8 +349,8 @@ void CmdRobotEdge2Trac::activated(int iMsg)
         doCommand(Gui,"Gui.activeDocument().setEdit('%s')",EdgeObj->getNameInDocument());
     }else if (EdgeFilter.match()) {
         // get the selected object
-        Part::Feature *part = static_cast<Part::Feature*>(EdgeFilter.Result[0][0].getObject());
-        const std::vector<std::string> &sub = EdgeFilter.Result[0][0].getSubNames();
+        //Part::Feature *part = static_cast<Part::Feature*>(EdgeFilter.Result[0][0].getObject());
+        //const std::vector<std::string> &sub = EdgeFilter.Result[0][0].getSubNames();
         //assert (sub.size()==1);
         //// get the selected sub shape (a Face)
         //const Part::TopoShape &shape = part->Shape.getValue();

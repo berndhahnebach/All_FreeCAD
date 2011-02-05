@@ -69,19 +69,19 @@ SoDrawingGrid::renderGrid(SoGLRenderAction *action)
     SoLazyElement::setLightModel(state, SoLazyElement::BASE_COLOR);
 
     const SbMatrix & mat = SoModelMatrixElement::get(state);
-    const SbViewVolume & vv = SoViewVolumeElement::get(state);
-    const SbMatrix & projmatrix = (mat * SoViewingMatrixElement::get(state) *
-                                   SoProjectionMatrixElement::get(state));
+    //const SbViewVolume & vv = SoViewVolumeElement::get(state);
+    //const SbMatrix & projmatrix = (mat * SoViewingMatrixElement::get(state) *
+    //                               SoProjectionMatrixElement::get(state));
     const SbViewportRegion & vp = SoViewportRegionElement::get(state);
     SbVec2s vpsize = vp.getViewportSizePixels();
     float fRatio = vp.getViewportAspectRatio();
 
-    float width = vv.getWidth();
-    float height = vv.getHeight();
+    //float width = vv.getWidth();
+    //float height = vv.getHeight();
     SbVec3f worldcenter(0,0,0);
     mat.multVecMatrix(worldcenter, worldcenter);
 
-    float dist = (vv.getProjectionPoint() - worldcenter).length();
+    //float dist = (vv.getProjectionPoint() - worldcenter).length();
 
     SoModelMatrixElement::set(state,this,SbMatrix::identity());
     SoViewingMatrixElement::set(state,this,SbMatrix::identity());
@@ -179,5 +179,5 @@ SoDrawingGrid::generatePrimitives(SoAction* action)
 void
 SoDrawingGrid::computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center)
 {
-    SoState*  state = action->getState();
+    //SoState*  state = action->getState();
 }
