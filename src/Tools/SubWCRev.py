@@ -66,6 +66,92 @@ class SvnHandler(xml.sax.handler.ContentHandler):
             self.mapping["Date"] = self.buffer
             self.buffer = ""
 
+class VersionControl:
+    def __init__(self):
+        self.rev = ""
+        self.date = ""
+        self.range = ""
+        self.url = ""
+        self.time = ""
+        self.mods = "Src not modified"
+        self.mixed = "Src not mixed"
+
+    def extractInfo(self):
+        return False
+
+    def writeVersion(self, lines):
+        for line in lines:
+            line = string.replace(line,'$WCREV$',self.rev)
+            line = string.replace(line,'$WCDATE$',self.date)
+            line = string.replace(line,'$WCRANGE$',self.range)
+            line = string.replace(line,'$WCURL$',self.url)
+            line = string.replace(line,'$WCNOW$',self.twime)
+            line = string.replace(line,'$WCMODS?Src modified:Src not modified$',self.mods)
+            line = string.replace(line,'$WCMIXED?Src mixed:Src not mixed$',self.mixed)
+
+class UnknownControl(VersionControl):
+    def extractInfo(self):
+        self.rev = "Unknown"
+        self.date = "Unknown"
+        self.range = "Unknown"
+        self.url = "Unknown"
+        self.time = "Unknown"
+        return True
+
+class Subversion(VersionControl):
+    def extractInfo(self):
+        parser=xml.sax.make_parser()
+        handler=SvnHandler()
+        parser.setContentHandler(handler)
+
+        #Create an XML stream with the required information and read in with a SAX parser
+        Ver=os.popen("svnversion %s -n" % (srcdir)).read()
+        Info=os.popen("svn info %s --xml" % (srcdir)).read()
+        try:
+            inpsrc = xml.sax.InputSource()
+            strio=StringIO.StringIO(Info)
+            inpsrc.setByteStream(strio)
+            parser.parse(inpsrc)
+            return True
+        except:
+            return False
+
+        #Information of the Subversion stuff
+        self.url = handler.mapping["Url"]
+        self.rev = handler.mapping["Rev"]
+        self.date = handler.mapping["Date"]
+        self.date = self.date[:19]
+        #Same format as SubWCRev does
+        self.date = string.replace(self.date,'T',' ')
+        self.date = string.replace(self.date,'-','/')
+
+        #Date is given as GMT. Now we must convert to local date.
+        m=time.strptime(self.date,"%Y/%m/%d %H:%M:%S")
+        #Copy the tuple and set tm_isdst to 0 because it's GMT
+        l=(m.tm_year,m.tm_mon,m.tm_mday,m.tm_hour,m.tm_min,m.tm_sec,m.tm_wday,m.tm_yday,0)
+        #Take timezone into account
+        t=time.mktime(l)-time.timezone
+        self.date=time.strftime("%Y/%m/%d %H:%M:%S",time.localtime(t))
+
+        #Get the current local date
+        self.time = time.strftime("%Y/%m/%d %H:%M:%S")
+
+        self.mods = 'Src not modified'
+        self.mixed = 'Src not mixed'
+        self.range = self.rev
+
+        # if version string ends with an 'M'
+        r=re.search("M$",Ver)
+        if r != None:
+            self.mods = 'Src modified'
+
+        # if version string contains a range
+        r=re.match("^\\d+\\:\\d+",Ver)
+        if r != None:
+            self.mixed = 'Src mixed'
+            self.range = Ver[:r.end()]
+        return True
+
 
 def main():
     #if(len(sys.argv) != 2):
