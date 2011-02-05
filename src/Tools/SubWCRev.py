@@ -3,6 +3,7 @@
 #
 # Under Linux the Subversion tool SubWCRev shipped with TortoiseSVN isn't 
 # available which is provided by this script. 
+# 2011/02/05: The script was extended to support also Bazaar
 
 #***************************************************************************
 #*   Copyright (c) 2006 Werner Mayer <werner.wm.mayer@gmx.de>              *
@@ -76,21 +77,27 @@ class VersionControl:
         self.mods = "Src not modified"
         self.mixed = "Src not mixed"
 
-    def extractInfo(self):
+    def extractInfo(self, srcdir):
         return False
 
+    def printInfo(self):
+        print ""
+
     def writeVersion(self, lines):
+        content=[]
         for line in lines:
             line = string.replace(line,'$WCREV$',self.rev)
             line = string.replace(line,'$WCDATE$',self.date)
             line = string.replace(line,'$WCRANGE$',self.range)
             line = string.replace(line,'$WCURL$',self.url)
-            line = string.replace(line,'$WCNOW$',self.twime)
+            line = string.replace(line,'$WCNOW$',self.time)
             line = string.replace(line,'$WCMODS?Src modified:Src not modified$',self.mods)
             line = string.replace(line,'$WCMIXED?Src mixed:Src not mixed$',self.mixed)
+            content.append(line)
+        return content
 
 class UnknownControl(VersionControl):
-    def extractInfo(self):
+    def extractInfo(self, srcdir):
         self.rev = "Unknown"
         self.date = "Unknown"
         self.range = "Unknown"
@@ -98,8 +105,47 @@ class UnknownControl(VersionControl):
         self.time = "Unknown"
         return True
 
+    def printInfo(self):
+        print "Unknown version control"
+
+class BazaarControl(VersionControl):
+    def extractInfo(self, srcdir):
+        info=os.popen("bzr log -l 1 %s" % (srcdir)).read()
+        if len(info) == 0:
+            return False
+        #Get the current local date
+        self.time = time.strftime("%Y/%m/%d %H:%M:%S")
+        lines=info.split("\n")
+        for i in lines:
+            r = re.match("^revno: (\\d+)$", i)
+            if r != None:
+                self.rev = r.groups()[0]
+                continue
+            r=re.match("^timestamp: (\\w+ \\d+-\\d+-\\d+ \\d+:\\d+:\\d+)",i)
+            if r != None:
+                self.date = r.groups()[0]
+                continue
+        return True
+
+    def printInfo(self):
+        print "bazaar"
+
+class GitControl(VersionControl):
+    def extractInfo(self, srcdir):
+        return False
+
+    def printInfo(self):
+        print "git"
+
+class MercurialControl(VersionControl):
+    def extractInfo(self, srcdir):
+        return False
+
+    def printInfo(self):
+        print "mercurial"
+
 class Subversion(VersionControl):
-    def extractInfo(self):
+    def extractInfo(self, srcdir):
         parser=xml.sax.make_parser()
         handler=SvnHandler()
         parser.setContentHandler(handler)
@@ -112,7 +158,6 @@ class Subversion(VersionControl):
             strio=StringIO.StringIO(Info)
             inpsrc.setByteStream(strio)
             parser.parse(inpsrc)
-            return True
         except:
             return False
 
@@ -152,6 +197,9 @@ class Subversion(VersionControl):
             self.range = Ver[:r.end()]
         return True
 
+    def printInfo(self):
+        print "subversion"
+
 
 def main():
     #if(len(sys.argv) != 2):
@@ -170,87 +218,22 @@ def main():
         if o in ("-b", "--bindir"):
             bindir = a
 
-    parser=xml.sax.make_parser()
-    handler=SvnHandler()
-    parser.setContentHandler(handler)
+    vcs=[Subversion(), BazaarControl(), GitControl(), MercurialControl(), UnknownControl()]
+    for i in vcs:
+        if i.extractInfo(srcdir):
+            # Open the template file and the version file
+            file = open("%s/src/Build/Version.h.in" % (srcdir))
+            lines = file.readlines()
+            file.close()
+            lines = i.writeVersion(lines)
+            out  = open("%s/src/Build/Version.h" % (bindir),"w");
+            out.writelines(lines)
+            out.write('\n')
+            out.close()
+            i.printInfo()
+            sys.stdout.write("%s/src/Build/Version.h written\n" % (bindir))
+            break
 
-    #Create an XML stream with the required information and read in with a SAX parser
-    Ver=os.popen("svnversion %s -n" % (srcdir)).read()
-    Info=os.popen("svn info %s --xml" % (srcdir)).read()
-    try:
-        inpsrc = xml.sax.InputSource()
-        strio=StringIO.StringIO(Info)
-        inpsrc.setByteStream(strio)
-        parser.parse(inpsrc)
-    except:
-        sys.stderr.write("No svn repository\n")
-        out  = open("%s/src/Build/Version.h" % (bindir),"w");
-        out.write("\n")
-        out.write("#define FCVersionMajor \"0\"\n")
-        out.write("#define FCVersionMinor \"11\"\n")
-        out.write("#define FCVersionName \"Dagoba\"\n")
-        out.write("#define FCRevision \"Unknown\"\n")
-        out.write("#define FCRevisionDate \"Unknown\"\n")
-        out.write("#define FCRepositoryURL \"Unknown\"\n")
-        out.write("#define FCCurrentDateT \"Unknown\"\n")
-        out.close()
-        return # exit normally to not stop a build where no svn is installed
-
-    #Information of the Subversion stuff
-    Url = handler.mapping["Url"]
-    Rev = handler.mapping["Rev"]
-    Date = handler.mapping["Date"]
-    Date = Date[:19]
-    #Same format as SubWCRev does
-    Date = string.replace(Date,'T',' ')
-    Date = string.replace(Date,'-','/')
-
-    #Date is given as GMT. Now we must convert to local date.
-    m=time.strptime(Date,"%Y/%m/%d %H:%M:%S")
-    #Copy the tuple and set tm_isdst to 0 because it's GMT
-    l=(m.tm_year,m.tm_mon,m.tm_mday,m.tm_hour,m.tm_min,m.tm_sec,m.tm_wday,m.tm_yday,0)
-    #Take timezone into account
-    t=time.mktime(l)-time.timezone
-    Date=time.strftime("%Y/%m/%d %H:%M:%S",time.localtime(t))
-
-    #Get the current local date
-    Time = time.strftime("%Y/%m/%d %H:%M:%S")
-
-    Mods = 'Src not modified'
-    Mixed = 'Src not mixed'
-    Range = Rev
-
-    # if version string ends with an 'M'
-    r=re.search("M$",Ver)
-    if r != None:
-        Mods = 'Src modified'
-
-    # if version string contains a range
-    r=re.match("^\\d+\\:\\d+",Ver)
-    if r != None:
-        Mixed = 'Src mixed'
-        Range = Ver[:r.end()]
-
-    # Open the template file and the version file
-    file = open("%s/src/Build/Version.h.in" % (srcdir))
-    lines = file.readlines()
-    file.close()
-    out  = open("%s/src/Build/Version.h" % (bindir),"w");
-
-    for line in lines:
-        line = string.replace(line,'$WCREV$',Rev)
-        line = string.replace(line,'$WCDATE$',Date)
-        line = string.replace(line,'$WCRANGE$',Range)
-        line = string.replace(line,'$WCURL$',Url)
-        line = string.replace(line,'$WCNOW$',Time)
-        line = string.replace(line,'$WCMODS?Src modified:Src not modified$',Mods)
-        line = string.replace(line,'$WCMIXED?Src mixed:Src not mixed$',Mixed)
-        # output
-        out.write(line)
-
-    out.write('\n')
-    out.close()
-    sys.stdout.write("%s/src/Build/Version.h written\n" % (bindir))
 if __name__ == "__main__":
     main()
 
