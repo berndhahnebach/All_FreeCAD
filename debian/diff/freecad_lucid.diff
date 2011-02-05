@@ -1,6 +1,12 @@
---- freecad-0.11.3729.orig/debian/changelog
-+++ freecad-0.11.3729/debian/changelog
-@@ -0,0 +1,172 @@
+--- freecad-0.11.4014.orig/debian/changelog
++++ freecad-0.11.4014/debian/changelog
+@@ -0,0 +1,178 @@
++freecad (0.11.4014-1lucid1) lucid; urgency=low
++
++  * New release for Ubuntu 10.04.2 LTS (lucid)
++
++ -- Werner Mayer <wmayer@users.sourceforge.net>  Sat, 05 Feb 2011 15:58:04 +0100
++
 +freecad (0.11.3729-1lucid1) lucid; urgency=low
 +
 +  * New release for Ubuntu 10.04.1 LTS (lucid)
@@ -173,12 +179,12 @@
 +
 + -- Werner Mayer <wmayer@users.sourceforge.net>  Tue, 26 Sep 2006 16:55:15 +0200
 +
---- freecad-0.11.3729.orig/debian/shlibs.local
-+++ freecad-0.11.3729/debian/shlibs.local
+--- freecad-0.11.4014.orig/debian/shlibs.local
++++ freecad-0.11.4014/debian/shlibs.local
 @@ -0,0 +1 @@
 +libGL 1 libgl1-mesa-glx (>= 7.7.1-1)
---- freecad-0.11.3729.orig/debian/freecad.1
-+++ freecad-0.11.3729/debian/freecad.1
+--- freecad-0.11.4014.orig/debian/freecad.1
++++ freecad-0.11.4014/debian/freecad.1
 @@ -0,0 +1,73 @@
 +.\"                                      Hey, EMACS: -*- nroff -*-
 +.\" First parameter, NAME, should be all caps
@@ -253,8 +259,8 @@
 +To report a bug, please visit \fIhttp://free-cad.sf.net/\fR
 +.SH AUTHOR
 +This manual page was written by Werner Mayer.
---- freecad-0.11.3729.orig/debian/rules
-+++ freecad-0.11.3729/debian/rules
+--- freecad-0.11.4014.orig/debian/rules
++++ freecad-0.11.4014/debian/rules
 @@ -0,0 +1,107 @@
 +#!/usr/bin/make -f
 +# -*- makefile -*-
@@ -363,8 +369,8 @@
 +
 +binary: binary-indep binary-arch
 +.PHONY: build clean binary-indep binary-arch binary install
---- freecad-0.11.3729.orig/debian/menu
-+++ freecad-0.11.3729/debian/menu
+--- freecad-0.11.4014.orig/debian/menu
++++ freecad-0.11.4014/debian/menu
 @@ -0,0 +1,6 @@
 +?package(freecad):needs="X11"\
 +  section="Applications/Science/Engineering"\
@@ -372,8 +378,8 @@
 +  command="/usr/bin/freecad"\
 +  icon="/usr/share/freecad/freecad.xpm"
 +
---- freecad-0.11.3729.orig/debian/control
-+++ freecad-0.11.3729/debian/control
+--- freecad-0.11.4014.orig/debian/control
++++ freecad-0.11.4014/debian/control
 @@ -0,0 +1,67 @@
 +Source: freecad
 +Section: science
@@ -442,8 +448,8 @@
 + the new help format version can be viewed in conjunction with the Qt Assistant
 + found in the qt4-dev-tools package.
 +
---- freecad-0.11.3729.orig/debian/freecad.sharedmimeinfo
-+++ freecad-0.11.3729/debian/freecad.sharedmimeinfo
+--- freecad-0.11.4014.orig/debian/freecad.sharedmimeinfo
++++ freecad-0.11.4014/debian/freecad.sharedmimeinfo
 @@ -0,0 +1,8 @@
 +<?xml version="1.0" encoding="UTF-8"?>
 +<mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
@@ -453,18 +459,93 @@
 +		<glob pattern="*.fcstd"/>
 +	</mime-type>
 +</mime-info>
---- freecad-0.11.3729.orig/debian/compat
-+++ freecad-0.11.3729/debian/compat
+--- freecad-0.11.4014.orig/debian/compat
++++ freecad-0.11.4014/debian/compat
 @@ -0,0 +1 @@
 +7
---- freecad-0.11.3729.orig/debian/freecad.links
-+++ freecad-0.11.3729/debian/freecad.links
+--- freecad-0.11.4014.orig/debian/postinst
++++ freecad-0.11.4014/debian/postinst
+@@ -0,0 +1,36 @@
++#!/bin/sh
++
++set -e
++
++case "$1" in
++    configure)
++    echo "getting  vrml files ..."
++    wgetoptions="--tries=2 --timeout=60"
++    downloadurl="http://free-cad.svn.sourceforge.net/svnroot/free-cad/trunk"
++    downloaddir="--directory-prefix=/usr/share/freecad/Mod/Robot/Lib/Kuka"
++    wget $wgetoptions  $downloaddir $downloadurl/src/Mod/Robot/Lib/Kuka/kr16.wrl
++    wget $wgetoptions  $downloaddir $downloadurl/src/Mod/Robot/Lib/Kuka/kr125_3.wrl
++    wget $wgetoptions  $downloaddir $downloadurl/src/Mod/Robot/Lib/Kuka/kr210.WRL
++    wget $wgetoptions  $downloaddir $downloadurl/src/Mod/Robot/Lib/Kuka/kr500_1.csv
++    wget $wgetoptions  $downloaddir $downloadurl/src/Mod/Robot/Lib/Kuka/kr500_1.wrl
++    wget $wgetoptions  $downloaddir $downloadurl/src/Mod/Robot/Lib/Kuka/kr_16.csv
++    wget $wgetoptions  $downloaddir $downloadurl/src/Mod/Robot/Lib/Kuka/kr_125.csv
++    wget $wgetoptions  $downloaddir $downloadurl/src/Mod/Robot/Lib/Kuka/kr_210_2.csv
++    wget $wgetoptions  $downloaddir $downloadurl/src/Mod/Robot/Lib/Kuka/testprog.dat
++    wget $wgetoptions  $downloaddir $downloadurl/src/Mod/Robot/Lib/Kuka/testprog.src
++    ;;
++
++    abort-upgrade|abort-remove|abort-deconfigure)
++    ;;
++
++    *)
++        echo "postinst called with unknown argument \`$1'" >&2
++        exit 1
++    ;;
++esac
++
++#DEBHELPER#
++
++exit 0
++
++
+--- freecad-0.11.4014.orig/debian/freecad.links
++++ freecad-0.11.4014/debian/freecad.links
 @@ -0,0 +1,3 @@
 +usr/lib/freecad/bin/FreeCAD usr/bin/freecad
 +usr/lib/freecad/bin/FreeCADCmd usr/bin/freecadcmd
 +usr/share/man/man1/freecad.1.gz usr/share/man/man1/freecadcmd.1.gz
---- freecad-0.11.3729.orig/debian/freecad.desktop
-+++ freecad-0.11.3729/debian/freecad.desktop
+--- freecad-0.11.4014.orig/debian/prerm
++++ freecad-0.11.4014/debian/prerm
+@@ -0,0 +1,33 @@
++#!/bin/sh
++
++set -e
++
++case "$1" in
++    remove|upgrade|deconfigure)
++    downloaddir="/usr/share/freecad/Mod/Robot/Lib/Kuka"
++    rm -f $downloaddir/kr16.wrl
++    rm -f $downloaddir/kr125_3.wrl
++    rm -f $downloaddir/kr210.WRL
++    rm -f $downloaddir/kr500_1.csv
++    rm -f $downloaddir/kr500_1.wrl
++    rm -f $downloaddir/kr_16.csv
++    rm -f $downloaddir/kr_125.csv
++    rm -f $downloaddir/kr_210_2.csv
++    rm -f $downloaddir/testprog.dat
++    rm -f $downloaddir/testprog.src
++    ;;
++
++    failed-upgrade)
++    ;;
++
++    *)
++        echo "prerm called with unknown argument \`$1'" >&2
++        exit 1
++    ;;
++esac
++
++#DEBHELPER#
++
++exit 0
++
++
+--- freecad-0.11.4014.orig/debian/freecad.desktop
++++ freecad-0.11.4014/debian/freecad.desktop
 @@ -0,0 +1,19 @@
 +[Desktop Entry]
 +Version=1.0
@@ -485,13 +566,13 @@
 +GenericName[de_DE]=Feature-basierter parametrischer Modellierer
 +Comment[de_DE]=Feature-basierter parametrischer Modellierer
 +MimeType=application/x-extension-fcstd
---- freecad-0.11.3729.orig/debian/watch
-+++ freecad-0.11.3729/debian/watch
+--- freecad-0.11.4014.orig/debian/watch
++++ freecad-0.11.4014/debian/watch
 @@ -0,0 +1,2 @@
 +version=3
 +http://sf.net/free-cad/freecad_(.+)\.orig\.tar\.gz
---- freecad-0.11.3729.orig/debian/copyright
-+++ freecad-0.11.3729/debian/copyright
+--- freecad-0.11.4014.orig/debian/copyright
++++ freecad-0.11.4014/debian/copyright
 @@ -0,0 +1,237 @@
 +Format-Specification: http://dep.debian.net/deps/dep5/
 +Maintainer: Werner Mayer <wmayer@users.sourceforge.net>
@@ -730,7 +811,7 @@
 +Copyright: 2007-2009 Werner Mayer <wmayer@users.sourceforge.net>,
 + Teemu Ikonen <tpikonen@gmail.com>
 +License: LGPL-2+
---- freecad-0.11.3729.orig/debian/source/format
-+++ freecad-0.11.3729/debian/source/format
+--- freecad-0.11.4014.orig/debian/source/format
++++ freecad-0.11.4014/debian/source/format
 @@ -0,0 +1 @@
 +1.0

@@ -1,8 +1,9 @@
+# Change data dir from default $(datadir) to $(datadir)/Mod/Robot/Lib
+datadir = @datadir@/Mod/Robot/Lib/Kuka
+
 # For Debian based system we mustn't pick up these files
 if MAKE_NO_DFSG_PACKAGE
 
-# Change data dir from default $(datadir) to $(datadir)/Mod/Robot/Lib
-datadir = @datadir@/Mod/Robot/Lib/Kuka
 data_DATA = \
 		Kuka/kr16.wrl \
 		Kuka/kr125_3.wrl \
