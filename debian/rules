@@ -4,7 +4,7 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-MODULES = Part Mesh MeshPart PartDesign Sketcher Points Raytracing Image Drawing ReverseEngineering Complete
+MODULES = Part Mesh MeshPart PartDesign Sketcher Points Raytracing Image Drawing ReverseEngineering Complete Fem Robot Import Inspection
 
 # These are used for cross-compiling and for saving the configure script
 # from having to guess our platform (since we know it already)
@@ -77,8 +77,6 @@ install-stamp:
 	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/$(MODULE)/*.py usr/lib/freecad/Mod/$(MODULE);)
 	# special treating of Draft module
 	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Draft/*.py usr/lib/freecad/Mod/Draft
-	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Draft/*.svg usr/lib/freecad/Mod/Draft
-	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Draft/*.ui usr/lib/freecad/Mod/Draft
 	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Draft/draftlibs/*.py usr/lib/freecad/Mod/Draft/draftlibs
 	# special treating of Test module
 	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Test/lib*.so.* usr/lib/freecad/Mod/Test

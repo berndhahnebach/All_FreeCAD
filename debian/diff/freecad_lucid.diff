@@ -1,6 +1,12 @@
---- freecad-0.11.4014.orig/debian/changelog
-+++ freecad-0.11.4014/debian/changelog
-@@ -0,0 +1,178 @@
+--- freecad-0.11.4016.orig/debian/changelog
++++ freecad-0.11.4016/debian/changelog
+@@ -0,0 +1,184 @@
++freecad (0.11.4016-1lucid1) lucid; urgency=low
++
++  * New release for Ubuntu 10.04.2 LTS (lucid)
++
++ -- Werner Mayer <wmayer@users.sourceforge.net>  Sun, 06 Feb 2011 10:45:32 +0100
++
 +freecad (0.11.4014-1lucid1) lucid; urgency=low
 +
 +  * New release for Ubuntu 10.04.2 LTS (lucid)
@@ -179,12 +185,12 @@
 +
 + -- Werner Mayer <wmayer@users.sourceforge.net>  Tue, 26 Sep 2006 16:55:15 +0200
 +
---- freecad-0.11.4014.orig/debian/shlibs.local
-+++ freecad-0.11.4014/debian/shlibs.local
+--- freecad-0.11.4016.orig/debian/shlibs.local
++++ freecad-0.11.4016/debian/shlibs.local
 @@ -0,0 +1 @@
 +libGL 1 libgl1-mesa-glx (>= 7.7.1-1)
---- freecad-0.11.4014.orig/debian/freecad.1
-+++ freecad-0.11.4014/debian/freecad.1
+--- freecad-0.11.4016.orig/debian/freecad.1
++++ freecad-0.11.4016/debian/freecad.1
 @@ -0,0 +1,73 @@
 +.\"                                      Hey, EMACS: -*- nroff -*-
 +.\" First parameter, NAME, should be all caps
@@ -259,8 +265,8 @@
 +To report a bug, please visit \fIhttp://free-cad.sf.net/\fR
 +.SH AUTHOR
 +This manual page was written by Werner Mayer.
---- freecad-0.11.4014.orig/debian/rules
-+++ freecad-0.11.4014/debian/rules
+--- freecad-0.11.4016.orig/debian/rules
++++ freecad-0.11.4016/debian/rules
 @@ -0,0 +1,107 @@
 +#!/usr/bin/make -f
 +# -*- makefile -*-
@@ -369,8 +375,8 @@
 +
 +binary: binary-indep binary-arch
 +.PHONY: build clean binary-indep binary-arch binary install
---- freecad-0.11.4014.orig/debian/menu
-+++ freecad-0.11.4014/debian/menu
+--- freecad-0.11.4016.orig/debian/menu
++++ freecad-0.11.4016/debian/menu
 @@ -0,0 +1,6 @@
 +?package(freecad):needs="X11"\
 +  section="Applications/Science/Engineering"\
@@ -378,8 +384,8 @@
 +  command="/usr/bin/freecad"\
 +  icon="/usr/share/freecad/freecad.xpm"
 +
---- freecad-0.11.4014.orig/debian/control
-+++ freecad-0.11.4014/debian/control
+--- freecad-0.11.4016.orig/debian/control
++++ freecad-0.11.4016/debian/control
 @@ -0,0 +1,67 @@
 +Source: freecad
 +Section: science
@@ -448,8 +454,8 @@
 + the new help format version can be viewed in conjunction with the Qt Assistant
 + found in the qt4-dev-tools package.
 +
---- freecad-0.11.4014.orig/debian/freecad.sharedmimeinfo
-+++ freecad-0.11.4014/debian/freecad.sharedmimeinfo
+--- freecad-0.11.4016.orig/debian/freecad.sharedmimeinfo
++++ freecad-0.11.4016/debian/freecad.sharedmimeinfo
 @@ -0,0 +1,8 @@
 +<?xml version="1.0" encoding="UTF-8"?>
 +<mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
@@ -459,12 +465,12 @@
 +		<glob pattern="*.fcstd"/>
 +	</mime-type>
 +</mime-info>
---- freecad-0.11.4014.orig/debian/compat
-+++ freecad-0.11.4014/debian/compat
+--- freecad-0.11.4016.orig/debian/compat
++++ freecad-0.11.4016/debian/compat
 @@ -0,0 +1 @@
 +7
---- freecad-0.11.4014.orig/debian/postinst
-+++ freecad-0.11.4014/debian/postinst
+--- freecad-0.11.4016.orig/debian/postinst
++++ freecad-0.11.4016/debian/postinst
 @@ -0,0 +1,36 @@
 +#!/bin/sh
 +
@@ -502,14 +508,14 @@
 +exit 0
 +
 +
---- freecad-0.11.4014.orig/debian/freecad.links
-+++ freecad-0.11.4014/debian/freecad.links
+--- freecad-0.11.4016.orig/debian/freecad.links
++++ freecad-0.11.4016/debian/freecad.links
 @@ -0,0 +1,3 @@
 +usr/lib/freecad/bin/FreeCAD usr/bin/freecad
 +usr/lib/freecad/bin/FreeCADCmd usr/bin/freecadcmd
 +usr/share/man/man1/freecad.1.gz usr/share/man/man1/freecadcmd.1.gz
---- freecad-0.11.4014.orig/debian/prerm
-+++ freecad-0.11.4014/debian/prerm
+--- freecad-0.11.4016.orig/debian/prerm
++++ freecad-0.11.4016/debian/prerm
 @@ -0,0 +1,33 @@
 +#!/bin/sh
 +
@@ -544,8 +550,8 @@
 +exit 0
 +
 +
---- freecad-0.11.4014.orig/debian/freecad.desktop
-+++ freecad-0.11.4014/debian/freecad.desktop
+--- freecad-0.11.4016.orig/debian/freecad.desktop
++++ freecad-0.11.4016/debian/freecad.desktop
 @@ -0,0 +1,19 @@
 +[Desktop Entry]
 +Version=1.0
@@ -566,14 +572,14 @@
 +GenericName[de_DE]=Feature-basierter parametrischer Modellierer
 +Comment[de_DE]=Feature-basierter parametrischer Modellierer
 +MimeType=application/x-extension-fcstd
---- freecad-0.11.4014.orig/debian/watch
-+++ freecad-0.11.4014/debian/watch
+--- freecad-0.11.4016.orig/debian/watch
++++ freecad-0.11.4016/debian/watch
 @@ -0,0 +1,2 @@
 +version=3
 +http://sf.net/free-cad/freecad_(.+)\.orig\.tar\.gz
---- freecad-0.11.4014.orig/debian/copyright
-+++ freecad-0.11.4014/debian/copyright
-@@ -0,0 +1,237 @@
+--- freecad-0.11.4016.orig/debian/copyright
++++ freecad-0.11.4016/debian/copyright
+@@ -0,0 +1,275 @@
 +Format-Specification: http://dep.debian.net/deps/dep5/
 +Maintainer: Werner Mayer <wmayer@users.sourceforge.net>
 +X-Packaged-By: Werner Mayer <wmayer@users.sourceforge.net>
@@ -687,8 +693,34 @@
 +Files: src/Doc/Start_Page.html
 +Copyright: 2004-2009 UnaMesa Association
 +License: BSD
-+ On Debian systems, the complete text of the BSD license
-+ can be found in `/usr/share/common-licenses/BSD'.
++ Copyright (c) UnaMesa Association 2004-2009
++ .
++ Redistribution and use in source and binary forms, with or without
++ modification, are permitted provided that the following conditions are
++ met:
++ .
++ Redistributions of source code must retain the above copyright notice,
++ this list of conditions and the following disclaimer.
++ .
++ Redistributions in binary form must reproduce the above copyright notice,
++ this list of conditions and the following disclaimer in the documentation
++ and/or other materials provided with the distribution.
++ .
++ Neither the name of the UnaMesa Association nor the names of its
++ contributors may be used to endorse or promote products derived from this
++ software without specific prior written permission.
++ .
++ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS
++ IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
++ THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
++ PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
++ CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
++ EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
++ PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
++ PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
++ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
++ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
++ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 +
 +Files: src/Doc/Start_Page.html
 +Copyright: 2009 John Resig
@@ -732,6 +764,10 @@
 +Copyright: 2005-2008 Ed Blake, Remigiusz Fiedler, Stani Michiels
 +License: GPL-2+
 +
++Files: src/Mod/Draft/WorkingPlane.py
++Copyright: 2009-2010 Ken Cline <cline@frii.com>
++License: GPL-2+
++
 +Files: src/Base/BoundBox.h, src/Base/Swap.*, src/Base/Vector3D.*,
 + src/Base/ViewProj.h, src/Base/Matrix.*, src/Base/Tools2D.*,
 + src/Mod/Mesh/App/Core/*
@@ -769,6 +805,10 @@
 +Copyright: 1998-2007 David Eberly http://www.geometrictools.com
 +License: LGPL-2.1+
 +
++Files: src/Mod/Part/App/edgecluster.*
++Copyright: 2010 Joachim Zettler <Joachim.Zettler@gmx.de>
++License: LGPL-2+
++
 +Files: src/Mod/Raytracing/App/resources/*
 +Copyright: 2005 Georg Wiora <georg.wiora@quarkbox.de>,
 + Juergen Riegel <juergen.riegel@web.de>
@@ -779,6 +819,10 @@
 +License: GPL-3+
 + On Debian systems, the complete text of the GNU General Public License
 + version 3 can be found in '/usr/share/common-licenses/GPL-3'.
++
++Files: src/Mod/Sketcher/App/sketchsolve_cp/*
++Copyright: 2009 Jonathan George
++License: BSD
 +
 +Files: src/Mod/Test/unittestgui.py
 +Copyright: 1999-2001 Steve Purcell
@@ -811,7 +855,7 @@
 +Copyright: 2007-2009 Werner Mayer <wmayer@users.sourceforge.net>,
 + Teemu Ikonen <tpikonen@gmail.com>
 +License: LGPL-2+
---- freecad-0.11.4014.orig/debian/source/format
-+++ freecad-0.11.4014/debian/source/format
+--- freecad-0.11.4016.orig/debian/source/format
++++ freecad-0.11.4016/debian/source/format
 @@ -0,0 +1 @@
 +1.0
