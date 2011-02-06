@@ -2666,7 +2666,8 @@ class Upgrade(Modifier):
                 elif wires and (not faces) and (not openwires):
                         if (len(self.sel) == 1) and self.sel[0].isDerivedFrom("Sketcher::SketchObject") and (not curves):
                                 msg(translate("draft", "Found 1 closed sketch object: making a face from it\n"))
-                                newob = Draft.makeWire(self.sel[0].Shape.Wires[0],closed=True)
+                                newob = Draft.makeWire(self.sel[0].Shape,closed=True)
+                                newob.Base = self.sel[0]
                                 self.sel[0].ViewObject.Visibility = False
                                 nodelete = True
                         else:

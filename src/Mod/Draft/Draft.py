@@ -331,7 +331,7 @@ def makeWire(pointslist,closed=False,placement=None,face=True):
                 for v in pointslist.Vertexes:
                         nlist.append(v.Point)
                 pointslist = nlist
-        if placement: typecheck([(placement,FreeCAD.Placement)], "makeRectangle")
+        if placement: typecheck([(placement,FreeCAD.Placement)], "makeWire")
         if len(pointslist) == 2: fname = "Line"
         else: fname = "Wire"
         obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython",fname)
@@ -1369,7 +1369,16 @@ class Wire:
                         
         def createGeometry(self,fp):
                 plm = fp.Placement
-                if fp.Base and fp.Tool:
+                if fp.Base and (not fp.Tool):
+                        if fp.Base.isDerivedFrom("Sketcher::SketchObject"):
+                                shape = fp.Base.Shape.copy()
+                                if fp.Base.Shape.isClosed():
+                                        shape = Part.Face(shape)
+                                fp.Shape = shape
+                                p = []
+                                for v in shape.Vertexes: p.append(v.Point)
+                                if fp.Points != p: fp.Points = p
+                elif fp.Base and fp.Tool:
                         if ('Shape' in fp.Base.PropertiesList) and ('Shape' in fp.Tool.PropertiesList):
                                 sh1 = fp.Base.Shape.copy()
                                 sh2 = fp.Tool.Shape.copy()
