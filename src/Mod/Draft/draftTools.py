@@ -326,20 +326,21 @@ def selectObject(arg):
 				FreeCAD.activeDraftCommand.proceed()
 
 
-def getPoint(target,args,mobile=False,sym=False):
+def getPoint(target,args,mobile=False,sym=False,workingplane=True):
 	'''
         Function used by the Draft Tools.
 	returns a constrained 3d point and its original point.
 	if mobile=True, the constraining occurs from the location of
 	mouse cursor when Shift is pressed, otherwise from last entered
-	point. If sym=True, x and y values stay always equal
+	point. If sym=True, x and y values stay always equal. If workingplane=False,
+        the point won't be projected on the Working Plane.
 	'''
 	ui = FreeCADGui.draftToolBar.ui
 	view = FreeCADGui.ActiveDocument.ActiveView
 	point = view.getPoint(args["Position"][0],args["Position"][1])
 	point = snapPoint(target,point,args["Position"],args["CtrlDown"])
 
-	if not plane.weak:
+	if (not plane.weak) and workingplane:
 		# working plane was explicitely selected - project onto it
 		viewDirection = view.getViewDirection()
 		if FreeCADGui.ActiveDocument.ActiveView.getCameraType() == "Perspective":
@@ -2861,56 +2862,58 @@ class Trimex(Modifier):
 		self.linetrack = lineTracker()
 		self.constraintrack = lineTracker(dotted=True)
 		self.edges = []
-		if len(self.sel.Shape.Faces) == 1:
-			self.extrudeMode = True
-			self.ghost = [ghostTracker([self.sel])]
-			self.normal = self.sel.Shape.Faces[0].normalAt(.5,.5)
-			for v in self.sel.Shape.Vertexes:
-				self.ghost.append(lineTracker())
-			for g in self.ghost: g.on()
-		else:
-			self.sel.ViewObject.Visibility = False
-			self.extrudeMode = False
-			c = fcgeo.complexity(self.sel)
-			if (c >= 7):
-				msg(translate("draft", "The selected object cannot be extended\n"))
-				self.finish()
-			elif (c >= 4): 
-				self.edges = self.sel.Shape.Wires[0].Edges
-				self.edges = fcgeo.sortEdges(self.edges)
-			else: self.edges = self.sel.Shape.Edges	
-			self.ghost = []
-			lc = self.sel.ViewObject.LineColor
-			sc = (lc[0],lc[1],lc[2])
-			sw = self.sel.ViewObject.LineWidth
-			for e in self.edges:
-				if isinstance(e.Curve,Part.Line):
-					self.ghost.append(lineTracker(scolor=sc,swidth=sw))
-				else:
-					self.ghost.append(arcTracker(scolor=sc,swidth=sw))
-			for g in self.ghost: g.on()
-
-		self.activePoint = 0
-		self.nodes = []
-		self.shift = False
-		self.alt = False
-		self.force = None
-		self.call = self.view.addEventCallback("SoEvent",self.action)
-		msg(translate("draft", "Pick distance:\n"))
-		self.ui.cross(True)
-
+                self.ghost = None
+                c = fcgeo.complexity(self.sel)
+                if ((c >= 7) and (len(self.sel.Shape.Faces) > 1)):
+                        msg(translate("draft", "The selected object cannot be extended\n"))
+                        self.finish()
+                else:
+                        if len(self.sel.Shape.Faces) == 1:
+                                self.extrudeMode = True
+                                self.ghost = [ghostTracker([self.sel])]
+                                self.normal = self.sel.Shape.Faces[0].normalAt(.5,.5)
+                                for v in self.sel.Shape.Vertexes:
+                                        self.ghost.append(lineTracker())
+                                for g in self.ghost: g.on()
+                        else:
+                                self.sel.ViewObject.Visibility = False
+                                self.extrudeMode = False
+                                if (c >= 4): 
+                                        self.edges = self.sel.Shape.Wires[0].Edges
+                                        self.edges = fcgeo.sortEdges(self.edges)
+                                else:
+                                        self.edges = self.sel.Shape.Edges	
+                                self.ghost = []
+                                lc = self.sel.ViewObject.LineColor
+                                sc = (lc[0],lc[1],lc[2])
+                                sw = self.sel.ViewObject.LineWidth
+                                for e in self.edges:
+                                        if isinstance(e.Curve,Part.Line):
+                                                self.ghost.append(lineTracker(scolor=sc,swidth=sw))
+                                        else:
+                                                self.ghost.append(arcTracker(scolor=sc,swidth=sw))
+                                for g in self.ghost: g.on()
+                        self.activePoint = 0
+                        self.nodes = []
+                        self.shift = False
+                        self.alt = False
+                        self.force = None
+                        self.call = self.view.addEventCallback("SoEvent",self.action)
+                        msg(translate("draft", "Pick distance:\n"))
+                        self.ui.cross(True)
 				
 	def action(self,arg):
 		"scene event handler"
 		if (arg["Type"] == "SoLocation2Event"): #mouse movement detection
                         self.ui.cross(True)
-                        self.point = getPoint(self,arg)[0]
 			self.shift = arg["ShiftDown"]
 			self.alt = arg["AltDown"]
+                        wp = not(self.extrudeMode and self.shift)
+                        self.point = getPoint(self,arg,workingplane=wp)[0]
 			if arg["CtrlDown"]: self.snapped = None
 			else: self.snapped = self.view.getObjectInfo((arg["Position"][0],arg["Position"][1]))
 			if self.extrudeMode:
-				dist = self.extrude(self.point,self.shift)
+				dist = self.extrude(self.shift)
 			else:
 				dist = self.redraw(self.point,self.snapped,self.shift,self.alt)
 			self.constraintrack.p1(self.point)
@@ -2923,20 +2926,17 @@ class Trimex(Modifier):
 		if (arg["Type"] == "SoMouseButtonEvent"):
 			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
 				cursor = arg["Position"]
-				point = self.view.getPoint(cursor[0],cursor[1])
 				self.shift = arg["ShiftDown"]
 				self.alt = arg["AltDown"]
 				if arg["CtrlDown"]: self.snapped = None
 				else: self.snapped = self.view.getObjectInfo((cursor[0],cursor[1]))
-				self.point = snapPoint(self,point,cursor,arg["CtrlDown"])
-				if not self.ui.zValue.isEnabled(): self.point.z = float(self.ui.zValue.text())
 				self.trimObject()
 				self.finish()
 
-	def extrude(self,point,shift=False,real=False):
+	def extrude(self,shift=False,real=False):
 		"redraws the ghost in extrude mode"
 		self.newpoint = self.sel.Shape.Faces[0].CenterOfMass
-		dvec = point.sub(self.newpoint)
+		dvec = self.point.sub(self.newpoint)
 		if shift: delta = fcvec.project(dvec,self.normal)
 		else: delta = dvec
                 if self.force:
@@ -3060,7 +3060,8 @@ class Trimex(Modifier):
 	def trimObject(self):
 		"trims the actual object"
 		if self.extrudeMode:
-			delta = self.extrude(self.point,self.shift,real=True)
+			delta = self.extrude(self.shift,real=True)
+                        print "delta",delta
                         self.doc.openTransaction("Extrude")
                         obj = Draft.extrude(self.sel,delta)
                         self.doc.commitTransaction()
@@ -3086,7 +3087,9 @@ class Trimex(Modifier):
 			self.snap.finalize()
 			self.linetrack.finalize()
 			self.constraintrack.finalize()
-			for g in self.ghost: g.finalize()
+			if self.ghost:
+                                for g in self.ghost:
+                                        g.finalize()
                         self.sel.ViewObject.Visibility = True
 			Draft.select(self.sel)
 
