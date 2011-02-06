@@ -2534,6 +2534,17 @@ class Offset(Modifier):
 			self.constraintrack.finalize()
 			self.ghost.finalize()
 
+        def numericRadius(self,rad):
+		"this function gets called by the toolbar when valid radius have been entered there"
+                if self.dvec:
+                        self.dvec.normalize()
+                        self.dvec.multiply(rad)
+                        copymode = False
+                        if self.ui.isCopy.isChecked(): copymode = True
+                        self.doc.openTransaction("Offset")
+                        nwire = Draft.offset(self.sel,self.dvec,copymode)
+                        self.doc.commitTransaction()
+                        self.finish()
 
 class Upgrade(Modifier):
 	'''The Draft_Upgrade FreeCAD command definition.
