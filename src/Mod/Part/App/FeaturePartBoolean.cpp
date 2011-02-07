@@ -52,19 +52,27 @@ short Boolean::mustExecute() const
 
 App::DocumentObjectExecReturn *Boolean::execute(void)
 {
-    Part::Feature *base = dynamic_cast<Part::Feature*>(Base.getValue());
-    Part::Feature *tool = dynamic_cast<Part::Feature*>(Tool.getValue());
+    try {
+#if defined(__GNUC__) && defined (FC_OS_LINUX)
+        Base::SignalException se;
+#endif
+        Part::Feature *base = dynamic_cast<Part::Feature*>(Base.getValue());
+        Part::Feature *tool = dynamic_cast<Part::Feature*>(Tool.getValue());
 
-    if (!base || !tool)
-        return new App::DocumentObjectExecReturn("Linked object is not a Part object");
+        if (!base || !tool)
+            return new App::DocumentObjectExecReturn("Linked object is not a Part object");
 
-    // Now, let's get the TopoDS_Shape
-    TopoDS_Shape BaseShape = base->Shape.getValue();
-    TopoDS_Shape ToolShape = tool->Shape.getValue();
+        // Now, let's get the TopoDS_Shape
+        TopoDS_Shape BaseShape = base->Shape.getValue();
+        TopoDS_Shape ToolShape = tool->Shape.getValue();
 
-    TopoDS_Shape resShape = runOperation(BaseShape, ToolShape);
-    if (resShape.IsNull())
-        return new App::DocumentObjectExecReturn("Resulting shape is invalid");
-    this->Shape.setValue(resShape);
-    return App::DocumentObject::StdReturn;
+        TopoDS_Shape resShape = runOperation(BaseShape, ToolShape);
+        if (resShape.IsNull())
+            return new App::DocumentObjectExecReturn("Resulting shape is invalid");
+        this->Shape.setValue(resShape);
+        return App::DocumentObject::StdReturn;
+    }
+    catch (...) {
+        return new App::DocumentObjectExecReturn("A fatal error occurred when running boolean operation");
+    }
 }
