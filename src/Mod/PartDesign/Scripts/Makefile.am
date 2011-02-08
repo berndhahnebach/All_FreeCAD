@@ -2,6 +2,7 @@
 datadir = $(prefix)/Mod/PartDesign/Scripts
 data_DATA = \
 		__init__.py \
+		Gear.py \
 		DistanceBolt.py \
 		RadialCopy.py
 
