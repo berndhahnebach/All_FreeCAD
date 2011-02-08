@@ -60,6 +60,7 @@ SET(PartDesign_SRCS
 SET(PartDesign_Scripts
     __init__.py
     Scripts/__init__.py
+    Scripts/Gear.py
     Scripts/DistanceBolt.py
     Scripts/RadialCopy.py
 )
