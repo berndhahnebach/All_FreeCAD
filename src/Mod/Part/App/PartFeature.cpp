@@ -41,6 +41,7 @@
 
 #include "PartFeature.h"
 #include "PartFeaturePy.h"
+#include "FeaturePythonPy.h"
 
 using namespace Part;
 
@@ -131,6 +132,14 @@ namespace App {
 PROPERTY_SOURCE_TEMPLATE(Part::FeaturePython, Part::Feature)
 template<> const char* Part::FeaturePython::getViewProviderName(void) const {
     return "PartGui::ViewProviderPython";
+}
+
+template<> PyObject* Part::FeaturePython::getPyObject(void) {
+    if (PythonObject.is(Py::_None())){
+        // ref counter is set to 1
+        PythonObject = Py::Object(new Part::FeaturePythonPy(this),true);
+    }
+    return Py::new_reference_to(PythonObject); 
 }
 /// @endcond
 
