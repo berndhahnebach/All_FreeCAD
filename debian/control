@@ -16,7 +16,7 @@ Build-Depends: debhelper (>= 7.0.50~), autotools-dev,
  zlib1g-dev, libxerces-c2-dev, libopencascade-visualization-dev,
  libopencascade-foundation-dev, libopencascade-modeling-dev, python-cxx-dev,
  libswscale-dev, libzipios++-dev, swig, libeigen2-dev
-Standards-Version: 3.9.0
+Standards-Version: 3.9.1
 
 Package: freecad
 Architecture: any
