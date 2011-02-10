@@ -194,12 +194,12 @@ class DraftWorkbench (Workbench):
 				"Draft_Trimex", "Draft_Upgrade", "Draft_Downgrade", "Draft_Scale",
                                 "Draft_Drawing","Draft_Edit","Draft_WireToBSpline","Draft_AddPoint",
                                 "Draft_DelPoint"]
-                self.treecmdList = ["Draft_ApplyStyle","Draft_ToggleDisplayMode","Draft_AddToGroup"]
+                self.treecmdList = ["Draft_ApplyStyle","Draft_ToggleDisplayMode","Draft_AddToGroup","Draft_SelectGroup"]
                 self.lineList = ["Draft_UndoLine","Draft_FinishLine","Draft_CloseLine"]
                 self.appendToolbar("Draft tools",self.cmdList+self.modList)
                 self.appendMenu("Draft",self.cmdList+self.modList)
-                self.appendMenu(["Draft","Object appearence"],self.treecmdList)
-                self.appendMenu(["Draft","Wire Tools"],self.lineList)
+                self.appendMenu(["Draft","Context tools"],self.treecmdList)
+                self.appendMenu(["Draft","Wire tools"],self.lineList)
                 FreeCAD.activeDraftCommand = None # a global place to look for active draft Command
                 FreeCADGui.draftToolBar = self.draftToolBar
                         
@@ -217,7 +217,7 @@ class DraftWorkbench (Workbench):
                         if (FreeCAD.activeDraftCommand == None):
                                 if (FreeCADGui.Selection.getSelection() != []):
                                         self.appendContextMenu("Draft",self.cmdList+self.modList)
-                                        self.appendContextMenu("Object appearence",self.treecmdList)
+                                        self.appendContextMenu("Context tools",self.treecmdList)
                                 else:
                                         self.appendContextMenu("Draft",self.cmdList)
                         else:
@@ -225,7 +225,7 @@ class DraftWorkbench (Workbench):
                                         self.appendContextMenu("",self.lineList)
                 else:
                         if (FreeCADGui.Selection.getSelection() != []):
-                                self.appendContextMenu("Object appearence",self.treecmdList)
+                                self.appendContextMenu("Context tools",self.treecmdList)
 
 	def GetClassName(self): 
 		return "Gui::PythonWorkbench"

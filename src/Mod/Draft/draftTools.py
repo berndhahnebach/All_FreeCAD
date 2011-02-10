@@ -784,7 +784,7 @@ class SelectPlane:
 	"The Draft_SelectPlane FreeCAD command definition"
 
 	def GetResources(self):
-		return {'Pixmap'  : 'Draft_selectPlane',
+		return {'Pixmap'  : 'Draft_SelectPlane',
 			'MenuText': str(translate("draft", "SelectPlane").toLatin1()),
 			'ToolTip' : str(translate("draft", "Select a working plane for geometry creation").toLatin1())}
 
@@ -3822,6 +3822,30 @@ class WireToBSpline(Modifier):
 	def finish(self):
 		Modifier.finish(self)
 
+class SelectGroup():
+	"The SelectGroup FreeCAD command definition"
+
+	def GetResources(self):
+		return {'Pixmap'  : 'Draft_SelectGroup',
+                        'MenuText': str(translate("draft", "Select group").toLatin1()),
+			'ToolTip': str(translate("draft", "Selects all objects with the same parents as this group").toLatin1())}
+
+        def IsActive(self):
+                if Draft.getSelection():
+                        return True
+                else:
+                        return False
+        
+	def Activated(self):
+                sellist = []
+                for ob in Draft.getSelection():
+                        for child in ob.OutList:
+                                FreeCADGui.Selection.addSelection(child)
+                        for parent in ob.InList:
+                                FreeCADGui.Selection.addSelection(parent)
+                                for child in parent.OutList:
+                                        FreeCADGui.Selection.addSelection(child)
+                                
                         
 
 #---------------------------------------------------------------------------
@@ -3862,3 +3886,4 @@ FreeCADGui.addCommand('Draft_ToggleConstructionMode',ToggleConstructionMode())
 FreeCADGui.addCommand('Draft_ApplyStyle',ApplyStyle())
 FreeCADGui.addCommand('Draft_ToggleDisplayMode',ToggleDisplayMode())
 FreeCADGui.addCommand('Draft_AddToGroup',AddToGroup())
+FreeCADGui.addCommand('Draft_SelectGroup',SelectGroup())
