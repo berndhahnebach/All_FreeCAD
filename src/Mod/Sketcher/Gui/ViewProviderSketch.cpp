@@ -270,52 +270,57 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
             switch (Mode) {
                 
                 case STATUS_SELECT_Point:{
-                    //Base::Console().Log("Select Point:%d\n",this->DragPoint);
-                    // Do selection
-                    std::stringstream ss;
-                    ss << "Vertex" << edit->PreselectPoint;
-                    Gui::Selection().addSelection(getSketchObject()->getDocument()->getName()
-                                                 ,getSketchObject()->getNameInDocument()
-                                                 , ss.str().c_str()
-                                                 ,pp->getPoint()[0]
-                                                 ,pp->getPoint()[1]
-                                                 ,pp->getPoint()[2]);
+                    if (pp) {
+                        //Base::Console().Log("Select Point:%d\n",this->DragPoint);
+                        // Do selection
+                        std::stringstream ss;
+                        ss << "Vertex" << edit->PreselectPoint;
+                        Gui::Selection().addSelection(getSketchObject()->getDocument()->getName()
+                                                     ,getSketchObject()->getNameInDocument()
+                                                     ,ss.str().c_str()
+                                                     ,pp->getPoint()[0]
+                                                     ,pp->getPoint()[1]
+                                                     ,pp->getPoint()[2]);
+                        this->edit->DragPoint = -1;
+                    }
 
-                    edit->DragPoint = -1;
                     Mode = STATUS_NONE;
-                    return true;
-                                         }
+                    return true;}
                 case STATUS_SELECT_Edge:{
-                    //Base::Console().Log("Select Point:%d\n",this->DragPoint);
-                    // Do selection
-                    std::stringstream ss;
-                    ss << "Edge" << edit->PreselectCurve;
-                                        Gui::Selection().addSelection(getSketchObject()->getDocument()->getName()
-                                                 ,getSketchObject()->getNameInDocument()
-                                                 ,ss.str().c_str()
-                                                 ,pp->getPoint()[0]
-                                                 ,pp->getPoint()[1]
-                                                 ,pp->getPoint()[2]);
+                    if (pp) {
+                        //Base::Console().Log("Select Point:%d\n",this->DragPoint);
+                        // Do selection
+                        std::stringstream ss;
+                        ss << "Edge" << edit->PreselectCurve;
+                                            Gui::Selection().addSelection(getSketchObject()->getDocument()->getName()
+                                                     ,getSketchObject()->getNameInDocument()
+                                                     ,ss.str().c_str()
+                                                     ,pp->getPoint()[0]
+                                                     ,pp->getPoint()[1]
+                                                     ,pp->getPoint()[2]);
+                        this->edit->DragPoint = -1;
+                    }
 
-                    this->edit->DragPoint = -1;
                     Mode = STATUS_NONE;
                     return true;}
                 case STATUS_SELECT_Constraint:{
-                     // Do selection
-                    std::stringstream ss;
-                    ss << "Constraint" << edit->PreselectConstraint;
-                                        Gui::Selection().addSelection(getSketchObject()->getDocument()->getName()
-                                                 ,getSketchObject()->getNameInDocument()
-                                                 ,ss.str().c_str()
-                                                 ,pp->getPoint()[0]
-                                                 ,pp->getPoint()[1]
-                                                 ,pp->getPoint()[2]);
+                    if (pp) {
+                         // Do selection
+                        std::stringstream ss;
+                        ss << "Constraint" << edit->PreselectConstraint;
+                                            Gui::Selection().addSelection(getSketchObject()->getDocument()->getName()
+                                                     ,getSketchObject()->getNameInDocument()
+                                                     ,ss.str().c_str()
+                                                     ,pp->getPoint()[0]
+                                                     ,pp->getPoint()[1]
+                                                     ,pp->getPoint()[2]);
+                        this->edit->DragPoint = -1;
+                    }
 
-                    this->edit->DragPoint = -1;
                     Mode = STATUS_NONE;
                     return true;}
                 case STATUS_SKETCH_DragPoint:
-                    if(edit->DragPoint != -1 && pp){
+                    if (edit->DragPoint != -1 && pp){
                           Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.movePoint(%i,%i,App.Vector(%f,%f,0)) "
                           ,getObject()->getNameInDocument()
                           ,edit->DragPoint/2,edit->DragPoint%2+1
