@@ -276,6 +276,25 @@ class UndoRedoCases(unittest.TestCase):
     # switch on the Undo OFF
     self.Doc.UndoMode = 0
 
+  def testUndoClear(self):
+    # switch on the Undo
+    self.Doc.UndoMode = 1
+    self.assertEqual(self.Doc.UndoNames,[])
+    self.assertEqual(self.Doc.UndoCount,0)
+    self.assertEqual(self.Doc.RedoNames,[])
+    self.assertEqual(self.Doc.RedoCount,0)
+
+    self.Doc.openTransaction("Transaction1")
+    # becomes the active object
+    self.Doc.addObject("App::FeatureTest","test1")
+    self.Doc.commitTransaction()
+    # removes the active object
+    self.Doc.undo()
+    self.assertEqual(self.Doc.ActiveObject,None)
+    # deletes the active object
+    self.Doc.clearUndos()
+    self.assertEqual(self.Doc.ActiveObject,None)
+
   def testUndo(self):
     # switch on the Undo
     self.Doc.UndoMode = 1

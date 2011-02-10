@@ -1328,6 +1328,9 @@ void Document::_remObject(DocumentObject* pcObject)
 {
     std::map<std::string,DocumentObject*>::iterator pos = d->objectMap.find(pcObject->getNameInDocument());
 
+    if (d->activeObject == pcObject)
+        d->activeObject = 0;
+
     signalDeletedObject(*pcObject);
 
     // Transaction stuff
