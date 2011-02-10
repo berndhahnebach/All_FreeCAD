@@ -57,6 +57,7 @@ public:
 
   virtual void attach(App::DocumentObject *);
   virtual void updateData(const App::Property*);
+  virtual std::vector<std::string> getDisplayModes(void) const;
 
   /// creats the grid
   SoSeparator* createGrid(void); 
