@@ -37,6 +37,7 @@
         <file>icons/Draft_Wire.svg</file>
         <file>icons/Draft_WireToBSpline.svg</file>
         <file>icons/Draft_Construction.svg</file>
+        <file>icons/Draft_SelectGroup.svg</file>
 	</qresource>
     <qresource>
         <file>patterns/concrete.svg</file>
