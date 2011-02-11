@@ -129,16 +129,17 @@ Translator::Translator()
 {
     // This is needed for Qt's lupdate
     d = new TranslatorP;
-    d->mapLanguageTopLevelDomain[QT_TR_NOOP("English" )] = "en";
-    d->mapLanguageTopLevelDomain[QT_TR_NOOP("German"  )] = "de";
-    d->mapLanguageTopLevelDomain[QT_TR_NOOP("Spanish" )] = "es";
-    d->mapLanguageTopLevelDomain[QT_TR_NOOP("French"  )] = "fr";
-    d->mapLanguageTopLevelDomain[QT_TR_NOOP("Italian" )] = "it";
-    d->mapLanguageTopLevelDomain[QT_TR_NOOP("Japanese")] = "jp";
-    d->mapLanguageTopLevelDomain[QT_TR_NOOP("Chinese" )] = "cn";
-    d->mapLanguageTopLevelDomain[QT_TR_NOOP("Korean"  )] = "kr";
-    d->mapLanguageTopLevelDomain[QT_TR_NOOP("Russian" )] = "ru";
-    d->mapLanguageTopLevelDomain[QT_TR_NOOP("Swedish" )] = "se";
+    d->mapLanguageTopLevelDomain[QT_TR_NOOP("English"   )] = "en";
+    d->mapLanguageTopLevelDomain[QT_TR_NOOP("German"    )] = "de";
+    d->mapLanguageTopLevelDomain[QT_TR_NOOP("Spanish"   )] = "es";
+    d->mapLanguageTopLevelDomain[QT_TR_NOOP("French"    )] = "fr";
+    d->mapLanguageTopLevelDomain[QT_TR_NOOP("Italian"   )] = "it";
+    d->mapLanguageTopLevelDomain[QT_TR_NOOP("Japanese"  )] = "jp";
+    d->mapLanguageTopLevelDomain[QT_TR_NOOP("Chinese"   )] = "cn";
+    d->mapLanguageTopLevelDomain[QT_TR_NOOP("Korean"    )] = "kr";
+    d->mapLanguageTopLevelDomain[QT_TR_NOOP("Russian"   )] = "ru";
+    d->mapLanguageTopLevelDomain[QT_TR_NOOP("Swedish"   )] = "se";
+    d->mapLanguageTopLevelDomain[QT_TR_NOOP("Afrikaans" )] = "af";
     d->activatedLanguage = "English";
 
     d->paths = directories();
