@@ -42,12 +42,18 @@ locations = [["Assembly","../Mod/Assembly/Gui/Resources/translations"],
              ["ReverseEngineering","../Mod/ReverseEngineering/Gui/Resources/translations"],
              ["Robot","../Mod/Robot/Gui/Resources/translations"],
              ["Sketcher","../Mod/Sketcher/Gui/Resources/translations"]]
+
+tweaks = [["pt-BR","pt"],["es-ES","es"]]
              
 def doFile(tsfilepath,targetpath,lncode):
     "treats a single file"
     basename = os.path.basename(tsfilepath)[:-3]
     # special fix of the draft filename...
     if basename == "draft": basename = "Draft"
+    # tweak of the final name...
+    for t in tweaks:
+        if lncode == t[0]:
+            lncode = t[1]
     newname = basename + "_" + lncode + ".ts"
     newpath = targetpath + os.sep + newname
     shutil.copyfile(tsfilepath, newpath)
