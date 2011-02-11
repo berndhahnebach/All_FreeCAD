@@ -414,6 +414,7 @@ class toolBar:
 				self.cmdlabel.setText(translate("draft", "Circle"))
 				self.pointUi()
 				self.labelx.setText(translate("draft", "Center X"))
+                                self.hasFill.show()
 
 			def arcUi(self):
 				self.cmdlabel.setText(translate("draft", "Arc"))
