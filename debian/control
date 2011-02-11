@@ -6,7 +6,7 @@ Uploaders: Teemu Ikonen <tpikonen@gmail.com>, "Adam C. Powell, IV" <hazelsct@deb
 Vcs-Browser: http://git.debian.org/?p=debian-science/packages/freecad.git
 Vcs-Git: git://git.debian.org/git/debian-science/packages/freecad.git
 Homepage: http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page
-Build-Depends: debhelper (>= 7.0.50~), autotools-dev,
+Build-Depends: debhelper (>= 7.0.50~), autotools-dev, libtool,
  libboost-dev, libboost-date-time-dev, libboost-filesystem-dev,
  libboost-graph-dev, libboost-iostreams-dev, libboost-program-options-dev,
  libboost-regex-dev, libboost-serialization-dev, libboost-signals-dev,
