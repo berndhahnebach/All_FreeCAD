@@ -1,33 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="es">
-<context>
+<TS>
+  <context>
     <name>CmdApproxSurface</name>
     <message>
-        <source>Reverse Engineering</source>
-        <translation>Ingeniería inversa</translation>
+      <location/>
+      <source>Reverse Engineering</source>
+      <translation>Ingeniería Inversa</translation>
     </message>
     <message>
-        <source>Approximate surface...</source>
-        <translation>Superficie aproximada...</translation>
+      <location/>
+      <source>Approximate surface...</source>
+      <translation>Superficie aproximada...</translation>
     </message>
     <message>
-        <source>Approximate a B-Spline surface</source>
-        <translation>Aproximar a una superficie B-Spline</translation>
+      <location/>
+      <source>Approximate a B-Spline surface</source>
+      <translation>Superficie aproximada a B-Spline</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>ReverseEngineeringGui::Workbench</name>
     <message>
-        <source>Reverse Engineering</source>
-        <translation type="obsolete">Ingeniería inversa</translation>
+      <location/>
+      <source>Reverse Engineering</source>
+      <translation>Ingeniería Inversa</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>Workbench</name>
     <message>
-        <source>Reverse Engineering</source>
-        <translation>Ingeniería inversa</translation>
+      <location/>
+      <source>Reverse Engineering</source>
+      <translation>Ingeniería Inversa</translation>
     </message>
-</context>
+  </context>
 </TS>

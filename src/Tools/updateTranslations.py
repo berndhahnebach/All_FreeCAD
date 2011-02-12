@@ -54,7 +54,8 @@ class SvnHandler(xml.sax.handler.ContentHandler):
 
     def startElement(self, name, attributes):
         if name == "wc-status":
-            self.is_versioned = False
+            if attributes["item"] == "unversioned":
+                self.is_versioned = False
 
 def doFile(tsfilepath,targetpath,lncode):
     "treats a single file"

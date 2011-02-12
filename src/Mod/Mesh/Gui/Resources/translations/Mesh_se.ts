@@ -1,1244 +1,1522 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="sv_SE">
-<context>
+<TS>
+  <context>
     <name>CmdMeshAddFacet</name>
     <message>
-        <source>Mesh</source>
-        <translation type="unfinished">Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Add triangle</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Add triangle</source>
+      <translation>Add triangle</translation>
     </message>
     <message>
-        <source>Add triangle manually to a mesh</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Add triangle manually to a mesh</source>
+      <translation>Add triangle manually to a mesh</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshBoundingBox</name>
     <message>
-        <source>Mesh</source>
-        <translation>Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Boundings info...</source>
-        <translation>Begränsningsinfo...</translation>
+      <location/>
+      <source>Boundings info...</source>
+      <translation>Begränsningsinfo...</translation>
     </message>
     <message>
-        <source>Shows the boundings of the selected mesh</source>
-        <translation>Visar begränsningarna på det valda nätet</translation>
+      <location/>
+      <source>Shows the boundings of the selected mesh</source>
+      <translation>Visar begränsningarna på det valda nätet</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshBuildRegularSolid</name>
     <message>
-        <source>Mesh</source>
-        <translation>Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Regular solid...</source>
-        <translation>Reguljär solid...</translation>
+      <location/>
+      <source>Regular solid...</source>
+      <translation>Reguljär solid...</translation>
     </message>
     <message>
-        <source>Builds a regular solid</source>
-        <translation>Skapar en reguljär solid</translation>
+      <location/>
+      <source>Builds a regular solid</source>
+      <translation>Skapar en reguljär solid</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshDemolding</name>
     <message>
-        <source>Interactive demolding direction</source>
-        <translation>Interaktiv avformningsriktning</translation>
+      <location/>
+      <source>Interactive demolding direction</source>
+      <translation>Interaktiv avformningsriktning</translation>
     </message>
     <message>
-        <source>Mesh</source>
-        <translation>Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshDifference</name>
     <message>
-        <source>Mesh</source>
-        <translation>Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Difference</source>
-        <translation>Skillnad</translation>
+      <location/>
+      <source>Difference</source>
+      <translation>Skillnad</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshEvaluateFacet</name>
     <message>
-        <source>Mesh</source>
-        <translation>Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Face info</source>
-        <translation>Ytinformation</translation>
+      <location/>
+      <source>Face info</source>
+      <translation>Ytinformation</translation>
     </message>
     <message>
-        <source>Information about face</source>
-        <translation>Information om yta</translation>
+      <location/>
+      <source>Information about face</source>
+      <translation>Information om yta</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshEvaluateSolid</name>
     <message>
-        <source>Mesh</source>
-        <translation>Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Check solid mesh</source>
-        <translation>Kontrolera solidnät</translation>
+      <location/>
+      <source>Check solid mesh</source>
+      <translation>Kontrolera solidnät</translation>
     </message>
     <message>
-        <source>Checks whether the mesh is a solid</source>
-        <translation>Kontrollerar om nätet är en solid</translation>
+      <location/>
+      <source>Checks whether the mesh is a solid</source>
+      <translation>Kontrollerar om nätet är en solid</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshEvaluation</name>
     <message>
-        <source>Mesh</source>
-        <translation>Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Evaluate mesh...</source>
-        <translation type="obsolete">Evaluera nät...</translation>
+      <location/>
+      <source>Evaluate mesh...</source>
+      <translation>Evaluera nät...</translation>
     </message>
     <message>
-        <source>Opens a dialog to analyze and repair a mesh</source>
-        <translation>Öppnar en dialog för att analysera och reparera ett nät</translation>
+      <location/>
+      <source>Opens a dialog to analyze and repair a mesh</source>
+      <translation>Öppnar en dialog för att analysera och reparera ett nät</translation>
     </message>
     <message>
-        <source>Evaluate &amp;&amp; Repair mesh...</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Evaluate &amp;&amp; Repair mesh...</source>
+      <translation>Evaluate &amp;&amp; Repair mesh...</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshExMakeMesh</name>
     <message>
-        <source>Mesh</source>
-        <translation>Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Make a Box</source>
-        <translation>Gör en kub</translation>
+      <location/>
+      <source>Make a Box</source>
+      <translation>Gör en kub</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshExMakeTool</name>
     <message>
-        <source>Mesh</source>
-        <translation>Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Make a Tool</source>
-        <translation>Gör ett verktyg</translation>
+      <location/>
+      <source>Make a Tool</source>
+      <translation>Gör ett verktyg</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshExMakeUnion</name>
     <message>
-        <source>Mesh</source>
-        <translation>Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Make Union</source>
-        <translation>Gör en förening</translation>
+      <location/>
+      <source>Make Union</source>
+      <translation>Gör en förening</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshExport</name>
     <message>
-        <source>Mesh</source>
-        <translation>Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Export mesh...</source>
-        <translation>Exportera nät...</translation>
+      <location/>
+      <source>Export mesh...</source>
+      <translation>Exportera nät...</translation>
     </message>
     <message>
-        <source>Exports a mesh to file</source>
-        <translation>Exporterar ett nät till fil</translation>
+      <location/>
+      <source>Exports a mesh to file</source>
+      <translation>Exporterar ett nät till fil</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshFillInteractiveHole</name>
     <message>
-        <source>Mesh</source>
-        <translation>Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Close hole</source>
-        <translation>Stäng hål</translation>
+      <location/>
+      <source>Close hole</source>
+      <translation>Stäng hål</translation>
     </message>
     <message>
-        <source>Close holes interactively</source>
-        <translation>Stäng hål interaktivt</translation>
+      <location/>
+      <source>Close holes interactively</source>
+      <translation>Stäng hål interaktivt</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshFillupHoles</name>
     <message>
-        <source>Mesh</source>
-        <translation>Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Fill holes...</source>
-        <translation>Fyll hål...</translation>
+      <location/>
+      <source>Fill holes...</source>
+      <translation>Fyll hål...</translation>
     </message>
     <message>
-        <source>Fill holes of the mesh</source>
-        <translation>Fyll nätets hål</translation>
+      <location/>
+      <source>Fill holes of the mesh</source>
+      <translation>Fyll nätets hål</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshFixDegenerations</name>
     <message>
-        <source>Mesh</source>
-        <translation type="obsolete">Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Remove degenerated faces</source>
-        <translation type="obsolete">Ta bort degenererade ytor</translation>
+      <location/>
+      <source>Remove degenerated faces</source>
+      <translation>Ta bort degenererade ytor</translation>
     </message>
     <message>
-        <source>Remove degenerated faces from the mesh</source>
-        <translation type="obsolete">Ta bort degenererade ytor från nätet</translation>
+      <location/>
+      <source>Remove degenerated faces from the mesh</source>
+      <translation>Ta bort degenererade ytor från nätet</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshFixDuplicateFaces</name>
     <message>
-        <source>Mesh</source>
-        <translation type="obsolete">Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Remove duplicated faces</source>
-        <translation type="obsolete">Ta bort duplicerade ytor</translation>
+      <location/>
+      <source>Remove duplicated faces</source>
+      <translation>Ta bort duplicerade ytor</translation>
     </message>
     <message>
-        <source>Remove duplicated faces from the mesh</source>
-        <translation type="obsolete">Ta bort duplicerade ytor från nätet</translation>
+      <location/>
+      <source>Remove duplicated faces from the mesh</source>
+      <translation>Ta bort duplicerade ytor från nätet</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshFixDuplicatePoints</name>
     <message>
-        <source>Mesh</source>
-        <translation type="obsolete">Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Remove duplicated points</source>
-        <translation type="obsolete">Ta bort duplicerade punkter</translation>
+      <location/>
+      <source>Remove duplicated points</source>
+      <translation>Ta bort duplicerade punkter</translation>
     </message>
     <message>
-        <source>Remove duplicated points from the mesh</source>
-        <translation type="obsolete">Ta bort duplicerade punkter från nätet</translation>
+      <location/>
+      <source>Remove duplicated points from the mesh</source>
+      <translation>Ta bort duplicerade punkter från nätet</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshFixIndices</name>
     <message>
-        <source>Mesh</source>
-        <translation type="obsolete">Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Fix indices</source>
-        <translation type="obsolete">Korrigera index</translation>
+      <location/>
+      <source>Fix indices</source>
+      <translation>Korrigera index</translation>
     </message>
     <message>
-        <source>Fixes invalid indices in the mesh structure</source>
-        <translation type="obsolete">Korrigera ogiltiga index i nätstrukturen</translation>
+      <location/>
+      <source>Fixes invalid indices in the mesh structure</source>
+      <translation>Korrigera ogiltiga index i nätstrukturen</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshFlipNormals</name>
     <message>
-        <source>Mesh</source>
-        <translation>Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Flip normals</source>
-        <translation>Invertera normaler</translation>
+      <location/>
+      <source>Flip normals</source>
+      <translation>Invertera normaler</translation>
     </message>
     <message>
-        <source>Flips the normals of the mesh</source>
-        <translation>Invertera nätets normaler</translation>
+      <location/>
+      <source>Flips the normals of the mesh</source>
+      <translation>Invertera nätets normaler</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshFromGeometry</name>
     <message>
-        <source>Mesh</source>
-        <translation>Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Create mesh from geometry...</source>
-        <translation>Skapa nät från geometri...</translation>
+      <location/>
+      <source>Create mesh from geometry...</source>
+      <translation>Skapa nät från geometri...</translation>
     </message>
     <message>
-        <source>Create mesh from the selected geometry</source>
-        <translation>Skapa nät från den valda geometrin</translation>
+      <location/>
+      <source>Create mesh from the selected geometry</source>
+      <translation>Skapa nät från den valda geometrin</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshHarmonizeNormals</name>
     <message>
-        <source>Mesh</source>
-        <translation>Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Harmonize normals</source>
-        <translation>Anpassa normaler</translation>
+      <location/>
+      <source>Harmonize normals</source>
+      <translation>Anpassa normaler</translation>
     </message>
     <message>
-        <source>Harmonizes the normals of the mesh</source>
-        <translation>Anpassa nätets normaler</translation>
+      <location/>
+      <source>Harmonizes the normals of the mesh</source>
+      <translation>Anpassa nätets normaler</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshImport</name>
     <message>
-        <source>Mesh</source>
-        <translation>Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Import mesh...</source>
-        <translation>Importera nät...</translation>
+      <location/>
+      <source>Import mesh...</source>
+      <translation>Importera nät...</translation>
     </message>
     <message>
-        <source>Imports a mesh from file</source>
-        <translation>Importerar ett nät från fil</translation>
+      <location/>
+      <source>Imports a mesh from file</source>
+      <translation>Importerar ett nät från fil</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshIntersection</name>
     <message>
-        <source>Mesh</source>
-        <translation>Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Intersection</source>
-        <translation>Skärning</translation>
+      <location/>
+      <source>Intersection</source>
+      <translation>Skärning</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshPolyCut</name>
     <message>
-        <source>Mesh</source>
-        <translation>Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Cut mesh</source>
-        <translation>Klipp nät</translation>
+      <location/>
+      <source>Cut mesh</source>
+      <translation>Klipp nät</translation>
     </message>
     <message>
-        <source>Cuts a mesh with a picked polygon</source>
-        <translation>Klipper ett nät med en vald polygon</translation>
+      <location/>
+      <source>Cuts a mesh with a picked polygon</source>
+      <translation>Klipper ett nät med en vald polygon</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshPolySegm</name>
     <message>
-        <source>Mesh</source>
-        <translation>Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Make segment</source>
-        <translation>Skapa segment</translation>
+      <location/>
+      <source>Make segment</source>
+      <translation>Skapa segment</translation>
     </message>
     <message>
-        <source>Creates a mesh segment</source>
-        <translation>Skapar ett nätsegment</translation>
+      <location/>
+      <source>Creates a mesh segment</source>
+      <translation>Skapar ett nätsegment</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshPolySelect</name>
     <message>
-        <source>Mesh</source>
-        <translation type="unfinished">Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Select mesh</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select mesh</source>
+      <translation>Select mesh</translation>
     </message>
     <message>
-        <source>Select an area of the mesh</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select an area of the mesh</source>
+      <translation>Select an area of the mesh</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshPolySplit</name>
     <message>
-        <source>Mesh</source>
-        <translation>Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Split mesh</source>
-        <translation>Dela nät</translation>
+      <location/>
+      <source>Split mesh</source>
+      <translation>Dela nät</translation>
     </message>
     <message>
-        <source>Splits a mesh into two meshes</source>
-        <translation>Delar ett nät till två nät</translation>
+      <location/>
+      <source>Splits a mesh into two meshes</source>
+      <translation>Delar ett nät till två nät</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshRemoveCompByHand</name>
     <message>
-        <source>Mesh</source>
-        <translation>Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Remove components by hand...</source>
-        <translation>Ta bort komponenter för hand...</translation>
+      <location/>
+      <source>Remove components by hand...</source>
+      <translation>Ta bort komponenter för hand...</translation>
     </message>
     <message>
-        <source>Mark a component to remove it from the mesh</source>
-        <translation>Markera en komponent för att ta bort den från nätet</translation>
+      <location/>
+      <source>Mark a component to remove it from the mesh</source>
+      <translation>Markera en komponent för att ta bort den från nätet</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshRemoveComponents</name>
     <message>
-        <source>Mesh</source>
-        <translation>Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Remove components...</source>
-        <translation>Ta bort komponenter...</translation>
+      <location/>
+      <source>Remove components...</source>
+      <translation>Ta bort komponenter...</translation>
     </message>
     <message>
-        <source>Remove topologic independant components from the mesh</source>
-        <translation>Ta bort topologiskt oberoende komponenter från nätet</translation>
+      <location/>
+      <source>Remove topologic independant components from the mesh</source>
+      <translation>Ta bort topologiskt oberoende komponenter från nätet</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshSmoothing</name>
     <message>
-        <source>Mesh</source>
-        <translation>Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Smooth...</source>
-        <translation>Jämna ut...</translation>
+      <location/>
+      <source>Smooth...</source>
+      <translation>Jämna ut...</translation>
     </message>
     <message>
-        <source>Smooth the selected meshes</source>
-        <translation>Jämna ut de valda näten</translation>
+      <location/>
+      <source>Smooth the selected meshes</source>
+      <translation>Jämna ut de valda näten</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshToolMesh</name>
     <message>
-        <source>Mesh</source>
-        <translation>Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Segment by tool mesh</source>
-        <translation>Segmentera</translation>
+      <location/>
+      <source>Segment by tool mesh</source>
+      <translation>Segmentera</translation>
     </message>
     <message>
-        <source>Creates a segment from a given tool mesh</source>
-        <translation>Skapar ett segment från ett givet verktygsnät</translation>
+      <location/>
+      <source>Creates a segment from a given tool mesh</source>
+      <translation>Skapar ett segment från ett givet verktygsnät</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshTransform</name>
     <message>
-        <source>Mesh</source>
-        <translation>Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Transform mesh</source>
-        <translation>Transformera nät</translation>
+      <location/>
+      <source>Transform mesh</source>
+      <translation>Transformera nät</translation>
     </message>
     <message>
-        <source>Rotate or move a mesh</source>
-        <translation>Rotera eller flytta ett nät</translation>
+      <location/>
+      <source>Rotate or move a mesh</source>
+      <translation>Rotera eller flytta ett nät</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshUnion</name>
     <message>
-        <source>Mesh</source>
-        <translation>Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Union</source>
-        <translation>Förening</translation>
+      <location/>
+      <source>Union</source>
+      <translation>Förening</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshVertexCurvature</name>
     <message>
-        <source>Mesh</source>
-        <translation>Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Calculates the curvature of the vertices of a mesh</source>
-        <translation>Beräknar hörnens krökning på ett nät</translation>
+      <location/>
+      <source>Calculates the curvature of the vertices of a mesh</source>
+      <translation>Beräknar hörnens krökning på ett nät</translation>
     </message>
     <message>
-        <source>Curvature plot</source>
-        <translation>Krökningsplott</translation>
+      <location/>
+      <source>Curvature plot</source>
+      <translation>Krökningsplott</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshVertexCurvatureInfo</name>
     <message>
-        <source>Mesh</source>
-        <translation>Nät</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Nät</translation>
     </message>
     <message>
-        <source>Curvature info</source>
-        <translation>Krökningsinfo</translation>
+      <location/>
+      <source>Curvature info</source>
+      <translation>Krökningsinfo</translation>
     </message>
     <message>
-        <source>Information about curvature</source>
-        <translation>Information om krökning</translation>
+      <location/>
+      <source>Information about curvature</source>
+      <translation>Information om krökning</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>DockEvaluateMeshImp</name>
     <message>
-        <source>Evaluate Mesh</source>
-        <translation type="obsolete">Evaluera nät</translation>
+      <location/>
+      <source>Evaluate Mesh</source>
+      <translation>Evaluera nät</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>MeshGui::DlgEvaluateMesh</name>
     <message>
-        <source>Evaluate Mesh</source>
-        <translation type="obsolete">Evaluera nät</translation>
+      <location/>
+      <source>Evaluate Mesh</source>
+      <translation>Evaluera nät</translation>
     </message>
     <message>
-        <source>&amp;Help</source>
-        <translation>&amp;Hjälp</translation>
+      <location/>
+      <source>&amp;Help</source>
+      <translation>&amp;Hjälp</translation>
     </message>
     <message>
-        <source>F1</source>
-        <translation>F1</translation>
+      <location/>
+      <source>F1</source>
+      <translation>F1</translation>
     </message>
     <message>
-        <source>&amp;Close</source>
-        <translation>&amp;Stäng</translation>
+      <location/>
+      <source>&amp;Close</source>
+      <translation>&amp;Stäng</translation>
     </message>
     <message>
-        <source>Alt+C</source>
-        <translation>Alt+C</translation>
+      <location/>
+      <source>Alt+C</source>
+      <translation>Alt+C</translation>
     </message>
     <message>
-        <source>Mesh information</source>
-        <translation>Nätinformation</translation>
+      <location/>
+      <source>Mesh information</source>
+      <translation>Nätinformation</translation>
     </message>
     <message>
-        <source>No information</source>
-        <translation>Ingen Information</translation>
+      <location/>
+      <source>No information</source>
+      <translation>Ingen Information</translation>
     </message>
     <message>
-        <source>Number of points:</source>
-        <translation>Antal punkter:</translation>
+      <location/>
+      <source>Number of points:</source>
+      <translation>Antal punkter:</translation>
     </message>
     <message>
-        <source>Number of edges:</source>
-        <translation>Antal kanter:</translation>
+      <location/>
+      <source>Number of edges:</source>
+      <translation>Antal kanter:</translation>
     </message>
     <message>
-        <source>Refresh</source>
-        <translation>Ladda om</translation>
+      <location/>
+      <source>Refresh</source>
+      <translation>Ladda om</translation>
     </message>
     <message>
-        <source>Analyze</source>
-        <translation>Analysera</translation>
+      <location/>
+      <source>Analyze</source>
+      <translation>Analysera</translation>
     </message>
     <message>
-        <source>Repair</source>
-        <translation>Reparera</translation>
+      <location/>
+      <source>Repair</source>
+      <translation>Reparera</translation>
     </message>
     <message>
-        <source>Orientation</source>
-        <translation>Orientering</translation>
+      <location/>
+      <source>Orientation</source>
+      <translation>Orientering</translation>
     </message>
     <message>
-        <source>Degenerated faces</source>
-        <translation>Degenererade ytor</translation>
+      <location/>
+      <source>Degenerated faces</source>
+      <translation>Degenererade ytor</translation>
     </message>
     <message>
-        <source>Face indices</source>
-        <translation>Ytindex</translation>
+      <location/>
+      <source>Face indices</source>
+      <translation>Ytindex</translation>
     </message>
     <message>
-        <source>Number of faces:</source>
-        <translation>Antal ytor:</translation>
+      <location/>
+      <source>Number of faces:</source>
+      <translation>Antal ytor:</translation>
     </message>
     <message>
-        <source>Duplicated faces</source>
-        <translation>Duplicerade ytor</translation>
+      <location/>
+      <source>Duplicated faces</source>
+      <translation>Duplicerade ytor</translation>
     </message>
     <message>
-        <source>Duplicated points</source>
-        <translation>Duplicerade punkter</translation>
+      <location/>
+      <source>Duplicated points</source>
+      <translation>Duplicerade punkter</translation>
     </message>
     <message>
-        <source>Non-manifolds</source>
-        <translation type="unfinished">Nichtmannigfaltigkeiten</translation>
+      <location/>
+      <source>Non-manifolds</source>
+      <translation>Non-manifolds</translation>
     </message>
     <message>
-        <source>Self-intersections</source>
-        <translation>Självskärningar</translation>
+      <location/>
+      <source>Self-intersections</source>
+      <translation>Självskärningar</translation>
     </message>
     <message>
-        <source>All above tests together</source>
-        <translation>Alla ovanstående test tillsammans</translation>
+      <location/>
+      <source>All above tests together</source>
+      <translation>Alla ovanstående test tillsammans</translation>
     </message>
     <message>
-        <source>Repetitive repair</source>
-        <translation>Upprepad reparation</translation>
+      <location/>
+      <source>Repetitive repair</source>
+      <translation>Upprepad reparation</translation>
     </message>
     <message>
-        <source>Evaluate &amp; Repair Mesh</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Evaluate &amp; Repair Mesh</source>
+      <translation>Evaluate &amp; Repair Mesh</translation>
     </message>
     <message>
-        <source>Folds on surface</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Folds on surface</source>
+      <translation>Folds on surface</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>MeshGui::DlgEvaluateMeshImp</name>
     <message>
-        <source>No information</source>
-        <translation>Ingen Information</translation>
+      <location/>
+      <source>No information</source>
+      <translation>Ingen Information</translation>
     </message>
     <message>
-        <source>Invalid neighbour indices</source>
-        <translation>Ogiltiga grannindex</translation>
+      <location/>
+      <source>Invalid neighbour indices</source>
+      <translation>Ogiltiga grannindex</translation>
     </message>
     <message>
-        <source>Invalid face indices</source>
-        <translation>Ogiltiga ytindex</translation>
+      <location/>
+      <source>Invalid face indices</source>
+      <translation>Ogiltiga ytindex</translation>
     </message>
     <message>
-        <source>Invalid point indices</source>
-        <translation>Ogiltiga punktindex</translation>
+      <location/>
+      <source>Invalid point indices</source>
+      <translation>Ogiltiga punktindex</translation>
     </message>
     <message>
-        <source>Multiple point indices</source>
-        <translation>Multipla punktindex</translation>
+      <location/>
+      <source>Multiple point indices</source>
+      <translation>Multipla punktindex</translation>
     </message>
     <message>
-        <source>Non-manifolds</source>
-        <translation type="unfinished">Nichtmannigfaltigkeiten</translation>
+      <location/>
+      <source>Non-manifolds</source>
+      <translation>Non-manifolds</translation>
     </message>
     <message>
-        <source>Cannot remove non-manifolds</source>
-        <translation type="unfinished">Nichtmannigfaltigkeiten können nicht entfernt werden</translation>
+      <location/>
+      <source>Cannot remove non-manifolds</source>
+      <translation>Cannot remove non-manifolds</translation>
     </message>
     <message>
-        <source>No selection</source>
-        <translation>Inget val</translation>
+      <location/>
+      <source>No selection</source>
+      <translation>Inget val</translation>
     </message>
     <message>
-        <source>No flipped normals</source>
-        <translation>Inga inverterade normaler</translation>
+      <location/>
+      <source>No flipped normals</source>
+      <translation>Inga inverterade normaler</translation>
     </message>
     <message>
-        <source>%1 flipped normals</source>
-        <translation>%1 inverterade normaler</translation>
+      <location/>
+      <source>%1 flipped normals</source>
+      <translation>%1 inverterade normaler</translation>
     </message>
     <message>
-        <source>No non-manifolds</source>
-        <translation type="unfinished">Keine Nichtmannigfaltigkeiten</translation>
+      <location/>
+      <source>No non-manifolds</source>
+      <translation>No non-manifolds</translation>
     </message>
     <message>
-        <source>%1 non-manifolds</source>
-        <translation type="unfinished">%1 Nichtmannigfaltigkeiten</translation>
+      <location/>
+      <source>%1 non-manifolds</source>
+      <translation>%1 non-manifolds</translation>
     </message>
     <message>
-        <source>No invalid indices</source>
-        <translation>Keine ungültige Indexe</translation>
+      <location/>
+      <source>No invalid indices</source>
+      <translation>No invalid indices</translation>
     </message>
     <message>
-        <source>No degenerations</source>
-        <translation>Inga degenerationer</translation>
+      <location/>
+      <source>No degenerations</source>
+      <translation>Inga degenerationer</translation>
     </message>
     <message>
-        <source>%1 degenerated faces</source>
-        <translation>%1 degenererade ytor</translation>
+      <location/>
+      <source>%1 degenerated faces</source>
+      <translation>%1 degenererade ytor</translation>
     </message>
     <message>
-        <source>No duplicated faces</source>
-        <translation>Inga duplicerade ytor</translation>
+      <location/>
+      <source>No duplicated faces</source>
+      <translation>Inga duplicerade ytor</translation>
     </message>
     <message>
-        <source>%1 duplicated faces</source>
-        <translation>%1 duplicerade ytor</translation>
+      <location/>
+      <source>%1 duplicated faces</source>
+      <translation>%1 duplicerade ytor</translation>
     </message>
     <message>
-        <source>No duplicated points</source>
-        <translation>Inga duplicerade punkter</translation>
+      <location/>
+      <source>No duplicated points</source>
+      <translation>Inga duplicerade punkter</translation>
     </message>
     <message>
-        <source>Duplicated points</source>
-        <translation>Duplicerade punkter</translation>
+      <location/>
+      <source>Duplicated points</source>
+      <translation>Duplicerade punkter</translation>
     </message>
     <message>
-        <source>Orientation</source>
-        <translation>Orientering</translation>
+      <location/>
+      <source>Orientation</source>
+      <translation>Orientering</translation>
     </message>
     <message>
-        <source>Indices</source>
-        <translation>Index</translation>
+      <location/>
+      <source>Indices</source>
+      <translation>Index</translation>
     </message>
     <message>
-        <source>Degenerations</source>
-        <translation>Degenerationer</translation>
+      <location/>
+      <source>Degenerations</source>
+      <translation>Degenerationer</translation>
     </message>
     <message>
-        <source>Duplicated faces</source>
-        <translation>Duplicerade ytor</translation>
+      <location/>
+      <source>Duplicated faces</source>
+      <translation>Duplicerade ytor</translation>
     </message>
     <message>
-        <source>No self-intersections</source>
-        <translation>Inga självskärningar</translation>
+      <location/>
+      <source>No self-intersections</source>
+      <translation>Inga självskärningar</translation>
     </message>
     <message>
-        <source>Self-intersections</source>
-        <translation>Självskärningar</translation>
+      <location/>
+      <source>Self-intersections</source>
+      <translation>Självskärningar</translation>
     </message>
     <message>
-        <source>Mesh repair</source>
-        <translation>Nätreparation</translation>
+      <location/>
+      <source>Mesh repair</source>
+      <translation>Nätreparation</translation>
     </message>
     <message>
-        <source>Flipped normals found</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Flipped normals found</source>
+      <translation>Flipped normals found</translation>
     </message>
     <message>
-        <source>Check failed due to folds on the surface.
+      <location/>
+      <source>Check failed due to folds on the surface.
 Please run the command to repair folds first</source>
-        <translation type="unfinished"></translation>
+      <translation>Check failed due to folds on the surface.
+Please run the command to repair folds first</translation>
     </message>
     <message>
-        <source>No folds on surface</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>No folds on surface</source>
+      <translation>No folds on surface</translation>
     </message>
     <message>
-        <source>%1 folds on surface</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>%1 folds on surface</source>
+      <translation>%1 folds on surface</translation>
     </message>
     <message>
-        <source>Folds</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Folds</source>
+      <translation>Folds</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>MeshGui::DlgRegularSolid</name>
     <message>
-        <source>Regular Solid</source>
-        <translation>Reguljär solid</translation>
+      <location/>
+      <source>Regular Solid</source>
+      <translation>Reguljär solid</translation>
     </message>
     <message>
-        <source>&amp;Create</source>
-        <translation>&amp;Skapa</translation>
+      <location/>
+      <source>&amp;Create</source>
+      <translation>&amp;Skapa</translation>
     </message>
     <message>
-        <source>Alt+C</source>
-        <translation>Alt+S</translation>
+      <location/>
+      <source>Alt+C</source>
+      <translation>Alt+C</translation>
     </message>
     <message>
-        <source>Cl&amp;ose</source>
-        <translation>S&amp;täng</translation>
+      <location/>
+      <source>Cl&amp;ose</source>
+      <translation>S&amp;täng</translation>
     </message>
     <message>
-        <source>Alt+O</source>
-        <translation>Alt+t</translation>
+      <location/>
+      <source>Alt+O</source>
+      <translation>Alt+t</translation>
     </message>
     <message>
-        <source>Solid:</source>
-        <translation>Solid:</translation>
+      <location/>
+      <source>Solid:</source>
+      <translation>Solid:</translation>
     </message>
     <message>
-        <source>Cube</source>
-        <translation>Kub</translation>
+      <location/>
+      <source>Cube</source>
+      <translation>Kub</translation>
     </message>
     <message>
-        <source>Cylinder</source>
-        <translation>Cylinder</translation>
+      <location/>
+      <source>Cylinder</source>
+      <translation>Cylinder</translation>
     </message>
     <message>
-        <source>Cone</source>
-        <translation>Kon</translation>
+      <location/>
+      <source>Cone</source>
+      <translation>Kon</translation>
     </message>
     <message>
-        <source>Sphere</source>
-        <translation>Sfär</translation>
+      <location/>
+      <source>Sphere</source>
+      <translation>Sfär</translation>
     </message>
     <message>
-        <source>Ellipsoid</source>
-        <translation>Ellipsoid</translation>
+      <location/>
+      <source>Ellipsoid</source>
+      <translation>Ellipsoid</translation>
     </message>
     <message>
-        <source>Torus</source>
-        <translation>Torus</translation>
+      <location/>
+      <source>Torus</source>
+      <translation>Torus</translation>
     </message>
     <message>
-        <source>Height:</source>
-        <translation>Höjd:</translation>
+      <location/>
+      <source>Height:</source>
+      <translation>Höjd:</translation>
     </message>
     <message>
-        <source>Length:</source>
-        <translation>Längd:</translation>
+      <location/>
+      <source>Length:</source>
+      <translation>Längd:</translation>
     </message>
     <message>
-        <source>Width:</source>
-        <translation>Bredd:</translation>
+      <location/>
+      <source>Width:</source>
+      <translation>Bredd:</translation>
     </message>
     <message>
-        <source>Radius:</source>
-        <translation>Radie:</translation>
+      <location/>
+      <source>Radius:</source>
+      <translation>Radie:</translation>
     </message>
     <message>
-        <source>Closed</source>
-        <translation>Stängd</translation>
+      <location/>
+      <source>Closed</source>
+      <translation>Stängd</translation>
     </message>
     <message>
-        <source>Sampling:</source>
-        <translation>Skanning:</translation>
+      <location/>
+      <source>Sampling:</source>
+      <translation>Skanning:</translation>
     </message>
     <message>
-        <source>Edge length:</source>
-        <translation>Kantlängd:</translation>
+      <location/>
+      <source>Edge length:</source>
+      <translation>Kantlängd:</translation>
     </message>
     <message>
-        <source>Radius 1:</source>
-        <translation>Radie 1:</translation>
+      <location/>
+      <source>Radius 1:</source>
+      <translation>Radie 1:</translation>
     </message>
     <message>
-        <source>Radius 2:</source>
-        <translation>Radie 2:</translation>
+      <location/>
+      <source>Radius 2:</source>
+      <translation>Radie 2:</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>MeshGui::DlgRegularSolidImp</name>
     <message>
-        <source>Create %1</source>
-        <translation>Skapa %1</translation>
+      <location/>
+      <source>Create %1</source>
+      <translation>Skapa %1</translation>
     </message>
     <message>
-        <source>No active document</source>
-        <translation>Inget aktivt dokument</translation>
+      <location/>
+      <source>No active document</source>
+      <translation>Inget aktivt dokument</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>MeshGui::DlgSettingsMeshView</name>
     <message>
-        <source>Mesh view</source>
-        <translation>Nätvy</translation>
+      <location/>
+      <source>Mesh view</source>
+      <translation>Nätvy</translation>
     </message>
     <message>
-        <source>Appearance</source>
-        <translation type="obsolete">Utseende</translation>
+      <location/>
+      <source>Appearance</source>
+      <translation>Utseende</translation>
     </message>
     <message>
-        <source>Face color</source>
-        <translation type="obsolete">Ytfärg</translation>
+      <location/>
+      <source>Face color</source>
+      <translation>Ytfärg</translation>
     </message>
     <message>
-        <source>Two-side rendering</source>
-        <translation>Två-sidig rendering</translation>
+      <location/>
+      <source>Two-side rendering</source>
+      <translation>Två-sidig rendering</translation>
     </message>
     <message>
-        <source>Backface color</source>
-        <translation>Bakgrundsfärg</translation>
+      <location/>
+      <source>Backface color</source>
+      <translation>Bakgrundsfärg</translation>
     </message>
     <message>
-        <source>Smoothing</source>
-        <translation>Utjämning</translation>
+      <location/>
+      <source>Smoothing</source>
+      <translation>Utjämning</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;This is the smallest angle between two faces where normals get calculated to do flat shading.&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;If the angle between the normals of two neighbouring faces is less than the crease angle, the faces will be smoothshaded around their common edge.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Detta är den minsta vinkeln mellan två ytor där normalerna beräknas för att göra platt skuggning.&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Om vinkeln mellan normalerna på två intilliggande ytor är mindre än veckvinkeln, så kommer ytorna att mjukskuggas runt deras gemensamma kant.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+      <location/>
+      <source>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;This is the smallest angle between two faces where normals get calculated to do flat shading.&lt;/p&gt;&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;If the angle between the normals of two neighbouring faces is less than the crease angle, the faces will be smoothshaded around their common edge.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;Detta är den minsta vinkeln mellan två ytor där normalerna beräknas för att göra platt skuggning.&lt;/p&gt;&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;Om vinkeln mellan normalerna på två intilliggande ytor är mindre än veckvinkeln, så kommer ytorna att mjukskuggas runt deras gemensamma kant.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>Crease angle</source>
-        <translation>Veckvinkel</translation>
+      <location/>
+      <source>Crease angle</source>
+      <translation>Veckvinkel</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Flat shading/Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Defines the appearance of surfaces.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;With flat shading the surface normals are not defined per vertex that leads to a unreal appearance for curved surfaces while using Phong shading leads to a smoother appearance. &lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;If this option is set Phong shading is used, if it is unset flat shading is used.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Platt skuggning/Phong skuggning&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Definierar ytornas utseende.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Med plattskuggning så är ytnormalerna inte definierade för hörn som leder till ett onaturligt utseende för kurvade ytor, emedan Phong skuggning leder till ett mjukare utseende. &lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Om detta alternativ är valt så används Phong skuggning,annars så används plattskuggning.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+      <location/>
+      <source>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600;"&gt;Flat shading/Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;Defines the appearance of surfaces.&lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;With flat shading the surface normals are not defined per vertex that leads to a unreal appearance for curved surfaces while using Phong shading leads to a smoother appearance. &lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;If this option is set Phong shading is used, if it is unset flat shading is used.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600;"&gt;Platt skuggning/Phong skuggning&lt;/span&gt;&lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;Definierar ytornas utseende.&lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;Med plattskuggning så är ytnormalerna inte definierade för hörn som leder till ett onaturligt utseende för kurvade ytor, emedan Phong skuggning leder till ett mjukare utseende. &lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;Om detta alternativ är valt så används Phong skuggning,annars så används plattskuggning.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>Define normal per vertex</source>
-        <translation>Definiera normaler för hörn</translation>
-    </message>
-    <message utf8="true">
-        <source> °</source>
-        <translation> °</translation>
+      <location/>
+      <source>Define normal per vertex</source>
+      <translation>Definiera normaler för hörn</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Hint&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Defining the normals per vertex is also called &lt;span style=&quot; font-style:italic;&quot;&gt;Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;while defining the normals per face is called &lt;/span&gt;Flat shading&lt;span style=&quot; font-style:normal;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Tips&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Definiera normaler för hörn kallas också&lt;span style=&quot; font-style:italic;&quot;&gt;Phong skuggning&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;medan definition av normaler för yta kallas&lt;/span&gt;Plattskuggning&lt;span style=&quot; font-style:normal;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+      <location/>
+      <source> °</source>
+      <translation> °</translation>
     </message>
     <message>
-        <source>Default appearance for new meshes</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600;"&gt;Hint&lt;/span&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;Defining the normals per vertex is also called &lt;span style=" font-style:italic;"&gt;Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;"&gt;&lt;span style=" font-style:normal;"&gt;while defining the normals per face is called &lt;/span&gt;Flat shading&lt;span style=" font-style:normal;"&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600;"&gt;Tips&lt;/span&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;Definiera normaler för hörn kallas också&lt;span style=" font-style:italic;"&gt;Phong skuggning&lt;/span&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;"&gt;&lt;span style=" font-style:normal;"&gt;medan definition av normaler för yta kallas&lt;/span&gt;Plattskuggning&lt;span style=" font-style:normal;"&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>Default line color</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Default appearance for new meshes</source>
+      <translation>Default appearance for new meshes</translation>
     </message>
     <message>
-        <source>Mesh transparency</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Default line color</source>
+      <translation>Default line color</translation>
     </message>
     <message>
-        <source>Default mesh color</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Mesh transparency</source>
+      <translation>Mesh transparency</translation>
     </message>
     <message>
-        <source>Show bounding-box for highlighted or selected meshes</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Default mesh color</source>
+      <translation>Default mesh color</translation>
     </message>
     <message>
-        <source>Line transparency</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Show bounding-box for highlighted or selected meshes</source>
+      <translation>Show bounding-box for highlighted or selected meshes</translation>
     </message>
-</context>
-<context>
+    <message>
+      <location/>
+      <source>Line transparency</source>
+      <translation>Line transparency</translation>
+    </message>
+  </context>
+  <context>
     <name>MeshGui::DlgSmoothing</name>
     <message>
-        <source>Smoothing</source>
-        <translation type="unfinished">Utjämning</translation>
+      <location/>
+      <source>Smoothing</source>
+      <translation>Utjämning</translation>
     </message>
     <message>
-        <source>Method</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Method</source>
+      <translation>Method</translation>
     </message>
     <message>
-        <source>Taubin</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Taubin</source>
+      <translation>Taubin</translation>
     </message>
     <message>
-        <source>Laplace</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Laplace</source>
+      <translation>Laplace</translation>
     </message>
     <message>
-        <source>Parameter</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Parameter</source>
+      <translation>Parameter</translation>
     </message>
     <message>
-        <source>Iterations:</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Iterations:</source>
+      <translation>Iterations:</translation>
     </message>
     <message>
-        <source>Lambda:</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Lambda:</source>
+      <translation>Lambda:</translation>
     </message>
     <message>
-        <source>Mu:</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Mu:</source>
+      <translation>Mu:</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>MeshGui::DockEvaluateMeshImp</name>
     <message>
-        <source>Evaluate &amp; Repair Mesh</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Evaluate &amp; Repair Mesh</source>
+      <translation>Evaluate &amp; Repair Mesh</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>MeshGui::MeshFaceAddition</name>
     <message>
-        <source>Add triangle</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Add triangle</source>
+      <translation>Add triangle</translation>
     </message>
     <message>
-        <source>Flip normal</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Flip normal</source>
+      <translation>Flip normal</translation>
     </message>
     <message>
-        <source>Clear</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Clear</source>
+      <translation>Clear</translation>
     </message>
     <message>
-        <source>Finish</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Finish</source>
+      <translation>Finish</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>MeshGui::RemoveComponents</name>
     <message>
-        <source>Remove components</source>
-        <translation type="unfinished">Ta bort komponenter</translation>
+      <location/>
+      <source>Remove components</source>
+      <translation>Ta bort komponenter</translation>
     </message>
     <message>
-        <source>Select</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select</source>
+      <translation>Select</translation>
     </message>
     <message>
-        <source>Select whole component</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select whole component</source>
+      <translation>Select whole component</translation>
     </message>
     <message>
-        <source>Pick triangle</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Pick triangle</source>
+      <translation>Pick triangle</translation>
     </message>
     <message>
-        <source>&lt; faces than</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&lt; faces than</source>
+      <translation>&lt; faces than</translation>
     </message>
     <message>
-        <source>Region</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Region</source>
+      <translation>Region</translation>
     </message>
     <message>
-        <source>Components</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Components</source>
+      <translation>Components</translation>
     </message>
     <message>
-        <source>All</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>All</source>
+      <translation>All</translation>
     </message>
     <message>
-        <source>Deselect</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Deselect</source>
+      <translation>Deselect</translation>
     </message>
     <message>
-        <source>Deselect whole component</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Deselect whole component</source>
+      <translation>Deselect whole component</translation>
     </message>
     <message>
-        <source>&gt; faces than</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&gt; faces than</source>
+      <translation>&gt; faces than</translation>
     </message>
     <message>
-        <source>Region options</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Region options</source>
+      <translation>Region options</translation>
     </message>
     <message>
-        <source>Respect only triangles with normals facing screen</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Respect only front triangles</source>
+      <translation>Respect only front triangles</translation>
     </message>
     <message>
-        <source>Respect only visible triangles</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Respect only triangles with normals facing screen</source>
+      <translation>Respect only triangles with normals facing screen</translation>
     </message>
-</context>
-<context>
+    <message>
+      <location/>
+      <source>Respect only visible triangles</source>
+      <translation>Respect only visible triangles</translation>
+    </message>
+  </context>
+  <context>
     <name>MeshGui::TaskRemoveComponents</name>
     <message>
-        <source>Delete</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Delete</source>
+      <translation>Delete</translation>
     </message>
     <message>
-        <source>Invert</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Invert</source>
+      <translation>Invert</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>MeshGui::Workbench</name>
     <message>
-        <source>Analyze</source>
-        <translation type="obsolete">Analysera</translation>
+      <location/>
+      <source>Analyze</source>
+      <translation>Analysera</translation>
     </message>
     <message>
-        <source>Boolean</source>
-        <translation type="obsolete">Boolesk</translation>
+      <location/>
+      <source>Boolean</source>
+      <translation>Boolesk</translation>
     </message>
     <message>
-        <source>&amp;Meshes</source>
-        <translation type="obsolete">&amp;Nät</translation>
+      <location/>
+      <source>&amp;Meshes</source>
+      <translation>&amp;Nät</translation>
     </message>
     <message>
-        <source>Mesh tools</source>
-        <translation type="obsolete">Nätverktyg</translation>
+      <location/>
+      <source>Mesh tools</source>
+      <translation>Nätverktyg</translation>
     </message>
     <message>
-        <source>Mesh test suite</source>
-        <translation type="obsolete">Nät testsvit</translation>
+      <location/>
+      <source>Mesh test suite</source>
+      <translation>Nät testsvit</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>QObject</name>
     <message>
-        <source>Import mesh</source>
-        <translation>Importera nät</translation>
+      <location/>
+      <source>Import mesh</source>
+      <translation>Importera nät</translation>
     </message>
     <message>
-        <source>Export mesh</source>
-        <translation>Exportera nät</translation>
+      <location/>
+      <source>Export mesh</source>
+      <translation>Exportera nät</translation>
     </message>
     <message>
-        <source>Solid Mesh</source>
-        <translation>Solid nät</translation>
+      <location/>
+      <source>Solid Mesh</source>
+      <translation>Solid nät</translation>
     </message>
     <message>
-        <source>Boundings</source>
-        <translation>Gränser</translation>
+      <location/>
+      <source>Boundings</source>
+      <translation>Gränser</translation>
     </message>
     <message>
-        <source>Fill holes</source>
-        <translation>Fyll hål</translation>
+      <location/>
+      <source>Fill holes</source>
+      <translation>Fyll hål</translation>
     </message>
     <message>
-        <source>Fill holes with maximum number of edges:</source>
-        <translation>Fyll hål med maximalt antal kanter:</translation>
+      <location/>
+      <source>Fill holes with maximum number of edges:</source>
+      <translation>Fyll hål med maximalt antal kanter:</translation>
     </message>
     <message>
-        <source>Remove components</source>
-        <translation type="obsolete">Ta bort komponenter</translation>
+      <location/>
+      <source>Remove components</source>
+      <translation>Ta bort komponenter</translation>
     </message>
     <message>
-        <source>Removes components up to a maximum number of triangles:</source>
-        <translation type="obsolete">Tar bort komponenter upp till ett maximalt antal trianglar:</translation>
+      <location/>
+      <source>Removes components up to a maximum number of triangles:</source>
+      <translation>Tar bort komponenter upp till ett maximalt antal trianglar:</translation>
     </message>
     <message>
-        <source>All Mesh Files (*.stl *.ast *.bms *.obj)</source>
-        <translation type="obsolete">Alla nätfiler (*.stl *.ast *.bms *.obj)</translation>
+      <location/>
+      <source>All Mesh Files (*.stl *.ast *.bms *.obj)</source>
+      <translation>Alla nätfiler (*.stl *.ast *.bms *.obj)</translation>
     </message>
     <message>
-        <source>Binary STL (*.stl)</source>
-        <translation>Binär STL (*.stl)</translation>
+      <location/>
+      <source>Binary STL (*.stl)</source>
+      <translation>Binär STL (*.stl)</translation>
     </message>
     <message>
-        <source>ASCII STL (*.ast)</source>
-        <translation>ASCII STL (*.ast)</translation>
+      <location/>
+      <source>ASCII STL (*.ast)</source>
+      <translation>ASCII STL (*.ast)</translation>
     </message>
     <message>
-        <source>Binary Mesh (*.bms)</source>
-        <translation>Nät-Binärformat (*.bms)</translation>
+      <location/>
+      <source>Binary Mesh (*.bms)</source>
+      <translation>Nät-Binärformat (*.bms)</translation>
     </message>
     <message>
-        <source>Alias Mesh (*.obj)</source>
-        <translation>Alias-Format (*.obj)</translation>
+      <location/>
+      <source>Alias Mesh (*.obj)</source>
+      <translation>Alias Mesh (*.obj)</translation>
     </message>
     <message>
-        <source>Inventor V2.1 ascii (*.iv)</source>
-        <translation>Inventor V2.1 ascii (*.iv)</translation>
+      <location/>
+      <source>Inventor V2.1 ascii (*.iv)</source>
+      <translation>Inventor V2.1 ascii (*.iv)</translation>
     </message>
     <message>
-        <source>All Files (*.*)</source>
-        <translation>Alla Filer (*.*)</translation>
+      <location/>
+      <source>All Files (*.*)</source>
+      <translation>Alla Filer (*.*)</translation>
     </message>
     <message>
-        <source>ASCII STL (*.stl)</source>
-        <translation>ASCII STL (*.stl)</translation>
+      <location/>
+      <source>ASCII STL (*.stl)</source>
+      <translation>ASCII STL (*.stl)</translation>
     </message>
     <message>
-        <source>VRML V2.0 (*.wrl *.vrml)</source>
-        <translation>VRML V2.0 (*.wrl *.vrml)</translation>
+      <location/>
+      <source>VRML V2.0 (*.wrl *.vrml)</source>
+      <translation>VRML V2.0 (*.wrl *.vrml)</translation>
     </message>
     <message>
-        <source>Compressed VRML 2.0 (*.wrz)</source>
-        <translation>Komprimerad VRML 2.0 (*.wrz)</translation>
+      <location/>
+      <source>Compressed VRML 2.0 (*.wrz)</source>
+      <translation>Komprimerad VRML 2.0 (*.wrz)</translation>
     </message>
     <message>
-        <source>Nastran (*.nas *.bdf)</source>
-        <translation>Nastran (*.nas *.bdf)</translation>
+      <location/>
+      <source>Nastran (*.nas *.bdf)</source>
+      <translation>Nastran (*.nas *.bdf)</translation>
     </message>
     <message>
-        <source>Python module def (*.py)</source>
-        <translation>Python-Modul (*.py)</translation>
+      <location/>
+      <source>Python module def (*.py)</source>
+      <translation>Python module def (*.py)</translation>
     </message>
     <message>
-        <source>Meshing Tolerance</source>
-        <translation>Nät tolerans</translation>
+      <location/>
+      <source>Meshing Tolerance</source>
+      <translation>Nät tolerans</translation>
     </message>
     <message>
-        <source>Enter tolerance for meshing geometry:</source>
-        <translation>Mata in tolerans för nätning av geometri:</translation>
+      <location/>
+      <source>Enter tolerance for meshing geometry:</source>
+      <translation>Mata in tolerans för nätning av geometri:</translation>
     </message>
     <message>
-        <source>The mesh &apos;%1&apos; is a solid.</source>
-        <translation>Nätet &apos;%1&apos; är en solid.</translation>
+      <location/>
+      <source>The mesh '%1' is a solid.</source>
+      <translation>Nätet '%1' är en solid.</translation>
     </message>
     <message>
-        <source>The mesh &apos;%1&apos; is not a solid.</source>
-        <translation>Nätet &apos;%1&apos; är ingen solid.</translation>
+      <location/>
+      <source>The mesh '%1' is not a solid.</source>
+      <translation>Nätet '%1' är ingen solid.</translation>
     </message>
     <message>
-        <source>Min=&lt;%1,%2,%3&gt;
+      <location/>
+      <source>Min=&lt;%1,%2,%3&gt;
 
 Max=&lt;%4,%5,%6&gt;</source>
-        <translation>Min=&lt;%1,%2,%3&gt;
+      <translation>Min=&lt;%1,%2,%3&gt;
 
 Max=&lt;%4,%5,%6&gt;</translation>
     </message>
     <message>
-        <source>[Points: %1, Edges: %2 Faces: %3]</source>
-        <translation>[Punkter: %1, Kanter: %2 Ytor: %3]</translation>
+      <location/>
+      <source>[Points: %1, Edges: %2 Faces: %3]</source>
+      <translation>[Punkter: %1, Kanter: %2 Ytor: %3]</translation>
     </message>
     <message>
-        <source>Leave info mode</source>
-        <translation>Lämna info läge</translation>
+      <location/>
+      <source>Leave info mode</source>
+      <translation>Lämna info läge</translation>
     </message>
     <message>
-        <source>Index: %1</source>
-        <translation>Index: %1</translation>
+      <location/>
+      <source>Index: %1</source>
+      <translation>Index: %1</translation>
     </message>
     <message>
-        <source>Leave hole-filling mode</source>
-        <translation>Lämna hålfyllningsläge</translation>
+      <location/>
+      <source>Leave hole-filling mode</source>
+      <translation>Lämna hålfyllningsläge</translation>
     </message>
     <message>
-        <source>Leave removal mode</source>
-        <translation>Lämna borttagningsläge</translation>
+      <location/>
+      <source>Leave removal mode</source>
+      <translation>Lämna borttagningsläge</translation>
     </message>
     <message>
-        <source>All Mesh Files (*.stl *.ast *.bms *.obj *.ply)</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>All Mesh Files (*.stl *.ast *.bms *.obj *.ply)</source>
+      <translation>All Mesh Files (*.stl *.ast *.bms *.obj *.ply)</translation>
     </message>
     <message>
-        <source>Stanford Polygon (*.ply)</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Stanford Polygon (*.ply)</source>
+      <translation>Stanford Polygon (*.ply)</translation>
     </message>
     <message>
-        <source>Object File Format (*.off)</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Object File Format (*.off)</source>
+      <translation>Object File Format (*.off)</translation>
     </message>
     <message>
-        <source>Standford Polygon (*.ply)</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Standford Polygon (*.ply)</source>
+      <translation>Standford Polygon (*.ply)</translation>
     </message>
     <message>
-        <source>Delete selected faces</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Delete selected faces</source>
+      <translation>Delete selected faces</translation>
     </message>
     <message>
-        <source>Clear selected faces</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Clear selected faces</source>
+      <translation>Clear selected faces</translation>
     </message>
     <message>
-        <source>Annotation</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Annotation</source>
+      <translation>Annotation</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>Workbench</name>
     <message>
-        <source>Analyze</source>
-        <translation>Analysera</translation>
+      <location/>
+      <source>Analyze</source>
+      <translation>Analysera</translation>
     </message>
     <message>
-        <source>Boolean</source>
-        <translation>Boolesk</translation>
+      <location/>
+      <source>Boolean</source>
+      <translation>Boolesk</translation>
     </message>
     <message>
-        <source>&amp;Meshes</source>
-        <translation>&amp;Nät</translation>
+      <location/>
+      <source>&amp;Meshes</source>
+      <translation>&amp;Nät</translation>
     </message>
     <message>
-        <source>Mesh tools</source>
-        <translation>Nätverktyg</translation>
+      <location/>
+      <source>Mesh tools</source>
+      <translation>Nätverktyg</translation>
     </message>
     <message>
-        <source>Mesh test suite</source>
-        <translation type="obsolete">Nät testsvit</translation>
+      <location/>
+      <source>Mesh test suite</source>
+      <translation>Nät testsvit</translation>
     </message>
-</context>
+  </context>
 </TS>

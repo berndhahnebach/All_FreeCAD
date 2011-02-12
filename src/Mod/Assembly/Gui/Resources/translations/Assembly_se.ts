@@ -6,7 +6,7 @@
     <message>
       <location/>
       <source>Assembly</source>
-      <translation>Ensamblaje</translation>
+      <translation>Ihopsättning</translation>
     </message>
   </context>
   <context>
@@ -14,17 +14,17 @@
     <message>
       <location/>
       <source>Assembly</source>
-      <translation>Ensamblaje</translation>
+      <translation>Ihopsättning</translation>
     </message>
     <message>
       <location/>
       <source>Constraint Axle...</source>
-      <translation>Restricción de eje...</translation>
+      <translation>Begränsningsaxel...</translation>
     </message>
     <message>
       <location/>
       <source>set a axle constraint between two objects</source>
-      <translation>definir una restricción de eje entre dos objetos</translation>
+      <translation>Sätt en axelbegränsning mellan två objekt</translation>
     </message>
   </context>
 </TS>

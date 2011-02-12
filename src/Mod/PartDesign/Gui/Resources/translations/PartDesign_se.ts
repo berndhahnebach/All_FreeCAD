@@ -1,230 +1,290 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="sv_SE">
-<context>
+<TS>
+  <context>
     <name>CmdPartDesignChamfer</name>
     <message>
-        <source>Part</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Part</source>
+      <translation>Part</translation>
     </message>
     <message>
-        <source>Chamfer...</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Chamfer...</source>
+      <translation>Chamfer...</translation>
     </message>
     <message>
-        <source>Chamfer the selected edges of a shape</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Chamfer the selected edges of a shape</source>
+      <translation>Chamfer the selected edges of a shape</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPartDesignFillet</name>
     <message>
-        <source>PartDesign</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>PartDesign</source>
+      <translation>Del design</translation>
     </message>
     <message>
-        <source>Fillet</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Fillet</source>
+      <translation>Fasning</translation>
     </message>
     <message>
-        <source>Make a fillet on an edge, face or body</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Make a fillet on an edge, face or body</source>
+      <translation>Gör en fasning på en kant, yta eller kropp</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
+    <name>CmdPartDesignNewSketch</name>
+    <message>
+      <location/>
+      <source>PartDesign</source>
+      <translation>Del design</translation>
+    </message>
+  </context>
+  <context>
     <name>CmdPartDesignPad</name>
     <message>
-        <source>PartDesign</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>PartDesign</source>
+      <translation>Del design</translation>
     </message>
     <message>
-        <source>Pad</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Pad</source>
+      <translation>Solidifiera</translation>
     </message>
     <message>
-        <source>Pad a selected sketch</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Pad a selected sketch</source>
+      <translation>Solidifiera en vald skiss</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPartDesignPocket</name>
     <message>
-        <source>PartDesign</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>PartDesign</source>
+      <translation>Del design</translation>
     </message>
     <message>
-        <source>Pocket</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Pocket</source>
+      <translation>Pocket</translation>
     </message>
     <message>
-        <source>create a pocket with the selected sketch</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>create a pocket with the selected sketch</source>
+      <translation>create a pocket with the selected sketch</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>PartDesignGui::ChamferWidget</name>
     <message>
-        <source>Edges to chamfer</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Edges to chamfer</source>
+      <translation>Edges to chamfer</translation>
     </message>
     <message>
-        <source>Start distance</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Start distance</source>
+      <translation>Start distance</translation>
     </message>
     <message>
-        <source>End distance</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>End distance</source>
+      <translation>End distance</translation>
     </message>
     <message>
-        <source>Edge%1</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Edge%1</source>
+      <translation>Edge%1</translation>
     </message>
     <message>
-        <source>Distance</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Distance</source>
+      <translation>Distance</translation>
     </message>
     <message>
-        <source>No shape selected</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>No shape selected</source>
+      <translation>No shape selected</translation>
     </message>
     <message>
-        <source>No valid shape is selected.
+      <location/>
+      <source>No valid shape is selected.
 Please select a valid shape in the drop-down box first.</source>
-        <translation type="unfinished"></translation>
+      <translation>No valid shape is selected.
+Please select a valid shape in the drop-down box first.</translation>
     </message>
     <message>
-        <source>No edge selected</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>No edge selected</source>
+      <translation>No edge selected</translation>
     </message>
     <message>
-        <source>No edge entity is checked to chamfer.
+      <location/>
+      <source>No edge entity is checked to chamfer.
 Please check one or more edge entities first.</source>
-        <translation type="unfinished"></translation>
+      <translation>No edge entity is checked to chamfer.
+Please check one or more edge entities first.</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>PartDesignGui::TaskChamfer</name>
     <message>
-        <source>Chamfer Edges</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Chamfer Edges</source>
+      <translation>Chamfer Edges</translation>
     </message>
     <message>
-        <source>Shape</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Shape</source>
+      <translation>Shape</translation>
     </message>
     <message>
-        <source>Selected shape:</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Selected shape:</source>
+      <translation>Selected shape:</translation>
     </message>
     <message>
-        <source>No selection</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>No selection</source>
+      <translation>No selection</translation>
     </message>
     <message>
-        <source>Chamfer Parameter</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Chamfer Parameter</source>
+      <translation>Chamfer Parameter</translation>
     </message>
     <message>
-        <source>All</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>All</source>
+      <translation>All</translation>
     </message>
     <message>
-        <source>None</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>None</source>
+      <translation>None</translation>
     </message>
     <message>
-        <source>Chamfer type:</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Chamfer type:</source>
+      <translation>Chamfer type:</translation>
     </message>
     <message>
-        <source>Constant Distance</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Constant Distance</source>
+      <translation>Constant Distance</translation>
     </message>
     <message>
-        <source>Variable Distance</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Variable Distance</source>
+      <translation>Variable Distance</translation>
     </message>
     <message>
-        <source>Distance:</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Distance:</source>
+      <translation>Distance:</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>PartDesignGui::TaskPadParameters</name>
     <message>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Form</source>
+      <translation>Form</translation>
     </message>
     <message>
-        <source>Display mode:</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Display mode:</source>
+      <translation>Visningsläge:</translation>
     </message>
     <message>
-        <source>Plot mode:</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Plot mode:</source>
+      <translation>Plottningsläge:</translation>
     </message>
     <message>
-        <source>Point size:</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Point size:</source>
+      <translation>Punktstorlek:</translation>
     </message>
     <message>
-        <source>Line width:</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Line width:</source>
+      <translation>Linjebredd:</translation>
     </message>
     <message>
-        <source>Transparency:</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Transparency:</source>
+      <translation>Transparens:</translation>
     </message>
     <message>
-        <source>TaskPadParameters</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>TaskPadParameters</source>
+      <translation>Parametrar för uppgiften Solidifiera</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>QObject</name>
     <message>
-        <source>Wrong selection</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Wrong selection</source>
+      <translation>Fel val</translation>
     </message>
     <message>
-        <source>Select a sketch or 2D object.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select a sketch or 2D object.</source>
+      <translation>Välj en skiss eller 2D-objekt.</translation>
     </message>
     <message>
-        <source>The shape of the selected object is empty.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>The shape of the selected object is empty.</source>
+      <translation>Formen på det markerade objektet är tom.</translation>
     </message>
     <message>
-        <source>The shape of the selected object is not a wire.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>The shape of the selected object is not a wire.</source>
+      <translation>Formen på det markerade objektet är inte en tråd.</translation>
     </message>
     <message>
-        <source>Select an edge, face or body. Only one body is allowed.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select an edge, face or body. Only one body is allowed.</source>
+      <translation>Välj en kant, yta eller kropp. Endast en kropp är tillåtet.</translation>
     </message>
     <message>
-        <source>Wrong object type</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Wrong object type</source>
+      <translation>Fel objekttyp</translation>
     </message>
     <message>
-        <source>Fillet works only on parts</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Fillet works only on parts</source>
+      <translation>Fasning fungerar endast på Delar</translation>
     </message>
     <message>
-        <source>No Support</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>No Support</source>
+      <translation>No Support</translation>
     </message>
     <message>
-        <source>The sketch has to have a support for the pocket feature.
+      <location/>
+      <source>The sketch has to have a support for the pocket feature.
 Create the sketch on a face.</source>
-        <translation type="unfinished"></translation>
+      <translation>The sketch has to have a support for the pocket feature.
+Create the sketch on a face.</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>Workbench</name>
     <message>
-        <source>Part Design</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Part Design</source>
+      <translation>Part Design</translation>
     </message>
-</context>
+  </context>
 </TS>

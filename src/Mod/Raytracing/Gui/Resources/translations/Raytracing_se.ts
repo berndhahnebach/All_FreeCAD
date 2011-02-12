@@ -1,233 +1,237 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="sv_SE">
-<context>
+<TS>
+  <context>
     <name>CmdRaytracingExportProject</name>
     <message>
-        <source>File</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>File</source>
+      <translation>Fil</translation>
     </message>
     <message>
-        <source>&amp;Export project...</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&amp;Export project...</source>
+      <translation>&amp;Exportera projekt...</translation>
     </message>
     <message>
-        <source>Export the Povray project file</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Export the Povray project file</source>
+      <translation>Exportera Povray projektfilen</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRaytracingNewPartSegment</name>
     <message>
-        <source>Raytracing</source>
-        <translation type="unfinished">Raytracing</translation>
+      <location/>
+      <source>Raytracing</source>
+      <translation>Rendering</translation>
     </message>
     <message>
-        <source>Insert part</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Insert part</source>
+      <translation>Infoga del</translation>
     </message>
     <message>
-        <source>Insert a new part object into a Povray project</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Insert a new part object into a Povray project</source>
+      <translation>Sätt i ett nytt del objekt i ett Povray projekt</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRaytracingNewPovrayProject</name>
     <message>
-        <source>Raytracing</source>
-        <translation type="unfinished">Raytracing</translation>
+      <location/>
+      <source>Raytracing</source>
+      <translation>Rendering</translation>
     </message>
     <message>
-        <source>New Povray project</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>New Povray project</source>
+      <translation>Nytt Povray projekt</translation>
     </message>
     <message>
-        <source>Insert new Povray project into the document</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Insert new Povray project into the document</source>
+      <translation>Infoga nytt Povray projekt i dokumentet</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRaytracingNewProject</name>
     <message>
-        <source>Raytracing</source>
-        <translation type="obsolete">Raytracing</translation>
+      <location/>
+      <source>Raytracing</source>
+      <translation>Rendering</translation>
     </message>
-    <message>
-        <source>New project</source>
-        <translation type="obsolete">Nytt projekt</translation>
-    </message>
-    <message>
-        <source>Write the initial povray file to render a part</source>
-        <translation type="obsolete">Skriv startfilen för povray för att rendera en detalj</translation>
-    </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRaytracingQuickRender</name>
     <message>
-        <source>Raytracing</source>
-        <translation type="obsolete">Raytracing</translation>
+      <location/>
+      <source>Raytracing</source>
+      <translation>Rendering</translation>
     </message>
-    <message>
-        <source>Render</source>
-        <translation type="obsolete">Rendera</translation>
-    </message>
-    <message>
-        <source>Renders the actual view</source>
-        <translation type="obsolete">Renderar den aktuella vyn</translation>
-    </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRaytracingWriteCamera</name>
     <message>
-        <source>Raytracing</source>
-        <translation>Raytracing</translation>
+      <location/>
+      <source>Raytracing</source>
+      <translation>Rendering</translation>
     </message>
     <message>
-        <source>Write camera position</source>
-        <translation type="obsolete">Skriv kameraposition</translation>
+      <location/>
+      <source>Export camera to povray</source>
+      <translation>Exportera kameran till povray</translation>
     </message>
     <message>
-        <source>Write the camera positon of the active 3D view in PovRay format to a file</source>
-        <translation type="obsolete">Skriv kamerapositionen för den aktuella 3D vyn i povray format till en fil</translation>
+      <location/>
+      <source>Export the camera positon of the active 3D view in PovRay format to a file</source>
+      <translation>Exportera kamerans position i den aktiva 3D-vyn i povray format till en fil</translation>
     </message>
-    <message>
-        <source>Export camera to povray</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Export the camera positon of the active 3D view in PovRay format to a file</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRaytracingWritePart</name>
     <message>
-        <source>Raytracing</source>
-        <translation>Raytracing</translation>
+      <location/>
+      <source>Raytracing</source>
+      <translation>Rendering</translation>
     </message>
     <message>
-        <source>Write the part</source>
-        <translation type="obsolete">Skriv detaljen</translation>
+      <location/>
+      <source>Export part to povray...</source>
+      <translation>Exportera del till povray ...</translation>
     </message>
     <message>
-        <source>Write the Part (object) of the active 3D view in PovRay format to a file</source>
-        <translation type="obsolete">Skriv detaljen (objekt) för den aktuella 3D vyn i povray format till en fil</translation>
+      <location/>
+      <source>Write the selected Part (object) as a povray file</source>
+      <translation>Skriv den markerade delen (objekt) som en povray fil</translation>
     </message>
-    <message>
-        <source>Export part to povray...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Write the selected Part (object) as a povray file</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRaytracingWriteView</name>
     <message>
-        <source>Raytracing</source>
-        <translation type="unfinished">Raytracing</translation>
+      <location/>
+      <source>Raytracing</source>
+      <translation>Rendering</translation>
     </message>
     <message>
-        <source>Export view to povray...</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Export view to povray...</source>
+      <translation>Exportera vy till povray...</translation>
     </message>
     <message>
-        <source>Write the active 3D view with camera and all its content to a povray file</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Write the active 3D view with camera and all its content to a povray file</source>
+      <translation>Skriv den aktiva 3D vyn med kameraposition och allt dess innehåll till en povray fil</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>QObject</name>
     <message>
-        <source>Povray(*.pov)</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Povray(*.pov)</source>
+      <translation>Povray (*.POV)</translation>
     </message>
     <message>
-        <source>All Files (*.*)</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>All Files (*.*)</source>
+      <translation>Alla filer (*.*)</translation>
     </message>
     <message>
-        <source>Export page</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Export page</source>
+      <translation>Exportera sida</translation>
     </message>
     <message>
-        <source>Wrong selection</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Wrong selection</source>
+      <translation>Fel val</translation>
     </message>
     <message>
-        <source>Select a Part object.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select a Part object.</source>
+      <translation>Välj ett Del objekt.</translation>
     </message>
     <message>
-        <source>No Povray project to insert</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>No Povray project to insert</source>
+      <translation>Inget Povray projekt att infoga</translation>
     </message>
     <message>
-        <source>Create a Povray project to insert a view.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Create a Povray project to insert a view.</source>
+      <translation>Skapa ett Povray projekt för att infoga en vy.</translation>
     </message>
     <message>
-        <source>Select one Povray project object.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select one Povray project object.</source>
+      <translation>Välj ett Povray projekt objekt.</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>RaytracingGui::DlgSettingsRay</name>
     <message>
-        <source>Raytracing</source>
-        <translation>Raytracing</translation>
+      <location/>
+      <source>Raytracing</source>
+      <translation>Rendering</translation>
     </message>
     <message>
-        <source>Directories</source>
-        <translation>Kataloger</translation>
+      <location/>
+      <source>Directories</source>
+      <translation>Kataloger</translation>
     </message>
     <message>
-        <source>Default Project dir:</source>
-        <translation>Standard-projektkatalog:</translation>
+      <location/>
+      <source>Default Project dir:</source>
+      <translation>Standard-projektkatalog:</translation>
     </message>
     <message>
-        <source>Camera file name:</source>
-        <translation>Kamera-filnamn:</translation>
+      <location/>
+      <source>Camera file name:</source>
+      <translation>Kamera-filnamn:</translation>
     </message>
     <message>
-        <source>Part file name:</source>
-        <translation>Detalj filnamn:</translation>
+      <location/>
+      <source>Part file name:</source>
+      <translation>Detalj filnamn:</translation>
     </message>
     <message>
-        <source>TempCamera.inc</source>
-        <translation>TempCamera.inc</translation>
+      <location/>
+      <source>TempCamera.inc</source>
+      <translation>TempCamera.inc</translation>
     </message>
     <message>
-        <source>TempPart.inc</source>
-        <translation>TempPart.inc</translation>
+      <location/>
+      <source>TempPart.inc</source>
+      <translation>TempPart.inc</translation>
     </message>
     <message>
-        <source>Mesh export settings</source>
-        <translation>Nät exportinställningar</translation>
+      <location/>
+      <source>Mesh export settings</source>
+      <translation>Nät exportinställningar</translation>
     </message>
     <message>
-        <source>max mesh deviation:</source>
-        <translation>Max nätdeviation:</translation>
+      <location/>
+      <source>max mesh deviation:</source>
+      <translation>Max nätdeviation:</translation>
     </message>
     <message>
-        <source>Do not calculate vertex normals</source>
-        <translation>Beräkna inte hörn normaler</translation>
+      <location/>
+      <source>Do not calculate vertex normals</source>
+      <translation>Beräkna inte hörn normaler</translation>
     </message>
     <message>
-        <source>Write u,v coordinates</source>
-        <translation>Skriv u,v koordinater</translation>
+      <location/>
+      <source>Write u,v coordinates</source>
+      <translation>Skriv u,v koordinater</translation>
     </message>
-</context>
-<context>
-    <name>Workbench</name>
+  </context>
+  <context>
+    <name>RaytracingGui::Workbench</name>
     <message>
-        <source>Raytracing tools</source>
-        <translation type="obsolete">Raytracing verktyg</translation>
+      <location/>
+      <source>&amp;Raytracing</source>
+      <translation>&amp;Rendering</translation>
     </message>
-    <message>
-        <source>&amp;Raytracing</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
+  </context>
 </TS>

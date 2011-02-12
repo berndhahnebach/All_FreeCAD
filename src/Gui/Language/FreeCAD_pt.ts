@@ -6,7 +6,7 @@
     <message>
       <location/>
       <source>Form</source>
-      <translation>Form</translation>
+      <translation>Formulário</translation>
     </message>
     <message>
       <location/>
@@ -26,47 +26,47 @@
     <message>
       <location/>
       <source>Angle Snap</source>
-      <translation>Vinkel Snäpp</translation>
+      <translation>Snap de ângulo</translation>
     </message>
     <message>
       <location/>
       <source>1 °</source>
-      <translation>1°</translation>
+      <translation>1 °</translation>
     </message>
     <message>
       <location/>
       <source>2 °</source>
-      <translation>2°</translation>
+      <translation>2 °</translation>
     </message>
     <message>
       <location/>
       <source>5 °</source>
-      <translation>5°</translation>
+      <translation>5 °</translation>
     </message>
     <message>
       <location/>
       <source>10 °</source>
-      <translation>10°</translation>
+      <translation>10 °</translation>
     </message>
     <message>
       <location/>
       <source>20 °</source>
-      <translation>20°</translation>
+      <translation>20 °</translation>
     </message>
     <message>
       <location/>
       <source>45 °</source>
-      <translation>45°</translation>
+      <translation>45 °</translation>
     </message>
     <message>
       <location/>
       <source>90 °</source>
-      <translation>90°</translation>
+      <translation>90 °</translation>
     </message>
     <message>
       <location/>
       <source>180 °</source>
-      <translation>180°</translation>
+      <translation>180 °</translation>
     </message>
   </context>
   <context>
@@ -74,7 +74,7 @@
     <message>
       <location/>
       <source>none</source>
-      <translation>inget</translation>
+      <translation>nenhum</translation>
     </message>
   </context>
   <context>
@@ -82,22 +82,22 @@
     <message>
       <location/>
       <source>Press left mouse button</source>
-      <translation>Tryck på vänster musknapp</translation>
+      <translation>Pressione o botão esquerdo do mouse</translation>
     </message>
     <message>
       <location/>
       <source>Press middle mouse button</source>
-      <translation>Tryck på mittre musknapp</translation>
+      <translation>Pressione o botão do meio do mouse</translation>
     </message>
     <message>
       <location/>
       <source>Press left and middle mouse button</source>
-      <translation>Tryck på vänster och mittre musknapp</translation>
+      <translation>Pressione o botão esquerdo e do meio do mouse</translation>
     </message>
     <message>
       <location/>
       <source>Scroll middle mouse button</source>
-      <translation>Bläddra mittre musknapp</translation>
+      <translation>Role a roda do mouse</translation>
     </message>
   </context>
   <context>
@@ -105,7 +105,7 @@
     <message>
       <location/>
       <source>Standard</source>
-      <translation>Standard</translation>
+      <translation>Padrão</translation>
     </message>
   </context>
   <context>
@@ -113,12 +113,12 @@
     <message>
       <location/>
       <source>&amp;OK</source>
-      <translation>&amp;Ok</translation>
+      <translation>&amp;OK</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Cancel</source>
-      <translation>&amp;Avbryt</translation>
+      <translation>&amp;Cancelar</translation>
     </message>
   </context>
   <context>
@@ -126,7 +126,7 @@
     <message>
       <location/>
       <source>Task panel</source>
-      <translation>Uppgiftspanel</translation>
+      <translation>Painel de tarefas</translation>
     </message>
   </context>
   <context>
@@ -134,27 +134,27 @@
     <message>
       <location/>
       <source>About</source>
-      <translation>Om</translation>
+      <translation>Sobre</translation>
     </message>
     <message>
       <location/>
       <source>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600; text-decoration: underline; color:#0000ff;"&gt; Unknown Application (c) Unknown Author&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600; text-decoration: underline; color:#0000ff;"&gt; Okänd Applikation (c) Okänd författare&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt; &lt;span style=" font-weight:600; text-decoration: underline; color:#0000ff;"&gt;Aplicação Desconhecido (c) Autor Desconhecido&lt;/span&gt; &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
       <location/>
       <source>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600;"&gt;Unknown&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600;"&gt;Okänd&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt; &lt;span style=" font-weight:600;"&gt;Desconhecido&lt;/span&gt; &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
       <location/>
       <source>Revision number</source>
-      <translation>Revisionsnummer</translation>
+      <translation>Número de revisão</translation>
     </message>
     <message>
       <location/>
       <source>Version</source>
-      <translation>Version</translation>
+      <translation>Versão</translation>
     </message>
     <message>
       <location/>
@@ -164,12 +164,12 @@
     <message>
       <location/>
       <source></source>
-      <translation type="unfinished"/>
+      <translation> </translation>
     </message>
     <message>
       <location/>
       <source>Release date</source>
-      <translation>Släppdatum</translation>
+      <translation>Data de lançamento</translation>
     </message>
   </context>
   <context>
@@ -177,32 +177,32 @@
     <message>
       <location/>
       <source>View Turntable</source>
-      <translation>Visa vridbord</translation>
+      <translation>Vista Turntable</translation>
     </message>
     <message>
       <location/>
       <source>Speed</source>
-      <translation>Hastighet</translation>
+      <translation>Velocidade</translation>
     </message>
     <message>
       <location/>
       <source>Maximum</source>
-      <translation>Maximum</translation>
+      <translation>Máximo</translation>
     </message>
     <message>
       <location/>
       <source>Minimum</source>
-      <translation>Minimum</translation>
+      <translation>Mínimo</translation>
     </message>
     <message>
       <location/>
       <source>Fullscreen</source>
-      <translation>Fullskärm</translation>
+      <translation>Tela cheia</translation>
     </message>
     <message>
       <location/>
       <source>Enable timer</source>
-      <translation>Aktivera timer</translation>
+      <translation>Habilitar o timer</translation>
     </message>
     <message>
       <location/>
@@ -212,7 +212,7 @@
     <message>
       <location/>
       <source>Angle</source>
-      <translation>Vinkel</translation>
+      <translation>Ângulo</translation>
     </message>
     <message>
       <location/>
@@ -227,17 +227,17 @@
     <message>
       <location/>
       <source>Play</source>
-      <translation>Spela upp</translation>
+      <translation>Reproduzir</translation>
     </message>
     <message>
       <location/>
       <source>Stop</source>
-      <translation>Stopp</translation>
+      <translation>Parar</translation>
     </message>
     <message>
       <location/>
       <source>Close</source>
-      <translation>Stäng</translation>
+      <translation>Fechar</translation>
     </message>
   </context>
   <context>
@@ -245,27 +245,27 @@
     <message>
       <location/>
       <source>Choose Window</source>
-      <translation>Välj fönster</translation>
+      <translation>Escolhe uma Janela</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Activate</source>
-      <translation>&amp;Aktivera</translation>
+      <translation>&amp;Ativar</translation>
     </message>
     <message>
       <location/>
       <source>Alt+A</source>
-      <translation>Alt+A</translation>
+      <translation>Alt + A</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Cancel</source>
-      <translation>&amp;Avbryt</translation>
+      <translation>&amp;Cancelar</translation>
     </message>
     <message>
       <location/>
       <source></source>
-      <translation type="unfinished"/>
+      <translation> </translation>
     </message>
   </context>
   <context>
@@ -273,7 +273,7 @@
     <message>
       <location/>
       <source>Windows</source>
-      <translation>Fönster</translation>
+      <translation>Janelas</translation>
     </message>
   </context>
   <context>
@@ -281,32 +281,32 @@
     <message>
       <location/>
       <source>Authorization</source>
-      <translation>Auktorisering</translation>
+      <translation>Autorização</translation>
     </message>
     <message>
       <location/>
       <source>&amp;OK</source>
-      <translation>&amp;Ok</translation>
+      <translation>&amp;OK</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Cancel</source>
-      <translation>&amp;Avbryt</translation>
+      <translation>&amp;Cancelar</translation>
     </message>
     <message>
       <location/>
       <source>Password:</source>
-      <translation>lösenord:</translation>
+      <translation>Senha:</translation>
     </message>
     <message>
       <location/>
       <source>User name:</source>
-      <translation>Användarnamn:</translation>
+      <translation>Nome de usuário:</translation>
     </message>
     <message>
       <location/>
       <source></source>
-      <translation type="unfinished"/>
+      <translation> </translation>
     </message>
   </context>
   <context>
@@ -314,7 +314,7 @@
     <message>
       <location/>
       <source>Choose Icon</source>
-      <translation>Välj ikon</translation>
+      <translation>Escolher ícone</translation>
     </message>
     <message>
       <location/>
@@ -324,7 +324,7 @@
     <message>
       <location/>
       <source>Cancel</source>
-      <translation>Avbryt</translation>
+      <translation>Cancelar</translation>
     </message>
   </context>
   <context>
@@ -332,17 +332,17 @@
     <message>
       <location/>
       <source>Macros</source>
-      <translation>Makron</translation>
+      <translation>Macros</translation>
     </message>
     <message>
       <location/>
       <source>Setup Custom Macros</source>
-      <translation>Gör egna makron</translation>
+      <translation>Configurar macros personalizadas</translation>
     </message>
     <message>
       <location/>
       <source>Macro:</source>
-      <translation>Makro:</translation>
+      <translation>Macro:</translation>
     </message>
     <message>
       <location/>
@@ -352,47 +352,47 @@
     <message>
       <location/>
       <source>Pixmap</source>
-      <translation>Pixelkarta</translation>
+      <translation>Imagem</translation>
     </message>
     <message>
       <location/>
       <source>Accelerator:</source>
-      <translation>Snabbtangent:</translation>
+      <translation>Atalho:</translation>
     </message>
     <message>
       <location/>
       <source>What's this:</source>
-      <translation>Förklaring:</translation>
+      <translation>O Que é Isto:</translation>
     </message>
     <message>
       <location/>
       <source>Status text:</source>
-      <translation>Statustext:</translation>
+      <translation>Texto de status:</translation>
     </message>
     <message>
       <location/>
       <source>Tool tip:</source>
-      <translation>Verktygstips:</translation>
+      <translation>Dica:</translation>
     </message>
     <message>
       <location/>
       <source>Menu text:</source>
-      <translation>Menytext:</translation>
+      <translation>Texto do menu:</translation>
     </message>
     <message>
       <location/>
       <source>Add</source>
-      <translation>Lägg till</translation>
+      <translation>Adicionar</translation>
     </message>
     <message>
       <location/>
       <source>Remove</source>
-      <translation>Ta bort</translation>
+      <translation>Remover</translation>
     </message>
     <message>
       <location/>
       <source>Replace</source>
-      <translation>Ersätt</translation>
+      <translation>Substituir</translation>
     </message>
   </context>
   <context>
@@ -400,62 +400,62 @@
     <message>
       <location/>
       <source>Icons</source>
-      <translation>Ikoner</translation>
+      <translation>Ícones</translation>
     </message>
     <message>
       <location/>
       <source>Macros</source>
-      <translation>Makron</translation>
+      <translation>Macros</translation>
     </message>
     <message>
       <location/>
       <source>No macro</source>
-      <translation>Inget makro</translation>
+      <translation>Nenhuma macro</translation>
     </message>
     <message>
       <location/>
       <source>No macros found.</source>
-      <translation>Inga makron funna.</translation>
+      <translation>Nenhuma macro encontrada.</translation>
     </message>
     <message>
       <location/>
       <source>Macro not found</source>
-      <translation>Makro ej funnet</translation>
+      <translation>Macro não encontrada</translation>
     </message>
     <message>
       <location/>
       <source>Sorry, couldn't find macro file '%1'.</source>
-      <translation>Ledsen, kunde inte hitta makrofil '%1'.</translation>
+      <translation>Desculpe, não foi possível encontrar o arquivo de macro '%1'.</translation>
     </message>
     <message>
       <location/>
       <source>Empty macro</source>
-      <translation>Tomt makro</translation>
+      <translation>Macro vazia</translation>
     </message>
     <message>
       <location/>
       <source>Please specify the macro first.</source>
-      <translation>Speceficera makrot först.</translation>
+      <translation>Por favor especifique a macro primeiro.</translation>
     </message>
     <message>
       <location/>
       <source>Empty text</source>
-      <translation>Tom text</translation>
+      <translation>Texto vazio</translation>
     </message>
     <message>
       <location/>
       <source>Please specify the menu text first.</source>
-      <translation>Specificera menytexten först.</translation>
+      <translation>Por favor especifique o texto do menu primeiro.</translation>
     </message>
     <message>
       <location/>
       <source>No item selected</source>
-      <translation>Ingen sak vald</translation>
+      <translation>Nenhum item selecionado</translation>
     </message>
     <message>
       <location/>
       <source>Please select a macro item first.</source>
-      <translation>Välj ett makro först.</translation>
+      <translation>Primeiro, selecione uma macro.</translation>
     </message>
   </context>
   <context>
@@ -463,12 +463,12 @@
     <message>
       <location/>
       <source>Commands</source>
-      <translation>Kommandon</translation>
+      <translation>Comandos</translation>
     </message>
     <message>
       <location/>
       <source></source>
-      <translation type="unfinished"/>
+      <translation> </translation>
     </message>
   </context>
   <context>
@@ -476,17 +476,17 @@
     <message>
       <location/>
       <source>Category</source>
-      <translation>Kategori</translation>
+      <translation>Categoria</translation>
     </message>
     <message>
       <location/>
       <source>Icon</source>
-      <translation>Ikon</translation>
+      <translation>Ícone</translation>
     </message>
     <message>
       <location/>
       <source>Command</source>
-      <translation>Kommando</translation>
+      <translation>Comando</translation>
     </message>
   </context>
   <context>
@@ -494,72 +494,72 @@
     <message>
       <location/>
       <source>Keyboard</source>
-      <translation>Tangentbord</translation>
+      <translation>Teclado</translation>
     </message>
     <message>
       <location/>
       <source>Description:</source>
-      <translation>Beskrivning:</translation>
+      <translation>Descrição:</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Category:</source>
-      <translation>&amp;Kategori:</translation>
+      <translation>&amp;Categoria:</translation>
     </message>
     <message>
       <location/>
       <source>C&amp;ommands:</source>
-      <translation>K&amp;ommandon:</translation>
+      <translation>C&amp;omandos:</translation>
     </message>
     <message>
       <location/>
       <source>Current shortcut:</source>
-      <translation>Nuvarande genväg:</translation>
+      <translation>Atalho atual:</translation>
     </message>
     <message>
       <location/>
       <source>Press &amp;new shortcut:</source>
-      <translation>Klicka på &amp;ny genväg:</translation>
+      <translation>Indique o &amp;novo atalho:</translation>
     </message>
     <message>
       <location/>
       <source>Currently assigned to:</source>
-      <translation>För närvarande tilldelat till:</translation>
+      <translation>Atualmente atribuído a:</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Assign</source>
-      <translation>&amp;Tilldela</translation>
+      <translation>&amp;Atribuir</translation>
     </message>
     <message>
       <location/>
       <source>Alt+A</source>
-      <translation>Alt+A</translation>
+      <translation>Alt + A</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Reset</source>
-      <translation>&amp;Återställ</translation>
+      <translation>&amp;Restaurar</translation>
     </message>
     <message>
       <location/>
       <source>Alt+R</source>
-      <translation>Alt+R</translation>
+      <translation>Alt + R</translation>
     </message>
     <message>
       <location/>
       <source>Re&amp;set All</source>
-      <translation>Åter&amp;ställ allt</translation>
+      <translation>Re&amp;definir Tudo</translation>
     </message>
     <message>
       <location/>
       <source>Alt+S</source>
-      <translation>Alt+S</translation>
+      <translation>Alt + D</translation>
     </message>
     <message>
       <location/>
       <source></source>
-      <translation type="unfinished"/>
+      <translation> </translation>
     </message>
   </context>
   <context>
@@ -567,41 +567,40 @@
     <message>
       <location/>
       <source>Icon</source>
-      <translation>Ikon</translation>
+      <translation>Ícone</translation>
     </message>
     <message>
       <location/>
       <source>Command</source>
-      <translation>Kommando</translation>
+      <translation>Comando</translation>
     </message>
     <message>
       <location/>
       <source>none</source>
-      <translation>inget</translation>
+      <translation>nenhum</translation>
     </message>
     <message>
       <location/>
       <source>Multiple defined shortcut</source>
-      <translation>multipel definierad genväg</translation>
+      <translation>Atalho definido várias vezes</translation>
     </message>
     <message>
       <location/>
       <source>The shortcut '%1' is defined more than once. This could result into unexpected behaviour.</source>
-      <translation>Genvägen '%1' är definierad mer än en gång. Detta kan leda till oväntat beteende.</translation>
+      <translation>O atalho '%1' é definido mais de uma vez. Isso pode provocar um comportamento inesperado.</translation>
     </message>
     <message>
       <location/>
       <source>Already defined shortcut</source>
-      <translation>Genvägen är redan definierad</translation>
+      <translation>Atalho já definido</translation>
     </message>
     <message>
       <location/>
       <source>The shortcut '%1' is already assigned to '%2'.
 
 Please define another shortcut.</source>
-      <translation>Genvägen '%1' är redan tilldelad '%2'.
-
-Definiera en annan genväg.</translation>
+      <translation>O atalho '%1' já está atribuído a '%2'.
+Defina outro atalho.</translation>
     </message>
   </context>
   <context>
@@ -609,7 +608,7 @@ Definiera en annan genväg.</translation>
     <message>
       <location/>
       <source>Toolbox bars</source>
-      <translation>Verktygslådor</translation>
+      <translation>Barras de ferramentas</translation>
     </message>
   </context>
   <context>
@@ -617,77 +616,77 @@ Definiera en annan genväg.</translation>
     <message>
       <location/>
       <source>Toolbars</source>
-      <translation>Verktygslådor</translation>
+      <translation>Barras de ferramentas</translation>
     </message>
     <message>
       <location/>
       <source>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600;"&gt;Note:&lt;/span&gt; The changes become active the next time you load the appropriate workbench&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600;"&gt;Note:&lt;/span&gt; Ändringarna blir aktiva nästa gång du laddar passande arbetsbänk&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600;"&gt;Note:&lt;/span&gt; As mudanças terão efeito quando carregar novamente o Workbench apropriado&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
       <location/>
       <source>Move right</source>
-      <translation>Flytta till höger</translation>
+      <translation>Mover para a direita</translation>
     </message>
     <message>
       <location/>
       <source>&lt;b&gt;Move the selected item one level down.&lt;/b&gt;&lt;p&gt;This will also change the level of the parent item.&lt;/p&gt;</source>
-      <translation>&lt;b&gt;Flytta den valda saken en nivå ned.&lt;/b&gt;&lt;p&gt;Detta kommer även att ändra nivån på sakens förälder.&lt;/p&gt;</translation>
+      <translation>&lt;b&gt;Move o item selecionado um nível abaixo.&lt;/b&gt; &lt;p&gt; Isso também irá alterar o nível do item pai. &lt;/p&gt;</translation>
     </message>
     <message>
       <location/>
       <source>Move left</source>
-      <translation>Flytta till vänster</translation>
+      <translation>Mover para a esquerda</translation>
     </message>
     <message>
       <location/>
       <source>&lt;b&gt;Move the selected item one level up.&lt;/b&gt;&lt;p&gt;This will also change the level of the parent item.&lt;/p&gt;</source>
-      <translation>&lt;b&gt;Flytta den valda saken en nivå upp.&lt;/b&gt;&lt;p&gt;Detta kommer även att ändra nivån på sakens förälder.&lt;/p&gt;</translation>
+      <translation>&lt;b&gt;Mover o item selecionado um nível acima.&lt;/b&gt; &lt;p&gt; Isso também irá alterar o nível do item pai. &lt;/p&gt;</translation>
     </message>
     <message>
       <location/>
       <source>Move down</source>
-      <translation>Flytta ned</translation>
+      <translation>Move para baixo</translation>
     </message>
     <message>
       <location/>
       <source>&lt;b&gt;Move the selected item down.&lt;/b&gt;&lt;p&gt;The item will be moved within the hierarchy level.&lt;/p&gt;</source>
-      <translation>&lt;b&gt;Flytta ned den valda saken.&lt;/b&gt;&lt;p&gt;Saken kommer att flyttas inom hierarki nivån.&lt;/p&gt;</translation>
+      <translation>&lt;b&gt;Move o item selecionado para baixo.&lt;/b&gt; &lt;p&gt; O item será movido dentro do nível de hierarquia. &lt;/p&gt;</translation>
     </message>
     <message>
       <location/>
       <source>Move up</source>
-      <translation>Flytta upp</translation>
+      <translation>Mover para cima</translation>
     </message>
     <message>
       <location/>
       <source>&lt;b&gt;Move the selected item up.&lt;/b&gt;&lt;p&gt;The item will be moved within the hierarchy level.&lt;/p&gt;</source>
-      <translation>&lt;b&gt;Flytta upp den valda saken.&lt;/b&gt;&lt;p&gt;Saken kommer att flyttas inom hierarki nivån.&lt;/p&gt;</translation>
+      <translation>&lt;b&gt;Move o item selecionado para cima.&lt;/b&gt; &lt;p&gt; O item será movido dentro do nível de hierarquia. &lt;/p&gt;</translation>
     </message>
     <message>
       <location/>
       <source>New...</source>
-      <translation>Ny...</translation>
+      <translation>Novo...</translation>
     </message>
     <message>
       <location/>
       <source>Rename...</source>
-      <translation>Döp om...</translation>
+      <translation>Renomear...</translation>
     </message>
     <message>
       <location/>
       <source>Delete</source>
-      <translation>Radera</translation>
+      <translation>Excluir</translation>
     </message>
     <message>
       <location/>
       <source>Icon</source>
-      <translation>Ikon</translation>
+      <translation>Ícone</translation>
     </message>
     <message>
       <location/>
       <source>Command</source>
-      <translation>Kommando</translation>
+      <translation>Comando</translation>
     </message>
     <message>
       <location/>
@@ -697,32 +696,32 @@ Definiera en annan genväg.</translation>
     <message>
       <location/>
       <source>New toolbar</source>
-      <translation>Ny verktygsrad</translation>
+      <translation>Nova barra de ferramentas</translation>
     </message>
     <message>
       <location/>
       <source>Toolbar name:</source>
-      <translation>Namn på verktygsraden:</translation>
+      <translation>Nome da barra de ferramentas:</translation>
     </message>
     <message>
       <location/>
       <source>Duplicated name</source>
-      <translation>Duplicerat namn</translation>
+      <translation>Nome duplicado</translation>
     </message>
     <message>
       <location/>
       <source>The toolbar name '%1' is already used</source>
-      <translation>Verktygsradens namn '%1' används redan</translation>
+      <translation>O nome de barra de ferramentas '%1' já está sendo usado</translation>
     </message>
     <message>
       <location/>
       <source>Rename toolbar</source>
-      <translation>Döp om verktygsraden</translation>
+      <translation>Renomear barra de ferramentas</translation>
     </message>
     <message>
       <location/>
       <source></source>
-      <translation type="unfinished"/>
+      <translation> </translation>
     </message>
   </context>
   <context>
@@ -730,17 +729,17 @@ Definiera en annan genväg.</translation>
     <message>
       <location/>
       <source>Customize</source>
-      <translation>Anpassa</translation>
+      <translation>Personalizar</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Help</source>
-      <translation>&amp;Hjälp</translation>
+      <translation>A&amp;juda</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Close</source>
-      <translation>&amp;Stäng</translation>
+      <translation>&amp;Fechar</translation>
     </message>
   </context>
   <context>
@@ -748,27 +747,27 @@ Definiera en annan genväg.</translation>
     <message>
       <location/>
       <source>Display properties</source>
-      <translation>Fönsteregenskaper</translation>
+      <translation>Exibir propriedades</translation>
     </message>
     <message>
       <location/>
       <source>Display</source>
-      <translation>Fönster</translation>
+      <translation>Tela</translation>
     </message>
     <message>
       <location/>
       <source>Transparency:</source>
-      <translation>Transparens:</translation>
+      <translation>Transparência:</translation>
     </message>
     <message>
       <location/>
       <source>Line width:</source>
-      <translation>Linjebredd:</translation>
+      <translation>Largura da linha:</translation>
     </message>
     <message>
       <location/>
       <source>Point size:</source>
-      <translation>Punktstorlek:</translation>
+      <translation>Tamanho de ponto:</translation>
     </message>
     <message>
       <location/>
@@ -783,42 +782,42 @@ Definiera en annan genväg.</translation>
     <message>
       <location/>
       <source>Close</source>
-      <translation>Stäng</translation>
+      <translation>Fechar</translation>
     </message>
     <message>
       <location/>
       <source>Viewing mode</source>
-      <translation>Visningsläge</translation>
+      <translation>Modo de visualização</translation>
     </message>
     <message>
       <location/>
       <source>Display mode:</source>
-      <translation>Visningsläge:</translation>
+      <translation>Modo de exibição:</translation>
     </message>
     <message>
       <location/>
       <source>Plot mode:</source>
-      <translation>Plottningsläge:</translation>
+      <translation>Modo de impressão:</translation>
     </message>
     <message>
       <location/>
       <source></source>
-      <translation type="unfinished"/>
+      <translation> </translation>
     </message>
     <message>
       <location/>
       <source>Line transparency:</source>
-      <translation>Linjegenomskinlighet:</translation>
+      <translation>Transparência das linhas:</translation>
     </message>
     <message>
       <location/>
       <source>Line color:</source>
-      <translation>linjefärg:</translation>
+      <translation>Cor das linhas:</translation>
     </message>
     <message>
       <location/>
       <source>Shape color:</source>
-      <translation>Form färg:</translation>
+      <translation>Cor das formas:</translation>
     </message>
   </context>
   <context>
@@ -826,72 +825,72 @@ Definiera en annan genväg.</translation>
     <message>
       <location/>
       <source>Editor</source>
-      <translation>Redigerare</translation>
+      <translation>Editor</translation>
     </message>
     <message>
       <location/>
       <source>Options</source>
-      <translation>Alternativ</translation>
+      <translation>Opções</translation>
     </message>
     <message>
       <location/>
       <source>Enable line numbers</source>
-      <translation>Aktivera radnummer</translation>
+      <translation>Ativar números de linha</translation>
     </message>
     <message>
       <location/>
       <source>Enable folding</source>
-      <translation>Aktivera vikning</translation>
+      <translation>Habilitar dobra</translation>
     </message>
     <message>
       <location/>
       <source>Indentation</source>
-      <translation>Indrag</translation>
+      <translation>Indentação</translation>
     </message>
     <message>
       <location/>
       <source>Insert spaces</source>
-      <translation>Sätt in mellanslag</translation>
+      <translation>Inserir espaços</translation>
     </message>
     <message>
       <location/>
       <source>Tab size:</source>
-      <translation>Tabulatorstorlek:</translation>
+      <translation>Tamanho da tabulação:</translation>
     </message>
     <message>
       <location/>
       <source>Indent size:</source>
-      <translation>Storlek på indrag:</translation>
+      <translation>Tamanho da indentação:</translation>
     </message>
     <message>
       <location/>
       <source>Keep tabs</source>
-      <translation>Behåll tabulatorer</translation>
+      <translation>Manter abas</translation>
     </message>
     <message>
       <location/>
       <source>Display Items</source>
-      <translation>Visa saker</translation>
+      <translation>Exibir itens</translation>
     </message>
     <message>
       <location/>
       <source>Family:</source>
-      <translation>Familj:</translation>
+      <translation>Família:</translation>
     </message>
     <message>
       <location/>
       <source>Size:</source>
-      <translation>Storlek:</translation>
+      <translation>Tamanho:</translation>
     </message>
     <message>
       <location/>
       <source>Preview:</source>
-      <translation>Förhandsgranskning:</translation>
+      <translation>Pré-visualização:</translation>
     </message>
     <message>
       <location/>
       <source></source>
-      <translation type="unfinished"/>
+      <translation> </translation>
     </message>
   </context>
   <context>
@@ -899,52 +898,52 @@ Definiera en annan genväg.</translation>
     <message>
       <location/>
       <source>General</source>
-      <translation>Allmänt</translation>
+      <translation>Geral</translation>
     </message>
     <message>
       <location/>
       <source>Start up</source>
-      <translation>Uppstart</translation>
+      <translation>Início</translation>
     </message>
     <message>
       <location/>
       <source>Enable splash screen at start up</source>
-      <translation>Aktivera splashfönster vid uppstart</translation>
+      <translation>Mostrar a tela de splash ao iniciar</translation>
     </message>
     <message>
       <location/>
       <source>Switch to tab of report window:</source>
-      <translation>Växla till rapportfönstrets tabb:</translation>
+      <translation>Alternar para a guia da janela de relatório:</translation>
     </message>
     <message>
       <location/>
       <source>Auto load module after start up:</source>
-      <translation>Autoladda modul efter uppstart:</translation>
+      <translation>Auto-carregar módulo ao iniciar:</translation>
     </message>
     <message>
       <location/>
       <source>Language</source>
-      <translation>Språk</translation>
+      <translation>Idioma</translation>
     </message>
     <message>
       <location/>
       <source>Change language:</source>
-      <translation>Välj språk:</translation>
+      <translation>Alterar idioma:</translation>
     </message>
     <message>
       <location/>
       <source>Main window</source>
-      <translation>Huvudfönster</translation>
+      <translation>Janela principal</translation>
     </message>
     <message>
       <location/>
       <source>Size of recent file list</source>
-      <translation>Storlek på listan för sist öppnade filer</translation>
+      <translation>Tamanho da lista de arquivos recentes</translation>
     </message>
     <message>
       <location/>
       <source>Window style:</source>
-      <translation>Fönsterstil:</translation>
+      <translation>Estilo de janela:</translation>
     </message>
   </context>
   <context>
@@ -952,7 +951,7 @@ Definiera en annan genväg.</translation>
     <message>
       <location/>
       <source>Input</source>
-      <translation>Inmatning</translation>
+      <translation>Entrada</translation>
     </message>
     <message>
       <location/>
@@ -962,12 +961,12 @@ Definiera en annan genväg.</translation>
     <message>
       <location/>
       <source>Cancel</source>
-      <translation>Avbryt</translation>
+      <translation>Cancelar</translation>
     </message>
     <message>
       <location/>
       <source></source>
-      <translation type="unfinished"/>
+      <translation> </translation>
     </message>
   </context>
   <context>
@@ -975,7 +974,7 @@ Definiera en annan genväg.</translation>
     <message>
       <location/>
       <source>Scene Inspector</source>
-      <translation>Sceninspektör</translation>
+      <translation>Inspetor de cena</translation>
     </message>
   </context>
   <context>
@@ -983,42 +982,42 @@ Definiera en annan genväg.</translation>
     <message>
       <location/>
       <source>Execute macro</source>
-      <translation>Utför makro</translation>
+      <translation>Executar macro</translation>
     </message>
     <message>
       <location/>
       <source>Macro name:</source>
-      <translation>Makronamn:</translation>
+      <translation>Nome da macro:</translation>
     </message>
     <message>
       <location/>
       <source>Macro destination:</source>
-      <translation>Makro destination:</translation>
+      <translation>Destino da macro:</translation>
     </message>
     <message>
       <location/>
       <source>Execute</source>
-      <translation>Utför</translation>
+      <translation>Executar</translation>
     </message>
     <message>
       <location/>
       <source>Close</source>
-      <translation>Stäng</translation>
+      <translation>Fechar</translation>
     </message>
     <message>
       <location/>
       <source>Create</source>
-      <translation>Skapa</translation>
+      <translation>Criar</translation>
     </message>
     <message>
       <location/>
       <source>Delete</source>
-      <translation>Radera</translation>
+      <translation>Excluir</translation>
     </message>
     <message>
       <location/>
       <source>Edit</source>
-      <translation>Redigera</translation>
+      <translation>Editar</translation>
     </message>
   </context>
   <context>
@@ -1026,49 +1025,49 @@ Definiera en annan genväg.</translation>
     <message>
       <location/>
       <source>Macros</source>
-      <translation>Makron</translation>
+      <translation>Macros</translation>
     </message>
     <message>
       <location/>
       <source>Macro file</source>
-      <translation>Makro fil</translation>
+      <translation>Arquivo de macro</translation>
     </message>
     <message>
       <location/>
       <source>Enter a file name, please:</source>
-      <translation>Skriv in ett filnamn:</translation>
+      <translation>Digite um nome de arquivo, por favor:</translation>
     </message>
     <message>
       <location/>
       <source>Existing file</source>
-      <translation>Filen finns</translation>
+      <translation>Arquivo existente</translation>
     </message>
     <message>
       <location/>
       <source>'%1'.
 This file already exists.</source>
       <translation>'%1'.
-Denna fil finns redan.</translation>
+Este arquivo já existe.</translation>
     </message>
     <message>
       <location/>
       <source>Delete macro</source>
-      <translation>Radera makro</translation>
+      <translation>Excluir macro</translation>
     </message>
     <message>
       <location/>
       <source>Do you really want to delete the macro '%1'?</source>
-      <translation>Vill du verkligen radera makrot '%1'?</translation>
+      <translation>Você realmente deseja excluir a macro '%1'?</translation>
     </message>
     <message>
       <location/>
       <source>Cannot create file</source>
-      <translation>Kan inte skapa fil</translation>
+      <translation>Não é possível criar o arquivo</translation>
     </message>
     <message>
       <location/>
       <source>Creation of file '%1' failed.</source>
-      <translation>Skapandet av filen %1' misslyckades.</translation>
+      <translation>Falha na criação do arquivo '%1'.</translation>
     </message>
   </context>
   <context>
@@ -1076,27 +1075,27 @@ Denna fil finns redan.</translation>
     <message>
       <location/>
       <source>Macro recording</source>
-      <translation>Makroinspelning</translation>
+      <translation>Gravação de macros</translation>
     </message>
     <message>
       <location/>
       <source>Macro name:</source>
-      <translation>Makronamn:</translation>
+      <translation>Nome da macro:</translation>
     </message>
     <message>
       <location/>
       <source>Stop</source>
-      <translation>Stopp</translation>
+      <translation>Parar</translation>
     </message>
     <message>
       <location/>
       <source>Cancel</source>
-      <translation>Avbryt</translation>
+      <translation>Cancelar</translation>
     </message>
     <message>
       <location/>
       <source>Macro path:</source>
-      <translation>sökväg för makro:</translation>
+      <translation>Caminho de macro:</translation>
     </message>
     <message>
       <location/>
@@ -1106,7 +1105,7 @@ Denna fil finns redan.</translation>
     <message>
       <location/>
       <source>Record</source>
-      <translation>Spela in</translation>
+      <translation>Gravar</translation>
     </message>
   </context>
   <context>
@@ -1114,32 +1113,32 @@ Denna fil finns redan.</translation>
     <message>
       <location/>
       <source>Macro recorder</source>
-      <translation>Makroinspelare</translation>
+      <translation>Gravador de macro</translation>
     </message>
     <message>
       <location/>
       <source>Specify first a place to save.</source>
-      <translation>Specificera först en plats att spara på.</translation>
+      <translation>Especifique um local para salvar.</translation>
     </message>
     <message>
       <location/>
       <source>Existing macro</source>
-      <translation>Makrot finns</translation>
+      <translation>Macro existente</translation>
     </message>
     <message>
       <location/>
       <source>The macro '%1' already exists. Do you want to overwrite?</source>
-      <translation>Makrot '%1' finns redan. Vill du skriva över den?</translation>
+      <translation>A macro '%1' já existe. Deseja substituir?</translation>
     </message>
     <message>
       <location/>
       <source>The macro directory doesn't exist. Please, choose another one.</source>
-      <translation>Makrokatalogen finns inte. Var snäll och välj en annan.</translation>
+      <translation>O diretório de macro não existe. Por favor, escolha um outro.</translation>
     </message>
     <message>
       <location/>
       <source>Choose macro directory</source>
-      <translation>Välj makro katalog</translation>
+      <translation>Escolha o diretório de macros</translation>
     </message>
   </context>
   <context>
@@ -1147,17 +1146,17 @@ Denna fil finns redan.</translation>
     <message>
       <location/>
       <source>Material properties</source>
-      <translation>Materialegenskaper</translation>
+      <translation>Propriedades do material</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Close</source>
-      <translation>&amp;Stäng</translation>
+      <translation>&amp;Fechar</translation>
     </message>
     <message>
       <location/>
       <source>Alt+C</source>
-      <translation>Alt+C</translation>
+      <translation>Alt + C</translation>
     </message>
     <message>
       <location/>
@@ -1167,17 +1166,17 @@ Denna fil finns redan.</translation>
     <message>
       <location/>
       <source>Diffuse color:</source>
-      <translation>Diffuseringsfärg:</translation>
+      <translation>Cor Diffuse:</translation>
     </message>
     <message>
       <location/>
       <source>Specular color:</source>
-      <translation>Speglingsfärg:</translation>
+      <translation>Cor Specular:</translation>
     </message>
     <message>
       <location/>
       <source>Shininess:</source>
-      <translation>Blänkvärde:</translation>
+      <translation>Brilho:</translation>
     </message>
     <message>
       <location/>
@@ -1187,17 +1186,17 @@ Denna fil finns redan.</translation>
     <message>
       <location/>
       <source>Ambient color:</source>
-      <translation>Omgivningsfärg:</translation>
+      <translation>Cor ambiente:</translation>
     </message>
     <message>
       <location/>
       <source></source>
-      <translation type="unfinished"/>
+      <translation> </translation>
     </message>
     <message>
       <location/>
       <source>Emissive color:</source>
-      <translation>Emissiv färg:</translation>
+      <translation>Cor de emissão:</translation>
     </message>
   </context>
   <context>
@@ -1205,17 +1204,17 @@ Denna fil finns redan.</translation>
     <message>
       <location/>
       <source>On-line help</source>
-      <translation>On-line hjälp</translation>
+      <translation>Ajuda on-line</translation>
     </message>
     <message>
       <location/>
       <source>Help viewer</source>
-      <translation>Hjälpvisare</translation>
+      <translation>Visualizador da ajuda</translation>
     </message>
     <message>
       <location/>
       <source>Location of start page</source>
-      <translation>Startsidans adress</translation>
+      <translation>Localização da página inicial</translation>
     </message>
   </context>
   <context>
@@ -1223,21 +1222,20 @@ Denna fil finns redan.</translation>
     <message>
       <location/>
       <source>HTML files (*.html *.htm)</source>
-      <translation>HTML filer (*.html *.htm)</translation>
+      <translation>Arquivos HTML (*.html *.htm)</translation>
     </message>
     <message>
       <location/>
       <source>Access denied</source>
-      <translation>Åtkomst nekad</translation>
+      <translation>Acesso negado</translation>
     </message>
     <message>
       <location/>
       <source>Access denied to '%1'
 
 Specify another directory, please.</source>
-      <translation>Åtkomst nekad till '%1'
-
-Ange en annan katalog.</translation>
+      <translation>Acesso negado a '%1'
+Por favor especifique outro diretório.</translation>
     </message>
   </context>
   <context>
@@ -1245,22 +1243,22 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Parameter Editor</source>
-      <translation>Parameter redigerare</translation>
+      <translation>Editor de parâmetros</translation>
     </message>
     <message>
       <location/>
       <source>Save to disk</source>
-      <translation>Spara till disk</translation>
+      <translation>Salvar no disco</translation>
     </message>
     <message>
       <location/>
       <source>Alt+C</source>
-      <translation>Alt+C</translation>
+      <translation>Alt + C</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Close</source>
-      <translation>&amp;Stäng</translation>
+      <translation>&amp;Fechar</translation>
     </message>
   </context>
   <context>
@@ -1268,42 +1266,42 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Group</source>
-      <translation>Grupp</translation>
+      <translation>Grupo</translation>
     </message>
     <message>
       <location/>
       <source>Name</source>
-      <translation>Namn</translation>
+      <translation>Nome</translation>
     </message>
     <message>
       <location/>
       <source>Type</source>
-      <translation>Typ</translation>
+      <translation>Tipo</translation>
     </message>
     <message>
       <location/>
       <source>Value</source>
-      <translation>Värde</translation>
+      <translation>Valor</translation>
     </message>
     <message>
       <location/>
       <source>User parameter</source>
-      <translation>Användarparameter</translation>
+      <translation>Parâmetros de usuário</translation>
     </message>
     <message>
       <location/>
       <source>Invalid input</source>
-      <translation>Ogiltig inmatning</translation>
+      <translation>Entrada inválida</translation>
     </message>
     <message>
       <location/>
       <source>Invalid key name '%1'</source>
-      <translation>Ogiltigt nyckelnamn '%1'</translation>
+      <translation>Nome da chave inválido '%1'</translation>
     </message>
     <message>
       <location/>
       <source>System parameter</source>
-      <translation>Systemparameter</translation>
+      <translation>Parâmetro de sistema</translation>
     </message>
   </context>
   <context>
@@ -1311,42 +1309,42 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Preferences</source>
-      <translation>Inställningar</translation>
+      <translation>Preferências</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Help</source>
-      <translation>&amp;Hjälp</translation>
+      <translation>A&amp;juda</translation>
     </message>
     <message>
       <location/>
       <source>Alt+H</source>
-      <translation>Alt+H</translation>
+      <translation>Alt+J</translation>
     </message>
     <message>
       <location/>
       <source>&amp;OK</source>
-      <translation>&amp;Ok</translation>
+      <translation>&amp;OK</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Apply</source>
-      <translation>&amp;Verkställ</translation>
+      <translation>&amp;Aplicar</translation>
     </message>
     <message>
       <location/>
       <source>Alt+A</source>
-      <translation>Alt+A</translation>
+      <translation>Alt + A</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Cancel</source>
-      <translation>&amp;Avbryt</translation>
+      <translation>&amp;Cancelar</translation>
     </message>
     <message>
       <location/>
       <source></source>
-      <translation type="unfinished"/>
+      <translation> </translation>
     </message>
   </context>
   <context>
@@ -1354,7 +1352,7 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Wrong parameter</source>
-      <translation>Fel parameter</translation>
+      <translation>Parâmetro incorreto</translation>
     </message>
   </context>
   <context>
@@ -1362,67 +1360,67 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Project information</source>
-      <translation>Projektinformation</translation>
+      <translation>Informações do projeto</translation>
     </message>
     <message>
       <location/>
       <source>Information</source>
-      <translation>Information</translation>
+      <translation>Informação</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Name:</source>
-      <translation>&amp;Namn:</translation>
+      <translation>&amp;Nome:</translation>
     </message>
     <message>
       <location/>
       <source>Commen&amp;t:</source>
-      <translation>Kommen&amp;tar:</translation>
+      <translation>Comen&amp;tário:</translation>
     </message>
     <message>
       <location/>
       <source>Path:</source>
-      <translation>Sökväg:</translation>
+      <translation>Caminho:</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Last modified by:</source>
-      <translation>&amp;Sist ändrad av:</translation>
+      <translation>&amp;Modificado por último por:</translation>
     </message>
     <message>
       <location/>
       <source>Created &amp;by:</source>
-      <translation>&amp;Skapad av:</translation>
+      <translation>Criado &amp;por:</translation>
     </message>
     <message>
       <location/>
       <source>Com&amp;pany:</source>
-      <translation>&amp;Företag:</translation>
+      <translation>&amp;Empresa:</translation>
     </message>
     <message>
       <location/>
       <source>Last &amp;modification date:</source>
-      <translation>Sista ändringsdatu&amp;m:</translation>
+      <translation>Data da última &amp;modificação:</translation>
     </message>
     <message>
       <location/>
       <source>Creation &amp;date:</source>
-      <translation>Skapad &amp;datum:</translation>
+      <translation>&amp;Data de criação:</translation>
     </message>
     <message>
       <location/>
       <source>&amp;OK</source>
-      <translation>&amp;Ok</translation>
+      <translation>&amp;OK</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Cancel</source>
-      <translation>&amp;Avbryt</translation>
+      <translation>&amp;Cancelar</translation>
     </message>
     <message>
       <location/>
       <source></source>
-      <translation type="unfinished"/>
+      <translation> </translation>
     </message>
   </context>
   <context>
@@ -1430,62 +1428,62 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Output window</source>
-      <translation>Utmatningsfönster</translation>
+      <translation>janela de saída</translation>
     </message>
     <message>
       <location/>
       <source>Output</source>
-      <translation>Utmatning</translation>
+      <translation>Saída</translation>
     </message>
     <message>
       <location/>
       <source>Record log messages</source>
-      <translation>spela in logg meddelanden</translation>
+      <translation>Gravar mensagens de log</translation>
     </message>
     <message>
       <location/>
       <source>Record warnings</source>
-      <translation>Spela in varningar</translation>
+      <translation>Gravar advertências</translation>
     </message>
     <message>
       <location/>
       <source>Record error messages</source>
-      <translation>Spela in felmeddelanden</translation>
+      <translation>Gravar mensagens de erro</translation>
     </message>
     <message>
       <location/>
       <source>Colors</source>
-      <translation>Färger</translation>
+      <translation>Cores</translation>
     </message>
     <message>
       <location/>
       <source>Normal messages:</source>
-      <translation>Normala meddelanden:</translation>
+      <translation>Mensagens normais:</translation>
     </message>
     <message>
       <location/>
       <source>Log messages:</source>
-      <translation>Loggmeddelanden:</translation>
+      <translation>Mensagens de log:</translation>
     </message>
     <message>
       <location/>
       <source>Warnings:</source>
-      <translation>Varningar:</translation>
+      <translation>Advertências:</translation>
     </message>
     <message>
       <location/>
       <source>Errors:</source>
-      <translation>Fel:</translation>
+      <translation>Erros:</translation>
     </message>
     <message>
       <location/>
       <source></source>
-      <translation type="unfinished"/>
+      <translation> </translation>
     </message>
     <message>
       <location/>
       <source>Redirect internal Python errors to report view</source>
-      <translation>Redirect internal Python errors to report view</translation>
+      <translation>Redirecionar erros internos do Python para a janela de relatório</translation>
     </message>
   </context>
   <context>
@@ -1493,12 +1491,12 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Redirect Python errors</source>
-      <translation>Omdirigera Python fel</translation>
+      <translation>Redirecionar erros de Python</translation>
     </message>
     <message>
       <location/>
       <source>In order to take effect this change you must restart the application.</source>
-      <translation>För att denna ändring ska träda i kraft så måste du starta om programmet.</translation>
+      <translation>Para que essa alteração tenha efeito, você deve reiniciar o aplicativo.</translation>
     </message>
   </context>
   <context>
@@ -1506,17 +1504,17 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Running external program</source>
-      <translation>Kör externt program</translation>
+      <translation>Executando programa externo</translation>
     </message>
     <message>
       <location/>
       <source>TextLabel</source>
-      <translation>TextLabel</translation>
+      <translation>Rótulo de texto</translation>
     </message>
     <message>
       <location/>
       <source>Advanced &gt;&gt;</source>
-      <translation>Avancerat &gt;&gt;</translation>
+      <translation>Avançado &gt;&gt;</translation>
     </message>
     <message>
       <location/>
@@ -1526,27 +1524,27 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Accept changes</source>
-      <translation>Acceptera förändringar</translation>
+      <translation>Aceitar mudanças</translation>
     </message>
     <message>
       <location/>
       <source>Discard changes</source>
-      <translation>Förkasta ändringar</translation>
+      <translation>Descartar alterações</translation>
     </message>
     <message>
       <location/>
       <source>Abort program</source>
-      <translation>Avbryt programmet</translation>
+      <translation>Abortar o programa</translation>
     </message>
     <message>
       <location/>
       <source>Help</source>
-      <translation>Hjälp</translation>
+      <translation>Ajuda</translation>
     </message>
     <message>
       <location/>
       <source>Select a file</source>
-      <translation>Välj en fil</translation>
+      <translation>Selecione um arquivo</translation>
     </message>
   </context>
   <context>
@@ -1554,77 +1552,77 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>3D View</source>
-      <translation>3D Vy</translation>
+      <translation>Vista 3D</translation>
     </message>
     <message>
       <location/>
       <source>3D View settings</source>
-      <translation>Inställningar för 3D Vy</translation>
+      <translation>Configurações de visualização 3D</translation>
     </message>
     <message>
       <location/>
       <source>Show coordinate system in the corner</source>
-      <translation>Visa koordinatsystemet i hörnet</translation>
+      <translation>Mostrar sistema de coordenadas no canto</translation>
     </message>
     <message>
       <location/>
       <source>Show counter of frames per second</source>
-      <translation>Visa räknaren för bilder per sekund</translation>
+      <translation>Mostrar contador de frames por segundo</translation>
     </message>
     <message>
       <location/>
       <source>Enable animation</source>
-      <translation>Aktivera animering</translation>
+      <translation>Habilitar animação</translation>
     </message>
     <message>
       <location/>
       <source>Enable anti-aliasing (slower)</source>
-      <translation>Aktivera antialiasing (långsammare)</translation>
+      <translation>Habilitar anti-aliasing (mais lento)</translation>
     </message>
     <message>
       <location/>
       <source>Eye to eye distance for stereo modes:</source>
-      <translation>Ögonavstånd för stereolägen:</translation>
+      <translation>Distância entre olhos para modos estéreo:</translation>
     </message>
     <message>
       <location/>
       <source>Camera type</source>
-      <translation>Kameratyp</translation>
+      <translation>Tipo de câmera</translation>
     </message>
     <message>
       <location/>
       <source>Orthographic rendering</source>
-      <translation>Ortografisk rendering</translation>
+      <translation>Renderização ortográfica</translation>
     </message>
     <message>
       <location/>
       <source>Perspective rendering</source>
-      <translation>Perspektivrendering</translation>
+      <translation>Renderização perspectiva</translation>
     </message>
     <message>
       <location/>
       <source></source>
-      <translation type="unfinished"/>
+      <translation> </translation>
     </message>
     <message>
       <location/>
       <source>3D Navigation</source>
-      <translation>3D Navigering</translation>
+      <translation>Navegação 3D</translation>
     </message>
     <message>
       <location/>
       <source>Mouse...</source>
-      <translation>Mus...</translation>
+      <translation>Mouse...</translation>
     </message>
     <message>
       <location/>
       <source>Intensity of backlight</source>
-      <translation>Intensiteten i bakgrundsbelysningen</translation>
+      <translation>Intensidade da luz de fundo</translation>
     </message>
     <message>
       <location/>
       <source>Enable backlight color</source>
-      <translation>Aktivera bakgrundsbelysningsfärg</translation>
+      <translation>Habilitar a cor da luz de fundo</translation>
     </message>
   </context>
   <context>
@@ -1632,7 +1630,7 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>%1 navigation</source>
-      <translation>%1 navigering</translation>
+      <translation>navegação de %1</translation>
     </message>
   </context>
   <context>
@@ -1640,127 +1638,127 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Color model</source>
-      <translation>Färgmodell</translation>
+      <translation>Modelo de cores</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Gradient:</source>
-      <translation>&amp;Gradient:</translation>
+      <translation>&amp;Gradiente:</translation>
     </message>
     <message>
       <location/>
       <source>red-yellow-green-cyan-blue</source>
-      <translation>röd-gul-grön-cyan-blå</translation>
+      <translation>vermelho-amarelo-verde-ciano-azul</translation>
     </message>
     <message>
       <location/>
       <source>blue-cyan-green-yellow-red</source>
-      <translation>blå-cyan-grön-gul-röd</translation>
+      <translation>azul-turquesa-verde-amarelo-vermelho</translation>
     </message>
     <message>
       <location/>
       <source>white-black</source>
-      <translation>vit-svart</translation>
+      <translation>branco-preto</translation>
     </message>
     <message>
       <location/>
       <source>black-white</source>
-      <translation>svart-vit</translation>
+      <translation>preto-branco</translation>
     </message>
     <message>
       <location/>
       <source>Visibility</source>
-      <translation>Synlighet</translation>
+      <translation>Visibilidade</translation>
     </message>
     <message>
       <location/>
       <source>Out g&amp;rayed</source>
-      <translation>Ut g&amp;rå</translation>
+      <translation>Saída &amp;inativa</translation>
     </message>
     <message>
       <location/>
       <source>Alt+R</source>
-      <translation>Alt+R</translation>
+      <translation>Alt + R</translation>
     </message>
     <message>
       <location/>
       <source>Out &amp;invisible</source>
-      <translation>Ut osynl&amp;ig</translation>
+      <translation>Saída in&amp;visível</translation>
     </message>
     <message>
       <location/>
       <source>Alt+I</source>
-      <translation>Alt+I</translation>
+      <translation>Alt+v</translation>
     </message>
     <message>
       <location/>
       <source>Style</source>
-      <translation>Stil</translation>
+      <translation>Estilo</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Zero</source>
-      <translation>&amp;Noll</translation>
+      <translation>Zero</translation>
     </message>
     <message>
       <location/>
       <source>Alt+Z</source>
-      <translation>Alt+Z</translation>
+      <translation>Alt + Z</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Flow</source>
-      <translation>&amp;Flöde</translation>
+      <translation>&amp;Fluxo</translation>
     </message>
     <message>
       <location/>
       <source>Alt+F</source>
-      <translation>Alt+F</translation>
+      <translation>Alt + F</translation>
     </message>
     <message>
       <location/>
       <source>&amp;OK</source>
-      <translation>&amp;Ok</translation>
+      <translation>&amp;OK</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Cancel</source>
-      <translation>&amp;Avbryt</translation>
+      <translation>&amp;Cancelar</translation>
     </message>
     <message>
       <location/>
       <source>Parameter range</source>
-      <translation>Parameterområde</translation>
+      <translation>Intervalo de parâmetros</translation>
     </message>
     <message>
       <location/>
       <source>Mi&amp;nimum:</source>
-      <translation>Mi&amp;nimum:</translation>
+      <translation>Mí&amp;nimo:</translation>
     </message>
     <message>
       <location/>
       <source>Ma&amp;ximum:</source>
-      <translation>Ma&amp;ximum:</translation>
+      <translation>Má&amp;ximo:</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Labels:</source>
-      <translation>&amp;Etiketter:</translation>
+      <translation>Rótu&amp;los:</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Decimals:</source>
-      <translation>&amp;Decimaler:</translation>
+      <translation>&amp;Decimais:</translation>
     </message>
     <message>
       <location/>
       <source></source>
-      <translation type="unfinished"/>
+      <translation> </translation>
     </message>
     <message>
       <location/>
       <source>Color-gradient settings</source>
-      <translation>Färggradient inställningar</translation>
+      <translation>Configurações de gradiente de cores</translation>
     </message>
   </context>
   <context>
@@ -1768,12 +1766,12 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Wrong parameter</source>
-      <translation>Fel parameter</translation>
+      <translation>Parâmetro incorreto</translation>
     </message>
     <message>
       <location/>
       <source>The maximum value must be higher than the minimum value.</source>
-      <translation>Maximumvärdet måste vara större än minimumvärdet.</translation>
+      <translation>O valor máximo deve ser superior ao valor mínimo.</translation>
     </message>
   </context>
   <context>
@@ -1781,69 +1779,68 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Document</source>
-      <translation>Dokument</translation>
+      <translation>Documento</translation>
     </message>
     <message>
       <location/>
       <source>General</source>
-      <translation>Allmänt</translation>
+      <translation>Geral</translation>
     </message>
     <message>
       <location/>
       <source>Document save compression level
 (0 = none, 9 = highest, 3 = default)</source>
-      <translation>Komprimeringsgrad när dokument sparas
-(0 = ingen, 9 = högst, 3 = standard)</translation>
+      <translation>Nível de compactação ao salvar documentos (0 = nenhum, 9 = mais alto, 3 = padrão)</translation>
     </message>
     <message>
       <location/>
       <source>Undo Redo Size (in Megabyte)</source>
-      <translation>Ångra gör om storlek (i Megabyte)</translation>
+      <translation>Quantidade de memória alocada para Desfazer/Refazer (em Megabytes)</translation>
     </message>
     <message>
       <location/>
       <source>Create new document at start up</source>
-      <translation>Skapa nytt dokument vid uppstart</translation>
+      <translation>Criar um novo documento ao iniciar</translation>
     </message>
     <message>
       <location/>
       <source>Using Undo/Redo on documents (can be very memory consuming)</source>
-      <translation>Använd ångra/gör om på dokument (kan använda mycket minne)</translation>
+      <translation>Usando Desfazer/Refazer em documentos (pode consumir muita memória)</translation>
     </message>
     <message>
       <location/>
       <source>Storage</source>
-      <translation>Lagring</translation>
+      <translation>Armazenamento</translation>
     </message>
     <message>
       <location/>
       <source>Saving transactions (Auto-save)</source>
-      <translation>Spara transaktionern (autospara)</translation>
+      <translation>Salvar as transações (auto-save)</translation>
     </message>
     <message>
       <location/>
       <source>Discard saved transaction after saving document</source>
-      <translation>Förstör sparad transaktion efter att ha sparat dokumentet</translation>
+      <translation>Descartar transações salvas depois de salvar o documento</translation>
     </message>
     <message>
       <location/>
       <source>Save thumbnail into project file when saving document</source>
-      <translation>Spara minibild i projektfilen när dokumentet sparas</translation>
+      <translation>Salvar miniatura no arquivo quando salvar um documento </translation>
     </message>
     <message>
       <location/>
       <source>Create up to backup files when resaving document</source>
-      <translation>Skapa upp till säkerhetskopior när dokumentet omsparas</translation>
+      <translation>Criar arquivos de backup ao salvar o documento</translation>
     </message>
     <message>
       <location/>
       <source>Document objects</source>
-      <translation>Dokumentobjekt</translation>
+      <translation>Objetos do documento</translation>
     </message>
     <message>
       <location/>
       <source>Allow duplicate object labels in one document</source>
-      <translation>Tillåt duplicerade objektetiketter i ett dokument</translation>
+      <translation>Permitir rótulos de objetos duplicados em um documento</translation>
     </message>
   </context>
   <context>
@@ -1851,77 +1848,77 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Text</source>
-      <translation>Text</translation>
+      <translation>Texto</translation>
     </message>
     <message>
       <location/>
       <source>Bookmark</source>
-      <translation>Bokmärke</translation>
+      <translation>Favorito</translation>
     </message>
     <message>
       <location/>
       <source>Breakpoint</source>
-      <translation>Brytpunkt</translation>
+      <translation>Ponto de Interrupção</translation>
     </message>
     <message>
       <location/>
       <source>Keyword</source>
-      <translation>Nyckelord</translation>
+      <translation>Palavra-chave</translation>
     </message>
     <message>
       <location/>
       <source>Comment</source>
-      <translation>Kommentera</translation>
+      <translation>Comentário</translation>
     </message>
     <message>
       <location/>
       <source>Block comment</source>
-      <translation>Blockkommentar</translation>
+      <translation>Comentário de bloco</translation>
     </message>
     <message>
       <location/>
       <source>Number</source>
-      <translation>Nummer</translation>
+      <translation>Número</translation>
     </message>
     <message>
       <location/>
       <source>String</source>
-      <translation>Sträng</translation>
+      <translation>Texto</translation>
     </message>
     <message>
       <location/>
       <source>Character</source>
-      <translation>Tecken</translation>
+      <translation>Caráter</translation>
     </message>
     <message>
       <location/>
       <source>Class name</source>
-      <translation>Klassnamn</translation>
+      <translation>Nome de classe</translation>
     </message>
     <message>
       <location/>
       <source>Define name</source>
-      <translation>Definiera namn</translation>
+      <translation>Definir nome</translation>
     </message>
     <message>
       <location/>
       <source>Operator</source>
-      <translation>Operator</translation>
+      <translation>Operador</translation>
     </message>
     <message>
       <location/>
       <source>Python output</source>
-      <translation>Python utmatning</translation>
+      <translation>Saída de Python</translation>
     </message>
     <message>
       <location/>
       <source>Python error</source>
-      <translation>Python fel</translation>
+      <translation>Erro de python</translation>
     </message>
     <message>
       <location/>
       <source>Items</source>
-      <translation>Saker</translation>
+      <translation>Itens</translation>
     </message>
   </context>
   <context>
@@ -1929,42 +1926,42 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Image settings</source>
-      <translation>Bildinställningar</translation>
+      <translation>Configurações de imagem</translation>
     </message>
     <message>
       <location/>
       <source>Image properties</source>
-      <translation>Bildegenskaper</translation>
+      <translation>Propriedades de imagem</translation>
     </message>
     <message>
       <location/>
       <source>Back&amp;ground:</source>
-      <translation>Bak&amp;grund:</translation>
+      <translation>P&amp;lano de Fundo:</translation>
     </message>
     <message>
       <location/>
       <source>Current</source>
-      <translation>Nuvarande</translation>
+      <translation>Atual</translation>
     </message>
     <message>
       <location/>
       <source>White</source>
-      <translation>Vit</translation>
+      <translation>Branco</translation>
     </message>
     <message>
       <location/>
       <source>Black</source>
-      <translation>Svart</translation>
+      <translation>Preto</translation>
     </message>
     <message>
       <location/>
       <source>Transparent</source>
-      <translation>Transparent</translation>
+      <translation>Transparente</translation>
     </message>
     <message>
       <location/>
       <source>Image dimensions</source>
-      <translation>Bildstorlek</translation>
+      <translation>Dimensões da imagem</translation>
     </message>
     <message>
       <location/>
@@ -1974,82 +1971,82 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>&amp;Width:</source>
-      <translation>&amp;Bredd:</translation>
+      <translation>&amp;Largura:</translation>
     </message>
     <message>
       <location/>
       <source>Current screen</source>
-      <translation>Nuvarande fönster</translation>
+      <translation>Tela atual</translation>
     </message>
     <message>
       <location/>
       <source>Icon       32  x 32</source>
-      <translation>Ikon       32 x 32</translation>
+      <translation>Ícone de 32 x 32</translation>
     </message>
     <message>
       <location/>
       <source>Icon       64 x 64</source>
-      <translation>Ikon       64 x 64</translation>
+      <translation>Ícone de 64 x 64</translation>
     </message>
     <message>
       <location/>
       <source>Icon       128 x 128</source>
-      <translation>Ikon       128 .x. 128</translation>
+      <translation>Ícone de 128 x 128</translation>
     </message>
     <message>
       <location/>
       <source>CGA       320 x 200</source>
-      <translation>CGA       320 x 200</translation>
+      <translation>CGA 320 x 200</translation>
     </message>
     <message>
       <location/>
       <source>QVGA     320 x 240</source>
-      <translation>QVGA     320 x 240</translation>
+      <translation>QVGA 320 x 240</translation>
     </message>
     <message>
       <location/>
       <source>VGA       640 x 480</source>
-      <translation>VGA        640 x 480</translation>
+      <translation>VGA 640 x 480</translation>
     </message>
     <message>
       <location/>
       <source>NTSC     720 x 480</source>
-      <translation>NTSC     720 x 480</translation>
+      <translation>NTSC 720 x 480</translation>
     </message>
     <message>
       <location/>
       <source>PAL        768 x 578</source>
-      <translation>PAL        768 x 578</translation>
+      <translation>PAL 768 x 578</translation>
     </message>
     <message>
       <location/>
       <source>SVGA     800 x 600</source>
-      <translation>SVGA     800 x 600</translation>
+      <translation>SVGA 800 x 600</translation>
     </message>
     <message>
       <location/>
       <source>XGA       1024 x 768</source>
-      <translation>XGA       1024 x 768</translation>
+      <translation>XGA 1024 x 768</translation>
     </message>
     <message>
       <location/>
       <source>HD720   1280 x 720</source>
-      <translation>HD720   1280 x 720</translation>
+      <translation>HD720 1280 x 720</translation>
     </message>
     <message>
       <location/>
       <source>SXGA     1280 x 1024</source>
-      <translation>SXGA     1280 x 1024</translation>
+      <translation>SXGA 1280 x 1024</translation>
     </message>
     <message>
       <location/>
       <source>SXGA+   1400 x 1050</source>
-      <translation>SXGA+   1400 x 1050</translation>
+      <translation>SXGA+ 1400 x 1050</translation>
     </message>
     <message>
       <location/>
       <source>UXGA     1600 x 1200</source>
-      <translation>UXGA     1600 x 1200</translation>
+      <translation>UXGA 1600 x 1200</translation>
     </message>
     <message>
       <location/>
@@ -2059,62 +2056,62 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>WUXGA  1920 x 1200</source>
-      <translation>WUXGA  1920 x 1200</translation>
+      <translation>WUXGA 1920 x 1200</translation>
     </message>
     <message>
       <location/>
       <source>QXGA     2048 x 1538</source>
-      <translation>QXGA     2048 x 1538</translation>
+      <translation>QXGA 2048 x 1538</translation>
     </message>
     <message>
       <location/>
       <source>WQXGA  2560 x 1600</source>
-      <translation>WQXGA  2560 x 1600</translation>
+      <translation>WQXGA 2560 x 1600</translation>
     </message>
     <message>
       <location/>
       <source>QSXGA   2560 x 2048</source>
-      <translation>QSXGA   2560 x 2048</translation>
+      <translation>QSXGA 2560 x 2048</translation>
     </message>
     <message>
       <location/>
       <source>QUXGA   3200 × 2400</source>
-      <translation>QUXGA   3200 × 2400</translation>
+      <translation>QUXGA 3200 × 2400</translation>
     </message>
     <message>
       <location/>
       <source>HUXGA   6400 × 4800</source>
-      <translation>HUXGA   6400 × 4800</translation>
+      <translation>HUXGA 6400 × 4800</translation>
     </message>
     <message>
       <location/>
       <source>!!!          10000 x 10000</source>
-      <translation>!!!          10000 x 10000</translation>
+      <translation>!!! 10000 x 10000</translation>
     </message>
     <message>
       <location/>
       <source>Standard sizes:</source>
-      <translation>Standardstorlekar:</translation>
+      <translation>Tamanhos padrão:</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Height:</source>
-      <translation>&amp;Höjd:</translation>
+      <translation>&amp;Altura:</translation>
     </message>
     <message>
       <location/>
       <source>Aspect ratio:</source>
-      <translation>Bildförhållande:</translation>
+      <translation>Proporção:</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Screen</source>
-      <translation>&amp;Skärm</translation>
+      <translation>&amp;Tela</translation>
     </message>
     <message>
       <location/>
       <source>Alt+S</source>
-      <translation>Alt+S</translation>
+      <translation>Alt + D</translation>
     </message>
     <message>
       <location/>
@@ -2144,22 +2141,22 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Alt+1</source>
-      <translation>Alt+1</translation>
+      <translation>Alt +1</translation>
     </message>
     <message>
       <location/>
       <source>Image comment</source>
-      <translation>Bildkommentar</translation>
+      <translation>Comentário da imagem</translation>
     </message>
     <message>
       <location/>
       <source>Insert MIBA</source>
-      <translation>Sätt in MIBA</translation>
+      <translation>Inserir MIBA</translation>
     </message>
     <message>
       <location/>
       <source>Insert comment</source>
-      <translation>Sätt in kommentar</translation>
+      <translation>Inserir comentário</translation>
     </message>
   </context>
   <context>
@@ -2167,52 +2164,52 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Macro</source>
-      <translation>Makro</translation>
+      <translation>Macro</translation>
     </message>
     <message>
       <location/>
       <source>Macro recording settings</source>
-      <translation>Inställningar för makroinspelning</translation>
+      <translation>Configurações de gravação de macros</translation>
     </message>
     <message>
       <location/>
       <source>Logging Commands</source>
-      <translation>Loggkommandon</translation>
+      <translation>Comandos de log</translation>
     </message>
     <message>
       <location/>
       <source>Show script commands in python console</source>
-      <translation>Visa skriptkommandon i python konsolen</translation>
+      <translation>Mostrar os comandos de script no console python</translation>
     </message>
     <message>
       <location/>
       <source>Log all commands issued by menus to file:</source>
-      <translation>Logga alla kommandon startade av menyer till fil:</translation>
+      <translation>Salvar todos os comandos emitidos por menus em arquivo de log:</translation>
     </message>
     <message>
       <location/>
       <source>FullScript.FCScript</source>
-      <translation>FullScript.FCScript</translation>
+      <translation>FullScript.FCScript </translation>
     </message>
     <message>
       <location/>
       <source>Gui commands</source>
-      <translation>Gui kommandon</translation>
+      <translation>Comandos da interface gráfica </translation>
     </message>
     <message>
       <location/>
       <source>Recording GUI commands</source>
-      <translation>Spela in GUI kommandon</translation>
+      <translation>Gravar os comandos da interface gráfica</translation>
     </message>
     <message>
       <location/>
       <source>Record as comment</source>
-      <translation>Spela in som kommentar</translation>
+      <translation>Gravar como comentário</translation>
     </message>
     <message>
       <location/>
       <source>Macro path</source>
-      <translation>sökväg för makro</translation>
+      <translation>Caminho de macro</translation>
     </message>
   </context>
   <context>
@@ -2220,37 +2217,37 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Units</source>
-      <translation>Enheter</translation>
+      <translation>Unidades</translation>
     </message>
     <message>
       <location/>
       <source>Units settings</source>
-      <translation>Inställningar för enheter</translation>
+      <translation>Configurações de unidades</translation>
     </message>
     <message>
       <location/>
       <source>Standard (mm/kg/s/degree)</source>
-      <translation>Standard (mm/kg/s/grad)</translation>
+      <translation>Padrão (mm,kg,s,grau)</translation>
     </message>
     <message>
       <location/>
       <source>MKS (m/kg/s/degree)</source>
-      <translation>MKS (m/kg/s/grad)</translation>
+      <translation>MKS (m/kg/s/graus)</translation>
     </message>
     <message>
       <location/>
       <source>Magnitude</source>
-      <translation>Magnitud</translation>
+      <translation>Magnitude</translation>
     </message>
     <message>
       <location/>
       <source>Unit</source>
-      <translation>Enhet</translation>
+      <translation>Unidade</translation>
     </message>
     <message>
       <location/>
       <source>User system:</source>
-      <translation>User system:</translation>
+      <translation>sistema do usuário:</translation>
     </message>
     <message>
       <location/>
@@ -2263,42 +2260,42 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Colors</source>
-      <translation>Färger</translation>
+      <translation>Cores</translation>
     </message>
     <message>
       <location/>
       <source>Selection</source>
-      <translation>markering</translation>
+      <translation>Seleção</translation>
     </message>
     <message>
       <location/>
       <source>Enable selection highlighting</source>
-      <translation>Aktivera valmarkering</translation>
+      <translation>Habilitar o enfoque da seleção</translation>
     </message>
     <message>
       <location/>
       <source>Enable preselection highlighting</source>
-      <translation>Aktivera förvalsmarkering</translation>
+      <translation>Habilitar o enfoque de preseleção</translation>
     </message>
     <message>
       <location/>
       <source>Background color</source>
-      <translation>Bakgrundsfärg</translation>
+      <translation>Cor de fundo</translation>
     </message>
     <message>
       <location/>
       <source>Middle color</source>
-      <translation>Mellanfärg</translation>
+      <translation>Cor intermediária</translation>
     </message>
     <message>
       <location/>
       <source>Color gradient</source>
-      <translation>Färggradient</translation>
+      <translation>Gradiente de cor</translation>
     </message>
     <message>
       <location/>
       <source>Simple color</source>
-      <translation>Enkel färg</translation>
+      <translation>Cor simples</translation>
     </message>
   </context>
   <context>
@@ -2306,47 +2303,47 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Tip of the day</source>
-      <translation>Dagens tips</translation>
+      <translation>Dica do dia</translation>
     </message>
     <message>
       <location/>
       <source>&lt;b&gt;&lt;font face="Times New Roman"&gt;&lt;font size="+3"&gt;Did you know...&lt;/font&gt;&lt;/font&gt;&lt;/b&gt;</source>
-      <translation>&lt;b&gt;&lt;font face="Times New Roman"&gt;&lt;font size="+3"&gt;Visste du...&lt;/font&gt;&lt;/font&gt;&lt;/b&gt;</translation>
+      <translation>&lt;b&gt;&lt;font face="Times New Roman"&gt; &lt;font size="+3"&gt; você sabia...&lt;/font&gt;&lt;/font&gt;&lt;/b&gt;</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Show tips at start up</source>
-      <translation>Vi&amp;sa tips vid uppstart</translation>
+      <translation>&amp;Mostrar dicas ao iniciar</translation>
     </message>
     <message>
       <location/>
       <source>Alt+S</source>
-      <translation>Alt+S</translation>
+      <translation>Alt + D</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Next Tip</source>
-      <translation>&amp;Nästa tips</translation>
+      <translation>&amp;Próxima dica</translation>
     </message>
     <message>
       <location/>
       <source>Alt+N</source>
-      <translation>Alt+N</translation>
+      <translation>Alt + P</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Close</source>
-      <translation>&amp;Stäng</translation>
+      <translation>&amp;Fechar</translation>
     </message>
     <message>
       <location/>
       <source>Alt+C</source>
-      <translation>Alt+C</translation>
+      <translation>Alt + C</translation>
     </message>
     <message>
       <location/>
       <source></source>
-      <translation type="unfinished"/>
+      <translation> </translation>
     </message>
   </context>
   <context>
@@ -2355,13 +2352,12 @@ Ange en annan katalog.</translation>
       <location/>
       <source>Download failed: %1
 </source>
-      <translation>Nedladdning misslyckades:%1
-</translation>
+      <translation>O Download falhou: %1</translation>
     </message>
     <message>
       <location/>
       <source>If you want to learn more about FreeCAD you must go to %1 or press the Help item in the Help menu.</source>
-      <translation>Om du vill läradig mer om FreeCAD så måste du gå till %1 eller klicka på Hjälp i Hjälp-menyn.</translation>
+      <translation>Se você quiser saber mais sobre FreeCAD você deve ir para %1 ou pressione o item ajuda no menu Ajuda.</translation>
     </message>
   </context>
   <context>
@@ -2369,7 +2365,7 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Placement</source>
-      <translation>Placering</translation>
+      <translation>Posicionamento</translation>
     </message>
   </context>
   <context>
@@ -2377,12 +2373,12 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Input vector</source>
-      <translation>Inmatningsvektor</translation>
+      <translation>Vetor de entrada</translation>
     </message>
     <message>
       <location/>
       <source>Vector</source>
-      <translation>Vektor</translation>
+      <translation>Vetor</translation>
     </message>
     <message>
       <location/>
@@ -2410,32 +2406,32 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Mouse buttons</source>
-      <translation>Musknappar</translation>
+      <translation>Botões do mouse</translation>
     </message>
     <message>
       <location/>
       <source>Configuration</source>
-      <translation>Konfiguration</translation>
+      <translation>Configuração</translation>
     </message>
     <message>
       <location/>
       <source>Selection:</source>
-      <translation>Markering:</translation>
+      <translation>Seleção:</translation>
     </message>
     <message>
       <location/>
       <source>Panning</source>
-      <translation>Panorering</translation>
+      <translation>Pan</translation>
     </message>
     <message>
       <location/>
       <source>Rotation:</source>
-      <translation>Rotation:</translation>
+      <translation>Rotação:</translation>
     </message>
     <message>
       <location/>
       <source>Zooming:</source>
-      <translation>Zoomning:</translation>
+      <translation>Zoom:</translation>
     </message>
   </context>
   <context>
@@ -2443,77 +2439,77 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Expand</source>
-      <translation>Expandera</translation>
+      <translation>Expandir</translation>
     </message>
     <message>
       <location/>
       <source>Add sub-group</source>
-      <translation>Lägg till undergrupp</translation>
+      <translation>Adicionar sub-grupo</translation>
     </message>
     <message>
       <location/>
       <source>Remove group</source>
-      <translation>Ta bort grupp</translation>
+      <translation>Remover grupo</translation>
     </message>
     <message>
       <location/>
       <source>Rename group</source>
-      <translation>Döp om grupp</translation>
+      <translation>Renomear grupo</translation>
     </message>
     <message>
       <location/>
       <source>Export parameter</source>
-      <translation>Exportera parameter</translation>
+      <translation>Parâmetros de exportação </translation>
     </message>
     <message>
       <location/>
       <source>Import parameter</source>
-      <translation>Importera parameter</translation>
+      <translation>Parâmetros de importação</translation>
     </message>
     <message>
       <location/>
       <source>Collapse</source>
-      <translation>Minimera</translation>
+      <translation>Recolher</translation>
     </message>
     <message>
       <location/>
       <source>Do really want to remove this parameter group?</source>
-      <translation>Vill du verkligen to bort denna parametergrupp?</translation>
+      <translation>Você realmente deseja remover este grupo de parâmetros?</translation>
     </message>
     <message>
       <location/>
       <source>Existing sub-group</source>
-      <translation>Undergruppen existerar</translation>
+      <translation>Subgrupo existente</translation>
     </message>
     <message>
       <location/>
       <source>The sub-group '%1' already exists.</source>
-      <translation>Undergruppen '%1' finns redan.</translation>
+      <translation>O subgrupo '%1' já existe.</translation>
     </message>
     <message>
       <location/>
       <source>Export parameter to file</source>
-      <translation>exportera parameter till fil</translation>
+      <translation>Exportar parâmetros para arquivo</translation>
     </message>
     <message>
       <location/>
       <source>XML (*.FCParam)</source>
-      <translation>XML(*.FCParam)</translation>
+      <translation>XML (*. FCParam)</translation>
     </message>
     <message>
       <location/>
       <source>Import parameter from file</source>
-      <translation>Importera parameter från fil</translation>
+      <translation>Importar parâmetros de arquivo</translation>
     </message>
     <message>
       <location/>
       <source>Import Error</source>
-      <translation>Importfel</translation>
+      <translation>Erro de importação</translation>
     </message>
     <message>
       <location/>
       <source>Reading from '%1' failed.</source>
-      <translation>Läsning från '%1' misslyckades.</translation>
+      <translation>Leitura de '1%' falhou.</translation>
     </message>
   </context>
   <context>
@@ -2521,57 +2517,57 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Change value</source>
-      <translation>Ändra värde</translation>
+      <translation>Mudar o valor</translation>
     </message>
     <message>
       <location/>
       <source>Remove key</source>
-      <translation>Ta bort nyckel</translation>
+      <translation>Remover a chave</translation>
     </message>
     <message>
       <location/>
       <source>Rename key</source>
-      <translation>Döp om nyckel</translation>
+      <translation>Renomear a chave</translation>
     </message>
     <message>
       <location/>
       <source>New</source>
-      <translation>Ny</translation>
+      <translation>Novo</translation>
     </message>
     <message>
       <location/>
       <source>New string item</source>
-      <translation>Ny sträng</translation>
+      <translation>Novo item string</translation>
     </message>
     <message>
       <location/>
       <source>New float item</source>
-      <translation>Nytt flyttal</translation>
+      <translation>Novo item float</translation>
     </message>
     <message>
       <location/>
       <source>New integer item</source>
-      <translation>Nytt heltal</translation>
+      <translation>Novo item inteiro</translation>
     </message>
     <message>
       <location/>
       <source>New unsigned item</source>
-      <translation>Nytt osignerat tal</translation>
+      <translation>Novo item unsigned</translation>
     </message>
     <message>
       <location/>
       <source>New Boolean item</source>
-      <translation>Nytt booleskt värde</translation>
+      <translation>Novo item Boolean</translation>
     </message>
     <message>
       <location/>
       <source>Existing item</source>
-      <translation>Existerar</translation>
+      <translation>Item existente</translation>
     </message>
     <message>
       <location/>
       <source>The item '%1' already exists.</source>
-      <translation>Saken '%1' finns redan.</translation>
+      <translation>O item '%1' já existe.</translation>
     </message>
   </context>
   <context>
@@ -2579,7 +2575,7 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Placement</source>
-      <translation>Placering</translation>
+      <translation>Posicionamento</translation>
     </message>
     <message>
       <location/>
@@ -2589,7 +2585,7 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Translation:</source>
-      <translation>Översättning:</translation>
+      <translation>Translação:</translation>
     </message>
     <message>
       <location/>
@@ -2609,72 +2605,72 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Rotation:</source>
-      <translation>Rotation:</translation>
+      <translation>Rotação:</translation>
     </message>
     <message>
       <location/>
       <source>Angle:</source>
-      <translation>Vinkel:</translation>
+      <translation>Ângulo:</translation>
     </message>
     <message>
       <location/>
       <source>Axis:</source>
-      <translation>Axel:</translation>
+      <translation>Eixo:</translation>
     </message>
     <message>
       <location/>
       <source>Center:</source>
-      <translation>Centrum:</translation>
+      <translation>Centro:</translation>
     </message>
     <message>
       <location/>
       <source>Pitch:</source>
-      <translation>Lutning:</translation>
+      <translation>Altura:</translation>
     </message>
     <message>
       <location/>
       <source>Roll:</source>
-      <translation>Rullning:</translation>
+      <translation>Roll:</translation>
     </message>
     <message>
       <location/>
       <source>Yaw:</source>
-      <translation>Girning:</translation>
+      <translation>Guinada:</translation>
     </message>
     <message>
       <location/>
       <source>Rotation axis wih angle</source>
-      <translation>Rotationsaxel med vinkel</translation>
+      <translation>Eixo de rotação com ângulo</translation>
     </message>
     <message>
       <location/>
       <source>Euler angles</source>
-      <translation>Eulervinklar</translation>
+      <translation>Ângulos de Euler</translation>
     </message>
     <message>
       <location/>
       <source>Apply placement changes immediately</source>
-      <translation>Applicera placeringsförändringar omedelbart</translation>
+      <translation>Aplicar alterações de posicionamento imediatamente</translation>
     </message>
     <message>
       <location/>
       <source>Apply incremental changes to object placement</source>
-      <translation>applicera stegvisa förändringar på objektplacering</translation>
+      <translation>Aplicar as alterações incrementais ao posicionamento do objeto</translation>
     </message>
     <message>
       <location/>
       <source>Apply</source>
-      <translation>Verkställ</translation>
+      <translation>Aplicar</translation>
     </message>
     <message>
       <location/>
       <source>Reset</source>
-      <translation>Återställ</translation>
+      <translation>Restaurar</translation>
     </message>
     <message>
       <location/>
       <source>Close</source>
-      <translation>Stäng</translation>
+      <translation>Fechar</translation>
     </message>
   </context>
   <context>
@@ -2682,17 +2678,17 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Dialog</source>
-      <translation>Dialog</translation>
+      <translation>Diálogo</translation>
     </message>
     <message>
       <location/>
       <source>Close</source>
-      <translation>Stäng</translation>
+      <translation>Fechar</translation>
     </message>
     <message>
       <location/>
       <source>Refresh</source>
-      <translation>Uppdatera</translation>
+      <translation>Atualizar</translation>
     </message>
   </context>
   <context>
@@ -2700,12 +2696,12 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Inventor Tree</source>
-      <translation>Inventor träd</translation>
+      <translation>Árvore do Inventor</translation>
     </message>
     <message>
       <location/>
       <source>Nodes</source>
-      <translation>Noder</translation>
+      <translation>Nós</translation>
     </message>
   </context>
   <context>
@@ -2713,12 +2709,12 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Texture</source>
-      <translation>Struktur</translation>
+      <translation>Textura</translation>
     </message>
     <message>
       <location/>
       <source>Texture mapping</source>
-      <translation>strukturmappning</translation>
+      <translation>Mapeamento de textura</translation>
     </message>
     <message>
       <location/>
@@ -2728,32 +2724,32 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Environment</source>
-      <translation>Miljö</translation>
+      <translation>Ambiente</translation>
     </message>
     <message>
       <location/>
       <source>Image files (%1)</source>
-      <translation>Bildfiler (%1)</translation>
+      <translation>Arquivos de imagem (%1)</translation>
     </message>
     <message>
       <location/>
       <source>No image</source>
-      <translation>Ingen bild</translation>
+      <translation>Nenhuma imagem</translation>
     </message>
     <message>
       <location/>
       <source>The specified file is not a valid image file.</source>
-      <translation>Den angivna filen är inte en giltig bildfil.</translation>
+      <translation>O arquivo especificado não é um arquivo de imagem válido.</translation>
     </message>
     <message>
       <location/>
       <source>No 3d view</source>
-      <translation>Ingen 3d vy</translation>
+      <translation>Nenhuma vista 3d</translation>
     </message>
     <message>
       <location/>
       <source>No active 3d view found.</source>
-      <translation>Ingen aktiv 3D-vy hittades.</translation>
+      <translation>Nenhuma vista 3d ativa encontrado.</translation>
     </message>
   </context>
   <context>
@@ -2761,12 +2757,12 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Cancel</source>
-      <translation>Avbryt</translation>
+      <translation>Cancelar</translation>
     </message>
     <message>
       <location/>
       <source>Transform</source>
-      <translation>Omvandla</translation>
+      <translation>Transformar</translation>
     </message>
   </context>
   <context>
@@ -2774,12 +2770,12 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Dialog</source>
-      <translation>Dialog</translation>
+      <translation>Diálogo</translation>
     </message>
     <message>
       <location/>
       <source>Items</source>
-      <translation>Saker</translation>
+      <translation>Itens</translation>
     </message>
     <message>
       <location/>
@@ -2789,12 +2785,12 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Cancel</source>
-      <translation>Avbryt</translation>
+      <translation>Cancelar</translation>
     </message>
     <message>
       <location/>
       <source></source>
-      <translation type="unfinished"/>
+      <translation> </translation>
     </message>
   </context>
   <context>
@@ -2802,17 +2798,17 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>CombiView</source>
-      <translation>Kombivy</translation>
+      <translation>CombiVista</translation>
     </message>
     <message>
       <location/>
       <source>Project</source>
-      <translation>Projekt</translation>
+      <translation>Projeto</translation>
     </message>
     <message>
       <location/>
       <source>Tasks</source>
-      <translation>Uppgifter</translation>
+      <translation>Tarefas</translation>
     </message>
   </context>
   <context>
@@ -2820,47 +2816,47 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Previous</source>
-      <translation>Föregående</translation>
+      <translation>Anterior</translation>
     </message>
     <message>
       <location/>
       <source>Next</source>
-      <translation>Nästa</translation>
+      <translation>Próximo</translation>
     </message>
     <message>
       <location/>
       <source>Home</source>
-      <translation>Hem</translation>
+      <translation>Início</translation>
     </message>
     <message>
       <location/>
       <source>Open</source>
-      <translation>Öppna</translation>
+      <translation>Abrir</translation>
     </message>
     <message>
       <location/>
       <source>Open file</source>
-      <translation>Öppna fil</translation>
+      <translation>Abrir arquivo</translation>
     </message>
     <message>
       <location/>
       <source>All HTML files (*.html *.htm)</source>
-      <translation>Alla HTML filer (*.html *.htm)</translation>
+      <translation>Todos os arquivos HTML (*.html *.htm)</translation>
     </message>
     <message>
       <location/>
       <source>External browser</source>
-      <translation>Extern webbläsare</translation>
+      <translation>Navegador externo</translation>
     </message>
     <message>
       <location/>
       <source>No external browser found. Specify in preferences, please</source>
-      <translation>Någon extern webbläsare hittades inte. Specificera en i inställningar</translation>
+      <translation>Nenhum navegador externo encontrado. Especifique nas preferências, por favor</translation>
     </message>
     <message>
       <location/>
       <source>Starting of %1 failed</source>
-      <translation>Start av %1 misslyckades</translation>
+      <translation>Início de %1 falhou</translation>
     </message>
   </context>
   <context>
@@ -2868,7 +2864,7 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Property View</source>
-      <translation>Egenskapsvy</translation>
+      <translation>Tela de propriedades</translation>
     </message>
   </context>
   <context>
@@ -2876,47 +2872,47 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Logging</source>
-      <translation>Loggning</translation>
+      <translation>Log</translation>
     </message>
     <message>
       <location/>
       <source>Warning</source>
-      <translation>Varning</translation>
+      <translation>Aviso</translation>
     </message>
     <message>
       <location/>
       <source>Error</source>
-      <translation>Fel</translation>
+      <translation>Erro</translation>
     </message>
     <message>
       <location/>
       <source>Options</source>
-      <translation>Alternativ</translation>
+      <translation>Opções</translation>
     </message>
     <message>
       <location/>
       <source>Clear</source>
-      <translation>Rensa</translation>
+      <translation>Limpar</translation>
     </message>
     <message>
       <location/>
       <source>Save As...</source>
-      <translation>Spara som...</translation>
+      <translation>Salvar como...</translation>
     </message>
     <message>
       <location/>
       <source>Save Report Output</source>
-      <translation>Spara rapport utmatning</translation>
+      <translation>Salvar o relatório</translation>
     </message>
     <message>
       <location/>
       <source>Plain Text Files (*.txt *.log)</source>
-      <translation>Rena textfiler (*.txt *.log)</translation>
+      <translation>Arquivos de texto sem formatação (*.txt *.log)</translation>
     </message>
     <message>
       <location/>
       <source>Go to end</source>
-      <translation>Gå till slutet</translation>
+      <translation>Ir para o fim</translation>
     </message>
   </context>
   <context>
@@ -2924,12 +2920,12 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Output</source>
-      <translation>Utmatning</translation>
+      <translation>Saída</translation>
     </message>
     <message>
       <location/>
       <source>Python console</source>
-      <translation>Python konsoll</translation>
+      <translation>Console Python</translation>
     </message>
   </context>
   <context>
@@ -2937,7 +2933,7 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Property View</source>
-      <translation>Egenskapsvy</translation>
+      <translation>Tela de propriedades</translation>
     </message>
   </context>
   <context>
@@ -2945,7 +2941,7 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Task View</source>
-      <translation>Uppgiftsvy</translation>
+      <translation>Tarefas</translation>
     </message>
   </context>
   <context>
@@ -2953,67 +2949,67 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Could not open file.</source>
-      <translation>Kunde inte öppna fil.</translation>
+      <translation>Não foi possível abrir o arquivo.</translation>
     </message>
     <message>
       <location/>
       <source>You tried to access the address %1 which is currently unavailable. Please make sure that the URL exists and try reloading the page.</source>
-      <translation>Du försökte öppna adress %1, som för tillfället är otillgänglig. Försäkra dig om att URL:en finns och försök att ladda om sidan.</translation>
+      <translation>Você tentou acessar o endereço %1 que não está disponível no momento. Por favor, certifique-se de que a URL existe e tente recarregar a página.</translation>
     </message>
     <message>
       <location/>
       <source>Connecting to %1</source>
-      <translation>Ansluterr till %1</translation>
+      <translation>Conectando-se a %1</translation>
     </message>
     <message>
       <location/>
       <source>Sending to %1</source>
-      <translation>Sänder till %1</translation>
+      <translation>Enviando para %1</translation>
     </message>
     <message>
       <location/>
       <source>Reading from %1</source>
-      <translation>Läser från %1</translation>
+      <translation>Lendo %1</translation>
     </message>
     <message>
       <location/>
       <source>Download failed: %1.</source>
-      <translation>Nedladdning misslyckades:%1.</translation>
+      <translation>O download falhou: %1.</translation>
     </message>
     <message>
       <location/>
       <source>Previous</source>
-      <translation>Föregående</translation>
+      <translation>Anterior</translation>
     </message>
     <message>
       <location/>
       <source>Forward</source>
-      <translation>Framåt</translation>
+      <translation>Para a frente</translation>
     </message>
     <message>
       <location/>
       <source>Home</source>
-      <translation>Hem</translation>
+      <translation>Início</translation>
     </message>
     <message>
       <location/>
       <source>Refresh</source>
-      <translation>Uppdatera</translation>
+      <translation>Atualizar</translation>
     </message>
     <message>
       <location/>
       <source>Copy</source>
-      <translation>Kopiera</translation>
+      <translation>Copiar</translation>
     </message>
     <message>
       <location/>
       <source>Select all</source>
-      <translation>Markera allt</translation>
+      <translation>Selecionar tudo</translation>
     </message>
     <message>
       <location/>
       <source>No description for</source>
-      <translation>Ingen beskrivning för</translation>
+      <translation>Nenhuma descrição para</translation>
     </message>
   </context>
   <context>
@@ -3021,12 +3017,12 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Application</source>
-      <translation>Applikation</translation>
+      <translation>Programa</translation>
     </message>
     <message>
       <location/>
       <source>Labels &amp; Attributes</source>
-      <translation>Etiketter &amp; attribut</translation>
+      <translation>Rótulos &amp; atributos</translation>
     </message>
   </context>
   <context>
@@ -3034,68 +3030,67 @@ Ange en annan katalog.</translation>
     <message>
       <location/>
       <source>Modified file</source>
-      <translation>Ändrad fil</translation>
+      <translation>Arquivo modificado</translation>
     </message>
     <message>
       <location/>
       <source>%1.
 
 This has been modified outside of the source editor. Do you want to reload it?</source>
-      <translation>%1.
-
-Denna har ändrats utanför källredigeraren. Vill du ladda om den?</translation>
+      <translation>%1. 
+Este arquivo foi modificado fora do editor. Deseja recarregá-lo?</translation>
     </message>
     <message>
       <location/>
       <source>Unsaved document</source>
-      <translation>Osparat dokument</translation>
+      <translation>Documento não salvo</translation>
     </message>
     <message>
       <location/>
       <source>The document has been modified.
 Do you want to save your changes?</source>
-      <translation>Dokumentet har ändrats.
-Vill du spara ändringarna?</translation>
+      <translation>O documento foi modificado.
+Deseja salvar as alterações?</translation>
     </message>
     <message>
       <location/>
       <source>FreeCAD macro (*.FCMacro);;Python (*.py)</source>
-      <translation>FreeCAD makro (*.FCMacro);;Python (*.py)</translation>
+      <translation>Macro do FreeCAD (*.FCMacro);;Python (*.py)</translation>
     </message>
     <message>
       <location/>
       <source>Export PDF</source>
-      <translation>Exportera PDF</translation>
+      <translation>Exportar PDF</translation>
     </message>
     <message>
       <location/>
       <source>PDF file (*.pdf)</source>
-      <translation>PDF fil (*.pdf)</translation>
+      <translation>Arquivo PDF (*.pdf)</translation>
     </message>
     <message>
       <location/>
       <source>untitled[*]</source>
-      <translation>utan namn[*]</translation>
+      <translation>sem título[*]</translation>
     </message>
     <message>
       <location/>
       <source> - Editor</source>
-      <translation> - Redigerare</translation>
+      <translation> - Editor</translation>
     </message>
     <message>
       <location/>
       <source>%1 chars removed</source>
-      <translation>%1 tecken borttagna</translation>
+      <translation>%1 caracteres removidos</translation>
     </message>
     <message>
       <location/>
       <source>%1 chars added</source>
-      <translation>%1 tecken tillagda</translation>
+      <translation>%1 caracteres adicionados</translation>
     </message>
     <message>
       <location/>
       <source>Formatted</source>
-      <translation>Formatterad</translation>
+      <translation>Formatado</translation>
     </message>
   </context>
   <context>
@@ -3103,12 +3098,12 @@ Vill du spara ändringarna?</translation>
     <message>
       <location/>
       <source>Select a file</source>
-      <translation>Välj en fil</translation>
+      <translation>Selecione um arquivo</translation>
     </message>
     <message>
       <location/>
       <source>Select a directory</source>
-      <translation>Välj en katalog</translation>
+      <translation>Selecione um diretório</translation>
     </message>
   </context>
   <context>
@@ -3116,12 +3111,12 @@ Vill du spara ändringarna?</translation>
     <message>
       <location/>
       <source>Save as</source>
-      <translation>Spara som</translation>
+      <translation>Salvar como</translation>
     </message>
     <message>
       <location/>
       <source>Open</source>
-      <translation>Öppna</translation>
+      <translation>Abrir</translation>
     </message>
   </context>
   <context>
@@ -3129,12 +3124,12 @@ Vill du spara ändringarna?</translation>
     <message>
       <location/>
       <source>Extended</source>
-      <translation>Utökad</translation>
+      <translation>Extendido</translation>
     </message>
     <message>
       <location/>
       <source>All files (*.*)</source>
-      <translation>Alla filer (*.*)</translation>
+      <translation>Todos os arquivos (*.*)</translation>
     </message>
   </context>
   <context>
@@ -3142,27 +3137,27 @@ Vill du spara ändringarna?</translation>
     <message>
       <location/>
       <source>Top left</source>
-      <translation>Topp vänster</translation>
+      <translation>Superior esquerdo</translation>
     </message>
     <message>
       <location/>
       <source>Bottom left</source>
-      <translation>Botten vänster</translation>
+      <translation>Inferior esquerdo</translation>
     </message>
     <message>
       <location/>
       <source>Top right</source>
-      <translation>Topp höger</translation>
+      <translation>Superior direito</translation>
     </message>
     <message>
       <location/>
       <source>Bottom right</source>
-      <translation>Botten höger</translation>
+      <translation>Inferior direito</translation>
     </message>
     <message>
       <location/>
       <source>Remove</source>
-      <translation>Ta bort</translation>
+      <translation>Remover</translation>
     </message>
   </context>
   <context>
@@ -3170,22 +3165,22 @@ Vill du spara ändringarna?</translation>
     <message>
       <location/>
       <source>Press CTRL and left mouse button</source>
-      <translation>Tryck CTRL och vänster musknapp</translation>
+      <translation>Pressione CTRL e o botão esquerdo do mouse</translation>
     </message>
     <message>
       <location/>
       <source>Press middle mouse button</source>
-      <translation>Tryck på mittre musknapp</translation>
+      <translation>Pressione o botão do meio do mouse</translation>
     </message>
     <message>
       <location/>
       <source>Press left mouse button</source>
-      <translation>Tryck på vänster musknapp</translation>
+      <translation>Pressione o botão esquerdo do mouse</translation>
     </message>
     <message>
       <location/>
       <source>Scroll middle mouse button</source>
-      <translation>Bläddra mittre musknapp</translation>
+      <translation>Role a roda do mouse</translation>
     </message>
   </context>
   <context>
@@ -3193,12 +3188,12 @@ Vill du spara ändringarna?</translation>
     <message>
       <location/>
       <source>Wrong direction</source>
-      <translation>Fel riktning</translation>
+      <translation>Direção errada</translation>
     </message>
     <message>
       <location/>
       <source>Direction must not be the null vector</source>
-      <translation>Riktningen får inte vara noll vektorn</translation>
+      <translation>Direção não pode ser um vector nulo</translation>
     </message>
     <message>
       <location/>
@@ -3218,7 +3213,7 @@ Vill du spara ändringarna?</translation>
     <message>
       <location/>
       <source>User defined...</source>
-      <translation>Användardefinierad...</translation>
+      <translation>Definido pelo usuário...</translation>
     </message>
   </context>
   <context>
@@ -3226,7 +3221,7 @@ Vill du spara ändringarna?</translation>
     <message>
       <location/>
       <source>Macros</source>
-      <translation>Makron</translation>
+      <translation>Macros</translation>
     </message>
   </context>
   <context>
@@ -3234,27 +3229,27 @@ Vill du spara ändringarna?</translation>
     <message>
       <location/>
       <source>Dimension</source>
-      <translation>Dimension</translation>
+      <translation>Dimensão</translation>
     </message>
     <message>
       <location/>
       <source>Ready</source>
-      <translation>Klar</translation>
+      <translation>Pronto</translation>
     </message>
     <message>
       <location/>
       <source>Toggles this toolbar</source>
-      <translation>Växlar denna verktygsrad</translation>
+      <translation>Alterna esta barra de ferramentas</translation>
     </message>
     <message>
       <location/>
       <source>Toggles this dockable window</source>
-      <translation>Växlar detta dockningsbara fönster</translation>
+      <translation>Alterna esta janela acoplável</translation>
     </message>
     <message>
       <location/>
       <source>Close All</source>
-      <translation>Stäng alla</translation>
+      <translation>Fechar tudo</translation>
     </message>
   </context>
   <context>
@@ -3263,7 +3258,7 @@ Vill du spara ändringarna?</translation>
       <location/>
       <source>Download started...
 </source>
-      <translation>Nedladdning startad...</translation>
+      <translation>Download iniciado... </translation>
     </message>
   </context>
   <context>
@@ -3271,17 +3266,17 @@ Vill du spara ändringarna?</translation>
     <message>
       <location/>
       <source>Remaining: %1</source>
-      <translation>Kvarvarande: %1</translation>
+      <translation>Restante: %1</translation>
     </message>
     <message>
       <location/>
       <source>Aborting</source>
-      <translation>Avbryter</translation>
+      <translation>Interrompendo</translation>
     </message>
     <message>
       <location/>
       <source>Do you really want to abort the operation?</source>
-      <translation>Vill du verkligen avbryta operationen?</translation>
+      <translation>Você realmente deseja abortar a operação?</translation>
     </message>
   </context>
   <context>
@@ -3289,17 +3284,17 @@ Vill du spara ändringarna?</translation>
     <message>
       <location/>
       <source>Remaining: %1</source>
-      <translation>Kvarvarande: %1</translation>
+      <translation>Restante: %1</translation>
     </message>
     <message>
       <location/>
       <source>Aborting</source>
-      <translation>Avbryter</translation>
+      <translation>Interrompendo</translation>
     </message>
     <message>
       <location/>
       <source>Do you really want to abort the operation?</source>
-      <translation>Vill du verkligen avbryta operationen?</translation>
+      <translation>Você realmente deseja abortar a operação?</translation>
     </message>
   </context>
   <context>
@@ -3307,12 +3302,12 @@ Vill du spara ändringarna?</translation>
     <message>
       <location/>
       <source>Property</source>
-      <translation>Egenskap</translation>
+      <translation>Propriedade</translation>
     </message>
     <message>
       <location/>
       <source>Value</source>
-      <translation>Värde</translation>
+      <translation>Valor</translation>
     </message>
   </context>
   <context>
@@ -3320,12 +3315,12 @@ Vill du spara ändringarna?</translation>
     <message>
       <location/>
       <source>View</source>
-      <translation>Vy</translation>
+      <translation>Vista</translation>
     </message>
     <message>
       <location/>
       <source>Data</source>
-      <translation>Data</translation>
+      <translation>Dados</translation>
     </message>
   </context>
   <context>
@@ -3333,89 +3328,88 @@ Vill du spara ändringarna?</translation>
     <message>
       <location/>
       <source>System exit</source>
-      <translation>Avsluta system</translation>
+      <translation>Saída do sistema</translation>
     </message>
     <message>
       <location/>
       <source>The application is still running.
 Do you want to exit without saving your data?</source>
-      <translation>Applikationen körs fortfarande.
-Vill du avsluta utan att spara din data?</translation>
+      <translation>O aplicativo ainda está em execução. Deseja sair sem salvar os seus dados?</translation>
     </message>
     <message>
       <location/>
       <source>Python console</source>
-      <translation>Python konsoll</translation>
+      <translation>Console Python</translation>
     </message>
     <message>
       <location/>
       <source>Unhandled PyCXX exception.</source>
-      <translation>Ohanterat PvCXX undantag.</translation>
+      <translation>Exceção PyCXX não tratada.</translation>
     </message>
     <message>
       <location/>
       <source>Unhandled FreeCAD exception.</source>
-      <translation>Ohanterat FreeCAD undantag.</translation>
+      <translation>Exceção FreeCAD não tratada.</translation>
     </message>
     <message>
       <location/>
       <source>Unhandled unknown C++ exception.</source>
-      <translation>Ohanterat okänt C++ undantag.</translation>
+      <translation>Exceção desconhecida C++ não tratada.</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Copy command</source>
-      <translation>&amp;Kopiera kommando</translation>
+      <translation>&amp;Copiar comando</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Copy history</source>
-      <translation>&amp;Kopieringshistorik</translation>
+      <translation>&amp;Copiar histórico</translation>
     </message>
     <message>
       <location/>
       <source>Save history as...</source>
-      <translation>Spara historik som...</translation>
+      <translation>Salvar histórico como...</translation>
     </message>
     <message>
       <location/>
       <source>Insert file name...</source>
-      <translation>Mata in filnamn...</translation>
+      <translation>Insira o nome do arquivo...</translation>
     </message>
     <message>
       <location/>
       <source>Save History</source>
-      <translation>Spara historik</translation>
+      <translation>Salvar histórico</translation>
     </message>
     <message>
       <location/>
       <source>Macro Files (*.FCMacro *.py)</source>
-      <translation>Makrofiler (*.FCMacro *.py)</translation>
+      <translation>Arquivos de macro (*.FCMacro *.py)</translation>
     </message>
     <message>
       <location/>
       <source>Insert file name</source>
-      <translation>Mata in filnamn</translation>
+      <translation>Insira o nome do arquivo</translation>
     </message>
     <message>
       <location/>
       <source>All Files (*.*)</source>
-      <translation>Alla filer (*.*)</translation>
+      <translation>Todos os arquivos (*.*)</translation>
     </message>
     <message>
       <location/>
       <source>Python Input Dialog</source>
-      <translation>Python inmatningsdialog</translation>
+      <translation>Diálogo de entrada de Python</translation>
     </message>
     <message>
       <location/>
       <source>Unhandled std C++ exception.</source>
-      <translation>Std C++ undantag utan hantering.</translation>
+      <translation>Exceção std C++ não tratada.</translation>
     </message>
     <message>
       <location/>
       <source>Word wrap</source>
-      <translation>Word wrap</translation>
+      <translation>Quebra de linha</translation>
     </message>
   </context>
   <context>
@@ -3423,12 +3417,12 @@ Vill du avsluta utan att spara din data?</translation>
     <message>
       <location/>
       <source>Comment</source>
-      <translation>Kommentera</translation>
+      <translation>Comentário</translation>
     </message>
     <message>
       <location/>
       <source>Uncomment</source>
-      <translation>Bortkommentera</translation>
+      <translation>Descomentar</translation>
     </message>
   </context>
   <context>
@@ -3441,7 +3435,7 @@ Vill du avsluta utan att spara din data?</translation>
     <message>
       <location/>
       <source>Clear</source>
-      <translation>Rensa</translation>
+      <translation>Limpar</translation>
     </message>
   </context>
   <context>
@@ -3449,17 +3443,17 @@ Vill du avsluta utan att spara din data?</translation>
     <message>
       <location/>
       <source>Open file %1</source>
-      <translation>Öppna fil %1</translation>
+      <translation>Abrir o arquivo %1</translation>
     </message>
     <message>
       <location/>
       <source>File not found</source>
-      <translation>Fil ej funnen</translation>
+      <translation>Arquivo não encontrado</translation>
     </message>
     <message>
       <location/>
       <source>The file '%1' cannot be opened.</source>
-      <translation>Filen '%1' kan inte öppnas.</translation>
+      <translation>Não é possível abrir o arquivo '%1'.</translation>
     </message>
   </context>
   <context>
@@ -3467,17 +3461,17 @@ Vill du avsluta utan att spara din data?</translation>
     <message>
       <location/>
       <source>Select module</source>
-      <translation>Välj modul</translation>
+      <translation>Selecione o módulo</translation>
     </message>
     <message>
       <location/>
       <source>Open %1 as</source>
-      <translation>Öppna %1 som</translation>
+      <translation>Abrir %1 como</translation>
     </message>
     <message>
       <location/>
       <source>Select</source>
-      <translation>markera</translation>
+      <translation>Selecionar</translation>
     </message>
   </context>
   <context>
@@ -3485,17 +3479,17 @@ Vill du avsluta utan att spara din data?</translation>
     <message>
       <location/>
       <source>Help</source>
-      <translation>Hjälp</translation>
+      <translation>Ajuda</translation>
     </message>
     <message>
       <location/>
       <source>Des&amp;cription</source>
-      <translation>Bes&amp;krivning</translation>
+      <translation>Des&amp;crição</translation>
     </message>
     <message>
       <location/>
       <source>Long description of commands</source>
-      <translation>Lång beskriving av kommandon</translation>
+      <translation>Descrição detalhada dos comandos</translation>
     </message>
   </context>
   <context>
@@ -3503,50 +3497,46 @@ Vill du avsluta utan att spara din data?</translation>
     <message>
       <location/>
       <source>Help</source>
-      <translation>Hjälp</translation>
+      <translation>Ajuda</translation>
     </message>
     <message>
       <location/>
       <source>Download online help</source>
-      <translation>Ladda ned online hjälp</translation>
+      <translation>Baixar a ajuda online</translation>
     </message>
     <message>
       <location/>
       <source>Download %1's online help</source>
-      <translation>Ladda ned online hjälp för %1</translation>
+      <translation>Baixar ajuda online de %1</translation>
     </message>
     <message>
       <location/>
       <source>Non-existing directory</source>
-      <translation>Katalogen existerar inte</translation>
+      <translation>Diretório não existente</translation>
     </message>
     <message>
       <location/>
       <source>The directory '%1' does not exist.
 
 Do you want to specify an existing directory?</source>
-      <translation>Katalogen '%1' existerar inte.
-
-Vill du ange en existerande katalog?</translation>
+      <translation>O diretório '%1' não existe.  Você deseja especificar um diretório existente?</translation>
     </message>
     <message>
       <location/>
       <source>Missing permission</source>
-      <translation>Behörighet saknas</translation>
+      <translation>Falta de permissão</translation>
     </message>
     <message>
       <location/>
       <source>You don't have write permission to '%1'
 
 Do you want to specify another directory?</source>
-      <translation>Du har inte behörighet att skriva till '%1'
-
-Vill du ange en annan katalog?</translation>
+      <translation>Você não tem permissão de escrita para '%1' Deseja especificar outro diretório?</translation>
     </message>
     <message>
       <location/>
       <source>Stop downloading</source>
-      <translation>Stoppa nedladdning</translation>
+      <translation>Parar a transferência</translation>
     </message>
   </context>
   <context>
@@ -3554,17 +3544,17 @@ Vill du ange en annan katalog?</translation>
     <message>
       <location/>
       <source>Tools</source>
-      <translation>Verktyg</translation>
+      <translation>Ferramentas</translation>
     </message>
     <message>
       <location/>
       <source>Python Modules</source>
-      <translation>Python moduler</translation>
+      <translation>Módulos Python</translation>
     </message>
     <message>
       <location/>
       <source>Opens a browser to show the Python modules</source>
-      <translation>Öppnar en läsare för att visa Python modulerna</translation>
+      <translation>Abre um navegador para mostrar os módulos Python</translation>
     </message>
   </context>
   <context>
@@ -3572,7 +3562,7 @@ Vill du ange en annan katalog?</translation>
     <message>
       <location/>
       <source>Angle</source>
-      <translation>Vinkel</translation>
+      <translation>Ângulo</translation>
     </message>
   </context>
   <context>
@@ -3580,7 +3570,7 @@ Vill du ange en annan katalog?</translation>
     <message>
       <location/>
       <source>Position</source>
-      <translation>Position</translation>
+      <translation>Posição</translation>
     </message>
   </context>
   <context>
@@ -3588,32 +3578,32 @@ Vill du ange en annan katalog?</translation>
     <message>
       <location/>
       <source>Display mode:</source>
-      <translation>Visningsläge:</translation>
+      <translation>Modo de exibição:</translation>
     </message>
     <message>
       <location/>
       <source>Plot mode:</source>
-      <translation>Plottningsläge:</translation>
+      <translation>Modo de impressão:</translation>
     </message>
     <message>
       <location/>
       <source>Point size:</source>
-      <translation>Punktstorlek:</translation>
+      <translation>Tamanho de ponto:</translation>
     </message>
     <message>
       <location/>
       <source>Line width:</source>
-      <translation>Linjebredd:</translation>
+      <translation>Largura da linha:</translation>
     </message>
     <message>
       <location/>
       <source>Transparency:</source>
-      <translation>Transparens:</translation>
+      <translation>Transparência:</translation>
     </message>
     <message>
       <location/>
       <source>Appearance</source>
-      <translation>Utseende</translation>
+      <translation>Aparência</translation>
     </message>
   </context>
   <context>
@@ -3621,7 +3611,7 @@ Vill du ange en annan katalog?</translation>
     <message>
       <location/>
       <source>Edit</source>
-      <translation>Redigera</translation>
+      <translation>Editar</translation>
     </message>
   </context>
   <context>
@@ -3629,7 +3619,7 @@ Vill du ange en annan katalog?</translation>
     <message>
       <location/>
       <source>Appearance</source>
-      <translation>Utseende</translation>
+      <translation>Aparência</translation>
     </message>
     <message>
       <location/>
@@ -3639,7 +3629,7 @@ Vill du ange en annan katalog?</translation>
     <message>
       <location/>
       <source>edit selection</source>
-      <translation>edit selection</translation>
+      <translation>editar seleção</translation>
     </message>
   </context>
   <context>
@@ -3647,52 +3637,52 @@ Vill du ange en annan katalog?</translation>
     <message>
       <location/>
       <source>English</source>
-      <translation>Engelska</translation>
+      <translation>Inglês</translation>
     </message>
     <message>
       <location/>
       <source>German</source>
-      <translation>Tyska</translation>
+      <translation>Alemão</translation>
     </message>
     <message>
       <location/>
       <source>French</source>
-      <translation>Franska</translation>
+      <translation>Francês</translation>
     </message>
     <message>
       <location/>
       <source>Italian</source>
-      <translation>Italienska</translation>
+      <translation>Italiano</translation>
     </message>
     <message>
       <location/>
       <source>Japanese</source>
-      <translation>Japanska</translation>
+      <translation>Japonês</translation>
     </message>
     <message>
       <location/>
       <source>Chinese</source>
-      <translation>Kinesiska</translation>
+      <translation>Chinês</translation>
     </message>
     <message>
       <location/>
       <source>Spanish</source>
-      <translation>Spanska</translation>
+      <translation>Espanhol</translation>
     </message>
     <message>
       <location/>
       <source>Korean</source>
-      <translation>Koreanska</translation>
+      <translation>Coreano</translation>
     </message>
     <message>
       <location/>
       <source>Russian</source>
-      <translation>Ryska</translation>
+      <translation>Russo</translation>
     </message>
     <message>
       <location/>
       <source>Swedish</source>
-      <translation>Svenska</translation>
+      <translation>Sueco</translation>
     </message>
   </context>
   <context>
@@ -3700,7 +3690,7 @@ Vill du ange en annan katalog?</translation>
     <message>
       <location/>
       <source>Tree view</source>
-      <translation>Trädvy</translation>
+      <translation>Árvore</translation>
     </message>
   </context>
   <context>
@@ -3708,57 +3698,57 @@ Vill du ange en annan katalog?</translation>
     <message>
       <location/>
       <source>Create group...</source>
-      <translation>Skapa grupp...</translation>
+      <translation>Criar grupo...</translation>
     </message>
     <message>
       <location/>
       <source>Create a group</source>
-      <translation>Skapa en grupp</translation>
+      <translation>Criar um grupo</translation>
     </message>
     <message>
       <location/>
       <source>Group</source>
-      <translation>Grupp</translation>
+      <translation>Grupo</translation>
     </message>
     <message>
       <location/>
       <source>Rename</source>
-      <translation>Döp om</translation>
+      <translation>Renomear</translation>
     </message>
     <message>
       <location/>
       <source>Rename object</source>
-      <translation>Döp om grupp</translation>
+      <translation>Renomear objeto</translation>
     </message>
     <message>
       <location/>
       <source>Labels &amp; Attributes</source>
-      <translation>Etiketter &amp; attribut</translation>
+      <translation>Rótulos &amp; atributos</translation>
     </message>
     <message>
       <location/>
       <source>Application</source>
-      <translation>Applikation</translation>
+      <translation>Programa</translation>
     </message>
     <message>
       <location/>
       <source>Finish editing</source>
-      <translation>Slutför redigering</translation>
+      <translation>Concluir a edição</translation>
     </message>
     <message>
       <location/>
       <source>Finish editing object</source>
-      <translation>Slutför redigering av objekt</translation>
+      <translation>Terminar de editar o objeto</translation>
     </message>
     <message>
       <location/>
       <source>Activate document</source>
-      <translation>Aktivera dokument</translation>
+      <translation>Ativar o documento</translation>
     </message>
     <message>
       <location/>
       <source>Activate document %1</source>
-      <translation>Aktivera dokument %1</translation>
+      <translation>Ativar o documento %1</translation>
     </message>
   </context>
   <context>
@@ -3766,12 +3756,12 @@ Vill du ange en annan katalog?</translation>
     <message>
       <location/>
       <source>Export PDF</source>
-      <translation>Exportera PDF</translation>
+      <translation>Exportar PDF</translation>
     </message>
     <message>
       <location/>
       <source>PDF file (*.pdf)</source>
-      <translation>PDF fil (*.pdf)</translation>
+      <translation>Arquivo PDF (*.pdf)</translation>
     </message>
   </context>
   <context>
@@ -3779,7 +3769,7 @@ Vill du ange en annan katalog?</translation>
     <message>
       <location/>
       <source>Select the '%1' workbench</source>
-      <translation>Välj arbetsbänken '%1'</translation>
+      <translation>Selecione a bancada '%1'</translation>
     </message>
   </context>
   <context>
@@ -3787,7 +3777,7 @@ Vill du ange en annan katalog?</translation>
     <message>
       <location/>
       <source>Form</source>
-      <translation>Form</translation>
+      <translation>Formulário</translation>
     </message>
     <message>
       <location/>
@@ -3807,12 +3797,12 @@ Vill du ange en annan katalog?</translation>
     <message>
       <location/>
       <source>0.1 mm</source>
-      <translation>0,1 mm</translation>
+      <translation>0.1 mm</translation>
     </message>
     <message>
       <location/>
       <source>0.5 mm</source>
-      <translation>0,5 mm</translation>
+      <translation>0.5 mm</translation>
     </message>
     <message>
       <location/>
@@ -3822,7 +3812,7 @@ Vill du ange en annan katalog?</translation>
     <message>
       <location/>
       <source>2 mm</source>
-      <translation>2 mm</translation>
+      <translation>1 mm</translation>
     </message>
     <message>
       <location/>
@@ -3877,7 +3867,7 @@ Vill du ange en annan katalog?</translation>
     <message>
       <location/>
       <source>Grid Snap in</source>
-      <translation>Grid Snap in</translation>
+      <translation>Snap de grade em</translation>
     </message>
   </context>
   <context>
@@ -3885,42 +3875,42 @@ Vill du ange en annan katalog?</translation>
     <message>
       <location/>
       <source>Tree view</source>
-      <translation>Trädvy</translation>
+      <translation>Árvore</translation>
     </message>
     <message>
       <location/>
       <source>Property view</source>
-      <translation>Egenskapsvy</translation>
+      <translation>Tela de propriedades</translation>
     </message>
     <message>
       <location/>
       <source>Selection view</source>
-      <translation>Markeringsvy</translation>
+      <translation>Tela de seleção</translation>
     </message>
     <message>
       <location/>
       <source>Report view</source>
-      <translation>Rapportvy</translation>
+      <translation>Tela de relatório relatório</translation>
     </message>
     <message>
       <location/>
       <source>Task View</source>
-      <translation>Uppgiftsvy</translation>
+      <translation>Tarefas</translation>
     </message>
     <message>
       <location/>
       <source>Combo View</source>
-      <translation>Kombinerad vy</translation>
+      <translation>Tela combinada</translation>
     </message>
     <message>
       <location/>
       <source>Toolbox</source>
-      <translation>Verktygslåda</translation>
+      <translation>Caixa de ferramentas</translation>
     </message>
     <message>
       <location/>
       <source>Python console</source>
-      <translation>Python konsoll</translation>
+      <translation>Console Python</translation>
     </message>
   </context>
   <context>
@@ -3928,32 +3918,32 @@ Vill du ange en annan katalog?</translation>
     <message>
       <location/>
       <source>General</source>
-      <translation>Allmänt</translation>
+      <translation>Geral</translation>
     </message>
     <message>
       <location/>
       <source>Display</source>
-      <translation>Fönster</translation>
+      <translation>Tela</translation>
     </message>
     <message>
       <location/>
       <source>Unknown filetype</source>
-      <translation>Okänd filtyp</translation>
+      <translation>Tipo de arquivo desconhecido</translation>
     </message>
     <message>
       <location/>
       <source>Cannot open unknown filetype: %1</source>
-      <translation>Kan inte öppna okänd filtyp: %1</translation>
+      <translation>Não é possível abrir o tipo de arquivo desconhecido: %1</translation>
     </message>
     <message>
       <location/>
       <source>Cannot save to unknown filetype: %1</source>
-      <translation>Kan inte spara till okänd filtyp: %1</translation>
+      <translation>Não é possível salvar em tipo de arquivo desconhecido: %1</translation>
     </message>
     <message>
       <location/>
       <source>Workbench failure</source>
-      <translation>Fel på arbetsbänk</translation>
+      <translation>Falha de bancada</translation>
     </message>
     <message>
       <location/>
@@ -3963,421 +3953,414 @@ Vill du ange en annan katalog?</translation>
     <message>
       <location/>
       <source>Unable to launch Qt Assistant (%1)</source>
-      <translation>Kan inte starta Qt assistent (%1)</translation>
+      <translation>Não foi possível iniciar o Assistente do Qt (%1)</translation>
     </message>
     <message>
       <location/>
       <source>Exception</source>
-      <translation>Undantag</translation>
+      <translation>Exceção</translation>
     </message>
     <message>
       <location/>
       <source>Open document</source>
-      <translation>Öppna dokument</translation>
+      <translation>Abrir um documento</translation>
     </message>
     <message>
       <location/>
       <source>Import file</source>
-      <translation>importera fil</translation>
+      <translation>Importar um arquivo</translation>
     </message>
     <message>
       <location/>
       <source>Export file</source>
-      <translation>Exportera fil</translation>
+      <translation>Exportar um arquivo</translation>
     </message>
     <message>
       <location/>
       <source>Printing...</source>
-      <translation>Skriver ut...</translation>
+      <translation>Imprimindo...</translation>
     </message>
     <message>
       <location/>
       <source>Cannot load workbench</source>
-      <translation>Kan inte ladda arbetsbänk</translation>
+      <translation>Não foi possível carregar a bancada</translation>
     </message>
     <message>
       <location/>
       <source>A general error occurred while loading the workbench</source>
-      <translation>Ett allmänt fel uppstod medan arbetsbänken laddades</translation>
+      <translation>Um erro geral ocorreu ao carregar a bancada</translation>
     </message>
     <message>
       <location/>
       <source>File not found</source>
-      <translation>Fil ej funnen</translation>
+      <translation>Arquivo não encontrado</translation>
     </message>
     <message>
       <location/>
       <source>Cannot open file %1</source>
-      <translation>Kan inte öppna fil %1</translation>
+      <translation>Não é possível abrir o arquivo %1</translation>
     </message>
     <message>
       <location/>
       <source>Save views...</source>
-      <translation>Spara vyer...</translation>
+      <translation>Salvar vistas...</translation>
     </message>
     <message>
       <location/>
       <source>Load views...</source>
-      <translation>Ladda vyer...</translation>
+      <translation>Carregar vistas...</translation>
     </message>
     <message>
       <location/>
       <source>Freeze view</source>
-      <translation>Frys vy</translation>
+      <translation>Congelar a vista</translation>
     </message>
     <message>
       <location/>
       <source>Clear views</source>
-      <translation>Rensa vyer</translation>
+      <translation>Limpar vistas</translation>
     </message>
     <message>
       <location/>
       <source>Restore view &amp;%1</source>
-      <translation>Återställ vy &amp;%1</translation>
+      <translation>Restaurar a vista &amp;%1</translation>
     </message>
     <message>
       <location/>
       <source>Save frozen views</source>
-      <translation>Spara frusna vyer</translation>
+      <translation>Salvar vistas congeladas</translation>
     </message>
     <message>
       <location/>
       <source>Frozen views (*.cam)</source>
-      <translation>Frusna vyer (*.cam)</translation>
+      <translation>Vistas congeladas (*.cam)</translation>
     </message>
     <message>
       <location/>
       <source>Restore views</source>
-      <translation>Återställ vyer</translation>
+      <translation>Restaurar vistas</translation>
     </message>
     <message>
       <location/>
       <source>Importing the restored views would clear the already stored views.
 Do you want to continue?</source>
-      <translation>Att importera de återställda vyerna kommer att förstöra de vyer som sparats.
-vill du fortsätta?</translation>
+      <translation>Importar vistas restauradas irá descartar vistas já armazenadas. Deseja continuar?</translation>
     </message>
     <message>
       <location/>
       <source>Restore frozen views</source>
-      <translation>Återställ frusna vyer</translation>
+      <translation>Restaurar vistas congeladas</translation>
     </message>
     <message>
       <location/>
       <source>Cannot open file '%1'.</source>
-      <translation>Kan inte öppna fil '%1'.</translation>
+      <translation>Não é possível abrir o arquivo '%1'.</translation>
     </message>
     <message>
       <location/>
       <source>Docked</source>
-      <translation>Dockad</translation>
+      <translation>Ancorado</translation>
     </message>
     <message>
       <location/>
       <source>Undocked</source>
-      <translation>Odockad</translation>
+      <translation>Desancorado</translation>
     </message>
     <message>
       <location/>
       <source>Fullscreen</source>
-      <translation>Fullskärm</translation>
+      <translation>Tela cheia</translation>
     </message>
     <message>
       <location/>
       <source>files</source>
-      <translation>Filer</translation>
+      <translation>arquivos</translation>
     </message>
     <message>
       <location/>
       <source>Save picture</source>
-      <translation>Spara bild</translation>
+      <translation>Salvar imagem</translation>
     </message>
     <message>
       <location/>
       <source>New sub-group</source>
-      <translation>Ny undergrupp</translation>
+      <translation>Novo subgrupo</translation>
     </message>
     <message>
       <location/>
       <source>Enter the name:</source>
-      <translation>Skriv in namnet:</translation>
+      <translation>Digite o nome:</translation>
     </message>
     <message>
       <location/>
       <source>New text item</source>
-      <translation>Ny text</translation>
+      <translation>Novo item de texto</translation>
     </message>
     <message>
       <location/>
       <source>Enter your text:</source>
-      <translation>Mata in din text:</translation>
+      <translation>Digite o texto:</translation>
     </message>
     <message>
       <location/>
       <source>New integer item</source>
-      <translation>Nytt heltal</translation>
+      <translation>Novo item inteiro</translation>
     </message>
     <message>
       <location/>
       <source>Enter your number:</source>
-      <translation>Mata in ditt nummer:</translation>
+      <translation>Digite seu número:</translation>
     </message>
     <message>
       <location/>
       <source>New unsigned item</source>
-      <translation>Nytt osignerat tal</translation>
+      <translation>Novo item unsigned</translation>
     </message>
     <message>
       <location/>
       <source>New float item</source>
-      <translation>Nytt flyttal</translation>
+      <translation>Novo item float</translation>
     </message>
     <message>
       <location/>
       <source>New Boolean item</source>
-      <translation>Nytt booleskt värde</translation>
+      <translation>Novo item Boolean</translation>
     </message>
     <message>
       <location/>
       <source>Choose an item:</source>
-      <translation>Välj en sak:</translation>
+      <translation>Escolha um item:</translation>
     </message>
     <message>
       <location/>
       <source>Rename group</source>
-      <translation>Döp om grupp</translation>
+      <translation>Renomear grupo</translation>
     </message>
     <message>
       <location/>
       <source>The group '%1' cannot be renamed.</source>
-      <translation>Gruppen '%1' kan inte döpass om.</translation>
+      <translation>O grupo '%1' não pode ser renomeado.</translation>
     </message>
     <message>
       <location/>
       <source>Existing group</source>
-      <translation>Gruppen existerar redan</translation>
+      <translation>Grupo existente</translation>
     </message>
     <message>
       <location/>
       <source>The group '%1' already exists.</source>
-      <translation>Gruppen '%1' existerar redan.</translation>
+      <translation>O grupo '%1' já existe.</translation>
     </message>
     <message>
       <location/>
       <source>Change value</source>
-      <translation>Ändra värde</translation>
+      <translation>Mudar o valor</translation>
     </message>
     <message>
       <location/>
       <source>Save document under new filename...</source>
-      <translation>Spara dokumentet med ett nytt filnamn...</translation>
+      <translation>Salvar documento sob novo nome ...</translation>
     </message>
     <message>
       <location/>
       <source>Saving aborted</source>
-      <translation>Sparning avbruten</translation>
+      <translation>Salvamento abortado</translation>
     </message>
     <message>
       <location/>
       <source>Unsaved document</source>
-      <translation>Osparat dokument</translation>
+      <translation>Documento não salvo</translation>
     </message>
     <message>
       <location/>
       <source>Save document before close?</source>
-      <translation>Spara dokument innan stängning?</translation>
+      <translation>Salvar o documento antes de fechar?</translation>
     </message>
     <message>
       <location/>
       <source>Save Macro</source>
-      <translation>Spara Makro</translation>
+      <translation>Salvar macro</translation>
     </message>
     <message>
       <location/>
       <source>Finish</source>
-      <translation>Gör klart</translation>
+      <translation>Concluir</translation>
     </message>
     <message>
       <location/>
       <source>Clear</source>
-      <translation>Rensa</translation>
+      <translation>Limpar</translation>
     </message>
     <message>
       <location/>
       <source>Cancel</source>
-      <translation>Avbryt</translation>
+      <translation>Cancelar</translation>
     </message>
     <message>
       <location/>
       <source>Inner</source>
-      <translation>Inre</translation>
+      <translation>Interno</translation>
     </message>
     <message>
       <location/>
       <source>Outer</source>
-      <translation>Yttre</translation>
+      <translation>Externo</translation>
     </message>
     <message>
       <location/>
       <source>No Browser</source>
-      <translation>Ingen läsare</translation>
+      <translation>Nenhum navegador</translation>
     </message>
     <message>
       <location/>
       <source>Unable to open your browser.
 
 Please open a browser window and type in: http://localhost:%1.</source>
-      <translation>Kan inte öppna din webbläsare.
-
-Öppna ett fönster i en webbläsare och skriv in : hppt://localhost:%1.</translation>
+      <translation>Não é possível abrir o navegador.  Por favor, abra uma janela do navegador e digite: http://localhost:%1.</translation>
     </message>
     <message>
       <location/>
       <source>No Server</source>
-      <translation>Ingen server</translation>
+      <translation>Nenhum servidor</translation>
     </message>
     <message>
       <location/>
       <source>Unable to start the server to port %1: %2.</source>
-      <translation>Kan inte starta server till port %1: %2.</translation>
+      <translation>Não é possível iniciar o servidor na porta %1: %2.</translation>
     </message>
     <message>
       <location/>
       <source>Unable to open your system browser.</source>
-      <translation>Kan inte öppna din systemwebbläsare.</translation>
+      <translation>Não é possível abrir o navegador do sistema.</translation>
     </message>
     <message>
       <location/>
       <source>Options...</source>
-      <translation>Alternatir...</translation>
+      <translation>Opções...</translation>
     </message>
     <message>
       <location/>
       <source>Out of memory</source>
-      <translation>Slut på minne</translation>
+      <translation>Memória insuficiente</translation>
     </message>
     <message>
       <location/>
       <source>Not enough memory available to display the data.</source>
-      <translation>Det finns inte tillräckligt med minne  för att visa datan.</translation>
+      <translation>Não há memória suficiente para exibir os dados.</translation>
     </message>
     <message>
       <location/>
       <source>Cannot find file %1</source>
-      <translation>Kan inte finna fil %1</translation>
+      <translation>Não foi possível encontrar o arquivo '%1'</translation>
     </message>
     <message>
       <location/>
       <source>Cannot find file %1 neither in %2 nor in %3</source>
-      <translation>Kan inte finna fil %1, varken i %2 eller i %3</translation>
+      <translation>Não é possível encontrar o arquivo %1 nem em %2, nem em %3</translation>
     </message>
     <message>
       <location/>
       <source>Save %1 Document</source>
-      <translation>Spara %1 dokument</translation>
+      <translation>Salvar documento %1</translation>
     </message>
     <message>
       <location/>
       <source>%1 document (*.FCStd)</source>
-      <translation>%1 dokument (*.FCStd)</translation>
+      <translation>documento %1 (*.FCStd)</translation>
     </message>
     <message>
       <location/>
       <source>Save As</source>
-      <translation>Spara som</translation>
+      <translation>Salvar como</translation>
     </message>
     <message>
       <location/>
       <source>%1 already exists.
 Do you want to replace it?</source>
-      <translation>%1 finns redan.
-Vill du ersätta den?</translation>
+      <translation>%1 já existe. Deseja substituí-lo?</translation>
     </message>
     <message>
       <location/>
       <source>Document not closable</source>
-      <translation>Dokumentet kan ej stängas</translation>
+      <translation>O documento não pode ser fechado</translation>
     </message>
     <message>
       <location/>
       <source>The document is not closable for the moment.</source>
-      <translation>Dokumentet kan inte stängas för tillfället.</translation>
+      <translation>O documento não pode ser fechado neste momento.</translation>
     </message>
     <message>
       <location/>
       <source>No OpenGL</source>
-      <translation>Inga OpenGL</translation>
+      <translation>Nenhum OpenGL</translation>
     </message>
     <message>
       <location/>
       <source>This system does not support OpenGL</source>
-      <translation>Detta system har inte stöd för OpenGL</translation>
+      <translation>Este sistema não tem suporte a OpenGL</translation>
     </message>
     <message>
       <location/>
       <source>Help</source>
-      <translation>Hjälp</translation>
+      <translation>Ajuda</translation>
     </message>
     <message>
       <location/>
       <source>Unable to load documentation.
 In order to load it Qt 4.4 or higher is required.</source>
-      <translation>Gick inte att ladda dokumentationen.
-För att läsa in den så krävs Qt 4,4 eller högre.</translation>
+      <translation>Não é possível carregar a documentação. Para carregá-la Qt 4. 4 ou superior é necessário.</translation>
     </message>
     <message>
       <location/>
       <source>%1 Help</source>
-      <translation>%1 Hjälp</translation>
+      <translation>Ajuda de %1</translation>
     </message>
     <message>
       <location/>
       <source>Exporting PDF...</source>
-      <translation>Exportera PDF ...</translation>
+      <translation>Exportar PDF...</translation>
     </message>
     <message>
       <location/>
       <source>Wrong selection</source>
-      <translation>Fel val</translation>
+      <translation>Seleção errada</translation>
     </message>
     <message>
       <location/>
       <source>Only one object selected. Please select two objects.
 Be aware the point where you click matters.</source>
-      <translation>Endast ett objekt markerat. Välj två objekt. 
-Tänk på det har betydelse var du klickar.</translation>
+      <translation>Apenas um objeto selecionado. Por favor selecione dois objetos. Lembre-se que o ponto onde você clicar tem importância.</translation>
     </message>
     <message>
       <location/>
       <source>Please select two objects.
 Be aware the point where you click matters.</source>
-      <translation>Välj två objekt.
-Tänk på att det har betydelse var du klickar.</translation>
+      <translation>Por favor selecione dois objetos. Lembre-se o que ponto onde você clicar tem importância.</translation>
     </message>
     <message>
       <location/>
       <source>New boolean item</source>
-      <translation>Nytt booleskt objekt</translation>
+      <translation>Novo item booleano</translation>
     </message>
     <message>
       <location/>
       <source>Navigation styles</source>
-      <translation>Navigationsstilar</translation>
+      <translation>Estilos de navegação</translation>
     </message>
     <message>
       <location/>
       <source>%1 navigation</source>
-      <translation>%1 navigering</translation>
+      <translation>navegação de %1</translation>
     </message>
     <message>
       <location/>
       <source>Move annotation</source>
-      <translation>Flytta annotering</translation>
+      <translation>Mover a anotação</translation>
     </message>
     <message>
       <location/>
       <source>Transform</source>
-      <translation>Omvandla</translation>
+      <translation>Transformar</translation>
     </message>
   </context>
   <context>
@@ -4385,17 +4368,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>&amp;Copy</source>
-      <translation>&amp;Kopiera</translation>
+      <translation>&amp;Copiar</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Paste</source>
-      <translation>Klistra &amp;in</translation>
+      <translation>Co&amp;lar</translation>
     </message>
     <message>
       <location/>
       <source>Select All</source>
-      <translation>Markera allt</translation>
+      <translation>Selecionar tudo</translation>
     </message>
   </context>
   <context>
@@ -4403,17 +4386,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Help</source>
-      <translation>Hjälp</translation>
+      <translation>Ajuda</translation>
     </message>
     <message>
       <location/>
       <source>&amp;About %1</source>
-      <translation>&amp;Om %1</translation>
+      <translation>&amp;Sobre %1</translation>
     </message>
     <message>
       <location/>
       <source>About %1</source>
-      <translation>Om %1</translation>
+      <translation>Sobre %1</translation>
     </message>
   </context>
   <context>
@@ -4421,17 +4404,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Help</source>
-      <translation>Hjälp</translation>
+      <translation>Ajuda</translation>
     </message>
     <message>
       <location/>
       <source>About &amp;Qt</source>
-      <translation>Om &amp;Qt</translation>
+      <translation>Sobre Qt</translation>
     </message>
     <message>
       <location/>
       <source>About Qt</source>
-      <translation>Om Qt</translation>
+      <translation>Sobre o Qt</translation>
     </message>
   </context>
   <context>
@@ -4439,17 +4422,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Window</source>
-      <translation>Fönster</translation>
+      <translation>Janela</translation>
     </message>
     <message>
       <location/>
       <source>Ne&amp;xt</source>
-      <translation>&amp;Nästa</translation>
+      <translation>Pró&amp;ximo</translation>
     </message>
     <message>
       <location/>
       <source>Activate next window</source>
-      <translation>Aktivera nästa fönster</translation>
+      <translation>Ativar a janela seguinte</translation>
     </message>
   </context>
   <context>
@@ -4457,17 +4440,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Window</source>
-      <translation>Fönster</translation>
+      <translation>Janela</translation>
     </message>
     <message>
       <location/>
       <source>Pre&amp;vious</source>
-      <translation>&amp;Föregående</translation>
+      <translation>An&amp;terior</translation>
     </message>
     <message>
       <location/>
       <source>Activate previous window</source>
-      <translation>Aktivera föregående fönster</translation>
+      <translation>Ativar a janela anterior</translation>
     </message>
   </context>
   <context>
@@ -4475,17 +4458,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Window</source>
-      <translation>Fönster</translation>
+      <translation>Janela</translation>
     </message>
     <message>
       <location/>
       <source>Arrange &amp;Icons</source>
-      <translation>Arrangera &amp;Ikoner</translation>
+      <translation>Organizar &amp;icones</translation>
     </message>
     <message>
       <location/>
       <source>Arrange Icons</source>
-      <translation>Arrangera Ikoner</translation>
+      <translation>Organizar ícones</translation>
     </message>
   </context>
   <context>
@@ -4493,17 +4476,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Window</source>
-      <translation>Fönster</translation>
+      <translation>Janela</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Cascade</source>
-      <translation>&amp;Överlappande</translation>
+      <translation>Em &amp;cascata</translation>
     </message>
     <message>
       <location/>
       <source>Tile pragmatic</source>
-      <translation>Överlappa pragmatiskt</translation>
+      <translation>Lado a lado pragmático</translation>
     </message>
   </context>
   <context>
@@ -4511,17 +4494,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Window</source>
-      <translation>Fönster</translation>
+      <translation>Janela</translation>
     </message>
     <message>
       <location/>
       <source>Cl&amp;ose</source>
-      <translation>&amp;Stäng</translation>
+      <translation>&amp;Fechar</translation>
     </message>
     <message>
       <location/>
       <source>Close active window</source>
-      <translation>Stäng aktivt fönster</translation>
+      <translation>Fechar a janela ativa</translation>
     </message>
   </context>
   <context>
@@ -4529,17 +4512,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Window</source>
-      <translation>Fönster</translation>
+      <translation>Janela</translation>
     </message>
     <message>
       <location/>
       <source>Close Al&amp;l</source>
-      <translation>Stäng a&amp;llt</translation>
+      <translation>Fechar &amp;tudo</translation>
     </message>
     <message>
       <location/>
       <source>Close all windows</source>
-      <translation>Stäng alla fönster</translation>
+      <translation>Fecha todas as janelas</translation>
     </message>
   </context>
   <context>
@@ -4547,17 +4530,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Tools</source>
-      <translation>Verktyg</translation>
+      <translation>Ferramentas</translation>
     </message>
     <message>
       <location/>
       <source>Start command &amp;line...</source>
-      <translation>Starta kommando&amp;rad...</translation>
+      <translation>Iniciar linha de comando...</translation>
     </message>
     <message>
       <location/>
       <source>Opens the command line in the console</source>
-      <translation>Öppnar kommandoraden i konsollen</translation>
+      <translation>Abre a linha de comando na consola</translation>
     </message>
   </context>
   <context>
@@ -4565,17 +4548,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Edit</source>
-      <translation>Redigera</translation>
+      <translation>Editar</translation>
     </message>
     <message>
       <location/>
       <source>C&amp;opy</source>
-      <translation>K&amp;opiera</translation>
+      <translation>C&amp;opiar</translation>
     </message>
     <message>
       <location/>
       <source>Copy operation</source>
-      <translation>Kopiera operation</translation>
+      <translation>Operação de cópia</translation>
     </message>
   </context>
   <context>
@@ -4583,17 +4566,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Edit</source>
-      <translation>Redigera</translation>
+      <translation>Editar</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Cut</source>
-      <translation>K&amp;lipp ut</translation>
+      <translation>Co&amp;rtar</translation>
     </message>
     <message>
       <location/>
       <source>Cut out</source>
-      <translation>Klipp ut</translation>
+      <translation>Cortar</translation>
     </message>
   </context>
   <context>
@@ -4601,17 +4584,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Edit</source>
-      <translation>Redigera</translation>
+      <translation>Editar</translation>
     </message>
     <message>
       <location/>
       <source>Duplicate selection</source>
-      <translation>Duplicera urval</translation>
+      <translation>Duplicar seleção</translation>
     </message>
     <message>
       <location/>
       <source>Put duplicates of the selected objects to the active document</source>
-      <translation>Lägg kopior av de markerade objekten till det aktiva dokumentet</translation>
+      <translation>Coloca duplicatas dos objetos selecionados no documento ativo</translation>
     </message>
   </context>
   <context>
@@ -4619,17 +4602,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Edit</source>
-      <translation>Redigera</translation>
+      <translation>Editar</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Delete</source>
-      <translation>Ra&amp;dera</translation>
+      <translation>&amp;Excluir</translation>
     </message>
     <message>
       <location/>
       <source>Deletes the selected objects</source>
-      <translation>Raderar de valda objekten</translation>
+      <translation>Exclui os objetos selecionados</translation>
     </message>
   </context>
   <context>
@@ -4637,17 +4620,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>View turntable...</source>
-      <translation>Visa vridbord...</translation>
+      <translation>Vista turntable...</translation>
     </message>
     <message>
       <location/>
       <source>View turntable</source>
-      <translation>Visa vridbord</translation>
+      <translation>Vista turntable</translation>
     </message>
   </context>
   <context>
@@ -4655,17 +4638,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Tools</source>
-      <translation>Verktyg</translation>
+      <translation>Ferramentas</translation>
     </message>
     <message>
       <location/>
       <source>Cu&amp;stomize...</source>
-      <translation>Anpa&amp;ssa...</translation>
+      <translation>Per&amp;sonalizar...</translation>
     </message>
     <message>
       <location/>
       <source>Customize toolbars and command bars</source>
-      <translation>Anpassa verktygs- och kommandorader</translation>
+      <translation>Personalizar barras de ferramentas e barras de comando</translation>
     </message>
   </context>
   <context>
@@ -4673,17 +4656,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Macros ...</source>
-      <translation>Makron...</translation>
+      <translation>Macros ...</translation>
     </message>
     <message>
       <location/>
       <source>Opens a dialog to let you execute a recorded macro</source>
-      <translation>Öppnar en dialog som låter dig utföra ett inspelat makro</translation>
+      <translation>Abre um diálogo para que você executa uma macro gravada</translation>
     </message>
     <message>
       <location/>
       <source>Macro</source>
-      <translation>Makro</translation>
+      <translation>Macro</translation>
     </message>
   </context>
   <context>
@@ -4691,17 +4674,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Macro</source>
-      <translation>Makro</translation>
+      <translation>Macro</translation>
     </message>
     <message>
       <location/>
       <source>Execute macro</source>
-      <translation>Utför makro</translation>
+      <translation>Executar macro</translation>
     </message>
     <message>
       <location/>
       <source>Execute the macro in the editor</source>
-      <translation>Kör makrot i redigeraren</translation>
+      <translation>Executar a macro no editor</translation>
     </message>
   </context>
   <context>
@@ -4709,17 +4692,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>&amp;Macro recording ...</source>
-      <translation>&amp;Makroinspelning...</translation>
+      <translation>&amp;Gravação de macros ...</translation>
     </message>
     <message>
       <location/>
       <source>Opens a dialog to record a macro</source>
-      <translation>Öppnar en dialog för att spela in ett makro</translation>
+      <translation>Abre uma janela para gravar uma macro</translation>
     </message>
     <message>
       <location/>
       <source>Macro</source>
-      <translation>Makro</translation>
+      <translation>Macro</translation>
     </message>
   </context>
   <context>
@@ -4727,17 +4710,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Tools</source>
-      <translation>Verktyg</translation>
+      <translation>Ferramentas</translation>
     </message>
     <message>
       <location/>
       <source>E&amp;dit parameters ...</source>
-      <translation>Re&amp;digera parametrar...</translation>
+      <translation>&amp;Editar parâmetros...</translation>
     </message>
     <message>
       <location/>
       <source>Opens a Dialog to edit the parameters</source>
-      <translation>Öppnar en dialog för att redigera parametrarna</translation>
+      <translation>Abre uma janela para editar os parâmetros</translation>
     </message>
   </context>
   <context>
@@ -4745,17 +4728,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Tools</source>
-      <translation>Verktyg</translation>
+      <translation>Ferramentas</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Preferences ...</source>
-      <translation>&amp;Alternativ...</translation>
+      <translation>&amp;Preferências ...</translation>
     </message>
     <message>
       <location/>
       <source>Opens a Dialog to edit the preferences</source>
-      <translation>Öppnar en dialogför att redigera alternativen</translation>
+      <translation>Abre uma janela para editar as preferências</translation>
     </message>
   </context>
   <context>
@@ -4763,17 +4746,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>View</source>
-      <translation>Vy</translation>
+      <translation>Vista</translation>
     </message>
     <message>
       <location/>
       <source>Vie&amp;ws</source>
-      <translation>&amp;Vyer</translation>
+      <translation>&amp;Vistas</translation>
     </message>
     <message>
       <location/>
       <source>Toggles this window</source>
-      <translation>Växlar detta fönster</translation>
+      <translation>Troca esta janela</translation>
     </message>
   </context>
   <context>
@@ -4781,22 +4764,22 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>File</source>
-      <translation>Fil</translation>
+      <translation>Arquivo</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Export...</source>
-      <translation>&amp;Exportera...</translation>
+      <translation>&amp;Exportar...</translation>
     </message>
     <message>
       <location/>
       <source>Export an object in the active document</source>
-      <translation>Exportera ett objekt i det aktiva dokumentet</translation>
+      <translation>Exportar um objeto do documento ativo</translation>
     </message>
     <message>
       <location/>
       <source>Supported formats</source>
-      <translation>Stödda format</translation>
+      <translation>Formatos suportados</translation>
     </message>
   </context>
   <context>
@@ -4804,17 +4787,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>File</source>
-      <translation>Fil</translation>
+      <translation>Arquivo</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Recompute</source>
-      <translation>Be&amp;räkna om</translation>
+      <translation>&amp;Recalcular</translation>
     </message>
     <message>
       <location/>
       <source>Recompute feature or document</source>
-      <translation>Omberäkna föremål eller dokument</translation>
+      <translation>Recalcular um objeto ou documento</translation>
     </message>
   </context>
   <context>
@@ -4822,17 +4805,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Help</source>
-      <translation>Hjälp</translation>
+      <translation>Ajuda</translation>
     </message>
     <message>
       <location/>
       <source>FreeCAD Website</source>
-      <translation>FreeCAD webbplats</translation>
+      <translation>Website do FreeCAD</translation>
     </message>
     <message>
       <location/>
       <source>The FreeCAD website</source>
-      <translation>FreeCAD's webbplats</translation>
+      <translation>O site do FreeCAD</translation>
     </message>
   </context>
   <context>
@@ -4840,17 +4823,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Freeze display</source>
-      <translation>Frys skärmen</translation>
+      <translation>Congelar exibição</translation>
     </message>
     <message>
       <location/>
       <source>Freezes the current view position</source>
-      <translation>Fryser den nuvarande vypositionen</translation>
+      <translation>Congela o ponto de vista atual</translation>
     </message>
   </context>
   <context>
@@ -4858,17 +4841,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Hide all objects</source>
-      <translation>Dölj alla objekt</translation>
+      <translation>Ocultar todos os objetos</translation>
     </message>
     <message>
       <location/>
       <source>Hide all objects in the document</source>
-      <translation>Dölj alla objekt i dokumentet</translation>
+      <translation>Ocultar todos os objetos do documento</translation>
     </message>
   </context>
   <context>
@@ -4876,17 +4859,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Hide selection</source>
-      <translation>Dölj markering</translation>
+      <translation>Ocultar seleção</translation>
     </message>
     <message>
       <location/>
       <source>Hide all selected objects</source>
-      <translation>Dölj alla markerade objekt</translation>
+      <translation>Ocultar todos os objetos selecionados</translation>
     </message>
   </context>
   <context>
@@ -4894,27 +4877,27 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>File</source>
-      <translation>Fil</translation>
+      <translation>Arquivo</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Import...</source>
-      <translation>&amp;Importera...</translation>
+      <translation>&amp;Importar...</translation>
     </message>
     <message>
       <location/>
       <source>Import a file in the active document</source>
-      <translation>Importera en fil i det aktiva dokumentet</translation>
+      <translation>Importar um arquivo no documento ativo</translation>
     </message>
     <message>
       <location/>
       <source>Supported formats</source>
-      <translation>Stödda format</translation>
+      <translation>Formatos suportados</translation>
     </message>
     <message>
       <location/>
       <source>All files (*.*)</source>
-      <translation>Alla filer (*.*)</translation>
+      <translation>Todos os arquivos (*.*)</translation>
     </message>
   </context>
   <context>
@@ -4922,17 +4905,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Macro</source>
-      <translation>Makro</translation>
+      <translation>Macro</translation>
     </message>
     <message>
       <location/>
       <source>Debug macro</source>
-      <translation>Felsök makro</translation>
+      <translation>Depurar macro</translation>
     </message>
     <message>
       <location/>
       <source>Start debugging of macro</source>
-      <translation>Starta felsökning av makro</translation>
+      <translation>Iniciar a depuração da macro</translation>
     </message>
   </context>
   <context>
@@ -4940,12 +4923,12 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Macro</source>
-      <translation>Makro</translation>
+      <translation>Macro</translation>
     </message>
     <message>
       <location/>
       <source>Step over</source>
-      <translation>Stega förbi</translation>
+      <translation>Avançar</translation>
     </message>
   </context>
   <context>
@@ -4953,17 +4936,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Macro</source>
-      <translation>Makro</translation>
+      <translation>Macro</translation>
     </message>
     <message>
       <location/>
       <source>Stop debugging</source>
-      <translation>Stoppa felsökning</translation>
+      <translation>Parar a depuração</translation>
     </message>
     <message>
       <location/>
       <source>Stop debugging of macro</source>
-      <translation>Stoppa felsökning av makro</translation>
+      <translation>Parar a depuração de macro</translation>
     </message>
   </context>
   <context>
@@ -4971,17 +4954,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Macro</source>
-      <translation>Makro</translation>
+      <translation>Macro</translation>
     </message>
     <message>
       <location/>
       <source>S&amp;top macro recording</source>
-      <translation>S&amp;toppa makroinspelning</translation>
+      <translation>Parar a gravação de macro</translation>
     </message>
     <message>
       <location/>
       <source>Stop the macro recording session</source>
-      <translation>Stoppa makroinspelningssessionen</translation>
+      <translation>Pare a sessão de gravação de macros</translation>
     </message>
   </context>
   <context>
@@ -4989,12 +4972,12 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>View</source>
-      <translation>Vy</translation>
+      <translation>Vista</translation>
     </message>
     <message>
       <location/>
       <source>Measure distance</source>
-      <translation>Mät avstånd</translation>
+      <translation>Medir distância</translation>
     </message>
   </context>
   <context>
@@ -5002,17 +4985,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Tools</source>
-      <translation>Verktyg</translation>
+      <translation>Ferramentas</translation>
     </message>
     <message>
       <location/>
       <source>Mesure distance</source>
-      <translation>Mät avstånd</translation>
+      <translation>Medir distância</translation>
     </message>
     <message>
       <location/>
       <source>Measures distance between two selected objects</source>
-      <translation>Mäter avståndet mellan två valda objekt</translation>
+      <translation>Mede a distância entre dois objetos selecionados</translation>
     </message>
   </context>
   <context>
@@ -5020,27 +5003,27 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>File</source>
-      <translation>Fil</translation>
+      <translation>Arquivo</translation>
     </message>
     <message>
       <location/>
       <source>Merge project...</source>
-      <translation>Merge project...</translation>
+      <translation>Mesclar projeto...</translation>
     </message>
     <message>
       <location/>
       <source>Merge project</source>
-      <translation>Merge project</translation>
+      <translation>Mesclar projeto</translation>
     </message>
     <message>
       <location/>
       <source>%1 document (*.fcstd)</source>
-      <translation>%1 document (*.fcstd)</translation>
+      <translation>documento %1 (*.fcstd)</translation>
     </message>
     <message>
       <location/>
       <source>Cannot merge project with itself.</source>
-      <translation>Cannot merge project with itself.</translation>
+      <translation>Não é possível mesclar esse projeto com ele mesmo.</translation>
     </message>
   </context>
   <context>
@@ -5048,17 +5031,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>File</source>
-      <translation>Fil</translation>
+      <translation>Arquivo</translation>
     </message>
     <message>
       <location/>
       <source>&amp;New</source>
-      <translation>&amp;Ny</translation>
+      <translation>&amp;Novo</translation>
     </message>
     <message>
       <location/>
       <source>Create a new empty document</source>
-      <translation>Skapa ett nytt tomt dokument</translation>
+      <translation>Criar um novo documento vazio</translation>
     </message>
   </context>
   <context>
@@ -5066,12 +5049,12 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Help</source>
-      <translation>Hjälp</translation>
+      <translation>Ajuda</translation>
     </message>
     <message>
       <location/>
       <source>Show help to the application</source>
-      <translation>Visa hjälp för applikationen</translation>
+      <translation>Mostra a ajuda para a aplicação</translation>
     </message>
   </context>
   <context>
@@ -5079,17 +5062,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Help</source>
-      <translation>Hjälp</translation>
+      <translation>Ajuda</translation>
     </message>
     <message>
       <location/>
       <source>Python Manuals</source>
-      <translation>Python manualer</translation>
+      <translation>Manuais de Python</translation>
     </message>
     <message>
       <location/>
       <source>Show the Python documentation</source>
-      <translation>Visa Python dokumentationen</translation>
+      <translation>Mostrar a documentação do Python</translation>
     </message>
   </context>
   <context>
@@ -5097,17 +5080,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Help</source>
-      <translation>Hjälp</translation>
+      <translation>Ajuda</translation>
     </message>
     <message>
       <location/>
       <source>Help Website</source>
-      <translation>Hjälpwebbplats</translation>
+      <translation>Site de ajuda</translation>
     </message>
     <message>
       <location/>
       <source>The website where the help is maintained</source>
-      <translation>Den webbplats där hjälp erhålls</translation>
+      <translation>O site onde a ajuda é mantida</translation>
     </message>
   </context>
   <context>
@@ -5115,27 +5098,27 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>File</source>
-      <translation>Fil</translation>
+      <translation>Arquivo</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Open...</source>
-      <translation>&amp;Öppna...</translation>
+      <translation>&amp;Abrir...</translation>
     </message>
     <message>
       <location/>
       <source>Open a document or import files</source>
-      <translation>Öppna ett dokument eller importera filer</translation>
+      <translation>Abrir um documento ou importar arquivos</translation>
     </message>
     <message>
       <location/>
       <source>Supported formats</source>
-      <translation>Stödda format</translation>
+      <translation>Formatos suportados</translation>
     </message>
     <message>
       <location/>
       <source>All files (*.*)</source>
-      <translation>Alla filer (*.*)</translation>
+      <translation>Todos os arquivos (*.*)</translation>
     </message>
   </context>
   <context>
@@ -5143,17 +5126,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Edit</source>
-      <translation>Redigera</translation>
+      <translation>Editar</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Paste</source>
-      <translation>Klistra &amp;in</translation>
+      <translation>Co&amp;lar</translation>
     </message>
     <message>
       <location/>
       <source>Paste operation</source>
-      <translation>Klistra in operation</translation>
+      <translation>Colar operação</translation>
     </message>
   </context>
   <context>
@@ -5161,17 +5144,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Edit</source>
-      <translation>Redigera</translation>
+      <translation>Editar</translation>
     </message>
     <message>
       <location/>
       <source>Placement...</source>
-      <translation>Placering...</translation>
+      <translation>Posicionamento...</translation>
     </message>
     <message>
       <location/>
       <source>Place the selected objects</source>
-      <translation>Placera de markerade objekten</translation>
+      <translation>Colocar os objetos selecionados</translation>
     </message>
   </context>
   <context>
@@ -5179,17 +5162,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>File</source>
-      <translation>Fil</translation>
+      <translation>Arquivo</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Print...</source>
-      <translation>&amp;Skriv ut...</translation>
+      <translation>&amp;Imprimir...</translation>
     </message>
     <message>
       <location/>
       <source>Print the document</source>
-      <translation>Skriv ut dokumentet</translation>
+      <translation>Imprime o documento</translation>
     </message>
   </context>
   <context>
@@ -5197,17 +5180,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>File</source>
-      <translation>Fil</translation>
+      <translation>Arquivo</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Export PDF...</source>
-      <translation>&amp;Exportera PDF...</translation>
+      <translation>&amp;Exportar PDF...</translation>
     </message>
     <message>
       <location/>
       <source>Export the document as PDF</source>
-      <translation>Exportera dokumentet som PDF</translation>
+      <translation>Exportar o documento como PDF</translation>
     </message>
   </context>
   <context>
@@ -5215,17 +5198,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>File</source>
-      <translation>Fil</translation>
+      <translation>Arquivo</translation>
     </message>
     <message>
       <location/>
       <source>Project i&amp;nformation...</source>
-      <translation>Projekti&amp;nformation...</translation>
+      <translation>I&amp;nformação do projeto...</translation>
     </message>
     <message>
       <location/>
       <source>Show details of the currently active project</source>
-      <translation>Visar detaljer om det aktiva projektet</translation>
+      <translation>Mostrar os detalhes do projeto ativo</translation>
     </message>
   </context>
   <context>
@@ -5233,17 +5216,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Help</source>
-      <translation>Hjälp</translation>
+      <translation>Ajuda</translation>
     </message>
     <message>
       <location/>
       <source>Python Website</source>
-      <translation>Python webbplats</translation>
+      <translation>Website do Python</translation>
     </message>
     <message>
       <location/>
       <source>The official Python website</source>
-      <translation>Den officiella Python webbplatsen</translation>
+      <translation>O site oficial do Python</translation>
     </message>
   </context>
   <context>
@@ -5251,17 +5234,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>File</source>
-      <translation>Fil</translation>
+      <translation>Arquivo</translation>
     </message>
     <message>
       <location/>
       <source>E&amp;xit</source>
-      <translation>&amp;Avsluta</translation>
+      <translation>&amp;Sair</translation>
     </message>
     <message>
       <location/>
       <source>Quits the application</source>
-      <translation>Avslutar applikationen</translation>
+      <translation>Finaliza o aplicativo</translation>
     </message>
   </context>
   <context>
@@ -5269,12 +5252,12 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>File</source>
-      <translation>Fil</translation>
+      <translation>Arquivo</translation>
     </message>
     <message>
       <location/>
       <source>Random color</source>
-      <translation>Slumpmässig färg</translation>
+      <translation>Cor aleatória</translation>
     </message>
   </context>
   <context>
@@ -5282,17 +5265,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>File</source>
-      <translation>Fil</translation>
+      <translation>Arquivo</translation>
     </message>
     <message>
       <location/>
       <source>Recent files</source>
-      <translation>Nyligen öppnade filer</translation>
+      <translation>Arquivos recentes</translation>
     </message>
     <message>
       <location/>
       <source>Recent file list</source>
-      <translation>Lista över nyligen öppnade filer</translation>
+      <translation>Lista de arquivos recentes</translation>
     </message>
   </context>
   <context>
@@ -5300,17 +5283,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Edit</source>
-      <translation>Redigera</translation>
+      <translation>Editar</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Redo</source>
-      <translation>Gö&amp;r om</translation>
+      <translation>&amp;Refazer</translation>
     </message>
     <message>
       <location/>
       <source>Redoes a previously undone action</source>
-      <translation>Gör om en tidigare ångrad aktion</translation>
+      <translation>Refaz uma ação desfeita anteriormente</translation>
     </message>
   </context>
   <context>
@@ -5318,17 +5301,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Edit</source>
-      <translation>Redigera</translation>
+      <translation>Editar</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Refresh</source>
-      <translation>Uppdate&amp;ra</translation>
+      <translation>&amp;Atualizar</translation>
     </message>
     <message>
       <location/>
       <source>Recomputes the current active document</source>
-      <translation>Beräknar om det aktiva dokumentet</translation>
+      <translation>Recalcula o documento ativo atual</translation>
     </message>
   </context>
   <context>
@@ -5336,17 +5319,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>File</source>
-      <translation>Fil</translation>
+      <translation>Arquivo</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Save</source>
-      <translation>&amp;Spara</translation>
+      <translation>&amp;Salvar</translation>
     </message>
     <message>
       <location/>
       <source>Save the active document</source>
-      <translation>Spara det aktiva dokumentet</translation>
+      <translation>Salva o documento ativo</translation>
     </message>
   </context>
   <context>
@@ -5354,17 +5337,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>File</source>
-      <translation>Fil</translation>
+      <translation>Arquivo</translation>
     </message>
     <message>
       <location/>
       <source>Save &amp;As...</source>
-      <translation>Sp&amp;ara som...</translation>
+      <translation>Salvar como...</translation>
     </message>
     <message>
       <location/>
       <source>Save the active document under a new file name</source>
-      <translation>Sparar det aktiva dokumentet med ett nytt filnamn</translation>
+      <translation>Salvar o documento ativo com um novo nome de arquivo</translation>
     </message>
   </context>
   <context>
@@ -5372,17 +5355,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Tools</source>
-      <translation>Verktyg</translation>
+      <translation>Ferramentas</translation>
     </message>
     <message>
       <location/>
       <source>Scene inspector...</source>
-      <translation>Sceninspektör...</translation>
+      <translation>Inspetor de cena...</translation>
     </message>
     <message>
       <location/>
       <source>Scene inspector</source>
-      <translation>Sceninspektör</translation>
+      <translation>Inspetor de cena</translation>
     </message>
   </context>
   <context>
@@ -5390,17 +5373,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Edit</source>
-      <translation>Redigera</translation>
+      <translation>Editar</translation>
     </message>
     <message>
       <location/>
       <source>Select &amp;All</source>
-      <translation>Markera &amp;allt</translation>
+      <translation>Selecionar &amp;tudo</translation>
     </message>
     <message>
       <location/>
       <source>Select all</source>
-      <translation>Markera allt</translation>
+      <translation>Selecionar tudo</translation>
     </message>
   </context>
   <context>
@@ -5408,17 +5391,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Appearance...</source>
-      <translation>Utseende...</translation>
+      <translation>Aparência...</translation>
     </message>
     <message>
       <location/>
       <source>Sets the display properties of the selected object</source>
-      <translation>Ställer in det markerade objektets visningsegenskaper</translation>
+      <translation>Define as propriedades de exibição do objeto selecionado</translation>
     </message>
   </context>
   <context>
@@ -5426,17 +5409,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Show all objects</source>
-      <translation>Visa alla objekt</translation>
+      <translation>Mostrar todos os objectos</translation>
     </message>
     <message>
       <location/>
       <source>Show all objects in the document</source>
-      <translation>Visa alla objekt i dokumentet</translation>
+      <translation>Mostrar todos os objetos do documento</translation>
     </message>
   </context>
   <context>
@@ -5444,17 +5427,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Show selection</source>
-      <translation>Visa markering</translation>
+      <translation>Exibir seleção</translation>
     </message>
     <message>
       <location/>
       <source>Show all selected objects</source>
-      <translation>Visa alla markerade objekt</translation>
+      <translation>Mostrar todos os objetos selecionados</translation>
     </message>
   </context>
   <context>
@@ -5462,17 +5445,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>View</source>
-      <translation>Vy</translation>
+      <translation>Vista</translation>
     </message>
     <message>
       <location/>
       <source>Status bar</source>
-      <translation>statusfält</translation>
+      <translation>Barra de status</translation>
     </message>
     <message>
       <location/>
       <source>Toggles the status bar</source>
-      <translation>Växlar statusfältet</translation>
+      <translation>Alterna a barra de status</translation>
     </message>
   </context>
   <context>
@@ -5480,17 +5463,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Tools</source>
-      <translation>Verktyg</translation>
+      <translation>Ferramentas</translation>
     </message>
     <message>
       <location/>
       <source>Texture mapping...</source>
-      <translation>strukturmappning...</translation>
+      <translation>Mapeamento de textura...</translation>
     </message>
     <message>
       <location/>
       <source>Texture mapping</source>
-      <translation>strukturmappning</translation>
+      <translation>Mapeamento de textura</translation>
     </message>
   </context>
   <context>
@@ -5498,17 +5481,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Window</source>
-      <translation>Fönster</translation>
+      <translation>Janela</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Tile</source>
-      <translation>&amp;Överlappa</translation>
+      <translation>Lado a lado</translation>
     </message>
     <message>
       <location/>
       <source>Tile the windows</source>
-      <translation>Överlappa fönstren</translation>
+      <translation>Organiza as janelas lado a lado</translation>
     </message>
   </context>
   <context>
@@ -5516,17 +5499,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Help</source>
-      <translation>Hjälp</translation>
+      <translation>Ajuda</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Tip of the day...</source>
-      <translation>Dagens &amp;tips...</translation>
+      <translation>&amp;Dica do Dia...</translation>
     </message>
     <message>
       <location/>
       <source>Tip of the day</source>
-      <translation>Dagens tips</translation>
+      <translation>Dica do dia</translation>
     </message>
   </context>
   <context>
@@ -5534,12 +5517,12 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Macro</source>
-      <translation>Makro</translation>
+      <translation>Macro</translation>
     </message>
     <message>
       <location/>
       <source>Toggle breakpoint</source>
-      <translation>Växla brytpunkt</translation>
+      <translation>Alternar ponto de interrupção</translation>
     </message>
   </context>
   <context>
@@ -5547,17 +5530,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Clipping plane</source>
-      <translation>Klippningsplan</translation>
+      <translation>Plano de clipping</translation>
     </message>
     <message>
       <location/>
       <source>Toggles clipping plane for active view</source>
-      <translation>Växlar klippningsplan för den aktiva vyn</translation>
+      <translation>Alterna plano de clipping da vista ativa</translation>
     </message>
   </context>
   <context>
@@ -5565,17 +5548,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Toggle navigation/Edit mode</source>
-      <translation>Toggle navigation/Edit mode</translation>
+      <translation>Alternar o modo de navegação/modo de edição</translation>
     </message>
     <message>
       <location/>
       <source>Toggle between navigation and edit mode</source>
-      <translation>Toggle between navigation and edit mode</translation>
+      <translation>Alternar entre o modo de edição e navegação</translation>
     </message>
   </context>
   <context>
@@ -5583,17 +5566,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Toggle all objects</source>
-      <translation>Växla alla objekt</translation>
+      <translation>Alternar todos os objetos</translation>
     </message>
     <message>
       <location/>
       <source>Toggles visibility of all objects in the active document</source>
-      <translation>Växlar alla objektens synlighet i det aktiva dokumentet</translation>
+      <translation>Alterna a visibilidade de todos os objetos do documento ativo</translation>
     </message>
   </context>
   <context>
@@ -5601,17 +5584,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Toggle selectability</source>
-      <translation>Växla Valbarhet</translation>
+      <translation>Alternar seletibilidade</translation>
     </message>
     <message>
       <location/>
       <source>Toggles the property of the objects to get selected in the 3D-View</source>
-      <translation>Växlar objektens egenskaper för att bli markerade i 3D-vyn</translation>
+      <translation>Alterna a possibilidade dos objetos serem selecionados na vista 3D</translation>
     </message>
   </context>
   <context>
@@ -5619,17 +5602,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Toggle visibility</source>
-      <translation>Växla synlighet</translation>
+      <translation>Mudar visibilidade</translation>
     </message>
     <message>
       <location/>
       <source>Toggles visibility</source>
-      <translation>Växlar synligheten</translation>
+      <translation>Troca a visibilidade</translation>
     </message>
   </context>
   <context>
@@ -5637,17 +5620,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>View</source>
-      <translation>Vy</translation>
+      <translation>Vista</translation>
     </message>
     <message>
       <location/>
       <source>Tool&amp;bars</source>
-      <translation>&amp;Verktygslådor</translation>
+      <translation>&amp;Barras de ferramentas</translation>
     </message>
     <message>
       <location/>
       <source>Toggles this window</source>
-      <translation>Växlar detta fönster</translation>
+      <translation>Troca esta janela</translation>
     </message>
   </context>
   <context>
@@ -5655,17 +5638,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Edit</source>
-      <translation>Redigera</translation>
+      <translation>Editar</translation>
     </message>
     <message>
       <location/>
       <source>Transform...</source>
-      <translation>Omvandla...</translation>
+      <translation>Transformar...</translation>
     </message>
     <message>
       <location/>
       <source>Transform the geometry of selected objects</source>
-      <translation>Omvandla geometrin för markerade objekt</translation>
+      <translation>Transformar a geometria dos objetos selecionados</translation>
     </message>
   </context>
   <context>
@@ -5673,17 +5656,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>View</source>
-      <translation>Vy</translation>
+      <translation>Vista</translation>
     </message>
     <message>
       <location/>
       <source>Go to selection</source>
-      <translation>Gå till markering</translation>
+      <translation>Ir para a seleção</translation>
     </message>
     <message>
       <location/>
       <source>Scroll to first selected item</source>
-      <translation>Rulla till den först valda saken</translation>
+      <translation>Vai para o primeiro item selecionado</translation>
     </message>
   </context>
   <context>
@@ -5691,17 +5674,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Edit</source>
-      <translation>Redigera</translation>
+      <translation>Editar</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Undo</source>
-      <translation>&amp;Ångra</translation>
+      <translation>&amp;Desfazer</translation>
     </message>
     <message>
       <location/>
       <source>Undo exactly one action</source>
-      <translation>Ångra exakt en aktion</translation>
+      <translation>Desfazer só uma ação</translation>
     </message>
   </context>
   <context>
@@ -5709,17 +5692,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>View</source>
-      <translation>Vy</translation>
+      <translation>Vista</translation>
     </message>
     <message>
       <location/>
       <source>Dock views</source>
-      <translation>Docka vyer</translation>
+      <translation>Ancorar vistas</translation>
     </message>
     <message>
       <location/>
       <source>Dock all top-level views</source>
-      <translation>Docka alla toppnivå vyer</translation>
+      <translation>Ancorar todas as vistas de nível superior</translation>
     </message>
   </context>
   <context>
@@ -5727,17 +5710,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Axometric</source>
-      <translation>Axonometrisk</translation>
+      <translation>Axonométrico</translation>
     </message>
     <message>
       <location/>
       <source>Set to axometric view</source>
-      <translation>Ställ in till axonometrisk vy</translation>
+      <translation>Definir como vista axonométrica</translation>
     </message>
   </context>
   <context>
@@ -5745,17 +5728,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Bottom</source>
-      <translation>Botten</translation>
+      <translation>De baixo</translation>
     </message>
     <message>
       <location/>
       <source>Set to bottom view</source>
-      <translation>Ställ in till bottenvy</translation>
+      <translation>Ver de baixo</translation>
     </message>
   </context>
   <context>
@@ -5763,17 +5746,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Create new view</source>
-      <translation>Skapa ny vy</translation>
+      <translation>Criar uma nova vista</translation>
     </message>
     <message>
       <location/>
       <source>Creates a new  view window for the active document</source>
-      <translation>Skapar ett nytt visningsfönster för det aktiva dokumentet</translation>
+      <translation>Cria uma nova janela de exibição para o documento ativo</translation>
     </message>
   </context>
   <context>
@@ -5781,17 +5764,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Inventor example #1</source>
-      <translation>Inventor exempel #1</translation>
+      <translation>Exemplo Inventor #1</translation>
     </message>
     <message>
       <location/>
       <source>Shows a 3D texture with manipulator</source>
-      <translation>Visar en 3D textur med manipulator</translation>
+      <translation>Mostra uma textura 3D com manipulador</translation>
     </message>
   </context>
   <context>
@@ -5799,17 +5782,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Inventor example #2</source>
-      <translation>Inventor exempel #2</translation>
+      <translation>Exemplo Inventor #2</translation>
     </message>
     <message>
       <location/>
       <source>Shows spheres and drag-lights</source>
-      <translation>Visar sfärer och släpljus</translation>
+      <translation>Mostra esferas e luzes de arrasto</translation>
     </message>
   </context>
   <context>
@@ -5817,17 +5800,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Inventor example #3</source>
-      <translation>Inventor exempel #3</translation>
+      <translation>Exemplo Inventor #3</translation>
     </message>
     <message>
       <location/>
       <source>Shows a animated texture</source>
-      <translation>Visar en animerad textur</translation>
+      <translation>Mostra uma textura animada</translation>
     </message>
   </context>
   <context>
@@ -5835,17 +5818,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Fit all</source>
-      <translation>Passa allt</translation>
+      <translation>Enquadrar tudo</translation>
     </message>
     <message>
       <location/>
       <source>Fits the whole content on the screen</source>
-      <translation>Anpasdsar så allt får plats på skärmen</translation>
+      <translation>Adapta todo o conteúdo na tela</translation>
     </message>
   </context>
   <context>
@@ -5853,17 +5836,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Fit selection</source>
-      <translation>Passa markering</translation>
+      <translation>Enquadrar seleção</translation>
     </message>
     <message>
       <location/>
       <source>Fits the selected content on the screen</source>
-      <translation>Anpassar det markerade innehållet på skärmen</translation>
+      <translation>Adapta o conteúdo selecionado na tela</translation>
     </message>
   </context>
   <context>
@@ -5871,17 +5854,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Front</source>
-      <translation>Front</translation>
+      <translation>Frente</translation>
     </message>
     <message>
       <location/>
       <source>Set to front view</source>
-      <translation>Ställ in till frontvy</translation>
+      <translation>Ajusta para a vista frontal</translation>
     </message>
   </context>
   <context>
@@ -5889,17 +5872,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Issue camera position</source>
-      <translation>Tilldela kameraposition</translation>
+      <translation>Mostrar a posição da câmera</translation>
     </message>
     <message>
       <location/>
       <source>Issue the camera position to the console and to a macro, to easily recall this position</source>
-      <translation>Tilldela kamerapositionen till konsolen och till ett makro, för att lätt återkalla denna position</translation>
+      <translation>Mostrar a posição da câmera no console e numa macro, para recuperar facilmente essa posição</translation>
     </message>
   </context>
   <context>
@@ -5907,17 +5890,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Stereo Interleaved Columns</source>
-      <translation>Stereo interfolierade kolumner</translation>
+      <translation>Colunas estéreo intercaladas</translation>
     </message>
     <message>
       <location/>
       <source>Switch stereo viewing to Interleaved Columns</source>
-      <translation>Växla stereovisning till interfolierade kolumner</translation>
+      <translation>Mudar de visualização stereo para Colunas Intercaladas</translation>
     </message>
   </context>
   <context>
@@ -5925,17 +5908,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Stereo Interleaved Rows</source>
-      <translation>Stereo interfolierade rader</translation>
+      <translation>Linhas estéreo intercaladas</translation>
     </message>
     <message>
       <location/>
       <source>Switch stereo viewing to Interleaved Rows</source>
-      <translation>Växla stereovisning till interfolierade rader</translation>
+      <translation>Alternar visualização estéreo para linhas intercaladas</translation>
     </message>
   </context>
   <context>
@@ -5943,17 +5926,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Stereo Off</source>
-      <translation>Stereo av</translation>
+      <translation>Desligar estéreo</translation>
     </message>
     <message>
       <location/>
       <source>Switch stereo viewing off</source>
-      <translation>Stänger av stereovisning</translation>
+      <translation>Desligar o modo de visualização estéreo</translation>
     </message>
   </context>
   <context>
@@ -5961,17 +5944,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Stereo quad buffer</source>
-      <translation>Stereo quad buffer</translation>
+      <translation>Quad buffer estéreo</translation>
     </message>
     <message>
       <location/>
       <source>Switch stereo viewing to quad buffer</source>
-      <translation>Växla stereovisning till quad buffer</translation>
+      <translation>Alternar visualização estéreo para quad buffer</translation>
     </message>
   </context>
   <context>
@@ -5979,17 +5962,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Stereo red/green</source>
-      <translation>Stereo röd/grön</translation>
+      <translation>Estéreo vermelho/verde</translation>
     </message>
     <message>
       <location/>
       <source>Switch stereo viewing to red/green</source>
-      <translation>Ändra stereovisning till röd/grön</translation>
+      <translation>Alternar visualização estéreo para vermelho/verde</translation>
     </message>
   </context>
   <context>
@@ -5997,17 +5980,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Left</source>
-      <translation>Vänster</translation>
+      <translation>Esquerda</translation>
     </message>
     <message>
       <location/>
       <source>Set to left view</source>
-      <translation>Ställ in till vänstervy</translation>
+      <translation>Ajusta para a vista esquerda</translation>
     </message>
   </context>
   <context>
@@ -6015,17 +5998,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Rear</source>
-      <translation>Bak</translation>
+      <translation>Traseira</translation>
     </message>
     <message>
       <location/>
       <source>Set to rear view</source>
-      <translation>Ställ in till bakvy</translation>
+      <translation>Vista de trás</translation>
     </message>
   </context>
   <context>
@@ -6033,17 +6016,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Right</source>
-      <translation>Höger</translation>
+      <translation>Direita</translation>
     </message>
     <message>
       <location/>
       <source>Set to right view</source>
-      <translation>Ställ in till högervy</translation>
+      <translation>Vista direita</translation>
     </message>
   </context>
   <context>
@@ -6051,17 +6034,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Top</source>
-      <translation>Topp</translation>
+      <translation>Topo</translation>
     </message>
     <message>
       <location/>
       <source>Set to top view</source>
-      <translation>Ställ in till toppvy</translation>
+      <translation>Vista de topo</translation>
     </message>
   </context>
   <context>
@@ -6069,17 +6052,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Help</source>
-      <translation>Hjälp</translation>
+      <translation>Ajuda</translation>
     </message>
     <message>
       <location/>
       <source>&amp;What's This?</source>
-      <translation>&amp;Förklaring?</translation>
+      <translation>O &amp;Que é Isso?</translation>
     </message>
     <message>
       <location/>
       <source>What's This</source>
-      <translation>Förklaring</translation>
+      <translation>O Que é Isso</translation>
     </message>
   </context>
   <context>
@@ -6087,17 +6070,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Window</source>
-      <translation>Fönster</translation>
+      <translation>Janela</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Windows...</source>
-      <translation>&amp;Fönster...</translation>
+      <translation>&amp;Janelas...</translation>
     </message>
     <message>
       <location/>
       <source>Windows list</source>
-      <translation>Fönsterlista</translation>
+      <translation>Lista de janelas</translation>
     </message>
   </context>
   <context>
@@ -6105,12 +6088,12 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Window</source>
-      <translation>Fönster</translation>
+      <translation>Janela</translation>
     </message>
     <message>
       <location/>
       <source>Activates this window</source>
-      <translation>Aktiverar detta fönster</translation>
+      <translation>Ativar esta janela</translation>
     </message>
   </context>
   <context>
@@ -6118,17 +6101,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>View</source>
-      <translation>Vy</translation>
+      <translation>Vista</translation>
     </message>
     <message>
       <location/>
       <source>Workbench</source>
-      <translation>Arbetsbänk</translation>
+      <translation>Bancada</translation>
     </message>
     <message>
       <location/>
       <source>Switch between workbenches</source>
-      <translation>Växla mellan arbetsbänkar</translation>
+      <translation>Alternar entre bancadas</translation>
     </message>
   </context>
   <context>
@@ -6136,17 +6119,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Orthographic view</source>
-      <translation>Ortografisk vy</translation>
+      <translation>Vista ortográfica</translation>
     </message>
     <message>
       <location/>
       <source>Switches to orthographic view mode</source>
-      <translation>Växlar till ortografisk vy</translation>
+      <translation>Alterna para o modo de exibição ortográfica</translation>
     </message>
   </context>
   <context>
@@ -6154,17 +6137,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Perspective view</source>
-      <translation>Perspektiv vy</translation>
+      <translation>Vista em perspectiva</translation>
     </message>
     <message>
       <location/>
       <source>Switches to perspective view mode</source>
-      <translation>Växlar till perspektiv vy</translation>
+      <translation>Alterna para o modo de visualização em perspectiva</translation>
     </message>
   </context>
   <context>
@@ -6172,12 +6155,12 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Box zoom</source>
-      <translation>Låd zoom</translation>
+      <translation>Zoom por caixa</translation>
     </message>
   </context>
   <context>
@@ -6185,17 +6168,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Display mode</source>
-      <translation>Visningsläge</translation>
+      <translation>Modo de exibição</translation>
     </message>
     <message>
       <location/>
       <source>Display the active view either in fullscreen, in undocked or docked mode</source>
-      <translation>Visa den aktiva vyn i fullskärm, i dockat eller i dockat läge</translation>
+      <translation>Mostrar a vista activa em tela cheia, em modo desencaixado ou encaixado</translation>
     </message>
   </context>
   <context>
@@ -6203,17 +6186,17 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Save picture...</source>
-      <translation>Spara bild...</translation>
+      <translation>Salvar imagem...</translation>
     </message>
     <message>
       <location/>
       <source>Creates a screenshot of the active view</source>
-      <translation>Ta en skärmbild på den aktiva vyn</translation>
+      <translation>Cria uma captura de tela da vista activa</translation>
     </message>
   </context>
   <context>
@@ -6221,12 +6204,12 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Zoom In</source>
-      <translation>Zooma in</translation>
+      <translation>Ampliar</translation>
     </message>
   </context>
   <context>
@@ -6234,12 +6217,12 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standardvy</translation>
+      <translation>Vista padrão</translation>
     </message>
     <message>
       <location/>
       <source>Zoom Out</source>
-      <translation>Zooma ut</translation>
+      <translation>Reduzir</translation>
     </message>
   </context>
   <context>
@@ -6247,22 +6230,22 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>&amp;File</source>
-      <translation>&amp;Arkiv</translation>
+      <translation>&amp;Arquivo</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Edit</source>
-      <translation>R&amp;edigera</translation>
+      <translation>&amp;Editar</translation>
     </message>
     <message>
       <location/>
       <source>Standard views</source>
-      <translation>Standardvyer</translation>
+      <translation>Vistas padrão</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Stereo</source>
-      <translation>&amp;Stereo</translation>
+      <translation>E&amp;stéreo</translation>
     </message>
     <message>
       <location/>
@@ -6272,57 +6255,57 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>Visibility</source>
-      <translation>Synlighet</translation>
+      <translation>Visibilidade</translation>
     </message>
     <message>
       <location/>
       <source>&amp;View</source>
-      <translation>&amp;Visa</translation>
+      <translation>&amp;Vista</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Tools</source>
-      <translation>Verk&amp;tyg</translation>
+      <translation>&amp;Ferramentas</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Macro</source>
-      <translation>&amp;Makro</translation>
+      <translation>&amp;Macro</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Windows</source>
-      <translation>&amp;Fönster</translation>
+      <translation>&amp;Janelas</translation>
     </message>
     <message>
       <location/>
       <source>&amp;On-line help</source>
-      <translation>&amp;Online hjälp</translation>
+      <translation>A&amp;juda on-line</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Help</source>
-      <translation>&amp;Hjälp</translation>
+      <translation>A&amp;juda</translation>
     </message>
     <message>
       <location/>
       <source>File</source>
-      <translation>Fil</translation>
+      <translation>Arquivo</translation>
     </message>
     <message>
       <location/>
       <source>Macro</source>
-      <translation>Makro</translation>
+      <translation>Macro</translation>
     </message>
     <message>
       <location/>
       <source>View</source>
-      <translation>Vy</translation>
+      <translation>Vista</translation>
     </message>
     <message>
       <location/>
       <source>Special Ops</source>
-      <translation>Special operationer</translation>
+      <translation>Operações especiais</translation>
     </message>
   </context>
   <context>
@@ -6330,7 +6313,7 @@ Tänk på att det har betydelse var du klickar.</translation>
     <message>
       <location/>
       <source>test</source>
-      <translation>Test</translation>
+      <translation>teste</translation>
     </message>
     <message>
       <location/>
@@ -6347,19 +6330,19 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;"&gt;
 &lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-size:20pt; font-weight:600;"&gt;iisTaskPanel&lt;/span&gt;&lt;/p&gt;
 &lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;"&gt;&lt;/p&gt;
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;"&gt;&lt;span style=" font-size:12pt;"&gt;Skapad för Qt 4.3.x&lt;/span&gt;&lt;/p&gt;
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;"&gt;&lt;span style=" font-size:12pt;"&gt;Created for Qt 4.3.x&lt;/span&gt;&lt;/p&gt;
 &lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;"&gt;&lt;/p&gt;
 &lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;"&gt;www.ii-system.com&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
       <location/>
       <source>Choose the style of the Task Panel</source>
-      <translation>Välj stil på uppgiftspanelen</translation>
+      <translation>Escolha o estilo do painel de tarefas</translation>
     </message>
     <message>
       <location/>
       <source>Default</source>
-      <translation>Standard</translation>
+      <translation>Padrão</translation>
     </message>
     <message>
       <location/>
