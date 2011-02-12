@@ -1,196 +1,238 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="es">
-<context>
+<TS>
+  <context>
     <name>CmdDrawingExportPage</name>
     <message>
-        <source>File</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>File</source>
+      <translation>Archivo</translation>
     </message>
     <message>
-        <source>&amp;Export page...</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&amp;Export page...</source>
+      <translation>&amp;Exportar página...</translation>
     </message>
     <message>
-        <source>Export a page to an SVG file</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Export a page to an SVG file</source>
+      <translation>Exportar una página a un archivo SVG</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdDrawingNewA3Landscape</name>
     <message>
-        <source>Drawing</source>
-        <translation>Dibujo</translation>
+      <location/>
+      <source>Drawing</source>
+      <translation>Dibujo</translation>
     </message>
     <message>
-        <source>Insert new A3 landscape drawing</source>
-        <translation>Inserta un nuevo dibujo en formato A3</translation>
+      <location/>
+      <source>Insert new A3 landscape drawing</source>
+      <translation>Inserta un nuevo dibujo en formato A3</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdDrawingNewView</name>
     <message>
-        <source>Drawing</source>
-        <translation>Dibujo</translation>
+      <location/>
+      <source>Drawing</source>
+      <translation>Dibujo</translation>
     </message>
     <message>
-        <source>Insert a new View in the active drawing</source>
-        <translation type="obsolete">Inserta una nueva vista en el dibujo actual</translation>
+      <location/>
+      <source>Insert a new View in the active drawing</source>
+      <translation>Inserta una nueva vista en el dibujo actual</translation>
     </message>
     <message>
-        <source>Insert view in drawing</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Insert view in drawing</source>
+      <translation>Insertar vista en el dibujo</translation>
     </message>
     <message>
-        <source>Insert a new View of a Part in the active drawing</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Insert a new View of a Part in the active drawing</source>
+      <translation>Insertar una nueva Vista de una Pieza en el dibujo activo</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdDrawingOpen</name>
     <message>
-        <source>Drawing</source>
-        <translation>Dibujo</translation>
+      <location/>
+      <source>Drawing</source>
+      <translation>Dibujo</translation>
     </message>
     <message>
-        <source>Open SVG...</source>
-        <translation>Abrir SVG...</translation>
+      <location/>
+      <source>Open SVG...</source>
+      <translation>Abrir SVG...</translation>
     </message>
     <message>
-        <source>Open a scalable vector graphic</source>
-        <translation>Abre una imagen vectorial escalable</translation>
+      <location/>
+      <source>Open a scalable vector graphic</source>
+      <translation>Abre una imagen vectorial escalable</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>DrawingGui::DrawingView</name>
     <message>
-        <source>&amp;Background</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&amp;Background</source>
+      <translation>&amp;Fondo</translation>
     </message>
     <message>
-        <source>&amp;Outline</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&amp;Outline</source>
+      <translation>&amp;Contorno</translation>
     </message>
     <message>
-        <source>&amp;Native</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&amp;Native</source>
+      <translation>&amp;Nativo</translation>
     </message>
     <message>
-        <source>&amp;OpenGL</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&amp;OpenGL</source>
+      <translation>&amp;OpenGL</translation>
     </message>
     <message>
-        <source>&amp;Image</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&amp;Image</source>
+      <translation>&amp;Imagen</translation>
     </message>
     <message>
-        <source>&amp;High Quality Antialiasing</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&amp;High Quality Antialiasing</source>
+      <translation>&amp;Antialiasing alta calidad</translation>
     </message>
     <message>
-        <source>Open SVG File</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Open SVG File</source>
+      <translation>Abrir archivo SVG</translation>
     </message>
     <message>
-        <source>Could not open file &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Could not open file '%1'.</source>
+      <translation>No se pudo abrir el archivo '%1'.</translation>
     </message>
     <message>
-        <source>&amp;Renderer</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&amp;Renderer</source>
+      <translation>&amp;Renderizador</translation>
     </message>
     <message>
-        <source>Export PDF</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Export PDF</source>
+      <translation>Exportar PDF</translation>
     </message>
     <message>
-        <source>PDF file (*.pdf)</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>PDF file (*.pdf)</source>
+      <translation>Archivo PDF (*.pdf)</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>DrawingGui::Workbench</name>
     <message>
-        <source>Drawing</source>
-        <translation type="obsolete">Dibujo</translation>
+      <location/>
+      <source>Drawing</source>
+      <translation>Dibujo</translation>
     </message>
     <message>
-        <source>I/O</source>
-        <translation type="obsolete">I/O</translation>
+      <location/>
+      <source>I/O</source>
+      <translation>E/S</translation>
     </message>
     <message>
-        <source>Drawing types</source>
-        <translation type="obsolete">Tipos de dibujos</translation>
+      <location/>
+      <source>Drawing types</source>
+      <translation>Tipos de dibujos</translation>
     </message>
     <message>
-        <source>Views</source>
-        <translation type="obsolete">Vistas</translation>
+      <location/>
+      <source>Views</source>
+      <translation>Vistas</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>QObject</name>
     <message>
-        <source>Choose an SVG file to open</source>
-        <translation>Seleccionar un archivo SVG para abrir</translation>
+      <location/>
+      <source>Choose an SVG file to open</source>
+      <translation>Seleccionar un archivo SVG para abrir</translation>
     </message>
     <message>
-        <source>Drawing viewer</source>
-        <translation>Visor de dibujos</translation>
+      <location/>
+      <source>Drawing viewer</source>
+      <translation>Visor de dibujos</translation>
     </message>
     <message>
-        <source>Scalable Vector Graphics (*.svg *.svgz)</source>
-        <translation>Imagen vectorial escalable (*.svg *.svgz)</translation>
+      <location/>
+      <source>Scalable Vector Graphics (*.svg *.svgz)</source>
+      <translation>Imagen vectorial escalable (*.svg *.svgz)</translation>
     </message>
     <message>
-        <source>Wrong selection</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Wrong selection</source>
+      <translation>Selección incorrecta</translation>
     </message>
     <message>
-        <source>Select a Part object.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select a Part object.</source>
+      <translation>Seleccionar un objeto Pieza.</translation>
     </message>
     <message>
-        <source>No page to insert</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>No page to insert</source>
+      <translation>Ninguna página para insertar</translation>
     </message>
     <message>
-        <source>Create a page to insert.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Create a page to insert.</source>
+      <translation>Crear una página para insertar.</translation>
     </message>
     <message>
-        <source>Select one Page object.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select one Page object.</source>
+      <translation>Seleccionar una página de objetos.</translation>
     </message>
     <message>
-        <source>SVG(*.svg)</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>SVG(*.svg)</source>
+      <translation>SVG(*.svg)</translation>
     </message>
     <message>
-        <source>All Files (*.*)</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>All Files (*.*)</source>
+      <translation>Todos los archivos (*.*)</translation>
     </message>
     <message>
-        <source>Export page</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Export page</source>
+      <translation>Exportar página</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>Workbench</name>
     <message>
-        <source>Drawing</source>
-        <translation type="unfinished">Dibujo</translation>
+      <location/>
+      <source>Drawing</source>
+      <translation>Dibujo</translation>
     </message>
     <message>
-        <source>I/O</source>
-        <translation type="obsolete">I/O</translation>
+      <location/>
+      <source>I/O</source>
+      <translation>E/S</translation>
     </message>
     <message>
-        <source>Drawing types</source>
-        <translation type="obsolete">Tipos de dibujos</translation>
+      <location/>
+      <source>Drawing types</source>
+      <translation>Tipos de dibujos</translation>
     </message>
     <message>
-        <source>Views</source>
-        <translation type="obsolete">Vistas</translation>
+      <location/>
+      <source>Views</source>
+      <translation>Vistas</translation>
     </message>
-</context>
+  </context>
 </TS>

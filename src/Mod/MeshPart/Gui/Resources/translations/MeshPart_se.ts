@@ -1,79 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="sv_SE">
-<context>
-    <name>CmdMeshPartConstraintAxle</name>
-    <message>
-        <source>MeshPart</source>
-        <translation type="obsolete">Nätdetalj</translation>
-    </message>
-    <message>
-        <source>Constraint Axle...</source>
-        <translation type="obsolete">Axelbegränsning...</translation>
-    </message>
-    <message>
-        <source>set a axle constraint between two objects</source>
-        <translation type="obsolete">Sätt en axelbegränsning mellan två objekt</translation>
-    </message>
-</context>
-<context>
+<TS>
+  <context>
     <name>CmdMeshPartMesher</name>
     <message>
-        <source>Mesh</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Mesh</translation>
     </message>
     <message>
-        <source>Create mesh from shape...</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Create mesh from shape...</source>
+      <translation>Create mesh from shape...</translation>
     </message>
     <message>
-        <source>Tessellate shape</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Tessellate shape</source>
+      <translation>Tessellate shape</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>MeshPartGui::Tessellation</name>
     <message>
-        <source>Tessellation</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Tessellation</source>
+      <translation>Tessellation</translation>
     </message>
     <message>
-        <source>Shapes</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Shapes</source>
+      <translation>Shapes</translation>
     </message>
     <message>
-        <source>Settings</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Settings</source>
+      <translation>Settings</translation>
     </message>
     <message>
-        <source>Surface deviation:</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Surface deviation:</source>
+      <translation>Surface deviation:</translation>
     </message>
     <message>
-        <source>Max. edge length:</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Max. edge length:</source>
+      <translation>Max. edge length:</translation>
     </message>
     <message>
-        <source>Select a shape for meshing, first.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select a shape for meshing, first.</source>
+      <translation>Select a shape for meshing, first.</translation>
     </message>
     <message>
-        <source>No such document &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>No such document '%1'.</source>
+      <translation>No such document '%1'.</translation>
     </message>
-</context>
-<context>
-    <name>MeshPartGui::Workbench</name>
-    <message>
-        <source>MeshPart</source>
-        <translation type="obsolete">Nätdetalj</translation>
-    </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>Workbench</name>
     <message>
-        <source>MeshPart</source>
-        <translation>Nätdetalj</translation>
+      <location/>
+      <source>MeshPart</source>
+      <translation>NätDel</translation>
     </message>
-</context>
+  </context>
 </TS>

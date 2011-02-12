@@ -1,233 +1,237 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="es">
-<context>
+<TS>
+  <context>
     <name>CmdRaytracingExportProject</name>
     <message>
-        <source>File</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>File</source>
+      <translation>Archivo</translation>
     </message>
     <message>
-        <source>&amp;Export project...</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&amp;Export project...</source>
+      <translation>&amp;Exportar proyecto...</translation>
     </message>
     <message>
-        <source>Export the Povray project file</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Export the Povray project file</source>
+      <translation>Exportar el archivo de proyecto Povray</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRaytracingNewPartSegment</name>
     <message>
-        <source>Raytracing</source>
-        <translation type="unfinished">Raytracing</translation>
+      <location/>
+      <source>Raytracing</source>
+      <translation>Trazado de rayos</translation>
     </message>
     <message>
-        <source>Insert part</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Insert part</source>
+      <translation>Insertar pieza</translation>
     </message>
     <message>
-        <source>Insert a new part object into a Povray project</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Insert a new part object into a Povray project</source>
+      <translation>Insertar objeto 'Parte' nuevo en un proyecto de Povray</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRaytracingNewPovrayProject</name>
     <message>
-        <source>Raytracing</source>
-        <translation type="unfinished">Raytracing</translation>
+      <location/>
+      <source>Raytracing</source>
+      <translation>Trazado de rayos</translation>
     </message>
     <message>
-        <source>New Povray project</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>New Povray project</source>
+      <translation>Proyecto Povray nuevo</translation>
     </message>
     <message>
-        <source>Insert new Povray project into the document</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Insert new Povray project into the document</source>
+      <translation>Insertar proyecto Povray nuevo en el documento</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRaytracingNewProject</name>
     <message>
-        <source>Raytracing</source>
-        <translation type="obsolete">Raytracing</translation>
+      <location/>
+      <source>Raytracing</source>
+      <translation>Trazado de rayos</translation>
     </message>
-    <message>
-        <source>New project</source>
-        <translation type="obsolete">Nuevo proyecto</translation>
-    </message>
-    <message>
-        <source>Write the initial povray file to render a part</source>
-        <translation type="obsolete">Guarda el archivo inicial de PovRay en una pieza renderizada</translation>
-    </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRaytracingQuickRender</name>
     <message>
-        <source>Raytracing</source>
-        <translation type="obsolete">Raytracing</translation>
+      <location/>
+      <source>Raytracing</source>
+      <translation>Trazado de rayos</translation>
     </message>
-    <message>
-        <source>Render</source>
-        <translation type="obsolete">Render</translation>
-    </message>
-    <message>
-        <source>Renders the actual view</source>
-        <translation type="obsolete">Renderiza la vista actual</translation>
-    </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRaytracingWriteCamera</name>
     <message>
-        <source>Raytracing</source>
-        <translation>Raytracing</translation>
+      <location/>
+      <source>Raytracing</source>
+      <translation>Trazado de rayos</translation>
     </message>
     <message>
-        <source>Write camera position</source>
-        <translation type="obsolete">Escribir la posición de la cámara</translation>
+      <location/>
+      <source>Export camera to povray</source>
+      <translation>Exportar cámara a povray</translation>
     </message>
     <message>
-        <source>Write the camera positon of the active 3D view in PovRay format to a file</source>
-        <translation type="obsolete">Escribe la posición de la cámara de la vista 3D activa en formato PovRay</translation>
+      <location/>
+      <source>Export the camera positon of the active 3D view in PovRay format to a file</source>
+      <translation>Exportar la posición de la cámara de la vista 3D activa en formato PovRay a un archivo</translation>
     </message>
-    <message>
-        <source>Export camera to povray</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Export the camera positon of the active 3D view in PovRay format to a file</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRaytracingWritePart</name>
     <message>
-        <source>Raytracing</source>
-        <translation>Raytracing</translation>
+      <location/>
+      <source>Raytracing</source>
+      <translation>Trazado de rayos</translation>
     </message>
     <message>
-        <source>Write the part</source>
-        <translation type="obsolete">escribe la pieza</translation>
+      <location/>
+      <source>Export part to povray...</source>
+      <translation>Exportar pieza a povray...</translation>
     </message>
     <message>
-        <source>Write the Part (object) of the active 3D view in PovRay format to a file</source>
-        <translation type="obsolete">Escribe la pieza (objeto) de la vista 3D activa en formato de PovRay en un archivo</translation>
+      <location/>
+      <source>Write the selected Part (object) as a povray file</source>
+      <translation>Escribir la Parte (objecto) seleccionada a un archivo povray</translation>
     </message>
-    <message>
-        <source>Export part to povray...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Write the selected Part (object) as a povray file</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRaytracingWriteView</name>
     <message>
-        <source>Raytracing</source>
-        <translation type="unfinished">Raytracing</translation>
+      <location/>
+      <source>Raytracing</source>
+      <translation>Trazado de rayos</translation>
     </message>
     <message>
-        <source>Export view to povray...</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Export view to povray...</source>
+      <translation>Exportar vista a povray...</translation>
     </message>
     <message>
-        <source>Write the active 3D view with camera and all its content to a povray file</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Write the active 3D view with camera and all its content to a povray file</source>
+      <translation>Escribir la vista 3D activa con cámara y todo su contenido a un archivo povray</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>QObject</name>
     <message>
-        <source>Povray(*.pov)</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Povray(*.pov)</source>
+      <translation>Povray(*.pov)</translation>
     </message>
     <message>
-        <source>All Files (*.*)</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>All Files (*.*)</source>
+      <translation>Todos los archivos (*.*)</translation>
     </message>
     <message>
-        <source>Export page</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Export page</source>
+      <translation>Exportar página</translation>
     </message>
     <message>
-        <source>Wrong selection</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Wrong selection</source>
+      <translation>Selección errónea</translation>
     </message>
     <message>
-        <source>Select a Part object.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select a Part object.</source>
+      <translation>Seleccione un objecto tipo Parte.</translation>
     </message>
     <message>
-        <source>No Povray project to insert</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>No Povray project to insert</source>
+      <translation>Ningún proyecto Povray para insertar</translation>
     </message>
     <message>
-        <source>Create a Povray project to insert a view.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Create a Povray project to insert a view.</source>
+      <translation>Crear un proyecto Povray para insertar una vista.</translation>
     </message>
     <message>
-        <source>Select one Povray project object.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select one Povray project object.</source>
+      <translation>Seleccione un objeto tipo Proyecto Povray.</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>RaytracingGui::DlgSettingsRay</name>
     <message>
-        <source>Raytracing</source>
-        <translation>Raytracing</translation>
+      <location/>
+      <source>Raytracing</source>
+      <translation>Trazado de rayos</translation>
     </message>
     <message>
-        <source>Directories</source>
-        <translation>Directorios</translation>
+      <location/>
+      <source>Directories</source>
+      <translation>Directorios</translation>
     </message>
     <message>
-        <source>Default Project dir:</source>
-        <translation>Directorio por defecto del proyecto:</translation>
+      <location/>
+      <source>Default Project dir:</source>
+      <translation>Directorio por defecto del proyecto:</translation>
     </message>
     <message>
-        <source>Camera file name:</source>
-        <translation>Nombre del archivo de la cámara:</translation>
+      <location/>
+      <source>Camera file name:</source>
+      <translation>Nombre del archivo de la cámara:</translation>
     </message>
     <message>
-        <source>Part file name:</source>
-        <translation>Nombre del archivo de la pieza:</translation>
+      <location/>
+      <source>Part file name:</source>
+      <translation>Nombre del archivo de la pieza:</translation>
     </message>
     <message>
-        <source>TempCamera.inc</source>
-        <translation>TempCamera.inc</translation>
+      <location/>
+      <source>TempCamera.inc</source>
+      <translation>TempCamera.inc</translation>
     </message>
     <message>
-        <source>TempPart.inc</source>
-        <translation>TempPart.inc</translation>
+      <location/>
+      <source>TempPart.inc</source>
+      <translation>TempPart.inc</translation>
     </message>
     <message>
-        <source>Mesh export settings</source>
-        <translation>Configuración de la exportación de mallas</translation>
+      <location/>
+      <source>Mesh export settings</source>
+      <translation>Configuración de la exportación de mallas</translation>
     </message>
     <message>
-        <source>max mesh deviation:</source>
-        <translation>Desviación máxima de la malla:</translation>
+      <location/>
+      <source>max mesh deviation:</source>
+      <translation>Desviación máxima de la malla:</translation>
     </message>
     <message>
-        <source>Do not calculate vertex normals</source>
-        <translation>No calcular vértices normales</translation>
+      <location/>
+      <source>Do not calculate vertex normals</source>
+      <translation>No calcular vértices normales</translation>
     </message>
     <message>
-        <source>Write u,v coordinates</source>
-        <translation>Escribir las coordenadas u,v</translation>
+      <location/>
+      <source>Write u,v coordinates</source>
+      <translation>Escribir las coordenadas u,v</translation>
     </message>
-</context>
-<context>
-    <name>Workbench</name>
+  </context>
+  <context>
+    <name>RaytracingGui::Workbench</name>
     <message>
-        <source>Raytracing tools</source>
-        <translation type="obsolete">Herramientas de Raytracing</translation>
+      <location/>
+      <source>&amp;Raytracing</source>
+      <translation>&amp;Trazado de rayos</translation>
     </message>
-    <message>
-        <source>&amp;Raytracing</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
+  </context>
 </TS>
