@@ -1,792 +1,966 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="de_DE">
-<context>
+<TS>
+  <context>
     <name>CmdRobotAddToolShape</name>
     <message>
-        <source>Robot</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Robot</source>
+      <translation>Roboter</translation>
     </message>
     <message>
-        <source>Add tool</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Add tool</source>
+      <translation>Werkzeug hinzufügen</translation>
     </message>
     <message>
-        <source>Add a tool shape to the robot</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Add a tool shape to the robot</source>
+      <translation>Hinzufügen einer Werkzeug-Form zum Roboter</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRobotConstraintAxle</name>
     <message>
-        <source>Robot</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Robot</source>
+      <translation>Roboter</translation>
     </message>
     <message>
-        <source>Place robot...</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Place robot...</source>
+      <translation>Plaziert einen Roboter...</translation>
     </message>
     <message>
-        <source>Place a robot (experimental!)</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Place a robot (experimental!)</source>
+      <translation>Platziere einen Roboter (experimental!)</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRobotCreateTrajectory</name>
     <message>
-        <source>Robot</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Robot</source>
+      <translation>Roboter</translation>
     </message>
     <message>
-        <source>Create trajectory</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Create trajectory</source>
+      <translation>Erstelle Arbeitsbewegung</translation>
     </message>
     <message>
-        <source>Create a new empty trajectory </source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Create a new empty trajectory </source>
+      <translation>Erstellen Sie eine neue, leere Arbeitsbewegung </translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRobotEdge2Trac</name>
     <message>
-        <source>Robot</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Robot</source>
+      <translation>Roboter</translation>
     </message>
     <message>
-        <source>Edge to Trajectory...</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Edge to Trajectory...</source>
+      <translation>Punkt zur Arbeitsbewegung hinzufügen...</translation>
     </message>
     <message>
-        <source>Generate a Trajectory from a set of edges</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Generate a Trajectory from a set of edges</source>
+      <translation>Generieren Sie eine Arbeitsbewegung aus einer Reihe von Punkten</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRobotExportKukaCompact</name>
     <message>
-        <source>Robot</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Robot</source>
+      <translation>Roboter</translation>
     </message>
     <message>
-        <source>Kuka compact subroutine...</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Kuka compact subroutine...</source>
+      <translation>KUKA kompaktes Unterprogramm ...</translation>
     </message>
     <message>
-        <source>Export the trajectory as a compact KRL subroutine.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Export the trajectory as a compact KRL subroutine.</source>
+      <translation>Exportieren Sie die Arbeitsbewegung als kompaktes KRL Unterprogramm.</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRobotExportKukaFull</name>
     <message>
-        <source>Robot</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Robot</source>
+      <translation>Roboter</translation>
     </message>
     <message>
-        <source>Kuka full subroutine...</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Kuka full subroutine...</source>
+      <translation>KUKA vollständiges Unterprogramm ...</translation>
     </message>
     <message>
-        <source>Export the trajectory as a full KRL subroutine.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Export the trajectory as a full KRL subroutine.</source>
+      <translation>Exportieren Sie die Arbeitsbewegung als eine volle KRL-Unterroutine.</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRobotInsertKukaIR125</name>
     <message>
-        <source>Robot</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Robot</source>
+      <translation>Roboter</translation>
     </message>
     <message>
-        <source>Kuka IR125</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Kuka IR125</source>
+      <translation>KUKA IR125</translation>
     </message>
     <message>
-        <source>Insert a Kuka IR125 into the document.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Insert a Kuka IR125 into the document.</source>
+      <translation>Einen Kuka-IR125 in das Dokument einfügen.</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRobotInsertKukaIR16</name>
     <message>
-        <source>Robot</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Robot</source>
+      <translation>Roboter</translation>
     </message>
     <message>
-        <source>Kuka IR16</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Kuka IR16</source>
+      <translation>KUKA IR16</translation>
     </message>
     <message>
-        <source>Insert a Kuka IR16 into the document.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Insert a Kuka IR16 into the document.</source>
+      <translation>Einen Kuka-IR16 in das Dokument einfügen.</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRobotInsertKukaIR210</name>
     <message>
-        <source>Robot</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Robot</source>
+      <translation>Roboter</translation>
     </message>
     <message>
-        <source>Kuka IR210</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Kuka IR210</source>
+      <translation>KUKA IR210</translation>
     </message>
     <message>
-        <source>Insert a Kuka IR210 into the document.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Insert a Kuka IR210 into the document.</source>
+      <translation>Einen Kuka-IR210 in das Dokument einfügen.</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRobotInsertKukaIR500</name>
     <message>
-        <source>Robot</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Robot</source>
+      <translation>Roboter</translation>
     </message>
     <message>
-        <source>Kuka IR500</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Kuka IR500</source>
+      <translation>KUKA IR500</translation>
     </message>
     <message>
-        <source>Insert a Kuka IR500 into the document.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Insert a Kuka IR500 into the document.</source>
+      <translation>Einen Kuka-IR500 in das Dokument einfügen.</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRobotInsertWaypoint</name>
     <message>
-        <source>Robot</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Robot</source>
+      <translation>Roboter</translation>
     </message>
     <message>
-        <source>Insert in trajectory</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Insert in trajectory</source>
+      <translation>Fügen Sie eine Arbeitsbewegung ein</translation>
     </message>
     <message>
-        <source>Insert robot Tool location into trajectory</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Insert robot Tool location into trajectory</source>
+      <translation>Lage des Roboterwerkzeugs in Arbeitsbewegung einbringen</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRobotInsertWaypointPreselect</name>
     <message>
-        <source>Robot</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Robot</source>
+      <translation>Roboter</translation>
     </message>
     <message>
-        <source>Insert in trajectory</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Insert in trajectory</source>
+      <translation>Fügen Sie eine Arbeitsbewegung ein</translation>
     </message>
     <message>
-        <source>Insert preselection position into trajectory (W)</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Insert preselection position into trajectory (W)</source>
+      <translation>Vorausgewählte Position in Arbeitsbewegung einbringen (W)</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRobotRestoreHomePos</name>
     <message>
-        <source>Robot</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Robot</source>
+      <translation>Roboter</translation>
     </message>
     <message>
-        <source>Move to home</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Move to home</source>
+      <translation>Zur Ausgansposition bewegen</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRobotSetDefaultOrientation</name>
     <message>
-        <source>Robot</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Robot</source>
+      <translation>Roboter</translation>
     </message>
     <message>
-        <source>Set default orientation</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Set default orientation</source>
+      <translation>Setze Standardrichtung</translation>
     </message>
     <message>
-        <source>set the default orientation for subsequent commands for waypoint creation</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>set the default orientation for subsequent commands for waypoint creation</source>
+      <translation>Setzt die Standardausrichtung für nachfolgende Befehle zur Wegpunkterstellung</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRobotSetDefaultValues</name>
     <message>
-        <source>Robot</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Robot</source>
+      <translation>Roboter</translation>
     </message>
     <message>
-        <source>Set default values</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Set default values</source>
+      <translation>Festlegen von Standardwerten</translation>
     </message>
     <message>
-        <source>set the default values for speed, acceleration and continuity for subsequent commands of waypoint creation</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>set the default values for speed, acceleration and continuity for subsequent commands of waypoint creation</source>
+      <translation>Setzt die Standard-Werte für Geschwindigkeit, Beschleunigung und Dauer für die nachfolgenden Befehle der Wegpunkterstellung</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRobotSetHomePos</name>
     <message>
-        <source>Robot</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Robot</source>
+      <translation>Roboter</translation>
     </message>
     <message>
-        <source>Set the home position</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Set the home position</source>
+      <translation>Setzen Sie die Ausgansposition</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRobotSimulate</name>
     <message>
-        <source>Robot</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Robot</source>
+      <translation>Roboter</translation>
     </message>
     <message>
-        <source>Simulate a trajectory</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Simulate a trajectory</source>
+      <translation>Simulieren einer Arbeitsbewegung</translation>
     </message>
     <message>
-        <source>Run a simulation on a trajectory</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Run a simulation on a trajectory</source>
+      <translation>Simulation über die Bewegungsbahn starten</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRobotTrajectoryCompound</name>
     <message>
-        <source>Robot</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Robot</source>
+      <translation>Roboter</translation>
     </message>
     <message>
-        <source>Trajectory compound...</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Trajectory compound...</source>
+      <translation>Verbinden der Arbeitsbewegungen ...</translation>
     </message>
     <message>
-        <source>Group and connect some trajectories to one</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Group and connect some trajectories to one</source>
+      <translation>Gruppieren und Verbinden zu einer Arbeitsbewegung</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdRobotTrajectoryDressUp</name>
     <message>
-        <source>Robot</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Robot</source>
+      <translation>Roboter</translation>
     </message>
     <message>
-        <source>Dress up trajectory...</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Dress up trajectory...</source>
+      <translation>Arbeitsbewegung verfeinern ...</translation>
     </message>
     <message>
-        <source>Create a dress up object which overide som aspects of a trajectory</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Create a dress up object which overide som aspects of a trajectory</source>
+      <translation>Create a dress up object which overide som aspects of a trajectory</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>QObject</name>
     <message>
-        <source>Wrong selection</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Wrong selection</source>
+      <translation>Falsche Auswahl</translation>
     </message>
     <message>
-        <source>Select one Robot and one Trajectory object.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select one Robot and one Trajectory object.</source>
+      <translation>Wählen Sie einen Roboter und eine Arbeitsbewegung.</translation>
     </message>
     <message>
-        <source>Trajectory not valid</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Trajectory not valid</source>
+      <translation>Arbeitsbewegung nicht gültig</translation>
     </message>
     <message>
-        <source>You need at least two way points in a trajectory to simulate.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>You need at least two way points in a trajectory to simulate.</source>
+      <translation>Sie benötigen mindestens zwei Wegpunkte, um eine Bewegungsbahn zu simulieren.</translation>
     </message>
     <message>
-        <source>KRL file(*.src)</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>KRL file(*.src)</source>
+      <translation>KRL-Datei (*. src)</translation>
     </message>
     <message>
-        <source>All Files (*.*)</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>All Files (*.*)</source>
+      <translation>Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <source>Export program</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Export program</source>
+      <translation>Programm exportieren</translation>
     </message>
     <message>
-        <source>Select one robot and one shape or VRML object.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select one robot and one shape or VRML object.</source>
+      <translation>Select one robot and one shape or VRML object.</translation>
     </message>
     <message>
-        <source>No preselection</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>No preselection</source>
+      <translation>Keine Vorauswahl</translation>
     </message>
     <message>
-        <source>You have to hover above a geometry (Preselection) with the mouse to use this command. See documentation for details.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>You have to hover above a geometry (Preselection) with the mouse to use this command. See documentation for details.</source>
+      <translation>Sie müssen die Maus über eine Geometrie (Preselection) positionieren, um diesen Befehl zu verwenden.
+Siehe Dokumentation für Details.</translation>
     </message>
     <message>
-        <source>Select one Robot to set home postion</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select one Robot to set home postion</source>
+      <translation>Wählen Sie einen Roboter um die Ausgangsposition zu setzen</translation>
     </message>
     <message>
-        <source>Select one Robot</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select one Robot</source>
+      <translation>Einen Roboter auswählen</translation>
     </message>
     <message>
-        <source>Select one Trajectory object.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select one Trajectory object.</source>
+      <translation>Einen Bewegungsablauf wählen.</translation>
     </message>
     <message>
-        <source>set default speed</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>set default speed</source>
+      <translation>Standardgeschwindigkeit setzen</translation>
     </message>
     <message>
-        <source>speed: (e.g. 1 m/s or 3 cm/s)</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>speed: (e.g. 1 m/s or 3 cm/s)</source>
+      <translation>Geschwindigkeit: (z.B. 1 m/s oder 3 cm/s)</translation>
     </message>
     <message>
-        <source>set default continuity</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>set default continuity</source>
+      <translation>Setze Vorgabe zur Dauer</translation>
     </message>
     <message>
-        <source>continuous ?</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>continuous ?</source>
+      <translation>Fortlaufend ?</translation>
     </message>
     <message>
-        <source>set default acceleration</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>set default acceleration</source>
+      <translation>Standardbeschleunigung setzen</translation>
     </message>
     <message>
-        <source>acceleration: (e.g. 1 m/s^2 or 3 cm/s^2)</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>acceleration: (e.g. 1 m/s^2 or 3 cm/s^2)</source>
+      <translation>Beschleunigung: (zB 1 m / s ^ 2 oder 3 cm / s ^ 2)</translation>
     </message>
     <message>
-        <source>No robot files installed</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>No robot files installed</source>
+      <translation>Keine Roboter-Dateien installiert</translation>
     </message>
     <message>
-        <source>Please visit %1 and copy the files to %2</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Please visit %1 and copy the files to %2</source>
+      <translation>Bitte gehen Sie zu %1 und kopieren Sie die Dateien in %2</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>RobotGui::DlgTrajectorySimulate</name>
     <message>
-        <source>Simulation</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Simulation</source>
+      <translation>Simulation</translation>
     </message>
     <message>
-        <source>|&lt;</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>|&lt;</source>
+      <translation>|&lt;</translation>
     </message>
     <message>
-        <source>&lt;</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&lt;</source>
+      <translation>&lt;</translation>
     </message>
     <message>
-        <source>||</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>||</source>
+      <translation>||</translation>
     </message>
     <message>
-        <source>|&gt;</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>|&gt;</source>
+      <translation>|&gt;</translation>
     </message>
     <message>
-        <source>&gt;</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&gt;</source>
+      <translation>&gt;</translation>
     </message>
     <message>
-        <source>&gt;|</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&gt;|</source>
+      <translation>&gt;|</translation>
     </message>
     <message>
-        <source>%</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>%</source>
+      <translation>%</translation>
     </message>
     <message>
-        <source>Type</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Type</source>
+      <translation>Typ</translation>
     </message>
     <message>
-        <source>Name</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Name</source>
+      <translation>Name</translation>
     </message>
     <message>
-        <source>C</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>C</source>
+      <translation>C</translation>
     </message>
     <message>
-        <source>V</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>V</source>
+      <translation>V</translation>
     </message>
     <message>
-        <source>A</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>A</source>
+      <translation>A</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>RobotGui::TaskEdge2TracParameter</name>
     <message>
-        <source>TaskEdge2TracParameter</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>TaskEdge2TracParameter</source>
+      <translation>TaskEdge2TracParameter</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>RobotGui::TaskRobot6Axis</name>
     <message>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Form</source>
+      <translation>Form</translation>
     </message>
     <message>
-        <source>A1</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>A1</source>
+      <translation>A1</translation>
     </message>
     <message>
-        <source>A2</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>A2</source>
+      <translation>A2</translation>
     </message>
     <message>
-        <source>A3</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>A3</source>
+      <translation>A3</translation>
     </message>
     <message>
-        <source>A4</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>A4</source>
+      <translation>A4</translation>
     </message>
     <message>
-        <source>A5</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>A5</source>
+      <translation>A5</translation>
     </message>
     <message>
-        <source>A6</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>A6</source>
+      <translation>A6</translation>
     </message>
     <message>
-        <source>TCP: (200.23,300.23,400.23,234,343,343)</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>TCP: (200.23,300.23,400.23,234,343,343)</source>
+      <translation>TCP: (200.23,300.23,400.23,234,343,343)</translation>
     </message>
     <message>
-        <source>Tool: (0,0,400,0,0,0)</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Tool: (0,0,400,0,0,0)</source>
+      <translation>Werkzeug: (0,0,400,0,0,0)</translation>
     </message>
     <message>
-        <source>...</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>...</source>
+      <translation>...</translation>
     </message>
     <message>
-        <source>TaskRobot6Axis</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>TaskRobot6Axis</source>
+      <translation>TaskRobot6Axis</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>RobotGui::TaskRobotControl</name>
     <message>
-        <source>TaskRobotControl</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>TaskRobotControl</source>
+      <translation>TaskRobotControl</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>RobotGui::TaskRobotMessages</name>
     <message>
-        <source>TaskRobotMessages</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>TaskRobotMessages</source>
+      <translation>TaskRobotMessages</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>RobotGui::TaskTrajectory</name>
     <message>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Form</source>
+      <translation>Form</translation>
     </message>
     <message>
-        <source>|&lt;</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>|&lt;</source>
+      <translation>|&lt;</translation>
     </message>
     <message>
-        <source>&lt;</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&lt;</source>
+      <translation>&lt;</translation>
     </message>
     <message>
-        <source>||</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>||</source>
+      <translation>||</translation>
     </message>
     <message>
-        <source>|&gt;</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>|&gt;</source>
+      <translation>|&gt;</translation>
     </message>
     <message>
-        <source>&gt;</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&gt;</source>
+      <translation>&gt;</translation>
     </message>
     <message>
-        <source>&gt;|</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&gt;|</source>
+      <translation>&gt;|</translation>
     </message>
     <message>
-        <source>%</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>%</source>
+      <translation>%</translation>
     </message>
     <message>
-        <source>10 ms</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>10 ms</source>
+      <translation>10 ms</translation>
     </message>
     <message>
-        <source>50 ms</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>50 ms</source>
+      <translation>50 ms</translation>
     </message>
     <message>
-        <source>100 ms</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>100 ms</source>
+      <translation>100 ms</translation>
     </message>
     <message>
-        <source>500 ms</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>500 ms</source>
+      <translation>500 ms</translation>
     </message>
     <message>
-        <source>1 s</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>1 s</source>
+      <translation>1 s</translation>
     </message>
     <message>
-        <source>Pos: (200.23, 300.23, 400.23, 234, 343 ,343)</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Pos: (200.23, 300.23, 400.23, 234, 343 ,343)</source>
+      <translation>Position: (200,23, 300,23, 400,23, 234, 343, 343)</translation>
     </message>
     <message>
-        <source>Type</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Type</source>
+      <translation>Typ</translation>
     </message>
     <message>
-        <source>Name</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Name</source>
+      <translation>Name</translation>
     </message>
     <message>
-        <source>C</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>C</source>
+      <translation>C</translation>
     </message>
     <message>
-        <source>V</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>V</source>
+      <translation>V</translation>
     </message>
     <message>
-        <source>A</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>A</source>
+      <translation>A</translation>
     </message>
     <message>
-        <source>Trajectory</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Trajectory</source>
+      <translation>Bahnverlauf</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>RobotGui::TaskTrajectoryDressUpParameter</name>
     <message>
-        <source>Dress Up Parameter</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Dress Up Parameter</source>
+      <translation>Dress Up Parameter</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>TaskEdge2TracParameter</name>
     <message>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Form</source>
+      <translation>Form</translation>
     </message>
     <message>
-        <source>Hide / Show</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Hide / Show</source>
+      <translation>Verbergen / Zeigen</translation>
     </message>
     <message>
-        <source>Edges: 0</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Edges: 0</source>
+      <translation>Punkte: 0</translation>
     </message>
     <message>
-        <source>Cluster: 0</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Cluster: 0</source>
+      <translation>Cluster: 0</translation>
     </message>
     <message>
-        <source>Sizing Value:</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Sizing Value:</source>
+      <translation>Größenwert:</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>TaskRobotControl</name>
     <message>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Form</source>
+      <translation>Form</translation>
     </message>
     <message>
-        <source>X+</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>X+</source>
+      <translation>X +</translation>
     </message>
     <message>
-        <source>Y+</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Y+</source>
+      <translation>Y +</translation>
     </message>
     <message>
-        <source>Z+</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Z+</source>
+      <translation>Z +</translation>
     </message>
     <message>
-        <source>A+</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>A+</source>
+      <translation>A +</translation>
     </message>
     <message>
-        <source>B+</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>B+</source>
+      <translation>B +</translation>
     </message>
     <message>
-        <source>C+</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>C+</source>
+      <translation>C +</translation>
     </message>
     <message>
-        <source>X-</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>X-</source>
+      <translation>X-</translation>
     </message>
     <message>
-        <source>Y-</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Y-</source>
+      <translation>Y-</translation>
     </message>
     <message>
-        <source>Z-</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Z-</source>
+      <translation>Z-</translation>
     </message>
     <message>
-        <source>A-</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>A-</source>
+      <translation>A-</translation>
     </message>
     <message>
-        <source>B-</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>B-</source>
+      <translation>B-</translation>
     </message>
     <message>
-        <source>C-</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>C-</source>
+      <translation>C-</translation>
     </message>
     <message>
-        <source>Tool 0</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Tool 0</source>
+      <translation>Werkzeug 0</translation>
     </message>
     <message>
-        <source>Tool</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Tool</source>
+      <translation>Werkzeug</translation>
     </message>
     <message>
-        <source>Base 0</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Base 0</source>
+      <translation>Basis 0</translation>
     </message>
     <message>
-        <source>Base</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Base</source>
+      <translation>Basis</translation>
     </message>
     <message>
-        <source>World</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>World</source>
+      <translation>Welt</translation>
     </message>
-    <message utf8="true">
-        <source>50mm / 5°</source>
-        <translation type="unfinished"></translation>
+    <message>
+      <location/>
+      <source>50mm / 5°</source>
+      <translation>50mm / 5 °</translation>
     </message>
-    <message utf8="true">
-        <source>20mm / 2°</source>
-        <translation type="unfinished"></translation>
+    <message>
+      <location/>
+      <source>20mm / 2°</source>
+      <translation>20mm / 2 °</translation>
     </message>
-    <message utf8="true">
-        <source>10mm / 1°</source>
-        <translation type="unfinished"></translation>
+    <message>
+      <location/>
+      <source>10mm / 1°</source>
+      <translation>10mm / 1 °</translation>
     </message>
-    <message utf8="true">
-        <source>5mm / 0.5°</source>
-        <translation type="unfinished"></translation>
+    <message>
+      <location/>
+      <source>5mm / 0.5°</source>
+      <translation>5mm / 0,5 °</translation>
     </message>
-    <message utf8="true">
-        <source>1mm / 0.1°</source>
-        <translation type="unfinished"></translation>
+    <message>
+      <location/>
+      <source>1mm / 0.1°</source>
+      <translation>1mm / 0,1 °</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>TaskRobotMessages</name>
     <message>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Form</source>
+      <translation>Form</translation>
     </message>
     <message>
-        <source>clear</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>clear</source>
+      <translation>Zurücksetzen</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>TaskTrajectoryDressUpParameter</name>
     <message>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Form</source>
+      <translation>Form</translation>
     </message>
     <message>
-        <source>Speed &amp; Acceleration:</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Speed &amp; Acceleration:</source>
+      <translation>Geschwindigkeit &amp; Beschleunigung:</translation>
     </message>
     <message>
-        <source>Speed:</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Speed:</source>
+      <translation>Geschwindigkeit:</translation>
     </message>
     <message>
-        <source>Use</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Use</source>
+      <translation>Verwenden</translation>
     </message>
     <message>
-        <source>Accel:</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Accel:</source>
+      <translation>Accel:</translation>
     </message>
     <message>
-        <source>Don&apos;t change Cont</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Don't change Cont</source>
+      <translation>Don't change Cont</translation>
     </message>
     <message>
-        <source>Continues</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Continues</source>
+      <translation>Continues</translation>
     </message>
     <message>
-        <source>Discontinues</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Discontinues</source>
+      <translation>Discontinues</translation>
     </message>
     <message>
-        <source>Position and Orientation:</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Position and Orientation:</source>
+      <translation>Position und Orientierung:</translation>
     </message>
     <message>
-        <source>(0,0,0),(0,0,0)</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>(0,0,0),(0,0,0)</source>
+      <translation>(0,0,0),(0,0,0)</translation>
     </message>
     <message>
-        <source>...</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>...</source>
+      <translation>...</translation>
     </message>
     <message>
-        <source>Don&apos;t change Position &amp; Orientation</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Don't change Position &amp; Orientation</source>
+      <translation>Position und Richtung nicht verändern</translation>
     </message>
     <message>
-        <source>Use Orientation</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Use Orientation</source>
+      <translation>Benutze Orientierung</translation>
     </message>
     <message>
-        <source>Add Position</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Add Position</source>
+      <translation>Position hinzufügen</translation>
     </message>
     <message>
-        <source>Add Orientation</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Add Orientation</source>
+      <translation>Hinzufügen der Orientierung</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>Workbench</name>
     <message>
-        <source>Robot</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Robot</source>
+      <translation>Roboter</translation>
     </message>
     <message>
-        <source>Insert Robots</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Insert Robots</source>
+      <translation>Roboter einfügen</translation>
     </message>
     <message>
-        <source>&amp;Robot</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&amp;Robot</source>
+      <translation>&amp;Roboter</translation>
     </message>
     <message>
-        <source>Export trajectory</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Export trajectory</source>
+      <translation>Exportiere Arbeitsbewegung</translation>
     </message>
-</context>
+  </context>
 </TS>

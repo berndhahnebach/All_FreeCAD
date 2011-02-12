@@ -1,26 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
-<context>
+<TS>
+  <context>
     <name>AssemblyGui::Workbench</name>
     <message>
-        <source>Assembly</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Assembly</source>
+      <translation>Baugruppe, Einheit</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdAssemblyConstraintAxle</name>
     <message>
-        <source>Assembly</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Assembly</source>
+      <translation>Baugruppe, Einheit</translation>
     </message>
     <message>
-        <source>Constraint Axle...</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Constraint Axle...</source>
+      <translation>Achseneinschränkung...</translation>
     </message>
     <message>
-        <source>set a axle constraint between two objects</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>set a axle constraint between two objects</source>
+      <translation>Festlegen der Achsen-Einschränkung zwischen zwei Objekten</translation>
     </message>
-</context>
+  </context>
 </TS>
