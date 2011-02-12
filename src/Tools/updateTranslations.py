@@ -7,7 +7,7 @@ Usage:
 
 Example:
 
-    ./updateTranslations.py fr nl pt_BR
+    ./updateTranslations.py [-d <directory>] fr nl pt_BR
 
 This command must be run from its current source tree location (/src/Tools)
 so it can find the correct places to put the translation files. The
@@ -22,7 +22,7 @@ reflect the latest state of the translations. Better make a build before
 using this script!
 '''
 
-import sys, os, shutil, tempfile, zipfile
+import sys, os, shutil, tempfile, zipfile, getopt, shutil
 
 crowdinpath = "http://crowdin.net/download/project/freecad.zip"
 
@@ -75,15 +75,37 @@ if __name__ == "__main__":
     if len(args) < 1:
         print __doc__
         sys.exit()
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "hd:", ["help", "directory="])
+    except getopt.GetoptError:
+        print __doc__
+        sys.exit()
         
+    # checking on the options
+    inputdir=""
+    for o, a in opts:
+        if o in ("-h", "--help"):
+            print __doc__
+            sys.exit()
+        if o in ("-d", "--directory"):
+            inputdir = a
+
     tempfolder = tempfile.mkdtemp()
     print "creating temp folder " + tempfolder
     currentfolder = os.getcwd()
     os.chdir(tempfolder)
-    os.system("wget "+crowdinpath)
-    if not os.path.exists("freecad.zip"):
-        print "download failed!"
-        sys.exit()
+    if len(inputdir) > 0:
+        inputdir=os.path.realpath(inputdir)
+        inputdir=os.sep.join((inputdir,"freecad.zip"))
+        if not os.path.exists(inputdir):
+            print "download failed!"
+            sys.exit()
+        shutil.copy(inputdir,tempfolder)
+    else:
+        os.system("wget "+crowdinpath)
+        if not os.path.exists("freecad.zip"):
+            print "download failed!"
+            sys.exit()
     zfile=zipfile.ZipFile("freecad.zip")
     print "extracting freecad.zip..."
     zfile.extractall()
