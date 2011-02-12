@@ -1,1244 +1,1521 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="fr_FR">
-<context>
+<TS>
+  <context>
     <name>CmdMeshAddFacet</name>
     <message>
-        <source>Mesh</source>
-        <translation type="unfinished">Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Add triangle</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Add triangle</source>
+      <translation>Ajouter un triangle</translation>
     </message>
     <message>
-        <source>Add triangle manually to a mesh</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Add triangle manually to a mesh</source>
+      <translation>Ajouter manuellement un triangle à une maille</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshBoundingBox</name>
     <message>
-        <source>Mesh</source>
-        <translation>Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Boundings info...</source>
-        <translation>Dimensions extérieures...</translation>
+      <location/>
+      <source>Boundings info...</source>
+      <translation>Dimensions extérieures...</translation>
     </message>
     <message>
-        <source>Shows the boundings of the selected mesh</source>
-        <translation>Affiche les dimensions englobantes du mailage sélectionné</translation>
+      <location/>
+      <source>Shows the boundings of the selected mesh</source>
+      <translation>Affiche les dimensions englobantes du mailage sélectionné</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshBuildRegularSolid</name>
     <message>
-        <source>Mesh</source>
-        <translation>Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Regular solid...</source>
-        <translation>Solide standard...</translation>
+      <location/>
+      <source>Regular solid...</source>
+      <translation>Solide standard...</translation>
     </message>
     <message>
-        <source>Builds a regular solid</source>
-        <translation>Construire un solide standard</translation>
+      <location/>
+      <source>Builds a regular solid</source>
+      <translation>Construire un solide standard</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshDemolding</name>
     <message>
-        <source>Interactive demolding direction</source>
-        <translation>Direction de démoulage interactive</translation>
+      <location/>
+      <source>Interactive demolding direction</source>
+      <translation>Direction de démoulage interactive</translation>
     </message>
     <message>
-        <source>Mesh</source>
-        <translation>Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshDifference</name>
     <message>
-        <source>Mesh</source>
-        <translation>Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Difference</source>
-        <translation>Différence</translation>
+      <location/>
+      <source>Difference</source>
+      <translation>Différence</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshEvaluateFacet</name>
     <message>
-        <source>Mesh</source>
-        <translation>Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Face info</source>
-        <translation>Infos sur la face</translation>
+      <location/>
+      <source>Face info</source>
+      <translation>Infos sur la face</translation>
     </message>
     <message>
-        <source>Information about face</source>
-        <translation>Informations sur la face</translation>
+      <location/>
+      <source>Information about face</source>
+      <translation>Informations sur la face</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshEvaluateSolid</name>
     <message>
-        <source>Mesh</source>
-        <translation>Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Check solid mesh</source>
-        <translation>Vérifier le maillage solide</translation>
+      <location/>
+      <source>Check solid mesh</source>
+      <translation>Vérifier le maillage solide</translation>
     </message>
     <message>
-        <source>Checks whether the mesh is a solid</source>
-        <translation>Vérifie si le maillage est un solide</translation>
+      <location/>
+      <source>Checks whether the mesh is a solid</source>
+      <translation>Vérifie si le maillage est un solide</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshEvaluation</name>
     <message>
-        <source>Mesh</source>
-        <translation>Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Evaluate mesh...</source>
-        <translation type="obsolete">Évaluer le maillage...</translation>
+      <location/>
+      <source>Evaluate mesh...</source>
+      <translation>Évaluer le maillage...</translation>
     </message>
     <message>
-        <source>Opens a dialog to analyze and repair a mesh</source>
-        <translation>Ouvre une fenêtre permettant d&apos;analyser et de réparer un maillage</translation>
+      <location/>
+      <source>Opens a dialog to analyze and repair a mesh</source>
+      <translation>Ouvre une fenêtre permettant d'analyser et de réparer un maillage</translation>
     </message>
     <message>
-        <source>Evaluate &amp;&amp; Repair mesh...</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Evaluate &amp;&amp; Repair mesh...</source>
+      <translation>Évaluer et réparer une maille...</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshExMakeMesh</name>
     <message>
-        <source>Mesh</source>
-        <translation>Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Make a Box</source>
-        <translation>Créer un cube</translation>
+      <location/>
+      <source>Make a Box</source>
+      <translation>Créer un cube</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshExMakeTool</name>
     <message>
-        <source>Mesh</source>
-        <translation>Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Make a Tool</source>
-        <translation>Créer un outil</translation>
+      <location/>
+      <source>Make a Tool</source>
+      <translation>Créer un outil</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshExMakeUnion</name>
     <message>
-        <source>Mesh</source>
-        <translation>Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Make Union</source>
-        <translation>Union</translation>
+      <location/>
+      <source>Make Union</source>
+      <translation>Union</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshExport</name>
     <message>
-        <source>Mesh</source>
-        <translation>Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Export mesh...</source>
-        <translation>Exporter le maillage...</translation>
+      <location/>
+      <source>Export mesh...</source>
+      <translation>Exporter le maillage...</translation>
     </message>
     <message>
-        <source>Exports a mesh to file</source>
-        <translation>Exporte le maillage dans un fichier</translation>
+      <location/>
+      <source>Exports a mesh to file</source>
+      <translation>Exporte le maillage dans un fichier</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshFillInteractiveHole</name>
     <message>
-        <source>Mesh</source>
-        <translation>Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Close hole</source>
-        <translation>Boucher un trou</translation>
+      <location/>
+      <source>Close hole</source>
+      <translation>Boucher un trou</translation>
     </message>
     <message>
-        <source>Close holes interactively</source>
-        <translation>Bouche un trou de manière interactive</translation>
+      <location/>
+      <source>Close holes interactively</source>
+      <translation>Bouche un trou de manière interactive</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshFillupHoles</name>
     <message>
-        <source>Mesh</source>
-        <translation>Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Fill holes...</source>
-        <translation>Remplir les trous...</translation>
+      <location/>
+      <source>Fill holes...</source>
+      <translation>Remplir les trous...</translation>
     </message>
     <message>
-        <source>Fill holes of the mesh</source>
-        <translation>Bouche un trou de manière interactive</translation>
+      <location/>
+      <source>Fill holes of the mesh</source>
+      <translation>Bouche un trou de manière interactive</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshFixDegenerations</name>
     <message>
-        <source>Mesh</source>
-        <translation type="obsolete">Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Remove degenerated faces</source>
-        <translation type="obsolete">Supprimer les faces dégénérées</translation>
+      <location/>
+      <source>Remove degenerated faces</source>
+      <translation>Supprimer les faces dégénérées</translation>
     </message>
     <message>
-        <source>Remove degenerated faces from the mesh</source>
-        <translation type="obsolete">Supprime les faces dégénérées du maillage</translation>
+      <location/>
+      <source>Remove degenerated faces from the mesh</source>
+      <translation>Supprime les faces dégénérées du maillage</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshFixDuplicateFaces</name>
     <message>
-        <source>Mesh</source>
-        <translation type="obsolete">Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Remove duplicated faces</source>
-        <translation type="obsolete">Supprimer les doublons de faces</translation>
+      <location/>
+      <source>Remove duplicated faces</source>
+      <translation>Supprimer les doublons de faces</translation>
     </message>
     <message>
-        <source>Remove duplicated faces from the mesh</source>
-        <translation type="obsolete">Supprime les doublons de faces du maillage</translation>
+      <location/>
+      <source>Remove duplicated faces from the mesh</source>
+      <translation>Supprime les doublons de faces du maillage</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshFixDuplicatePoints</name>
     <message>
-        <source>Mesh</source>
-        <translation type="obsolete">Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Remove duplicated points</source>
-        <translation type="obsolete">Supprimer les doublons de points</translation>
+      <location/>
+      <source>Remove duplicated points</source>
+      <translation>Supprimer les doublons de points</translation>
     </message>
     <message>
-        <source>Remove duplicated points from the mesh</source>
-        <translation type="obsolete">Supprime les doublons de points du maillage</translation>
+      <location/>
+      <source>Remove duplicated points from the mesh</source>
+      <translation>Supprime les doublons de points du maillage</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshFixIndices</name>
     <message>
-        <source>Mesh</source>
-        <translation type="obsolete">Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Fix indices</source>
-        <translation type="obsolete">Corriger les indices</translation>
+      <location/>
+      <source>Fix indices</source>
+      <translation>Corriger les indices</translation>
     </message>
     <message>
-        <source>Fixes invalid indices in the mesh structure</source>
-        <translation type="obsolete">Corrige les indices invalides dans la structure du maillage</translation>
+      <location/>
+      <source>Fixes invalid indices in the mesh structure</source>
+      <translation>Corrige les indices invalides dans la structure du maillage</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshFlipNormals</name>
     <message>
-        <source>Mesh</source>
-        <translation>Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Flip normals</source>
-        <translation>Inverser les normales</translation>
+      <location/>
+      <source>Flip normals</source>
+      <translation>Inverser les normales</translation>
     </message>
     <message>
-        <source>Flips the normals of the mesh</source>
-        <translation>Inverse les normales du maillage</translation>
+      <location/>
+      <source>Flips the normals of the mesh</source>
+      <translation>Inverse les normales du maillage</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshFromGeometry</name>
     <message>
-        <source>Mesh</source>
-        <translation>Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Create mesh from geometry...</source>
-        <translation>Créer un maillage depuis une géométrie...</translation>
+      <location/>
+      <source>Create mesh from geometry...</source>
+      <translation>Créer un maillage depuis une géométrie...</translation>
     </message>
     <message>
-        <source>Create mesh from the selected geometry</source>
-        <translation>Crée un maillage à partir de la géométrie sélectionée</translation>
+      <location/>
+      <source>Create mesh from the selected geometry</source>
+      <translation>Crée un maillage à partir de la géométrie sélectionée</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshHarmonizeNormals</name>
     <message>
-        <source>Mesh</source>
-        <translation>Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Harmonize normals</source>
-        <translation>Harmoniser les normales</translation>
+      <location/>
+      <source>Harmonize normals</source>
+      <translation>Harmoniser les normales</translation>
     </message>
     <message>
-        <source>Harmonizes the normals of the mesh</source>
-        <translation>Harmonise les normales du maillage</translation>
+      <location/>
+      <source>Harmonizes the normals of the mesh</source>
+      <translation>Harmonise les normales du maillage</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshImport</name>
     <message>
-        <source>Mesh</source>
-        <translation>Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Import mesh...</source>
-        <translation>Importer un maillage...</translation>
+      <location/>
+      <source>Import mesh...</source>
+      <translation>Importer un maillage...</translation>
     </message>
     <message>
-        <source>Imports a mesh from file</source>
-        <translation>Importe un maillage depuis un fichier</translation>
+      <location/>
+      <source>Imports a mesh from file</source>
+      <translation>Importe un maillage depuis un fichier</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshIntersection</name>
     <message>
-        <source>Mesh</source>
-        <translation>Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Intersection</source>
-        <translation>Intersection</translation>
+      <location/>
+      <source>Intersection</source>
+      <translation>Intersection</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshPolyCut</name>
     <message>
-        <source>Mesh</source>
-        <translation>Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Cut mesh</source>
-        <translation>Couper le maillage</translation>
+      <location/>
+      <source>Cut mesh</source>
+      <translation>Couper le maillage</translation>
     </message>
     <message>
-        <source>Cuts a mesh with a picked polygon</source>
-        <translation>Coupe un maillage à l&apos;aide du polygone sélectionné</translation>
+      <location/>
+      <source>Cuts a mesh with a picked polygon</source>
+      <translation>Coupe un maillage à l'aide du polygone sélectionné</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshPolySegm</name>
     <message>
-        <source>Mesh</source>
-        <translation>Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Make segment</source>
-        <translation>Créer un segment</translation>
+      <location/>
+      <source>Make segment</source>
+      <translation>Créer un segment</translation>
     </message>
     <message>
-        <source>Creates a mesh segment</source>
-        <translation>Crée un segment de maillage</translation>
+      <location/>
+      <source>Creates a mesh segment</source>
+      <translation>Crée un segment de maillage</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshPolySelect</name>
     <message>
-        <source>Mesh</source>
-        <translation type="unfinished">Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Select mesh</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select mesh</source>
+      <translation>Sélectionnez une maille</translation>
     </message>
     <message>
-        <source>Select an area of the mesh</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select an area of the mesh</source>
+      <translation>Sélectionnez une zone de la maille</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshPolySplit</name>
     <message>
-        <source>Mesh</source>
-        <translation>Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Split mesh</source>
-        <translation>Diviser un maillage</translation>
+      <location/>
+      <source>Split mesh</source>
+      <translation>Diviser un maillage</translation>
     </message>
     <message>
-        <source>Splits a mesh into two meshes</source>
-        <translation>Divise un maillage en deux</translation>
+      <location/>
+      <source>Splits a mesh into two meshes</source>
+      <translation>Divise un maillage en deux</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshRemoveCompByHand</name>
     <message>
-        <source>Mesh</source>
-        <translation>Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Remove components by hand...</source>
-        <translation>Supprimer manuellement des composants...</translation>
+      <location/>
+      <source>Remove components by hand...</source>
+      <translation>Supprimer manuellement des composants...</translation>
     </message>
     <message>
-        <source>Mark a component to remove it from the mesh</source>
-        <translation>Marque un composant pour le supprimer du maillage</translation>
+      <location/>
+      <source>Mark a component to remove it from the mesh</source>
+      <translation>Marque un composant pour le supprimer du maillage</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshRemoveComponents</name>
     <message>
-        <source>Mesh</source>
-        <translation>Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Remove components...</source>
-        <translation>Supprimer des composants...</translation>
+      <location/>
+      <source>Remove components...</source>
+      <translation>Supprimer des composants...</translation>
     </message>
     <message>
-        <source>Remove topologic independant components from the mesh</source>
-        <translation>Supprime des composants topologiquement indépendants du maillage</translation>
+      <location/>
+      <source>Remove topologic independant components from the mesh</source>
+      <translation>Supprime des composants topologiquement indépendants du maillage</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshSmoothing</name>
     <message>
-        <source>Mesh</source>
-        <translation>Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Smooth...</source>
-        <translation>Lisser...</translation>
+      <location/>
+      <source>Smooth...</source>
+      <translation>Lisser...</translation>
     </message>
     <message>
-        <source>Smooth the selected meshes</source>
-        <translation>Lisse les maillages sélectionnés</translation>
+      <location/>
+      <source>Smooth the selected meshes</source>
+      <translation>Lisse les maillages sélectionnés</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshToolMesh</name>
     <message>
-        <source>Mesh</source>
-        <translation>Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Segment by tool mesh</source>
-        <translation>Segment à partir d&apos;un maillage</translation>
+      <location/>
+      <source>Segment by tool mesh</source>
+      <translation>Segment à partir d'un maillage</translation>
     </message>
     <message>
-        <source>Creates a segment from a given tool mesh</source>
-        <translation>Crée un segment à l&apos;aide d&apos;un maillage outil</translation>
+      <location/>
+      <source>Creates a segment from a given tool mesh</source>
+      <translation>Crée un segment à l'aide d'un maillage outil</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshTransform</name>
     <message>
-        <source>Mesh</source>
-        <translation>Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Transform mesh</source>
-        <translation>Transformer le maillage</translation>
+      <location/>
+      <source>Transform mesh</source>
+      <translation>Transformer le maillage</translation>
     </message>
     <message>
-        <source>Rotate or move a mesh</source>
-        <translation>Rotation ou déplacement du maillage</translation>
+      <location/>
+      <source>Rotate or move a mesh</source>
+      <translation>Rotation ou déplacement du maillage</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshUnion</name>
     <message>
-        <source>Mesh</source>
-        <translation>Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Union</source>
-        <translation>Union</translation>
+      <location/>
+      <source>Union</source>
+      <translation>Union</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshVertexCurvature</name>
     <message>
-        <source>Mesh</source>
-        <translation>Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Calculates the curvature of the vertices of a mesh</source>
-        <translation>Calcule la courbure des vertex du maillage</translation>
+      <location/>
+      <source>Calculates the curvature of the vertices of a mesh</source>
+      <translation>Calcule la courbure des vertex du maillage</translation>
     </message>
     <message>
-        <source>Curvature plot</source>
-        <translation>Tracer la courbure</translation>
+      <location/>
+      <source>Curvature plot</source>
+      <translation>Tracer la courbure</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdMeshVertexCurvatureInfo</name>
     <message>
-        <source>Mesh</source>
-        <translation>Maillage</translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Maillage</translation>
     </message>
     <message>
-        <source>Curvature info</source>
-        <translation>Infos de courbure</translation>
+      <location/>
+      <source>Curvature info</source>
+      <translation>Infos de courbure</translation>
     </message>
     <message>
-        <source>Information about curvature</source>
-        <translation>Informations sur la courbure</translation>
+      <location/>
+      <source>Information about curvature</source>
+      <translation>Informations sur la courbure</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>DockEvaluateMeshImp</name>
     <message>
-        <source>Evaluate Mesh</source>
-        <translation type="obsolete">Évaluer le maillage</translation>
+      <location/>
+      <source>Evaluate Mesh</source>
+      <translation>Évaluer le maillage</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>MeshGui::DlgEvaluateMesh</name>
     <message>
-        <source>Evaluate Mesh</source>
-        <translation type="obsolete">Évaluer le maillage</translation>
+      <location/>
+      <source>Evaluate Mesh</source>
+      <translation>Évaluer le maillage</translation>
     </message>
     <message>
-        <source>&amp;Help</source>
-        <translation>&amp;Aide</translation>
+      <location/>
+      <source>&amp;Help</source>
+      <translation>&amp;Aide</translation>
     </message>
     <message>
-        <source>F1</source>
-        <translation>F1</translation>
+      <location/>
+      <source>F1</source>
+      <translation>F1</translation>
     </message>
     <message>
-        <source>&amp;Close</source>
-        <translation>&amp;Fermer</translation>
+      <location/>
+      <source>&amp;Close</source>
+      <translation>&amp;Fermer</translation>
     </message>
     <message>
-        <source>Alt+C</source>
-        <translation>Alt+F</translation>
+      <location/>
+      <source>Alt+C</source>
+      <translation>Alt+C</translation>
     </message>
     <message>
-        <source>Mesh information</source>
-        <translation>Informations sur le maillage</translation>
+      <location/>
+      <source>Mesh information</source>
+      <translation>Informations sur le maillage</translation>
     </message>
     <message>
-        <source>No information</source>
-        <translation>Aucune information</translation>
+      <location/>
+      <source>No information</source>
+      <translation>Aucune information</translation>
     </message>
     <message>
-        <source>Number of points:</source>
-        <translation>Nombre de points:</translation>
+      <location/>
+      <source>Number of points:</source>
+      <translation>Nombre de points:</translation>
     </message>
     <message>
-        <source>Number of edges:</source>
-        <translation>Nombre de contours:</translation>
+      <location/>
+      <source>Number of edges:</source>
+      <translation>Nombre de contours:</translation>
     </message>
     <message>
-        <source>Refresh</source>
-        <translation>Rafraichir</translation>
+      <location/>
+      <source>Refresh</source>
+      <translation>Rafraichir</translation>
     </message>
     <message>
-        <source>Analyze</source>
-        <translation>Analyser</translation>
+      <location/>
+      <source>Analyze</source>
+      <translation>Analyser</translation>
     </message>
     <message>
-        <source>Repair</source>
-        <translation>Réparer</translation>
+      <location/>
+      <source>Repair</source>
+      <translation>Réparer</translation>
     </message>
     <message>
-        <source>Orientation</source>
-        <translation>Orientation</translation>
+      <location/>
+      <source>Orientation</source>
+      <translation>Orientation</translation>
     </message>
     <message>
-        <source>Degenerated faces</source>
-        <translation>Faces dégénérées</translation>
+      <location/>
+      <source>Degenerated faces</source>
+      <translation>Faces dégénérées</translation>
     </message>
     <message>
-        <source>Face indices</source>
-        <translation>indices des faces</translation>
+      <location/>
+      <source>Face indices</source>
+      <translation>indices des faces</translation>
     </message>
     <message>
-        <source>Number of faces:</source>
-        <translation>Nombre de faces:</translation>
+      <location/>
+      <source>Number of faces:</source>
+      <translation>Nombre de faces:</translation>
     </message>
     <message>
-        <source>Duplicated faces</source>
-        <translation>Doublons de faces</translation>
+      <location/>
+      <source>Duplicated faces</source>
+      <translation>Doublons de faces</translation>
     </message>
     <message>
-        <source>Duplicated points</source>
-        <translation>Doublons de points</translation>
+      <location/>
+      <source>Duplicated points</source>
+      <translation>Doublons de points</translation>
     </message>
     <message>
-        <source>Non-manifolds</source>
-        <translation>Non-variétés</translation>
+      <location/>
+      <source>Non-manifolds</source>
+      <translation>Non-variétés</translation>
     </message>
     <message>
-        <source>Self-intersections</source>
-        <translation>Collisions internes</translation>
+      <location/>
+      <source>Self-intersections</source>
+      <translation>Collisions internes</translation>
     </message>
     <message>
-        <source>All above tests together</source>
-        <translation>Tous les tests ensemble</translation>
+      <location/>
+      <source>All above tests together</source>
+      <translation>Tous les tests ensemble</translation>
     </message>
     <message>
-        <source>Repetitive repair</source>
-        <translation>Réparation répétitive</translation>
+      <location/>
+      <source>Repetitive repair</source>
+      <translation>Réparation répétitive</translation>
     </message>
     <message>
-        <source>Evaluate &amp; Repair Mesh</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Evaluate &amp; Repair Mesh</source>
+      <translation>Évaluer et réparer une maille</translation>
     </message>
     <message>
-        <source>Folds on surface</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Folds on surface</source>
+      <translation>Plis sur la surface</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>MeshGui::DlgEvaluateMeshImp</name>
     <message>
-        <source>No information</source>
-        <translation>Aucune information</translation>
+      <location/>
+      <source>No information</source>
+      <translation>Aucune information</translation>
     </message>
     <message>
-        <source>Invalid neighbour indices</source>
-        <translation>Indices voisins invalides</translation>
+      <location/>
+      <source>Invalid neighbour indices</source>
+      <translation>Indices voisins invalides</translation>
     </message>
     <message>
-        <source>Invalid face indices</source>
-        <translation>Indices de face invalides</translation>
+      <location/>
+      <source>Invalid face indices</source>
+      <translation>Indices de face invalides</translation>
     </message>
     <message>
-        <source>Invalid point indices</source>
-        <translation>Indices de point invalides</translation>
+      <location/>
+      <source>Invalid point indices</source>
+      <translation>Indices de point invalides</translation>
     </message>
     <message>
-        <source>Multiple point indices</source>
-        <translation>Indices de point multiples</translation>
+      <location/>
+      <source>Multiple point indices</source>
+      <translation>Indices de point multiples</translation>
     </message>
     <message>
-        <source>Non-manifolds</source>
-        <translation>Non-variétés</translation>
+      <location/>
+      <source>Non-manifolds</source>
+      <translation>Non-variétés</translation>
     </message>
     <message>
-        <source>Cannot remove non-manifolds</source>
-        <translation>Impossible de supprimer les non-variétés</translation>
+      <location/>
+      <source>Cannot remove non-manifolds</source>
+      <translation>Impossible de supprimer les non-variétés</translation>
     </message>
     <message>
-        <source>No selection</source>
-        <translation>Aucune sélection</translation>
+      <location/>
+      <source>No selection</source>
+      <translation>Aucune sélection</translation>
     </message>
     <message>
-        <source>No flipped normals</source>
-        <translation>Aucune normale inversée</translation>
+      <location/>
+      <source>No flipped normals</source>
+      <translation>Aucune normale inversée</translation>
     </message>
     <message>
-        <source>%1 flipped normals</source>
-        <translation>%1 normales inversées</translation>
+      <location/>
+      <source>%1 flipped normals</source>
+      <translation>%1 normales inversées</translation>
     </message>
     <message>
-        <source>No non-manifolds</source>
-        <translation>Aucune non-variété</translation>
+      <location/>
+      <source>No non-manifolds</source>
+      <translation>Aucune non-variété</translation>
     </message>
     <message>
-        <source>%1 non-manifolds</source>
-        <translation>%1 non-variétés</translation>
+      <location/>
+      <source>%1 non-manifolds</source>
+      <translation>%1 non-variétés</translation>
     </message>
     <message>
-        <source>No invalid indices</source>
-        <translation>Aucun indice invalide</translation>
+      <location/>
+      <source>No invalid indices</source>
+      <translation>Aucun indice invalide</translation>
     </message>
     <message>
-        <source>No degenerations</source>
-        <translation>Aucune dégénération</translation>
+      <location/>
+      <source>No degenerations</source>
+      <translation>Aucune dégénération</translation>
     </message>
     <message>
-        <source>%1 degenerated faces</source>
-        <translation>%1 faces dégénérées</translation>
+      <location/>
+      <source>%1 degenerated faces</source>
+      <translation>%1 faces dégénérées</translation>
     </message>
     <message>
-        <source>No duplicated faces</source>
-        <translation>Aucun doublon de faces</translation>
+      <location/>
+      <source>No duplicated faces</source>
+      <translation>Aucun doublon de faces</translation>
     </message>
     <message>
-        <source>%1 duplicated faces</source>
-        <translation>%1 doublons de faces</translation>
+      <location/>
+      <source>%1 duplicated faces</source>
+      <translation>%1 doublons de faces</translation>
     </message>
     <message>
-        <source>No duplicated points</source>
-        <translation>Aucun doublon de points</translation>
+      <location/>
+      <source>No duplicated points</source>
+      <translation>Aucun doublon de points</translation>
     </message>
     <message>
-        <source>Duplicated points</source>
-        <translation>Doublons de points</translation>
+      <location/>
+      <source>Duplicated points</source>
+      <translation>Doublons de points</translation>
     </message>
     <message>
-        <source>Orientation</source>
-        <translation>Orientation</translation>
+      <location/>
+      <source>Orientation</source>
+      <translation>Orientation</translation>
     </message>
     <message>
-        <source>Indices</source>
-        <translation>Indices</translation>
+      <location/>
+      <source>Indices</source>
+      <translation>Indices</translation>
     </message>
     <message>
-        <source>Degenerations</source>
-        <translation>Dégénérations</translation>
+      <location/>
+      <source>Degenerations</source>
+      <translation>Dégénérations</translation>
     </message>
     <message>
-        <source>Duplicated faces</source>
-        <translation>Doublons de faces</translation>
+      <location/>
+      <source>Duplicated faces</source>
+      <translation>Doublons de faces</translation>
     </message>
     <message>
-        <source>No self-intersections</source>
-        <translation>Aucune collision interne</translation>
+      <location/>
+      <source>No self-intersections</source>
+      <translation>Aucune collision interne</translation>
     </message>
     <message>
-        <source>Self-intersections</source>
-        <translation>Collisions internes</translation>
+      <location/>
+      <source>Self-intersections</source>
+      <translation>Collisions internes</translation>
     </message>
     <message>
-        <source>Mesh repair</source>
-        <translation>Réparer le maillage</translation>
+      <location/>
+      <source>Mesh repair</source>
+      <translation>Réparer le maillage</translation>
     </message>
     <message>
-        <source>Flipped normals found</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Flipped normals found</source>
+      <translation>Normales inversées trouvés</translation>
     </message>
     <message>
-        <source>Check failed due to folds on the surface.
+      <location/>
+      <source>Check failed due to folds on the surface.
 Please run the command to repair folds first</source>
-        <translation type="unfinished"></translation>
+      <translation>Vérification échouée en raison de plis sur la surface. Exécutez d'abord la commande "réparer les plis"</translation>
     </message>
     <message>
-        <source>No folds on surface</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>No folds on surface</source>
+      <translation>Aucun pli sur la surface</translation>
     </message>
     <message>
-        <source>%1 folds on surface</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>%1 folds on surface</source>
+      <translation>%1 plis sur la surface</translation>
     </message>
     <message>
-        <source>Folds</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Folds</source>
+      <translation>Plis</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>MeshGui::DlgRegularSolid</name>
     <message>
-        <source>Regular Solid</source>
-        <translation>Solide standard</translation>
+      <location/>
+      <source>Regular Solid</source>
+      <translation>Solide standard</translation>
     </message>
     <message>
-        <source>&amp;Create</source>
-        <translation>&amp;Créer</translation>
+      <location/>
+      <source>&amp;Create</source>
+      <translation>&amp;Créer</translation>
     </message>
     <message>
-        <source>Alt+C</source>
-        <translation>Alt+C</translation>
+      <location/>
+      <source>Alt+C</source>
+      <translation>Alt+C</translation>
     </message>
     <message>
-        <source>Cl&amp;ose</source>
-        <translation>&amp;Fermer</translation>
+      <location/>
+      <source>Cl&amp;ose</source>
+      <translation>&amp;Fermer</translation>
     </message>
     <message>
-        <source>Alt+O</source>
-        <translation>Alt+F</translation>
+      <location/>
+      <source>Alt+O</source>
+      <translation>Alt+F</translation>
     </message>
     <message>
-        <source>Solid:</source>
-        <translation>Solide:</translation>
+      <location/>
+      <source>Solid:</source>
+      <translation>Solide:</translation>
     </message>
     <message>
-        <source>Cube</source>
-        <translation>Cube</translation>
+      <location/>
+      <source>Cube</source>
+      <translation>Cube</translation>
     </message>
     <message>
-        <source>Cylinder</source>
-        <translation>Cylindre</translation>
+      <location/>
+      <source>Cylinder</source>
+      <translation>Cylindre</translation>
     </message>
     <message>
-        <source>Cone</source>
-        <translation>Cône</translation>
+      <location/>
+      <source>Cone</source>
+      <translation>Cône</translation>
     </message>
     <message>
-        <source>Sphere</source>
-        <translation>Sphère</translation>
+      <location/>
+      <source>Sphere</source>
+      <translation>Sphère</translation>
     </message>
     <message>
-        <source>Ellipsoid</source>
-        <translation>Ellipsoïde</translation>
+      <location/>
+      <source>Ellipsoid</source>
+      <translation>Ellipsoïde</translation>
     </message>
     <message>
-        <source>Torus</source>
-        <translation>Tore</translation>
+      <location/>
+      <source>Torus</source>
+      <translation>Tore</translation>
     </message>
     <message>
-        <source>Height:</source>
-        <translation>Hauteur:</translation>
+      <location/>
+      <source>Height:</source>
+      <translation>Hauteur:</translation>
     </message>
     <message>
-        <source>Length:</source>
-        <translation>Longueur:</translation>
+      <location/>
+      <source>Length:</source>
+      <translation>Longueur:</translation>
     </message>
     <message>
-        <source>Width:</source>
-        <translation>Largeur:</translation>
+      <location/>
+      <source>Width:</source>
+      <translation>Largeur:</translation>
     </message>
     <message>
-        <source>Radius:</source>
-        <translation>Rayon:</translation>
+      <location/>
+      <source>Radius:</source>
+      <translation>Rayon:</translation>
     </message>
     <message>
-        <source>Closed</source>
-        <translation>Fermé</translation>
+      <location/>
+      <source>Closed</source>
+      <translation>Fermé</translation>
     </message>
     <message>
-        <source>Sampling:</source>
-        <translation>Numérisation:</translation>
+      <location/>
+      <source>Sampling:</source>
+      <translation>Numérisation:</translation>
     </message>
     <message>
-        <source>Edge length:</source>
-        <translation>Longueur du contour:</translation>
+      <location/>
+      <source>Edge length:</source>
+      <translation>Longueur du contour:</translation>
     </message>
     <message>
-        <source>Radius 1:</source>
-        <translation>Rayon 1:</translation>
+      <location/>
+      <source>Radius 1:</source>
+      <translation>Rayon 1:</translation>
     </message>
     <message>
-        <source>Radius 2:</source>
-        <translation>Rayon 2:</translation>
+      <location/>
+      <source>Radius 2:</source>
+      <translation>Rayon 2:</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>MeshGui::DlgRegularSolidImp</name>
     <message>
-        <source>Create %1</source>
-        <translation>Créer %1</translation>
+      <location/>
+      <source>Create %1</source>
+      <translation>Créer %1</translation>
     </message>
     <message>
-        <source>No active document</source>
-        <translation>Aucun document actif</translation>
+      <location/>
+      <source>No active document</source>
+      <translation>Aucun document actif</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>MeshGui::DlgSettingsMeshView</name>
     <message>
-        <source>Mesh view</source>
-        <translation>Vue du maillage</translation>
+      <location/>
+      <source>Mesh view</source>
+      <translation>Vue du maillage</translation>
     </message>
     <message>
-        <source>Appearance</source>
-        <translation type="obsolete">Apparence</translation>
+      <location/>
+      <source>Appearance</source>
+      <translation>Apparence</translation>
     </message>
     <message>
-        <source>Face color</source>
-        <translation type="obsolete">Couleur de la face</translation>
+      <location/>
+      <source>Face color</source>
+      <translation>Couleur de la face</translation>
     </message>
     <message>
-        <source>Two-side rendering</source>
-        <translation>Rendu biface</translation>
+      <location/>
+      <source>Two-side rendering</source>
+      <translation>Rendu biface</translation>
     </message>
     <message>
-        <source>Backface color</source>
-        <translation>Couleur de la face arrière</translation>
+      <location/>
+      <source>Backface color</source>
+      <translation>Couleur de la face arrière</translation>
     </message>
     <message>
-        <source>Smoothing</source>
-        <translation>Lissage</translation>
+      <location/>
+      <source>Smoothing</source>
+      <translation>Lissage</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;This is the smallest angle between two faces where normals get calculated to do flat shading.&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;If the angle between the normals of two neighbouring faces is less than the crease angle, the faces will be smoothshaded around their common edge.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Il s&apos;agit du plus petit angle entre deux faces dont les normales sont calculées pour un ombrage plat.&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Si l&apos;angle entre les normales de deux faces voisines est plus petit que l&apos;angle de pliage, les faces seront traitées en ombrage lissé autour de leur contour commun.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+      <location/>
+      <source>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;This is the smallest angle between two faces where normals get calculated to do flat shading.&lt;/p&gt;&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;If the angle between the normals of two neighbouring faces is less than the crease angle, the faces will be smoothshaded around their common edge.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;Il s'agit du plus petit angle entre deux faces dont les normales sont calculées pour un ombrage plat.&lt;/p&gt;&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;Si l'angle entre les normales de deux faces voisines est plus petit que l'angle de pliage, les faces seront traitées en ombrage lissé autour de leur contour commun.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>Crease angle</source>
-        <translation>Angle de pliage</translation>
+      <location/>
+      <source>Crease angle</source>
+      <translation>Angle de pliage</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Flat shading/Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Defines the appearance of surfaces.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;With flat shading the surface normals are not defined per vertex that leads to a unreal appearance for curved surfaces while using Phong shading leads to a smoother appearance. &lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;If this option is set Phong shading is used, if it is unset flat shading is used.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Ombrage plat/Ombrage Phong&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Définit l&apos;apparence des surfaces&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Avec l&apos;ombrage plat, les normales des surfaces ne sont pas définies par vertex, ce qui entraine une apparence irréelle des surfaces courbes, alors que l&apos;ombrage Phong produit une apparence plus lisse. &lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Si cette option est activée, l&apos;ombrage Phong sera utilisé, sinon l&apos;ombrage plat sera utilisé.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+      <location/>
+      <source>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600;"&gt;Flat shading/Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;Defines the appearance of surfaces.&lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;With flat shading the surface normals are not defined per vertex that leads to a unreal appearance for curved surfaces while using Phong shading leads to a smoother appearance. &lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;If this option is set Phong shading is used, if it is unset flat shading is used.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600;"&gt;Ombrage plat/Ombrage Phong&lt;/span&gt;&lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;Définit l'apparence des surfaces&lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;Avec l'ombrage plat, les normales des surfaces ne sont pas définies par vertex, ce qui entraine une apparence irréelle des surfaces courbes, alors que l'ombrage Phong produit une apparence plus lisse. &lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;Si cette option est activée, l'ombrage Phong sera utilisé, sinon l'ombrage plat sera utilisé.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>Define normal per vertex</source>
-        <translation>Définir les normales par vertex</translation>
-    </message>
-    <message utf8="true">
-        <source> °</source>
-        <translation> °</translation>
+      <location/>
+      <source>Define normal per vertex</source>
+      <translation>Définir les normales par vertex</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Hint&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Defining the normals per vertex is also called &lt;span style=&quot; font-style:italic;&quot;&gt;Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;while defining the normals per face is called &lt;/span&gt;Flat shading&lt;span style=&quot; font-style:normal;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Hint&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Définir les normales par vertex est aussi appelé &lt;span style=&quot; font-style:italic;&quot;&gt;ombrage Phong&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;alors que définir les normales par face est appelé&lt;/span&gt;ombrage plat&lt;span style=&quot; font-style:normal;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+      <location/>
+      <source> °</source>
+      <translation> °</translation>
     </message>
     <message>
-        <source>Default appearance for new meshes</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600;"&gt;Hint&lt;/span&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;Defining the normals per vertex is also called &lt;span style=" font-style:italic;"&gt;Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;"&gt;&lt;span style=" font-style:normal;"&gt;while defining the normals per face is called &lt;/span&gt;Flat shading&lt;span style=" font-style:normal;"&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600;"&gt;Hint&lt;/span&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;Définir les normales par vertex est aussi appelé &lt;span style=" font-style:italic;"&gt;ombrage Phong&lt;/span&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;"&gt;&lt;span style=" font-style:normal;"&gt;alors que définir les normales par face est appelé&lt;/span&gt;ombrage plat&lt;span style=" font-style:normal;"&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>Default line color</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Default appearance for new meshes</source>
+      <translation>Apparence par défaut pour les nouvelles mailles</translation>
     </message>
     <message>
-        <source>Mesh transparency</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Default line color</source>
+      <translation>Couleur de ligne par défaut</translation>
     </message>
     <message>
-        <source>Default mesh color</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Mesh transparency</source>
+      <translation>Transparence des mailles</translation>
     </message>
     <message>
-        <source>Show bounding-box for highlighted or selected meshes</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Default mesh color</source>
+      <translation>Couleur par défaut des mailles</translation>
     </message>
     <message>
-        <source>Line transparency</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Show bounding-box for highlighted or selected meshes</source>
+      <translation>Afficher le volume capable de mailles en surbrillance ou sélectionnées</translation>
     </message>
-</context>
-<context>
+    <message>
+      <location/>
+      <source>Line transparency</source>
+      <translation>Transparence de ligne</translation>
+    </message>
+  </context>
+  <context>
     <name>MeshGui::DlgSmoothing</name>
     <message>
-        <source>Smoothing</source>
-        <translation type="unfinished">Lissage</translation>
+      <location/>
+      <source>Smoothing</source>
+      <translation>Lissage</translation>
     </message>
     <message>
-        <source>Method</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Method</source>
+      <translation>Méthode</translation>
     </message>
     <message>
-        <source>Taubin</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Taubin</source>
+      <translation>Taubin</translation>
     </message>
     <message>
-        <source>Laplace</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Laplace</source>
+      <translation>Laplace</translation>
     </message>
     <message>
-        <source>Parameter</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Parameter</source>
+      <translation>Paramètre</translation>
     </message>
     <message>
-        <source>Iterations:</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Iterations:</source>
+      <translation>Itérations:</translation>
     </message>
     <message>
-        <source>Lambda:</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Lambda:</source>
+      <translation>Lambda:</translation>
     </message>
     <message>
-        <source>Mu:</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Mu:</source>
+      <translation>Mu:</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>MeshGui::DockEvaluateMeshImp</name>
     <message>
-        <source>Evaluate &amp; Repair Mesh</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Evaluate &amp; Repair Mesh</source>
+      <translation>Évaluer et réparer une maille</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>MeshGui::MeshFaceAddition</name>
     <message>
-        <source>Add triangle</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Add triangle</source>
+      <translation>Ajouter un triangle</translation>
     </message>
     <message>
-        <source>Flip normal</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Flip normal</source>
+      <translation>Inverser les normales</translation>
     </message>
     <message>
-        <source>Clear</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Clear</source>
+      <translation>Effacer</translation>
     </message>
     <message>
-        <source>Finish</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Finish</source>
+      <translation>Terminer</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>MeshGui::RemoveComponents</name>
     <message>
-        <source>Remove components</source>
-        <translation type="unfinished">Supprimer des composants</translation>
+      <location/>
+      <source>Remove components</source>
+      <translation>Supprimer des composants</translation>
     </message>
     <message>
-        <source>Select</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select</source>
+      <translation>Sélectionner</translation>
     </message>
     <message>
-        <source>Select whole component</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select whole component</source>
+      <translation>Sélectionner le composant entier</translation>
     </message>
     <message>
-        <source>Pick triangle</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Pick triangle</source>
+      <translation>Choisissez un triangle</translation>
     </message>
     <message>
-        <source>&lt; faces than</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&lt; faces than</source>
+      <translation>&lt; de faces que</translation>
     </message>
     <message>
-        <source>Region</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Region</source>
+      <translation>Région</translation>
     </message>
     <message>
-        <source>Components</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Components</source>
+      <translation>Composants</translation>
     </message>
     <message>
-        <source>All</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>All</source>
+      <translation>Tous</translation>
     </message>
     <message>
-        <source>Deselect</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Deselect</source>
+      <translation>Désélectionner</translation>
     </message>
     <message>
-        <source>Deselect whole component</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Deselect whole component</source>
+      <translation>Désélectionner le composant entier</translation>
     </message>
     <message>
-        <source>&gt; faces than</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&gt; faces than</source>
+      <translation>&gt; de faces que</translation>
     </message>
     <message>
-        <source>Region options</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Region options</source>
+      <translation>Options de région</translation>
     </message>
     <message>
-        <source>Respect only triangles with normals facing screen</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Respect only front triangles</source>
+      <translation>Respecter uniquement les triangles avants</translation>
     </message>
     <message>
-        <source>Respect only visible triangles</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Respect only triangles with normals facing screen</source>
+      <translation>Respecter seulement les triangles dont les normales font face à écran</translation>
     </message>
-</context>
-<context>
+    <message>
+      <location/>
+      <source>Respect only visible triangles</source>
+      <translation>Respecter uniquement les triangles visibles</translation>
+    </message>
+  </context>
+  <context>
     <name>MeshGui::TaskRemoveComponents</name>
     <message>
-        <source>Delete</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Delete</source>
+      <translation>Supprimer</translation>
     </message>
     <message>
-        <source>Invert</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Invert</source>
+      <translation>Inverser</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>MeshGui::Workbench</name>
     <message>
-        <source>Analyze</source>
-        <translation type="obsolete">Analyser</translation>
+      <location/>
+      <source>Analyze</source>
+      <translation>Analyser</translation>
     </message>
     <message>
-        <source>Boolean</source>
-        <translation type="obsolete">Opération booléenne</translation>
+      <location/>
+      <source>Boolean</source>
+      <translation>Opération booléenne</translation>
     </message>
     <message>
-        <source>&amp;Meshes</source>
-        <translation type="obsolete">&amp;Maillages</translation>
+      <location/>
+      <source>&amp;Meshes</source>
+      <translation>&amp;Maillages</translation>
     </message>
     <message>
-        <source>Mesh tools</source>
-        <translation type="obsolete">Outils de maillage</translation>
+      <location/>
+      <source>Mesh tools</source>
+      <translation>Outils de maillage</translation>
     </message>
     <message>
-        <source>Mesh test suite</source>
-        <translation type="obsolete">Suite de test de maillage</translation>
+      <location/>
+      <source>Mesh test suite</source>
+      <translation>Suite de test de maillage</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>QObject</name>
     <message>
-        <source>Import mesh</source>
-        <translation>Importer un maillage</translation>
+      <location/>
+      <source>Import mesh</source>
+      <translation>Importer un maillage</translation>
     </message>
     <message>
-        <source>Export mesh</source>
-        <translation>Exporter un maillage</translation>
+      <location/>
+      <source>Export mesh</source>
+      <translation>Exporter un maillage</translation>
     </message>
     <message>
-        <source>Solid Mesh</source>
-        <translation>Maillage solide</translation>
+      <location/>
+      <source>Solid Mesh</source>
+      <translation>Maillage solide</translation>
     </message>
     <message>
-        <source>Boundings</source>
-        <translation>Limites englobantes</translation>
+      <location/>
+      <source>Boundings</source>
+      <translation>Limites englobantes</translation>
     </message>
     <message>
-        <source>Fill holes</source>
-        <translation>Remplir les trous</translation>
+      <location/>
+      <source>Fill holes</source>
+      <translation>Remplir les trous</translation>
     </message>
     <message>
-        <source>Fill holes with maximum number of edges:</source>
-        <translation>Remplir les trous avec un nombre maximum de contours:</translation>
+      <location/>
+      <source>Fill holes with maximum number of edges:</source>
+      <translation>Remplir les trous avec un nombre maximum de contours:</translation>
     </message>
     <message>
-        <source>Remove components</source>
-        <translation type="obsolete">Supprimer des composants</translation>
+      <location/>
+      <source>Remove components</source>
+      <translation>Supprimer des composants</translation>
     </message>
     <message>
-        <source>Removes components up to a maximum number of triangles:</source>
-        <translation type="obsolete">Supprime les composants jusqu&apos;à un nombre maximum de triangles:</translation>
+      <location/>
+      <source>Removes components up to a maximum number of triangles:</source>
+      <translation>Supprime les composants jusqu'à un nombre maximum de triangles:</translation>
     </message>
     <message>
-        <source>All Mesh Files (*.stl *.ast *.bms *.obj)</source>
-        <translation type="obsolete">Tous les types de maillages (*.stl *.ast *.bms *.obj)</translation>
+      <location/>
+      <source>All Mesh Files (*.stl *.ast *.bms *.obj)</source>
+      <translation>Tous les types de maillages (*.stl *.ast *.bms *.obj)</translation>
     </message>
     <message>
-        <source>Binary STL (*.stl)</source>
-        <translation>STL binaire (*.stl)</translation>
+      <location/>
+      <source>Binary STL (*.stl)</source>
+      <translation>STL binaire (*.stl)</translation>
     </message>
     <message>
-        <source>ASCII STL (*.ast)</source>
-        <translation>STL ASCII (*.ast)</translation>
+      <location/>
+      <source>ASCII STL (*.ast)</source>
+      <translation>STL ASCII (*.ast)</translation>
     </message>
     <message>
-        <source>Binary Mesh (*.bms)</source>
-        <translation>Maillage binaire (*.bms)</translation>
+      <location/>
+      <source>Binary Mesh (*.bms)</source>
+      <translation>Maillage binaire (*.bms)</translation>
     </message>
     <message>
-        <source>Alias Mesh (*.obj)</source>
-        <translation>Maillage alias (*.obj)</translation>
+      <location/>
+      <source>Alias Mesh (*.obj)</source>
+      <translation>Maillage alias (*.obj)</translation>
     </message>
     <message>
-        <source>Inventor V2.1 ascii (*.iv)</source>
-        <translation>Inventor V2.1 ascii (*.iv)</translation>
+      <location/>
+      <source>Inventor V2.1 ascii (*.iv)</source>
+      <translation>Inventor V2.1 ascii (*.iv)</translation>
     </message>
     <message>
-        <source>All Files (*.*)</source>
-        <translation>Tous les fichiers (*.*)</translation>
+      <location/>
+      <source>All Files (*.*)</source>
+      <translation>Tous les fichiers (*.*)</translation>
     </message>
     <message>
-        <source>ASCII STL (*.stl)</source>
-        <translation>STL ASCII (*.stl)</translation>
+      <location/>
+      <source>ASCII STL (*.stl)</source>
+      <translation>STL ASCII (*.stl)</translation>
     </message>
     <message>
-        <source>VRML V2.0 (*.wrl *.vrml)</source>
-        <translation>VRML V2.0 (*.wrl *.vrml)</translation>
+      <location/>
+      <source>VRML V2.0 (*.wrl *.vrml)</source>
+      <translation>VRML V2.0 (*.wrl *.vrml)</translation>
     </message>
     <message>
-        <source>Compressed VRML 2.0 (*.wrz)</source>
-        <translation>VRML 2.0 compressé (*.wrz)</translation>
+      <location/>
+      <source>Compressed VRML 2.0 (*.wrz)</source>
+      <translation>VRML 2.0 compressé (*.wrz)</translation>
     </message>
     <message>
-        <source>Nastran (*.nas *.bdf)</source>
-        <translation>Nastran (*.nas *.bdf)</translation>
+      <location/>
+      <source>Nastran (*.nas *.bdf)</source>
+      <translation>Nastran (*.nas *.bdf)</translation>
     </message>
     <message>
-        <source>Python module def (*.py)</source>
-        <translation>Module Python(*.py)</translation>
+      <location/>
+      <source>Python module def (*.py)</source>
+      <translation>Module Python(*.py)</translation>
     </message>
     <message>
-        <source>Meshing Tolerance</source>
-        <translation>Tolérance de maillage</translation>
+      <location/>
+      <source>Meshing Tolerance</source>
+      <translation>Tolérance de maillage</translation>
     </message>
     <message>
-        <source>Enter tolerance for meshing geometry:</source>
-        <translation>Entrer la tolérance pour la géométrie maillée:</translation>
+      <location/>
+      <source>Enter tolerance for meshing geometry:</source>
+      <translation>Entrer la tolérance pour la géométrie maillée:</translation>
     </message>
     <message>
-        <source>The mesh &apos;%1&apos; is a solid.</source>
-        <translation>Le maillage &apos;%1&apos; est un solide.</translation>
+      <location/>
+      <source>The mesh '%1' is a solid.</source>
+      <translation>Le maillage '%1' est un solide.</translation>
     </message>
     <message>
-        <source>The mesh &apos;%1&apos; is not a solid.</source>
-        <translation>Le maillage &apos;%1&apos; n&apos;est pas un solide.</translation>
+      <location/>
+      <source>The mesh '%1' is not a solid.</source>
+      <translation>Le maillage '%1' n'est pas un solide.</translation>
     </message>
     <message>
-        <source>Min=&lt;%1,%2,%3&gt;
+      <location/>
+      <source>Min=&lt;%1,%2,%3&gt;
 
 Max=&lt;%4,%5,%6&gt;</source>
-        <translation>Min=&lt;%1,%2,%3&gt;
+      <translation>Min=&lt;%1,%2,%3&gt;
 
 Max=&lt;%4,%5,%6&gt;</translation>
     </message>
     <message>
-        <source>[Points: %1, Edges: %2 Faces: %3]</source>
-        <translation>[Points: %1, Contours: %2 Faces: %3]</translation>
+      <location/>
+      <source>[Points: %1, Edges: %2 Faces: %3]</source>
+      <translation>[Points: %1, Contours: %2 Faces: %3]</translation>
     </message>
     <message>
-        <source>Leave info mode</source>
-        <translation>Quitter le mode d&apos;information</translation>
+      <location/>
+      <source>Leave info mode</source>
+      <translation>Quitter le mode d'information</translation>
     </message>
     <message>
-        <source>Index: %1</source>
-        <translation>Index: %1</translation>
+      <location/>
+      <source>Index: %1</source>
+      <translation>Index: %1</translation>
     </message>
     <message>
-        <source>Leave hole-filling mode</source>
-        <translation>Quitter le mode de remplissage des trous</translation>
+      <location/>
+      <source>Leave hole-filling mode</source>
+      <translation>Quitter le mode de remplissage des trous</translation>
     </message>
     <message>
-        <source>Leave removal mode</source>
-        <translation>Quitter le mode de suppression</translation>
+      <location/>
+      <source>Leave removal mode</source>
+      <translation>Quitter le mode de suppression</translation>
     </message>
     <message>
-        <source>All Mesh Files (*.stl *.ast *.bms *.obj *.ply)</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>All Mesh Files (*.stl *.ast *.bms *.obj *.ply)</source>
+      <translation>Tous les fichiers de maillage (*.stl *.ast *.bms *.obj *.ply)</translation>
     </message>
     <message>
-        <source>Stanford Polygon (*.ply)</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Stanford Polygon (*.ply)</source>
+      <translation>Polygone de Stanford (*.ply)</translation>
     </message>
     <message>
-        <source>Object File Format (*.off)</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Object File Format (*.off)</source>
+      <translation>Object File Format (*.off)</translation>
     </message>
     <message>
-        <source>Standford Polygon (*.ply)</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Standford Polygon (*.ply)</source>
+      <translation>Standford Polygon (*.ply)</translation>
     </message>
     <message>
-        <source>Delete selected faces</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Delete selected faces</source>
+      <translation>Supprimer les faces sélectionnées</translation>
     </message>
     <message>
-        <source>Clear selected faces</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Clear selected faces</source>
+      <translation>Déselectionner les faces sélectionnées</translation>
     </message>
     <message>
-        <source>Annotation</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Annotation</source>
+      <translation>Annotation</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>Workbench</name>
     <message>
-        <source>Analyze</source>
-        <translation>Analyser</translation>
+      <location/>
+      <source>Analyze</source>
+      <translation>Analyser</translation>
     </message>
     <message>
-        <source>Boolean</source>
-        <translation>Opération booléenne</translation>
+      <location/>
+      <source>Boolean</source>
+      <translation>Opération booléenne</translation>
     </message>
     <message>
-        <source>&amp;Meshes</source>
-        <translation>&amp;Maillages</translation>
+      <location/>
+      <source>&amp;Meshes</source>
+      <translation>&amp;Maillages</translation>
     </message>
     <message>
-        <source>Mesh tools</source>
-        <translation>Outils de maillage</translation>
+      <location/>
+      <source>Mesh tools</source>
+      <translation>Outils de maillage</translation>
     </message>
     <message>
-        <source>Mesh test suite</source>
-        <translation type="obsolete">Suite de test de maillage</translation>
+      <location/>
+      <source>Mesh test suite</source>
+      <translation>Suite de test de maillage</translation>
     </message>
-</context>
+  </context>
 </TS>

@@ -1,185 +1,283 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="it_IT">
-<context>
+<TS>
+  <context>
     <name>CmdCompleteConstraintAxle</name>
     <message>
-        <source>Complete</source>
-        <translation>Completo</translation>
+      <location/>
+      <source>Complete</source>
+      <translation>Completo</translation>
     </message>
     <message>
-        <source>Constraint Axle...</source>
-        <translation>Asse di vincolo</translation>
+      <location/>
+      <source>Constraint Axle...</source>
+      <translation>Vincolo assiale...</translation>
     </message>
     <message>
-        <source>set a axle constraint between two objects</source>
-        <translation>assegna una asse di vincolo tra due oggetti</translation>
+      <location/>
+      <source>set a axle constraint between two objects</source>
+      <translation>Imposta un vincolo assiale tra due oggetti</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CompleteGui::Workbench</name>
     <message>
-        <source>&amp;File</source>
-        <translation type="obsolete">&amp;File</translation>
+      <location/>
+      <source>&amp;File</source>
+      <translation>&amp;File</translation>
     </message>
     <message>
-        <source>&amp;Edit</source>
-        <translation type="obsolete">&amp;Modifica</translation>
+      <location/>
+      <source>&amp;Edit</source>
+      <translation>&amp;Modifica</translation>
     </message>
     <message>
-        <source>Standard views</source>
-        <translation type="obsolete">Viste standard</translation>
+      <location/>
+      <source>Standard views</source>
+      <translation>Viste standard</translation>
     </message>
     <message>
-        <source>&amp;Zoom</source>
-        <translation type="obsolete">&amp;Zoom</translation>
+      <location/>
+      <source>&amp;Stereo</source>
+      <translation>&amp;Stereo</translation>
     </message>
     <message>
-        <source>&amp;View</source>
-        <translation type="obsolete">&amp;Visualizza</translation>
+      <location/>
+      <source>&amp;Zoom</source>
+      <translation>&amp;Zoom</translation>
     </message>
     <message>
-        <source>&amp;Tools</source>
-        <translation type="obsolete">&amp;Strumenti</translation>
+      <location/>
+      <source>Visibility</source>
+      <translation>Visibilità</translation>
     </message>
     <message>
-        <source>Analyze</source>
-        <translation type="obsolete">Analizza</translation>
+      <location/>
+      <source>&amp;View</source>
+      <translation>&amp;Visualizza</translation>
     </message>
     <message>
-        <source>Boolean</source>
-        <translation type="obsolete">Booleano</translation>
+      <location/>
+      <source>&amp;Tools</source>
+      <translation>&amp;Strumenti</translation>
     </message>
     <message>
-        <source>&amp;Meshes</source>
-        <translation type="obsolete">&amp;Griglie</translation>
+      <location/>
+      <source>Analyze</source>
+      <translation>Analizza</translation>
     </message>
     <message>
-        <source>&amp;Part</source>
-        <translation type="obsolete">&amp;Parte</translation>
+      <location/>
+      <source>Boolean</source>
+      <translation>Booleano</translation>
     </message>
     <message>
-        <source>&amp;Drawing</source>
-        <translation type="obsolete">&amp;Disegna</translation>
+      <location/>
+      <source>&amp;Meshes</source>
+      <translation>M&amp;esh</translation>
     </message>
     <message>
-        <source>&amp;Windows</source>
-        <translation type="obsolete">&amp;Finestre</translation>
+      <location/>
+      <source>&amp;Part</source>
+      <translation>&amp;Parte</translation>
     </message>
     <message>
-        <source>&amp;Online-help</source>
-        <translation type="obsolete">&amp;Aiuto in linea</translation>
+      <location/>
+      <source>Parametric</source>
+      <translation>Parametrica</translation>
     </message>
     <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">&amp;Aiuto</translation>
+      <location/>
+      <source>Ske&amp;tch</source>
+      <translation>S&amp;ketch</translation>
     </message>
     <message>
-        <source>File</source>
-        <translation type="obsolete">File</translation>
+      <location/>
+      <source>&amp;Drawing</source>
+      <translation>&amp;Disegno</translation>
     </message>
     <message>
-        <source>Macro</source>
-        <translation type="obsolete">Macro</translation>
+      <location/>
+      <source>&amp;Raytracing</source>
+      <translation>&amp;Raytracing</translation>
     </message>
     <message>
-        <source>View</source>
-        <translation type="obsolete">Visualizza</translation>
+      <location/>
+      <source>&amp;Drafting</source>
+      <translation>Draf&amp;ting</translation>
     </message>
-</context>
-<context>
+    <message>
+      <location/>
+      <source>&amp;Windows</source>
+      <translation>F&amp;inestre</translation>
+    </message>
+    <message>
+      <location/>
+      <source>&amp;Online-help</source>
+      <translation>Ai&amp;uto in linea</translation>
+    </message>
+    <message>
+      <location/>
+      <source>&amp;Help</source>
+      <translation>&amp;Aiuto</translation>
+    </message>
+    <message>
+      <location/>
+      <source>File</source>
+      <translation>File</translation>
+    </message>
+    <message>
+      <location/>
+      <source>Macro</source>
+      <translation>Macro</translation>
+    </message>
+    <message>
+      <location/>
+      <source>View</source>
+      <translation>Visualizza</translation>
+    </message>
+    <message>
+      <location/>
+      <source>Part design</source>
+      <translation>Part design</translation>
+    </message>
+    <message>
+      <location/>
+      <source>Sketch based</source>
+      <translation>Basato sullo sketch</translation>
+    </message>
+    <message>
+      <location/>
+      <source>Drawings</source>
+      <translation>Disegni</translation>
+    </message>
+    <message>
+      <location/>
+      <source>Raytracing</source>
+      <translation>Raytracing</translation>
+    </message>
+    <message>
+      <location/>
+      <source>Drafting</source>
+      <translation>Drafting</translation>
+    </message>
+  </context>
+  <context>
     <name>Workbench</name>
     <message>
-        <source>&amp;File</source>
-        <translation type="obsolete">&amp;File</translation>
+      <location/>
+      <source>&amp;File</source>
+      <translation>&amp;File</translation>
     </message>
     <message>
-        <source>&amp;Edit</source>
-        <translation type="obsolete">&amp;Modifica</translation>
+      <location/>
+      <source>&amp;Edit</source>
+      <translation>&amp;Modifica</translation>
     </message>
     <message>
-        <source>Standard views</source>
-        <translation type="obsolete">Viste standard</translation>
+      <location/>
+      <source>Standard views</source>
+      <translation>Viste standard</translation>
     </message>
     <message>
-        <source>&amp;3D View</source>
-        <translation type="obsolete">&amp;Vista 3D</translation>
+      <location/>
+      <source>&amp;3D View</source>
+      <translation>Vista &amp;3D</translation>
     </message>
     <message>
-        <source>&amp;Zoom</source>
-        <translation type="obsolete">&amp;Zoom</translation>
+      <location/>
+      <source>&amp;Zoom</source>
+      <translation>&amp;Zoom</translation>
     </message>
     <message>
-        <source>&amp;View</source>
-        <translation type="obsolete">&amp;Visualizza</translation>
+      <location/>
+      <source>&amp;View</source>
+      <translation>&amp;Visualizza</translation>
     </message>
     <message>
-        <source>&amp;Tools</source>
-        <translation type="obsolete">&amp;Strumenti</translation>
+      <location/>
+      <source>&amp;Tools</source>
+      <translation>&amp;Strumenti</translation>
     </message>
     <message>
-        <source>Analyze</source>
-        <translation type="obsolete">Analizza</translation>
+      <location/>
+      <source>Analyze</source>
+      <translation>Analizza</translation>
     </message>
     <message>
-        <source>Boolean</source>
-        <translation type="obsolete">Booleano</translation>
+      <location/>
+      <source>Boolean</source>
+      <translation>Booleano</translation>
     </message>
     <message>
-        <source>&amp;Meshes</source>
-        <translation type="obsolete">&amp;Griglie</translation>
+      <location/>
+      <source>&amp;Meshes</source>
+      <translation>M&amp;esh</translation>
     </message>
     <message>
-        <source>&amp;Part</source>
-        <translation type="obsolete">&amp;Parte</translation>
+      <location/>
+      <source>&amp;Part</source>
+      <translation>&amp;Parte</translation>
     </message>
     <message>
-        <source>&amp;Drawing</source>
-        <translation type="unfinished">&amp;Disegna</translation>
+      <location/>
+      <source>&amp;Drawing</source>
+      <translation>&amp;Disegno</translation>
     </message>
     <message>
-        <source>&amp;Windows</source>
-        <translation type="obsolete">&amp;Finestre</translation>
+      <location/>
+      <source>&amp;Windows</source>
+      <translation>F&amp;inestre</translation>
     </message>
     <message>
-        <source>&amp;Online-help</source>
-        <translation type="obsolete">&amp;Aiuto in linea</translation>
+      <location/>
+      <source>&amp;Online-help</source>
+      <translation>Ai&amp;uto in linea</translation>
     </message>
     <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">&amp;Aiuto</translation>
+      <location/>
+      <source>&amp;Help</source>
+      <translation>&amp;Aiuto</translation>
     </message>
     <message>
-        <source>File</source>
-        <translation type="obsolete">File</translation>
+      <location/>
+      <source>File</source>
+      <translation>File</translation>
     </message>
     <message>
-        <source>Macro</source>
-        <translation type="obsolete">Macro</translation>
+      <location/>
+      <source>Macro</source>
+      <translation>Macro</translation>
     </message>
     <message>
-        <source>View</source>
-        <translation type="obsolete">Visualizza</translation>
+      <location/>
+      <source>View</source>
+      <translation>Visualizza</translation>
     </message>
     <message>
-        <source>Ske&amp;tch</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Ske&amp;tch</source>
+      <translation>S&amp;ketch</translation>
     </message>
     <message>
-        <source>&amp;Raytracing</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&amp;Raytracing</source>
+      <translation>&amp;Raytracing</translation>
     </message>
     <message>
-        <source>&amp;Drafting</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&amp;Drafting</source>
+      <translation>Draf&amp;ting</translation>
     </message>
     <message>
-        <source>Sketch based</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Sketch based</source>
+      <translation>Basato sullo sketch</translation>
     </message>
     <message>
-        <source>Parametric</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Parametric</source>
+      <translation>Parametrica</translation>
     </message>
-</context>
+  </context>
 </TS>

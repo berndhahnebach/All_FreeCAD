@@ -1,200 +1,243 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="fr_FR">
-<context>
+<TS>
+  <context>
     <name>CmdPointsExport</name>
     <message>
-        <source>Points</source>
-        <translation>Points</translation>
+      <location/>
+      <source>Points</source>
+      <translation>Points</translation>
     </message>
     <message>
-        <source>Export points...</source>
-        <translation>Exporter les points...</translation>
+      <location/>
+      <source>Export points...</source>
+      <translation>Exporter les points...</translation>
     </message>
     <message>
-        <source>Exports a point cloud</source>
-        <translation>Exporte un nuage de point</translation>
+      <location/>
+      <source>Exports a point cloud</source>
+      <translation>Exporte un nuage de point</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPointsImport</name>
     <message>
-        <source>Points</source>
-        <translation>Points</translation>
+      <location/>
+      <source>Points</source>
+      <translation>Points</translation>
     </message>
     <message>
-        <source>Import points...</source>
-        <translation>Importer des points...</translation>
+      <location/>
+      <source>Import points...</source>
+      <translation>Importer des points...</translation>
     </message>
     <message>
-        <source>Imports a point cloud</source>
-        <translation>Importe un nuage de points</translation>
+      <location/>
+      <source>Imports a point cloud</source>
+      <translation>Importe un nuage de points</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPointsPolyCut</name>
     <message>
-        <source>Points</source>
-        <translation>Points</translation>
+      <location/>
+      <source>Points</source>
+      <translation>Points</translation>
     </message>
     <message>
-        <source>Cut point cloud</source>
-        <translation>Couper un nuage de points</translation>
+      <location/>
+      <source>Cut point cloud</source>
+      <translation>Couper un nuage de points</translation>
     </message>
     <message>
-        <source>Cuts a point cloud with a picked polygon</source>
-        <translation>Coupe un nuage de points à l&apos;aide d&apos;un polygone sélectionné</translation>
+      <location/>
+      <source>Cuts a point cloud with a picked polygon</source>
+      <translation>Coupe un nuage de points à l'aide d'un polygone sélectionné</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPointsTransform</name>
     <message>
-        <source>Points</source>
-        <translation>Points</translation>
+      <location/>
+      <source>Points</source>
+      <translation>Points</translation>
     </message>
     <message>
-        <source>Transform Points</source>
-        <translation>Transformer les points</translation>
+      <location/>
+      <source>Transform Points</source>
+      <translation>Transformer les points</translation>
     </message>
     <message>
-        <source>Test to transform a point cloud</source>
-        <translation>Test de transformation d&apos;un nuage de points</translation>
+      <location/>
+      <source>Test to transform a point cloud</source>
+      <translation>Test de transformation d'un nuage de points</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>PointsGui::DlgPointsRead</name>
     <message>
-        <source>ASCII points import</source>
-        <translation>Import de points ASCII</translation>
+      <location/>
+      <source>ASCII points import</source>
+      <translation>Import de points ASCII</translation>
     </message>
     <message>
-        <source>Template:</source>
-        <translation>Modèle:</translation>
+      <location/>
+      <source>Template:</source>
+      <translation>Modèle:</translation>
     </message>
     <message>
-        <source>Special lines</source>
-        <translation>Ligne spéciales</translation>
+      <location/>
+      <source>Special lines</source>
+      <translation>Ligne spéciales</translation>
     </message>
     <message>
-        <source>First line:</source>
-        <translation>Première ligne:</translation>
+      <location/>
+      <source>First line:</source>
+      <translation>Première ligne:</translation>
     </message>
     <message>
-        <source>Ignore</source>
-        <translation>Ignorer</translation>
+      <location/>
+      <source>Ignore</source>
+      <translation>Ignorer</translation>
     </message>
     <message>
-        <source>Cluster by lines starting with:</source>
-        <translation>Ensemble de lignes commençant par:</translation>
+      <location/>
+      <source>Cluster by lines starting with:</source>
+      <translation>Ensemble de lignes commençant par:</translation>
     </message>
     <message>
-        <source>Ignore lines starting with:</source>
-        <translation>Ignorer les lignes commençant par:</translation>
+      <location/>
+      <source>Ignore lines starting with:</source>
+      <translation>Ignorer les lignes commençant par:</translation>
     </message>
     <message>
-        <source>Point format</source>
-        <translation>Format de point</translation>
+      <location/>
+      <source>Point format</source>
+      <translation>Format de point</translation>
     </message>
     <message>
-        <source>Number seperator:</source>
-        <translation>Séparateur de nombres:</translation>
+      <location/>
+      <source>Number seperator:</source>
+      <translation>Séparateur de nombres:</translation>
     </message>
     <message>
-        <source>Points format:</source>
-        <translation>Format de points:</translation>
+      <location/>
+      <source>Points format:</source>
+      <translation>Format de points:</translation>
     </message>
     <message>
-        <source>Next block:</source>
-        <translation>Bloc suivant:</translation>
+      <location/>
+      <source>Next block:</source>
+      <translation>Bloc suivant:</translation>
     </message>
     <message>
-        <source>,</source>
-        <translation>,</translation>
+      <location/>
+      <source>,</source>
+      <translation>,</translation>
     </message>
     <message>
-        <source>;</source>
-        <translation>;</translation>
+      <location/>
+      <source>;</source>
+      <translation>;</translation>
     </message>
     <message>
-        <source>\t</source>
-        <translation>\t</translation>
+      <location/>
+      <source>\t</source>
+      <translation>\t</translation>
     </message>
     <message>
-        <source>\w</source>
-        <translation>\w</translation>
+      <location/>
+      <source>\w</source>
+      <translation>\w</translation>
     </message>
     <message>
-        <source>X,Y,Z</source>
-        <translation>X,Y,Z</translation>
+      <location/>
+      <source>X,Y,Z</source>
+      <translation>X, Y, Z</translation>
     </message>
     <message>
-        <source>X,Y</source>
-        <translation>X,Y</translation>
+      <location/>
+      <source>X,Y</source>
+      <translation>X, Y</translation>
     </message>
     <message>
-        <source>none</source>
-        <translation>aucun</translation>
+      <location/>
+      <source>none</source>
+      <translation>aucun</translation>
     </message>
     <message>
-        <source>I,J,K (normal vector)</source>
-        <translation>I,J,K (vecteur normal)</translation>
+      <location/>
+      <source>I,J,K (normal vector)</source>
+      <translation>I,J,K (vecteur normal)</translation>
     </message>
     <message>
-        <source>I,K (normal vector 2D)</source>
-        <translation>I,K (vecteur normal 2D)</translation>
+      <location/>
+      <source>I,K (normal vector 2D)</source>
+      <translation>I,K (vecteur normal 2D)</translation>
     </message>
     <message>
-        <source>R,G,B (color)</source>
-        <translation>R,V,B (couleur)</translation>
+      <location/>
+      <source>R,G,B (color)</source>
+      <translation>R,V,B (couleur)</translation>
     </message>
     <message>
-        <source>I (Gray value)</source>
-        <translation>I (valeur de gris)</translation>
+      <location/>
+      <source>I (Gray value)</source>
+      <translation>I (valeur de gris)</translation>
     </message>
     <message>
-        <source>Preview</source>
-        <translation>Aperçu</translation>
+      <location/>
+      <source>Preview</source>
+      <translation>Aperçu</translation>
     </message>
     <message>
-        <source>100</source>
-        <translation>100</translation>
+      <location/>
+      <source>100</source>
+      <translation>100</translation>
     </message>
     <message>
-        <source>Number of points</source>
-        <translation>Nombre de points</translation>
+      <location/>
+      <source>Number of points</source>
+      <translation>Nombre de points</translation>
     </message>
     <message>
-        <source>Number of previewed lines:</source>
-        <translation>Nombre de lignes prévisualisées:</translation>
+      <location/>
+      <source>Number of previewed lines:</source>
+      <translation>Nombre de lignes prévisualisés :</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>PointsGui::Workbench</name>
     <message>
-        <source>Points tools</source>
-        <translation type="obsolete">Outils points</translation>
+      <location/>
+      <source>Points tools</source>
+      <translation>Outils points</translation>
     </message>
     <message>
-        <source>&amp;Points</source>
-        <translation type="obsolete">&amp;Points</translation>
+      <location/>
+      <source>&amp;Points</source>
+      <translation>&amp;Points</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>QObject</name>
     <message>
-        <source>Ascii Points (*.asc);;All Files (*.*)</source>
-        <translation>Points Ascii (*.asc);;Tous les fichiers (*.*)</translation>
+      <location/>
+      <source>Ascii Points (*.asc);;All Files (*.*)</source>
+      <translation>Points Ascii (*.asc);;Tous les fichiers (*.*)</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>Workbench</name>
     <message>
-        <source>Points tools</source>
-        <translation>Outils points</translation>
+      <location/>
+      <source>Points tools</source>
+      <translation>Outils points</translation>
     </message>
     <message>
-        <source>&amp;Points</source>
-        <translation>&amp;Points</translation>
+      <location/>
+      <source>&amp;Points</source>
+      <translation>&amp;Points</translation>
     </message>
-</context>
+  </context>
 </TS>
