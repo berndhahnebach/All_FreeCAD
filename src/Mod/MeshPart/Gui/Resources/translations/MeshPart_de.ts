@@ -1,57 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="de_DE">
-<context>
+<TS>
+  <context>
     <name>CmdMeshPartMesher</name>
     <message>
-        <source>Mesh</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Mesh</source>
+      <translation>Mesh</translation>
     </message>
     <message>
-        <source>Create mesh from shape...</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Create mesh from shape...</source>
+      <translation>Create mesh from shape...</translation>
     </message>
     <message>
-        <source>Tessellate shape</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Tessellate shape</source>
+      <translation>Tessellate shape</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>MeshPartGui::Tessellation</name>
     <message>
-        <source>Tessellation</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Tessellation</source>
+      <translation>Tessellation</translation>
     </message>
     <message>
-        <source>Shapes</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Shapes</source>
+      <translation>Shapes</translation>
     </message>
     <message>
-        <source>Settings</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Settings</source>
+      <translation>Einstellungen</translation>
     </message>
     <message>
-        <source>Surface deviation:</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Surface deviation:</source>
+      <translation>Surface deviation:</translation>
     </message>
     <message>
-        <source>Max. edge length:</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Max. edge length:</source>
+      <translation>Max. edge length:</translation>
     </message>
     <message>
-        <source>Select a shape for meshing, first.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select a shape for meshing, first.</source>
+      <translation>Wählen Sie zuerst eine Form für die Vernetzung.</translation>
     </message>
     <message>
-        <source>No such document &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>No such document '%1'.</source>
+      <translation>Es gibt kein Dokument "%1".</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>Workbench</name>
     <message>
-        <source>MeshPart</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>MeshPart</source>
+      <translation>Mesh-Teil</translation>
     </message>
-</context>
+  </context>
 </TS>
