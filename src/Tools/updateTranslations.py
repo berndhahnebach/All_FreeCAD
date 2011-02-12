@@ -50,11 +50,11 @@ tweaks = [["pt-BR","pt"],["es-ES","es"]]
 # SAX handler to parse the subversion output
 class SvnHandler(xml.sax.handler.ContentHandler):
     def __init__(self):
-        self.is_versioned = False
+        self.is_versioned = True
 
     def startElement(self, name, attributes):
         if name == "wc-status":
-            self.is_versioned = (attributes["item"] != "unversioned")
+            self.is_versioned = False
 
 def doFile(tsfilepath,targetpath,lncode):
     "treats a single file"
