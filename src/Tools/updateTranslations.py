@@ -22,7 +22,9 @@ reflect the latest state of the translations. Better make a build before
 using this script!
 '''
 
-import sys, os, shutil, tempfile, zipfile, getopt, shutil
+import sys, os, shutil, tempfile, zipfile, getopt, StringIO
+import xml.sax, xml.sax.handler, xml.sax.xmlreader
+
 
 crowdinpath = "http://crowdin.net/download/project/freecad.zip"
 
@@ -44,7 +46,16 @@ locations = [["Assembly","../Mod/Assembly/Gui/Resources/translations"],
              ["Sketcher","../Mod/Sketcher/Gui/Resources/translations"]]
 
 tweaks = [["pt-BR","pt"],["es-ES","es"]]
-             
+
+# SAX handler to parse the subversion output
+class SvnHandler(xml.sax.handler.ContentHandler):
+    def __init__(self):
+        self.is_versioned = False
+
+    def startElement(self, name, attributes):
+        if name == "wc-status":
+            self.is_versioned = (attributes["item"] != "unversioned")
+
 def doFile(tsfilepath,targetpath,lncode):
     "treats a single file"
     basename = os.path.basename(tsfilepath)[:-3]
@@ -61,6 +72,38 @@ def doFile(tsfilepath,targetpath,lncode):
     newqm = targetpath + os.sep + basename + "_" + lncode + ".qm"
     if not os.path.exists(newqm):
         print "ERROR: " + newqm + "not released"
+
+    # handle .ts file
+    parser=xml.sax.make_parser()
+    handler=SvnHandler()
+    parser.setContentHandler(handler)
+    info=os.popen("svn status %s --xml" % (newpath)).read()
+    try:
+        inpsrc = xml.sax.InputSource()
+        strio=StringIO.StringIO(info)
+        inpsrc.setByteStream(strio)
+        parser.parse(inpsrc)
+        if not handler.is_versioned:
+            print "Add file %s to subversion" % (newpath)
+            os.system("svn add %s" % (newpath))
+    except:
+        pass
+
+    # handle .qm file
+    parser=xml.sax.make_parser()
+    handler=SvnHandler()
+    parser.setContentHandler(handler)
+    info=os.popen("svn status %s --xml" % (newqm)).read()
+    try:
+        inpsrc = xml.sax.InputSource()
+        strio=StringIO.StringIO(info)
+        inpsrc.setByteStream(strio)
+        parser.parse(inpsrc)
+        if not handler.is_versioned:
+            print "Add file %s to subversion" % (newqm)
+            os.system("svn add %s" % (newqm))
+    except:
+        pass
 
 def doLanguage(lncode):
     " treats a single language"
@@ -98,7 +141,7 @@ if __name__ == "__main__":
         inputdir=os.path.realpath(inputdir)
         inputdir=os.sep.join((inputdir,"freecad.zip"))
         if not os.path.exists(inputdir):
-            print "download failed!"
+            print "freecad.zip does not exist!"
             sys.exit()
         shutil.copy(inputdir,tempfolder)
     else:
