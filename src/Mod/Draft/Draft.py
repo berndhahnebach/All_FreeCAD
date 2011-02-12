@@ -1565,8 +1565,9 @@ class DrawingView:
                 svg = getSVG(obj.Source,obj.LinewidthModifier,obj.TextModifier)
                 result = '<g id="' + obj.Name + '"'
                 result += ' transform="'
-                result += ' translate('+str(obj.X)+','+str(obj.Y)+')'
-                result += ' scale('+str(obj.Scale)+','+str(-obj.Scale)+')'
+                result += 'rotate('+str(obj.Rotation)+','+str(obj.X)+','+str(obj.Y)+') '
+                result += 'translate('+str(obj.X)+','+str(obj.Y)+') '
+                result += 'scale('+str(obj.Scale)+','+str(-obj.Scale)+')'
                 result += '">'
                 result += svg
                 result += '</g>'
