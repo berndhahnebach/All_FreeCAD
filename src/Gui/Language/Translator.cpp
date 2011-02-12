@@ -140,6 +140,11 @@ Translator::Translator()
     d->mapLanguageTopLevelDomain[QT_TR_NOOP("Russian"   )] = "ru";
     d->mapLanguageTopLevelDomain[QT_TR_NOOP("Swedish"   )] = "se";
     d->mapLanguageTopLevelDomain[QT_TR_NOOP("Afrikaans" )] = "af";
+    d->mapLanguageTopLevelDomain[QT_TR_NOOP("Norwegian" )] = "no";
+    d->mapLanguageTopLevelDomain[QT_TR_NOOP("Portuguese")] = "pt";
+    d->mapLanguageTopLevelDomain[QT_TR_NOOP("Dutch"     )] = "nl";
+    d->mapLanguageTopLevelDomain[QT_TR_NOOP("Ukrainian" )] = "uk";
+    d->mapLanguageTopLevelDomain[QT_TR_NOOP("Finnish"   )] = "fi";
     d->activatedLanguage = "English";
 
     d->paths = directories();

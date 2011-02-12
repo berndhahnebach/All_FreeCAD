@@ -69,6 +69,7 @@ EXTRA_DIST = \
         Resources/icons/Draft_Rectangle.svg \
         Resources/icons/Draft_Rotate.svg \
         Resources/icons/Draft_Scale.svg \
+        Resources/icons/Draft_SelectGroup.svg \
         Resources/icons/Draft_SelectPlane.svg \
         Resources/icons/Draft_SwitchMode.svg \
         Resources/icons/Draft_Text.svg \
