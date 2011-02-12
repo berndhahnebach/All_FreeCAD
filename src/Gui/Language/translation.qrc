@@ -1,10 +1,16 @@
 <RCC>
 	<qresource prefix="/translations" >
+		<file>FreeCAD_af.qm</file>
 		<file>FreeCAD_de.qm</file>
 		<file>FreeCAD_es.qm</file>
+		<file>FreeCAD_fi.qm</file>
 		<file>FreeCAD_fr.qm</file>
 		<file>FreeCAD_it.qm</file>
+		<file>FreeCAD_nl.qm</file>
+		<file>FreeCAD_no.qm</file>
+		<file>FreeCAD_ru.qm</file>
 		<file>FreeCAD_se.qm</file>
+		<file>FreeCAD_uk.qm</file>
 		<file>qt_de.qm</file>
 		<file>qt_fr.qm</file>
 		<file>qt_it.qm</file>

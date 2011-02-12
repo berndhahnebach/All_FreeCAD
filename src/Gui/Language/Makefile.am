@@ -14,16 +14,28 @@ libLanguage_la_SOURCES=\
 EXTRA_DIST = \
 		translation.qrc \
 		FreeCAD.po \
+		FreeCAD_af.qm \
 		FreeCAD_de.qm \
 		FreeCAD_es.qm \
+		FreeCAD_fi.qm \
 		FreeCAD_fr.qm \
 		FreeCAD_it.qm \
+		FreeCAD_nl.qm \
+		FreeCAD_no.qm \
+		FreeCAD_ru.qm \
 		FreeCAD_se.qm \
+		FreeCAD_uk.qm \
+		FreeCAD_af.ts \
 		FreeCAD_de.ts \
 		FreeCAD_es.ts \
+		FreeCAD_fi.ts \
 		FreeCAD_fr.ts \
 		FreeCAD_it.ts \
+		FreeCAD_nl.ts \
+		FreeCAD_no.ts \
+		FreeCAD_ru.ts \
 		FreeCAD_se.ts \
+		FreeCAD_uk.ts \
 		qt_de.qm \
 		qt_fr.qm \
 		qt_it.qm

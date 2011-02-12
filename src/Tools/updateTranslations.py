@@ -45,7 +45,7 @@ locations = [["Assembly","../Mod/Assembly/Gui/Resources/translations"],
              ["Robot","../Mod/Robot/Gui/Resources/translations"],
              ["Sketcher","../Mod/Sketcher/Gui/Resources/translations"]]
 
-tweaks = [["pt-BR","pt"],["es-ES","es"]]
+tweaks = [["pt-BR","pt"],["es-ES","es"],["sv-SE","se"]]
 
 # SAX handler to parse the subversion output
 class SvnHandler(xml.sax.handler.ContentHandler):
