@@ -21,8 +21,24 @@ EXTRA_DIST = \
 		icons/Page.svg \
 		icons/Pages.svg \
 		icons/View.svg \
-		translations/Drawing_de.qm \
-		translations/Drawing_de.ts \
+		translations/Assembly_af.qm \
+		translations/Assembly_de.qm \
+		translations/Assembly_fi.qm \
+		translations/Assembly_fr.qm \
+		translations/Assembly_it.qm \
+		translations/Assembly_nl.qm \
+		translations/Assembly_no.qm \
+		translations/Assembly_ru.qm \
+		translations/Assembly_uk.qm \
+		translations/Assembly_af.ts \
+		translations/Assembly_de.ts \
+		translations/Assembly_fi.ts \
+		translations/Assembly_fr.ts \
+		translations/Assembly_it.ts \
+		translations/Assembly_nl.ts \
+		translations/Assembly_no.ts \
+		translations/Assembly_ru.ts \
+		translations/Assembly_uk.ts \
 		Drawing.qrc \
 		UpdateResources.bat
 
