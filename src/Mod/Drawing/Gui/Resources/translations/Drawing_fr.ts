@@ -1,196 +1,238 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="fr_FR">
-<context>
+<TS>
+  <context>
     <name>CmdDrawingExportPage</name>
     <message>
-        <source>File</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>File</source>
+      <translation>Fichier</translation>
     </message>
     <message>
-        <source>&amp;Export page...</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&amp;Export page...</source>
+      <translation>&amp;Exporter la page...</translation>
     </message>
     <message>
-        <source>Export a page to an SVG file</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Export a page to an SVG file</source>
+      <translation>Exporter une page vers un fichier SVG</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdDrawingNewA3Landscape</name>
     <message>
-        <source>Drawing</source>
-        <translation>Mise en plan</translation>
+      <location/>
+      <source>Drawing</source>
+      <translation>Mise en plan</translation>
     </message>
     <message>
-        <source>Insert new A3 landscape drawing</source>
-        <translation>Nouvelle mise en plan A3 paysage</translation>
+      <location/>
+      <source>Insert new A3 landscape drawing</source>
+      <translation>Insérer une nouvelle mise en plan A3 paysage</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdDrawingNewView</name>
     <message>
-        <source>Drawing</source>
-        <translation>Mise en plan</translation>
+      <location/>
+      <source>Drawing</source>
+      <translation>Mise en plan</translation>
     </message>
     <message>
-        <source>Insert a new View in the active drawing</source>
-        <translation type="obsolete">Insérer une nouvelle vue dans la mise en plan actuelle</translation>
+      <location/>
+      <source>Insert a new View in the active drawing</source>
+      <translation>Insérer une nouvelle vue dans la mise en plan actuelle</translation>
     </message>
     <message>
-        <source>Insert view in drawing</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Insert view in drawing</source>
+      <translation>Insérer une vue dans le dessin</translation>
     </message>
     <message>
-        <source>Insert a new View of a Part in the active drawing</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Insert a new View of a Part in the active drawing</source>
+      <translation>Insérer une nouvelle vue de la pièce dans le dessin actif</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdDrawingOpen</name>
     <message>
-        <source>Drawing</source>
-        <translation>Mise en plan</translation>
+      <location/>
+      <source>Drawing</source>
+      <translation>Mise en plan</translation>
     </message>
     <message>
-        <source>Open SVG...</source>
-        <translation>Ouvrir SVG...</translation>
+      <location/>
+      <source>Open SVG...</source>
+      <translation>Ouvrir SVG...</translation>
     </message>
     <message>
-        <source>Open a scalable vector graphic</source>
-        <translation>Ouvrir un fichier vectoriel SVG</translation>
+      <location/>
+      <source>Open a scalable vector graphic</source>
+      <translation>Ouvrir un fichier vectoriel SVG</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>DrawingGui::DrawingView</name>
     <message>
-        <source>&amp;Background</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&amp;Background</source>
+      <translation>&amp;Arrière-plan</translation>
     </message>
     <message>
-        <source>&amp;Outline</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&amp;Outline</source>
+      <translation>&amp;Contour</translation>
     </message>
     <message>
-        <source>&amp;Native</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&amp;Native</source>
+      <translation>&amp;Natif</translation>
     </message>
     <message>
-        <source>&amp;OpenGL</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&amp;OpenGL</source>
+      <translation>&amp;OpenGL</translation>
     </message>
     <message>
-        <source>&amp;Image</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&amp;Image</source>
+      <translation>&amp;Image</translation>
     </message>
     <message>
-        <source>&amp;High Quality Antialiasing</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&amp;High Quality Antialiasing</source>
+      <translation>&amp; Haute qualité anticrénelage</translation>
     </message>
     <message>
-        <source>Open SVG File</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Open SVG File</source>
+      <translation>Ouvrir un fichier SVG</translation>
     </message>
     <message>
-        <source>Could not open file &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Could not open file '%1'.</source>
+      <translation>Impossible d'ouvrir le fichier'%1'.</translation>
     </message>
     <message>
-        <source>&amp;Renderer</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>&amp;Renderer</source>
+      <translation>Moteur de &amp;rendu</translation>
     </message>
     <message>
-        <source>Export PDF</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Export PDF</source>
+      <translation>Export PDF</translation>
     </message>
     <message>
-        <source>PDF file (*.pdf)</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>PDF file (*.pdf)</source>
+      <translation>Fichier PDF (*. pdf)</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>DrawingGui::Workbench</name>
     <message>
-        <source>Drawing</source>
-        <translation type="obsolete">Mise en plan</translation>
+      <location/>
+      <source>Drawing</source>
+      <translation>Mise en plan</translation>
     </message>
     <message>
-        <source>I/O</source>
-        <translation type="obsolete">I/O</translation>
+      <location/>
+      <source>I/O</source>
+      <translation>E/S</translation>
     </message>
     <message>
-        <source>Drawing types</source>
-        <translation type="obsolete">Types de dessin</translation>
+      <location/>
+      <source>Drawing types</source>
+      <translation>Types de dessin</translation>
     </message>
     <message>
-        <source>Views</source>
-        <translation type="obsolete">Vues</translation>
+      <location/>
+      <source>Views</source>
+      <translation>Vues</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>QObject</name>
     <message>
-        <source>Choose an SVG file to open</source>
-        <translation>Choisir un fichier SVG à ouvrir</translation>
+      <location/>
+      <source>Choose an SVG file to open</source>
+      <translation>Choisir un fichier SVG à ouvrir</translation>
     </message>
     <message>
-        <source>Drawing viewer</source>
-        <translation>Visionneuse de mise en plan</translation>
+      <location/>
+      <source>Drawing viewer</source>
+      <translation>Visionneuse de mise en plan</translation>
     </message>
     <message>
-        <source>Scalable Vector Graphics (*.svg *.svgz)</source>
-        <translation>Fichier vectoriel SVG (*.svg *.svgz)</translation>
+      <location/>
+      <source>Scalable Vector Graphics (*.svg *.svgz)</source>
+      <translation>Fichier vectoriel SVG (*.svg *.svgz)</translation>
     </message>
     <message>
-        <source>Wrong selection</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Wrong selection</source>
+      <translation>Mauvaise sélection</translation>
     </message>
     <message>
-        <source>Select a Part object.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select a Part object.</source>
+      <translation>Sélectionnez un objet pièce.</translation>
     </message>
     <message>
-        <source>No page to insert</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>No page to insert</source>
+      <translation>Aucune page pour insérer</translation>
     </message>
     <message>
-        <source>Create a page to insert.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Create a page to insert.</source>
+      <translation>Créer une page à insérer.</translation>
     </message>
     <message>
-        <source>Select one Page object.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select one Page object.</source>
+      <translation>Sélectionnez un objet Page.</translation>
     </message>
     <message>
-        <source>SVG(*.svg)</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>SVG(*.svg)</source>
+      <translation>SVG (*. svg)</translation>
     </message>
     <message>
-        <source>All Files (*.*)</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>All Files (*.*)</source>
+      <translation>Tous les fichiers (*.*)</translation>
     </message>
     <message>
-        <source>Export page</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Export page</source>
+      <translation>Exporter la page</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>Workbench</name>
     <message>
-        <source>Drawing</source>
-        <translation type="unfinished">Mise en plan</translation>
+      <location/>
+      <source>Drawing</source>
+      <translation>Mise en plan</translation>
     </message>
     <message>
-        <source>I/O</source>
-        <translation type="obsolete">I/O</translation>
+      <location/>
+      <source>I/O</source>
+      <translation>E/S</translation>
     </message>
     <message>
-        <source>Drawing types</source>
-        <translation type="obsolete">Types de dessin</translation>
+      <location/>
+      <source>Drawing types</source>
+      <translation>Types de dessin</translation>
     </message>
     <message>
-        <source>Views</source>
-        <translation type="obsolete">Vues</translation>
+      <location/>
+      <source>Views</source>
+      <translation>Vues</translation>
     </message>
-</context>
+  </context>
 </TS>

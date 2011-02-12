@@ -1,1483 +1,1820 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="fr_FR">
-<context>
+<TS>
+  <context>
     <name>BlockDefinition</name>
     <message>
-        <source>Block definition</source>
-        <translation>Définition de bloc</translation>
+      <location/>
+      <source>Block definition</source>
+      <translation>définition de bloc</translation>
     </message>
     <message>
-        <source>First limit</source>
-        <translation>Première limite</translation>
+      <location/>
+      <source>First limit</source>
+      <translation>Première limite</translation>
     </message>
     <message>
-        <source>Type:</source>
-        <translation>Type:</translation>
+      <location/>
+      <source>Type:</source>
+      <translation>Type :</translation>
     </message>
     <message>
-        <source>mm</source>
-        <translation>mm</translation>
+      <location/>
+      <source>mm</source>
+      <translation>mm</translation>
     </message>
     <message>
-        <source>Length:</source>
-        <translation>Longueur:</translation>
+      <location/>
+      <source>Length:</source>
+      <translation>Longueur :</translation>
     </message>
     <message>
-        <source>Dimension</source>
-        <translation>Dimension</translation>
+      <location/>
+      <source>Dimension</source>
+      <translation>Cote</translation>
     </message>
     <message>
-        <source>Up to next</source>
-        <translation>Jusqu&apos;au suivant</translation>
+      <location/>
+      <source>Up to next</source>
+      <translation>Jusqu'au suivant</translation>
     </message>
     <message>
-        <source>Up to last</source>
-        <translation>Jusqu&apos;au dernier</translation>
+      <location/>
+      <source>Up to last</source>
+      <translation>Jusqu'au dernier</translation>
     </message>
     <message>
-        <source>Up to plane</source>
-        <translation>Jusqu&apos;au plan</translation>
+      <location/>
+      <source>Up to plane</source>
+      <translation>Jusqu'au plan</translation>
     </message>
     <message>
-        <source>Up to face</source>
-        <translation>Jusqu&apos;à la face</translation>
+      <location/>
+      <source>Up to face</source>
+      <translation>Jusqu'à la face</translation>
     </message>
     <message>
-        <source>Limit:</source>
-        <translation>Limite:</translation>
+      <location/>
+      <source>Limit:</source>
+      <translation>Limite :</translation>
     </message>
     <message>
-        <source>No selection</source>
-        <translation>Aucune sélection</translation>
+      <location/>
+      <source>No selection</source>
+      <translation>Aucune sélection</translation>
     </message>
     <message>
-        <source>Profile</source>
-        <translation>Profil</translation>
+      <location/>
+      <source>Profile</source>
+      <translation>Profil</translation>
     </message>
     <message>
-        <source>Selection:</source>
-        <translation>Sélection:</translation>
+      <location/>
+      <source>Selection:</source>
+      <translation>Sélection :</translation>
     </message>
     <message>
-        <source>Reverse</source>
-        <translation>Inverser</translation>
+      <location/>
+      <source>Reverse</source>
+      <translation>Inverser</translation>
     </message>
     <message>
-        <source>Both sides</source>
-        <translation>Deux directions</translation>
+      <location/>
+      <source>Both sides</source>
+      <translation>Deux directions</translation>
     </message>
     <message>
-        <source>Second limit</source>
-        <translation>Seconde limite</translation>
+      <location/>
+      <source>Second limit</source>
+      <translation>Deuxième limite</translation>
     </message>
     <message>
-        <source>Direction</source>
-        <translation>Direction</translation>
+      <location/>
+      <source>Direction</source>
+      <translation>Direction</translation>
     </message>
     <message>
-        <source>Perpendicular to sketch</source>
-        <translation>Perpendiculaire à l&apos;esquisse</translation>
+      <location/>
+      <source>Perpendicular to sketch</source>
+      <translation>Perpendiculaire au croquis</translation>
     </message>
     <message>
-        <source>Reference</source>
-        <translation>Référence</translation>
+      <location/>
+      <source>Reference</source>
+      <translation>Référence</translation>
     </message>
     <message>
-        <source>Apply</source>
-        <translation>Appliquer</translation>
+      <location/>
+      <source>Apply</source>
+      <translation>Appliquer</translation>
     </message>
     <message>
-        <source>Cancel</source>
-        <translation>Annuler</translation>
+      <location/>
+      <source>Cancel</source>
+      <translation>Annuler</translation>
     </message>
     <message>
-        <source>OK</source>
-        <translation>OK</translation>
+      <location/>
+      <source>OK</source>
+      <translation>OK</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPartBoolean</name>
     <message>
-        <source>Part</source>
-        <translation>Pièce</translation>
+      <location/>
+      <source>Part</source>
+      <translation>Pièce</translation>
     </message>
     <message>
-        <source>Boolean...</source>
-        <translation>Opération booléenne...</translation>
+      <location/>
+      <source>Boolean...</source>
+      <translation>Opération booléenne...</translation>
     </message>
     <message>
-        <source>Run a boolean operation with two shapes selected</source>
-        <translation>Lance une opération booléenne entre deux formes sélectionnées</translation>
+      <location/>
+      <source>Run a boolean operation with two shapes selected</source>
+      <translation>Exécuter une opération booléenne sur deux formes sélectionnées</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPartBox</name>
     <message>
-        <source>Part</source>
-        <translation>Pièce</translation>
+      <location/>
+      <source>Part</source>
+      <translation>Pièce</translation>
     </message>
     <message>
-        <source>Create box...</source>
-        <translation type="obsolete">Créer un cube...</translation>
+      <location/>
+      <source>Create box...</source>
+      <translation>Créer un cube...</translation>
     </message>
     <message>
-        <source>Create a box solid</source>
-        <translation>Crée un objet cube</translation>
+      <location/>
+      <source>Create a Box feature</source>
+      <translation>Créez une fonction Box</translation>
     </message>
     <message>
-        <source>Box</source>
-        <translation type="unfinished">Cube</translation>
+      <location/>
+      <source>Box</source>
+      <translation>Boîte</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPartBox2</name>
     <message>
-        <source>Part</source>
-        <translation>Pièce</translation>
+      <location/>
+      <source>Part</source>
+      <translation>Pièce</translation>
     </message>
     <message>
-        <source>Box fix 1</source>
-        <translation>Cube fix 1</translation>
+      <location/>
+      <source>Box fix 1</source>
+      <translation>Boîte correctif 1</translation>
     </message>
     <message>
-        <source>Create a box solid without dialog</source>
-        <translation>Créer un objet Cube sans fenêtre de dialogue</translation>
+      <location/>
+      <source>Create a box feature without dialog</source>
+      <translation>Erstellt ein Box-Feature ohne Dialog</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPartBox3</name>
     <message>
-        <source>Part</source>
-        <translation>Pièce</translation>
+      <location/>
+      <source>Part</source>
+      <translation>Pièce</translation>
     </message>
     <message>
-        <source>Box fix 2</source>
-        <translation>Cube fix 2</translation>
+      <location/>
+      <source>Box fix 2</source>
+      <translation>Boîte correctif 2</translation>
     </message>
     <message>
-        <source>Create a box solid without dialog</source>
-        <translation>Créer un objet Cube sans fenêtre de dialogue</translation>
+      <location/>
+      <source>Create a box feature without dialog</source>
+      <translation>Erstellt ein Box-Feature ohne Dialog</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPartCommon</name>
     <message>
-        <source>Part</source>
-        <translation>Pièce</translation>
+      <location/>
+      <source>Part</source>
+      <translation>Pièce</translation>
     </message>
     <message>
-        <source>Intersection</source>
-        <translation>Intersection</translation>
+      <location/>
+      <source>Intersection</source>
+      <translation>Intersection</translation>
     </message>
     <message>
-        <source>Make an intersection of two shapes</source>
-        <translation>Intersection de deux formes</translation>
+      <location/>
+      <source>Intersection of two shapes</source>
+      <translation>Intersection de deux formes</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPartCone</name>
     <message>
-        <source>Part</source>
-        <translation type="unfinished">Pièce</translation>
+      <location/>
+      <source>Part</source>
+      <translation>Pièce</translation>
     </message>
     <message>
-        <source>Cone</source>
-        <translation type="unfinished">Cône</translation>
+      <location/>
+      <source>Cone</source>
+      <translation>Cône</translation>
     </message>
     <message>
-        <source>Create a cone solid</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Create a cone feature</source>
+      <translation>Créer une fonction de cône</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPartCrossSections</name>
     <message>
-        <source>Part</source>
-        <translation type="unfinished">Pièce</translation>
+      <location/>
+      <source>Part</source>
+      <translation>Pièce</translation>
     </message>
     <message>
-        <source>Cross-sections...</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Cross-sections...</source>
+      <translation>Coupes...</translation>
     </message>
     <message>
-        <source>Cross-sections</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Cross-sections</source>
+      <translation>Coupes</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPartCut</name>
     <message>
-        <source>Part</source>
-        <translation>Pièce</translation>
+      <location/>
+      <source>Part</source>
+      <translation>Pièce</translation>
     </message>
     <message>
-        <source>Cut</source>
-        <translation>Couper</translation>
+      <location/>
+      <source>Cut</source>
+      <translation>Couper</translation>
     </message>
     <message>
-        <source>Make a cut of two shapes</source>
-        <translation>Créer une coupure</translation>
+      <location/>
+      <source>Create a Cut feature</source>
+      <translation>Créez une fonction couper</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPartCylinder</name>
     <message>
-        <source>Part</source>
-        <translation>Pièce</translation>
+      <location/>
+      <source>Part</source>
+      <translation>Pièce</translation>
     </message>
     <message>
-        <source>Create Cylinder...</source>
-        <translation type="obsolete">Créer un cylindre...</translation>
+      <location/>
+      <source>Create Cylinder...</source>
+      <translation>Créer un cylindre...</translation>
     </message>
     <message>
-        <source>Create a Cylinder</source>
-        <translation>Créer un cylindre</translation>
+      <location/>
+      <source>Create a Cylinder</source>
+      <translation>Créer un cylindre</translation>
     </message>
     <message>
-        <source>Cylinder</source>
-        <translation type="unfinished">Cylindre</translation>
+      <location/>
+      <source>Cylinder</source>
+      <translation>Cylindre</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPartExtrude</name>
     <message>
-        <source>Part</source>
-        <translation>Pièce</translation>
+      <location/>
+      <source>Part</source>
+      <translation>Pièce</translation>
     </message>
     <message>
-        <source>Extrude...</source>
-        <translation>Extruder...</translation>
+      <location/>
+      <source>Extrude...</source>
+      <translation>Extrusion...</translation>
     </message>
     <message>
-        <source>Extrude a selected sketch</source>
-        <translation>Extruder une esquisse sélectionnée</translation>
+      <location/>
+      <source>Extrude a selected sketch</source>
+      <translation>Extrusion d'une esquisse sélectionnée</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPartFillet</name>
     <message>
-        <source>Part</source>
-        <translation type="unfinished">Pièce</translation>
+      <location/>
+      <source>Part</source>
+      <translation>Pièce</translation>
     </message>
     <message>
-        <source>Fillet...</source>
-        <translation type="unfinished">Filetage...</translation>
+      <location/>
+      <source>Fillet...</source>
+      <translation>Congé...</translation>
     </message>
     <message>
-        <source>Fillet the selected edges of a shape</source>
-        <translation type="unfinished">Créer un filetage sur les contours sélectionnés</translation>
+      <location/>
+      <source>Fillet the selected edges of a shape</source>
+      <translation>Créer un congé sur les arêtes sélectionnées d'une forme</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPartFilletEdges</name>
     <message>
-        <source>Part</source>
-        <translation type="obsolete">Pièce</translation>
+      <location/>
+      <source>Part</source>
+      <translation>Pièce</translation>
     </message>
     <message>
-        <source>Fillet...</source>
-        <translation type="obsolete">Filetage...</translation>
+      <location/>
+      <source>Fillet...</source>
+      <translation>Congé...</translation>
     </message>
     <message>
-        <source>Fillet the selected edges of a shape</source>
-        <translation type="obsolete">Créer un filetage sur les contours sélectionnés</translation>
+      <location/>
+      <source>Fillet the selected edges of a shape</source>
+      <translation>Créer un congé sur les arêtes sélectionnées d'une forme</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPartFuse</name>
     <message>
-        <source>Part</source>
-        <translation>Pièce</translation>
+      <location/>
+      <source>Part</source>
+      <translation>Pièce</translation>
     </message>
     <message>
-        <source>Union</source>
-        <translation>Union</translation>
+      <location/>
+      <source>Union</source>
+      <translation>Union</translation>
     </message>
     <message>
-        <source>Make union of two shapes</source>
-        <translation type="obsolete">Définir l&apos;union de deux formes</translation>
+      <location/>
+      <source>Make union of two shapes</source>
+      <translation>Réaliser l'union de deux formes</translation>
     </message>
     <message>
-        <source>Make a union of several shapes</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Make union of several shapes</source>
+      <translation>Réunir plusieurs formes</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPartImport</name>
     <message>
-        <source>Part</source>
-        <translation>Pièce</translation>
+      <location/>
+      <source>Part</source>
+      <translation>Pièce</translation>
     </message>
     <message>
-        <source>Imports a CAD file</source>
-        <translation>Importer un fichier CAO</translation>
+      <location/>
+      <source>Imports a CAD file</source>
+      <translation>Importe un fichier CAO</translation>
     </message>
     <message>
-        <source>Import CAD...</source>
-        <translation>Importer de la CAO...</translation>
+      <location/>
+      <source>Import CAD...</source>
+      <translation>Import de CAO ...</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPartImportCurveNet</name>
     <message>
-        <source>Part</source>
-        <translation>Pièce</translation>
+      <location/>
+      <source>Part</source>
+      <translation>Pièce</translation>
     </message>
     <message>
-        <source>Import a curve network</source>
-        <translation>Importer un réseau de courbes</translation>
+      <location/>
+      <source>Import a curve network</source>
+      <translation>Importer un réseau de courbes</translation>
     </message>
     <message>
-        <source>Import curve network...</source>
-        <translation>Importer un réseau de coubres...</translation>
+      <location/>
+      <source>Import curve network...</source>
+      <translation>Importation courbe réseau...</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPartMakeSolid</name>
     <message>
-        <source>Part</source>
-        <translation type="unfinished">Pièce</translation>
+      <location/>
+      <source>Part</source>
+      <translation>Pièce</translation>
     </message>
     <message>
-        <source>Convert to solid</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Convert to solid</source>
+      <translation>Convertir en solide</translation>
     </message>
     <message>
-        <source>Create solid from a shell or compound</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Create solid from a shell or compound</source>
+      <translation>Créer de solides à partir d'un shell ou d'un composé</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPartMirror</name>
     <message>
-        <source>Part</source>
-        <translation type="unfinished">Pièce</translation>
+      <location/>
+      <source>Part</source>
+      <translation>Pièce</translation>
     </message>
     <message>
-        <source>Mirroring...</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Mirroring...</source>
+      <translation>Mise en miroir...</translation>
     </message>
     <message>
-        <source>Mirroring a selected shape</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Mirroring a selected shape</source>
+      <translation>Mise en miroir de la forme sélectionnée</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPartPickCurveNet</name>
     <message>
-        <source>Part</source>
-        <translation>Pièce</translation>
+      <location/>
+      <source>Part</source>
+      <translation>Pièce</translation>
     </message>
     <message>
-        <source>Pick curve network</source>
-        <translation>Sélectionner un réseau de courbes</translation>
+      <location/>
+      <source>Pick curve network</source>
+      <translation>Choisir un réseau de courbes</translation>
     </message>
     <message>
-        <source>Pick a curve network</source>
-        <translation>Sélectionner un réseau de courbes</translation>
+      <location/>
+      <source>Pick a curve network</source>
+      <translation>Choisir un réseau de courbes</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPartPrimitives</name>
     <message>
-        <source>Part</source>
-        <translation>Pièce</translation>
+      <location/>
+      <source>Part</source>
+      <translation>Pièce</translation>
     </message>
     <message>
-        <source>Create primitives...</source>
-        <translation>Créer des primitives...</translation>
+      <location/>
+      <source>Create primitives...</source>
+      <translation>Créer primitives ...</translation>
     </message>
     <message>
-        <source>Creation of parametrized geometric primitives</source>
-        <translation>Création de primitives géométriques paramétrées</translation>
+      <location/>
+      <source>Creation of parametrized geometric primitives</source>
+      <translation>Création de primitives géométriques paramétrées</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPartReverseShape</name>
     <message>
-        <source>Part</source>
-        <translation type="unfinished">Pièce</translation>
+      <location/>
+      <source>Part</source>
+      <translation>Pièce</translation>
     </message>
     <message>
-        <source>Reverse shapes</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Reverse shapes</source>
+      <translation>Formes inversées</translation>
     </message>
     <message>
-        <source>Reverse orientation of shapes</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Reverse orientation of shapes</source>
+      <translation>Inversion de l'orientation des formes</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPartRevolve</name>
     <message>
-        <source>Part</source>
-        <translation type="unfinished">Pièce</translation>
+      <location/>
+      <source>Part</source>
+      <translation>Pièce</translation>
     </message>
     <message>
-        <source>Revolve...</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Revolve...</source>
+      <translation>S'articulent...</translation>
     </message>
     <message>
-        <source>Revolve a selected shape</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Revolve a selected shape</source>
+      <translation>Tourner une forme sélectionnée</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPartRuledSurface</name>
     <message>
-        <source>Part</source>
-        <translation type="unfinished">Pièce</translation>
+      <location/>
+      <source>Part</source>
+      <translation>Pièce</translation>
     </message>
     <message>
-        <source>Create ruled surface</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Create ruled surface</source>
+      <translation>Créer une surface réglée</translation>
     </message>
     <message>
-        <source>Create a ruled surface from two curves</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Create a ruled surface from two curves</source>
+      <translation>Créer une surface réglée à partir de deux courbes</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPartSection</name>
     <message>
-        <source>Part</source>
-        <translation>Pièce</translation>
+      <location/>
+      <source>Part</source>
+      <translation>Pièce</translation>
     </message>
     <message>
-        <source>Section</source>
-        <translation>Coupe</translation>
+      <location/>
+      <source>Section</source>
+      <translation>Section</translation>
     </message>
     <message>
-        <source>Make a section of two shapes</source>
-        <translation>Générer la coupe de deux objets</translation>
+      <location/>
+      <source>Make section of two shapes</source>
+      <translation>faire la section de deux formes</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPartShapeFromMesh</name>
     <message>
-        <source>Part</source>
-        <translation type="unfinished">Pièce</translation>
+      <location/>
+      <source>Part</source>
+      <translation>Pièce</translation>
     </message>
     <message>
-        <source>Create shape from mesh...</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Create shape from mesh...</source>
+      <translation>Créer la forme à partir d'un maillage...</translation>
     </message>
     <message>
-        <source>Create shape from selected mesh object</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Create shape from selected mesh object</source>
+      <translation>Créer une forme dà partir du maillage sélectionné</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPartSimpleCylinder</name>
     <message>
-        <source>Part</source>
-        <translation>Pièce</translation>
+      <location/>
+      <source>Part</source>
+      <translation>Pièce</translation>
     </message>
     <message>
-        <source>Create Cylinder...</source>
-        <translation>Créer un cylindre...</translation>
+      <location/>
+      <source>Create Cylinder...</source>
+      <translation>Créer un cylindre...</translation>
     </message>
     <message>
-        <source>Create a Cylinder</source>
-        <translation>Créer un cylindre</translation>
+      <location/>
+      <source>Create a Cylinder</source>
+      <translation>Créer un cylindre</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPartSphere</name>
     <message>
-        <source>Part</source>
-        <translation type="unfinished">Pièce</translation>
+      <location/>
+      <source>Part</source>
+      <translation>Pièce</translation>
     </message>
     <message>
-        <source>Sphere</source>
-        <translation type="unfinished">Sphère</translation>
+      <location/>
+      <source>Sphere</source>
+      <translation>Sphère</translation>
     </message>
     <message>
-        <source>Create a sphere solid</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Create a sphere feature</source>
+      <translation>Créez une fonction de sphère</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdPartTorus</name>
     <message>
-        <source>Part</source>
-        <translation type="unfinished">Pièce</translation>
+      <location/>
+      <source>Part</source>
+      <translation>Pièce</translation>
     </message>
     <message>
-        <source>Torus</source>
-        <translation type="unfinished">Tore</translation>
+      <location/>
+      <source>Torus</source>
+      <translation>Tore</translation>
     </message>
     <message>
-        <source>Create a torus solid</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Create a torus feature</source>
+      <translation>Créez une fonction Tore</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>DlgPartImportIgesImp</name>
     <message>
-        <source>IGES (*.igs *.iges);;All Files (*.*)</source>
-        <translation type="obsolete">IGES (*.igs *.iges);;Tous les fichiers (*.*)</translation>
+      <location/>
+      <source>IGES (*.igs *.iges);;All Files (*.*)</source>
+      <translation>IGES (*. igs *. IGES);; Tous les fichiers (*.*)</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>DlgPartImportStepImp</name>
     <message>
-        <source>STEP (*.stp *.step);;All Files (*.*)</source>
-        <translation type="obsolete">STEP (*.stp *.step);;Tous les fichiers (*.*)</translation>
+      <location/>
+      <source>STEP (*.stp *.step);;All Files (*.*)</source>
+      <translation>STEP (*.stp *.step);; Tous les fichiers (*.*)</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>PartGui::CrossSections</name>
     <message>
-        <source>Cross sections</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Cross sections</source>
+      <translation>Coupes</translation>
     </message>
     <message>
-        <source>Guiding plane</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Guiding plane</source>
+      <translation>Plan directeur</translation>
     </message>
     <message>
-        <source>XY</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>XY</source>
+      <translation>XY</translation>
     </message>
     <message>
-        <source>XZ</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>XZ</source>
+      <translation>XZ</translation>
     </message>
     <message>
-        <source>YZ</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>YZ</source>
+      <translation>YZ</translation>
     </message>
     <message>
-        <source>Position:</source>
-        <translation type="unfinished">Position:</translation>
+      <location/>
+      <source>Position:</source>
+      <translation>Position :</translation>
     </message>
     <message>
-        <source>Sections</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Sections</source>
+      <translation>Sections</translation>
     </message>
     <message>
-        <source>On both sides</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>On both sides</source>
+      <translation>Des deux côtés</translation>
     </message>
     <message>
-        <source>Count</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Count</source>
+      <translation>Nombre</translation>
     </message>
     <message>
-        <source>Distance:</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Distance:</source>
+      <translation>Distance:</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>PartGui::DlgBooleanOperation</name>
     <message>
-        <source>Boolean Operation</source>
-        <translation>Opération booléenne</translation>
+      <location/>
+      <source>Boolean Operation</source>
+      <translation>Opération booléenne</translation>
     </message>
     <message>
-        <source>Shape</source>
-        <translation type="obsolete">Forme</translation>
+      <location/>
+      <source>Shape</source>
+      <translation>Forme</translation>
     </message>
     <message>
-        <source>No selection</source>
-        <translation type="obsolete">Aucune sélection</translation>
+      <location/>
+      <source>No selection</source>
+      <translation>Aucune sélection</translation>
     </message>
     <message>
-        <source>Second shape</source>
-        <translation>Seconde forme</translation>
+      <location/>
+      <source>Second shape</source>
+      <translation>Deuxième forme</translation>
     </message>
     <message>
-        <source>First shape</source>
-        <translation>Première forme</translation>
+      <location/>
+      <source>First shape</source>
+      <translation>première forme</translation>
     </message>
     <message>
-        <source>Boolean operation</source>
-        <translation>Opération booléenne</translation>
+      <location/>
+      <source>Boolean operation</source>
+      <translation>Opération booléenne</translation>
     </message>
     <message>
-        <source>Section</source>
-        <translation>Coupe</translation>
+      <location/>
+      <source>Section</source>
+      <translation>Section</translation>
     </message>
     <message>
-        <source>Difference</source>
-        <translation>Différence</translation>
+      <location/>
+      <source>Difference</source>
+      <translation>Différence</translation>
     </message>
     <message>
-        <source>Union</source>
-        <translation>Union</translation>
+      <location/>
+      <source>Union</source>
+      <translation>Union</translation>
     </message>
     <message>
-        <source>Intersection</source>
-        <translation>Intersection</translation>
+      <location/>
+      <source>Intersection</source>
+      <translation>Intersection</translation>
     </message>
     <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
+      <location/>
+      <source>OK</source>
+      <translation>OK</translation>
     </message>
     <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Annuler</translation>
+      <location/>
+      <source>Cancel</source>
+      <translation>Annuler</translation>
     </message>
     <message>
-        <source>Cannot perform a boolean operation with the same shape</source>
-        <translation>Impossible de réaliser une opération booléenne sur la même forme</translation>
+      <location/>
+      <source>Cannot perform a boolean operation with the same shape</source>
+      <translation>Impossible d'effectuer une opération booléenne avec la même forme</translation>
     </message>
     <message>
-        <source>Solids</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Solids</source>
+      <translation>Solides</translation>
     </message>
     <message>
-        <source>Shells</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Shells</source>
+      <translation>Shells</translation>
     </message>
     <message>
-        <source>Compounds</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Compounds</source>
+      <translation>Composés</translation>
     </message>
     <message>
-        <source>Faces</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Faces</source>
+      <translation>Faces</translation>
     </message>
     <message>
-        <source>Swap selection</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Swap selection</source>
+      <translation>Changement de sélection</translation>
     </message>
     <message>
-        <source>Select a shape on the left side, first</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select a shape on the left side, first</source>
+      <translation>Tout d'abord, sélectionner une forme sur le côté gauche</translation>
     </message>
     <message>
-        <source>Select a shape on the right side, first</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select a shape on the right side, first</source>
+      <translation>Tout d'abord, sélectionner une forme sur le côté droit</translation>
     </message>
     <message>
-        <source>No active document available</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>No active document available</source>
+      <translation>Aucun document actif disponible</translation>
     </message>
     <message>
-        <source>One of the selected objects doesn&apos;t exist anymore</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>One of the selected objects doesn't exist anymore</source>
+      <translation>Un des objets sélectionnés n'existe plus</translation>
     </message>
     <message>
-        <source>Performing union on non-solids is not possible</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Performing union on non-solids is not possible</source>
+      <translation>L'exécution de l'union des non-solides n'est pas possible</translation>
     </message>
     <message>
-        <source>Performing intersection on non-solids is not possible</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Performing intersection on non-solids is not possible</source>
+      <translation>L'Exécution d'intersection sur non-solides n'est pas possible</translation>
     </message>
     <message>
-        <source>Performing difference on non-solids is not possible</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Performing difference on non-solids is not possible</source>
+      <translation>L'Exécution de différence sur non-solides n'est pas possible</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>PartGui::DlgExtrusion</name>
     <message>
-        <source>Extrude</source>
-        <translation>Extruder</translation>
+      <location/>
+      <source>Extrude</source>
+      <translation>Extruder</translation>
     </message>
     <message>
-        <source>Direction</source>
-        <translation>Direction</translation>
+      <location/>
+      <source>Direction</source>
+      <translation>Direction</translation>
     </message>
     <message>
-        <source>Along normal</source>
-        <translation>Suivant la normale</translation>
+      <location/>
+      <source>Along normal</source>
+      <translation>Le long de la normale</translation>
     </message>
     <message>
-        <source>x</source>
-        <translation type="obsolete">x</translation>
+      <location/>
+      <source>x</source>
+      <translation>x</translation>
     </message>
     <message>
-        <source>y</source>
-        <translation type="obsolete">y</translation>
+      <location/>
+      <source>y</source>
+      <translation>y</translation>
     </message>
     <message>
-        <source>z</source>
-        <translation type="obsolete">z</translation>
+      <location/>
+      <source>Length:</source>
+      <translation>Longueur :</translation>
     </message>
     <message>
-        <source>Length:</source>
-        <translation>Longueur:</translation>
+      <location/>
+      <source>Shape</source>
+      <translation>Forme</translation>
     </message>
     <message>
-        <source>Shape</source>
-        <translation>Forme</translation>
+      <location/>
+      <source>Sketch:</source>
+      <translation>Esquisse :</translation>
     </message>
     <message>
-        <source>Sketch:</source>
-        <translation type="obsolete">Esquisse:</translation>
+      <location/>
+      <source>No selection</source>
+      <translation>Aucune sélection</translation>
     </message>
     <message>
-        <source>No selection</source>
-        <translation type="obsolete">Aucune sélection</translation>
+      <location/>
+      <source>OK</source>
+      <translation>OK</translation>
     </message>
     <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
+      <location/>
+      <source>Cancel</source>
+      <translation>Annuler</translation>
     </message>
     <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Annuler</translation>
+      <location/>
+      <source></source>
+      <translation> </translation>
     </message>
     <message>
-        <source></source>
-        <translation></translation>
+      <location/>
+      <source>X:</source>
+      <translation>X :</translation>
     </message>
     <message>
-        <source>X:</source>
-        <translation type="unfinished">X:</translation>
+      <location/>
+      <source>Z:</source>
+      <translation>Z :</translation>
     </message>
     <message>
-        <source>Z:</source>
-        <translation type="unfinished">Z:</translation>
+      <location/>
+      <source>Y:</source>
+      <translation>Y :</translation>
     </message>
     <message>
-        <source>Y:</source>
-        <translation type="unfinished">Y:</translation>
+      <location/>
+      <source>Select a shape for extrusion, first.</source>
+      <translation>Sélectionnez d'abord une forme pour l'extrusion.</translation>
     </message>
-    <message>
-        <source>Select a shape for extrusion, first.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>PartGui::DlgFilletEdges</name>
     <message>
-        <source>Fillet Edges</source>
-        <translation>Fileter des contours</translation>
+      <location/>
+      <source>Fillet Edges</source>
+      <translation>congés des arêtes</translation>
     </message>
     <message>
-        <source>Fillet Parameter</source>
-        <translation>Paramètre du filetage</translation>
+      <location/>
+      <source>Fillet Parameter</source>
+      <translation>Paramètre de congé</translation>
     </message>
     <message>
-        <source>Radius:</source>
-        <translation>Rayon:</translation>
+      <location/>
+      <source>Radius:</source>
+      <translation>Rayon :</translation>
     </message>
     <message>
-        <source>Fillet type:</source>
-        <translation>Type de filetage:</translation>
+      <location/>
+      <source>Fillet type:</source>
+      <translation>Type de congé :</translation>
     </message>
     <message>
-        <source>Constant Radius</source>
-        <translation>Rayon constant</translation>
+      <location/>
+      <source>Constant Radius</source>
+      <translation>Rayon constant</translation>
     </message>
     <message>
-        <source>Variable Radius</source>
-        <translation>Rayon variable</translation>
+      <location/>
+      <source>Variable Radius</source>
+      <translation>Rayon variable</translation>
     </message>
     <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
+      <location/>
+      <source>OK</source>
+      <translation>OK</translation>
     </message>
     <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Annuler</translation>
+      <location/>
+      <source>Cancel</source>
+      <translation>Annuler</translation>
     </message>
     <message>
-        <source>Shape</source>
-        <translation>Forme</translation>
+      <location/>
+      <source>Shape</source>
+      <translation>Forme</translation>
     </message>
     <message>
-        <source>Selected shape:</source>
-        <translation>Formes sélectionnées:</translation>
+      <location/>
+      <source>Selected shape:</source>
+      <translation>Forme sélectionnée :</translation>
     </message>
     <message>
-        <source>No selection</source>
-        <translation>Aucune sélection</translation>
+      <location/>
+      <source>No selection</source>
+      <translation>Aucune sélection</translation>
     </message>
     <message>
-        <source>Edges to fillet</source>
-        <translation>Contours à fileter</translation>
+      <location/>
+      <source>Edges to fillet</source>
+      <translation>Arêtes à usiner un congé</translation>
     </message>
     <message>
-        <source>Start radius</source>
-        <translation>Rayon de départ</translation>
+      <location/>
+      <source>Start radius</source>
+      <translation>débuter un tracé de rayon</translation>
     </message>
     <message>
-        <source>End radius</source>
-        <translation>Rayon de fin</translation>
+      <location/>
+      <source>End radius</source>
+      <translation>Finir un tracé de rayon</translation>
     </message>
     <message>
-        <source>Edge &lt;%1&gt;</source>
-        <translation type="obsolete">Contour &lt;%1&gt;</translation>
+      <location/>
+      <source>Edge &lt;%1&gt;</source>
+      <translation>Arête &lt;%1&gt;</translation>
     </message>
     <message>
-        <source>Radius</source>
-        <translation>Rayon</translation>
+      <location/>
+      <source>Radius</source>
+      <translation>Rayon</translation>
     </message>
     <message>
-        <source>No edge selected</source>
-        <translation>Aucun contour sélectionné</translation>
+      <location/>
+      <source>No edge selected</source>
+      <translation>Aucune arête sélectionnée</translation>
     </message>
     <message>
-        <source>No edge entity is checked to fillet.
+      <location/>
+      <source>No edge entity is checked to fillet.
 Please check one or more edge entities first.</source>
-        <translation>Aucun contour n&apos;est sélectionné pour le filetage
-Sélectionner un ou plusieurs contours.</translation>
+      <translation>Aucune entité dare n'est sélectionné pour  le congé. S'il vous plaît cocher d'abord une ou plusieurs entités d'arêtes.</translation>
     </message>
     <message>
-        <source>All</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>All</source>
+      <translation>Tous</translation>
     </message>
     <message>
-        <source>None</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>None</source>
+      <translation>Aucun</translation>
     </message>
     <message>
-        <source>Edge%1</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Edge%1</source>
+      <translation>Bord%1</translation>
     </message>
     <message>
-        <source>No shape selected</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>No shape selected</source>
+      <translation>Aucune forme sélectionnée</translation>
     </message>
     <message>
-        <source>No valid shape is selected.
+      <location/>
+      <source>No valid shape is selected.
 Please select a valid shape in the drop-down box first.</source>
-        <translation type="unfinished"></translation>
+      <translation>Aucune forme valide n'est sélectionné. Veuillez sélectionner d'abord une forme valide dans le menu déroulant.</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>PartGui::DlgPartBox</name>
     <message>
-        <source>Box definition</source>
-        <translation>Définition du cube</translation>
+      <location/>
+      <source>Box definition</source>
+      <translation>définition de Boite</translation>
     </message>
     <message>
-        <source>X:</source>
-        <translation>X:</translation>
+      <location/>
+      <source>X:</source>
+      <translation>X :</translation>
     </message>
     <message>
-        <source>Z:</source>
-        <translation>Z:</translation>
+      <location/>
+      <source>Z:</source>
+      <translation>Z :</translation>
     </message>
     <message>
-        <source>Y:</source>
-        <translation>Y:</translation>
+      <location/>
+      <source>Y:</source>
+      <translation>Y :</translation>
     </message>
     <message>
-        <source>Cancel</source>
-        <translation>Annuler</translation>
+      <location/>
+      <source>Cancel</source>
+      <translation>Annuler</translation>
     </message>
     <message>
-        <source>OK</source>
-        <translation>OK</translation>
+      <location/>
+      <source>OK</source>
+      <translation>OK</translation>
     </message>
     <message>
-        <source>Size:</source>
-        <translation>Taille:</translation>
+      <location/>
+      <source>Size:</source>
+      <translation>Taille :</translation>
     </message>
     <message>
-        <source>Height:</source>
-        <translation>Hauteur:</translation>
+      <location/>
+      <source>Height:</source>
+      <translation>Hauteur :</translation>
     </message>
     <message>
-        <source>Width:</source>
-        <translation>Largeur:</translation>
+      <location/>
+      <source>Width:</source>
+      <translation>Largeur :</translation>
     </message>
     <message>
-        <source>Length:</source>
-        <translation>Longueur:</translation>
+      <location/>
+      <source>Length:</source>
+      <translation>Longueur :</translation>
     </message>
     <message>
-        <source>Position:</source>
-        <translation>Position:</translation>
+      <location/>
+      <source>Position:</source>
+      <translation>Position :</translation>
     </message>
     <message>
-        <source>X</source>
-        <translation type="obsolete">X</translation>
+      <location/>
+      <source>X</source>
+      <translation>X</translation>
     </message>
     <message>
-        <source>Y</source>
-        <translation type="obsolete">Y</translation>
+      <location/>
+      <source>Y</source>
+      <translation>Y</translation>
     </message>
     <message>
-        <source>Z</source>
-        <translation type="obsolete">Z</translation>
+      <location/>
+      <source>Z</source>
+      <translation>Z</translation>
     </message>
     <message>
-        <source>User defined...</source>
-        <translation type="obsolete">Défini par l&apos;utilisateur...</translation>
+      <location/>
+      <source>User defined...</source>
+      <translation>Défini par l'utilisateur...</translation>
     </message>
     <message>
-        <source>Direction:</source>
-        <translation>Direction:</translation>
+      <location/>
+      <source>Direction:</source>
+      <translation>Direction :</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>PartGui::DlgPartCylinder</name>
     <message>
-        <source>Cylinder definition</source>
-        <translation>Définition du cylindre</translation>
+      <location/>
+      <source>Cylinder definition</source>
+      <translation>Définition du cylindre</translation>
     </message>
     <message>
-        <source>Parameter</source>
-        <translation>Paramètre</translation>
+      <location/>
+      <source>Parameter</source>
+      <translation>Paramètre</translation>
     </message>
     <message>
-        <source>Height:</source>
-        <translation>Hauteur:</translation>
+      <location/>
+      <source>Height:</source>
+      <translation>Hauteur :</translation>
     </message>
     <message>
-        <source>Radius:</source>
-        <translation>Rayon:</translation>
+      <location/>
+      <source>Radius:</source>
+      <translation>Rayon :</translation>
     </message>
     <message>
-        <source>Position:</source>
-        <translation>Position:</translation>
+      <location/>
+      <source>Position:</source>
+      <translation>Position :</translation>
     </message>
     <message>
-        <source>X</source>
-        <translation type="obsolete">X</translation>
+      <location/>
+      <source>X</source>
+      <translation>X</translation>
     </message>
     <message>
-        <source>Y</source>
-        <translation type="obsolete">Y</translation>
+      <location/>
+      <source>Y</source>
+      <translation>Y</translation>
     </message>
     <message>
-        <source>Z</source>
-        <translation type="obsolete">Z</translation>
+      <location/>
+      <source>Z</source>
+      <translation>Z</translation>
     </message>
     <message>
-        <source>User defined...</source>
-        <translation type="obsolete">Défini par l&apos;utilisateur...</translation>
+      <location/>
+      <source>User defined...</source>
+      <translation>Défini par l'utilisateur...</translation>
     </message>
     <message>
-        <source>Direction:</source>
-        <translation>Direction:</translation>
+      <location/>
+      <source>Direction:</source>
+      <translation>Direction :</translation>
     </message>
     <message>
-        <source>X:</source>
-        <translation>X:</translation>
+      <location/>
+      <source>X:</source>
+      <translation>X :</translation>
     </message>
     <message>
-        <source>Z:</source>
-        <translation>Z:</translation>
+      <location/>
+      <source>Z:</source>
+      <translation>Z :</translation>
     </message>
     <message>
-        <source>Y:</source>
-        <translation>Y:</translation>
+      <location/>
+      <source>Y:</source>
+      <translation>Y :</translation>
     </message>
     <message>
-        <source>OK</source>
-        <translation>OK</translation>
+      <location/>
+      <source>OK</source>
+      <translation>OK</translation>
     </message>
     <message>
-        <source>Cancel</source>
-        <translation>Annuler</translation>
+      <location/>
+      <source>Cancel</source>
+      <translation>Annuler</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>PartGui::DlgPartImportIges</name>
     <message>
-        <source>IGES input file</source>
-        <translation>Fichier d&apos;entrée IGES</translation>
+      <location/>
+      <source>IGES input file</source>
+      <translation>Fichier d'entrée IGES</translation>
     </message>
     <message>
-        <source>...</source>
-        <translation>...</translation>
+      <location/>
+      <source>...</source>
+      <translation>...</translation>
     </message>
     <message>
-        <source>Cancel</source>
-        <translation>Annuler</translation>
+      <location/>
+      <source>Cancel</source>
+      <translation>Annuler</translation>
     </message>
     <message>
-        <source>OK</source>
-        <translation>OK</translation>
+      <location/>
+      <source>OK</source>
+      <translation>OK</translation>
     </message>
     <message>
-        <source>File Name</source>
-        <translation>Nom du fichier</translation>
+      <location/>
+      <source>File Name</source>
+      <translation>Dateiname</translation>
     </message>
     <message>
-        <source></source>
-        <translation></translation>
+      <location/>
+      <source></source>
+      <translation> </translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>PartGui::DlgPartImportIgesImp</name>
     <message>
-        <source>IGES (*.igs *.iges);;All Files (*.*)</source>
-        <translation type="unfinished">IGES (*.igs *.iges);;Tous les fichiers (*.*)</translation>
+      <location/>
+      <source>IGES (*.igs *.iges);;All Files (*.*)</source>
+      <translation>IGES (*. igs *. IGES);; Tous les fichiers (*.*)</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>PartGui::DlgPartImportStep</name>
     <message>
-        <source>...</source>
-        <translation>...</translation>
+      <location/>
+      <source>...</source>
+      <translation>...</translation>
     </message>
     <message>
-        <source>Cancel</source>
-        <translation>Annuler</translation>
+      <location/>
+      <source>Cancel</source>
+      <translation>Annuler</translation>
     </message>
     <message>
-        <source>OK</source>
-        <translation>OK</translation>
+      <location/>
+      <source>OK</source>
+      <translation>OK</translation>
     </message>
     <message>
-        <source>Step input file</source>
-        <translation>Fichier d&apos;entrée Step</translation>
+      <location/>
+      <source>Step input file</source>
+      <translation>Étape fichier d'entrée</translation>
     </message>
     <message>
-        <source>File Name</source>
-        <translation>Nom du fichier</translation>
+      <location/>
+      <source>File Name</source>
+      <translation>Dateiname</translation>
     </message>
     <message>
-        <source></source>
-        <translation></translation>
+      <location/>
+      <source></source>
+      <translation> </translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>PartGui::DlgPartImportStepImp</name>
     <message>
-        <source>STEP (*.stp *.step);;All Files (*.*)</source>
-        <translation type="unfinished">STEP (*.stp *.step);;Tous les fichiers (*.*)</translation>
+      <location/>
+      <source>STEP (*.stp *.step);;All Files (*.*)</source>
+      <translation>STEP (*.stp *.step);; Tous les fichiers (*.*)</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>PartGui::DlgPrimitives</name>
     <message>
-        <source>Geometric Primitives</source>
-        <translation>Primitives géométriques</translation>
+      <location/>
+      <source>Geometric Primitives</source>
+      <translation>Primitives géométriques</translation>
     </message>
     <message>
-        <source>Primitive</source>
-        <translation>Primitive</translation>
+      <location/>
+      <source>Primitive</source>
+      <translation>Primitive</translation>
     </message>
     <message>
-        <source>Position</source>
-        <translation>Position</translation>
+      <location/>
+      <source>Position</source>
+      <translation>Position</translation>
     </message>
     <message>
-        <source>Z:</source>
-        <translation>Z:</translation>
+      <location/>
+      <source>Z:</source>
+      <translation>Z :</translation>
     </message>
     <message>
-        <source>X:</source>
-        <translation>X:</translation>
+      <location/>
+      <source>X:</source>
+      <translation>X :</translation>
     </message>
     <message>
-        <source>Direction:</source>
-        <translation>Direction:</translation>
+      <location/>
+      <source>Direction:</source>
+      <translation>Direction :</translation>
     </message>
     <message>
-        <source>Y:</source>
-        <translation>Y:</translation>
+      <location/>
+      <source>Y:</source>
+      <translation>Y :</translation>
     </message>
     <message>
-        <source>X</source>
-        <translation type="obsolete">X</translation>
+      <location/>
+      <source>X</source>
+      <translation>X</translation>
     </message>
     <message>
-        <source>Y</source>
-        <translation type="obsolete">Y</translation>
+      <location/>
+      <source>Y</source>
+      <translation>Y</translation>
     </message>
     <message>
-        <source>Z</source>
-        <translation type="obsolete">Z</translation>
+      <location/>
+      <source>Z</source>
+      <translation>Z</translation>
     </message>
     <message>
-        <source>User defined...</source>
-        <translation type="obsolete">Défini par l&apos;utilisateur...</translation>
+      <location/>
+      <source>User defined...</source>
+      <translation>Défini par l'utilisateur...</translation>
     </message>
     <message>
-        <source>Plane</source>
-        <translation>Plan</translation>
+      <location/>
+      <source>Plane</source>
+      <translation>Plan</translation>
     </message>
     <message>
-        <source>Box</source>
-        <translation>Cube</translation>
+      <location/>
+      <source>Box</source>
+      <translation>Boîte</translation>
     </message>
     <message>
-        <source>Cylinder</source>
-        <translation>Cylindre</translation>
+      <location/>
+      <source>Cylinder</source>
+      <translation>Cylindre</translation>
     </message>
     <message>
-        <source>Cone</source>
-        <translation>Cône</translation>
+      <location/>
+      <source>Cone</source>
+      <translation>Cône</translation>
     </message>
     <message>
-        <source>Sphere</source>
-        <translation>Sphère</translation>
+      <location/>
+      <source>Sphere</source>
+      <translation>Sphère</translation>
     </message>
     <message>
-        <source>Ellipsoid</source>
-        <translation>Ellipsoïde</translation>
+      <location/>
+      <source>Ellipsoid</source>
+      <translation>Ellipsoïde</translation>
     </message>
     <message>
-        <source>Torus</source>
-        <translation>Tore</translation>
+      <location/>
+      <source>Torus</source>
+      <translation>Tore</translation>
     </message>
     <message>
-        <source>Parameter</source>
-        <translation>Paramètre</translation>
+      <location/>
+      <source>Parameter</source>
+      <translation>Paramètre</translation>
     </message>
     <message>
-        <source>Width:</source>
-        <translation>Largeur:</translation>
+      <location/>
+      <source>Width:</source>
+      <translation>Largeur :</translation>
     </message>
     <message>
-        <source>Length:</source>
-        <translation>Longueur:</translation>
+      <location/>
+      <source>Length:</source>
+      <translation>Longueur :</translation>
     </message>
     <message>
-        <source>Height:</source>
-        <translation>Hauteur:</translation>
+      <location/>
+      <source>Height:</source>
+      <translation>Hauteur :</translation>
     </message>
     <message>
-        <source>Angle:</source>
-        <translation>Angle:</translation>
+      <location/>
+      <source>Angle:</source>
+      <translation>Angle:</translation>
     </message>
     <message>
-        <source>Radius:</source>
-        <translation>Rayon:</translation>
+      <location/>
+      <source>Radius:</source>
+      <translation>Rayon :</translation>
     </message>
     <message>
-        <source>Radius 1:</source>
-        <translation>Rayon 1:</translation>
+      <location/>
+      <source>Radius 1:</source>
+      <translation>Rayon 1 :</translation>
     </message>
     <message>
-        <source>Radius 2:</source>
-        <translation>Rayon 2:</translation>
+      <location/>
+      <source>Radius 2:</source>
+      <translation>Rayon 2 :</translation>
     </message>
     <message>
-        <source>U parametric:</source>
-        <translation>U paramétré:</translation>
+      <location/>
+      <source>U parametric:</source>
+      <translation>U paramétrique:</translation>
     </message>
     <message>
-        <source>V parametric:</source>
-        <translation>V paramétré:</translation>
+      <location/>
+      <source>V parametric:</source>
+      <translation>V paramétrique:</translation>
     </message>
     <message>
-        <source>&amp;Create</source>
-        <translation>&amp;Créer</translation>
+      <location/>
+      <source>&amp;Create</source>
+      <translation>&amp;Créer</translation>
     </message>
     <message>
-        <source>Alt+C</source>
-        <translation>Alt+C</translation>
+      <location/>
+      <source>Alt+C</source>
+      <translation>Alt + C</translation>
     </message>
     <message>
-        <source>Cl&amp;ose</source>
-        <translation>&amp;Fermer</translation>
+      <location/>
+      <source>Cl&amp;ose</source>
+      <translation>Fer&amp;mer</translation>
     </message>
     <message>
-        <source>Alt+O</source>
-        <translation>Alt+F</translation>
+      <location/>
+      <source>Alt+O</source>
+      <translation>Alt + O</translation>
     </message>
     <message>
-        <source>Create %1</source>
-        <translation>Créer %1</translation>
+      <location/>
+      <source>Create %1</source>
+      <translation>Créer %1</translation>
     </message>
     <message>
-        <source>No active document</source>
-        <translation>Aucun document actif</translation>
+      <location/>
+      <source>No active document</source>
+      <translation>Aucun document actif</translation>
     </message>
     <message>
-        <source>Pitch:</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Pitch:</source>
+      <translation>axe y ou axe transversal ou axe de tangage:</translation>
     </message>
     <message>
-        <source>Helix</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Helix</source>
+      <translation>Hélice</translation>
     </message>
     <message>
-        <source>3D View</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>3D View</source>
+      <translation>Vue 3D</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>PartGui::DlgRevolution</name>
     <message>
-        <source>Revolve</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Revolve</source>
+      <translation>S'articulent</translation>
     </message>
     <message>
-        <source>Y:</source>
-        <translation type="unfinished">Y:</translation>
+      <location/>
+      <source>Y:</source>
+      <translation>Y :</translation>
     </message>
     <message>
-        <source>X:</source>
-        <translation type="unfinished">X:</translation>
+      <location/>
+      <source>X:</source>
+      <translation>X :</translation>
     </message>
     <message>
-        <source>Angle:</source>
-        <translation type="unfinished">Angle:</translation>
+      <location/>
+      <source>Angle:</source>
+      <translation>Angle:</translation>
     </message>
     <message>
-        <source>Z:</source>
-        <translation type="unfinished">Z:</translation>
+      <location/>
+      <source>Z:</source>
+      <translation>Z :</translation>
     </message>
     <message>
-        <source>Axis:</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Axis:</source>
+      <translation>Axes:</translation>
     </message>
     <message>
-        <source>Shape</source>
-        <translation type="unfinished">Forme</translation>
+      <location/>
+      <source>Shape</source>
+      <translation>Forme</translation>
     </message>
     <message>
-        <source>Select a shape for revolution, first.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select a shape for revolution, first.</source>
+      <translation>Sélectionnez d'abord une forme de révolution.</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>PartGui::DlgSettings3DViewPart</name>
     <message>
-        <source>View accuracy / Performance</source>
-        <translation>Précision / Performance</translation>
+      <location/>
+      <source>View accuracy / Performance</source>
+      <translation>Afficher la précision / performance</translation>
     </message>
     <message>
-        <source>View smooting</source>
-        <translation>Voir le lissage</translation>
+      <location/>
+      <source>View smooting</source>
+      <translation>vue du lissage</translation>
     </message>
     <message>
-        <source>Using high-quality normals</source>
-        <translation>Utiliser des normales de haute qualité</translation>
+      <location/>
+      <source>Using high-quality normals</source>
+      <translation>Utilisation normales de haute qualité</translation>
     </message>
     <message>
-        <source>This will slow down render speed but will lead to nicer results</source>
-        <translation>Cela ralentit la vitesse de rendu mais conduit à de meilleurs résultats</translation>
+      <location/>
+      <source>This will slow down render speed but will lead to nicer results</source>
+      <translation>Ceci ralentira la vitesse de rendu, mais donnera de meilleurs résultats</translation>
     </message>
     <message>
-        <source>Defines the appearance of surfaces</source>
-        <translation>Définir l&apos;apparence des surfaces</translation>
+      <location/>
+      <source>Defines the appearance of surfaces</source>
+      <translation>Définit l'apparence de surfaces</translation>
     </message>
     <message>
-        <source>Shape view</source>
-        <translation>Vue Shape</translation>
+      <location/>
+      <source>Shape view</source>
+      <translation>Vue de la forme</translation>
     </message>
     <message>
-        <source>Tessellation</source>
-        <translation>Pavage</translation>
+      <location/>
+      <source>Tessellation</source>
+      <translation>Polygonalisation</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Flat shading/Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;With flat shading the surface normals are not defined per vertex that leads to a unreal appearance for curved surfaces while using Phong shading leads to a smoother appearance. &lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If this option is unset Phong shading is used, if it is set flat shading is used.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Ombrage plat/Ombrage Phong&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;L&apos;ombrage plat ne définit pas les normales de la surface par vertex, ce qui donne une apparence étrange pour les surfaces courbes, alors que l&apos;ombrage Phong conduit à une apparence plus lisse &lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Si cette option n&apos;est pas définie, l&apos;ombrage Phong est utilisé, sinon, l&apos;ombrage plat est utilisé.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+      <location/>
+      <source>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;span style=" font-weight:600;"&gt;Flat shading/Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;With flat shading the surface normals are not defined per vertex that leads to a unreal appearance for curved surfaces while using Phong shading leads to a smoother appearance. &lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;If this option is unset Phong shading is used, if it is set flat shading is used.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;span style=" font-weight:600;"&gt;Ombrage plat/Ombrage Phong&lt;/span&gt;&lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;Avec l'ombrage plat, les normales à la surface ne sont pas définies par vertex, ce qui conduit à une apparence irréelle pour les surfaces courbes, alors qu'utiliser l'ombrage Phong produit une apparence plus douce. &lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;Si l'option n'est pas sélectionnée, l'ombrage Phong est utilisé. Sinon, l'ombrage plat sera utilisé.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>Do not define normal per vertex</source>
-        <translation>Ne définit pas les normales par vertex</translation>
+      <location/>
+      <source>Do not define normal per vertex</source>
+      <translation>Ne pas définir les normales par vertex</translation>
     </message>
     <message>
-        <source>Defines the deviation of tessellation to the actual surface</source>
-        <translation>Attribue l&apos;écart du pavage à la surface actuelle</translation>
+      <location/>
+      <source>Defines the deviation of tessellation to the actual surface</source>
+      <translation>Définit l'écart de polygonalisation pour la surface actuelle</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Tessellation&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;Defines the maximum deviation of the tessellated mesh to the surface. The smaller the value is the slower the render speed and the nicer the appearance are.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Pavage&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;Définit l&apos;écart maximum du maillage pavé à la surface.Plus la valeur est petite, plus la vitesse de rendu sera petite et plus l&apos;apparence sera bonne.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+      <location/>
+      <source>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;span style=" font-weight:600;"&gt;Tessellation&lt;/span&gt;&lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;"&gt;&lt;span style=" font-weight:400;"&gt;Defines the maximum deviation of the tessellated mesh to the surface. The smaller the value is the slower the render speed and the nicer the appearance are.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt; &lt;span style=" font-weight:600;"&gt;Tessellation&lt;/span&gt; &lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;"&gt; &lt;span style=" font-weight:400;"&gt;Définition de l'écart maximum de la maille en pavage de la surface. Plus la valeur est la plus lente est la vitesse de rendu et la plus agréable l&amp;#39;apparence sont.&lt;/span&gt; &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>Maximum deviation of tessellated shapes</source>
-        <translation type="obsolete">Écart maximum des formes pavées</translation>
+      <location/>
+      <source>Maximum deviation of tessellated shapes</source>
+      <translation>L'écart maximal de formes tansformées en structures polygonales</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Hint&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Defining the normals per vertex is also called &lt;span style=&quot; font-style:italic;&quot;&gt;Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;while defining the normals per face is called &lt;/span&gt;Flat shading&lt;span style=&quot; font-style:normal;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Hint&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Définir les normales par vertex s&apos;appelle aussi &lt;span style=&quot; font-style:italic;&quot;&gt;Ombrage Phong&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;alors que définir les normales par faces s&apos;appelle aussi &lt;/span&gt;Ombrage plat&lt;span style=&quot; font-style:normal;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+      <location/>
+      <source>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600;"&gt;Hint&lt;/span&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;Defining the normals per vertex is also called &lt;span style=" font-style:italic;"&gt;Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;"&gt;&lt;span style=" font-style:normal;"&gt;while defining the normals per face is called &lt;/span&gt;Flat shading&lt;span style=" font-style:normal;"&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt; &lt;span style=" font-weight:600;"&gt;Allusion&lt;/span&gt; &lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt; Définir les normales par vertex est aussi appelé &lt;span style=" font-style:italic;"&gt;Phong shading&lt;/span&gt; &lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;"&gt; &lt;span style=" font-style:normal;"&gt;tout en définissant les normales par face est appelée&lt;/span&gt; ombrage &lt;span style=" font-style:normal;"&gt;plat.&lt;/span&gt; &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;High-quality normals&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This will slow down render speed but will lead to nicer results.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Normales de haute qualité&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Cela ralentit le rendu mais conduit à de meilleurs résultats.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+      <location/>
+      <source>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;span style=" font-weight:600;"&gt;High-quality normals&lt;/span&gt;&lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;This will slow down render speed but will lead to nicer results.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;span style=" font-weight:600;"&gt;Normales de haute qualité&lt;/span&gt;&lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;Cela ralentit la vitesse de rendu, mais produit de meilleurs résultats.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>Maximum deviation depending on the model bounding box</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Maximum deviation depending on the model bounding box</source>
+      <translation>L'écart maximal suivant la  boîte englobant le modèle</translation>
     </message>
     <message>
-        <source> %</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source> %</source>
+      <translation>%</translation>
     </message>
     <message>
-        <source>Deviation</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Deviation</source>
+      <translation>Déviation</translation>
     </message>
     <message>
-        <source>Setting a too small deviation causes the tessellation to take longerand thus freezes or slows down the GUI.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Setting a too small deviation causes the tessellation to take longerand thus freezes or slows down the GUI.</source>
+      <translation>Définir une déviation trop faible signifie que la polygonalisation prendra longtemps et ralentira ou bloquera l'interface.</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>PartGui::DlgSettingsGeneral</name>
     <message>
-        <source>General</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>General</source>
+      <translation>Général</translation>
     </message>
     <message>
-        <source>Export</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Export</source>
+      <translation>Exporter</translation>
     </message>
     <message>
-        <source>Millimeter</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Millimeter</source>
+      <translation>Millimètre</translation>
     </message>
     <message>
-        <source>Meter</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Meter</source>
+      <translation>Mètre</translation>
     </message>
     <message>
-        <source>Inch</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Inch</source>
+      <translation>Pouce</translation>
     </message>
     <message>
-        <source>Units for export of STEP/IGES</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Units for export of STEP/IGES</source>
+      <translation>Unités pour l'exportation de STEP / IGES</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>PartGui::Mirroring</name>
     <message>
-        <source>Mirroring</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Mirroring</source>
+      <translation>Mise en miroir</translation>
     </message>
     <message>
-        <source>Shapes</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Shapes</source>
+      <translation>Formes</translation>
     </message>
     <message>
-        <source>Mirror plane:</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Mirror plane:</source>
+      <translation>plan miroir:</translation>
     </message>
     <message>
-        <source>XY plane</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>XY plane</source>
+      <translation>plan XY</translation>
     </message>
     <message>
-        <source>XZ plane</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>XZ plane</source>
+      <translation>plan XZ</translation>
     </message>
     <message>
-        <source>YZ plane</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>YZ plane</source>
+      <translation>plan YZ</translation>
     </message>
     <message>
-        <source>Select a shape for mirroring, first.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select a shape for mirroring, first.</source>
+      <translation>Sélectionner tout d'abord une forme pour mettre en miroir.</translation>
     </message>
     <message>
-        <source>No such document &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>No such document '%1'.</source>
+      <translation>Aucun document'%1'.</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>PartGui::Workbench</name>
     <message>
-        <source>&amp;Part</source>
-        <translation type="obsolete">&amp;Pièce</translation>
+      <location/>
+      <source>&amp;Part</source>
+      <translation>&amp;Pièce</translation>
     </message>
     <message>
-        <source>&amp;Simple</source>
-        <translation type="obsolete">&amp;Simple</translation>
+      <location/>
+      <source>&amp;Simple</source>
+      <translation>&amp;Simple</translation>
     </message>
     <message>
-        <source>&amp;Parametric</source>
-        <translation type="obsolete">&amp;Parametrée</translation>
+      <location/>
+      <source>&amp;Parametric</source>
+      <translation>&amp;Paramétrique</translation>
     </message>
     <message>
-        <source>Part tools</source>
-        <translation type="obsolete">Outils Pièce</translation>
+      <location/>
+      <source>Solids</source>
+      <translation>Solides</translation>
     </message>
-</context>
-<context>
+    <message>
+      <location/>
+      <source>Part tools</source>
+      <translation>Outils de pièces</translation>
+    </message>
+    <message>
+      <location/>
+      <source>Boolean</source>
+      <translation>Booléen</translation>
+    </message>
+  </context>
+  <context>
     <name>QObject</name>
     <message>
-        <source>Wrong selection</source>
-        <translation>Sélection incorrecte</translation>
+      <location/>
+      <source>Wrong selection</source>
+      <translation>Mauvaise sélection</translation>
     </message>
     <message>
-        <source>Select two shapes please.</source>
-        <translation>Sélectionner deux formes.</translation>
+      <location/>
+      <source>Select two shapes please.</source>
+      <translation>Sélectionnez deux formes svp.</translation>
     </message>
     <message>
-        <source>All CAD Files (*.stp *.step *.igs *.iges *.brp *.brep)</source>
-        <translation>Tous les fichiers CAO (*.stp *.step *.igs *.iges *.brp *.brep)</translation>
+      <location/>
+      <source>All CAD Files (*.stp *.step *.igs *.iges *.brp *.brep)</source>
+      <translation>Tous les fichiers CAO (*.stp *.step *.igs *.iges *.brp *.brep)</translation>
     </message>
     <message>
-        <source>STEP (*.stp *.step)</source>
-        <translation>STEP (*.stp *.step)</translation>
+      <location/>
+      <source>STEP (*.stp *.step)</source>
+      <translation>STEP (*.stp * .step)</translation>
     </message>
     <message>
-        <source>IGES (*.igs *.iges)</source>
-        <translation>IGES (*.igs *.iges)</translation>
+      <location/>
+      <source>IGES (*.igs *.iges)</source>
+      <translation>IGES (*.igs *.iges)</translation>
     </message>
     <message>
-        <source>BREP (*.brp *.brep)</source>
-        <translation>BREP (*.brp *.brep)</translation>
+      <location/>
+      <source>BREP (*.brp *.brep)</source>
+      <translation>BREP (*.brp *.brep)</translation>
     </message>
     <message>
-        <source>All Files (*.*)</source>
-        <translation>Tous les fichiers (*.*)</translation>
+      <location/>
+      <source>All Files (*.*)</source>
+      <translation>Tous les fichiers (*.*)</translation>
     </message>
     <message>
-        <source>Sewing Tolerance</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Sewing Tolerance</source>
+      <translation>Tolérance de couture</translation>
     </message>
     <message>
-        <source>Enter tolerance for sewing shape:</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Enter tolerance for sewing shape:</source>
+      <translation>Entrez la tolérance pour la forme de couture :</translation>
     </message>
     <message>
-        <source>Edit mirror plane</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Edit mirror plane</source>
+      <translation>Éditer le plan du miroir</translation>
     </message>
     <message>
-        <source>Transform</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Transform</source>
+      <translation>Transformer</translation>
     </message>
     <message>
-        <source>Part design</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Part design</source>
+      <translation>Conception des pièces</translation>
     </message>
     <message>
-        <source>Select two shapes or more, please.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select two shapes or more, please.</source>
+      <translation>Veuillez sélectionner deux ou plusieurs formes.</translation>
     </message>
     <message>
-        <source>You have to select either two edges or two wires.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>You have to select either two edges or two wires.</source>
+      <translation>Vous devez sélectionner deux arêtes ou deux câbles.</translation>
     </message>
     <message>
-        <source>Edit fillet edges</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Edit fillet edges</source>
+      <translation>Modifier les bords de filet</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>Workbench</name>
     <message>
-        <source>&amp;Part</source>
-        <translation>&amp;Pièce</translation>
+      <location/>
+      <source>&amp;Part</source>
+      <translation>&amp;Pièce</translation>
     </message>
     <message>
-        <source>&amp;Simple</source>
-        <translation>&amp;Simple</translation>
+      <location/>
+      <source>&amp;Simple</source>
+      <translation>&amp;Simple</translation>
     </message>
     <message>
-        <source>&amp;Parametric</source>
-        <translation>&amp;Parametrée</translation>
+      <location/>
+      <source>&amp;Parametric</source>
+      <translation>&amp;Paramétrique</translation>
     </message>
     <message>
-        <source>Part tools</source>
-        <translation>Outils Pièce</translation>
+      <location/>
+      <source>Part tools</source>
+      <translation>Outils de pièces</translation>
     </message>
     <message>
-        <source>Import</source>
-        <translation type="obsolete">Importer</translation>
+      <location/>
+      <source>Import</source>
+      <translation>Importer</translation>
     </message>
     <message>
-        <source>Boolean Operators</source>
-        <translation type="obsolete">Opérations booléennes</translation>
+      <location/>
+      <source>Boolean Operators</source>
+      <translation>Opérateurs booléens</translation>
     </message>
     <message>
-        <source>Solids</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Solids</source>
+      <translation>Solides</translation>
     </message>
     <message>
-        <source>Boolean</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Boolean</source>
+      <translation>Booléen</translation>
     </message>
-</context>
+  </context>
 </TS>

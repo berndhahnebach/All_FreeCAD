@@ -1,137 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="it_IT">
-<context>
+<TS>
+  <context>
     <name>CmdCreateImagePlane</name>
     <message>
-        <source>Image</source>
-        <translation type="unfinished">Immagine</translation>
+      <location/>
+      <source>Image</source>
+      <translation>Immagine</translation>
     </message>
     <message>
-        <source>Create image plane...</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Create image plane...</source>
+      <translation>Crea un piano immagine...</translation>
     </message>
     <message>
-        <source>create a planar image in the 3D space</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>create a planar image in the 3D space</source>
+      <translation>crea un'immagine piana nello spazio 3D</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdImageOpen</name>
     <message>
-        <source>Image</source>
-        <translation>Immagine</translation>
+      <location/>
+      <source>Image</source>
+      <translation>Immagine</translation>
     </message>
     <message>
-        <source>Open...</source>
-        <translation>Apri...</translation>
+      <location/>
+      <source>Open...</source>
+      <translation>Apri...</translation>
     </message>
     <message>
-        <source>Open image view</source>
-        <translation>Apri il visualizzatore immagini</translation>
+      <location/>
+      <source>Open image view</source>
+      <translation>Apri il visualizzatore di immagini</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>ImageGui::GLImageBox</name>
     <message>
-        <source>Undefined type of colour space for image viewing</source>
-        <translation>Tipo di spazio colore indefinito per la visualizzazione delle immagini</translation>
+      <location/>
+      <source>Undefined type of colour space for image viewing</source>
+      <translation>Tipo di spazio colore indefinito per la visualizzazione delle immagini</translation>
     </message>
     <message>
-        <source>Image pixel format</source>
-        <translation>Formato pixel</translation>
+      <location/>
+      <source>Image pixel format</source>
+      <translation>Formato pixel</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>ImageGui::ImageView</name>
     <message>
-        <source>&amp;Fit image</source>
-        <translation>&amp;Adatta immagine</translation>
+      <location/>
+      <source>&amp;Fit image</source>
+      <translation>&amp;Adatta immagine</translation>
     </message>
     <message>
-        <source>Stretch the image to fit the view</source>
-        <translation>Stira l&apos;immagine per adattarsi alla vista</translation>
+      <location/>
+      <source>Stretch the image to fit the view</source>
+      <translation>Stira l'immagine per adattarsi alla vista</translation>
     </message>
     <message>
-        <source>&amp;1:1 scale</source>
-        <translation>&amp;Scala 1:1</translation>
+      <location/>
+      <source>&amp;1:1 scale</source>
+      <translation>Scala &amp;1:1</translation>
     </message>
     <message>
-        <source>Display the image at a 1:1 scale</source>
-        <translation>Visualizza l&apos;immagine con scala 1:1</translation>
+      <location/>
+      <source>Display the image at a 1:1 scale</source>
+      <translation>Visualizza l'immagine in scala 1:1</translation>
     </message>
     <message>
-        <source>&amp;Original color</source>
-        <translation>&amp;Colore originale</translation>
+      <location/>
+      <source>&amp;Original color</source>
+      <translation>Colori &amp;originali</translation>
     </message>
     <message>
-        <source>Display the image with its original color(s)</source>
-        <translation>Visualizza l&apos;immagine con i suoi colori originali</translation>
+      <location/>
+      <source>Display the image with its original color(s)</source>
+      <translation>Visualizza l'immagine con i suoi colori originali</translation>
     </message>
     <message>
-        <source>&amp;Brightened color</source>
-        <translation>&amp;Colori più luminosi</translation>
+      <location/>
+      <source>&amp;Brightened color</source>
+      <translation>&amp;Colori più luminosi</translation>
     </message>
     <message>
-        <source>Display the image with brightened color(s)</source>
-        <translation>Visualizza l&apos;immagine con colori più luminosi</translation>
+      <location/>
+      <source>Display the image with brightened color(s)</source>
+      <translation>Visualizza l'immagine con colori più luminosi</translation>
     </message>
     <message>
-        <source>Standard</source>
-        <translation>Standard</translation>
+      <location/>
+      <source>Standard</source>
+      <translation>Standard</translation>
     </message>
     <message>
-        <source>Ready...</source>
-        <translation>Pronto...</translation>
+      <location/>
+      <source>Ready...</source>
+      <translation>Pronto...</translation>
     </message>
     <message>
-        <source>grey</source>
-        <translation>grigio</translation>
+      <location/>
+      <source>grey</source>
+      <translation>grigio</translation>
     </message>
     <message>
-        <source>zoom</source>
-        <translation>zoom</translation>
+      <location/>
+      <source>zoom</source>
+      <translation>zoom</translation>
     </message>
     <message>
-        <source>outside image</source>
-        <translation>immagine esterna</translation>
+      <location/>
+      <source>outside image</source>
+      <translation>fuori dall'immagine</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>ImageGui::Workbench</name>
     <message>
-        <source>Image</source>
-        <translation type="obsolete">Immagine</translation>
+      <location/>
+      <source>Image</source>
+      <translation>Immagine</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>QObject</name>
     <message>
-        <source>Image viewer</source>
-        <translation>Visualizzatore immagini</translation>
+      <location/>
+      <source>Image viewer</source>
+      <translation>Visualizzatore di immagini</translation>
     </message>
     <message>
-        <source>Images (*.png *.xpm *.jpg *.bmp)</source>
-        <translation>Immagini (*.png *.xpm *.jpg *.bmp)</translation>
+      <location/>
+      <source>Images (*.png *.xpm *.jpg *.bmp)</source>
+      <translation>Immagini (*.png *.xpm *.jpg *.bmp)</translation>
     </message>
     <message>
-        <source>Choose an image file to open</source>
-        <translation>Seleziona un file immagine da aprire</translation>
+      <location/>
+      <source>Choose an image file to open</source>
+      <translation>Seleziona un file immagine da aprire</translation>
     </message>
     <message>
-        <source>Error open image</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Error open image</source>
+      <translation>Errore durante l'apertura dell'immagine</translation>
     </message>
     <message>
-        <source>Could not load the choosen image</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Could not load the choosen image</source>
+      <translation>Impossibile caricare l'immagine scelta</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>Workbench</name>
     <message>
-        <source>Image</source>
-        <translation>Immagine</translation>
+      <location/>
+      <source>Image</source>
+      <translation>Immagine</translation>
     </message>
-</context>
+  </context>
 </TS>

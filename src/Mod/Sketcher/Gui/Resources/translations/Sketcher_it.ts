@@ -1,567 +1,674 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="it_IT">
-<context>
+<TS>
+  <context>
     <name>CmdSketcherConstrainCoincident</name>
     <message>
-        <source>Sketcher</source>
-        <translation>Sketcher</translation>
+      <location/>
+      <source>Sketcher</source>
+      <translation>Sketcher</translation>
     </message>
     <message>
-        <source>Constrain lock</source>
-        <translation type="obsolete">Vincolo bloccato</translation>
+      <location/>
+      <source>Constrain lock</source>
+      <translation>Vincolo bloccato</translation>
     </message>
     <message>
-        <source>Constrain coincident</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Constrain coincident</source>
+      <translation>Vincolo di coincidenza</translation>
     </message>
     <message>
-        <source>Create a coincident constraint on the selected item</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Create a coincident constraint on the selected item</source>
+      <translation>Crea un vincolo di coincidenza sull'elemento selezionato</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdSketcherConstrainDistance</name>
     <message>
-        <source>Sketcher</source>
-        <translation type="unfinished">Sketcher</translation>
+      <location/>
+      <source>Sketcher</source>
+      <translation>Sketcher</translation>
     </message>
     <message>
-        <source>Constrain distance</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Constrain distance</source>
+      <translation>Vincolo di distanza</translation>
     </message>
     <message>
-        <source>Fix a length of a line or the distance between a line and a vertex</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Fix a length of a line or the distance between a line and a vertex</source>
+      <translation>Fissa la lunghezza di una linea o la distanza tra una linea e un vertice</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdSketcherConstrainHorizontal</name>
     <message>
-        <source>Sketcher</source>
-        <translation>Sketcher</translation>
+      <location/>
+      <source>Sketcher</source>
+      <translation>Sketcher</translation>
     </message>
     <message>
-        <source>Constrain orizontal</source>
-        <translation type="obsolete">Vincolo orizzontale</translation>
+      <location/>
+      <source>Constrain orizontal</source>
+      <translation>Vincolo orizzontale</translation>
     </message>
     <message>
-        <source>Create a horizontal constrain on the selcted item</source>
-        <translation type="obsolete">Crea un vincolo orizzontale sull&apos;oggetto selezionato</translation>
+      <location/>
+      <source>Create a horizontal constrain on the selcted item</source>
+      <translation>Crea un vincolo orizzontale sull'elemento selezionato</translation>
     </message>
     <message>
-        <source>Constrain horizontally</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Constrain horizontally</source>
+      <translation>Vincolo orizzontale</translation>
     </message>
     <message>
-        <source>Create a horizontal constraint on the selected item</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Create a horizontal constraint on the selected item</source>
+      <translation>Crea un vincolo orizzontale sull'elemento selezionato</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdSketcherConstrainLock</name>
     <message>
-        <source>Sketcher</source>
-        <translation>Sketcher</translation>
+      <location/>
+      <source>Sketcher</source>
+      <translation>Sketcher</translation>
     </message>
     <message>
-        <source>Constrain Lock</source>
-        <translation type="obsolete">Vincolo bloccato</translation>
+      <location/>
+      <source>Constrain Lock</source>
+      <translation>Vincolo bloccato</translation>
     </message>
     <message>
-        <source>Create a Lock constrain on the selcted item</source>
-        <translation type="obsolete">Crea un vincolo bloccato sull&apos;oggetto selezionato</translation>
+      <location/>
+      <source>Create a Lock constrain on the selcted item</source>
+      <translation>Crea un vincolo bloccato sull'elemento selezionato</translation>
     </message>
     <message>
-        <source>Create a lock constrain on the selected item</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Create a lock constrain on the selected item</source>
+      <translation>Crea vincolo bloccato sull'elemento selezionato</translation>
     </message>
     <message>
-        <source>Constrain lock</source>
-        <translation type="unfinished">Vincolo bloccato</translation>
+      <location/>
+      <source>Constrain lock</source>
+      <translation>Vincolo bloccato</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdSketcherConstrainParallel</name>
     <message>
-        <source>Sketcher</source>
-        <translation type="unfinished">Sketcher</translation>
+      <location/>
+      <source>Sketcher</source>
+      <translation>Sketcher</translation>
     </message>
     <message>
-        <source>Constrain parallel</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Constrain parallel</source>
+      <translation>Vincolo di parallelismo</translation>
     </message>
     <message>
-        <source>Create a parallel constraint between two lines</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Create a parallel constraint between two lines</source>
+      <translation>Crea un vincolo di parallelismo tra due linee</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdSketcherConstrainVertical</name>
     <message>
-        <source>Sketcher</source>
-        <translation>Sketcher</translation>
+      <location/>
+      <source>Sketcher</source>
+      <translation>Sketcher</translation>
     </message>
     <message>
-        <source>Constrain vertical</source>
-        <translation type="obsolete">Vincolo verticale</translation>
+      <location/>
+      <source>Constrain vertical</source>
+      <translation>Vincolo verticale</translation>
     </message>
     <message>
-        <source>Create a vertical constrain on the selcted item</source>
-        <translation type="obsolete">Crea un vincolo verticale sull&apos;oggetto selezionato</translation>
+      <location/>
+      <source>Create a vertical constrain on the selcted item</source>
+      <translation>Crea un vincolo verticale sull'elemento selezionato</translation>
     </message>
     <message>
-        <source>Constrain vertically</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Constrain vertically</source>
+      <translation>Vincolo verticale</translation>
     </message>
     <message>
-        <source>Create a vertical constraint on the selected item</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Create a vertical constraint on the selected item</source>
+      <translation>Crea un vincolo verticale sull'elemento selezionato</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdSketcherCreateArc</name>
     <message>
-        <source>Sketcher</source>
-        <translation>Sketcher</translation>
+      <location/>
+      <source>Sketcher</source>
+      <translation>Sketcher</translation>
     </message>
     <message>
-        <source>Create arc</source>
-        <translation>Crea arco</translation>
+      <location/>
+      <source>Create arc</source>
+      <translation>Crea arco</translation>
     </message>
     <message>
-        <source>Create an arc in the sketch</source>
-        <translation>Crea un arco nello schizzo</translation>
+      <location/>
+      <source>Create an arc in the sketch</source>
+      <translation>Crea un arco nello schizzo</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdSketcherCreateBox</name>
     <message>
-        <source>Sketcher</source>
-        <translation type="unfinished">Sketcher</translation>
+      <location/>
+      <source>Sketcher</source>
+      <translation>Sketcher</translation>
     </message>
     <message>
-        <source>Create line</source>
-        <translation type="obsolete">Crea linea</translation>
+      <location/>
+      <source>Create box</source>
+      <translation>Creare un prisma</translation>
     </message>
     <message>
-        <source>Create a line in the sketch</source>
-        <translation type="obsolete">Crea una linea nello schizzo</translation>
+      <location/>
+      <source>Create a box in the sketch</source>
+      <translation>Creare un prisma nello sketch</translation>
     </message>
-    <message>
-        <source>Create box</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Create a box in the sketch</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdSketcherCreateCircle</name>
     <message>
-        <source>Sketcher</source>
-        <translation>Sketcher</translation>
+      <location/>
+      <source>Sketcher</source>
+      <translation>Sketcher</translation>
     </message>
     <message>
-        <source>Create circle</source>
-        <translation>Crea cerchio</translation>
+      <location/>
+      <source>Create circle</source>
+      <translation>Crea cerchio</translation>
     </message>
     <message>
-        <source>Create a circle in the sketch</source>
-        <translation>Crea un cerchio nello schizzo</translation>
+      <location/>
+      <source>Create a circle in the sketch</source>
+      <translation>Crea un cerchio nello schizzo</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdSketcherCreateDraftLine</name>
     <message>
-        <source>Sketcher</source>
-        <translation>Sketcher</translation>
+      <location/>
+      <source>Sketcher</source>
+      <translation>Sketcher</translation>
     </message>
     <message>
-        <source>Create draft line</source>
-        <translation>Crea linea di costruzione</translation>
+      <location/>
+      <source>Create draft line</source>
+      <translation>Crea linea di costruzione</translation>
     </message>
     <message>
-        <source>Create a draft line in the sketch</source>
-        <translation>Crea una linea di costruzione nello schizzo</translation>
+      <location/>
+      <source>Create a draft line in the sketch</source>
+      <translation>Crea una linea di costruzione nello schizzo</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdSketcherCreateLine</name>
     <message>
-        <source>Sketcher</source>
-        <translation>Sketcher</translation>
+      <location/>
+      <source>Sketcher</source>
+      <translation>Sketcher</translation>
     </message>
     <message>
-        <source>Create line</source>
-        <translation>Crea linea</translation>
+      <location/>
+      <source>Create line</source>
+      <translation>Crea linea</translation>
     </message>
     <message>
-        <source>Create a line in the sketch</source>
-        <translation>Crea una linea nello schizzo</translation>
+      <location/>
+      <source>Create a line in the sketch</source>
+      <translation>Crea una linea nello schizzo</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdSketcherCreatePoint</name>
     <message>
-        <source>Sketcher</source>
-        <translation>Sketcher</translation>
+      <location/>
+      <source>Sketcher</source>
+      <translation>Sketcher</translation>
     </message>
     <message>
-        <source>Create point</source>
-        <translation>Crea punto</translation>
+      <location/>
+      <source>Create point</source>
+      <translation>Crea punto</translation>
     </message>
     <message>
-        <source>Create a point in the sketch</source>
-        <translation>Crea un punto nello schizzo</translation>
+      <location/>
+      <source>Create a point in the sketch</source>
+      <translation>Crea un punto nello schizzo</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdSketcherCreatePolyline</name>
     <message>
-        <source>Sketcher</source>
-        <translation>Sketcher</translation>
+      <location/>
+      <source>Sketcher</source>
+      <translation>Sketcher</translation>
     </message>
     <message>
-        <source>Create polyline</source>
-        <translation>Crea polilinea</translation>
+      <location/>
+      <source>Create polyline</source>
+      <translation>Crea polilinea</translation>
     </message>
     <message>
-        <source>Create a polyline in the sketch</source>
-        <translation>Crea una polilinea nello schizzo</translation>
+      <location/>
+      <source>Create a polyline in the sketch</source>
+      <translation>Crea una polilinea nello schizzo</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdSketcherCreateRectangle</name>
     <message>
-        <source>Sketcher</source>
-        <translation type="obsolete">Sketcher</translation>
+      <location/>
+      <source>Sketcher</source>
+      <translation>Sketcher</translation>
     </message>
     <message>
-        <source>Create rectangle</source>
-        <translation type="obsolete">Crea rettangolo</translation>
+      <location/>
+      <source>Create rectangle</source>
+      <translation>Crea rettangolo</translation>
     </message>
     <message>
-        <source>Create a rectangle in the sketch</source>
-        <translation type="obsolete">Crea un rettangolo nello schizzo</translation>
+      <location/>
+      <source>Create a rectangle in the sketch</source>
+      <translation>Crea un rettangolo nello schizzo</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdSketcherCreateText</name>
     <message>
-        <source>Sketcher</source>
-        <translation>Sketcher</translation>
+      <location/>
+      <source>Sketcher</source>
+      <translation>Sketcher</translation>
     </message>
     <message>
-        <source>Create text</source>
-        <translation>Crea testo</translation>
+      <location/>
+      <source>Create text</source>
+      <translation>Crea testo</translation>
     </message>
     <message>
-        <source>Create text in the scetch</source>
-        <translation type="obsolete">Crea un testo nello schizzo</translation>
+      <location/>
+      <source>Create text in the scetch</source>
+      <translation>Crea un testo nello schizzo</translation>
     </message>
     <message>
-        <source>Create text in the sketch</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Create text in the sketch</source>
+      <translation>Crea testo nello sketch</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdSketcherLeaveSketch</name>
     <message>
-        <source>Sketcher</source>
-        <translation>Sketcher</translation>
+      <location/>
+      <source>Sketcher</source>
+      <translation>Sketcher</translation>
     </message>
     <message>
-        <source>Leave sketch</source>
-        <translation>Esci</translation>
+      <location/>
+      <source>Leave sketch</source>
+      <translation>Esci</translation>
     </message>
     <message>
-        <source>Close the editing of the sketch</source>
-        <translation>Chiude la modifica dello schizzo</translation>
+      <location/>
+      <source>Close the editing of the sketch</source>
+      <translation>Chiude la modifica dello schizzo</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdSketcherNewSketch</name>
     <message>
-        <source>Sketcher</source>
-        <translation>Sketcher</translation>
+      <location/>
+      <source>Sketcher</source>
+      <translation>Sketcher</translation>
     </message>
     <message>
-        <source>Create sketch</source>
-        <translation>Crea schizzo</translation>
+      <location/>
+      <source>Create sketch</source>
+      <translation>Crea schizzo</translation>
     </message>
     <message>
-        <source>Create a new sketch</source>
-        <translation>Crea un nuovo schizzo</translation>
+      <location/>
+      <source>Create a new sketch</source>
+      <translation>Crea un nuovo schizzo</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>CmdSketcherNewSketchSF</name>
     <message>
-        <source>Sketcher</source>
-        <translation type="unfinished">Sketcher</translation>
+      <location/>
+      <source>Sketcher</source>
+      <translation>Sketcher</translation>
     </message>
     <message>
-        <source>Sketchflat sketch</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Sketchflat sketch</source>
+      <translation>Sketchflat sketch</translation>
     </message>
     <message>
-        <source>Create a new sketchflat sketch by starting externel editor</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Create a new sketchflat sketch by starting externel editor</source>
+      <translation>Crea un nuovo sketch sketchflat avviando l'editor esterno</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>Gui::TaskView::TaskSketcherCreateCommands</name>
     <message>
-        <source>Appearance</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Appearance</source>
+      <translation>Aspetto</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>QObject</name>
     <message>
-        <source>Wrong selection</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Wrong selection</source>
+      <translation>Selezione errata</translation>
     </message>
     <message>
-        <source>Select an edge from the sketch.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select an edge from the sketch.</source>
+      <translation>Seleziona uno spigolo dallo sketch.</translation>
     </message>
     <message>
-        <source>Double constraint</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Double constraint</source>
+      <translation>Doppio vincolo</translation>
     </message>
     <message>
-        <source>The selected edge has already a horizontal constraint!</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>The selected edge has already a horizontal constraint!</source>
+      <translation>Lo spigolo selezionato ha già un vincolo orizzontale!</translation>
     </message>
     <message>
-        <source>Impossible constraint</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Impossible constraint</source>
+      <translation>Vincolo Impossible</translation>
     </message>
     <message>
-        <source>The selected edge has already a vertical constraint!</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>The selected edge has already a vertical constraint!</source>
+      <translation>Lo spigolo selezionato ha già un vincolo verticale!</translation>
     </message>
     <message>
-        <source>Select vertexes from the sketch.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select vertexes from the sketch.</source>
+      <translation>Seleziona vertici dallo sketch.</translation>
     </message>
     <message>
-        <source>Select exactly two vertexes from the sketch.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select exactly two vertexes from the sketch.</source>
+      <translation>Seleziona esattamente due vertici dallo sketch.</translation>
     </message>
     <message>
-        <source>Select exactly one line from the sketch.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select exactly one line from the sketch.</source>
+      <translation>Seleziona esattamente una linea dallo sketch.</translation>
     </message>
     <message>
-        <source>Select two lines from the sketch.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select two lines from the sketch.</source>
+      <translation>Seleziona due linee dallo sketch.</translation>
     </message>
     <message>
-        <source>Select exactly two lines from the sketch.</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Select exactly two lines from the sketch.</source>
+      <translation>Selezionare esattamente due linee dallo sketch.</translation>
     </message>
     <message>
-        <source>Edit sketch</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Edit sketch</source>
+      <translation>Modifica sketch</translation>
     </message>
     <message>
-        <source>A dialog is already open in the task panel</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>A dialog is already open in the task panel</source>
+      <translation>Una finestra di dialogo è già aperta nel pannello attività</translation>
     </message>
     <message>
-        <source>Do you want to close this dialog?</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Do you want to close this dialog?</source>
+      <translation>Vuoi chiudere questa finestra di dialogo?</translation>
     </message>
     <message>
-        <source>Several sub-elements selected</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Several sub-elements selected</source>
+      <translation>Diversi sottoelementi selezionati</translation>
     </message>
     <message>
-        <source>You have to select a single face as support for a sketch!</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>You have to select a single face as support for a sketch!</source>
+      <translation>Devi selezionare una singola faccia come supporto per uno sketch!</translation>
     </message>
     <message>
-        <source>No support face selected</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>No support face selected</source>
+      <translation>Nessuna faccia di supporto selezionata</translation>
     </message>
     <message>
-        <source>You have to select a face as support for a sketch!</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>You have to select a face as support for a sketch!</source>
+      <translation>Devi selezionare una faccia come supporto per uno sketch!</translation>
     </message>
     <message>
-        <source>No planar support</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>No planar support</source>
+      <translation>Nessun supporto planare</translation>
     </message>
     <message>
-        <source>You need a planar face as support for a sketch!</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>You need a planar face as support for a sketch!</source>
+      <translation>Hai bisogno di una faccia planare come supporto per uno sketch!</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>SketcherGui::InsertDatum</name>
     <message>
-        <source>Insert datum</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Insert datum</source>
+      <translation>Inserisci riferimento</translation>
     </message>
     <message>
-        <source>datum:</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>datum:</source>
+      <translation>Riferimento:</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>SketcherGui::TaskSketcherConstrains</name>
     <message>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Form</source>
+      <translation>Modulo</translation>
     </message>
     <message>
-        <source>Filter:</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Filter:</source>
+      <translation>Filtro:</translation>
     </message>
     <message>
-        <source>All</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>All</source>
+      <translation>Tutto</translation>
     </message>
     <message>
-        <source>Normal</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Normal</source>
+      <translation>Normale</translation>
     </message>
     <message>
-        <source>Datums</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Datums</source>
+      <translation>Riferimenti</translation>
     </message>
     <message>
-        <source>Named</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Named</source>
+      <translation>Denominato</translation>
     </message>
     <message>
-        <source>Constraints</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Constraints</source>
+      <translation>Vincoli</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>SketcherGui::TaskSketcherGeneral</name>
     <message>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Form</source>
+      <translation>Modulo</translation>
     </message>
     <message>
-        <source>Unsolved</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Unsolved</source>
+      <translation>Non risolto</translation>
     </message>
     <message>
-        <source>Grid Snap</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Grid Snap</source>
+      <translation>Snap griglia</translation>
     </message>
     <message>
-        <source>0.1 mm</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>0.1 mm</source>
+      <translation>0,1 mm</translation>
     </message>
     <message>
-        <source>0.2 mm</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>0.2 mm</source>
+      <translation>0,2 mm</translation>
     </message>
     <message>
-        <source>0.5 mm</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>0.5 mm</source>
+      <translation>0,5 mm</translation>
     </message>
     <message>
-        <source>1 mm</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>1 mm</source>
+      <translation>1 mm</translation>
     </message>
     <message>
-        <source>2 mm</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>2 mm</source>
+      <translation>2 mm</translation>
     </message>
     <message>
-        <source>5 mm</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>5 mm</source>
+      <translation>5 mm</translation>
     </message>
     <message>
-        <source>10 mm</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>10 mm</source>
+      <translation>10 mm</translation>
     </message>
     <message>
-        <source>20 mm</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>20 mm</source>
+      <translation>20 mm</translation>
     </message>
     <message>
-        <source>50 mm</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>50 mm</source>
+      <translation>50 mm</translation>
     </message>
     <message>
-        <source>100 mm</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>100 mm</source>
+      <translation>100 mm</translation>
     </message>
     <message>
-        <source>200 mm</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>200 mm</source>
+      <translation>200 mm</translation>
     </message>
     <message>
-        <source>500 mm</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>500 mm</source>
+      <translation>500 mm</translation>
     </message>
     <message>
-        <source>1 m</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>1 m</source>
+      <translation>1 m</translation>
     </message>
     <message>
-        <source>2 m</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>2 m</source>
+      <translation>2 m</translation>
     </message>
     <message>
-        <source>5 m</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>5 m</source>
+      <translation>5 m</translation>
     </message>
     <message>
-        <source>10 m</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>10 m</source>
+      <translation>10 m</translation>
     </message>
     <message>
-        <source>20 m</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>20 m</source>
+      <translation>20 m</translation>
     </message>
     <message>
-        <source>Edit controls</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>Edit controls</source>
+      <translation>Modifica controlli</translation>
     </message>
     <message>
-        <source>auto constraints</source>
-        <translation type="unfinished"></translation>
+      <location/>
+      <source>auto constraints</source>
+      <translation>vincoli automatici</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>SketcherGui::Workbench</name>
     <message>
-        <source>Sketcher</source>
-        <translation type="obsolete">Sketcher</translation>
+      <location/>
+      <source>Sketcher geoms</source>
+      <translation>Geometrie dello Sketcher</translation>
     </message>
     <message>
-        <source>Sketcher geoms</source>
-        <translation type="obsolete">Geometrie dello Sketcher</translation>
+      <location/>
+      <source>Sketcher constrains</source>
+      <translation>Vincoli dello Sketcher</translation>
     </message>
-    <message>
-        <source>Sketcher constrains</source>
-        <translation type="obsolete">Vincoli dello Sketcher</translation>
-    </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>Workbench</name>
     <message>
-        <source>Sketcher</source>
-        <translation>Sketcher</translation>
+      <location/>
+      <source>Sketcher</source>
+      <translation>Sketcher</translation>
     </message>
     <message>
-        <source>Sketcher geoms</source>
-        <translation>Geometrie dello Sketcher</translation>
+      <location/>
+      <source>Sketcher geoms</source>
+      <translation>Geometrie dello Sketcher</translation>
     </message>
     <message>
-        <source>Sketcher constraints</source>
-        <translation>Vincoli dello Sketcher</translation>
+      <location/>
+      <source>Sketcher constraints</source>
+      <translation>Vincoli dello Sketcher</translation>
     </message>
-</context>
+  </context>
 </TS>
