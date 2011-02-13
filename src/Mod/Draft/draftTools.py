@@ -207,12 +207,13 @@ def snapPoint(target,point,cursor,ctrl=False):
 
 		# calculating shortest distance
 		shortest = 1000000000000000000
-		newpoint = point
+		spt = Vector(snapped['x'],snapped['y'],snapped['z'])
+                newpoint = spt
 		for i in snapArray:
 			if i[0] == None: print "snapPoint: debug 'i[0]' is 'None'"
-			sqdist = ((point.x-i[0].x)**2 + (point.y-i[0].y)**2 + (point.z-i[0].z)**2)
-			if sqdist < shortest:
-				shortest = sqdist
+                        di = i[0].sub(spt)
+			if di.Length < shortest:
+				shortest = di.Length
 				newpoint = i
 		target.snap.coords.point.setValue((newpoint[2].x,newpoint[2].y,newpoint[2].z))
 		if (newpoint[1] == 1):
