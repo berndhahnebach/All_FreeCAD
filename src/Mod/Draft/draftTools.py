@@ -97,8 +97,141 @@ lastObj = [0,0]
 # Snapping stuff
 #---------------------------------------------------------------------------
 
-def snapPoint (target,point,cursor,ctrl=False):
+def snapPoint(target,point,cursor,ctrl=False):
 	'''
+	Snap function used by the Draft tools
+
+	Currently has two modes: passive and active. Pressing CTRL while 
+	clicking puts you in active mode:
+
+	- In passive mode (an open circle appears), your point is
+	  snapped to the nearest point on any underlying geometry.
+
+	- In active mode (ctrl pressed, a filled circle appears), your point
+	  can currently be snapped to the following points:
+	    - Nodes and midpoints of all Part shapes
+	    - Nodes and midpoints of lines/wires
+	    - Centers and quadrant points of circles
+	    - Endpoints of arcs
+	    - Intersection between line, wires segments, arcs and circles
+	    - When constrained (SHIFT pressed), Intersections between
+	      constraining axis and lines/wires
+	'''
+        
+        def getConstrainedPoint(edge,last,constrain):
+                "check for constrained snappoint"
+                p1 = edge.Vertexes[0].Point
+                p2 = edge.Vertexes[-1].Point
+                ar = []
+                if (constrain == 0):
+                        if ((last.y > p1.y) and (last.y < p2.y) or (last.y > p2.y) and (last.y < p1.y)):
+                                pc = (last.y-p1.y)/(p2.y-p1.y)
+                                cp = (Vector(p1.x+pc*(p2.x-p1.x),p1.y+pc*(p2.y-p1.y),p1.z+pc*(p2.z-p1.z)))
+                                ar.append([cp,1,cp]) # constrainpoint
+                if (constrain == 1):
+                        if ((last.x > p1.x) and (last.x < p2.x) or (last.x > p2.x) and (last.x < p1.x)):
+                                pc = (last.x-p1.x)/(p2.x-p1.x)
+                                cp = (Vector(p1.x+pc*(p2.x-p1.x),p1.y+pc*(p2.y-p1.y),p1.z+pc*(p2.z-p1.z)))
+                                ar.append([cp,1,cp]) # constrainpoint
+                return ar
+
+        def getPassivePoint(info):
+                "returns a passive snap point"
+                cur = Vector(info['x'],info['y'],info['z'])
+                return [cur,2,cur]
+
+	# checking if alwaySnap setting is on
+	if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").\
+		GetBool("alwaysSnap"): ctrl = True
+	
+	snapped=target.view.getObjectInfo((cursor[0],cursor[1]))
+
+        # check if we snapped to something
+	if (snapped == None):
+		target.snap.switch.whichChild = -1
+		return point
+	else:
+                obj = target.doc.getObject(snapped['Object'])
+                if not ctrl:
+                        # are we in passive snap?
+                        snapArray = [getPassivePoint(snapped)]
+                else:
+                        snapArray = []
+                        comp = snapped['Component']
+                        if obj.isDerivedFrom("Part::Feature"):
+                                if "Edge" in comp:
+                                        intedges = []
+                                        if lastObj[0]:
+                                                lo = target.doc.getObject(lastObj[0])
+                                                if lo:
+                                                        if lo.isDerivedFrom("Part::Feature"):
+                                                                intedges = lo.Shape.Edges
+                                                           
+                                        nr = int(comp[4:])-1
+                                        edge = obj.Shape.Edges[nr]
+                                        for v in edge.Vertexes:
+                                                snapArray.append([v.Point,0,v.Point])
+                                        if isinstance(edge.Curve,Part.Line):
+                                                midpoint = fcgeo.findMidpoint(edge)
+                                                snapArray.append([midpoint,1,midpoint])
+                                                if (len(target.node) > 0):
+                                                        last = target.node[len(target.node)-1]
+                                                        snapArray.extend(getConstrainedPoint(edge,last,target.constrain))
+
+                                        elif isinstance (edge.Curve,Part.Circle):
+                                                rad = edge.Curve.Radius
+                                                pos = edge.Curve.Center
+                                                for i in [0,30,45,60,90,120,135,150,180,210,225,240,270,300,315,330]:
+                                                        ang = math.radians(i)
+                                                        cur = Vector(math.sin(ang)*rad+pos.x,math.cos(ang)*rad+pos.y,pos.z)
+                                                        snapArray.append([cur,1,cur])
+                                                for i in [15,37.5,52.5,75,105,127.5,142.5,165,195,217.5,232.5,255,285,307.5,322.5,345]:
+                                                        ang = math.radians(i)
+                                                        cur = Vector(math.sin(ang)*rad+pos.x,math.cos(ang)*rad+pos.y,pos.z)
+                                                        snapArray.append([cur,0,pos])
+
+                                        for e in intedges:
+                                                pt = fcgeo.findIntersection(e,edge)
+                                                if pt:
+                                                        for p in pt:
+                                                                snapArray.append([p,3,p])
+                                else:
+                                        snapArray = [getPassivePoint(snapped)]
+                                                                
+                if not lastObj[0]:
+			lastObj[0] = obj.Name
+			lastObj[1] = obj.Name
+		if (lastObj[1] != obj.Name):
+			lastObj[0] = lastObj[1]
+			lastObj[1] = obj.Name
+
+		# calculating shortest distance
+		shortest = 1000000000000000000
+		newpoint = point
+		for i in snapArray:
+			if i[0] == None: print "snapPoint: debug 'i[0]' is 'None'"
+			sqdist = ((point.x-i[0].x)**2 + (point.y-i[0].y)**2 + (point.z-i[0].z)**2)
+			if sqdist < shortest:
+				shortest = sqdist
+				newpoint = i
+		target.snap.coords.point.setValue((newpoint[2].x,newpoint[2].y,newpoint[2].z))
+		if (newpoint[1] == 1):
+			target.snap.setMarker("square")
+		elif (newpoint[1] == 0):
+			target.snap.setMarker("point")
+		elif (newpoint[1] == 3):
+			target.snap.setMarker("square")
+		else:
+			target.snap.setMarker("circle")
+		target.snap.switch.whichChild = 0
+		return newpoint[2]
+
+                                        
+
+def snapPointOld (target,point,cursor,ctrl=False):
+	'''
+        OBSOLETE - TO BE REMOVED SOON...
+        
 	Snap function used by the Draft tools
 
 	Currently has two modes: passive and active. Pressing CTRL while 
