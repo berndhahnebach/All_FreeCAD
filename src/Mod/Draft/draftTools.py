@@ -2102,6 +2102,7 @@ class Move(Modifier):
 		self.sel = Draft.getSelection()
                 self.sel = Draft.getGroupContents(self.sel)
 		self.ui.pointUi()
+                self.ui.isCopy.show()
 		self.ui.xValue.setFocus()
 		self.ui.xValue.selectAll()
 		self.snap = snapTracker()
@@ -2152,7 +2153,6 @@ class Move(Modifier):
 				if (self.node == []):
 					self.node.append(point)
 					self.ui.isRelative.show()
-					self.ui.isCopy.show()
 					self.linetrack.on()
 					self.ghost.on()
 					self.linetrack.p1(point)
@@ -2250,6 +2250,7 @@ class Rotate(Modifier):
 		self.step = 0
 		self.center = None
 		self.ui.arcUi()
+                self.ui.isCopy.show()
 		self.ui.cmdlabel.setText("Rotate")
 		self.snap = snapTracker()
 		self.linetrack = lineTracker()
@@ -2342,6 +2343,7 @@ class Rotate(Modifier):
 					self.center = point
 					self.node = [point]
 					self.ui.radiusUi()
+                                        self.ui.hasFill.hide()
 					self.ui.labelRadius.setText("Base angle")
 					self.linetrack.p1(self.center)
 					self.arctrack.setCenter(self.center)
@@ -2356,7 +2358,6 @@ class Rotate(Modifier):
 					self.arctrack.on()
                                         self.arctrack.setStartPoint(point)
 					self.ghost.on()
-					self.ui.isCopy.show()
 					self.step = 2
 					msg(translate("draft", "Pick rotation angle:\n"))
 				else:
@@ -2387,6 +2388,7 @@ class Rotate(Modifier):
 		#self.arctrack.on()
 		self.linetrack.on()
 		self.ui.radiusUi()
+                self.ui.hasFill.hide()
 		self.ui.labelRadius.setText("Base angle")
 		self.step = 1
 		msg(translate("draft", "Pick base angle:\n"))
@@ -2399,7 +2401,6 @@ class Rotate(Modifier):
 			self.arctrack.setStartAngle(self.firstangle)
 			self.arctrack.on()
 			self.ghost.on()
-			self.ui.isCopy.show()
 			self.step = 2
 			msg(translate("draft", "Pick rotation angle:\n"))
 		else:
