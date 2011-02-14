@@ -8,14 +8,28 @@ nodist_libResources_la_SOURCES=\
 
 EXTRA_DIST = \
 		icons/actions/MeshFace.svg \
+		translations/MeshPart_af.qm \
+		translations/MeshPart_af.ts \
 		translations/MeshPart_de.qm \
-		translations/MeshPart_es.qm \
-		translations/MeshPart_it.qm \
-		translations/MeshPart_se.qm \
 		translations/MeshPart_de.ts \
+		translations/MeshPart_es.qm \
 		translations/MeshPart_es.ts \
+		translations/MeshPart_fi.qm \
+		translations/MeshPart_fi.ts \
+		translations/MeshPart_fr.qm \
+		translations/MeshPart_fr.ts \
+		translations/MeshPart_it.qm \
 		translations/MeshPart_it.ts \
+		translations/MeshPart_nl.qm \
+		translations/MeshPart_nl.ts \
+		translations/MeshPart_no.qm \
+		translations/MeshPart_no.ts \
+		translations/MeshPart_ru.qm \
+		translations/MeshPart_ru.ts \
+		translations/MeshPart_se.qm \
 		translations/MeshPart_se.ts \
+		translations/MeshPart_uk.qm \
+		translations/MeshPart_uk.ts \
 		MeshPart.qrc
 
 

@@ -37,16 +37,28 @@ EXTRA_DIST = \
 		CMakeLists.txt \
 		draft.dox \
 		Resources/Draft.qrc \
+        Resources/translations/Draft_af.ts \
+        Resources/translations/Draft_af.qm \
         Resources/translations/Draft_de.ts \
         Resources/translations/Draft_de.qm \
         Resources/translations/Draft_es.ts \
         Resources/translations/Draft_es.qm \
+        Resources/translations/Draft_fi.ts \
+        Resources/translations/Draft_fi.qm \
         Resources/translations/Draft_fr.ts \
         Resources/translations/Draft_fr.qm \
         Resources/translations/Draft_it.ts \
         Resources/translations/Draft_it.qm \
+        Resources/translations/Draft_nl.ts \
+        Resources/translations/Draft_nl.qm \
+        Resources/translations/Draft_no.ts \
+        Resources/translations/Draft_no.qm \
+        Resources/translations/Draft_ru.ts \
+        Resources/translations/Draft_ru.qm \
         Resources/translations/Draft_se.ts \
         Resources/translations/Draft_se.qm \
+        Resources/translations/Draft_uk.ts \
+        Resources/translations/Draft_uk.qm \
 		Resources/icons/preferences-draft.svg \
 		Resources/icons/Draft_AddPoint.svg \
         Resources/icons/Draft_AddToGroup.svg \

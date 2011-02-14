@@ -20,8 +20,28 @@ EXTRA_DIST = \
 		icons/Robot_Simulate.svg \
 		icons/Robot_TrajectoryCompound.svg \
 		icons/Robot_TrajectoryDressUp.svg \
+		translations/Robot_af.qm \
+		translations/Robot_af.ts \
 		translations/Robot_de.qm \
 		translations/Robot_de.ts \
+		translations/Robot_es.qm \
+		translations/Robot_es.ts \
+		translations/Robot_fi.qm \
+		translations/Robot_fi.ts \
+		translations/Robot_fr.qm \
+		translations/Robot_fr.ts \
+		translations/Robot_it.qm \
+		translations/Robot_it.ts \
+		translations/Robot_nl.qm \
+		translations/Robot_nl.ts \
+		translations/Robot_no.qm \
+		translations/Robot_no.ts \
+		translations/Robot_ru.qm \
+		translations/Robot_ru.ts \
+		translations/Robot_se.qm \
+		translations/Robot_se.ts \
+		translations/Robot_uk.qm \
+		translations/Robot_uk.ts \
 		Robot.qrc \
 		UpdateResources.bat
 

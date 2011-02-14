@@ -7,8 +7,28 @@ nodist_libResources_la_SOURCES=\
 		qrc_PartDesign.cpp 
 
 EXTRA_DIST = \
+		translations/PartDesign_af.qm \
+		translations/PartDesign_af.ts \
 		translations/PartDesign_de.qm \
 		translations/PartDesign_de.ts \
+		translations/PartDesign_es.qm \
+		translations/PartDesign_es.ts \
+		translations/PartDesign_fi.qm \
+		translations/PartDesign_fi.ts \
+		translations/PartDesign_fr.qm \
+		translations/PartDesign_fr.ts \
+		translations/PartDesign_it.qm \
+		translations/PartDesign_it.ts \
+		translations/PartDesign_nl.qm \
+		translations/PartDesign_nl.ts \
+		translations/PartDesign_no.qm \
+		translations/PartDesign_no.ts \
+		translations/PartDesign_ru.qm \
+		translations/PartDesign_ru.ts \
+		translations/PartDesign_se.qm \
+		translations/PartDesign_se.ts \
+		translations/PartDesign_uk.qm \
+		translations/PartDesign_uk.ts \
 		icons/PartDesign_Pad.svg \
 		icons/PartDesign_Pocket.svg \
 		PartDesign.qrc

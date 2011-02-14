@@ -42,16 +42,28 @@ EXTRA_DIST = \
 		icons/Sketcher_DraftLine.svg \
 		icons/Sketcher_LeaveSketch.svg \
 		icons/Sketcher_NewSketch.svg \
+		translations/Sketcher_af.qm \
+		translations/Sketcher_af.ts \
 		translations/Sketcher_de.qm \
-		translations/Sketcher_es.qm \
-		translations/Sketcher_fr.qm \
-		translations/Sketcher_it.qm \
-		translations/Sketcher_se.qm \
 		translations/Sketcher_de.ts \
+		translations/Sketcher_es.qm \
 		translations/Sketcher_es.ts \
+		translations/Sketcher_fi.qm \
+		translations/Sketcher_fi.ts \
+		translations/Sketcher_fr.qm \
 		translations/Sketcher_fr.ts \
+		translations/Sketcher_it.qm \
 		translations/Sketcher_it.ts \
+		translations/Sketcher_nl.qm \
+		translations/Sketcher_nl.ts \
+		translations/Sketcher_no.qm \
+		translations/Sketcher_no.ts \
+		translations/Sketcher_ru.qm \
+		translations/Sketcher_ru.ts \
+		translations/Sketcher_se.qm \
 		translations/Sketcher_se.ts \
+		translations/Sketcher_uk.qm \
+		translations/Sketcher_uk.ts \
 		Sketcher.qrc
 
 
