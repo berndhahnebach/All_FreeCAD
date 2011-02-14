@@ -8,16 +8,28 @@ nodist_libResources_la_SOURCES=\
 
 EXTRA_DIST = \
 		icons/actions/FitSurface.svg \
+		translations/ReverseEngineering_af.qm \
+		translations/ReverseEngineering_af.ts \
 		translations/ReverseEngineering_de.qm \
-		translations/ReverseEngineering_es.qm \
-		translations/ReverseEngineering_fr.qm \
-		translations/ReverseEngineering_it.qm \
-		translations/ReverseEngineering_se.qm \
 		translations/ReverseEngineering_de.ts \
+		translations/ReverseEngineering_es.qm \
 		translations/ReverseEngineering_es.ts \
+		translations/ReverseEngineering_fi.qm \
+		translations/ReverseEngineering_fi.ts \
+		translations/ReverseEngineering_fr.qm \
 		translations/ReverseEngineering_fr.ts \
+		translations/ReverseEngineering_it.qm \
 		translations/ReverseEngineering_it.ts \
+		translations/ReverseEngineering_nl.qm \
+		translations/ReverseEngineering_nl.ts \
+		translations/ReverseEngineering_no.qm \
+		translations/ReverseEngineering_no.ts \
+		translations/ReverseEngineering_ru.qm \
+		translations/ReverseEngineering_ru.ts \
+		translations/ReverseEngineering_se.qm \
 		translations/ReverseEngineering_se.ts \
+		translations/ReverseEngineering_uk.qm \
+		translations/ReverseEngineering_uk.ts \
 		ReverseEngineering.qrc \
 		UpdateResources.bat
 

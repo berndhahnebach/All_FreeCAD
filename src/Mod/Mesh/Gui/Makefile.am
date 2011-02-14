@@ -128,14 +128,26 @@ EXTRA_DIST = \
 		DlgSmoothing.ui \
 		RemoveComponents.ui \
 		Resources/Mesh.qrc \
+		Resources/translations/Mesh_af.qm \
+		Resources/translations/Mesh_af.ts \
 		Resources/translations/Mesh_de.qm \
-		Resources/translations/Mesh_es.qm \
-		Resources/translations/Mesh_fr.qm \
-		Resources/translations/Mesh_it.qm \
-		Resources/translations/Mesh_se.qm \
 		Resources/translations/Mesh_de.ts \
+		Resources/translations/Mesh_es.qm \
 		Resources/translations/Mesh_es.ts \
+		Resources/translations/Mesh_fi.qm \
+		Resources/translations/Mesh_fi.ts \
+		Resources/translations/Mesh_fr.qm \
 		Resources/translations/Mesh_fr.ts \
+		Resources/translations/Mesh_it.qm \
 		Resources/translations/Mesh_it.ts \
+		Resources/translations/Mesh_nl.qm \
+		Resources/translations/Mesh_nl.ts \
+		Resources/translations/Mesh_no.qm \
+		Resources/translations/Mesh_no.ts \
+		Resources/translations/Mesh_ru.qm \
+		Resources/translations/Mesh_ru.ts \
+		Resources/translations/Mesh_se.qm \
 		Resources/translations/Mesh_se.ts \
+		Resources/translations/Mesh_uk.qm \
+		Resources/translations/Mesh_uk.ts \
 		images.h

@@ -89,15 +89,27 @@ CLEANFILES = $(BUILT_SOURCES)
 EXTRA_DIST = \
 		CMakeLists.txt \
 		Resources/Image.qrc \
+		Resources/translations/Image_af.qm \
+		Resources/translations/Image_af.ts \
 		Resources/translations/Image_de.qm \
-		Resources/translations/Image_es.qm \
-		Resources/translations/Image_fr.qm \
-		Resources/translations/Image_it.qm \
-		Resources/translations/Image_se.qm \
 		Resources/translations/Image_de.ts \
+		Resources/translations/Image_es.qm \
 		Resources/translations/Image_es.ts \
+		Resources/translations/Image_fi.qm \
+		Resources/translations/Image_fi.ts \
+		Resources/translations/Image_fr.qm \
 		Resources/translations/Image_fr.ts \
+		Resources/translations/Image_it.qm \
 		Resources/translations/Image_it.ts \
+		Resources/translations/Image_nl.qm \
+		Resources/translations/Image_nl.ts \
+		Resources/translations/Image_no.qm \
+		Resources/translations/Image_no.ts \
+		Resources/translations/Image_ru.qm \
+		Resources/translations/Image_ru.ts \
+		Resources/translations/Image_se.qm \
 		Resources/translations/Image_se.ts \
+		Resources/translations/Image_uk.qm \
+		Resources/translations/Image_uk.ts \
 		Resources/icons/image-import.svg
 

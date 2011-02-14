@@ -98,14 +98,26 @@ EXTRA_DIST = \
 		DlgSettingsRay.ui \
 		FreeCADpov \
 		Resources/Raytracing.qrc \
+		Resources/translations/Raytracing_af.qm \
+		Resources/translations/Raytracing_af.ts \
 		Resources/translations/Raytracing_de.qm \
-		Resources/translations/Raytracing_es.qm \
-		Resources/translations/Raytracing_fr.qm \
-		Resources/translations/Raytracing_it.qm \
-		Resources/translations/Raytracing_se.qm \
 		Resources/translations/Raytracing_de.ts \
+		Resources/translations/Raytracing_es.qm \
 		Resources/translations/Raytracing_es.ts \
+		Resources/translations/Raytracing_fi.qm \
+		Resources/translations/Raytracing_fi.ts \
+		Resources/translations/Raytracing_fr.qm \
 		Resources/translations/Raytracing_fr.ts \
+		Resources/translations/Raytracing_it.qm \
 		Resources/translations/Raytracing_it.ts \
+		Resources/translations/Raytracing_nl.qm \
+		Resources/translations/Raytracing_nl.ts \
+		Resources/translations/Raytracing_no.qm \
+		Resources/translations/Raytracing_no.ts \
+		Resources/translations/Raytracing_ru.qm \
+		Resources/translations/Raytracing_ru.ts \
+		Resources/translations/Raytracing_se.qm \
 		Resources/translations/Raytracing_se.ts \
+		Resources/translations/Raytracing_uk.qm \
+		Resources/translations/Raytracing_uk.ts \
 		CMakeLists.txt

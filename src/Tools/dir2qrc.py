@@ -35,6 +35,7 @@ from os.path import join, getsize
 # Globals
 Verbose = False
 Automatic = False
+ExtraDist = False
 Dir = '.'
 Output = 'resources.qrc'
 
@@ -66,10 +67,10 @@ locations = [["../Gui/Language","translation.qrc"," prefix=\"/translations\""],
              ["../Mod/Sketcher/Gui/Resources","Sketcher.qrc"]]
 
 def main():
-	global Verbose,Automatic,Dir,Output
+	global Verbose,Automatic,ExtraDist,Dir,Output
 	
 	try:
-		opts, args = getopt.getopt(sys.argv[1:], "hvd:o:", ["help", "verbose", "auto", "directory=","out-file="])
+		opts, args = getopt.getopt(sys.argv[1:], "hvd:o:", ["help", "verbose", "auto", "dist", "directory=","out-file="])
 	except getopt.GetoptError:
 		# print help information and exit:
 		sys.stderr.write(Usage)
@@ -84,6 +85,8 @@ def main():
 			sys.exit()
 		if o in ("-a", "--auto"):
 			Automatic = True
+		if o in ("--dist"):
+			ExtraDist = True
 		if o in ("-o", "--out-file"):
 			Output = a
 		if o in ("-d", "--directory"):
@@ -99,8 +102,12 @@ def main():
 				updateResourceFile(qrcDir,i[1],i[2])
 			else:
 				updateResourceFile(qrcDir,i[1])
+			if ExtraDist:
+				makeTargetExtraDist(qrcDir)
 	else:
 		updateResourceFile(Dir, Output)
+		if ExtraDist:
+			makeTargetExtraDist(Dir)
 
 def updateResourceFile(Dir, Output,prefix=""):
 	global Verbose
@@ -122,6 +129,23 @@ def updateResourceFile(Dir, Output,prefix=""):
 
 	file.write(hhcFooter)
 	file.close()
+
+def makeTargetExtraDist(Dir):
+	extensions = EndingList[:]
+	extensions.append(".qrc")
+	extensions.append(".bat")
+	extensions.append(".ts")
+	print ("EXTRA_DIST = \\")
+	DirPath = Dir + os.path.sep
+	for root, dirs, files in os.walk(Dir):
+		for name in files:
+			if ( (1 in [c in name for c in extensions]) and not ('.svn' in root) ):
+				FilePathOrg = join(root,name)
+				FilePath = FilePathOrg.replace(DirPath,'')
+				FilePath = FilePath.replace('.\\','')
+				FilePath = FilePath.replace('\\','/')
+				print ("\t\t%s \\" % (FilePath))
+	print
 
 if __name__ == "__main__":
 	main()

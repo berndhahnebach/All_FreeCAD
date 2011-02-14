@@ -82,14 +82,26 @@ EXTRA_DIST = \
 		DlgPointsRead.ui \
 		CMakeLists.txt \
 		Resources/Points.qrc \
+		Resources/translations/Points_af.qm \
+		Resources/translations/Points_af.ts \
 		Resources/translations/Points_de.qm \
-		Resources/translations/Points_es.qm \
-		Resources/translations/Points_fr.qm \
-		Resources/translations/Points_it.qm \
-		Resources/translations/Points_se.qm \
 		Resources/translations/Points_de.ts \
+		Resources/translations/Points_es.qm \
 		Resources/translations/Points_es.ts \
+		Resources/translations/Points_fi.qm \
+		Resources/translations/Points_fi.ts \
+		Resources/translations/Points_fr.qm \
 		Resources/translations/Points_fr.ts \
+		Resources/translations/Points_it.qm \
 		Resources/translations/Points_it.ts \
-		Resources/translations/Points_se.ts
+		Resources/translations/Points_nl.qm \
+		Resources/translations/Points_nl.ts \
+		Resources/translations/Points_no.qm \
+		Resources/translations/Points_no.ts \
+		Resources/translations/Points_ru.qm \
+		Resources/translations/Points_ru.ts \
+		Resources/translations/Points_se.qm \
+		Resources/translations/Points_se.ts \
+		Resources/translations/Points_uk.qm \
+		Resources/translations/Points_uk.ts
 		
