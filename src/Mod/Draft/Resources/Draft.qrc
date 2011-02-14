@@ -1,19 +1,12 @@
 <RCC>
-    <qresource>
-        <file>translations/Draft_de.qm</file>
-        <file>translations/Draft_es.qm</file>
-        <file>translations/Draft_fr.qm</file>
-        <file>translations/Draft_it.qm</file>
-        <file>translations/Draft_se.qm</file>
-    </qresource>
-    <qresource>
-		<file>icons/preferences-draft.svg</file>
-		<file>icons/Draft_AddPoint.svg</file>
+    <qresource> 
+        <file>icons/Draft_AddPoint.svg</file>
         <file>icons/Draft_AddToGroup.svg</file>
         <file>icons/Draft_Apply.svg</file>
         <file>icons/Draft_Arc.svg</file>
         <file>icons/Draft_BSpline.svg</file>
         <file>icons/Draft_Circle.svg</file>
+        <file>icons/Draft_Construction.svg</file>
         <file>icons/Draft_DelPoint.svg</file>
         <file>icons/Draft_Dimension.svg</file>
         <file>icons/Draft_Downgrade.svg</file>
@@ -29,6 +22,7 @@
         <file>icons/Draft_Rectangle.svg</file>
         <file>icons/Draft_Rotate.svg</file>
         <file>icons/Draft_Scale.svg</file>
+        <file>icons/Draft_SelectGroup.svg</file>
         <file>icons/Draft_SelectPlane.svg</file>
         <file>icons/Draft_SwitchMode.svg</file>
         <file>icons/Draft_Text.svg</file>
@@ -36,18 +30,24 @@
         <file>icons/Draft_Upgrade.svg</file>
         <file>icons/Draft_Wire.svg</file>
         <file>icons/Draft_WireToBSpline.svg</file>
-        <file>icons/Draft_Construction.svg</file>
-        <file>icons/Draft_SelectGroup.svg</file>
-	</qresource>
-    <qresource>
+        <file>icons/preferences-draft.svg</file>
         <file>patterns/concrete.svg</file>
         <file>patterns/cross.svg</file>
         <file>patterns/line.svg</file>
         <file>patterns/simple.svg</file>
         <file>patterns/square.svg</file>
-    </qresource>
-    <qresource>
+        <file>translations/Draft_af.qm</file>
+        <file>translations/Draft_de.qm</file>
+        <file>translations/Draft_es.qm</file>
+        <file>translations/Draft_fi.qm</file>
+        <file>translations/Draft_fr.qm</file>
+        <file>translations/Draft_it.qm</file>
+        <file>translations/Draft_nl.qm</file>
+        <file>translations/Draft_no.qm</file>
+        <file>translations/Draft_ru.qm</file>
+        <file>translations/Draft_se.qm</file>
+        <file>translations/Draft_uk.qm</file>
         <file>ui/userprefs-base.ui</file>
         <file>ui/userprefs-import.ui</file>
     </qresource>
-</RCC>
+</RCC> 

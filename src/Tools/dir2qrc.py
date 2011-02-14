@@ -34,23 +34,42 @@ from os.path import join, getsize
 
 # Globals
 Verbose = False
+Automatic = False
 Dir = '.'
 Output = 'resources.qrc'
 
 hhcHeader = """<RCC>
-    <qresource> 
+    <qresource%s> 
 """
 hhcFooter="""    </qresource>
 </RCC> 
 """
 
-EndingList = ['.xpm','.svg','.qm','.png']
+EndingList = ['.xpm','.svg','.qm','.png','.ui']
+
+locations = [["../Gui/Language","translation.qrc"," prefix=\"/translations\""],
+             ["../Gui/Icons","resource.qrc"," prefix=\"/icons\""],
+             ["../Mod/Assembly/Gui/Resources","Assembly.qrc"],
+             ["../Mod/Complete/Gui/Resources","Complete.qrc"],
+             ["../Mod/Draft/Resources","Draft.qrc"],
+             ["../Mod/Drawing/Gui/Resources","Drawing.qrc"],
+             ["../Mod/Fem/Gui/Resources","Fem.qrc"],
+             ["../Mod/Image/Gui/Resources","Image.qrc"],
+             ["../Mod/Mesh/Gui/Resources","Mesh.qrc"],
+             ["../Mod/MeshPart/Gui/Resources","MeshPart.qrc"],
+             ["../Mod/Part/Gui/Resources","Part.qrc"],
+             ["../Mod/PartDesign/Gui/Resources","PartDesign.qrc"],
+             ["../Mod/Points/Gui/Resources","Points.qrc"],
+             ["../Mod/Raytracing/Gui/Resources","Raytracing.qrc"],
+             ["../Mod/ReverseEngineering/Gui/Resources","ReverseEngineering.qrc"],
+             ["../Mod/Robot/Gui/Resources","Robot.qrc"],
+             ["../Mod/Sketcher/Gui/Resources","Sketcher.qrc"]]
 
 def main():
-	global Verbose,Dir,Output
+	global Verbose,Automatic,Dir,Output
 	
 	try:
-		opts, args = getopt.getopt(sys.argv[1:], "hvd:o:", ["help", "verbose",  "directory=","out-file="])
+		opts, args = getopt.getopt(sys.argv[1:], "hvd:o:", ["help", "verbose", "auto", "directory=","out-file="])
 	except getopt.GetoptError:
 		# print help information and exit:
 		sys.stderr.write(Usage)
@@ -63,19 +82,35 @@ def main():
 		if o in ("-h", "--help"):
 			sys.stderr.write(Usage)
 			sys.exit()
+		if o in ("-a", "--auto"):
+			Automatic = True
 		if o in ("-o", "--out-file"):
 			Output = a
 		if o in ("-d", "--directory"):
 			print "Using path: " + a +"\n"
 			Dir = a
+			
+	if Automatic:
+		path = os.path.realpath(__file__)
+		path = os.path.dirname(path)
+		for i in locations:
+			qrcDir = os.path.realpath(join(path,i[0]))
+			if len(i) > 2:
+				updateResourceFile(qrcDir,i[1],i[2])
+			else:
+				updateResourceFile(qrcDir,i[1])
+	else:
+		updateResourceFile(Dir, Output)
 
+def updateResourceFile(Dir, Output,prefix=""):
+	global Verbose
 	Output = join(Dir,Output)
 	file = open(Output,"w")
-	file.write(hhcHeader)
+	file.write(hhcHeader % (prefix))
 	DirPath = Dir + os.path.sep
 	for root, dirs, files in os.walk(Dir):
 		for name in files:
-			if( (1 in [c in name for c in EndingList]) and not ('.svn' in root) ):
+			if ( (1 in [c in name for c in EndingList]) and not ('.svn' in root) ):
 				FilePathOrg = join(root,name)
 				FilePath = FilePathOrg.replace(DirPath,'')
 				FilePath = FilePath.replace('.\\','')
