@@ -207,8 +207,8 @@ class toolBar:
 
                                 # subcommands
 
-                                self.addButton = _pushButton("addButton", icon="Draft_AddPoint", width=100, checkable=True)
-                                self.delButton = _pushButton("delButton", icon="Draft_DelPoint", width=115, checkable=True)
+                                self.addButton = _pushButton("addButton", icon="Draft_AddPoint", width=22, checkable=True)
+                                self.delButton = _pushButton("delButton", icon="Draft_DelPoint", width=22, checkable=True)
                                 
                                 # point
 
@@ -297,7 +297,7 @@ class toolBar:
                                 style = "#constrButton:Checked {background-color: "
                                 style += self.getDefaultColor("constr",rgb=True)+" } "
                                 style += "#addButton:Checked, #delButton:checked {"
-                                style += "background-color: rgb(10,255,10) }"
+                                style += "background-color: rgb(20,100,250) }"
 				draftToolbar.setStyleSheet(style)
                                 
 				self.sourceCmd=None
@@ -369,9 +369,7 @@ class toolBar:
                                 self.hasFill.setToolTip(translate("draft", "Check this if the object should appear as filled, otherwise it will appear as wireframe (F)"))
 				self.finishButton.setText(translate("draft", "F&inish"))
 				self.finishButton.setToolTip(translate("draft", "Finishes the current drawing or editing operation (F)"))
-                                self.addButton.setText(translate("draft", "&Add Points"))
 				self.addButton.setToolTip(translate("draft", "Add points to the current object"))
-                                self.delButton.setText(translate("draft", "&Remove Points"))
 				self.delButton.setToolTip(translate("draft", "Remove points from the current object"))
 				self.undoButton.setText(translate("draft", "&Undo"))
 				self.undoButton.setToolTip(translate("draft", "Undo the last segment (CTRL+Z)"))
