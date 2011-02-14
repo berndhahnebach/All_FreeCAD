@@ -15,7 +15,7 @@
    id="svg3612"
    version="1.1"
    inkscape:version="0.47 r22583"
-   sodipodi:docname="Draft_DelPoint.svg">
+   sodipodi:docname="Draft_AddPoint.svg">
   <defs
      id="defs3614">
     <inkscape:perspective
@@ -372,9 +372,9 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="5.5"
-     inkscape:cx="-2.7272727"
+     inkscape:cx="32"
      inkscape:cy="32"
-     inkscape:current-layer="g5208"
+     inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
@@ -391,7 +391,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -407,7 +407,7 @@
          d="m 225.87188,173.18926 a 7.1046771,7.2837954 0 0 0 -4.9698,2.53192 7.1046771,7.2837954 0 0 0 -1.49399,2.93827 l -20.30607,-0.0312 -0.0304,4.50119 20.67194,0.0625 a 7.1046771,7.2837954 0 0 0 11.95192,2.00053 7.1046771,7.2837954 0 0 0 1.18909,-2.00053 l 20.64145,0.0625 0,-4.50119 -20.33655,-0.0312 a 7.1046771,7.2837954 0 0 0 -7.3175,-5.53271 z"
          id="path4353" />
       <rect
-         style="color:#000000;fill:#ff0d00;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+         style="color:#000000;fill:#0048ff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
          id="rect3558-8-3"
          width="7.0708513"
          height="23.499424"
@@ -431,7 +431,7 @@
           <path
              d="m 245.71428,655.2193 a 48.57143,48.57143 0 1 1 -97.14286,0 48.57143,48.57143 0 1 1 97.14286,0 z"
              id="path4335"
-             style="fill:#ff0d00;fill-opacity:1;stroke:#000000;stroke-width:5.80000019000000044;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+             style="fill:#0048ff;fill-opacity:1;stroke:#000000;stroke-width:5.80000019;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
           <path
              d="m 259.60921,672.79736 a 34.34519,23.991124 0 1 1 -68.69038,0 34.34519,23.991124 0 1 1 68.69038,0 z"
              transform="matrix(0.8513023,-0.5246754,0.5246754,0.8513023,-338.69692,214.19328)"

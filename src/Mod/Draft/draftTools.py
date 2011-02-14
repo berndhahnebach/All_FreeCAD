@@ -3479,12 +3479,18 @@ class Edit(Modifier):
                 else:
                         Modifier.Activated(self,"Edit")
                         self.ui.editUi()
-                        self.ui.addButton.setChecked(False)
-                        self.ui.delButton.setChecked(False)
                         if self.doc:
                                 self.obj = Draft.getSelection()
                                 if self.obj:
                                         self.obj = self.obj[0]
+                                        if not Draft.getType(self.obj) in ["Wire","BSpline"]:
+                                                self.ui.addButton.setEnabled(False)
+                                                self.ui.delButton.setEnabled(False)
+                                        else:
+                                                self.ui.addButton.setEnabled(True)
+                                                self.ui.delButton.setEnabled(True)
+                                        self.ui.addButton.setChecked(False)
+                                        self.ui.delButton.setChecked(False)
                                         self.editing = None
                                         self.editpoints = []
                                         self.pl = None
@@ -3712,6 +3718,7 @@ class Edit(Modifier):
 
         
         def delPoint(self,point):
+                if not (Draft.getType(self.obj) in ["Wire","BSpline"]): return
 		if len(self.obj.Points) <= 2:
 			msg(translate("draft", "Active object must have more than two points/nodes\n"),'warning')
 		else: 
