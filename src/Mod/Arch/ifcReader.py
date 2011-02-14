@@ -55,7 +55,7 @@ Just place the .exp file together with this script.
 '''
 
 IFCLINE_RE = re.compile("#(\d+)[ ]?=[ ]?(.*?)\((.*)\);[\\r]?$")
-DEBUG = False
+DEBUG = True
 
 class IfcSchema:
     SIMPLETYPES = ["INTEGER", "REAL", "STRING", "NUMBER", "LOGICAL", "BOOLEAN"]
@@ -196,6 +196,9 @@ class IfcFile:
         m = IFCLINE_RE.search(line)  # id,name,attrs
         if m:
             id, name, attrs = m.groups()
+            id = id.strip()
+            name = name.strip()
+            attrs = attrs.strip()
         else:
             return False
         
@@ -307,6 +310,7 @@ class IfcDocument:
                                 val = val.strip(" ()")
                                 if DEBUG: print "referencing ",val," : ",self.getEnt(int(val))
                                 val =  self.getEnt(int(val))
+                                if not val: val = v
                     else:
                         val = v
                     setattr(ent,k.strip(),val)
@@ -318,7 +322,10 @@ class IfcDocument:
     def getEnt(self,ref):
         "gets an entity by id number, or a list of entities by type"
         if isinstance(ref,int):
-            return self.Entities[ref]
+            if ref < len(self.Entities):
+                return self.Entities[ref]
+            else:
+                return None
         elif isinstance(ref,str):
             l = []
             ref = ref.upper()
