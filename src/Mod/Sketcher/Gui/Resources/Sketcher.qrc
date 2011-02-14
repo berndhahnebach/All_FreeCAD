@@ -1,45 +1,50 @@
-<!DOCTYPE RCC><RCC version="1.0">
-    <qresource>
-		<file>translations/Sketcher_de.qm</file>
-		<file>translations/Sketcher_es.qm</file>
+<RCC>
+    <qresource> 
+        <file>icons/Constraint_Concentric.svg</file>
+        <file>icons/Constraint_EqualLength.svg</file>
+        <file>icons/Constraint_ExternalAngle.svg</file>
+        <file>icons/Constraint_Horizontal.svg</file>
+        <file>icons/Constraint_InternalAngle.svg</file>
+        <file>icons/Constraint_Length.svg</file>
+        <file>icons/Constraint_Parallel.svg</file>
+        <file>icons/Constraint_Perpendicular.svg</file>
+        <file>icons/Constraint_PointOnEnd.svg</file>
+        <file>icons/Constraint_PointOnMidPoint.svg</file>
+        <file>icons/Constraint_PointOnObject.svg</file>
+        <file>icons/Constraint_PointOnPoint.svg</file>
+        <file>icons/Constraint_PointOnStart.svg</file>
+        <file>icons/Constraint_PointToObject.svg</file>
+        <file>icons/Constraint_Radius.svg</file>
+        <file>icons/Constraint_Tangent.svg</file>
+        <file>icons/Constraint_TangentToEnd.svg</file>
+        <file>icons/Constraint_TangentToStart.svg</file>
+        <file>icons/Constraint_Vertical.svg</file>
+        <file>icons/Sketcher_ConstrainCoincident.svg</file>
+        <file>icons/Sketcher_ConstrainDistance.svg</file>
+        <file>icons/Sketcher_ConstrainHorizontal.svg</file>
+        <file>icons/Sketcher_ConstrainLock.svg</file>
+        <file>icons/Sketcher_ConstrainParallel.svg</file>
+        <file>icons/Sketcher_ConstrainVertical.svg</file>
+        <file>icons/Sketcher_CreateArc.png</file>
+        <file>icons/Sketcher_CreateCircle.png</file>
+        <file>icons/Sketcher_CreateLine.png</file>
+        <file>icons/Sketcher_CreatePoint.svg</file>
+        <file>icons/Sketcher_CreatePolyline.png</file>
+        <file>icons/Sketcher_CreateRectangle.png</file>
+        <file>icons/Sketcher_CreateText.png</file>
+        <file>icons/Sketcher_DraftLine.svg</file>
+        <file>icons/Sketcher_LeaveSketch.svg</file>
+        <file>icons/Sketcher_NewSketch.svg</file>
+        <file>translations/Sketcher_af.qm</file>
+        <file>translations/Sketcher_de.qm</file>
+        <file>translations/Sketcher_es.qm</file>
+        <file>translations/Sketcher_fi.qm</file>
         <file>translations/Sketcher_fr.qm</file>
         <file>translations/Sketcher_it.qm</file>
+        <file>translations/Sketcher_nl.qm</file>
+        <file>translations/Sketcher_no.qm</file>
+        <file>translations/Sketcher_ru.qm</file>
         <file>translations/Sketcher_se.qm</file>
-		<file>icons/Sketcher_NewSketch.svg</file>
-		<file>icons/Sketcher_LeaveSketch.svg</file>
-		<file>icons/Sketcher_DraftLine.svg</file>
-		<file>icons/Sketcher_CreatePoint.svg</file>
-		<file>icons/Sketcher_ConstrainLock.svg</file>
-		<file>icons/Sketcher_ConstrainCoincident.svg</file>
-		<file>icons/Sketcher_ConstrainHorizontal.svg</file>
-      <file>icons/Sketcher_ConstrainVertical.svg</file>
-      <file>icons/Sketcher_ConstrainDistance.svg</file>
-      <file>icons/Sketcher_ConstrainParallel.svg</file>
-      <file>icons/Sketcher_CreateArc.png</file>
-		<file>icons/Sketcher_CreateCircle.png</file>
-		<file>icons/Sketcher_CreateLine.png</file>
-		<file>icons/Sketcher_CreatePolyline.png</file>
-		<file>icons/Sketcher_CreateRectangle.png</file>
-      <file>icons/Sketcher_CreateText.png</file>
-      
-      <file>icons/Constraint_Concentric.svg</file>
-      <file>icons/Constraint_EqualLength.svg</file>
-      <file>icons/Constraint_ExternalAngle.svg</file>
-      <file>icons/Constraint_Horizontal.svg</file>
-      <file>icons/Constraint_InternalAngle.svg</file>
-      <file>icons/Constraint_Length.svg</file>
-      <file>icons/Constraint_Parallel.svg</file>
-      <file>icons/Constraint_Perpendicular.svg</file>
-      <file>icons/Constraint_PointOnEnd.svg</file>
-      <file>icons/Constraint_PointOnMidPoint.svg</file>
-      <file>icons/Constraint_PointOnObject.svg</file>
-      <file>icons/Constraint_PointOnPoint.svg</file>
-      <file>icons/Constraint_PointOnStart.svg</file>
-      <file>icons/Constraint_PointToObject.svg</file>
-      <file>icons/Constraint_Radius.svg</file>
-      <file>icons/Constraint_Tangent.svg</file>
-      <file>icons/Constraint_TangentToEnd.svg</file>
-      <file>icons/Constraint_TangentToStart.svg</file>
-      <file>icons/Constraint_Vertical.svg</file>
+        <file>translations/Sketcher_uk.qm</file>
     </qresource>
 </RCC> 

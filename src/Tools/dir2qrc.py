@@ -13,7 +13,7 @@ Options:
  -d, --directory=DIRNAME  directory to search, default PWD
  -h, --help               print this help message
  
-This programm walk a directory (tree) and collect all supported files
+This program walks a directory (tree) and collects all supported files
 and put them in a .qrc file, to compile in with the QT resource facility.
 
 Examples:
@@ -37,7 +37,7 @@ Verbose = False
 Dir = '.'
 Output = 'resources.qrc'
 
-hhcHeader = """<!DOCTYPE RCC><RCC version="1.0">
+hhcHeader = """<RCC>
     <qresource> 
 """
 hhcFooter="""    </qresource>
@@ -69,13 +69,16 @@ def main():
 			print "Using path: " + a +"\n"
 			Dir = a
 
+	Output = join(Dir,Output)
 	file = open(Output,"w")
 	file.write(hhcHeader)
+	DirPath = Dir + os.path.sep
 	for root, dirs, files in os.walk(Dir):
 		for name in files:
 			if( (1 in [c in name for c in EndingList]) and not ('.svn' in root) ):
 				FilePathOrg = join(root,name)
-				FilePath = FilePathOrg.replace('.\\','')
+				FilePath = FilePathOrg.replace(DirPath,'')
+				FilePath = FilePath.replace('.\\','')
 				FilePath = FilePath.replace('\\','/')
 				if Verbose: print FilePathOrg + ' -> ' + FilePath 
 				
