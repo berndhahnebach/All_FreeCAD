@@ -818,10 +818,13 @@ class ghostTracker(Tracker):
 
 class editTracker(Tracker):
 	"A node edit tracker"
-	def __init__(self,pos=Vector(0,0,0),name="None",idx=0):
+	def __init__(self,pos=Vector(0,0,0),name="None",idx=0,objcol=None):
 		color = coin.SoBaseColor()
-		color.rgb = FreeCADGui.draftToolBar.\
-			ui.getDefaultColor("snap")
+                if objcol:
+                        color.rgb = objcol[:3]
+                else:
+                        color.rgb = FreeCADGui.draftToolBar.\
+                            ui.getDefaultColor("snap")
 		self.marker = coin.SoMarkerSet() # this is the marker symbol
 		self.marker.markerIndex = coin.SoMarkerSet.SQUARE_FILLED_9_9
 		self.coords = coin.SoCoordinate3() # this is the coordinate
@@ -3468,10 +3471,7 @@ class Edit(Modifier):
                         if "Proxy" in self.selection[0].PropertiesList:
                                 if hasattr(self.selection[0].Proxy,"Type"):
                                         return True
-                        else:
-                                return False
-                else:
-                        return False
+                return False
 
 	def Activated(self):
                 if self.running:
@@ -3479,6 +3479,8 @@ class Edit(Modifier):
                 else:
                         Modifier.Activated(self,"Edit")
                         self.ui.editUi()
+                        self.ui.addButton.setChecked(False)
+                        self.ui.delButton.setChecked(False)
                         if self.doc:
                                 self.obj = Draft.getSelection()
                                 if self.obj:
@@ -3519,7 +3521,8 @@ class Edit(Modifier):
                                         self.constraintrack = None
                                         if self.editpoints:
                                                 for ep in range(len(self.editpoints)):
-                                                        self.trackers.append(editTracker(self.editpoints[ep],self.obj.Name,ep))
+                                                        self.trackers.append(editTracker(self.editpoints[ep],self.obj.Name,
+                                                                                         ep,self.obj.ViewObject.LineColor))
                                                 self.snap = snapTracker()
                                                 self.constraintrack = lineTracker(dotted=True)
                                                 self.call = self.view.addEventCallback("SoEvent",self.action)
@@ -3569,7 +3572,14 @@ class Edit(Modifier):
                                         snapped = self.view.getObjectInfo((arg["Position"][0],arg["Position"][1]))
                                         if snapped:
                                                 if snapped['Object'] == self.obj.Name:
-                                                        if 'EditNode' in snapped['Component']:
+                                                        if self.ui.addButton.isChecked():
+                                                                point,ctrlPoint = getPoint(self,arg)
+                                                                self.pos = arg["Position"]
+                                                                self.addPoint(point)
+                                                        elif self.ui.delButton.isChecked():
+                                                                if 'EditNode' in snapped['Component']:
+                                                                        self.delPoint(int(snapped['Component'][8:]))
+                                                        elif 'EditNode' in snapped['Component']:
                                                                 self.ui.pointUi()
                                                                 self.ui.isRelative.show()
                                                                 self.editing = int(snapped['Component'][8:])
@@ -3659,6 +3669,67 @@ class Edit(Modifier):
                 self.editing = None
                 self.ui.editUi()
                 self.node = []
+       
+	def addPoint(self,point):
+                if not (Draft.getType(self.obj) in ["Wire","BSpline"]): return
+		pts = self.obj.Points
+		if ( Draft.getType(self.obj) == "Wire" ):
+                        if (self.obj.Closed == True):
+                                # DNC: work around.... seems there is a
+                                # bug in approximate method for closed wires...
+                                edges = self.obj.Shape.Wires[0].Edges
+                                e1 = edges[-1] # last edge
+                                v1 = e1.Vertexes[0].Point
+                                v2 = e1.Vertexes[1].Point
+                                v2.multiply(0.9999)
+                                edges[-1] = Part.makeLine(v1,v2)
+                                edges.reverse()
+                                wire = Part.Wire(edges)
+                                curve = wire.approximate(0.0001,0.0001,100,25)
+                        else:
+                                # DNC: this version is much more reliable near sharp edges!
+                                curve = self.obj.Shape.Wires[0].approximate(0.0001,0.0001,100,25)
+		elif ( Draft.getType(self.obj) == "BSpline" ):
+                        if (self.obj.Closed == True):
+                                curve = self.obj.Shape.Edges[0].Curve
+                        else:
+                                curve = self.obj.Shape.Curve
+		uNewPoint = curve.parameter(point)
+		uPoints = []
+		for p in self.obj.Points:
+			uPoints.append(curve.parameter(p))
+		for i in range(len(uPoints)-1):
+			if ( uNewPoint > uPoints[i] ) and ( uNewPoint < uPoints[i+1] ):
+				pts.insert(i+1, self.invpl.multVec(point))
+				break
+		# DNC: fix: add points to last segment if curve is closed 
+		if ( self.obj.Closed ) and ( uNewPoint > uPoints[-1] ) :
+				pts.append(self.invpl.multVec(point))
+                self.doc.openTransaction("Edit "+self.obj.Name)
+		self.obj.Points = pts
+                self.doc.commitTransaction()
+		self.resetTrackers()
+
+        
+        def delPoint(self,point):
+		if len(self.obj.Points) <= 2:
+			msg(translate("draft", "Active object must have more than two points/nodes\n"),'warning')
+		else: 
+			pts = self.obj.Points
+			pts.pop(point)
+                        self.doc.openTransaction("Edit "+self.obj.Name)
+			self.obj.Points = pts
+                        self.doc.commitTransaction()
+			self.resetTrackers()
+
+        def resetTrackers(self):
+		for t in self.trackers:
+			t.finalize()
+		self.trackers = []
+		for ep in range(len(self.obj.Points)):
+			objPoints = self.obj.Points[ep]
+			if self.pl: objPoints = self.pl.multVec(objPoints)
+			self.trackers.append(editTracker(objPoints,self.obj.Name,ep,self.obj.ViewObject.LineColor))
 
 class AddToGroup():
 	"The AddToGroup FreeCAD command definition"
@@ -3760,7 +3831,7 @@ class AddPoint(Modifier):
 
 	def action(self,arg):
 		"scene event handler"
-                if arg["Type"] == "SoKeyboardEvent" and arg["Key"] == "ESCAPE":
+                if (arg["Type"] == "SoKeyboardEvent") and (arg["Key"] == "ESCAPE"):
 			self.finish()
 		if (arg["Type"] == "SoLocation2Event"): #mouse movement detection
 			point,ctrlPoint = getPoint(self,arg)

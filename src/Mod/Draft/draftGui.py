@@ -134,7 +134,7 @@ class toolBar:
                                 self.layout.setDirection(QtGui.QBoxLayout.LeftToRight)
                                 self.layout.setObjectName("layout")
 
-				def _pushButton (name, hide=True, icon=None, width=66):
+				def _pushButton (name, hide=True, icon=None, width=66, checkable=False):
 					button = QtGui.QPushButton(draftToolbar)
 					#button.setGeometry(geometry)
 					button.setObjectName(name)
@@ -143,6 +143,9 @@ class toolBar:
                                         if icon:
                                                 button.setIcon(QtGui.QIcon(':/icons/'+icon+'.svg'))
                                                 button.setIconSize(QtCore.QSize(16, 16))
+                                        if checkable:
+                                                button.setCheckable(True)
+                                                button.setChecked(False)
                                         self.layout.addWidget(button)
 					return button
 
@@ -202,6 +205,11 @@ class toolBar:
 				boldtxt.setBold(True)
 				self.cmdlabel.setFont(boldtxt)
 
+                                # subcommands
+
+                                self.addButton = _pushButton("addButton", icon="Draft_AddPoint", width=100, checkable=True)
+                                self.delButton = _pushButton("delButton", icon="Draft_DelPoint", width=115, checkable=True)
+                                
                                 # point
 
 				self.labelx = _label("labelx")
@@ -269,9 +277,7 @@ class toolBar:
                                         self.wplabel.setText("Side")
                                 else:
                                         self.wplabel.setText("None")
-                                self.constrButton = _pushButton("constrButton", hide=False, icon='Draft_Construction',width=22)
-				self.constrButton.setCheckable(True)
-				self.constrButton.setChecked(False)
+                                self.constrButton = _pushButton("constrButton", hide=False, icon='Draft_Construction',width=22, checkable=True)
 				self.constrColor = QtGui.QColor(paramconstr)
 				self.colorButton = _pushButton("colorButton",hide=False,width=22)
 				self.color = QtGui.QColor(paramcolor)
@@ -288,9 +294,10 @@ class toolBar:
                                 self.fontsizeButton = _spinbox("fontsizeButton",val=paramfontsize,hide=False,double=True,size=(50,22))
 				self.applyButton = _pushButton("applyButton", hide=False, icon='Draft_Apply',width=22)
 
-                                style = "#pageWpButton:Checked {background-color:rgb(255,0,0)} "
-                                style += "#constrButton:Checked {background-color: "
-                                style += self.getDefaultColor("constr",rgb=True)+" }"
+                                style = "#constrButton:Checked {background-color: "
+                                style += self.getDefaultColor("constr",rgb=True)+" } "
+                                style += "#addButton:Checked, #delButton:checked {"
+                                style += "background-color: rgb(10,255,10) }"
 				draftToolbar.setStyleSheet(style)
                                 
 				self.sourceCmd=None
@@ -313,6 +320,8 @@ class toolBar:
 				QtCore.QObject.connect(self.zValue,QtCore.SIGNAL("returnPressed()"),self.xValue.selectAll)
 				QtCore.QObject.connect(self.offsetValue,QtCore.SIGNAL("textEdited(QString)"),self.checkSpecialChars)
 				QtCore.QObject.connect(self.offsetValue,QtCore.SIGNAL("returnPressed()"),self.validatePoint)
+                                QtCore.QObject.connect(self.addButton,QtCore.SIGNAL("toggled(bool)"),self.setAddMode)
+                                QtCore.QObject.connect(self.delButton,QtCore.SIGNAL("toggled(bool)"),self.setDelMode)
 				QtCore.QObject.connect(self.finishButton,QtCore.SIGNAL("pressed()"),self.finish)
 				QtCore.QObject.connect(self.closeButton,QtCore.SIGNAL("pressed()"),self.closeLine)
 				QtCore.QObject.connect(self.undoButton,QtCore.SIGNAL("pressed()"),self.undoSegment)
@@ -359,7 +368,11 @@ class toolBar:
                                 self.hasFill.setText(translate("draft", "&Filled"))
                                 self.hasFill.setToolTip(translate("draft", "Check this if the object should appear as filled, otherwise it will appear as wireframe (F)"))
 				self.finishButton.setText(translate("draft", "F&inish"))
-				self.finishButton.setToolTip(translate("draft", "Finishes the current line without closing (F)"))
+				self.finishButton.setToolTip(translate("draft", "Finishes the current drawing or editing operation (F)"))
+                                self.addButton.setText(translate("draft", "&Add Points"))
+				self.addButton.setToolTip(translate("draft", "Add points to the current object"))
+                                self.delButton.setText(translate("draft", "&Remove Points"))
+				self.delButton.setToolTip(translate("draft", "Remove points from the current object"))
 				self.undoButton.setText(translate("draft", "&Undo"))
 				self.undoButton.setToolTip(translate("draft", "Undo the last segment (CTRL+Z)"))
 				self.closeButton.setText(translate("draft", "&Close"))
@@ -447,6 +460,8 @@ class toolBar:
 				self.isRelative.hide()
                                 self.hasFill.hide()
 				self.finishButton.hide()
+                                self.addButton.hide()
+                                self.delButton.hide()
 				self.undoButton.hide()
 				self.closeButton.hide()
 				self.xyButton.hide()
@@ -526,6 +541,8 @@ class toolBar:
                                 self.numFaces.hide()
 				self.isRelative.hide()
                                 self.hasFill.hide()
+                                self.addButton.show()
+                                self.delButton.show()
 				self.finishButton.show()
 
 			def relocate(self):
@@ -815,6 +832,14 @@ class toolBar:
 
                         def popupTriggered(self,action):
                                 self.sourceCmd.proceed(str(action.text()))
+
+                        def setAddMode(self,bool):
+                                if self.addButton.isChecked():
+                                        self.delButton.setChecked(False)
+
+                        def setDelMode(self,bool):
+                                if self.delButton.isChecked():
+                                        self.addButton.setChecked(False)
 
 #---------------------------------------------------------------------------
 # Initialization
