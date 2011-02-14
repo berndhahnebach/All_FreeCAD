@@ -586,12 +586,14 @@ def scale(objectslist,delta,center=Vector(0,0,0),copy=False):
         if len(newobjlist) == 1: return newobjlist[0]
         return newobjlist
 
-def offset(obj,delta,copy=False,bind=False):
+def offset(obj,delta,copy=False,bind=False,sym=False):
         '''offset(object,Vector,[copymode],[bind]): offsets the given wire by
         applying the given Vector to its first vertex. If copymode is
         True, another object is created, otherwise the same object gets
         offsetted. If bind is True, and provided the wire is open, the original
-        and the offsetted wires will be bound by their endpoints, forming a face'''
+        and the offsetted wires will be bound by their endpoints, forming a face
+        if sym is True, bind must be true too, and the offset is made on both
+        sides, the total width being the given delta length.'''
 
         def getRect(p,obj):
                 "returns length,heigh,placement"
@@ -611,18 +613,31 @@ def offset(obj,delta,copy=False,bind=False):
         if getType(obj) == "Circle":
                 pass
         else:
-                newwire = fcgeo.offsetWire(obj.Shape,delta)
-                p = fcgeo.getVerts(newwire)
+                if sym:
+                        d1 = delta.multiply(0.5)
+                        d2 = fcvec.neg(d1)
+                        n1 = fcgeo.offsetWire(obj.Shape,d1)
+                        n2 = fcgeo.offsetWire(obj.Shape,d2)
+                else:
+                        newwire = fcgeo.offsetWire(obj.Shape,delta)
+                        p = fcgeo.getVerts(newwire)
         if bind:
                 if not fcgeo.isReallyClosed(obj.Shape):
-                        w1 = obj.Shape.Edges
-                        w2 = newwire.Edges
-                        w3 = Part.Line(obj.Shape.Vertexes[0].Point,newwire.Vertexes[0].Point).toShape()
-                        w4 = Part.Line(obj.Shape.Vertexes[-1].Point,newwire.Vertexes[-1].Point).toShape()
+                        if sym:
+                                s1 = n1
+                                s2 = n2
+                        else:
+                                s1 = obj.Shape
+                                s2 = newwire
+                        w1 = s1.Edges
+                        w2 = s2.Edges
+                        w3 = Part.Line(s1.Vertexes[0].Point,s2.Vertexes[0].Point).toShape()
+                        w4 = Part.Line(s1.Vertexes[-1].Point,s2.Vertexes[-1].Point).toShape()
                         newobj = Part.Face(Part.Wire(w1+[w3]+w2+[w4]))
                 else:
                         newobj = Part.Face(obj.Shape.Wires[0])
         elif copy:
+                if sym: return None
                 if getType(obj) == "Wire":
                         newobj = makeWire(p)
                         newobj.Closed = obj.Closed
@@ -637,6 +652,7 @@ def offset(obj,delta,copy=False,bind=False):
                         newobj.Placement = pl
                 formatObject(newobj,obj)
         else:
+                if sym: return None
                 if getType(obj) == "Wire":
                         obj.Points = p
                 elif getType(obj) == "Rectangle":

@@ -22,7 +22,7 @@
 #***************************************************************************
 
 import FreeCAD,FreeCADGui,Part,Draft
-from draftlibs import fcgeo
+from draftlibs import fcgeo,fcvec
 from FreeCAD import Vector
 
 __title__="FreeCAD Wall"
@@ -66,9 +66,13 @@ class Wall:
                         "The height of this wall")
         obj.addProperty("App::PropertyVector","Normal","Base",
                         "The normal extrusion direction of this wall (keep (0,0,0) for automatic normal)")
-        obj.addProperty("App::PropertyEnumeration","Align","Base"
+        obj.addProperty("App::PropertyEnumeration","Align","Base",
                         "The alignment of this wall on its base object, if applicable")
-        obj.Align = ['Left','Right','Centered']
+        obj.addProperty("App::PropertyLinkList","Appendices","Base",
+                        "Other shapes that are appended to this wall")
+        obj.addProperty("App::PropertyLinkList","Holes","Base",
+                        "Other shapes that are subtracted from this wall")
+        obj.Align = ['Left','Right','Center']
         obj.Proxy = self
         self.Type = "Wall"
         obj.Width = 0.1
@@ -78,37 +82,45 @@ class Wall:
         self.createGeometry(obj)
         
     def onChanged(self,obj,prop):
-        if prop in ["Base","Height","Width"]:
+        if prop in ["Base","Height","Width","Align"]:
             print prop
             self.createGeometry(obj)
 
     def createGeometry(self,obj):
-            plm = obj.Placement
-            if obj.Base:
-                if obj.Base.isDerivedFrom("Part::Feature"):
-                    base = obj.Base.Shape.copy()
-                    if base.Solids:
+        normal = Vector(0,0,1)
+        plm = obj.Placement
+        if obj.Base:
+            if obj.Base.isDerivedFrom("Part::Feature"):
+                base = obj.Base.Shape.copy()
+                if base.Solids:
+                    obj.Shape = base
+                elif base.Faces:
+                    if obj.Height:
+                        norm = normal.multiply(obj.Height)
+                        base = base.extrude(norm)
                         obj.Shape = base
-                    elif base.Faces:
-                        if obj.Height:
-                            norm = fcgeo.getNormal(base)
-                            norm = norm.multiply(obj.Height)
-                            base = base.extrude(norm)
-                            obj.Shape = base
-                    elif base.Wires:
-                        dvec = fcgeo.vec(base.Edges[0]).cross(Vector(0,0,1))
-                        dvec.normalize()
+                elif base.Wires and not base.isClosed():
+                    dvec = fcgeo.vec(base.Edges[0]).cross(normal)
+                    dvec.normalize()
+                    if obj.Align == "Left":
                         dvec = dvec.multiply(obj.Width)
                         base = Draft.offset(obj.Base,dvec,bind=True)
-                        if obj.Height:
-                            norm = fcgeo.getNormal(base)
-                            norm = norm.multiply(obj.Height)
-                            base = base.extrude(norm)
-                            obj.Shape = base
-                        else:
-                            obj.Shape = base
+                    elif obj.Align == "Right":
+                        dvec = dvec.multiply(obj.Width)
+                        dvec = fcvec.neg(dvec)
+                        base = Draft.offset(obj.Base,dvec,bind=True)
+                    elif obj.Align == "Center":
+                        dvec = dvec.multiply(obj.Width)
+                        base = Draft.offset(obj.Base,dvec,bind=True,sym=True)
+                    if obj.Height:
+                        norm = fcgeo.getNormal(base)
+                        norm = norm.multiply(obj.Height)
+                        base = base.extrude(norm)
+                        obj.Shape = base
                     else:
-                        print "creating from scratch"
+                        obj.Shape = base
+                else:
+                    print "creating from scratch"
             obj.Placement = plm
 
 class ViewProviderWall:
@@ -156,7 +168,7 @@ class ViewProviderWall:
         return
 
     def claimChildren(self):
-        return [self.Object.Base]
+        return [self.Object.Base]+self.Object.Appendices+self.Object.Holes
 
     def attach(self,obj):
         return
