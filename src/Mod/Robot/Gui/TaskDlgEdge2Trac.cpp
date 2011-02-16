@@ -45,7 +45,7 @@ TaskDlgEdge2Trac::TaskDlgEdge2Trac(Robot::Edge2TracObject *obj)
     : TaskDialog(),Edge2TaskObject(obj)
 {
     param  = new TaskEdge2TracParameter(obj);
-    select = new Gui::TaskView::TaskSelectLinkProperty("SELECT Part::Feature SUBELEMENT Edge",&(obj->Source));
+    select = new Gui::TaskView::TaskSelectLinkProperty("SELECT Part::Feature SUBELEMENT Edge COUNT 1..",&(obj->Source));
 
     Content.push_back(param);
     Content.push_back(select);

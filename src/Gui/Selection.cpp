@@ -900,6 +900,10 @@ SelectionSingleton::SelectionSingleton()
     ActiveGate = 0;
     App::GetApplication().signalDeletedObject.connect(boost::bind(&Gui::SelectionSingleton::slotDeletedObject, this, _1));
     App::GetApplication().signalRenamedObject.connect(boost::bind(&Gui::SelectionSingleton::slotRenamedObject, this, _1));
+    CurrentPreselection.pDocName = 0;
+    CurrentPreselection.pObjectName = 0;
+    CurrentPreselection.pSubName = 0;
+
 }
 
 /**

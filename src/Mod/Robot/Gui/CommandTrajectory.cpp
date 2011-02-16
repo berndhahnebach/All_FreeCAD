@@ -347,7 +347,7 @@ void CmdRobotEdge2Trac::activated(int iMsg)
         Robot::Edge2TracObject *EdgeObj = static_cast<Robot::Edge2TracObject*>(ObjectFilter.Result[0][0].getObject());
         openCommand("Edit Edge2TracObject");
         doCommand(Gui,"Gui.activeDocument().setEdit('%s')",EdgeObj->getNameInDocument());
-    }else if (EdgeFilter.match()) {
+//    }else if (EdgeFilter.match()) {
         // get the selected object
         //Part::Feature *part = static_cast<Part::Feature*>(EdgeFilter.Result[0][0].getObject());
         //const std::vector<std::string> &sub = EdgeFilter.Result[0][0].getSubNames();
