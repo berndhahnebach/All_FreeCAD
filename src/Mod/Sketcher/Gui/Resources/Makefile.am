@@ -58,6 +58,8 @@ EXTRA_DIST = \
 		translations/Sketcher_nl.ts \
 		translations/Sketcher_no.qm \
 		translations/Sketcher_no.ts \
+		translations/Sketcher_pt.qm \
+		translations/Sketcher_pt.ts \
 		translations/Sketcher_ru.qm \
 		translations/Sketcher_ru.ts \
 		translations/Sketcher_se.qm \

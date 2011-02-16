@@ -24,6 +24,8 @@ EXTRA_DIST = \
 		translations/ReverseEngineering_nl.ts \
 		translations/ReverseEngineering_no.qm \
 		translations/ReverseEngineering_no.ts \
+		translations/ReverseEngineering_pt.qm \
+		translations/ReverseEngineering_pt.ts \
 		translations/ReverseEngineering_ru.qm \
 		translations/ReverseEngineering_ru.ts \
 		translations/ReverseEngineering_se.qm \

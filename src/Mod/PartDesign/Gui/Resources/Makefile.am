@@ -23,6 +23,8 @@ EXTRA_DIST = \
 		translations/PartDesign_nl.ts \
 		translations/PartDesign_no.qm \
 		translations/PartDesign_no.ts \
+		translations/PartDesign_pt.qm \
+		translations/PartDesign_pt.ts \
 		translations/PartDesign_ru.qm \
 		translations/PartDesign_ru.ts \
 		translations/PartDesign_se.qm \
