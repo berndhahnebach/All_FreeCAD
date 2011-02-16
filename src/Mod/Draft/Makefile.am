@@ -53,6 +53,8 @@ EXTRA_DIST = \
         Resources/translations/Draft_nl.qm \
         Resources/translations/Draft_no.ts \
         Resources/translations/Draft_no.qm \
+        Resources/translations/Draft_pt.ts \
+        Resources/translations/Draft_pt.qm \
         Resources/translations/Draft_ru.ts \
         Resources/translations/Draft_ru.qm \
         Resources/translations/Draft_se.ts \

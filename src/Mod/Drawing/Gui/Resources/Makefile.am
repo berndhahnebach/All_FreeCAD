@@ -29,6 +29,7 @@ EXTRA_DIST = \
 		translations/Drawing_it.qm \
 		translations/Drawing_nl.qm \
 		translations/Drawing_no.qm \
+		translations/Drawing_pt.qm \
 		translations/Drawing_ru.qm \
 		translations/Drawing_se.qm \
 		translations/Drawing_uk.qm \
@@ -40,6 +41,7 @@ EXTRA_DIST = \
 		translations/Drawing_it.ts \
 		translations/Drawing_nl.ts \
 		translations/Drawing_no.ts \
+		translations/Drawing_pt.ts \
 		translations/Drawing_ru.ts \
 		translations/Drawing_se.ts \
 		translations/Drawing_uk.ts \

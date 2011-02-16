@@ -24,6 +24,8 @@ EXTRA_DIST = \
 		translations/MeshPart_nl.ts \
 		translations/MeshPart_no.qm \
 		translations/MeshPart_no.ts \
+		translations/MeshPart_pt.qm \
+		translations/MeshPart_pt.ts \
 		translations/MeshPart_ru.qm \
 		translations/MeshPart_ru.ts \
 		translations/MeshPart_se.qm \

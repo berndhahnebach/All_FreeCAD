@@ -185,6 +185,7 @@ EXTRA_DIST = \
 		Resources/icons/Part_MirrorPNG.png \
 		Resources/icons/Tree_Part.svg \
 		Resources/icons/preferences-part_design.svg \
+		Resources/icons/PartFeature.svg \
 		Resources/icons/PartFeature.xpm \
 		Resources/icons/PartFeatureImport.xpm \
 		CrossSections.ui \
@@ -217,6 +218,8 @@ EXTRA_DIST = \
 		Resources/translations/Part_nl.ts \
 		Resources/translations/Part_no.qm \
 		Resources/translations/Part_no.ts \
+		Resources/translations/Part_pt.qm \
+		Resources/translations/Part_pt.ts \
 		Resources/translations/Part_ru.qm \
 		Resources/translations/Part_ru.ts \
 		Resources/translations/Part_se.qm \
