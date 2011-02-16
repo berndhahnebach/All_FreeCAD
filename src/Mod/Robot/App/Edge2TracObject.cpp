@@ -53,7 +53,8 @@ Edge2TracObject::Edge2TracObject()
 
     ADD_PROPERTY_TYPE( Source,      (0)   , "Edge2Trac",Prop_None,"Edges to generate the Trajectory");
     ADD_PROPERTY_TYPE( SegValue,    (0.5), "Edge2Trac",Prop_None,"Max deviation from original geometry");
-
+    NbrOfEdges = 0;
+    NbrOfCluster = 0;
 }
 
 Edge2TracObject::~Edge2TracObject()
