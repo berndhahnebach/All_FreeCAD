@@ -47,6 +47,7 @@
         <file>translations/Draft_ru.qm</file>
         <file>translations/Draft_se.qm</file>
         <file>translations/Draft_uk.qm</file>
+        <file>translations/Draft_pt.qm</file>
         <file>ui/userprefs-base.ui</file>
         <file>ui/userprefs-import.ui</file>
     </qresource>
