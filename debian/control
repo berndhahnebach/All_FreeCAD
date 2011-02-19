@@ -6,7 +6,8 @@ Uploaders: Teemu Ikonen <tpikonen@gmail.com>, "Adam C. Powell, IV" <hazelsct@deb
 Vcs-Browser: http://git.debian.org/?p=debian-science/packages/freecad.git
 Vcs-Git: git://git.debian.org/git/debian-science/packages/freecad.git
 Homepage: http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page
-Build-Depends: debhelper (>= 7.0.50~), autotools-dev, libtool, gfortran,
+Build-Depends: debhelper (>= 7.0.50~), autotools-dev, libtool,
+ autoconf, automake, libf2c2-dev, gfortran,
  libboost-dev, libboost-date-time-dev, libboost-filesystem-dev,
  libboost-graph-dev, libboost-iostreams-dev, libboost-program-options-dev,
  libboost-regex-dev, libboost-serialization-dev, libboost-signals-dev,
@@ -14,8 +15,8 @@ Build-Depends: debhelper (>= 7.0.50~), autotools-dev, libtool, gfortran,
  libqt4-dev, libxt-dev, libxext-dev, libxmu-dev, libxi-dev, libx11-dev,
  libcoin60-dev, libsoqt4-dev (>= 1.4.2~svn20090224), libgl1-mesa-dev,
  zlib1g-dev, libxerces-c2-dev, libopencascade-visualization-dev,
- libopencascade-foundation-dev, libopencascade-modeling-dev, python-cxx-dev,
- libswscale-dev, libzipios++-dev, swig, libeigen2-dev
+ libopencascade-foundation-dev, libopencascade-modeling-dev, libopencascade-ocaf-dev,
+ python-cxx-dev, libswscale-dev, libzipios++-dev, swig, libeigen2-dev
 Standards-Version: 3.9.1
 
 Package: freecad
