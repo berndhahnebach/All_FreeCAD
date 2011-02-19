@@ -90,7 +90,12 @@ class DraftDockWidget(QtGui.QWidget):
 		QtGui.QDockWidget.__init__(self,parent)
 	def resizeEvent(self,event):
 		self.emit(QtCore.SIGNAL("resized()"))
-
+        def changeEvent(self, event):
+                if event.type() == QtCore.QEvent.LanguageChange:
+                        self.emit(QtCore.SIGNAL("retranslate()"))
+                else:
+                        QtGui.QWidget.changeEvent(self,event)
+                        
 class DraftLineEdit(QtGui.QLineEdit):
 	"custom QLineEdit widget that has the power to catch Escape keypress"
 	def __init__(self, parent=None):
@@ -116,7 +121,7 @@ class toolBar:
 #---------------------------------------------------------------------------
 # General UI setup
 #---------------------------------------------------------------------------
-
+                        
 			def setupUi(self, draftToolbar):
 				self.params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
 				paramcolor = self.params.GetUnsigned("color")>>8
@@ -338,6 +343,7 @@ class toolBar:
 				QtCore.QObject.connect(self.zValue,QtCore.SIGNAL("undo()"),self.undoSegment)
 				QtCore.QObject.connect(self.radiusValue,QtCore.SIGNAL("escaped()"),self.finish)
 				QtCore.QObject.connect(self.draftToolbar,QtCore.SIGNAL("resized()"),self.relocate)
+                                QtCore.QObject.connect(self.draftToolbar,QtCore.SIGNAL("retranslate()"),self.retranslateUi)
                                 QtCore.QObject.connect(self.wplabel,QtCore.SIGNAL("pressed()"),self.selectplane)
 				QtCore.QObject.connect(self.colorButton,QtCore.SIGNAL("pressed()"),self.getcol)
                                 QtCore.QObject.connect(self.facecolorButton,QtCore.SIGNAL("pressed()"),self.getfacecol)
@@ -350,8 +356,7 @@ class toolBar:
 # language tools
 #---------------------------------------------------------------------------
 				
-			def retranslateUi(self, draftToolbar):
-                                
+			def retranslateUi(self, draftToolbar=self):
                                 self.promptlabel.setText(translate("draft", "active command:"))
 				self.cmdlabel.setText(translate("draft", "None"))
 				self.cmdlabel.setToolTip(translate("draft", "Active Draft command"))
@@ -856,4 +861,9 @@ class toolBar:
 		self.mw.addDockWidget(QtCore.Qt.TopDockWidgetArea,self.draftWidget)
 		self.draftWidget.setVisible(False)
 		self.draftWidget.toggleViewAction().setVisible(False)
+
+        def changeEvent(self, event):
+                if event.type() == QtCore.QEvent.LanguageChange:
+                        print "Language changed!"
+                        self.ui.retranslateUi(self)
 
