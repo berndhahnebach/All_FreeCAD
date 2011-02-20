@@ -36,10 +36,11 @@ from draftGui import todo,QtCore,QtGui
 from pivy import coin
 
 # loads a translation engine
-locale = QtCore.QLocale(eval("QtCore.QLocale."+FreeCADGui.getLocale())).name()
-translator = QtCore.QTranslator()
-translator.load('Draft_'+locale+'.qm',':/translations/')
-QtGui.QApplication.installTranslator(translator)
+#locale = QtCore.QLocale(eval("QtCore.QLocale."+FreeCADGui.getLocale())).name()
+#translator = QtCore.QTranslator()
+#translator.load('Draft_'+locale+'.qm',':/translations/')
+#QtGui.QApplication.installTranslator(translator)
+FreeCADGui.updateLocale()
 
 def translate(context,text):
         "convenience function for Qt translator"
