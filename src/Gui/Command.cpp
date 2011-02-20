@@ -619,7 +619,7 @@ void MacroCommand::save()
 //===========================================================================
 
 PythonCommand::PythonCommand(const char* name,PyObject * pcPyCommand, const char* pActivationString)
-        :Command(name),_pcPyCommand(pcPyCommand)
+  : Command(name),_pcPyCommand(pcPyCommand)
 {
     if (pActivationString)
         Activation = pActivationString;
@@ -631,7 +631,7 @@ PythonCommand::PythonCommand(const char* name,PyObject * pcPyCommand, const char
     // call the method "GetResources()" of the command object
     _pcPyResourceDict = Interpreter().runMethodObject(_pcPyCommand, "GetResources");
     // check if the "GetResources()" method returns a Dict object
-    if (! PyDict_Check(_pcPyResourceDict) )
+    if (!PyDict_Check(_pcPyResourceDict))
         throw Base::Exception("PythonCommand::PythonCommand(): Method GetResources() of the Python command object returns the wrong type (has to be Py Dictonary)");
 }
 
@@ -641,9 +641,9 @@ const char* PythonCommand::getResource(const char* sName) const
 
     // get the "MenuText" resource string
     pcTemp = PyDict_GetItemString(_pcPyResourceDict,sName);
-    if (! pcTemp )
+    if (!pcTemp)
         return "";
-    if (! PyString_Check(pcTemp) )
+    if (!PyString_Check(pcTemp))
         throw Base::Exception("PythonCommand::getResource(): Method GetResources() of the Python command object returns a dictionary which holds not only strings");
 
     return PyString_AsString(pcTemp);
@@ -655,11 +655,11 @@ void PythonCommand::activated(int iMsg)
         try {
             Interpreter().runMethodVoid(_pcPyCommand, "Activated");
         }
-        catch ( const Base::PyException& e) {
+        catch (const Base::PyException& e) {
             Base::Console().Error("Running the Python command '%s' failed:\n%s\n%s",
                                   sName, e.getStackTrace().c_str(), e.what());
         }
-        catch ( const Base::Exception&) {
+        catch (const Base::Exception&) {
             Base::Console().Error("Running the Python command '%s' failed, try to resume",sName);
         }
     }
@@ -694,10 +694,12 @@ bool PythonCommand::isActive(void)
 void PythonCommand::languageChange()
 {
     if (_pcAction) {
-        _pcAction->setText       (qApp->translate(getName(), getMenuText   ()));
-        _pcAction->setToolTip    (qApp->translate(getName(), getToolTipText()));
-        _pcAction->setStatusTip  (qApp->translate(getName(), getStatusTip  ()));
-        _pcAction->setWhatsThis  (qApp->translate(getName(), getWhatsThis  ()));
+        _pcAction->setText         (qApp->translate(getName(), getMenuText   ()));
+        _pcAction->setToolTip      (qApp->translate(getName(), getToolTipText()));
+        _pcAction->setStatusTip    (qApp->translate(getName(), getStatusTip  ()));
+        _pcAction->setWhatsThis    (qApp->translate(getName(), getWhatsThis  ()));
+        if (_pcAction->statusTip().isEmpty())
+            _pcAction->setStatusTip(qApp->translate(getName(), getToolTipText()));
     }
 }
 
@@ -717,17 +719,15 @@ Action * PythonCommand::createAction(void)
     Action *pcAction;
 
     pcAction = new Action(this,getMainWindow());
-    pcAction->setText(QObject::trUtf8(getResource("MenuText")));
-    pcAction->setToolTip(QObject::trUtf8(getResource("ToolTip")));
-    pcAction->setStatusTip(QObject::trUtf8(getResource("StatusTip")));
-    pcAction->setWhatsThis(QString::fromUtf8(getResource("WhatsThis")));
+
+    pcAction->setText         (qApp->translate(getName(), getMenuText   ()));
+    pcAction->setToolTip      (qApp->translate(getName(), getToolTipText()));
+    pcAction->setStatusTip    (qApp->translate(getName(), getStatusTip  ()));
+    pcAction->setWhatsThis    (qApp->translate(getName(), getWhatsThis  ()));
+    if (pcAction->statusTip().isEmpty())
+        pcAction->setStatusTip(qApp->translate(getName(), getToolTipText()));
     if (strcmp(getResource("Pixmap"),"") != 0)
         pcAction->setIcon(Gui::BitmapFactory().pixmap(getResource("Pixmap")));
-
-    if (pcAction->statusTip().isEmpty())
-        pcAction->setStatusTip(QObject::trUtf8(getResource("ToolTip")));
-    if (pcAction->whatsThis().isEmpty())
-        pcAction->setWhatsThis(QObject::trUtf8(getResource("ToolTip")));
 
     return pcAction;
 }
