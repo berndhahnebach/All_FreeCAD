@@ -12,13 +12,10 @@ for so in Gui.Selection.getSelectionEx():
 		pos1 = edge.valueAt(0)
 		pos2 = edge.valueAt(edge.Length)
 		print pos1,pos2
-		if count=0: # first edge
+		if count==0: # first edge
 			FirstPos1 = pos1
 			FirstPos2 = pos2
-		else: if count=1 : # second edge
-			if 
+		elif count==1 : # second edge
+			continue
 		else: # the rest
 			SortedEdgeList.append( (pos1,pos2,edge) )
-
-			
-
