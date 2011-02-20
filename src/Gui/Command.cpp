@@ -693,11 +693,11 @@ bool PythonCommand::isActive(void)
 
 void PythonCommand::languageChange()
 {
-    if ( _pcAction ) {
-        _pcAction->setText       ( QObject::tr( getMenuText()    ) );
-        _pcAction->setToolTip    ( QObject::tr( getToolTipText() ) );
-        _pcAction->setStatusTip  ( QObject::tr( getStatusTip()   ) );
-        _pcAction->setWhatsThis  ( QObject::tr( getWhatsThis()   ) );
+    if (_pcAction) {
+        _pcAction->setText       (qApp->translate(getName(), getMenuText   ()));
+        _pcAction->setToolTip    (qApp->translate(getName(), getToolTipText()));
+        _pcAction->setStatusTip  (qApp->translate(getName(), getStatusTip  ()));
+        _pcAction->setWhatsThis  (qApp->translate(getName(), getWhatsThis  ()));
     }
 }
 
