@@ -921,8 +921,8 @@ class SelectPlane:
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_SelectPlane',
-			'MenuText': str(translate("draft", "SelectPlane")),
-			'ToolTip' : str(translate("draft", "Select a working plane for geometry creation"))}
+			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_SelectPlane", "SelectPlane"),
+			'ToolTip' : QtCore.QT_TRANSLATE_NOOP("Draft_SelectPlane", "Select a working plane for geometry creation")}
 
         def IsActive(self):
                 if FreeCADGui.ActiveDocument:
@@ -1074,8 +1074,8 @@ class Line(Creator):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Line',
-			'MenuText': str(translate("draft", "Line")),
-			'ToolTip': str(translate("draft", "Creates a 2-point line. CTRL to snap, SHIFT to constrain"))}
+			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Line", "Line"),
+			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Line", "Creates a 2-point line. CTRL to snap, SHIFT to constrain")}
 
 	def Activated(self):
 		Creator.Activated(self,"Line")
@@ -1204,8 +1204,8 @@ class Wire(Line):
 		Line.__init__(self,wiremode=True)
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Wire',
-			'MenuText': str(translate("draft", "Wire")),
-			'ToolTip': str(translate("draft", "Creates a multiple-point wire. CTRL to snap, SHIFT to constrain"))}
+			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Wire", "Wire"),
+			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Wire", "Creates a multiple-point wire. CTRL to snap, SHIFT to constrain")}
 
 class BSpline(Line):
         "a FreeCAD command for creating a b-spline"
@@ -1214,8 +1214,8 @@ class BSpline(Line):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_BSpline',
-			'MenuText': str(translate("draft", "B-Spline")),
-			'ToolTip': str(translate("draft", "Creates a multiple-point b-spline. CTRL to snap, SHIFT to constrain"))}
+			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_BSpline", "B-Spline"),
+			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_BSpline", "Creates a multiple-point b-spline. CTRL to snap, SHIFT to constrain")}
 
         def Activated(self):
                 Line.Activated(self)
@@ -1298,8 +1298,8 @@ class FinishLine:
 				FreeCAD.activeDraftCommand.finish(False)
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Finish',
-			'MenuText': str(translate("draft", "Finish line")),
-			'ToolTip': str(translate("draft", "Finishes a line without closing it"))}
+			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_FinishLine", "Finish line"),
+			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_FinishLine", "Finishes a line without closing it")}
         def IsActive(self):
                 if FreeCAD.activeDraftCommand:
                         if FreeCAD.activeDraftCommand.featureName == "Line":
@@ -1314,8 +1314,8 @@ class CloseLine:
 				FreeCAD.activeDraftCommand.finish(True)
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Lock',
-			'MenuText': str(translate("draft", "Close Line")),
-			'ToolTip': str(translate("draft", "Closes the line being drawn"))}
+			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_CloseLine", "Close Line"),
+			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_CloseLine", "Closes the line being drawn")}
         def IsActive(self):
                 if FreeCAD.activeDraftCommand:
                         if FreeCAD.activeDraftCommand.featureName == "Line":
@@ -1331,8 +1331,8 @@ class UndoLine:
 				FreeCAD.activeDraftCommand.undolast()
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Rotate',
-			'MenuText': str(translate("draft", "Undo last segment")),
-			'ToolTip': str(translate("draft", "Undoes the last drawn segment of the line being drawn"))}
+			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_UndoLine", "Undo last segment"),
+			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_UndoLine", "Undoes the last drawn segment of the line being drawn")}
         def IsActive(self):
                 if FreeCAD.activeDraftCommand:
                         if FreeCAD.activeDraftCommand.featureName == "Line":
@@ -1344,8 +1344,8 @@ class Rectangle(Creator):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Rectangle',
-			'MenuText': str(translate("draft", "Rectangle")),
-			'ToolTip': str(translate("draft", "Creates a 2-point rectangle. CTRL to snap"))}
+			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Rectangle", "Rectangle"),
+			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Rectangle", "Creates a 2-point rectangle. CTRL to snap")}
 
 	def Activated(self):
 		Creator.Activated(self,"Rectangle")
@@ -1425,8 +1425,8 @@ class Arc(Creator):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Arc',
-			'MenuText': str(translate("draft", "Arc")),
-			'ToolTip': str(translate("draft", "Creates an arc. CTRL to snap, SHIFT to constrain"))}
+			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Arc", "Arc"),
+			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Arc", "Creates an arc. CTRL to snap, SHIFT to constrain")}
 
 	def Activated(self):
 		Creator.Activated(self,self.featureName)
@@ -1720,8 +1720,8 @@ class Circle(Arc):
 		
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Circle',
-			'MenuText': str(translate("draft", "Circle")),
-			'ToolTip': str(translate("draft", "Creates a circle. CTRL to snap, ALT to select tangent objects"))}
+			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Circle", "Circle"),
+			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Circle", "Creates a circle. CTRL to snap, ALT to select tangent objects")}
 
 
 class Polygon(Creator):
@@ -1729,8 +1729,8 @@ class Polygon(Creator):
         
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Polygon',
-			'MenuText': str(translate("draft", "Polygon")),
-			'ToolTip': str(translate("draft", "Creates a regular polygon. CTRL to snap, SHIFT to constrain"))}
+			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Polygon", "Polygon"),
+			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Polygon", "Creates a regular polygon. CTRL to snap, SHIFT to constrain")}
 
 	def Activated(self):
 		Creator.Activated(self,"Polygon")
@@ -1915,8 +1915,8 @@ class Text(Creator):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Text',
-			'MenuText': str(translate("draft", "Text")),
-			'ToolTip': str(translate("draft", "Creates an annotation. CTRL to snap"))}
+			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Text", "Text"),
+			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Text", "Creates an annotation. CTRL to snap")}
 
 	def Activated(self):
 		Creator.Activated(self,"Text")
@@ -1977,8 +1977,8 @@ class Dimension(Creator):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Dimension',
-			'MenuText': str(translate("draft", "Dimension")),
-			'ToolTip': str(translate("draft", "Creates a dimension. CTRL to snap, SHIFT to constrain, ALT to select a segment"))}
+			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Dimension", "Dimension"),
+			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Dimension", "Creates a dimension. CTRL to snap, SHIFT to constrain, ALT to select a segment")}
 
 	def Activated(self):
                 if self.cont: self.finish()
@@ -2216,8 +2216,8 @@ class Move(Modifier):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Move',
-			'MenuText': str(translate("draft", "Move")),
-			'ToolTip': str(translate("draft", "Moves the selected objects between 2 points. CTRL to snap, SHIFT to constrain, ALT to copy"))}
+			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Move", "Move"),
+			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Move", "Moves the selected objects between 2 points. CTRL to snap, SHIFT to constrain, ALT to copy")}
 
 	def Activated(self):
 		Modifier.Activated(self,"Move")
@@ -2330,8 +2330,8 @@ class ApplyStyle(Modifier):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Apply',
-			'MenuText': str(translate("draft", "Apply Current Style")),
-			'ToolTip': str(translate("draft", "Applies current line width and color to selected objects"))}
+			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Apply", "Apply Current Style"),
+			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Apply", "Applies current line width and color to selected objects")}
 
         def IsActive(self):
                 if Draft.getSelection():
@@ -2361,8 +2361,8 @@ class Rotate(Modifier):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Rotate',
-			'MenuText': str(translate("draft", "Rotate")),
-			'ToolTip': str(translate("draft", "Rotates the selected objects. CTRL to snap, SHIFT to constrain, ALT creates a copy"))}
+			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Rotate", "Rotate"),
+			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Rotate", "Rotates the selected objects. CTRL to snap, SHIFT to constrain, ALT creates a copy")}
 
 	def Activated(self):
 		Modifier.Activated(self,"Rotate")
@@ -2549,8 +2549,8 @@ class Offset(Modifier):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Offset',
-			'MenuText': str(translate("draft", "Offset")),
-			'ToolTip': str(translate("draft", "Offsets the active object. CTRL to snap, SHIFT to constrain, ALT to copy"))}
+			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Offset", "Offset"),
+			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Offset", "Offsets the active object. CTRL to snap, SHIFT to constrain, ALT to copy")}
 
 	def Activated(self):
                 self.running = False
@@ -2695,8 +2695,8 @@ class Upgrade(Modifier):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Upgrade',
-			'MenuText': str(translate("draft", "Upgrade")),
-			'ToolTip': str(translate("draft", "Joins the selected objects into one, or converts closed wires to filled faces, or unite faces"))}
+			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Upgrade", "Upgrade"),
+			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Upgrade", "Joins the selected objects into one, or converts closed wires to filled faces, or unite faces")}
 
 	def Activated(self):
 		Modifier.Activated(self,"Upgrade")
@@ -2879,8 +2879,8 @@ class Downgrade(Modifier):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Downgrade',
-			'MenuText': str(translate("draft", "Downgrade")),
-			'ToolTip': str(translate("draft", "Explodes the selected objects into simpler objects, or subtract faces"))}
+			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Downgrade", "Downgrade"),
+			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Downgrade", "Explodes the selected objects into simpler objects, or subtract faces")}
 
 	def Activated(self):
 		Modifier.Activated(self,"Downgrade")
@@ -2969,8 +2969,8 @@ class Trimex(Modifier):
 
 	def GetResources(self):
 		return {'Pixmap' : 'Draft_Trimex',
-			'MenuText' : str(translate("draft", "Trimex")),
-			'ToolTip' : str(translate("draft", "Trims or Extends the selected object, or extrudes single faces. CTRL snaps, SHIFT constrains to current segment or to normal, ALT inverts"))}
+			'MenuText' : QtCore.QT_TRANSLATE_NOOP("Draft_Trimex", "Trimex"),
+			'ToolTip' : QtCore.QT_TRANSLATE_NOOP("Draft_Trimex", "Trims or Extends the selected object, or extrudes single faces. CTRL snaps, SHIFT constrains to current segment or to normal, ALT inverts")}
 
 	def Activated(self):
 		Modifier.Activated(self,"Trimex")
@@ -3241,8 +3241,8 @@ class Scale(Modifier):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Scale',
-			'MenuText': str(translate("draft", "Scale")),
-			'ToolTip': str(translate("draft", "Scales the selected objects from a base point. CTRL to snap, SHIFT to constrain, ALT to copy"))}
+			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Scale", "Scale"),
+			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Scale", "Scales the selected objects from a base point. CTRL to snap, SHIFT to constrain, ALT to copy")}
 
 	def Activated(self):
 		Modifier.Activated(self,"Scale")
@@ -3355,8 +3355,8 @@ class ToggleConstructionMode():
 	"The Draft_ToggleConstructionMode FreeCAD command definition"
 
 	def GetResources(self):
-		return {'MenuText': str(translate("draft", "Toggle construcion Mode")),
-			'ToolTip': str(translate("draft", "Toggles the Construction Mode for next objects."))}
+		return {'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_ToggleConstructionMode", "Toggle construcion Mode"),
+			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_ToggleConstructionMode", "Toggles the Construction Mode for next objects.")}
 
 	def Activated(self):
 		FreeCADGui.draftToolBar.ui.constrButton.toggle()
@@ -3366,8 +3366,8 @@ class Drawing(Modifier):
 
         def GetResources(self):
 		return {'Pixmap'  : 'Draft_Drawing',
-			'MenuText': str(translate("draft", "Drawing")),
-			'ToolTip': str(translate("draft", "Puts the selected objects on a Drawing sheet."))}
+			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Drawing", "Drawing"),
+			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Drawing", "Puts the selected objects on a Drawing sheet.")}
 
         def IsActive(self):
                 if Draft.getSelection():
@@ -3434,8 +3434,8 @@ class ToggleDisplayMode():
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_SwitchMode',
-                        'MenuText': str(translate("draft", "Toggle display mode")),
-			'ToolTip': str(translate("draft", "Swaps display mode of selected objects between wireframe and flatlines"))}
+                        'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_SwitchMode", "Toggle display mode"),
+			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_SwitchMode", "Swaps display mode of selected objects between wireframe and flatlines")}
 
         def IsActive(self):
                 if Draft.getSelection():
@@ -3461,8 +3461,8 @@ class Edit(Modifier):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Edit',
-			'MenuText': str(translate("draft", "Edit")),
-			'ToolTip': str(translate("draft", "Edits the active object"))}
+			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Edit", "Edit"),
+			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Edit", "Edits the active object")}
 
         def IsActive(self):
                 if Draft.getSelection():
@@ -3742,8 +3742,8 @@ class AddToGroup():
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_AddToGroup',
-                        'MenuText': str(translate("draft", "Add to group")),
-			'ToolTip': str(translate("draft", "Adds the selected object(s) to an existing group"))}
+                        'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_AddToGroup", "Add to group"),
+			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_AddToGroup", "Adds the selected object(s) to an existing group")}
 
         def IsActive(self):
                 if Draft.getSelection():
@@ -3788,8 +3788,8 @@ class AddPoint(Modifier):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_AddPoint',
-			'MenuText': str(translate("draft", "Add Point")),
-			'ToolTip': str(translate("draft", "Adds a point to an existing wire/bspline"))}
+			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_AddPoint", "Add Point"),
+			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_AddPoint", "Adds a point to an existing wire/bspline")}
 
         def IsActive(self):
 		self.selection = Draft.getSelection()
@@ -3907,8 +3907,8 @@ class DelPoint(Modifier):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_DelPoint',
-			'MenuText': str(translate("draft", "Remove Point")),
-			'ToolTip': str(translate("draft", "Removes a point from an existing wire or bspline"))}
+			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_DelPoint", "Remove Point"),
+			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_DelPoint", "Removes a point from an existing wire or bspline")}
 
         def IsActive(self):
 		self.selection = Draft.getSelection()
@@ -3996,8 +3996,8 @@ class WireToBSpline(Modifier):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_WireToBSpline',
-			'MenuText': str(translate("draft", "Wire to BSpline")),
-			'ToolTip': str(translate("draft", "Converts between Wire and BSpline"))}
+			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_WireToBSpline", "Wire to BSpline"),
+			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_WireToBSpline", "Converts between Wire and BSpline")}
 
 	def IsActive(self):
 		self.selection = Draft.getSelection()
@@ -4037,8 +4037,8 @@ class SelectGroup():
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_SelectGroup',
-                        'MenuText': str(translate("draft", "Select group")),
-			'ToolTip': str(translate("draft", "Selects all objects with the same parents as this group"))}
+                        'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_SelectGroup", "Select group"),
+			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_SelectGroup", "Selects all objects with the same parents as this group")}
 
         def IsActive(self):
                 if Draft.getSelection():
