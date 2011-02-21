@@ -26,6 +26,8 @@
 #ifndef _PreComp_
 # include <sstream>
 # include <QPixmap>
+# include <boost/signals.hpp>
+# include <boost/bind.hpp>
 # include <Inventor/nodes/SoDrawStyle.h>
 # include <Inventor/nodes/SoMaterial.h>
 # include <Inventor/nodes/SoSeparator.h>
@@ -63,10 +65,131 @@
 
 using namespace Gui;
 
+namespace Gui {
+
+class ViewProviderPythonFeatureObserver
+{
+public:
+    /// The one and only instance.
+    static ViewProviderPythonFeatureObserver* instance();
+    /// Destructs the sole instance.
+    static void destruct ();
+    void slotAppendObject(const Gui::ViewProvider&);
+    void slotDeleteObject(const Gui::ViewProvider&);
+    void slotDeleteDocument(const Gui::Document&);
+
+private:
+    static ViewProviderPythonFeatureObserver* _singleton;
+
+    ViewProviderPythonFeatureObserver();
+    ~ViewProviderPythonFeatureObserver();
+    typedef std::map<
+                const App::DocumentObject*,
+                std::string
+            > ObjectProxy;
+
+    std::map<const App::Document*, ObjectProxy> proxyMap;
+};
+
+}
+
+ViewProviderPythonFeatureObserver* ViewProviderPythonFeatureObserver::_singleton = 0;
+
+ViewProviderPythonFeatureObserver* ViewProviderPythonFeatureObserver::instance()
+{
+    if (!_singleton)
+        _singleton = new ViewProviderPythonFeatureObserver;
+    return _singleton;
+}
+
+void ViewProviderPythonFeatureObserver::destruct ()
+{
+    delete _singleton;
+    _singleton = 0;
+}
+
+void ViewProviderPythonFeatureObserver::slotDeleteDocument(const Gui::Document& d)
+{
+    App::Document* doc = d.getDocument();
+    std::map<const App::Document*, ObjectProxy>::iterator it = proxyMap.find(doc);
+    if (it != proxyMap.end()) {
+        proxyMap.erase(it);
+    }
+}
+
+void ViewProviderPythonFeatureObserver::slotAppendObject(const Gui::ViewProvider& obj)
+{
+    if (!obj.isDerivedFrom(Gui::ViewProviderDocumentObject::getClassTypeId()))
+        return;
+    const Gui::ViewProviderDocumentObject& vp = static_cast<const Gui::ViewProviderDocumentObject&>(obj);
+    const App::DocumentObject* docobj = vp.getObject();
+    App::Document* doc = docobj->getDocument();
+    std::map<const App::Document*, ObjectProxy>::iterator it = proxyMap.find(doc);
+    if (it != proxyMap.end()) {
+        ObjectProxy::iterator jt = it->second.find(docobj);
+        if (jt != it->second.end()) {
+            Base::PyGILStateLocker lock;
+            try {
+                App::Property* prop = vp.getPropertyByName("Proxy");
+                if (prop && prop->isDerivedFrom(App::PropertyPythonObject::getClassTypeId())) {
+                    static_cast<App::PropertyPythonObject*>(prop)->fromString(jt->second);
+                    static_cast<App::PropertyPythonObject*>(prop)->touch();
+                    it->second.erase(jt);
+                }
+            }
+            catch (Py::Exception& e) {
+                e.clear();
+            }
+        }
+        // all cached objects of the documents are already destroyed
+        else {
+            it->second.clear();
+        }
+    }
+}
+
+void ViewProviderPythonFeatureObserver::slotDeleteObject(const Gui::ViewProvider& obj)
+{
+    if (!obj.isDerivedFrom(Gui::ViewProviderDocumentObject::getClassTypeId()))
+        return;
+    const Gui::ViewProviderDocumentObject& vp = static_cast<const Gui::ViewProviderDocumentObject&>(obj);
+    const App::DocumentObject* docobj = vp.getObject();
+    App::Document* doc = docobj->getDocument();
+    if (!doc->getUndoMode())
+        return; // object will be deleted immediately, thus we don't need to store anything
+    Base::PyGILStateLocker lock;
+    try {
+        App::Property* prop = vp.getPropertyByName("Proxy");
+        if (prop && prop->isDerivedFrom(App::PropertyPythonObject::getClassTypeId())) {
+            std::string proxy = static_cast<App::PropertyPythonObject*>(prop)->toString();
+            proxyMap[doc][docobj] = proxy;
+        }
+    }
+    catch (Py::Exception& e) {
+        e.clear();
+    }
+}
+
+ViewProviderPythonFeatureObserver::ViewProviderPythonFeatureObserver()
+{
+    Gui::Application::Instance->signalDeletedObject.connect(boost::bind
+        (&ViewProviderPythonFeatureObserver::slotDeleteObject, this, _1));
+    Gui::Application::Instance->signalNewObject.connect(boost::bind
+        (&ViewProviderPythonFeatureObserver::slotAppendObject, this, _1));
+    Gui::Application::Instance->signalDeleteDocument.connect(boost::bind
+        (&ViewProviderPythonFeatureObserver::slotDeleteDocument, this, _1));
+}
+
+ViewProviderPythonFeatureObserver::~ViewProviderPythonFeatureObserver()
+{
+}
+
+// ----------------------------------------------------------------------------
 
 ViewProviderPythonFeatureImp::ViewProviderPythonFeatureImp(ViewProviderDocumentObject* vp)
   : object(vp)
 {
+    (void)ViewProviderPythonFeatureObserver::instance();
 }
 
 ViewProviderPythonFeatureImp::~ViewProviderPythonFeatureImp()

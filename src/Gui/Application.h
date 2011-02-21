@@ -97,8 +97,16 @@ public:
     boost::signal<void (const Gui::Document&)> signalRenameDocument;
     /// signal on activating Document
     boost::signal<void (const Gui::Document&)> signalActiveDocument;
+    /// signal on new Object
+    boost::signal<void (const Gui::ViewProvider&)> signalNewObject;
+    /// signal on deleted Object
+    boost::signal<void (const Gui::ViewProvider&)> signalDeletedObject;
     /// signal on changed object property
     boost::signal<void (const Gui::ViewProvider&, const App::Property&)> signalChangedObject;
+    /// signal on renamed Object
+    boost::signal<void (const Gui::ViewProvider&)> signalRenamedObject;
+    /// signal on activated Object
+    boost::signal<void (const Gui::ViewProvider&)> signalActivatedObject;
     /// signal on activated workbench
     boost::signal<void (const char*)> signalActivateWorkbench;
     /// signal on added workbench
@@ -118,6 +126,11 @@ protected:
     void slotRelabelDocument(const App::Document&);
     void slotRenameDocument(const App::Document&);
     void slotActiveDocument(const App::Document&);
+    void slotNewObject(const ViewProvider&);
+    void slotDeletedObject(const ViewProvider&);
+    void slotChangedObject(const ViewProvider&, const App::Property& Prop);
+    void slotRenamedObject(const ViewProvider&);
+    void slotActivatedObject(const ViewProvider&);
 
 public:
     /// message when a GuiDocument is about to vanish
