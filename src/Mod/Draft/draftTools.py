@@ -51,11 +51,11 @@ def msg(text=None,mode=None):
         if not text: FreeCAD.Console.PrintMessage("")
         else:
                 if mode == 'warning':
-                        FreeCAD.Console.PrintWarning(str(QtCore.QString(text).toUtf8()))
+                        FreeCAD.Console.PrintWarning(text)
                 elif mode == 'error':
-                        FreeCAD.Console.PrintError(str(QtCore.QString(text).toUtf8()))
+                        FreeCAD.Console.PrintError(text)
                 else:
-                        FreeCAD.Console.PrintMessage(str(QtCore.QString(text).toUtf8()))
+                        FreeCAD.Console.PrintMessage(text)
 
 # loads the fill patterns
 FreeCAD.svgpatterns = importSVG.getContents(Draft_rc.qt_resource_data,'pattern',True)
