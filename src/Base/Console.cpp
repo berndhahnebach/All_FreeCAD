@@ -374,11 +374,15 @@ PyObject *ConsoleSingleton::sPyMessage(PyObject * /*self*/, PyObject *args, PyOb
     const char* string=0;
     PyObject* unicode=0;
     if (PyUnicode_Check(output)) {
-        unicode = PyUnicode_AsUTF8String(output);
+        unicode = PyUnicode_AsEncodedObject(output, "latin1", "strict");
         string = PyString_AsString(unicode);
     }
     else if (PyString_Check(output)) {
         string = PyString_AsString(output);
+    }
+    else {
+        unicode = PyObject_Str(output);
+        string = PyString_AsString(unicode);
     }
 
     PY_TRY {
@@ -400,11 +404,15 @@ PyObject *ConsoleSingleton::sPyWarning(PyObject * /*self*/, PyObject *args, PyOb
     const char* string=0;
     PyObject* unicode=0;
     if (PyUnicode_Check(output)) {
-        unicode = PyUnicode_AsUTF8String(output);
+        unicode = PyUnicode_AsEncodedObject(output, "latin1", "strict");
         string = PyString_AsString(unicode);
     }
     else if (PyString_Check(output)) {
         string = PyString_AsString(output);
+    }
+    else {
+        unicode = PyObject_Str(output);
+        string = PyString_AsString(unicode);
     }
 
     PY_TRY {
@@ -426,11 +434,15 @@ PyObject *ConsoleSingleton::sPyError(PyObject * /*self*/, PyObject *args, PyObje
     const char* string=0;
     PyObject* unicode=0;
     if (PyUnicode_Check(output)) {
-        unicode = PyUnicode_AsUTF8String(output);
+        unicode = PyUnicode_AsEncodedObject(output, "latin1", "strict");
         string = PyString_AsString(unicode);
     }
     else if (PyString_Check(output)) {
         string = PyString_AsString(output);
+    }
+    else {
+        unicode = PyObject_Str(output);
+        string = PyString_AsString(unicode);
     }
 
     PY_TRY {
@@ -452,11 +464,15 @@ PyObject *ConsoleSingleton::sPyLog(PyObject * /*self*/, PyObject *args, PyObject
     const char* string=0;
     PyObject* unicode=0;
     if (PyUnicode_Check(output)) {
-        unicode = PyUnicode_AsUTF8String(output);
+        unicode = PyUnicode_AsEncodedObject(output, "latin1", "strict");
         string = PyString_AsString(unicode);
     }
     else if (PyString_Check(output)) {
         string = PyString_AsString(output);
+    }
+    else {
+        unicode = PyObject_Str(output);
+        string = PyString_AsString(unicode);
     }
 
     PY_TRY {

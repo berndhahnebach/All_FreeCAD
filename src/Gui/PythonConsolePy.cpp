@@ -69,7 +69,7 @@ Py::Object PythonStdout::write(const Py::Tuple& args)
     try {
         Py::Object output(args[0]);
         if (PyUnicode_Check(output.ptr())) {
-            PyObject* unicode = PyUnicode_AsUTF8String(output.ptr());
+            PyObject* unicode = PyUnicode_AsEncodedObject(output.ptr(), "latin1", "strict");
             const char* string = PyString_AsString(unicode);
             int maxlen = qstrlen(string) > 10000 ? 10000 : -1;
             pyConsole->insertPythonOutput(QString::fromUtf8(string, maxlen));
@@ -129,7 +129,7 @@ Py::Object PythonStderr::write(const Py::Tuple& args)
     try {
         Py::Object output(args[0]);
         if (PyUnicode_Check(output.ptr())) {
-            PyObject* unicode = PyUnicode_AsUTF8String(output.ptr());
+            PyObject* unicode = PyUnicode_AsEncodedObject(output.ptr(), "latin1", "strict");
             const char* string = PyString_AsString(unicode);
             int maxlen = qstrlen(string) > 10000 ? 10000 : -1;
             pyConsole->insertPythonError(QString::fromUtf8(string, maxlen));
@@ -188,7 +188,7 @@ Py::Object OutputStderr::write(const Py::Tuple& args)
     try {
         Py::Object output(args[0]);
         if (PyUnicode_Check(output.ptr())) {
-            PyObject* unicode = PyUnicode_AsUTF8String(output.ptr());
+            PyObject* unicode = PyUnicode_AsEncodedObject(output.ptr(), "latin1", "strict");
             const char* string = PyString_AsString(unicode);
             Base::Console().Error("%s",string);
             Py_DECREF(unicode);
