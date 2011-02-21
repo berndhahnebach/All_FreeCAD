@@ -577,6 +577,15 @@ void Application::slotNewDocument(const App::Document& Doc)
 #endif
     Gui::Document* pDoc = new Gui::Document(const_cast<App::Document*>(&Doc),this);
     d->documents[&Doc] = pDoc;
+
+    // connect the signals to the application for the new document
+    pDoc->signalNewObject.connect(boost::bind(&Gui::Application::slotNewObject, this, _1));
+    pDoc->signalDeletedObject.connect(boost::bind(&Gui::Application::slotDeletedObject, this, _1));
+    pDoc->signalChangedObject.connect(boost::bind(&Gui::Application::slotChangedObject, this, _1, _2));
+    pDoc->signalRenamedObject.connect(boost::bind(&Gui::Application::slotRenamedObject, this, _1));
+    pDoc->signalActivatedObject.connect(boost::bind(&Gui::Application::slotActivatedObject, this, _1));
+
+
     signalNewDocument(*pDoc);
     pDoc->createView("View3DIv");
     qApp->processEvents(); // make sure to show the window stuff on the right place
@@ -633,6 +642,31 @@ void Application::slotActiveDocument(const App::Document& Doc)
 #endif
 
     signalActiveDocument(*doc->second);
+}
+
+void Application::slotNewObject(const ViewProvider& vp)
+{
+    this->signalNewObject(vp);
+}
+
+void Application::slotDeletedObject(const ViewProvider& vp)
+{
+    this->signalDeletedObject(vp);
+}
+
+void Application::slotChangedObject(const ViewProvider& vp, const App::Property& prop)
+{
+    this->signalChangedObject(vp,prop);
+}
+
+void Application::slotRenamedObject(const ViewProvider& vp)
+{
+    this->signalRenamedObject(vp);
+}
+
+void Application::slotActivatedObject(const ViewProvider& vp)
+{
+    this->signalActivatedObject(vp);
 }
 
 void Application::onLastWindowClosed(Gui::Document* pcDoc)
