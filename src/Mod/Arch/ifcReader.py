@@ -21,7 +21,7 @@
 #*                                                                         *
 #***************************************************************************
 
-import os,re, copy
+import os, re, copy
 
 __title__="FreeCAD IFC parser"
 __author__ = "Yorik van Havre, Marijn van Aerle"
@@ -55,7 +55,7 @@ Just place the .exp file together with this script.
 '''
 
 IFCLINE_RE = re.compile("#(\d+)[ ]?=[ ]?(.*?)\((.*)\);[\\r]?$")
-DEBUG = True
+DEBUG = False
 
 class IfcSchema:
     SIMPLETYPES = ["INTEGER", "REAL", "STRING", "NUMBER", "LOGICAL", "BOOLEAN"]
@@ -277,15 +277,36 @@ class IfcFile:
 
 class IfcEntity:
     "a container for an IFC entity"
-    def __init__(self,ent):
+    def __init__(self,ent,doc=None):
         self.data = ent
         self.id = int(ent['id'])
         self.type = ent['name'].upper().strip(",[]()")
         self.attributes = ent['attributes']
+        self.doc = doc
 
     def __repr__(self):
         return str(self.id) + ' : ' + self.type + ' ' + str(self.attributes)
-        
+
+    def getProperty(self,prop):
+        "finds the next given property"
+        ents = self.doc.getEnt('IFCPROPERTYSINGLEVALUE')
+        ents.extend(self.doc.getEnt('IFCQUANTITYLENGTH'))
+        ents.extend(self.doc.getEnt('IFCQUANTITYAREA'))
+        ents.extend(self.doc.getEnt('IFCQUANTITYVOLUME'))
+        if not ents: return None
+        for e in ents:
+            if e.id > self.id:
+                if e.Name == prop:
+                    if hasattr(e,"LengthValue"):
+                        return e.LengthValue
+                    elif hasattr(e,"AreaValue"):
+                        return e.AreaValue
+                    elif hasattr(e,"VolumeValue"):
+                        return e.VolumeValue
+                    elif hasattr(e,"NominalValue"):
+                        return e.NominalValue
+        return None
+            
 class IfcDocument:
     "an object representing an IFC document"
     def __init__(self,filename,schema="IFC2X3_TC1.exp"):
@@ -294,28 +315,49 @@ class IfcDocument:
         self.data = f.entById
         self.Entities = [f.header]
         for k,e in self.data.iteritems():
-            self.Entities.append(IfcEntity(e))
+            self.Entities.append(IfcEntity(e,self))
         if DEBUG: print len(self.Entities)," entities created. Creating attributes..."
         for ent in self.Entities:
+            if DEBUG: print "attributing entity ",ent
             if hasattr(ent,"attributes"):
-                #ent.attributes = IfcAttribute(ent.attributes,self)
                 for k,v in ent.attributes.iteritems():
                     if DEBUG: print "parsing attribute: ",k," value ",v
                     if isinstance(v,str):
-                        val = v.strip()
-                        if '#' in val:
-                            if not "," in val:
-                                val = val.strip()
-                                val = val.replace("#","")
-                                val = val.strip(" ()")
-                                if DEBUG: print "referencing ",val," : ",self.getEnt(int(val))
-                                val =  self.getEnt(int(val))
-                                if not val: val = v
+                        val = self.cleanValue(v)
+                    elif isinstance(v,list):
+                        val = []
+                        for item in v:
+                            if isinstance(item,str):
+                                val.append(self.cleanValue(item))
+                            else:
+                                val.append(item)
                     else:
                         val = v
                     setattr(ent,k.strip(),val)
         if DEBUG: print "Document successfully created"
-                
+
+    def cleanValue(self,value):
+        "strips unuseful characters from an attribute value"
+        val = value.strip(" ()'")
+        if '#' in val:
+            if "," in val:
+                val = val.split(",")
+                l = []
+                for subval in val:
+                    if '#' in subval:
+                        s = subval.strip(" #")
+                        if DEBUG: print "referencing ",s," : ",self.getEnt(int(s))
+                        l.append(self.getEnt(int(s)))
+                val = l
+            else:
+                val = val.strip()
+                val = val.replace("#","")
+                if DEBUG: print "referencing ",val," : ",self.getEnt(int(val))
+                val =  self.getEnt(int(val))
+                if not val:
+                    val = value
+        return val
+        
     def __repr__(self):
         return "IFC Document: " + self.filename + ', ' + str(len(self.Entities)) + " entities"
 

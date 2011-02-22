@@ -45,4 +45,5 @@ class ArchWorkbench(Workbench):
 
 Gui.addIconPath("/home/yorik/Apps/FreeCAD/src/Mod/Arch/Resources/icons")
 Gui.addWorkbench(ArchWorkbench)
+App.addImportType("Industry Foundation Classes (*.ifc)","importIFC") 
 
