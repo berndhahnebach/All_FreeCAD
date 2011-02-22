@@ -29,7 +29,7 @@ __title__="FreeCAD Wall"
 __author__ = "Yorik van Havre"
 __url__ = "http://free-cad.sourceforge.net"
 
-def makeWall(baseobj,width=None,height=None):
+def makeWall(baseobj,width=None,height=None,align="Center"):
     '''makeWall(obj,[width],[height]): creates a wall based on the
     given object'''
     obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Wall")
@@ -38,7 +38,8 @@ def makeWall(baseobj,width=None,height=None):
     obj.Base = baseobj
     if width: obj.Width = width
     if height: obj.Height = height
-    baseobj.ViewObject.hide()
+    obj.Align = align
+    if obj.Base: obj.Base.ViewObject.hide()
     return obj
 
 class commandWall:
@@ -72,6 +73,8 @@ class Wall:
                         "Other shapes that are appended to this wall")
         obj.addProperty("App::PropertyLinkList","Holes","Base",
                         "Other shapes that are subtracted from this wall")
+        obj.addProperty("App::PropertyLinkList","CrossingWalls","Base",
+                        "These are other walls that must be intestected with this wall")
         obj.Align = ['Left','Right','Center']
         obj.Proxy = self
         self.Type = "Wall"
@@ -82,13 +85,14 @@ class Wall:
         self.createGeometry(obj)
         
     def onChanged(self,obj,prop):
-        if prop in ["Base","Height","Width","Align"]:
-            print prop
+        if prop in ["Base","Height","Width","Align","Appendices","Holes","CrossingWalls"]:
             self.createGeometry(obj)
 
     def createGeometry(self,obj):
-        normal = Vector(0,0,1)
-        plm = obj.Placement
+        if obj.Normal == Vector(0,0,0):
+            normal = Vector(0,0,1)
+        else:
+            normal = obj.Normal
         if obj.Base:
             if obj.Base.isDerivedFrom("Part::Feature"):
                 base = obj.Base.Shape.copy()
@@ -113,15 +117,18 @@ class Wall:
                         dvec = dvec.multiply(obj.Width)
                         base = Draft.offset(obj.Base,dvec,bind=True,sym=True)
                     if obj.Height:
-                        norm = fcgeo.getNormal(base)
-                        norm = norm.multiply(obj.Height)
+                        norm = normal.multiply(obj.Height)
                         base = base.extrude(norm)
-                        obj.Shape = base
-                    else:
-                        obj.Shape = base
-                else:
-                    print "creating from scratch"
-            obj.Placement = plm
+                    for app in obj.Appendices:
+                        base = base.fuse(app.Shape)
+                        app.viewObject.hide() #to be removed
+                    for hole in obj.Holes:
+                        base = base.cut(hole.Shape)
+                        hole.ViewObject.hide() # to be removed
+                    for wall in obj.CrossingWalls:
+                        if not obj in wall.CrossingWalls:
+                            base = base.cut(wall.Shape)
+                    obj.Shape = base
 
 class ViewProviderWall:
     "A View Provider for the Wall object"
