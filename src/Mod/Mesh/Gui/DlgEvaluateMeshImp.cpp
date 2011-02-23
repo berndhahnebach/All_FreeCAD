@@ -1073,6 +1073,8 @@ void DlgEvaluateMeshImp::on_repairAllTogether_clicked()
 
 // -------------------------------------------------------------
 
+/* TRANSLATOR MeshGui::DockEvaluateMeshImp */
+
 DockEvaluateMeshImp* DockEvaluateMeshImp::_instance=0;
 
 DockEvaluateMeshImp* DockEvaluateMeshImp::instance()

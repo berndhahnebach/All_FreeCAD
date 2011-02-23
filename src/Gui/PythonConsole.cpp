@@ -1190,6 +1190,8 @@ const QStringList& ConsoleHistory::values() const
 
 // -----------------------------------------------------
 
+/* TRANSLATOR Gui::PythonInputField */
+
 PythonInputField::PythonInputField(QWidget* parent)
   : QWidget(parent)
 {

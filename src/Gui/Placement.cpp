@@ -311,6 +311,8 @@ void Placement::changeEvent(QEvent *e)
 
 // ----------------------------------------------
 
+/* TRANSLATOR Gui::Dialog::DockablePlacement */
+
 DockablePlacement::DockablePlacement(QWidget* parent, Qt::WFlags fl) : Placement(parent, fl)
 {
     Gui::DockWindowManager* pDockMgr = Gui::DockWindowManager::instance();
@@ -341,6 +343,8 @@ void DockablePlacement::reject()
 }
 
 // ----------------------------------------------
+
+/* TRANSLATOR Gui::Dialog::TaskPlacement */
 
 TaskPlacement::TaskPlacement()
 {

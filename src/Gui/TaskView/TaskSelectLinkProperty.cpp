@@ -41,6 +41,8 @@
 
 using namespace Gui::TaskView;
 
+/* TRANSLATOR Gui::TaskView::TaskSelectLinkProperty */
+
 TaskSelectLinkProperty::TaskSelectLinkProperty(const char *sFilter,App::Property *prop,QWidget *parent)
     : TaskBox(Gui::BitmapFactory().pixmap("mouse_pointer"),tr("edit selection"),true, parent),Filter(0),LinkSub(0),LinkList(0)
 {

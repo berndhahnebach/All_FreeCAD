@@ -39,6 +39,8 @@ using namespace Gui;
 // TaskBoxPosition 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+/* TRANSLATOR Gui::TaskBoxPosition */
+
 TaskBoxPosition::TaskBoxPosition(QWidget *parent)
     : TaskBox(Gui::BitmapFactory().pixmap("Robot_CreateRobot"),tr("Position"),true, parent)
 {
@@ -64,6 +66,8 @@ TaskBoxPosition::~TaskBoxPosition()
 // TaskBoxAngle
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+/* TRANSLATOR Gui::TaskBoxAngle */
+
 TaskBoxAngle::TaskBoxAngle(QWidget *parent)
     : TaskBox(Gui::BitmapFactory().pixmap("Robot_CreateRobot"),tr("Angle"),true, parent)
 {
@@ -88,6 +92,8 @@ TaskBoxAngle::~TaskBoxAngle()
 //**************************************************************************
 // TaskDialog
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+/* TRANSLATOR Gui::TaskDlgRelocation */
 
 TaskDlgRelocation::TaskDlgRelocation()
     : TaskDialog()

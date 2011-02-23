@@ -42,6 +42,8 @@
 
 using namespace MeshPartGui;
 
+/* TRANSLATOR MeshPartGui::Tessellation */
+
 Tessellation::Tessellation(QWidget* parent)
   : QWidget(parent), ui(new Ui_Tessellation)
 {

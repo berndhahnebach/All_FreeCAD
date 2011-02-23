@@ -57,6 +57,8 @@
 
 using namespace PartDesignGui;
 
+/* TRANSLATOR PartDesignGui::ChamferDistanceDelegate */
+
 ChamferDistanceDelegate::ChamferDistanceDelegate(QObject *parent) : QItemDelegate(parent)
 {
 }
@@ -137,7 +139,7 @@ namespace PartDesignGui {
     };
 };
 
-/* TRANSLATOR PartGui::ChamferWidget */
+/* TRANSLATOR PartDesignGui::ChamferWidget */
 
 ChamferWidget::ChamferWidget(QWidget* parent, Qt::WFlags fl)
   : QWidget(parent, fl), ui(new Ui_TaskChamfer()), d(new ChamferWidgetP())

@@ -51,7 +51,7 @@ using namespace Gui::DockWnd;
 using namespace Gui::PropertyEditor;
 
 
-/* TRANSLATOR Gui::DockWnd::PropertyView */
+/* TRANSLATOR Gui::PropertyView */
 
 PropertyView::PropertyView(QWidget *parent)
   : QWidget(parent)
@@ -68,10 +68,10 @@ PropertyView::PropertyView(QWidget *parent)
 
     propertyEditorView = new Gui::PropertyEditor::PropertyEditor();
     propertyEditorView->setAutomaticDocumentUpdate(false);
-    tabs->addTab(propertyEditorView, trUtf8("View"));
+    tabs->addTab(propertyEditorView, tr("View"));
     propertyEditorData = new Gui::PropertyEditor::PropertyEditor();
     propertyEditorData->setAutomaticDocumentUpdate(true);
-    tabs->addTab(propertyEditorData, trUtf8("Data"));
+    tabs->addTab(propertyEditorData, tr("Data"));
 }
 
 PropertyView::~PropertyView()

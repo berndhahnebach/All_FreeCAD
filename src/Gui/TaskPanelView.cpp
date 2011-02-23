@@ -34,6 +34,8 @@ using namespace Gui;
 using namespace Gui::DockWnd;
 
 
+/* TRANSLATOR Gui::DockWnd::TaskPanelView */
+
 TaskPanelView::TaskPanelView(Gui::Document* pcDocument, QWidget *parent)
   : DockWindow(pcDocument,parent)
 {

@@ -470,8 +470,8 @@ RemoveComponentsDialog::RemoveComponentsDialog(QWidget* parent, Qt::WFlags fl)
     QDialogButtonBox* buttonBox = new QDialogButtonBox(this);
     buttonBox->setStandardButtons(QDialogButtonBox::Close|QDialogButtonBox::Ok);
     QPushButton* okButton = buttonBox->button(QDialogButtonBox::Ok);
-    okButton->setText(TaskRemoveComponents::tr("Delete"));
-    buttonBox->addButton(TaskRemoveComponents::tr("Invert"),
+    okButton->setText(MeshGui::TaskRemoveComponents::tr("Delete"));
+    buttonBox->addButton(MeshGui::TaskRemoveComponents::tr("Invert"),
         QDialogButtonBox::ActionRole);
     
     connect(buttonBox, SIGNAL(clicked(QAbstractButton*)),
@@ -507,6 +507,8 @@ void RemoveComponentsDialog::clicked(QAbstractButton* btn)
 }
 
 // ---------------------------------------
+
+/* TRANSLATOR MeshGui::TaskRemoveComponents */
 
 TaskRemoveComponents::TaskRemoveComponents()
 {

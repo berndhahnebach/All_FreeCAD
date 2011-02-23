@@ -39,6 +39,8 @@
 
 using namespace Gui::TaskView;
 
+/* TRANSLATOR Gui::TaskView::TaskAppearance */
+
 TaskAppearance::TaskAppearance(QWidget *parent)
     : TaskBox(Gui::BitmapFactory().pixmap("document-new"),tr("Appearance"),true, parent)
 {
