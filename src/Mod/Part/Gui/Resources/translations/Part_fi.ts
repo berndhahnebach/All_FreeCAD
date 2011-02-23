@@ -1505,7 +1505,7 @@ Ole hyvä ja valitse kelvollinen muoto alas veto laatikosta.</translation>
     </message>
     <message>
       <location/>
-      <source>View smooting</source>
+      <source>View smoothing</source>
       <translation>Näytä tasainen</translation>
     </message>
     <message>

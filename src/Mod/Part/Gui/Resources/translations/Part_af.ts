@@ -1505,7 +1505,7 @@ Kies eers 'n geldige vorm in die vallys.</translation>
     </message>
     <message>
       <location/>
-      <source>View smooting</source>
+      <source>View smoothing</source>
       <translation>Kyk na stryking</translation>
     </message>
     <message>
