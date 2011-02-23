@@ -47,11 +47,15 @@ or a link to another entity.
 
 Important note:
 
-For this reader to function, you need an IFC Schema Express file (.exp)
+1) For this reader to function, you need an IFC Schema Express file (.exp)
 available here:
 http://www.steptools.com/support/stdev_docs/express/ifc2x3/ifc2x3_tc1.exp
 For licensing reasons we are not allowed to ship that file with FreeCAD.
 Just place the .exp file together with this script.
+
+2) IFC files can have ordered content (ordered list, no entity number missing)
+or be much messier (entity numbers missing, etc). The performance of the reader
+will be drastically different.
 '''
 
 IFCLINE_RE = re.compile("#(\d+)[ ]?=[ ]?(.*?)\((.*)\);[\\r]?$")
@@ -309,26 +313,28 @@ class IfcEntity:
             
 class IfcDocument:
     "an object representing an IFC document"
-    def __init__(self,filename,schema="IFC2X3_TC1.exp"):
+    def __init__(self,filename,schema="IFC2X3_TC1.exp",debug=False):
+        DEBUG = debug
         f = IfcFile(filename,schema)
         self.filename = filename
         self.data = f.entById
-        self.Entities = [f.header]
+        self.Entities = {0:f.header}
         for k,e in self.data.iteritems():
-            self.Entities.append(IfcEntity(e,self))
-        if DEBUG: print len(self.Entities)," entities created. Creating attributes..."
-        for ent in self.Entities:
+            eid = int(e['id'])
+            self.Entities[eid] = IfcEntity(e,self)
+        if DEBUG: print len(self.Entities),"entities created. Creating attributes..."
+        for k,ent in self.Entities.iteritems():
             if DEBUG: print "attributing entity ",ent
             if hasattr(ent,"attributes"):
                 for k,v in ent.attributes.iteritems():
                     if DEBUG: print "parsing attribute: ",k," value ",v
                     if isinstance(v,str):
-                        val = self.cleanValue(v)
+                        val = self.__clean__(v)
                     elif isinstance(v,list):
                         val = []
                         for item in v:
                             if isinstance(item,str):
-                                val.append(self.cleanValue(item))
+                                val.append(self.__clean__(item))
                             else:
                                 val.append(item)
                     else:
@@ -336,46 +342,49 @@ class IfcDocument:
                     setattr(ent,k.strip(),val)
         if DEBUG: print "Document successfully created"
 
-    def cleanValue(self,value):
+    def __clean__(self,value):
         "strips unuseful characters from an attribute value"
-        val = value.strip(" ()'")
-        if '#' in val:
-            if "," in val:
-                val = val.split(",")
-                l = []
-                for subval in val:
-                    if '#' in subval:
-                        s = subval.strip(" #")
-                        if DEBUG: print "referencing ",s," : ",self.getEnt(int(s))
-                        l.append(self.getEnt(int(s)))
-                val = l
-            else:
-                val = val.strip()
-                val = val.replace("#","")
-                if DEBUG: print "referencing ",val," : ",self.getEnt(int(val))
-                val =  self.getEnt(int(val))
-                if not val:
-                    val = value
+        try:
+            val = value.strip(" ()'")
+            if '#' in val:
+                if "," in val:
+                    val = val.split(",")
+                    l = []
+                    for subval in val:
+                        if '#' in subval:
+                            s = subval.strip(" #")
+                            if DEBUG: print "referencing ",s," : ",self.getEnt(int(s))
+                            l.append(self.getEnt(int(s)))
+                    val = l
+                else:
+                    val = val.strip()
+                    val = val.replace("#","")
+                    if DEBUG: print "referencing ",val," : ",self.getEnt(int(val))
+                    val =  self.getEnt(int(val))
+                    if not val:
+                        val = value
+        except:
+            if DEBUG: print "error parsing attribute",value
+            val = value
         return val
         
     def __repr__(self):
-        return "IFC Document: " + self.filename + ', ' + str(len(self.Entities)) + " entities"
+        return "IFC Document: " + self.filename + ', ' + str(len(self.Entities)) + " entities "
 
     def getEnt(self,ref):
         "gets an entity by id number, or a list of entities by type"
         if isinstance(ref,int):
-            if ref < len(self.Entities):
+            if ref in self.Entities:
                 return self.Entities[ref]
-            else:
-                return None
         elif isinstance(ref,str):
             l = []
             ref = ref.upper()
-            for ob in self.Entities:
+            for k,ob in self.Entities.iteritems():
                 if hasattr(ob,"type"):
                     if ob.type == ref:
                         l.append(ob)
             return l
+        return None
 
     def search(self,pat):
         "searches entities types for partial match"
