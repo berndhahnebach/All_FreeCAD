@@ -1505,8 +1505,8 @@ Please select a valid shape in the drop-down box first.</translation>
     </message>
     <message>
       <location/>
-      <source>View smooting</source>
-      <translation>View smooting</translation>
+      <source>View smoothing</source>
+      <translation>View smoothing</translation>
     </message>
     <message>
       <location/>

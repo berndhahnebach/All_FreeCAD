@@ -1504,7 +1504,7 @@ Please select a valid shape in the drop-down box first.</source>
     </message>
     <message>
       <location/>
-      <source>View smooting</source>
+      <source>View smoothing</source>
       <translation>Toon effenen</translation>
     </message>
     <message>

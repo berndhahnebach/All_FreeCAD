@@ -1505,7 +1505,7 @@ Seleziona prima una forma valida dal menu a tendina.</translation>
     </message>
     <message>
       <location/>
-      <source>View smooting</source>
+      <source>View smoothing</source>
       <translation>Vista lisciata</translation>
     </message>
     <message>
