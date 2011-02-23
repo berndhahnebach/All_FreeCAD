@@ -33,6 +33,8 @@
 
 using namespace PartGui;
 
+/* TRANSLATOR PartGui::DlgPartImportIgesImp */
+
 /* 
  *  Constructs a DlgPartImportIges which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 

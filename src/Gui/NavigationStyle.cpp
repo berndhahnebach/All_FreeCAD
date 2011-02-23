@@ -982,6 +982,8 @@ TYPESYSTEM_SOURCE_ABSTRACT(Gui::UserNavigationStyle,Gui::NavigationStyle);
 
 // ----------------------------------------------------------------------------------
 
+/* TRANSLATOR Gui::InventorNavigationStyle */
+
 TYPESYSTEM_SOURCE(Gui::InventorNavigationStyle, Gui::UserNavigationStyle);
 
 InventorNavigationStyle::InventorNavigationStyle()
@@ -1302,6 +1304,8 @@ SbBool InventorNavigationStyle::processSoEvent(const SoEvent * const ev)
 }
 
 // ----------------------------------------------------------------------------------
+
+/* TRANSLATOR Gui::CADNavigationStyle */
 
 TYPESYSTEM_SOURCE(Gui::CADNavigationStyle, Gui::UserNavigationStyle);
 

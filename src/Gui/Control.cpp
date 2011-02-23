@@ -40,6 +40,8 @@
 using namespace Gui;
 using namespace std;
 
+/* TRANSLATOR Gui::ControlSingleton */
+
 ControlSingleton* ControlSingleton::_pcSingleton = 0;
 static QPointer<Gui::TaskView::TaskView> taskPanel = 0;
 

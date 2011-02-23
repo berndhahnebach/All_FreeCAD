@@ -170,6 +170,8 @@ SoPickedPoint* ViewProviderFace::getPickedPoint(const SbVec2s& pos, const SoQtVi
 
 // ----------------------------------------------------------------------
 
+/* TRANSLATOR MeshGui::MeshFaceAddition */
+
 MeshFaceAddition::MeshFaceAddition(Gui::View3DInventor* parent)
   : QObject(parent), faceView(new MeshGui::ViewProviderFace())
 {

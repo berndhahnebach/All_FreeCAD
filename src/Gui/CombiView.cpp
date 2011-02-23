@@ -39,6 +39,8 @@ using namespace Gui;
 using namespace Gui::DockWnd;
 
 
+/* TRANSLATOR Gui::DockWnd::CombiView */
+
 CombiView::CombiView(Gui::Document* pcDocument, QWidget *parent)
   : DockWindow(pcDocument,parent), oldTabIndex(0)
 {

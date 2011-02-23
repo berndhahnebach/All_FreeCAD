@@ -32,6 +32,8 @@
 
 using namespace PartGui;
 
+/* TRANSLATOR PartGui::DlgPartImportStepImp */
+
 /* 
  *  Constructs a DlgPartImportStep which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 

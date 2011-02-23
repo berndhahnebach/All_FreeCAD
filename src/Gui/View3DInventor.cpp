@@ -88,6 +88,8 @@ void GLOverlayWidget::paintEvent(QPaintEvent* ev)
     paint.end();
 }
 
+/* TRANSLATOR Gui::View3DInventor */
+
 TYPESYSTEM_SOURCE_ABSTRACT(Gui::View3DInventor,Gui::BaseView);
 
 View3DInventor::View3DInventor(Gui::Document* pcDocument, QWidget* parent, Qt::WFlags wflags)

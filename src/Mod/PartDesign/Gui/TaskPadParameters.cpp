@@ -40,6 +40,8 @@
 using namespace PartDesignGui;
 using namespace Gui;
 
+/* TRANSLATOR PartDesignGui::TaskPadParameters */
+
 TaskPadParameters::TaskPadParameters(QWidget *parent)
     : TaskBox(Gui::BitmapFactory().pixmap("document-new"),tr("TaskPadParameters"),true, parent)
 {
