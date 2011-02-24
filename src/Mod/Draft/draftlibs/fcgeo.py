@@ -755,7 +755,63 @@ def bind(wire1,wire2):
         if nw.isClosed():
                 return Part.Face(nw)
         return nw
+
+def cleanFaces(shape):
+        '''removes inner edges from coplanar faces'''
+        # grouping faces by same normal
+        groups = []
+        for face in shape.Faces:
+                norm = face.normalAt(0.5,0.5)
+                found = False
+                for g in groups:
+                        if g[0] == norm:
+                                g.append(face)
+                                found = True
+                                break
+                if not found:
+                        groups.append([norm,face])
         
+        # separating groups with more than 1 faces
+        treatedfaces = []
+        facestotreat = []
+        for g in groups:
+                if len(g) > 2:
+                        facestotreat.append(g)
+                else:
+                        treatedfaces.append(g[1])
+
+        # find border edges in each group
+        for g in facestotreat:
+                sh = Part.makeCompound(g[1:])
+                lut={}
+                for f in sh.Faces:
+                        for e in f.Edges:
+                                hc = e.hashCode()
+                                if lut.has_key(hc): lut[hc]=lut[hc]+1
+                                else: lut[hc] = 1
+                                
+                # filter out the edges shared by more than one face
+                bound=[]
+                inneredges = False
+                for e in sh.Edges:
+                        if lut[e.hashCode()] == 1:
+                                bound.append(e)
+                        else:
+                                inneredges = True
+
+                # adding new faces
+                if inneredges:
+                        w = Part.Wire(sortEdges(bound))
+                        w = Part.Face(w)
+                        treatedfaces.append(w)
+                else:
+                        treatedfaces.extend(sh.Faces)
+
+        # joining it all
+        fshape = Part.makeShell(treatedfaces)
+        if shape.isClosed():
+                fshape = Part.makeSolid(fshape)
+        return fshape
    
 # circle functions *********************************************************
 
