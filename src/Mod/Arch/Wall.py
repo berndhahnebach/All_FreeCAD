@@ -42,7 +42,7 @@ def makeWall(baseobj,width=None,height=None,align="Center"):
     if obj.Base: obj.Base.ViewObject.hide()
     return obj
 
-class commandWall:
+class CommandWall:
     "the Arch Wall command definition"
     def GetResources(self):
         return {'Pixmap'  : 'Arch_Wall',
@@ -73,8 +73,6 @@ class Wall:
                         "Other shapes that are appended to this wall")
         obj.addProperty("App::PropertyLinkList","Holes","Base",
                         "Other shapes that are subtracted from this wall")
-        obj.addProperty("App::PropertyLinkList","CrossingWalls","Base",
-                        "These are other walls that must be intestected with this wall")
         obj.Align = ['Left','Right','Center']
         obj.Proxy = self
         self.Type = "Wall"
@@ -89,10 +87,11 @@ class Wall:
             self.createGeometry(obj)
 
     def createGeometry(self,obj):
+        pl = obj.Placement
         if obj.Normal == Vector(0,0,0):
             normal = Vector(0,0,1)
         else:
-            normal = obj.Normal
+            normal = Vector(obj.Normal)
         if obj.Base:
             if obj.Base.isDerivedFrom("Part::Feature"):
                 base = obj.Base.Shape.copy()
@@ -102,7 +101,6 @@ class Wall:
                     if obj.Height:
                         norm = normal.multiply(obj.Height)
                         base = base.extrude(norm)
-                        obj.Shape = base
                 elif base.Wires and not base.isClosed():
                     dvec = fcgeo.vec(base.Edges[0]).cross(normal)
                     dvec.normalize()
@@ -119,16 +117,14 @@ class Wall:
                     if obj.Height:
                         norm = normal.multiply(obj.Height)
                         base = base.extrude(norm)
-                    for app in obj.Appendices:
-                        base = base.fuse(app.Shape)
-                        app.viewObject.hide() #to be removed
-                    for hole in obj.Holes:
-                        base = base.cut(hole.Shape)
-                        hole.ViewObject.hide() # to be removed
-                    for wall in obj.CrossingWalls:
-                        if not obj in wall.CrossingWalls:
-                            base = base.cut(wall.Shape)
-                    obj.Shape = base
+                for app in obj.Appendices:
+                    base = base.fuse(app.Shape)
+                    app.viewObject.hide() #to be removed
+                for hole in obj.Holes:
+                    base = base.cut(hole.Shape)
+                    hole.ViewObject.hide() # to be removed
+                obj.Shape = base
+                obj.Placement = pl
 
 class ViewProviderWall:
     "A View Provider for the Wall object"
@@ -139,7 +135,7 @@ class ViewProviderWall:
     def getIcon(self):          
         return """
                 /* XPM */
-                static char * arch_xpm[] = {
+                static char * Arch_Wall_xpm[] = {
                 "16 16 9 1",
                 " 	c None",
                 ".	c #543016",
