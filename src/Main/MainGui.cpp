@@ -51,10 +51,6 @@
 #include <Gui/Icons/background.xpm>
 #include <Gui/Application.h>
 
-// If you stumble here, run the target "BuildExtractRevision" on Windows systems or the Python script "SubWCRev.py" on Linux based systems
-// which builds src/Build/Version.h. Or create your own from src/Build/Version.h.in!
-#include <Build/Version.h>
-
 void PrintInitHelp(void);
 
 const char sBanner[] = "\xc2\xa9 Juergen Riegel, Werner Mayer, Yorik van Havre 2001-2011\n"\
