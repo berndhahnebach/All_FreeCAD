@@ -48,11 +48,6 @@
 #include <Base/Exception.h>
 #include <App/Application.h>
 
-// If you stumble here, run the target "BuildExtractRevision" on Windows systems or the Python script
-// "SubWCRev.py" on Linux based systems which builds src/Build/Version.h. Or create your own from
-// src/Build/Version.h.in!
-#include <Build/Version.h>
-
 
 #if defined(FC_OS_WIN32)
 # include <windows.h>
