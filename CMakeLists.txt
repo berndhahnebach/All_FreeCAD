@@ -357,8 +357,14 @@ if(FREECAD_MAINTAINERS_BUILD AND NOT WIN32)
 	  "${DOT}"
 	  "${TILD}"
 	  ".a$"
+	  ".am$"
+	  ".in$"
+	  ".bat$"
 	  ".o$"
 	  ".so$"
+	  ".m4$"
+	  "/_build/"
+	  "/_cmake/"
 	  "/.deps/"
 	  "/.svn/"
 	  "/CMakeFiles/"
@@ -368,15 +374,21 @@ if(FREECAD_MAINTAINERS_BUILD AND NOT WIN32)
 	  "/debian/"
 	  "/debug/"
 	  "/docs/"
+	  "/m4/"
 	  "/qt-build/"
+	  "/CxImage/"
+	  "/WindowsInstaller/"
 	  "AdditionalInfo.txt$"
 	  "CMakeCache.txt$"
 	  "Makefile$"
 	  "\\\\.sh$"
 	  "_CPack_"
+	  "71"
 	  "config.h$"
 	  "config.log$"
 	  "config.status$"
+	  "configure$"
+	  "configure.ac$"
 	  "Doxyfile"
 	  "html$"
 	  "stamp-h1$"
@@ -385,6 +397,10 @@ if(FREECAD_MAINTAINERS_BUILD AND NOT WIN32)
 	  "tar.gz"
 	  "~$"
 	)
+	#set(CPACK_SOURCE_IGNORE_FILES
+    #  ${CPACK_SOURCE_IGNORE_FILES}
+	#  "/Pivy-0.5/"
+	#)
 	set(CPACK_SOURCE_STRIP_FILES "")
 	include(CPack)
 
