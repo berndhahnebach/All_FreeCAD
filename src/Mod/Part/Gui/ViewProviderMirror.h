@@ -71,6 +71,17 @@ protected:
     //@}
 };
 
+class ViewProviderChamfer : public ViewProviderPart
+{
+    PROPERTY_HEADER(PartGui::ViewProviderChamfer);
+
+public:
+    /// constructor
+    ViewProviderChamfer();
+    /// destructor
+    virtual ~ViewProviderChamfer();
+};
+
 } // namespace PartGui
 
 

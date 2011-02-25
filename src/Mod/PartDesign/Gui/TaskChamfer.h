@@ -28,6 +28,7 @@
 #include <Gui/Selection.h>
 #include <QStandardItemModel>
 #include <QItemDelegate>
+#include <Mod/Part/Gui/ViewProvider.h>
 
 namespace PartDesignGui {
 
@@ -115,6 +116,17 @@ public:
 
 private:
     ChamferWidget* widget;
+};
+
+class ViewProviderChamfer : public PartGui::ViewProviderPart
+{
+    PROPERTY_HEADER(PartDesignGui::ViewProviderChamfer);
+
+public:
+    /// constructor
+    ViewProviderChamfer();
+    /// destructor
+    virtual ~ViewProviderChamfer();
 };
 
 } // namespace PartDesignGui

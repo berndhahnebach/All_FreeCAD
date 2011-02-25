@@ -241,3 +241,16 @@ std::vector<App::DocumentObject*> ViewProviderFillet::claimChildren() const
     temp.push_back(static_cast<Part::Fillet*>(getObject())->Base.getValue());
     return temp;
 }
+
+// ---------------------------------------
+
+PROPERTY_SOURCE(PartGui::ViewProviderChamfer, PartGui::ViewProviderPart)
+
+ViewProviderChamfer::ViewProviderChamfer()
+{
+    sPixmap = "Part_Chamfer";
+}
+
+ViewProviderChamfer::~ViewProviderChamfer()
+{
+}

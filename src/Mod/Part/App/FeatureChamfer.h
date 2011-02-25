@@ -45,6 +45,10 @@ public:
     /// recalculate the feature
     App::DocumentObjectExecReturn *execute(void);
     short mustExecute() const;
+    /// returns the type name of the view provider
+    const char* getViewProviderName(void) const {
+        return "PartGui::ViewProviderChamfer";
+    }
     //@}
 };
 

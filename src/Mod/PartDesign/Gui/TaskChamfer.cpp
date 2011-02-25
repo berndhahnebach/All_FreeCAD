@@ -531,4 +531,17 @@ bool TaskChamfer::reject()
     return true;
 }
 
+// ---------------------------------------
+
+PROPERTY_SOURCE(PartDesignGui::ViewProviderChamfer, PartGui::ViewProviderPart)
+
+ViewProviderChamfer::ViewProviderChamfer()
+{
+    sPixmap = "Part_Chamfer";
+}
+
+ViewProviderChamfer::~ViewProviderChamfer()
+{
+}
+
 #include "moc_TaskChamfer.cpp"
