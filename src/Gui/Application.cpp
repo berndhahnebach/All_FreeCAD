@@ -1041,12 +1041,15 @@ QPixmap Application::workbenchIcon(const QString& wb) const
                 ary[j]=content[j];
             if (ary.indexOf("/* XPM */") > 0) {
                 // Make sure to remove crap around the XPM data
-                QByteArray buffer;
-                buffer.reserve(ary.size());
                 QList<QByteArray> lines = ary.split('\n');
+                QByteArray buffer;
+                buffer.reserve(ary.size()+lines.size());
                 for (QList<QByteArray>::iterator it = lines.begin(); it != lines.end(); ++it) {
-                    if (!it->trimmed().isEmpty())
-                        buffer.append(*it);
+                    QByteArray trim = it->trimmed();
+                    if (!trim.isEmpty()) {
+                        buffer.append(trim);
+                        buffer.append('\n');
+                    }
                 }
                 icon.loadFromData(buffer, "XPM");
             }
