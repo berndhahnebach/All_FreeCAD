@@ -1039,9 +1039,18 @@ QPixmap Application::workbenchIcon(const QString& wb) const
             ary.resize(strlen);
             for (int j=0; j<strlen; j++)
                 ary[j]=content[j];
-            icon.loadFromData(ary, "XPM");
-
-            if (icon.isNull()) {
+            if (ary.indexOf("/* XPM */") > 0) {
+                // Make sure to remove crap around the XPM data
+                QByteArray buffer;
+                buffer.reserve(ary.size());
+                QList<QByteArray> lines = ary.split('\n');
+                for (QList<QByteArray>::iterator it = lines.begin(); it != lines.end(); ++it) {
+                    if (!it->trimmed().isEmpty())
+                        buffer.append(*it);
+                }
+                icon.loadFromData(buffer, "XPM");
+            }
+            else {
                 // is it a file name...
                 QString file = QString::fromUtf8(content.c_str());
                 icon.load(file);
