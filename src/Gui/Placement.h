@@ -28,10 +28,13 @@
 #include <Gui/TaskView/TaskView.h>
 #include <Base/Placement.h>
 
+class QSignalMapper;
+
 namespace Gui {
 namespace Dialog {
 
 class Ui_Placement;
+class TaskPlacement;
 class GuiExport Placement : public Gui::LocationDialog
 {
     Q_OBJECT
@@ -40,6 +43,7 @@ public:
     Placement(QWidget* parent = 0, Qt::WFlags fl = 0);
     ~Placement();
     void accept();
+    void reject();
 
     Base::Vector3f getDirection() const;
     void setPlacement(const Base::Placement&);
@@ -51,7 +55,6 @@ protected:
 
 private Q_SLOTS:
     void on_applyButton_clicked();
-    void on_applyPlacementChange_toggled(bool);
     void on_applyIncrementalPlacement_toggled(bool);
     void onPlacementChanged(int);
     void on_resetButton_clicked();
@@ -60,15 +63,19 @@ private:
     void setPlacementData(const Base::Placement&);
     Base::Placement getPlacementData() const;
     void directionActivated(int);
+    void applyPlacement(const Base::Placement& p, bool incremental, bool data);
 
 Q_SIGNALS:
-    void placementChanged(const QVariant &);
+    void placementChanged(const QVariant &, bool, bool);
     void directionChanged();
 
 private:
     typedef Gui::LocationInterfaceComp<Ui_Placement> Ui_PlacementComp;
     Ui_PlacementComp* ui;
-    Base::Placement pm;
+    QSignalMapper* signalMapper;
+    Base::Placement ref;
+
+    friend class TaskPlacement;
 };
 
 class GuiExport DockablePlacement : public Placement
@@ -94,15 +101,16 @@ public:
 public:
     void setPlacement(const Base::Placement&);
     bool accept();
+    bool reject();
+    void clicked(int id);
 
-    virtual QDialogButtonBox::StandardButtons getStandardButtons() const
-    { return QDialogButtonBox::Ok|QDialogButtonBox::Close; }
+    QDialogButtonBox::StandardButtons getStandardButtons() const;
 
 public Q_SLOTS:
-    void slotPlacementChanged(const QVariant &);
+    void slotPlacementChanged(const QVariant &, bool, bool);
 
 Q_SIGNALS:
-    void placementChanged(const QVariant &);
+    void placementChanged(const QVariant &, bool, bool);
 
 private:
     Placement* widget;
