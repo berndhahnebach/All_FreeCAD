@@ -1763,7 +1763,6 @@ class Polygon(Creator):
 		"finishes the arc"
 		Creator.finish(self)
 		if self.ui:
-			if (self.rad == None): self.doc.undo()
 			self.snap.finalize()
 			self.linetrack.finalize()
 			self.constraintrack.finalize()
