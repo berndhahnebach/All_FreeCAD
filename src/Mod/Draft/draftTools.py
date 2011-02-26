@@ -922,6 +922,7 @@ class SelectPlane:
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_SelectPlane',
+                        'Accel' : "SHIFT+P",
 			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_SelectPlane", "SelectPlane"),
 			'ToolTip' : QtCore.QT_TRANSLATE_NOOP("Draft_SelectPlane", "Select a working plane for geometry creation")}
 
@@ -1075,6 +1076,7 @@ class Line(Creator):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Line',
+                        'Accel' : "L",
 			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Line", "Line"),
 			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Line", "Creates a 2-point line. CTRL to snap, SHIFT to constrain")}
 
@@ -1205,6 +1207,7 @@ class Wire(Line):
 		Line.__init__(self,wiremode=True)
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Wire',
+                        'Accel' : "W",
 			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Wire", "Wire"),
 			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Wire", "Creates a multiple-point wire. CTRL to snap, SHIFT to constrain")}
 
@@ -1215,6 +1218,7 @@ class BSpline(Line):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_BSpline',
+                        'Accel' : "S",
 			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_BSpline", "B-Spline"),
 			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_BSpline", "Creates a multiple-point b-spline. CTRL to snap, SHIFT to constrain")}
 
@@ -1345,6 +1349,7 @@ class Rectangle(Creator):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Rectangle',
+                        'Accel' : "R",
 			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Rectangle", "Rectangle"),
 			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Rectangle", "Creates a 2-point rectangle. CTRL to snap")}
 
@@ -1426,6 +1431,7 @@ class Arc(Creator):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Arc',
+                        'Accel' : "A",
 			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Arc", "Arc"),
 			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Arc", "Creates an arc. CTRL to snap, SHIFT to constrain")}
 
@@ -1721,6 +1727,7 @@ class Circle(Arc):
 		
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Circle',
+                        'Accel' : "C",
 			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Circle", "Circle"),
 			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Circle", "Creates a circle. CTRL to snap, ALT to select tangent objects")}
 
@@ -1730,6 +1737,7 @@ class Polygon(Creator):
         
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Polygon',
+                        'Accel' : "G",
 			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Polygon", "Polygon"),
 			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Polygon", "Creates a regular polygon. CTRL to snap, SHIFT to constrain")}
 
@@ -1916,6 +1924,7 @@ class Text(Creator):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Text',
+                        'Accel' : "T",
 			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Text", "Text"),
 			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Text", "Creates an annotation. CTRL to snap")}
 
@@ -1978,6 +1987,7 @@ class Dimension(Creator):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Dimension',
+                        'Accel' : "SHIFT+D",
 			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Dimension", "Dimension"),
 			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Dimension", "Creates a dimension. CTRL to snap, SHIFT to constrain, ALT to select a segment")}
 
@@ -2217,6 +2227,7 @@ class Move(Modifier):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Move',
+                        'Accel' : "M",
 			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Move", "Move"),
 			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Move", "Moves the selected objects between 2 points. CTRL to snap, SHIFT to constrain, ALT to copy")}
 
@@ -2362,6 +2373,7 @@ class Rotate(Modifier):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Rotate',
+                        'Accel' : "SHIFT+R",
 			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Rotate", "Rotate"),
 			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Rotate", "Rotates the selected objects. CTRL to snap, SHIFT to constrain, ALT creates a copy")}
 
@@ -2550,6 +2562,7 @@ class Offset(Modifier):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Offset',
+                        'Accel' : "SHIFT+O",
 			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Offset", "Offset"),
 			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Offset", "Offsets the active object. CTRL to snap, SHIFT to constrain, ALT to copy")}
 
@@ -2696,6 +2709,7 @@ class Upgrade(Modifier):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Upgrade',
+                        'Accel' : ".",
 			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Upgrade", "Upgrade"),
 			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Upgrade", "Joins the selected objects into one, or converts closed wires to filled faces, or unite faces")}
 
@@ -2880,6 +2894,7 @@ class Downgrade(Modifier):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Downgrade',
+                        'Accel' : ",",
 			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Downgrade", "Downgrade"),
 			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Downgrade", "Explodes the selected objects into simpler objects, or subtract faces")}
 
@@ -2970,6 +2985,7 @@ class Trimex(Modifier):
 
 	def GetResources(self):
 		return {'Pixmap' : 'Draft_Trimex',
+                        'Accel' : "E",
 			'MenuText' : QtCore.QT_TRANSLATE_NOOP("Draft_Trimex", "Trimex"),
 			'ToolTip' : QtCore.QT_TRANSLATE_NOOP("Draft_Trimex", "Trims or Extends the selected object, or extrudes single faces. CTRL snaps, SHIFT constrains to current segment or to normal, ALT inverts")}
 
@@ -3242,6 +3258,7 @@ class Scale(Modifier):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Scale',
+                        'Accel' : "SHIFT+S",
 			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Scale", "Scale"),
 			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Scale", "Scales the selected objects from a base point. CTRL to snap, SHIFT to constrain, ALT to copy")}
 
