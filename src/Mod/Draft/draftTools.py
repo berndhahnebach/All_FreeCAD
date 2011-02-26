@@ -3015,6 +3015,9 @@ class Trimex(Modifier):
 		self.constraintrack = lineTracker(dotted=True)
 		self.edges = []
                 self.ghost = None
+                self.placement = None
+                if "Placement" in self.sel.PropertiesList:
+                        self.placement = self.sel.Placement
                 c = fcgeo.complexity(self.sel)
                 if ((c >= 7) and (len(self.sel.Shape.Faces) > 1)):
                         msg(translate("draft", "The selected object cannot be extended\n"))
@@ -3224,7 +3227,11 @@ class Trimex(Modifier):
                         self.doc.openTransaction("Trim/extend")
                         if 'Points' in self.sel.PropertiesList:
                                 p = []
-                                for v in newshape.Vertexes: p.append(v.Point)
+                                if self.placement: invpl = self.placement.inverse()
+                                for v in newshape.Vertexes:
+                                        np = v.Point
+                                        if self.placement: np = invpl.multVec(np)
+                                        p.append(np)
                                 self.sel.Points = p
                         else:
                                 self.sel.Shape = newshape
