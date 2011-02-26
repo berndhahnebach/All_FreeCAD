@@ -526,9 +526,9 @@ void Command::languageChange()
 
 MacroCommand::MacroCommand(const char* name)
 #if defined (_MSC_VER)
-        : Command( _strdup(name) )
+  : Command( _strdup(name) )
 #else
-        : Command( strdup(name) )
+  : Command( strdup(name) )
 #endif
 {
     sGroup = QT_TR_NOOP("Macros");
@@ -728,6 +728,7 @@ Action * PythonCommand::createAction(void)
         pcAction->setStatusTip(qApp->translate(getName(), getToolTipText()));
     if (strcmp(getResource("Pixmap"),"") != 0)
         pcAction->setIcon(Gui::BitmapFactory().pixmap(getResource("Pixmap")));
+    pcAction->setShortcut     (getAccel());
 
     return pcAction;
 }
@@ -759,7 +760,12 @@ const char* PythonCommand::getPixmap() const
 
 int PythonCommand::getAccel() const
 {
-    return 0;
+    const char* accel = getResource("Accel");
+    if (!accel || accel[0] == '\0')
+        return 0;
+    QKeySequence ks(QString::fromAscii(accel));
+    QVariant v = QVariant::fromValue<QKeySequence>(ks);
+    return v.toInt();
 }
 
 //===========================================================================
