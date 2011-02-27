@@ -735,7 +735,10 @@ Action * PythonCommand::createAction(void)
 
 const char* PythonCommand::getWhatsThis() const
 {
-    return getResource("WhatsThis");
+    const char* whatsthis = getResource("WhatsThis");
+    if (!whatsthis || whatsthis[0] == '\0')
+        whatsthis = this->getName();
+    return whatsthis;
 }
 
 const char* PythonCommand::getMenuText() const
