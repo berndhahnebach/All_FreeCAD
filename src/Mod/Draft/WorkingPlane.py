@@ -93,7 +93,7 @@ class plane:
 		t.multiply(self.offsetToPoint(p, direction))
 		return p.add(t)
 
-	def alignToPointAndAxis(self, point, axis, offset):
+	def alignToPointAndAxis(self, point, axis, offset, upvec=None):
 		self.doc = FreeCAD.ActiveDocument
 		self.axis = axis;
 		self.axis.normalize()
@@ -103,6 +103,10 @@ class plane:
                 elif (fcvec.equals(axis, Vector(-1,0,0))):
                         self.u = Vector(0,-1,0)
                         self.v = Vector(0,0,1)
+                elif upvec:
+                        self.v = upvec
+                        self.v.normalize()
+                        self.u = self.v.cross(self.axis)
 		else:
 			self.v = axis.cross(Vector(1,0,0))
 			self.v.normalize()
@@ -145,10 +149,10 @@ class plane:
 			# len(sex) > 2, look for point and line, three points, etc.
 			return False
 
-	def setup(self, direction, point):
+	def setup(self, direction, point, upvec=None):
 		'''If working plane is undefined, define it!'''
 		if self.weak:
-			self.alignToPointAndAxis(point, direction, 0)
+			self.alignToPointAndAxis(point, direction, 0, upvec)
 			self.weak = True
 
 	def reset(self):

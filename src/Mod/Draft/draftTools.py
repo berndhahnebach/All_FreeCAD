@@ -1041,7 +1041,9 @@ class Creator:
                         self.ui.sourceCmd = self
                         self.ui.cmdlabel.setText(name)
 			FreeCADGui.draftToolBar.draftWidget.setVisible(True)
-			plane.setup(fcvec.neg(self.view.getViewDirection()), Vector(0,0,0))
+                        rot = self.view.getCameraNode().getField("orientation").getValue()
+                        upv = Vector(rot.multVec(coin.SbVec3f(0,1,0)).getValue())
+			plane.setup(fcvec.neg(self.view.getViewDirection()), Vector(0,0,0), upv)
 			self.node = []
 			self.pos = []
 			self.constrain = None
@@ -2192,7 +2194,9 @@ class Modifier:
 			self.view = FreeCADGui.ActiveDocument.ActiveView
 			self.ui = FreeCADGui.draftToolBar.ui
 			FreeCADGui.draftToolBar.draftWidget.setVisible(True)
-			plane.setup(fcvec.neg(self.view.getViewDirection()), Vector(0,0,0))
+                        rot = self.view.getCameraNode().getField("orientation").getValue()
+                        upv = Vector(rot.multVec(coin.SbVec3f(0,1,0)).getValue())
+			plane.setup(fcvec.neg(self.view.getViewDirection()), Vector(0,0,0), upv)
 			self.node = []
 			self.ui.sourceCmd = self
 			self.constrain = None
