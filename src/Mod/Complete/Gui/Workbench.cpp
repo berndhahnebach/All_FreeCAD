@@ -51,6 +51,8 @@ using namespace CompleteGui;
     qApp->translate("Workbench", "&Drafting");
     qApp->translate("Workbench", "Sketch based");
     qApp->translate("Workbench", "Parametric");
+    qApp->translate("Workbench", "Object appearence");
+    qApp->translate("Workbench", "Wire Tools");
 #endif
 
 /// @namespace CompleteGui @class Workbench
@@ -315,7 +317,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
         *DraftContext << "Draft_ApplyStyle" << "Draft_ToggleDisplayMode";
 
         Gui::MenuItem* DraftWireTools = new Gui::MenuItem();
-        DraftWireTools->setCommand("Wire tools");
+        DraftWireTools->setCommand("Wire Tools");
 
         *DraftWireTools << "Draft_WireToBSpline" << "Draft_AddPoint" << "Draft_DelPoint";
 

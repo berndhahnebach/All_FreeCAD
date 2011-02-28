@@ -2345,8 +2345,8 @@ class ApplyStyle(Modifier):
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_Apply',
-			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Apply", "Apply Current Style"),
-			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Apply", "Applies current line width and color to selected objects")}
+			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_ApplyStyle", "Apply Current Style"),
+			'ToolTip' : QtCore.QT_TRANSLATE_NOOP("Draft_ApplyStyle", "Applies current line width and color to selected objects")}
 
         def IsActive(self):
                 if Draft.getSelection():
@@ -3462,8 +3462,8 @@ class ToggleDisplayMode():
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_SwitchMode',
-                        'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_SwitchMode", "Toggle display mode"),
-			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_SwitchMode", "Swaps display mode of selected objects between wireframe and flatlines")}
+			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_ToggleDisplayMode", "Toggle display mode"),
+			'ToolTip' : QtCore.QT_TRANSLATE_NOOP("Draft_ToggleDisplayMode", "Swaps display mode of selected objects between wireframe and flatlines")}
 
         def IsActive(self):
                 if Draft.getSelection():
