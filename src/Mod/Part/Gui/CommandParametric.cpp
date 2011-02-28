@@ -57,6 +57,7 @@ void CmdPartCylinder::activated(int iMsg)
     doCommand(Doc,"App.ActiveDocument.addObject(\"Part::Cylinder\",\"Cylinder\")");
     commitCommand();
     updateActive();
+    doCommand(Gui, "Gui.SendMsgToActiveView(\"ViewFit\")");
 }
 
 bool CmdPartCylinder::isActive(void)
@@ -91,6 +92,7 @@ void CmdPartBox::activated(int iMsg)
     doCommand(Doc,"App.ActiveDocument.addObject(\"Part::Box\",\"Box\")");
     commitCommand();
     updateActive();
+    doCommand(Gui, "Gui.SendMsgToActiveView(\"ViewFit\")");
 }
 
 bool CmdPartBox::isActive(void)
@@ -125,6 +127,7 @@ void CmdPartSphere::activated(int iMsg)
     doCommand(Doc,"App.ActiveDocument.addObject(\"Part::Sphere\",\"Sphere\")");
     commitCommand();
     updateActive();
+    doCommand(Gui, "Gui.SendMsgToActiveView(\"ViewFit\")");
 }
 
 bool CmdPartSphere::isActive(void)
@@ -159,6 +162,7 @@ void CmdPartCone::activated(int iMsg)
     doCommand(Doc,"App.ActiveDocument.addObject(\"Part::Cone\",\"Cone\")");
     commitCommand();
     updateActive();
+    doCommand(Gui, "Gui.SendMsgToActiveView(\"ViewFit\")");
 }
 
 bool CmdPartCone::isActive(void)
@@ -193,6 +197,7 @@ void CmdPartTorus::activated(int iMsg)
     doCommand(Doc,"App.ActiveDocument.addObject(\"Part::Torus\",\"Torus\")");
     commitCommand();
     updateActive();
+    doCommand(Gui, "Gui.SendMsgToActiveView(\"ViewFit\")");
 }
 
 bool CmdPartTorus::isActive(void)
