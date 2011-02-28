@@ -1282,12 +1282,13 @@ StdCmdViewCreate::StdCmdViewCreate()
 
 void StdCmdViewCreate::activated(int iMsg)
 {
-  getActiveGuiDocument()->createView("View3DIv");
+    getActiveGuiDocument()->createView("View3DIv");
+    getActiveGuiDocument()->getActiveView()->viewAll();
 }
 
 bool StdCmdViewCreate::isActive(void)
 {
-  return (getActiveGuiDocument()!=NULL);
+    return (getActiveGuiDocument()!=NULL);
 }
 
 //===========================================================================
