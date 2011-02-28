@@ -637,11 +637,9 @@ void Application::slotRenameDocument(const App::Document& Doc)
 void Application::slotActiveDocument(const App::Document& Doc)
 {
     std::map<const App::Document*, Gui::Document*>::iterator doc = d->documents.find(&Doc);
-#ifdef FC_DEBUG
-    assert(doc!=d->documents.end());
-#endif
-
-    signalActiveDocument(*doc->second);
+    // this can happen when closing a document with two views opened
+    if (doc != d->documents.end())
+        signalActiveDocument(*doc->second);
 }
 
 void Application::slotNewObject(const ViewProvider& vp)
