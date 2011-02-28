@@ -326,14 +326,17 @@ void TaskView::addTaskWatcher(void)
 void TaskView::removeTaskWatcher(void)
 {
     // remove all widgets
-    for(std::vector<TaskWatcher*>::iterator it=ActiveWatcher.begin();it!=ActiveWatcher.end();++it){
+    for (std::vector<TaskWatcher*>::iterator it=ActiveWatcher.begin();it!=ActiveWatcher.end();++it) {
         std::vector<QWidget*> &cont = (*it)->getWatcherContent();
-        for(std::vector<QWidget*>::iterator it2=cont.begin();it2!=cont.end();++it2){
+        for (std::vector<QWidget*>::iterator it2=cont.begin();it2!=cont.end();++it2) {
             (*it2)->hide();
             taskPanel->removeWidget(*it2);
         }
 
+        delete *it;
     }
+
+    ActiveWatcher.clear();
     taskPanel->removeStretch();
 }
 
