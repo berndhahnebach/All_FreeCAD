@@ -55,12 +55,12 @@ SketchObject::SketchObject()
 App::DocumentObjectExecReturn *SketchObject::execute(void)
 {
     // recalculate support:
-    if(Support.getValue() && Support.getValue()->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
+    if (Support.getValue() && Support.getValue()->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
     {
         Part::Feature *part = static_cast<Part::Feature*>(Support.getValue());
         Base::Placement ObjectPos = part->Placement.getValue();
         const std::vector<std::string> &sub = Support.getSubValues();
-        assert (sub.size()==1);
+        assert(sub.size()==1);
         // get the selected sub shape (a Face)
         const Part::TopoShape &shape = part->Shape.getValue();
         TopoDS_Shape sh = shape.getSubShape(sub[0].c_str());
@@ -68,7 +68,7 @@ App::DocumentObjectExecReturn *SketchObject::execute(void)
         assert(!face.IsNull());
 
         BRepAdaptor_Surface adapt(face);
-        if(adapt.GetType() != GeomAbs_Plane)
+        if (adapt.GetType() != GeomAbs_Plane)
             return new App::DocumentObjectExecReturn("Sketch has no planar support!");
 
         // set sketch position 
@@ -83,14 +83,13 @@ App::DocumentObjectExecReturn *SketchObject::execute(void)
  
     // solve the sketch with no fixed points
     double * fixed[2]={0,0};
-    if(sketch.solve(fixed) != 0)
+    if (sketch.solve(fixed) != 0)
         return new App::DocumentObjectExecReturn("Solving the sketch failed!",this);
 
     std::vector<Part::Geometry *> geomlist = sketch.getGeometry();
     Geometry.setValues(geomlist);
-    for(std::vector<Part::Geometry *>::iterator it=geomlist.begin();it!=geomlist.end();++it){
-        if(*it)delete(*it);
-    }
+    for (std::vector<Part::Geometry *>::iterator it = geomlist.begin(); it != geomlist.end(); ++it)
+        if (*it) delete *it;
 
     Shape.setValue(sketch.toShape());
 
@@ -113,10 +112,13 @@ void SketchObject::setDatum(double Datum,int ConstrNbr)
     newVals[ConstrNbr] = constNew;
     this->Constraints.setValues(newVals);
     delete constNew;
-
-
 }
-    
+
+int SketchObject::addGeometry(const std::vector<Part::Geometry *> &geoList)
+{
+    return -1;
+}
+
 int SketchObject::addGeometry(const Part::Geometry *geo)
 {
     const std::vector< Part::Geometry * > &vals = Geometry.getValues();
@@ -129,24 +131,18 @@ int SketchObject::addGeometry(const Part::Geometry *geo)
     return Geometry.getSize()-1;
 }
 
-int SketchObject::addGeometry(const std::vector<Part::Geometry *> &geoList)
-{
-    return -1;
-}
-
 
 int SketchObject::addConstraints(const std::vector<Constraint *> &ConstraintList)
 {
     return -1;
 }
 
-
-int SketchObject::addConstraints(const Constraint *Constraints)
+int SketchObject::addConstraints(const Constraint *constraint)
 {
     const std::vector< Constraint * > &vals = this->Constraints.getValues();
 
     std::vector< Constraint * > newVals(vals);
-    Constraint *constNew = Constraints->clone();
+    Constraint *constNew = constraint->clone();
     newVals.push_back(constNew);
     this->Constraints.setValues(newVals);
     delete constNew;
@@ -163,17 +159,16 @@ PyObject *SketchObject::getPyObject(void)
     return Py::new_reference_to(PythonObject); 
 }
 
-unsigned int SketchObject::getMemSize (void) const
+unsigned int SketchObject::getMemSize(void) const
 {
-	return 0;
+    return 0;
 }
 
-void SketchObject::Save (Writer &writer) const
+void SketchObject::Save(Writer &writer) const
 {
     // save the father classes
     Part::Part2DObject::Save(writer);
-
- }
+}
 
 void SketchObject::Restore(XMLReader &reader)
 {

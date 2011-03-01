@@ -57,9 +57,9 @@ public:
     Sketch();
     ~Sketch();
 
-	// from base class
-    virtual unsigned int getMemSize (void) const;
-	virtual void Save (Base::Writer &/*writer*/) const;
+    // from base class
+    virtual unsigned int getMemSize(void) const;
+    virtual void Save(Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
 
 

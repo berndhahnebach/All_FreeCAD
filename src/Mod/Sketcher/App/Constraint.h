@@ -54,10 +54,9 @@ public:
     Constraint(const Constraint&);
     virtual Constraint *clone(void)const;
 
-
-	// from base class
-    virtual unsigned int getMemSize (void) const;
-	virtual void Save (Base::Writer &/*writer*/) const;
+    // from base class
+    virtual unsigned int getMemSize(void) const;
+    virtual void Save(Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
 
     virtual PyObject *getPyObject(void);
@@ -73,9 +72,6 @@ public:
     int Second;
     PointPos SecondPos;
     int Extern;
-
-
-
 };
 
 } //namespace Part

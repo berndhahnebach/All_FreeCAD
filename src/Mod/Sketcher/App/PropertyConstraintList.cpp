@@ -48,7 +48,7 @@ using namespace Sketcher;
 // PropertyConstraintList
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-TYPESYSTEM_SOURCE(Sketcher::PropertyConstraintList , App::PropertyLists);
+TYPESYSTEM_SOURCE(Sketcher::PropertyConstraintList, App::PropertyLists);
 
 //**************************************************************************
 // Construction/Destruction
@@ -76,7 +76,7 @@ int PropertyConstraintList::getSize(void) const
 
 void PropertyConstraintList::setValue(const Constraint* lValue)
 {
-    if (lValue){
+    if (lValue) {
         aboutToSetValue();
         _lValueList.resize(1);
         _lValueList[0]=lValue->clone();
@@ -89,16 +89,16 @@ void PropertyConstraintList::setValues(const std::vector<Constraint*>& lValue)
     aboutToSetValue();
     _lValueList.resize(lValue.size());
     // copy all objects
-    for(unsigned int i = 0;i<lValue.size(); i++)
-        _lValueList[i]=lValue[i]->clone();
+    for (unsigned int i = 0; i < lValue.size(); i++)
+        _lValueList[i] = lValue[i]->clone();
 
     hasSetValue();
 }
 
 PyObject *PropertyConstraintList::getPyObject(void)
 {
-    PyObject* list = PyList_New(	getSize() );
-    for(int i = 0;i<getSize(); i++)
+    PyObject* list = PyList_New(getSize());
+    for (int i = 0; i < getSize(); i++)
         PyList_SetItem( list, i, _lValueList[i]->getPyObject());
     return list;
 }
@@ -110,7 +110,7 @@ void PropertyConstraintList::setPyObject(PyObject *value)
         std::vector<Constraint*> values;
         values.resize(nSize);
 
-        for (Py_ssize_t i=0; i<nSize;++i) {
+        for (Py_ssize_t i=0; i < nSize; ++i) {
             PyObject* item = PyList_GetItem(value, i);
             if (!PyObject_TypeCheck(item, &(ConstraintPy::Type))) {
                 std::string error = std::string("types in list must be 'Constraint', not ");
@@ -123,8 +123,8 @@ void PropertyConstraintList::setPyObject(PyObject *value)
 
         setValues(values);
     }
-    else if(PyObject_TypeCheck(value, &(ConstraintPy::Type))) {
-        ConstraintPy  *pcObject = static_cast<ConstraintPy*>(value);
+    else if (PyObject_TypeCheck(value, &(ConstraintPy::Type))) {
+        ConstraintPy *pcObject = static_cast<ConstraintPy*>(value);
         setValue(pcObject->getConstraintPtr());
     }
     else {
@@ -134,14 +134,12 @@ void PropertyConstraintList::setPyObject(PyObject *value)
     }
 }
 
-void PropertyConstraintList::Save (Writer &writer) const
+void PropertyConstraintList::Save(Writer &writer) const
 {
-    writer.Stream() << writer.ind() << "<ConstraintList count=\"" <<  getSize() <<"\">" << endl;
+    writer.Stream() << writer.ind() << "<ConstraintList count=\"" << getSize() <<"\">" << endl;
     writer.incInd();
-    for(int i = 0;i<getSize(); i++){
-
+    for (int i = 0; i < getSize(); i++)
         _lValueList[i]->Save(writer);
-    }
     writer.decInd();
     writer.Stream() << writer.ind() << "</ConstraintList>" << endl ;
 }
@@ -191,11 +189,10 @@ void PropertyConstraintList::Paste(const Property &from)
     hasSetValue();
 }
 
-unsigned int PropertyConstraintList::getMemSize (void) const
+unsigned int PropertyConstraintList::getMemSize(void) const
 {
     int size = sizeof(PropertyConstraintList);
-     for(int i = 0;i<getSize(); i++){
+    for (int i = 0; i < getSize(); i++)
         size += _lValueList[i]->getMemSize();
-     }
     return size;
 }

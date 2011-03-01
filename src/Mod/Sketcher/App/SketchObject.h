@@ -36,7 +36,6 @@
 namespace Sketcher
 {
 
-
 class AppSketcherExport SketchObject :public Part::Part2DObject
 {
     PROPERTY_HEADER(Sketcher::SketchObject);
@@ -59,27 +58,26 @@ public:
     }
     //@}
 
-    /// add unspecified geomtry
+    /// add unspecified geometry
     int addGeometry(const Part::Geometry *geo);
-    /// add unspecified geomtry
+    /// add unspecified geometry
     int addGeometry(const std::vector<Part::Geometry *> &geoList);
     /// add all constraints in the list
     int addConstraints(const std::vector<Constraint *> &ConstraintList);
-    /// add constraint 
-    int addConstraints(const Constraint *Constraints );
+    /// add constraint
+    int addConstraints(const Constraint *constraint);
 
-
-    /// set the datum of an Distance or Angle constraint
+    /// set the datum of a Distance or Angle constraint
     void setDatum(double Datum,int ConstrNbr);
 
-    /** retrives for a Vertex number the corosponding GeoId and PointPosition
+    /** retrieves for a Vertex number the corosponding GeoId and PointPosition
     */
     void getGeoVertexIndex(int VertexId,int &GeoId,int &PointPos);
 
-	// from base class
+    // from base class
     virtual PyObject *getPyObject(void);
     virtual unsigned int getMemSize (void) const;
-	virtual void Save (Base::Writer &/*writer*/) const;
+    virtual void Save (Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
 
 };

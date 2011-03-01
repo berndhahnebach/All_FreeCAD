@@ -45,14 +45,11 @@ using namespace std;
 using namespace Part;
 
 
-
-
-
 //**************************************************************************
 // PropertyGeometryList
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-TYPESYSTEM_SOURCE(Part::PropertyGeometryList , App::PropertyLists);
+TYPESYSTEM_SOURCE(Part::PropertyGeometryList, App::PropertyLists);
 
 //**************************************************************************
 // Construction/Destruction
@@ -65,9 +62,8 @@ PropertyGeometryList::PropertyGeometryList()
 
 PropertyGeometryList::~PropertyGeometryList()
 {
-   for(std::vector<Part::Geometry *>::iterator it=_lValueList.begin();it!=_lValueList.end();++it)
-        if(*it)delete(*it);
-
+    for (std::vector<Geometry*>::iterator it = _lValueList.begin(); it != _lValueList.end(); ++it)
+        if (*it) delete *it;
 }
 
 void PropertyGeometryList::setSize(int newSize)
@@ -82,7 +78,7 @@ int PropertyGeometryList::getSize(void) const
 
 void PropertyGeometryList::setValue(const Geometry* lValue)
 {
-    if (lValue){
+    if (lValue) {
         aboutToSetValue();
         _lValueList.resize(1);
         _lValueList[0]=lValue->clone();
@@ -95,16 +91,16 @@ void PropertyGeometryList::setValues(const std::vector<Geometry*>& lValue)
     aboutToSetValue();
     _lValueList.resize(lValue.size());
     // copy all objects
-    for(unsigned int i = 0;i<lValue.size(); i++)
-        _lValueList[i]=lValue[i]->clone();
+    for (unsigned int i = 0; i < lValue.size(); i++)
+        _lValueList[i] = lValue[i]->clone();
 
     hasSetValue();
 }
 
 PyObject *PropertyGeometryList::getPyObject(void)
 {
-    PyObject* list = PyList_New(	getSize() );
-    for(int i = 0;i<getSize(); i++)
+    PyObject* list = PyList_New(getSize());
+    for (int i = 0; i < getSize(); i++)
         PyList_SetItem( list, i, _lValueList[i]->getPyObject());
     return list;
 }
@@ -116,7 +112,7 @@ void PropertyGeometryList::setPyObject(PyObject *value)
         std::vector<Geometry*> values;
         values.resize(nSize);
 
-        for (Py_ssize_t i=0; i<nSize;++i) {
+        for (Py_ssize_t i=0; i < nSize; ++i) {
             PyObject* item = PyList_GetItem(value, i);
             if (!PyObject_TypeCheck(item, &(GeometryPy::Type))) {
                 std::string error = std::string("types in list must be 'Geometry', not ");
@@ -129,7 +125,7 @@ void PropertyGeometryList::setPyObject(PyObject *value)
 
         setValues(values);
     }
-    else if(PyObject_TypeCheck(value, &(GeometryPy::Type))) {
+    else if (PyObject_TypeCheck(value, &(GeometryPy::Type))) {
         GeometryPy  *pcObject = static_cast<GeometryPy*>(value);
         setValue(pcObject->getGeometryPtr());
     }
@@ -140,13 +136,13 @@ void PropertyGeometryList::setPyObject(PyObject *value)
     }
 }
 
-void PropertyGeometryList::Save (Writer &writer) const
+void PropertyGeometryList::Save(Writer &writer) const
 {
-    writer.Stream() << writer.ind() << "<GeometryList count=\"" <<  getSize() <<"\">" << endl;
+    writer.Stream() << writer.ind() << "<GeometryList count=\"" << getSize() <<"\">" << endl;
     writer.incInd();
-    for(int i = 0;i<getSize(); i++){
-         writer.Stream() << writer.ind() << "<Geometry  type=\"" 
-                         << _lValueList[i]->getTypeId().getName() << "\">" << endl;;
+    for (int i = 0; i < getSize(); i++) {
+        writer.Stream() << writer.ind() << "<Geometry  type=\"" 
+                        << _lValueList[i]->getTypeId().getName() << "\">" << endl;;
         writer.incInd();
         _lValueList[i]->Save(writer);
         writer.decInd();
@@ -204,11 +200,10 @@ void PropertyGeometryList::Paste(const Property &from)
     hasSetValue();
 }
 
-unsigned int PropertyGeometryList::getMemSize (void) const
+unsigned int PropertyGeometryList::getMemSize(void) const
 {
     int size = sizeof(PropertyGeometryList);
-     for(int i = 0;i<getSize(); i++){
+    for (int i = 0; i < getSize(); i++)
         size += _lValueList[i]->getMemSize();
-     }
     return size;
 }

@@ -77,12 +77,12 @@ PyObject* SketchObjectPy::movePoint(PyObject *args)
 
     const std::vector< Part::Geometry * > &vals = this->getSketchObjectPtr()->Geometry.getValues();
     const Part::Geometry * actGeom = vals[GeoId];
-    if(actGeom->getTypeId() == Part::GeomLineSegment::getClassTypeId()){
+    if (actGeom->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
         const Part::GeomLineSegment * Line = static_cast<const Part::GeomLineSegment*>(actGeom);
         // create a single new line segment
         Part::GeomLineSegment *newLine = new Part::GeomLineSegment();
         // set the right point, leave the other old
-        if(PointType == 1)
+        if (PointType == 1)
             newLine->setPoints(v1,Line->getEndPoint());
         else
             newLine->setPoints(Line->getStartPoint(),v1);
