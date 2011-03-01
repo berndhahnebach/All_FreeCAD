@@ -68,6 +68,8 @@ PropertyGeometryList::~PropertyGeometryList()
 
 void PropertyGeometryList::setSize(int newSize)
 {
+    for (unsigned int i = newSize; i < _lValueList.size(); i++)
+        delete _lValueList[i];
     _lValueList.resize(newSize);
 }
 
@@ -80,8 +82,11 @@ void PropertyGeometryList::setValue(const Geometry* lValue)
 {
     if (lValue) {
         aboutToSetValue();
+        Geometry* newVal = lValue->clone();
+        for (unsigned int i = 0; i < _lValueList.size(); i++)
+            delete _lValueList[i];
         _lValueList.resize(1);
-        _lValueList[0]=lValue->clone();
+        _lValueList[0] = newVal;
         hasSetValue();
     }
 }
@@ -89,11 +94,13 @@ void PropertyGeometryList::setValue(const Geometry* lValue)
 void PropertyGeometryList::setValues(const std::vector<Geometry*>& lValue)
 {
     aboutToSetValue();
+    std::vector<Geometry*> oldVals(_lValueList);
     _lValueList.resize(lValue.size());
     // copy all objects
     for (unsigned int i = 0; i < lValue.size(); i++)
         _lValueList[i] = lValue[i]->clone();
-
+    for (unsigned int i = 0; i < oldVals.size(); i++)
+        delete oldVals[i];
     hasSetValue();
 }
 
@@ -179,11 +186,7 @@ void PropertyGeometryList::Restore(Base::XMLReader &reader)
 Property *PropertyGeometryList::Copy(void) const
 {
     PropertyGeometryList *p = new PropertyGeometryList();
-
-    p->_lValueList.resize(_lValueList.size());
-    // copy all objects
-    for(unsigned int i = 0;i<_lValueList.size(); i++)
-        p->_lValueList[i]=_lValueList[i]->clone();
+    p->setValues(_lValueList);
 
     return p;
 }
@@ -192,11 +195,7 @@ void PropertyGeometryList::Paste(const Property &from)
 {
     aboutToSetValue();
     const PropertyGeometryList& FromList = dynamic_cast<const PropertyGeometryList&>(from);
-    _lValueList.resize(FromList._lValueList.size());
-    // copy all objects
-    for(unsigned int i = 0;i<FromList._lValueList.size(); i++)
-        _lValueList[i]=FromList._lValueList[i]->clone();
-    
+    setValues(FromList._lValueList);
     hasSetValue();
 }
 

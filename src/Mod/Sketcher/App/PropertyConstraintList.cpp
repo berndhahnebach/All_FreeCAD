@@ -61,11 +61,14 @@ PropertyConstraintList::PropertyConstraintList()
 
 PropertyConstraintList::~PropertyConstraintList()
 {
-
+    for (std::vector<Constraint*>::iterator it = _lValueList.begin(); it != _lValueList.end(); ++it)
+        if (*it) delete *it;
 }
 
 void PropertyConstraintList::setSize(int newSize)
 {
+    for (unsigned int i = newSize; i < _lValueList.size(); i++)
+        delete _lValueList[i];
     _lValueList.resize(newSize);
 }
 
@@ -78,8 +81,11 @@ void PropertyConstraintList::setValue(const Constraint* lValue)
 {
     if (lValue) {
         aboutToSetValue();
+        Constraint* newVal = lValue->clone();
+        for (unsigned int i = 0; i < _lValueList.size(); i++)
+            delete _lValueList[i];
         _lValueList.resize(1);
-        _lValueList[0]=lValue->clone();
+        _lValueList[0] = newVal;
         hasSetValue();
     }
 }
@@ -87,11 +93,13 @@ void PropertyConstraintList::setValue(const Constraint* lValue)
 void PropertyConstraintList::setValues(const std::vector<Constraint*>& lValue)
 {
     aboutToSetValue();
+    std::vector<Constraint*> oldVals(_lValueList);
     _lValueList.resize(lValue.size());
     // copy all objects
     for (unsigned int i = 0; i < lValue.size(); i++)
         _lValueList[i] = lValue[i]->clone();
-
+    for (unsigned int i = 0; i < oldVals.size(); i++)
+        delete oldVals[i];
     hasSetValue();
 }
 
@@ -168,11 +176,7 @@ void PropertyConstraintList::Restore(Base::XMLReader &reader)
 Property *PropertyConstraintList::Copy(void) const
 {
     PropertyConstraintList *p = new PropertyConstraintList();
-
-    p->_lValueList.resize(_lValueList.size());
-    // copy all objects
-    for(unsigned int i = 0;i<_lValueList.size(); i++)
-        p->_lValueList[i]=_lValueList[i]->clone();
+    p->setValues(_lValueList);
 
     return p;
 }
@@ -181,11 +185,7 @@ void PropertyConstraintList::Paste(const Property &from)
 {
     aboutToSetValue();
     const PropertyConstraintList& FromList = dynamic_cast<const PropertyConstraintList&>(from);
-    _lValueList.resize(FromList._lValueList.size());
-    // copy all objects
-    for(unsigned int i = 0;i<FromList._lValueList.size(); i++)
-        _lValueList[i]=FromList._lValueList[i]->clone();
-    
+    setValues(FromList._lValueList);
     hasSetValue();
 }
 
