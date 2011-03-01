@@ -196,7 +196,8 @@ void ChamferWidget::onSelectionChanged(const Gui::SelectionChanges& msg)
             QString subelement = QString::fromAscii(msg.pSubName);
             QAbstractItemModel* model = ui->treeView->model();
             for (int i=0; i<model->rowCount(); ++i) {
-                QString name = model->data(model->index(i,0), Qt::DisplayRole).toString();
+                int id = model->data(model->index(i,0), Qt::UserRole).toInt();
+                QString name = QString::fromAscii("Edge%1").arg(id);
                 if (name == subelement) {
                     // ok, check the selected sub-element
                     Qt::CheckState checkState = Qt::Checked;
@@ -255,7 +256,8 @@ void ChamferWidget::toogleCheckState(const QModelIndex& index)
     if (!d->object)
         return;
     QVariant check = index.data(Qt::CheckStateRole);
-    QString name = index.data(Qt::DisplayRole).toString();
+    int id = index.data(Qt::UserRole).toInt();
+    QString name = QString::fromAscii("Edge%1").arg(id);
     Qt::CheckState checkState = static_cast<Qt::CheckState>(check.toInt());
 
     bool block = this->blockConnection(false);
@@ -303,6 +305,38 @@ void ChamferWidget::findShapes()
     if (current_index > 0) {
         ui->shapeObject->setCurrentIndex(current_index);
         on_shapeObject_activated(current_index);
+    }
+}
+
+void ChamferWidget::changeEvent(QEvent *e)
+{
+    if (e->type() == QEvent::LanguageChange) {
+        int index = ui->shapeObject->currentIndex();
+        // only get the items from index 1 on since the first one will be added automatically
+        int count = ui->shapeObject->count() - 1;
+        QStringList text;
+        QList<QVariant> data;
+        for (int i=0; i<count; i++) {
+            text << ui->shapeObject->itemText(i+1);
+            data << ui->shapeObject->itemData(i+1);
+        }
+
+        ui->retranslateUi(this);
+        for (int i=0; i<count; i++) {
+            ui->shapeObject->addItem(text.at(i));
+            ui->shapeObject->setItemData(i+1, data.at(i));
+        }
+
+        ui->shapeObject->setCurrentIndex(index);
+        QStandardItemModel *model = qobject_cast<QStandardItemModel*>(ui->treeView->model());
+        count = model->rowCount();
+        for (int i=0; i<count; i++) {
+            int id = model->data(model->index(i, 0), Qt::UserRole).toInt();
+            model->setData(model->index(i, 0), QVariant(tr("Edge%1").arg(id)));
+        }
+    }
+    else {
+        QWidget::changeEvent(e);
     }
 }
 

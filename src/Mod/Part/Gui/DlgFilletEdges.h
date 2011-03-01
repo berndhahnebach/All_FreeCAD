@@ -79,6 +79,7 @@ public:
 protected:
     void findShapes();
     void setupFillet(const std::vector<App::DocumentObject*>&);
+    void changeEvent(QEvent *e);
 
 private:
     void onSelectionChanged(const Gui::SelectionChanges& msg);
