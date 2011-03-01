@@ -77,6 +77,7 @@ public:
 
 protected:
     void findShapes();
+    void changeEvent(QEvent *e);
 
 private:
     void onSelectionChanged(const Gui::SelectionChanges& msg);
