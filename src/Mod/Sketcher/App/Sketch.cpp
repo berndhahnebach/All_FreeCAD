@@ -89,19 +89,17 @@ void Sketch::clear(void)
     Circles.clear();
 
     // deleting the doubles allocated with new
-    for(std::vector<double*>::iterator it = Parameters.begin();it!=Parameters.end();++it)
-        if(*it) delete *it;
+    for (std::vector<double*>::iterator it = Parameters.begin();it!=Parameters.end();++it)
+        if (*it) delete *it;
     Parameters.clear();
-    for(std::vector<double*>::iterator it = FixParameters.begin();it!=FixParameters.end();++it)
-        if(*it) delete *it;
+    for (std::vector<double*>::iterator it = FixParameters.begin();it!=FixParameters.end();++it)
+        if (*it) delete *it;
     FixParameters.clear();
 
     // deleting the geometry copied into this sketch
-    for(std::vector<GeoDef>::iterator it = Geoms.begin();it!=Geoms.end();++it)
-        if(it->geo) delete it->geo;
+    for (std::vector<GeoDef>::iterator it = Geoms.begin();it!=Geoms.end();++it)
+        if (it->geo) delete it->geo;
     Geoms.clear();
-
-
 }
 
 void Sketch::setUpSketch(const std::vector<Part::Geometry *> &geo,const std::vector<Constraint *> &ConstraintList)
@@ -110,17 +108,17 @@ void Sketch::setUpSketch(const std::vector<Part::Geometry *> &geo,const std::vec
     int rtn = -1;
 
 
-    // pass 1 first check the PointCoincidentConstraint =================================================
+    // pass 1: first check the PointCoincidentConstraint ===============================================
 
-    for(std::vector<Constraint *>::const_iterator it = ConstraintList.begin();it!=ConstraintList.end();++it){
-        switch ((*it)->Type){
+    for (std::vector<Constraint *>::const_iterator it = ConstraintList.begin();it!=ConstraintList.end();++it) {
+        switch ((*it)->Type) {
            case Coincident: addPointCoincidentConstraint((*it)->First,(*it)->FirstPos,(*it)->Second,(*it)->SecondPos,(*it)->Name.c_str()); break;
            default: break;
         }
     }
 
-    // pass 2: building up internel geo list ===========================================================
-    for (std::vector<Part::Geometry *>::const_iterator it = geo.begin();it!=geo.end();++it){
+    // pass 2: building up internal geo list ===========================================================
+    for (std::vector<Part::Geometry *>::const_iterator it = geo.begin();it!=geo.end();++it) {
         if ((*it)->getTypeId()== GeomLineSegment::getClassTypeId()) { // add a line
             const GeomLineSegment *lineSeg = dynamic_cast<const GeomLineSegment*>((*it));
             // create the definition struct for that geom
@@ -140,15 +138,15 @@ void Sketch::setUpSketch(const std::vector<Part::Geometry *> &geo,const std::vec
     assert((int)Geoms.size()>0 || ConstraintList.size() == 0 );
 
     rtn = -1;
-    for(std::vector<Constraint *>::const_iterator it = ConstraintList.begin();it!=ConstraintList.end();++it){
+    for (std::vector<Constraint *>::const_iterator it = ConstraintList.begin();it!=ConstraintList.end();++it) {
         // constraints on nothing makes no sense 
         assert((int)Geoms.size()>0  );
-        switch ((*it)->Type){
+        switch ((*it)->Type) {
            case Horizontal: addHorizontalConstraint((*it)->First,(*it)->Name.c_str()); break;
            case Vertical  : addVerticalConstraint((*it)->First,(*it)->Name.c_str());   break;
            case Parallel  : addParallelConstraint((*it)->First,(*it)->Second,(*it)->Name.c_str());  break;
            case Distance  :
-               if((*it)->Second == -1)
+               if ((*it)->Second == -1)
                     rtn = addDistanceConstraint((*it)->First,(*it)->Value, (*it)->Name.c_str());
                else
                    rtn = addDistanceConstraint((*it)->First,(*it)->Second,(*it)->Value, (*it)->Name.c_str());
@@ -168,7 +166,7 @@ void Sketch::setUpSketch(const std::vector<Part::Geometry *> &geo,const std::vec
 int Sketch::addGeometry(const Part::Geometry *geo)
 {
     
-    if(geo->getTypeId()== GeomLineSegment::getClassTypeId()){ // add a line
+    if (geo->getTypeId()== GeomLineSegment::getClassTypeId()) { // add a line
         const GeomLineSegment *lineSeg = dynamic_cast<const GeomLineSegment*>(geo);
         // create the definition struct for that geom
         return addLineSegment(*lineSeg);
@@ -180,9 +178,8 @@ int Sketch::addGeometry(const Part::Geometry *geo)
 
 void Sketch::addGeometry(const std::vector<Part::Geometry *> &geo)
 {
-    for(std::vector<Part::Geometry *>::const_iterator it = geo.begin();it!=geo.end();++it)
+    for (std::vector<Part::Geometry *>::const_iterator it = geo.begin();it!=geo.end();++it)
         addGeometry(*it);
-    
 }
 
 int Sketch::addPoint(Base::Vector3d newPoint)
@@ -240,14 +237,14 @@ int Sketch::addLineSegment(const Part::GeomLineSegment &lineSegment)
     def.parameterStartIndex = Parameters.size();
 
     // check if for the start point is already a constraint point present
-    if(PoPMap[Geoms.size()].StartPointIndex != -1){
+    if (PoPMap[Geoms.size()].StartPointIndex != -1) {
         // if yes, use the coincident point
         p1.x = Parameters[PoPMap[Geoms.size()].StartPointIndex+0];
         p1.y = Parameters[PoPMap[Geoms.size()].StartPointIndex+1];
         // set the values
         *(Parameters[PoPMap[Geoms.size()].StartPointIndex+0]) = start.x;
         *(Parameters[PoPMap[Geoms.size()].StartPointIndex+1]) = start.y;
-    }else{
+    } else {
         // otherwise set the parameter for the solver
         Parameters.push_back(new double(start.x));
         Parameters.push_back(new double(start.y));
@@ -258,14 +255,14 @@ int Sketch::addLineSegment(const Part::GeomLineSegment &lineSegment)
 
 
     // check if for the end point is already a constraint point present
-    if(PoPMap[Geoms.size()].EndPointIndex != -1){
+    if (PoPMap[Geoms.size()].EndPointIndex != -1) {
         // if yes, use the coincident point
         p2.x = Parameters[PoPMap[Geoms.size()].EndPointIndex+0];
         p2.y = Parameters[PoPMap[Geoms.size()].EndPointIndex+1];
         // set the values
         *(Parameters[PoPMap[Geoms.size()].EndPointIndex+0]) = end.x;
         *(Parameters[PoPMap[Geoms.size()].EndPointIndex+1]) = end.y;
-    }else{
+    } else {
         Parameters.push_back(new double(end.x));
         Parameters.push_back(new double(end.y));
         // set the points for later constraints
@@ -355,11 +352,11 @@ std::vector<Part::Geometry *> Sketch::getGeometry(bool withConstrucionElements) 
     std::vector<Part::Geometry *> temp(Geoms.size()-IntGeoOffset);
     int i=0;
     std::vector<GeoDef>::const_iterator it=Geoms.begin();
-    // skeep the default elements
+    // skip the default elements
     it += IntGeoOffset;
          
-    for(;it!=Geoms.end();++it,i++)
-        if(!it->construction || withConstrucionElements)
+    for (;it!=Geoms.end();++it,i++)
+        if (!it->construction || withConstrucionElements)
           temp[i] = it->geo->clone();
 
     return temp;
@@ -371,17 +368,17 @@ Py::Tuple Sketch::getPyGeometry(void) const
     Py::Tuple tuple(Geoms.size());
     int i=0;
     std::vector<GeoDef>::const_iterator it=Geoms.begin();
-    // skeep the default elements
+    // skip the default elements
     it += IntGeoOffset;
 
-    for(;it!=Geoms.end();++it,i++) {
-        if(it->type == Line){
+    for (;it!=Geoms.end();++it,i++) {
+        if (it->type == Line) {
             GeomLineSegment *lineSeg = dynamic_cast<GeomLineSegment*>(it->geo);
             tuple[i] = Py::Object(new LinePy(lineSeg));
-        }else if(it->type == Point){
+        } else if (it->type == Point) {
             Base::Vector3d temp(*(Points[Geoms[i].pointStartIndex].x),*(Points[Geoms[i].pointStartIndex].y),0);
             tuple[i] = Py::Object(new VectorPy(temp));
-        }else {
+        } else {
             assert(0); // not implemented type in the sketch!
         }
     }
@@ -408,12 +405,12 @@ bool  Sketch::getConstruction(int geoIndex) const
 
 // constraint adding ==========================================================
 
-int Sketch::addConstraint(const Constraint * constraint)
+int Sketch::addConstraint(const Constraint *constraint)
 {
     // constraints on nothing makes no sense 
     assert((int)Geoms.size()>0  );
     int rtn = -1;
-    switch (constraint->Type){
+    switch (constraint->Type) {
        case Horizontal:
            rtn = addHorizontalConstraint(constraint->First,constraint->Name.c_str());
            break;
@@ -427,7 +424,7 @@ int Sketch::addConstraint(const Constraint * constraint)
            rtn = addParallelConstraint(constraint->First,constraint->Second,constraint->Name.c_str());
            break;
        case Distance:
-           if(constraint->Second == -1)
+           if (constraint->Second == -1)
                 rtn = addDistanceConstraint(constraint->First,constraint->Value, constraint->Name.c_str());
            else
                rtn = addDistanceConstraint(constraint->First,constraint->Second,constraint->Value, constraint->Name.c_str());
@@ -447,7 +444,7 @@ int Sketch::addConstraints(const std::vector<Constraint *> &ConstraintList)
     assert((int)Geoms.size()>0 || ConstraintList.size() == 0 );
 
     int rtn = -1;
-    for(std::vector<Constraint *>::const_iterator it = ConstraintList.begin();it!=ConstraintList.end();++it)
+    for (std::vector<Constraint *>::const_iterator it = ConstraintList.begin();it!=ConstraintList.end();++it)
         rtn = addConstraint (*it);
 
     return rtn;
@@ -463,7 +460,7 @@ int Sketch::addHorizontalConstraint(int geoIndex, const char* name)
     ConstrainDef constrain;
     constrain.constrain.type = horizontal;
     constrain.constrain.line1 = Lines[Geoms[geoIndex].lineStartIndex];
-    if(name)
+    if (name)
         constrain.name = name;
 
     Const.push_back(constrain);
@@ -478,11 +475,11 @@ int Sketch::addVerticalConstraint(int geoIndex, const char* name)
     // constraint the right type?
     assert(Geoms[geoIndex].type == Line);
 
-    // creat the constraint and fill it up
+    // create the constraint and fill it up
     ConstrainDef constrain;
     constrain.constrain.type = vertical;
     constrain.constrain.line1 = Lines[Geoms[geoIndex].lineStartIndex];
-    if(name)
+    if (name)
         constrain.name = name;
 
     Const.push_back(constrain);
@@ -491,8 +488,8 @@ int Sketch::addVerticalConstraint(int geoIndex, const char* name)
 }
 
 int Sketch::addPointCoincidentConstraint(int geoIndex1,PointPos Pos1,int geoIndex2,PointPos Pos2, const char* name)
-{ 
-    // this optimization alter point on point constraints for e.g Line segments
+{
+    // this optimization alters point on point constraints for e.g Line segments
     // to one point. That means the Lines segments get altered to a polyline. 
 
     // create one points for the constraint
@@ -515,8 +512,6 @@ int Sketch::addPointCoincidentConstraint(int geoIndex1,PointPos Pos1,int geoInde
     }
 
     return Const.size()-1;
-
-
 }
 
 int Sketch::addParallelConstraint(int geoIndex1,int geoIndex2, const char* name)
@@ -534,7 +529,7 @@ int Sketch::addParallelConstraint(int geoIndex1,int geoIndex2, const char* name)
     constrain.constrain.line1 = Lines[Geoms[geoIndex1].lineStartIndex];
     constrain.constrain.line2 = Lines[Geoms[geoIndex2].lineStartIndex];
 
-    if(name)
+    if (name)
         constrain.name = name;
 
     Const.push_back(constrain);
@@ -559,7 +554,7 @@ int Sketch::addDistanceConstraint(int geoIndex1, double Value, const char* name)
     FixParameters.push_back(new double(Value));
     constrain.constrain.parameter = FixParameters[FixParameters.size()-1];
 
-    if(name)
+    if (name)
         constrain.name = name;
 
     Const.push_back(constrain);
@@ -585,7 +580,7 @@ int Sketch::addDistanceConstraint(int geoIndex1,int geoIndex2, double Value, con
     Parameters.push_back(new double(Value));
     constrain.constrain.parameter = Parameters[Parameters.size()-1];
 
-    if(name)
+    if (name)
         constrain.name = name;
 
     Const.push_back(constrain);
@@ -596,8 +591,8 @@ int Sketch::addDistanceConstraint(int geoIndex1,int geoIndex2, double Value, con
 
 // solving ==========================================================
 
-void _redirectPoint(point &c,double &fixedValue1,double &fixedValue2,double * fixed[2]){
-    if(fixed[0] && c.x == fixed[0]){
+void _redirectPoint(point &c,double &fixedValue1,double &fixedValue2,double * fixed[2]) {
+    if (fixed[0] && c.x == fixed[0]) {
         // copy the fixes values
         //fixedValue1 = *(c.x);
         //fixedValue2 = *(c.y);
@@ -614,7 +609,7 @@ int Sketch::solve(double * fixed[2]) {
     Solver s;
     double fixedValue1=0,fixedValue2=0;
 
-    if(fixed[0]){
+    if (fixed[0]) {
         fixedValue1 = *(fixed[0]);
         fixedValue2 = *(fixed[1]);
     }
@@ -622,9 +617,9 @@ int Sketch::solve(double * fixed[2]) {
     // copy the constraints and handling the fixed constraint ################
     std::vector<constraint> constraints(Const.size());
     int i=0;
-    for(std::vector<ConstrainDef>::iterator it=Const.begin();it!=Const.end();++it,i++){
+    for (std::vector<ConstrainDef>::iterator it=Const.begin();it!=Const.end();++it,i++) {
         constraints[i] = it->constrain;
-        if(fixed[0]){
+        if (fixed[0]) {
             // exchange the fixed points in the constraints
             _redirectPoint(constraints[i].point1,fixedValue1,fixedValue2,fixed);
             _redirectPoint(constraints[i].point1,fixedValue1,fixedValue2,fixed);
@@ -639,17 +634,17 @@ int Sketch::solve(double * fixed[2]) {
     int ret = s.solve(&Parameters[0],Parameters.size(),&constraints[0],Const.size(),0);
 
     // set back the fixed parameters no matter what the solver did with it
-    if(fixed[0]){
+    if (fixed[0]) {
         *(fixed[0]) = fixedValue1;
         *(fixed[1]) = fixedValue2;
     }
 
     // if successfully solve write the parameter back
-    if(ret == 0){
+    if (ret == 0) {
         int i=0;
-        for(std::vector<GeoDef>::const_iterator it=Geoms.begin();it!=Geoms.end();++it,i++){
-            try{
-                if(it->type == Line){
+        for (std::vector<GeoDef>::const_iterator it=Geoms.begin();it!=Geoms.end();++it,i++) {
+            try {
+                if (it->type == Line) {
                     GeomLineSegment *lineSeg = dynamic_cast<GeomLineSegment*>(it->geo);
                     lineSeg->setPoints(
                              Vector3d(
@@ -662,7 +657,7 @@ int Sketch::solve(double * fixed[2]) {
                                  0.0)
                          );
                 }
-            }catch(Base::Exception e){
+            } catch (Base::Exception e) {
                 Base::Console().Error("Solv: Error build geometry(%d): %s\n",i,e.what());
                 return -1;
             }
@@ -674,7 +669,7 @@ int Sketch::solve(double * fixed[2]) {
     Base::TimeInfo end_time;
     //Base::Console().Log("T:%s\n",Base::TimeInfo::diffTime(start_time,end_time).c_str());
     SolveTime = Base::TimeInfo::diffTimeF(start_time,end_time);
-	return ret;
+    return ret;
 }
 
 int Sketch::solve(void) 
@@ -688,12 +683,12 @@ int Sketch::movePoint(int geoIndex1,PointPos Pos1,Base::Vector3d toPoint)
     // list of the two fixed parameters (point)
     double * fixed[2]={0,0};
 
-    if(Pos1 == start){
+    if (Pos1 == start) {
         *(Points[Geoms[geoIndex1].pointStartIndex].x) = toPoint.x;
         *(Points[Geoms[geoIndex1].pointStartIndex].y) = toPoint.y;
         fixed [0] = Points[Geoms[geoIndex1].pointStartIndex].x;
         fixed [1] = Points[Geoms[geoIndex1].pointStartIndex].y;
-    }else{
+    } else {
         *(Points[Geoms[geoIndex1].pointStartIndex+1].x) = toPoint.x;
         *(Points[Geoms[geoIndex1].pointStartIndex+1].y) = toPoint.y;
         fixed [0] = Points[Geoms[geoIndex1].pointStartIndex+1].x;
@@ -713,8 +708,8 @@ TopoShape Sketch::toShape(void) const
 #if 0
 
     bool first = true;
-    for(;it!=Geoms.end();++it){
-        if(!it->construction){
+    for (;it!=Geoms.end();++it) {
+        if (!it->construction) {
             TopoDS_Shape sh = it->geo->toShape();
             if (first) {
                 first = false;
@@ -731,8 +726,8 @@ TopoShape Sketch::toShape(void) const
     std::list<TopoDS_Wire> wires;
 
     // collecting all (non constructive) edges out of the sketch
-    for(;it!=Geoms.end();++it){
-        if(!it->construction){
+    for (;it!=Geoms.end();++it) {
+        if (!it->construction) {
             edge_list.push_back(TopoDS::Edge(it->geo->toShape()));
         }
     }
@@ -803,12 +798,12 @@ void Sketch::getGeoVertexIndex(int VertexId,int &GeoId,int &PointPos)
 
 // Persistance implementer -------------------------------------------------
 
-unsigned int Sketch::getMemSize (void) const
+unsigned int Sketch::getMemSize(void) const
 {
-	return 0;
+    return 0;
 }
 
-void Sketch::Save (Writer &writer) const
+void Sketch::Save(Writer &writer) const
 {
 
 }

@@ -67,7 +67,7 @@ public:
 
     /// index operator
     const Geometry *operator[] (const int idx) const {
-        return _lValueList.operator[] (idx);
+        return _lValueList[idx];
     }
 
 
@@ -82,13 +82,13 @@ public:
     virtual PyObject *getPyObject(void);
     virtual void setPyObject(PyObject *);
 
-    virtual void Save (Base::Writer &writer) const;
+    virtual void Save(Base::Writer &writer) const;
     virtual void Restore(Base::XMLReader &reader);
 
     virtual Property *Copy(void) const;
     virtual void Paste(const App::Property &from);
 
-    virtual unsigned int getMemSize (void) const;
+    virtual unsigned int getMemSize(void) const;
 
 private:
     std::vector<Geometry*> _lValueList;
