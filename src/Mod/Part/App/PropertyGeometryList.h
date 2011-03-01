@@ -70,11 +70,6 @@ public:
         return _lValueList[idx];
     }
 
-
-    void  set1Value (const int idx, Geometry* value) {
-        _lValueList.operator[] (idx) = value->clone();
-    }
-
     const std::vector<Geometry*> &getValues(void) const {
         return _lValueList;
     }
