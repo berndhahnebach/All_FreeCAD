@@ -139,7 +139,7 @@ def buildtoc():
     
     qhelpfile = '''<?xml version="1.0" encoding="UTF-8"?>
 <QtHelpProject version="1.0">
-    <namespace>org.freecad.usermanual_0.9</namespace>
+    <namespace>org.freecad.usermanual</namespace>
     <virtualFolder>doc</virtualFolder>
     <!--
     <customFilter name="FreeCAD 0.11">
