@@ -610,6 +610,19 @@ def offset(obj,delta,copy=False,bind=False,sym=False):
                 else: h = nh.Length
                 return l,h,pl
 
+        def getRadius(obj,delta):
+                "returns a new radius for a regular polygon"
+                an = math.pi/obj.FacesNumber
+                nr = fcvec.rotate(delta,-an)
+                nr.multiply(1/math.cos(an))
+                nr = obj.Shape.Vertexes[0].Point.add(nr)
+                nr = nr.sub(obj.Placement.Base)
+                nr = nr.Length
+                if obj.DrawMode == "inscribed":
+                        return nr
+                else:
+                        return nr * math.cos(math.pi/obj.FacesNumber)
+
         if getType(obj) == "Circle":
                 pass
         else:
@@ -650,6 +663,12 @@ def offset(obj,delta,copy=False,bind=False,sym=False):
                         newobj.FirstAngle = obj.FirstAngle
                         newobj.LastAngle = obj.LastAngle
                         newobj.Placement = pl
+                elif getType(obj) == "Polygon":
+                        pl = obj.Placement
+                        newobj = makePolygon(obj.FacesNumber)
+                        newobj.Radius = getRadius(obj,delta)
+                        newobj.DrawMode = obj.DrawMode
+                        newobj.Placement = pl
                 formatObject(newobj,obj)
         else:
                 if sym: return None
@@ -662,6 +681,8 @@ def offset(obj,delta,copy=False,bind=False,sym=False):
                         obj.Height = height
                 elif getType(obj) == "Circle":
                         obj.Radius = delta
+                elif getType(obj) == "Polygon":
+                        obj.Radius = getRadius(obj,delta)
                 newobj = obj
         return newobj
 
