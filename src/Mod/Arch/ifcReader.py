@@ -390,7 +390,7 @@ class IfcDocument:
         "searches entities types for partial match"
         l = []
         pat = pat.upper()
-        for ob in self.Entities:
+        for k,ob in self.Entities.iteritems():
             if hasattr(ob,"type"):
                 if pat in ob.type:
                     if not ob.type in l:

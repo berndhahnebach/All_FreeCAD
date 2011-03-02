@@ -58,6 +58,8 @@ class Floor:
                         "The objects that make part of this floor")
         obj.addProperty("App::PropertyLength","PlanHeight","Base",
                         "The height of the section plane when making a plan view of this floor")
+        obj.addProperty("App::PropertyBool","DebugMode","Base",
+                        "if debug mode, no face cleaning!")
         obj.PlanHeight = 1.8
         obj.Proxy = self
         self.Type = "Floor"
@@ -78,7 +80,7 @@ class Floor:
             for comp in obj.Components:
                 if Draft.getType(comp) in ["Wall","Floor","Shape"]:
                     baseShape = baseShape.fuse(comp.Shape)
-            baseShape = fcgeo.cleanFaces(baseShape)
+            if not obj.DebugMode: baseShape = fcgeo.cleanFaces(baseShape)
             obj.Shape = baseShape
             obj.Placement = pl
 
