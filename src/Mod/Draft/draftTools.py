@@ -2609,7 +2609,7 @@ class Offset(Modifier):
                         self.faces = False
                         self.shape = self.sel.Shape
                         self.mode = None
-                        if "Radius" in self.sel.PropertiesList:
+                        if Draft.getType(self.sel) in ["Circle","Arc"]:
                                 self.ghost = arcTracker()
                                 self.mode = "Circle"
                                 self.center = self.shape.Edges[0].Curve.Center
