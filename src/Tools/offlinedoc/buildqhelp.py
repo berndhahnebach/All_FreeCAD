@@ -69,7 +69,7 @@ def crawl():
     
 def compile(qhpfile):
     "compiles the whole html doc with qassistant"
-    qchfile = "freecad.qch"
+    qchfile = FOLDER + os.sep + "freecad.qch"
     if not os.system(QHELPCOMPILER + ' '+qhpfile+' -o '+qchfile):
         if VERBOSE: print "Successfully created",qchfile
         return 0
@@ -83,7 +83,7 @@ def generate(qhcpfile):
     about=open(FOLDER + os.sep + "about.txt","w")
     about.write(txt)
     about.close()
-    qhcfile = "freecad.qhc"
+    qhcfile = FOLDER + os.sep + "freecad.qhc"
     if not os.system(QCOLLECTIOMGENERATOR+' '+qhcpfile+' -o '+qhcfile):
         if VERBOSE: print "Successfully created ",qhcfile
         return 0
