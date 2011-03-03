@@ -53,6 +53,9 @@ private:
     void slotChangedObject(const App::DocumentObject&, const App::Property&);
     bool hasSolids(const App::DocumentObject*) const;
 
+protected:
+    void changeEvent(QEvent *e);
+
 public Q_SLOTS:
     void on_swapButton_clicked();
 

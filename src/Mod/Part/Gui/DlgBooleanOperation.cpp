@@ -75,6 +75,14 @@ DlgBooleanOperation::~DlgBooleanOperation()
     this->connectModObject.disconnect();
 }
 
+void DlgBooleanOperation::changeEvent(QEvent *e)
+{
+    if (e->type() == QEvent::LanguageChange) {
+        ui->retranslateUi(this);
+    }
+    QWidget::changeEvent(e);
+}
+
 void DlgBooleanOperation::slotCreatedObject(const App::DocumentObject& obj)
 {
     App::Document* activeDoc = App::GetApplication().getActiveDocument();

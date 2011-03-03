@@ -66,6 +66,14 @@ Mirroring::~Mirroring()
     delete ui;
 }
 
+void Mirroring::changeEvent(QEvent *e)
+{
+    if (e->type() == QEvent::LanguageChange) {
+        ui->retranslateUi(this);
+    }
+    QWidget::changeEvent(e);
+}
+
 void Mirroring::findShapes()
 {
     App::Document* activeDoc = App::GetApplication().getActiveDocument();

@@ -55,6 +55,7 @@ protected:
     /** Trigger for reparent event. */
     bool event(QEvent* e);
     void showEvent(QShowEvent* e);
+    void changeEvent(QEvent *e);
 
 protected Q_SLOTS:
     /** Enables/disables buttons for deletion */

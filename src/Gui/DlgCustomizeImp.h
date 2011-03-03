@@ -62,6 +62,9 @@ Q_SIGNALS:
     void removeMacroAction(const QByteArray&);
     void modifyMacroAction(const QByteArray&);
 
+protected:
+    void changeEvent(QEvent *e);
+
 private:
     /** @name for internal use only */
     //@{

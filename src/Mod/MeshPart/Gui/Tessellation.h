@@ -41,6 +41,9 @@ public:
     ~Tessellation();
     bool accept();
 
+protected:
+    void changeEvent(QEvent *e);
+
 private:
     void findShapes();
 

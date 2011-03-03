@@ -93,6 +93,14 @@ MeshGui::DlgRegularSolidImp::~DlgRegularSolidImp()
     // no need to delete child widgets, Qt does it all for us
 }
 
+void MeshGui::DlgRegularSolidImp::changeEvent(QEvent *e)
+{
+    if (e->type() == QEvent::LanguageChange) {
+        this->retranslateUi(this);
+    }
+    QDialog::changeEvent(e);
+}
+
 /**
  * Builds a mesh solid from the currently active solid type.
  */

@@ -8,6 +8,7 @@
         <file>translations/Mesh_es.qm</file>
         <file>translations/Mesh_fi.qm</file>
         <file>translations/Mesh_fr.qm</file>
+        <file>translations/Mesh_hr.qm</file>
         <file>translations/Mesh_it.qm</file>
         <file>translations/Mesh_nl.qm</file>
         <file>translations/Mesh_no.qm</file>
@@ -15,5 +16,6 @@
         <file>translations/Mesh_ru.qm</file>
         <file>translations/Mesh_se.qm</file>
         <file>translations/Mesh_uk.qm</file>
+        <file>translations/Mesh_zh.qm</file>
     </qresource>
 </RCC> 

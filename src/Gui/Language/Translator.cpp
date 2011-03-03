@@ -135,7 +135,7 @@ Translator::Translator()
     d->mapLanguageTopLevelDomain[QT_TR_NOOP("French"    )] = "fr";
     d->mapLanguageTopLevelDomain[QT_TR_NOOP("Italian"   )] = "it";
     d->mapLanguageTopLevelDomain[QT_TR_NOOP("Japanese"  )] = "jp";
-    d->mapLanguageTopLevelDomain[QT_TR_NOOP("Chinese"   )] = "cn";
+    d->mapLanguageTopLevelDomain[QT_TR_NOOP("Chinese"   )] = "zh";
     d->mapLanguageTopLevelDomain[QT_TR_NOOP("Korean"    )] = "kr";
     d->mapLanguageTopLevelDomain[QT_TR_NOOP("Russian"   )] = "ru";
     d->mapLanguageTopLevelDomain[QT_TR_NOOP("Swedish"   )] = "se";
@@ -145,6 +145,7 @@ Translator::Translator()
     d->mapLanguageTopLevelDomain[QT_TR_NOOP("Dutch"     )] = "nl";
     d->mapLanguageTopLevelDomain[QT_TR_NOOP("Ukrainian" )] = "uk";
     d->mapLanguageTopLevelDomain[QT_TR_NOOP("Finnish"   )] = "fi";
+    d->mapLanguageTopLevelDomain[QT_TR_NOOP("Croatian"  )] = "hr";
     d->activatedLanguage = "English";
 
     d->paths = directories();

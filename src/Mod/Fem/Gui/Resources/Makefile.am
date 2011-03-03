@@ -18,6 +18,8 @@ EXTRA_DIST = \
 		translations/Fem_fi.ts \
 		translations/Fem_fr.qm \
 		translations/Fem_fr.ts \
+		translations/Fem_hr.qm \
+		translations/Fem_hr.ts \
 		translations/Fem_it.qm \
 		translations/Fem_it.ts \
 		translations/Fem_nl.qm \
@@ -32,6 +34,8 @@ EXTRA_DIST = \
 		translations/Fem_se.ts \
 		translations/Fem_uk.qm \
 		translations/Fem_uk.ts \
+		translations/Fem_zh.qm \
+		translations/Fem_zh.ts \
 		Fem.qrc \
 		UpdateResources.bat
 

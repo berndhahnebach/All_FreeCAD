@@ -217,4 +217,11 @@ void DemoMode::on_timerCheck_toggled(bool on)
         timer->stop();
 }
 
+void DemoMode::changeEvent(QEvent *e)
+{
+    if (e->type() == QEvent::LanguageChange)
+        ui->retranslateUi(this);
+    QDialog::changeEvent(e);
+}
+
 #include "moc_DemoMode.cpp"

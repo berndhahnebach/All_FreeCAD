@@ -133,6 +133,15 @@ void DlgInspector::setNode(SoNode* node)
     header->setMovable(false);
 }
 
+void DlgInspector::changeEvent(QEvent *e)
+{
+    if (e->type() == QEvent::LanguageChange) {
+        ui->retranslateUi(this);
+        setWindowTitle(tr("Scene Inspector"));
+    }
+    QDialog::changeEvent(e);
+}
+
 void DlgInspector::on_refreshButton_clicked()
 {
     View3DInventor* child = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());

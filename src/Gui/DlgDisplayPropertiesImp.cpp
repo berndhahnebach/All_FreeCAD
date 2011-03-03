@@ -53,6 +53,10 @@ using namespace std;
 
 /* TRANSLATOR Gui::Dialog::DlgDisplayPropertiesImp */
 
+#if 0 // needed for Qt's lupdate utility
+    qApp->translate("QDockWidget", "Display properties");
+#endif
+
 /**
  *  Constructs a DlgDisplayPropertiesImp which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
@@ -103,6 +107,14 @@ DlgDisplayPropertiesImp::~DlgDisplayPropertiesImp()
     // no need to delete child widgets, Qt does it all for us
     this->connectChangedObject.disconnect();
     Gui::Selection().Detach(this);
+}
+
+void DlgDisplayPropertiesImp::changeEvent(QEvent *e)
+{
+    if (e->type() == QEvent::LanguageChange) {
+        this->retranslateUi(this);
+    }
+    QDialog::changeEvent(e);
 }
 
 /// @cond DOXERR

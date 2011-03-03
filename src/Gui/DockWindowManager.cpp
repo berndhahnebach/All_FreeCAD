@@ -134,7 +134,15 @@ QDockWidget* DockWindowManager::addDockWindow(const char* name, QWidget* widget,
     // First, hide immediately the dock widget to avoid flickering, after setting up the dock widgets
     // MainWindow::loadLayoutSettings() is called to restore the layout.
     dw->hide();
-    mw->addDockWidget(pos, dw);
+    switch (pos) {
+    case Qt::LeftDockWidgetArea:
+    case Qt::RightDockWidgetArea:
+    case Qt::TopDockWidgetArea:
+    case Qt::BottomDockWidgetArea:
+        mw->addDockWidget(pos, dw);
+    default:
+        break;
+    }
     connect(dw, SIGNAL(destroyed(QObject*)),
             this, SLOT(onDockWidgetDestroyed(QObject*)));
     connect(widget, SIGNAL(destroyed(QObject*)),

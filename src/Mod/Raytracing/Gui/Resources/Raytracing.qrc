@@ -10,6 +10,7 @@
         <file>translations/Raytracing_es.qm</file>
         <file>translations/Raytracing_fi.qm</file>
         <file>translations/Raytracing_fr.qm</file>
+        <file>translations/Raytracing_hr.qm</file>
         <file>translations/Raytracing_it.qm</file>
         <file>translations/Raytracing_nl.qm</file>
         <file>translations/Raytracing_no.qm</file>
@@ -17,5 +18,6 @@
         <file>translations/Raytracing_ru.qm</file>
         <file>translations/Raytracing_se.qm</file>
         <file>translations/Raytracing_uk.qm</file>
+        <file>translations/Raytracing_zh.qm</file>
     </qresource>
 </RCC> 

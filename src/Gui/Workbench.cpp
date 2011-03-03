@@ -347,13 +347,15 @@ void Workbench::addTaskWatcher(std::vector<Gui::TaskView::TaskWatcher*> &Watcher
     pcCombiView->getTaskPanel()->addTaskWatcher(Watcher); 
 }
 
-
 void Workbench::removeTaskWatcher(void)
 {
-   Gui::DockWnd::CombiView* pcCombiView = qobject_cast<Gui::DockWnd::CombiView*>
+    Gui::DockWnd::CombiView* pcCombiView = qobject_cast<Gui::DockWnd::CombiView*>
         (Gui::DockWindowManager::instance()->getDockWindow("Combo View"));
 
-   pcCombiView->getTaskPanel()->removeTaskWatcher();
+    std::vector<Gui::TaskView::TaskWatcher*> watcher;
+    pcCombiView->getTaskPanel()->removeTaskWatcher();
+    // make sure to delete the old watchers
+    pcCombiView->getTaskPanel()->addTaskWatcher(watcher); 
 }
 
 // --------------------------------------------------------------------

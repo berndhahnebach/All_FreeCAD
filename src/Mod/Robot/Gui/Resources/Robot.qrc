@@ -18,6 +18,7 @@
         <file>translations/Robot_es.qm</file>
         <file>translations/Robot_fi.qm</file>
         <file>translations/Robot_fr.qm</file>
+        <file>translations/Robot_hr.qm</file>
         <file>translations/Robot_it.qm</file>
         <file>translations/Robot_nl.qm</file>
         <file>translations/Robot_no.qm</file>
@@ -25,5 +26,6 @@
         <file>translations/Robot_ru.qm</file>
         <file>translations/Robot_se.qm</file>
         <file>translations/Robot_uk.qm</file>
+        <file>translations/Robot_zh.qm</file>
     </qresource>
 </RCC> 

@@ -379,4 +379,24 @@ void DlgCustomKeyboardImp::onModifyMacroAction(const QByteArray& macro)
     }
 }
 
+void DlgCustomKeyboardImp::changeEvent(QEvent *e)
+{
+    if (e->type() == QEvent::LanguageChange) {
+        this->retranslateUi(this);
+        int count = categoryBox->count();
+
+        CommandManager & cCmdMgr = Application::Instance->commandManager();
+        for (int i=0; i<count; i++) {
+            QVariant data = categoryBox->itemData(i, Qt::UserRole);
+            std::vector<Command*> aCmds = cCmdMgr.getGroupCommands(data.toByteArray());
+            if (!aCmds.empty()) {
+                QString text = qApp->translate(aCmds[0]->className(), aCmds[0]->getGroupName());
+                categoryBox->setItemText(i, text);
+            }
+        }
+        on_categoryBox_activated(categoryBox->currentIndex());
+    }
+    QWidget::changeEvent(e);
+}
+
 #include "moc_DlgKeyboardImp.cpp"

@@ -6,6 +6,7 @@
         <file>translations/Image_es.qm</file>
         <file>translations/Image_fi.qm</file>
         <file>translations/Image_fr.qm</file>
+        <file>translations/Image_hr.qm</file>
         <file>translations/Image_it.qm</file>
         <file>translations/Image_nl.qm</file>
         <file>translations/Image_no.qm</file>
@@ -13,5 +14,6 @@
         <file>translations/Image_ru.qm</file>
         <file>translations/Image_se.qm</file>
         <file>translations/Image_uk.qm</file>
+        <file>translations/Image_zh.qm</file>
     </qresource>
 </RCC> 

@@ -44,6 +44,9 @@ public:
     ~Mirroring();
     bool accept();
 
+protected:
+    void changeEvent(QEvent *e);
+
 private:
     void findShapes();
 

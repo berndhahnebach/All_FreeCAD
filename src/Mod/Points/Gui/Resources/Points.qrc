@@ -5,6 +5,7 @@
         <file>translations/Points_es.qm</file>
         <file>translations/Points_fi.qm</file>
         <file>translations/Points_fr.qm</file>
+        <file>translations/Points_hr.qm</file>
         <file>translations/Points_it.qm</file>
         <file>translations/Points_nl.qm</file>
         <file>translations/Points_no.qm</file>
@@ -12,5 +13,6 @@
         <file>translations/Points_ru.qm</file>
         <file>translations/Points_se.qm</file>
         <file>translations/Points_uk.qm</file>
+        <file>translations/Points_zh.qm</file>
     </qresource>
 </RCC> 

@@ -582,6 +582,7 @@ void TreeWidget::changeEvent(QEvent *e)
 {
     if (e->type() == QEvent::LanguageChange) {
         this->headerItem()->setText(0, tr("Labels & Attributes"));
+        this->rootItem->setText(0, tr("Application"));
     }
 
     QTreeWidget::changeEvent(e);
@@ -710,6 +711,7 @@ TreeDockWidget::~TreeDockWidget()
 }
 
 // ----------------------------------------------------------------------------
+
 DocumentItem::DocumentItem(const Gui::Document* doc, QTreeWidgetItem * parent)
     : QTreeWidgetItem(parent, TreeWidget::DocumentType), pDocument(doc)
 {

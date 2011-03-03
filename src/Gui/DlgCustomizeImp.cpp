@@ -41,12 +41,12 @@ QList<QByteArray> DlgCustomizeImp::_pages;
  *  TRUE to construct a modal dialog.
  */
 DlgCustomizeImp::DlgCustomizeImp(QWidget* parent, Qt::WFlags fl)
-  : QDialog( parent, fl )
+  : QDialog(parent, fl)
 {
     setModal(false);
     resize( 434, 365 ); 
 
-    setWindowTitle( tr( "Customize" ) );
+    setWindowTitle(tr("Customize"));
     setSizeGripEnabled( true );
 
     customLayout = new QGridLayout( this ); 
@@ -58,15 +58,15 @@ DlgCustomizeImp::DlgCustomizeImp(QWidget* parent, Qt::WFlags fl)
     layout->setMargin( 0 );
 
     buttonHelp = new QPushButton( this );
-    buttonHelp->setText( tr( "&Help" ) );
+    buttonHelp->setText(tr("&Help"));
     layout->addWidget( buttonHelp );
 
     QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
-    layout->addItem( spacer );
+    layout->addItem(spacer);
 
     buttonClose = new QPushButton( this );
-    buttonClose->setText( tr( "&Close" ) );
-    layout->addWidget( buttonClose );
+    buttonClose->setText(tr("&Close"));
+    layout->addWidget(buttonClose);
 
     customLayout->addLayout( layout, 1, 0 );
 
@@ -115,6 +115,21 @@ void DlgCustomizeImp::addPage(const char* className)
 void DlgCustomizeImp::addPage (QWidget* w)
 {
     tabWidget->addTab(w, w->windowTitle());
+}
+
+void DlgCustomizeImp::changeEvent(QEvent *e)
+{
+    if (e->type() == QEvent::LanguageChange) {
+        setWindowTitle(tr("Customize"));
+        buttonHelp->setText(tr("&Help"));
+        buttonClose->setText(tr("&Close"));
+        int count = tabWidget->count();
+        for (int i=0; i<count; i++) {
+            QWidget* w = tabWidget->widget(i);
+            tabWidget->setTabText(i, w->windowTitle());
+        }
+    }
+    QDialog::changeEvent(e);
 }
 
 #include "moc_DlgCustomizeImp.cpp"

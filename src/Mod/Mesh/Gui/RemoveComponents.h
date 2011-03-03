@@ -66,6 +66,9 @@ public Q_SLOTS:
     void on_deselectComponents_clicked();
     void on_deselectTriangle_clicked();
 
+protected:
+    void changeEvent(QEvent *e);
+
 private:
     std::list<ViewProviderMesh*> getViewProviders(const Gui::Document*) const;
     Gui::View3DInventorViewer* getViewer() const;

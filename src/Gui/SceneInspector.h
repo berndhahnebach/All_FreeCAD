@@ -74,6 +74,9 @@ public:
 private Q_SLOTS:
     void on_refreshButton_clicked();
 
+protected:
+    void changeEvent(QEvent *e);
+
 private:
     Ui_SceneInspector* ui;
 };
