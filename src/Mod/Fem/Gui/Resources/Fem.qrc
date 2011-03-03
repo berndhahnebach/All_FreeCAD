@@ -6,6 +6,7 @@
         <file>translations/Fem_es.qm</file>
         <file>translations/Fem_fi.qm</file>
         <file>translations/Fem_fr.qm</file>
+        <file>translations/Fem_hr.qm</file>
         <file>translations/Fem_it.qm</file>
         <file>translations/Fem_nl.qm</file>
         <file>translations/Fem_no.qm</file>
@@ -13,5 +14,6 @@
         <file>translations/Fem_ru.qm</file>
         <file>translations/Fem_se.qm</file>
         <file>translations/Fem_uk.qm</file>
+        <file>translations/Fem_zh.qm</file>
     </qresource>
 </RCC> 

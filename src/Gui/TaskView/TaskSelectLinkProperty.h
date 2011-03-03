@@ -88,6 +88,9 @@ Q_SIGNALS:
     void emitSelectionFit(void);
     void emitSelectionMisfit(void);
 
+protected:
+    void changeEvent(QEvent *e);
+
 private:
     // checks for selection and set background color and signals
     void checkSelectionStatus(void);

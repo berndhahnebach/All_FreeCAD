@@ -114,5 +114,15 @@ void CombiView::showTaskView()
     tabs->setCurrentIndex(1);
 }
 
+void CombiView::changeEvent(QEvent *e)
+{
+    if (e->type() == QEvent::LanguageChange) {
+        tabs->setTabText(0, trUtf8("Project"));
+        tabs->setTabText(1, trUtf8("Tasks"));
+    }
+
+    DockWindow::changeEvent(e);
+}
+
 
 #include "moc_CombiView.cpp"

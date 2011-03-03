@@ -138,6 +138,8 @@ EXTRA_DIST = \
 		Resources/translations/Mesh_fi.ts \
 		Resources/translations/Mesh_fr.qm \
 		Resources/translations/Mesh_fr.ts \
+		Resources/translations/Mesh_hr.qm \
+		Resources/translations/Mesh_hr.ts \
 		Resources/translations/Mesh_it.qm \
 		Resources/translations/Mesh_it.ts \
 		Resources/translations/Mesh_nl.qm \
@@ -152,4 +154,6 @@ EXTRA_DIST = \
 		Resources/translations/Mesh_se.ts \
 		Resources/translations/Mesh_uk.qm \
 		Resources/translations/Mesh_uk.ts \
+		Resources/translations/Mesh_zh.qm \
+		Resources/translations/Mesh_zh.ts \
 		images.h

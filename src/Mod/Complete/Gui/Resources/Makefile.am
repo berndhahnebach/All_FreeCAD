@@ -12,23 +12,27 @@ EXTRA_DIST = \
 		translations/Complete_es.qm \
 		translations/Complete_fi.qm \
 		translations/Complete_fr.qm \
+		translations/Complete_hr.qm \
 		translations/Complete_it.qm \
 		translations/Complete_nl.qm \
 		translations/Complete_no.qm \
 		translations/Complete_ru.qm \
 		translations/Complete_se.qm \
 		translations/Complete_uk.qm \
+		translations/Complete_zh.qm \
 		translations/Complete_af.ts \
 		translations/Complete_de.ts \
 		translations/Complete_es.ts \
 		translations/Complete_fi.ts \
 		translations/Complete_fr.ts \
+		translations/Complete_hr.ts \
 		translations/Complete_it.ts \
 		translations/Complete_nl.ts \
 		translations/Complete_no.ts \
 		translations/Complete_ru.ts \
 		translations/Complete_se.ts \
 		translations/Complete_uk.ts \
+		translations/Complete_zh.ts \
 		Complete.qrc \
 		UpdateResources.bat
 

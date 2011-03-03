@@ -19,6 +19,7 @@ EXTRA_DIST = \
 		FreeCAD_es.qm \
 		FreeCAD_fi.qm \
 		FreeCAD_fr.qm \
+		FreeCAD_hr.qm \
 		FreeCAD_it.qm \
 		FreeCAD_nl.qm \
 		FreeCAD_no.qm \
@@ -26,11 +27,13 @@ EXTRA_DIST = \
 		FreeCAD_ru.qm \
 		FreeCAD_se.qm \
 		FreeCAD_uk.qm \
+		FreeCAD_zh.qm \
 		FreeCAD_af.ts \
 		FreeCAD_de.ts \
 		FreeCAD_es.ts \
 		FreeCAD_fi.ts \
 		FreeCAD_fr.ts \
+		FreeCAD_hr.ts \
 		FreeCAD_it.ts \
 		FreeCAD_nl.ts \
 		FreeCAD_no.ts \
@@ -38,6 +41,7 @@ EXTRA_DIST = \
 		FreeCAD_ru.ts \
 		FreeCAD_se.ts \
 		FreeCAD_uk.ts \
+		FreeCAD_zh.ts \
 		qt_de.qm \
 		qt_fr.qm \
 		qt_it.qm

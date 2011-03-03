@@ -67,6 +67,7 @@ private:
     SbVec3f getDirection(Gui::View3DInventor*) const;
     Gui::View3DInventor* activeView() const;
     void startAnimation(Gui::View3DInventor*);
+    void changeEvent(QEvent *e);
 
 private:
     int oldvalue;

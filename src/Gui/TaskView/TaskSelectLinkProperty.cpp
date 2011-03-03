@@ -89,6 +89,14 @@ TaskSelectLinkProperty::~TaskSelectLinkProperty()
     Gui::Selection().Detach(this);
 }
 
+void TaskSelectLinkProperty::changeEvent(QEvent *e)
+{
+    TaskBox::changeEvent(e);
+    if (e->type() == QEvent::LanguageChange) {
+        ui->retranslateUi(proxy);
+    }
+}
+
 /// @cond DOXERR
 
 

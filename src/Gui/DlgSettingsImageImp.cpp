@@ -56,6 +56,14 @@ DlgSettingsImageImp::~DlgSettingsImageImp()
     // no need to delete child widgets, Qt does it all for us
 }
 
+void DlgSettingsImageImp::changeEvent(QEvent *e)
+{
+    if (e->type() == QEvent::LanguageChange) {
+        this->retranslateUi(this);
+    }
+    QWidget::changeEvent(e);
+}
+
 /**
  * Sets the image size to (\a w, \a h).
  */

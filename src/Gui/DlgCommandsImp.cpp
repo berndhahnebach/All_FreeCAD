@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <QHeaderView>
+# include <QTreeWidgetItemIterator>
 # include <algorithm>
 # include <vector>
 #endif
@@ -231,6 +232,29 @@ void DlgCustomCommandsImp::onModifyMacroAction(const QByteArray& macro)
             }
         }
     }
+}
+
+void DlgCustomCommandsImp::changeEvent(QEvent *e)
+{
+    if (e->type() == QEvent::LanguageChange) {
+        this->retranslateUi(this);
+        QStringList labels; labels << tr("Category");
+        categoryTreeWidget->setHeaderLabels(labels);
+
+        CommandManager & cCmdMgr = Application::Instance->commandManager();
+        QTreeWidgetItemIterator it(categoryTreeWidget);
+        while (*it) {
+            QVariant data = (*it)->data(0, Qt::UserRole);
+            std::vector<Command*> aCmds = cCmdMgr.getGroupCommands(data.toByteArray());
+            if (!aCmds.empty()) {
+                QString text = qApp->translate(aCmds[0]->className(), aCmds[0]->getGroupName());
+                (*it)->setText(0, text);
+            }
+            ++it;
+        }
+        onGroupActivated(categoryTreeWidget->topLevelItem(0));
+    }
+    QWidget::changeEvent(e);
 }
 
 #include "moc_DlgCommandsImp.cpp"

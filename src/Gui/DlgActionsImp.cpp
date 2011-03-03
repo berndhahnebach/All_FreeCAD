@@ -455,5 +455,16 @@ QString DlgCustomActionsImp::newActionName()
     return sName;
 }
 
+void DlgCustomActionsImp::changeEvent(QEvent *e)
+{
+    if (e->type() == QEvent::LanguageChange) {
+        this->retranslateUi(this);
+        actionListWidget->clear();
+        showActions();
+        actionAccel->setText(qApp->translate("Gui::AccelLineEdit", "none"));
+    }
+    QWidget::changeEvent(e);
+}
+
 
 #include "moc_DlgActionsImp.cpp" 

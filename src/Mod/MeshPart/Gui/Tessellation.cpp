@@ -56,6 +56,14 @@ Tessellation::~Tessellation()
 {
 }
 
+void Tessellation::changeEvent(QEvent *e)
+{
+    if (e->type() == QEvent::LanguageChange) {
+        ui->retranslateUi(this);
+    }
+    QWidget::changeEvent(e);
+}
+
 void Tessellation::findShapes()
 {
     App::Document* activeDoc = App::GetApplication().getActiveDocument();

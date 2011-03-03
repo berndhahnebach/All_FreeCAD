@@ -18,6 +18,8 @@ EXTRA_DIST = \
 		translations/MeshPart_fi.ts \
 		translations/MeshPart_fr.qm \
 		translations/MeshPart_fr.ts \
+		translations/MeshPart_hr.qm \
+		translations/MeshPart_hr.ts \
 		translations/MeshPart_it.qm \
 		translations/MeshPart_it.ts \
 		translations/MeshPart_nl.qm \
@@ -32,6 +34,8 @@ EXTRA_DIST = \
 		translations/MeshPart_se.ts \
 		translations/MeshPart_uk.qm \
 		translations/MeshPart_uk.ts \
+		translations/MeshPart_zh.qm \
+		translations/MeshPart_zh.ts \
 		MeshPart.qrc
 
 

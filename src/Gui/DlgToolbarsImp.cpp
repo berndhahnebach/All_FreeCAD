@@ -518,6 +518,26 @@ void DlgCustomToolbars::onModifyMacroAction(const QByteArray& macro)
     }
 }
 
+void DlgCustomToolbars::changeEvent(QEvent *e)
+{
+    if (e->type() == QEvent::LanguageChange) {
+        this->retranslateUi(this);
+        int count = categoryBox->count();
+
+        CommandManager & cCmdMgr = Application::Instance->commandManager();
+        for (int i=0; i<count; i++) {
+            QVariant data = categoryBox->itemData(i, Qt::UserRole);
+            std::vector<Command*> aCmds = cCmdMgr.getGroupCommands(data.toByteArray());
+            if (!aCmds.empty()) {
+                QString text = qApp->translate(aCmds[0]->className(), aCmds[0]->getGroupName());
+                categoryBox->setItemText(i, text);
+            }
+        }
+        on_categoryBox_activated(categoryBox->currentIndex());
+    }
+    QWidget::changeEvent(e);
+}
+
 // -------------------------------------------------------------
 
 /* TRANSLATOR Gui::Dialog::DlgCustomToolbarsImp */
@@ -656,6 +676,13 @@ void DlgCustomToolbarsImp::moveDownCustomCommand(const QString& name, const QByt
     }
 }
 
+void DlgCustomToolbarsImp::changeEvent(QEvent *e)
+{
+    if (e->type() == QEvent::LanguageChange) {
+    }
+    DlgCustomToolbars::changeEvent(e);
+}
+
 
 /* TRANSLATOR Gui::Dialog::DlgCustomToolBoxbarsImp */
 
@@ -675,6 +702,14 @@ DlgCustomToolBoxbarsImp::DlgCustomToolBoxbarsImp( QWidget* parent )
 /** Destroys the object and frees any allocated resources */
 DlgCustomToolBoxbarsImp::~DlgCustomToolBoxbarsImp()
 {
+}
+
+void DlgCustomToolBoxbarsImp::changeEvent(QEvent *e)
+{
+    if (e->type() == QEvent::LanguageChange) {
+        setWindowTitle( tr( "Toolbox bars" ) );
+    }
+    DlgCustomToolbars::changeEvent(e);
 }
 
 #include "moc_DlgToolbarsImp.cpp"

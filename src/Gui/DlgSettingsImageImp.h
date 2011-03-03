@@ -72,6 +72,7 @@ protected Q_SLOTS:
 protected:
     // helper to force an aspect ratio
     void adjustImageSize(float fRatio);
+    void changeEvent(QEvent *e);
 
 
 private:

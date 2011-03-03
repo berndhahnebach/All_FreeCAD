@@ -125,13 +125,29 @@ void TaskBox::hideGroupBox()
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 }
 
+namespace Gui { namespace TaskView {
+class TaskIconLabel : public iisIconLabel {
+public:
+    TaskIconLabel(const QIcon &icon, 
+                  const QString &title,
+                  QWidget *parent = 0)
+      : iisIconLabel(icon, title, parent) {
+    }
+    void setTitle(const QString &text) {
+        myText = text;
+        update();
+    }
+};
+}
+}
+
 void TaskBox::actionEvent (QActionEvent* e)
 {
     QAction *action = e->action();
     switch (e->type()) {
     case QEvent::ActionAdded:
         {
-            iisIconLabel *label = new iisIconLabel(
+            TaskIconLabel *label = new TaskIconLabel(
                 action->icon(), action->text(), this);
             this->addIconLabel(label);
             connect(label,SIGNAL(clicked()),action,SIGNAL(triggered()));
@@ -139,7 +155,13 @@ void TaskBox::actionEvent (QActionEvent* e)
         }
     case QEvent::ActionChanged:
         {
-            // cannot change anything
+            // update label when action changes
+            QBoxLayout* bl = myGroup->groupLayout();
+            int index = this->actions().indexOf(action);
+            if (index < 0) break;
+            QWidgetItem* item = static_cast<QWidgetItem*>(bl->itemAt(index));
+            TaskIconLabel* label = static_cast<TaskIconLabel*>(item->widget());
+            label->setTitle(action->text());
             break;
         }
     case QEvent::ActionRemoved:
@@ -295,7 +317,6 @@ void TaskView::updateWatcher(void)
             else
                 (*it2)->hide();
         }
-
     }
 }
 
@@ -312,14 +333,16 @@ void TaskView::addTaskWatcher(const std::vector<TaskWatcher*> &Watcher)
 void TaskView::addTaskWatcher(void)
 {
     // add all widgets for all watcher to the task view
-    for(std::vector<TaskWatcher*>::iterator it=ActiveWatcher.begin();it!=ActiveWatcher.end();++it){
+    for (std::vector<TaskWatcher*>::iterator it=ActiveWatcher.begin();it!=ActiveWatcher.end();++it){
         std::vector<QWidget*> &cont = (*it)->getWatcherContent();
-        for(std::vector<QWidget*>::iterator it2=cont.begin();it2!=cont.end();++it2){
+        for (std::vector<QWidget*>::iterator it2=cont.begin();it2!=cont.end();++it2){
            taskPanel->addWidget(*it2);
            (*it2)->show();
         }
     }
-    taskPanel->addStretch();
+
+    if (!ActiveWatcher.empty())
+        taskPanel->addStretch();
     updateWatcher();
 }
 
@@ -332,11 +355,8 @@ void TaskView::removeTaskWatcher(void)
             (*it2)->hide();
             taskPanel->removeWidget(*it2);
         }
-
-        delete *it;
     }
 
-    ActiveWatcher.clear();
     taskPanel->removeStretch();
 }
 

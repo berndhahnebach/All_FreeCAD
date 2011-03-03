@@ -37,6 +37,9 @@ public:
 
 public Q_SLOTS:
     void on_createSolidButton_clicked();
+
+protected:
+    void changeEvent(QEvent *e);
 };
 
 /**

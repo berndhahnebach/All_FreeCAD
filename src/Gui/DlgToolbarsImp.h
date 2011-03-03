@@ -63,6 +63,7 @@ protected Q_SLOTS:
     void onModifyMacroAction(const QByteArray&);
 
 protected:
+    void changeEvent(QEvent *e);
     void hideEvent(QHideEvent * event);
     virtual void addCustomToolbar(const QString&);
     virtual void removeCustomToolbar(const QString&);
@@ -94,6 +95,7 @@ public:
     ~DlgCustomToolbarsImp();
 
 protected:
+    void changeEvent(QEvent *e);
     virtual void addCustomToolbar(const QString&);
     virtual void removeCustomToolbar(const QString&);
     virtual void renameCustomToolbar(const QString&, const QString&);
@@ -119,6 +121,9 @@ class DlgCustomToolBoxbarsImp : public DlgCustomToolbars
 public:
     DlgCustomToolBoxbarsImp(QWidget* parent = 0);
     ~DlgCustomToolBoxbarsImp();
+
+protected:
+    void changeEvent(QEvent *e);
 };
 
 } // namespace Dialog

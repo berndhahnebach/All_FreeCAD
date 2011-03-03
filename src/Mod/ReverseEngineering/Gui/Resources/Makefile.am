@@ -18,6 +18,8 @@ EXTRA_DIST = \
 		translations/ReverseEngineering_fi.ts \
 		translations/ReverseEngineering_fr.qm \
 		translations/ReverseEngineering_fr.ts \
+		translations/ReverseEngineering_hr.qm \
+		translations/ReverseEngineering_hr.ts \
 		translations/ReverseEngineering_it.qm \
 		translations/ReverseEngineering_it.ts \
 		translations/ReverseEngineering_nl.qm \
@@ -32,6 +34,8 @@ EXTRA_DIST = \
 		translations/ReverseEngineering_se.ts \
 		translations/ReverseEngineering_uk.qm \
 		translations/ReverseEngineering_uk.ts \
+		translations/ReverseEngineering_zh.qm \
+		translations/ReverseEngineering_zh.ts \
 		ReverseEngineering.qrc \
 		UpdateResources.bat
 

@@ -47,6 +47,8 @@ EXTRA_DIST = \
         Resources/translations/Draft_fi.qm \
         Resources/translations/Draft_fr.ts \
         Resources/translations/Draft_fr.qm \
+        Resources/translations/Draft_hr.ts \
+        Resources/translations/Draft_hr.qm \
         Resources/translations/Draft_it.ts \
         Resources/translations/Draft_it.qm \
         Resources/translations/Draft_nl.ts \
@@ -61,6 +63,8 @@ EXTRA_DIST = \
         Resources/translations/Draft_se.qm \
         Resources/translations/Draft_uk.ts \
         Resources/translations/Draft_uk.qm \
+        Resources/translations/Draft_zh.ts \
+        Resources/translations/Draft_zh.qm \
 		Resources/icons/preferences-draft.svg \
 		Resources/icons/Draft_AddPoint.svg \
         Resources/icons/Draft_AddToGroup.svg \

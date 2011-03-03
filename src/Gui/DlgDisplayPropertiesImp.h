@@ -73,6 +73,9 @@ private Q_SLOTS:
     void on_spinLineTransparency_valueChanged(int);
     void on_buttonUserDefinedMaterial_clicked();
 
+protected:
+    void changeEvent(QEvent *e);
+
 private:
     void slotChangedObject(const Gui::ViewProvider&, const App::Property& Prop);
     void reject();

@@ -129,6 +129,7 @@ protected:
     void addViewProvider(const char* vp, const std::vector<unsigned long>& indices);
     void removeViewProvider(const char* vp);
     void removeViewProviders();
+    void changeEvent(QEvent *e);
 
 private:
     std::map<std::string, ViewProviderMeshDefects*> _vp;

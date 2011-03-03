@@ -99,6 +99,8 @@ EXTRA_DIST = \
 		Resources/translations/Image_fi.ts \
 		Resources/translations/Image_fr.qm \
 		Resources/translations/Image_fr.ts \
+		Resources/translations/Image_hr.qm \
+		Resources/translations/Image_hr.ts \
 		Resources/translations/Image_it.qm \
 		Resources/translations/Image_it.ts \
 		Resources/translations/Image_nl.qm \
@@ -113,5 +115,7 @@ EXTRA_DIST = \
 		Resources/translations/Image_se.ts \
 		Resources/translations/Image_uk.qm \
 		Resources/translations/Image_uk.ts \
+		Resources/translations/Image_zh.qm \
+		Resources/translations/Image_zh.ts \
 		Resources/icons/image-import.svg
 

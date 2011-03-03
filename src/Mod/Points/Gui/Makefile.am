@@ -92,6 +92,8 @@ EXTRA_DIST = \
 		Resources/translations/Points_fi.ts \
 		Resources/translations/Points_fr.qm \
 		Resources/translations/Points_fr.ts \
+		Resources/translations/Points_hr.qm \
+		Resources/translations/Points_hr.ts \
 		Resources/translations/Points_it.qm \
 		Resources/translations/Points_it.ts \
 		Resources/translations/Points_nl.qm \
@@ -105,5 +107,7 @@ EXTRA_DIST = \
 		Resources/translations/Points_se.qm \
 		Resources/translations/Points_se.ts \
 		Resources/translations/Points_uk.qm \
-		Resources/translations/Points_uk.ts
+		Resources/translations/Points_uk.ts \
+		Resources/translations/Points_zh.qm \
+		Resources/translations/Points_zh.ts
 		

@@ -59,6 +59,9 @@ protected Q_SLOTS:
     void onRemoveMacroAction(const QByteArray&);
     void onModifyMacroAction(const QByteArray&);
 
+protected:
+    void changeEvent(QEvent *e);
+
 private:
     bool firstShow;
 };

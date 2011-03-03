@@ -91,6 +91,14 @@ RemoveComponents::~RemoveComponents()
     delete ui;
 }
 
+void RemoveComponents::changeEvent(QEvent *e)
+{
+    if (e->type() == QEvent::LanguageChange) {
+        ui->retranslateUi(this);
+    }
+    QWidget::changeEvent(e);
+}
+
 void RemoveComponents::on_selectRegion_clicked()
 {
     // a rubberband to select a rectangle area of the meshes

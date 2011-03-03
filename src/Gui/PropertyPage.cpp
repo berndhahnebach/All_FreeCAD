@@ -105,6 +105,11 @@ PreferencePage::~PreferencePage()
 {
 }
 
+void PreferencePage::changeEvent(QEvent *e)
+{
+    QWidget::changeEvent(e);
+}
+
 // ----------------------------------------------------------------
 
 PreferenceUiForm::PreferenceUiForm(const QString& fn, QWidget* parent)
@@ -132,6 +137,11 @@ PreferenceUiForm::PreferenceUiForm(const QString& fn, QWidget* parent)
 
 PreferenceUiForm::~PreferenceUiForm()
 {
+}
+
+void PreferenceUiForm::changeEvent(QEvent *e)
+{
+    QWidget::changeEvent(e);
 }
 
 template <typename PW>
@@ -198,31 +208,41 @@ CustomizeActionPage::~CustomizeActionPage()
 
 bool CustomizeActionPage::event(QEvent* e)
 {
-  bool ok = QWidget::event(e);
+    bool ok = QWidget::event(e);
 
-  if (e->type() == QEvent::ParentChange || e->type() == QEvent::ParentAboutToChange)
-  {
-    QWidget* topLevel = this->parentWidget();
-    while (topLevel && !topLevel->inherits("QDialog"))
-      topLevel = topLevel->parentWidget();
-    if ( topLevel )
-    {
-      int index = topLevel->metaObject()->indexOfSignal( QMetaObject::normalizedSignature("addMacroAction(const QByteArray&)") );
-      if ( index >= 0 ) {
-        if ( e->type() == QEvent::ParentChange ) {
-          connect(topLevel, SIGNAL(addMacroAction( const QByteArray& )), this, SLOT(onAddMacroAction( const QByteArray& )));
-          connect(topLevel, SIGNAL(removeMacroAction( const QByteArray& )), this, SLOT(onRemoveMacroAction( const QByteArray& )));
-          connect(topLevel, SIGNAL(modifyMacroAction( const QByteArray& )), this, SLOT(onModifyMacroAction( const QByteArray& )));
-        } else {
-          disconnect(topLevel, SIGNAL(addMacroAction( const QByteArray& )), this, SLOT(onAddMacroAction( const QByteArray& )));
-          disconnect(topLevel, SIGNAL(removeMacroAction( const QByteArray& )), this, SLOT(onRemoveMacroAction( const QByteArray& )));
-          disconnect(topLevel, SIGNAL(modifyMacroAction( const QByteArray& )), this, SLOT(onModifyMacroAction( const QByteArray& )));
+    if (e->type() == QEvent::ParentChange || e->type() == QEvent::ParentAboutToChange) {
+        QWidget* topLevel = this->parentWidget();
+        while (topLevel && !topLevel->inherits("QDialog"))
+            topLevel = topLevel->parentWidget();
+        if (topLevel) {
+            int index = topLevel->metaObject()->indexOfSignal( QMetaObject::normalizedSignature("addMacroAction(const QByteArray&)") );
+            if (index >= 0) {
+                if (e->type() == QEvent::ParentChange) {
+                    connect(topLevel, SIGNAL(addMacroAction( const QByteArray& )),
+                            this, SLOT(onAddMacroAction( const QByteArray& )));
+                    connect(topLevel, SIGNAL(removeMacroAction( const QByteArray& )),
+                            this, SLOT(onRemoveMacroAction( const QByteArray& )));
+                    connect(topLevel, SIGNAL(modifyMacroAction( const QByteArray& )),
+                            this, SLOT(onModifyMacroAction( const QByteArray& )));
+                }
+                else {
+                    disconnect(topLevel, SIGNAL(addMacroAction( const QByteArray& )),
+                               this, SLOT(onAddMacroAction( const QByteArray& )));
+                    disconnect(topLevel, SIGNAL(removeMacroAction( const QByteArray& )),
+                               this, SLOT(onRemoveMacroAction( const QByteArray& )));
+                    disconnect(topLevel, SIGNAL(modifyMacroAction( const QByteArray& )),
+                               this, SLOT(onModifyMacroAction( const QByteArray& )));
+                }
+            }
         }
-      }
     }
-  }
 
-  return ok;
+    return ok;
+}
+
+void CustomizeActionPage::changeEvent(QEvent *e)
+{
+    QWidget::changeEvent(e);
 }
 
 #include "moc_PropertyPage.cpp"

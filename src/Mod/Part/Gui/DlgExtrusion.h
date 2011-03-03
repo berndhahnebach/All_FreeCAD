@@ -43,6 +43,7 @@ public:
 protected:
     void findShapes();
     bool canExtrude(const TopoDS_Shape&) const;
+    void changeEvent(QEvent *e);
 
 private Q_SLOTS:
     void on_checkNormal_toggled(bool);

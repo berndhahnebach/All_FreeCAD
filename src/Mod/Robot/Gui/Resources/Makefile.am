@@ -30,6 +30,8 @@ EXTRA_DIST = \
 		translations/Robot_fi.ts \
 		translations/Robot_fr.qm \
 		translations/Robot_fr.ts \
+		translations/Robot_hr.qm \
+		translations/Robot_hr.ts \
 		translations/Robot_it.qm \
 		translations/Robot_it.ts \
 		translations/Robot_nl.qm \
@@ -44,6 +46,8 @@ EXTRA_DIST = \
 		translations/Robot_se.ts \
 		translations/Robot_uk.qm \
 		translations/Robot_uk.ts \
+		translations/Robot_zh.qm \
+		translations/Robot_zh.ts \
 		Robot.qrc \
 		UpdateResources.bat
 

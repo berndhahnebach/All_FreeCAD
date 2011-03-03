@@ -73,6 +73,9 @@ public:
 public Q_SLOTS:
     virtual void loadSettings()=0;
     virtual void saveSettings()=0;
+
+protected:
+    virtual void changeEvent(QEvent *e) = 0;
 };
 
 /** Subclass that embeds a form from a UI file.
@@ -88,6 +91,9 @@ public:
 
     void loadSettings();
     void saveSettings();
+
+protected:
+    void changeEvent(QEvent *e);
 
 private:
     template <typename PW>
@@ -112,6 +118,7 @@ public:
 
 protected:
     bool event(QEvent* e);
+    virtual void changeEvent(QEvent *e) = 0;
 
 protected Q_SLOTS:
     virtual void onAddMacroAction(const QByteArray&)=0;

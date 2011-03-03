@@ -60,6 +60,14 @@ DlgExtrusion::~DlgExtrusion()
     delete ui;
 }
 
+void DlgExtrusion::changeEvent(QEvent *e)
+{
+    if (e->type() == QEvent::LanguageChange) {
+        ui->retranslateUi(this);
+    }
+    QDialog::changeEvent(e);
+}
+
 void DlgExtrusion::findShapes()
 {
     App::Document* activeDoc = App::GetApplication().getActiveDocument();

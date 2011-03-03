@@ -71,6 +71,15 @@ void CleanupHandler::cleanup()
 
 /* TRANSLATOR MeshGui::DlgEvaluateMeshImp */
 
+void DlgEvaluateMeshImp::changeEvent(QEvent *e)
+{
+    if (e->type() == QEvent::LanguageChange) {
+        this->retranslateUi(this);
+        meshNameButton->setItemText(0, tr("No selection"));
+    }
+    QDialog::changeEvent(e);
+}
+
 void DlgEvaluateMeshImp::slotCreatedObject(const App::DocumentObject& Obj)
 {
     // add new mesh object to the list
@@ -1075,6 +1084,10 @@ void DlgEvaluateMeshImp::on_repairAllTogether_clicked()
 
 /* TRANSLATOR MeshGui::DockEvaluateMeshImp */
 
+#if 0 // needed for Qt's lupdate utility
+    qApp->translate("QDockWidget", "Evaluate & Repair Mesh");
+#endif
+
 DockEvaluateMeshImp* DockEvaluateMeshImp::_instance=0;
 
 DockEvaluateMeshImp* DockEvaluateMeshImp::instance()
@@ -1112,7 +1125,7 @@ DockEvaluateMeshImp::DockEvaluateMeshImp( QWidget* parent, Qt::WFlags fl )
     // embed this dialog into a dockable widget container
     Gui::DockWindowManager* pDockMgr = Gui::DockWindowManager::instance();
     // use Qt macro for preparing for translation stuff (but not translating yet)
-    QDockWidget* dw = pDockMgr->addDockWindow(QT_TR_NOOP("Evaluate & Repair Mesh"),
+    QDockWidget* dw = pDockMgr->addDockWindow("Evaluate & Repair Mesh",
         this, Qt::RightDockWidgetArea);
     //dw->setAttribute(Qt::WA_DeleteOnClose);
     dw->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
