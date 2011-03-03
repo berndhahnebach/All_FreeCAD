@@ -963,7 +963,7 @@ class Dimension:
                                 "Point through which the dimension line passes")
                 obj.addProperty("App::PropertyLink","Base","Base",
                                 "The base object this dimension is linked to")
-                obj.addProperty("App::PropertyLink","Base","Tool",
+                obj.addProperty("App::PropertyLink","Tool","Base",
                                 "The tool object this dimension is linked to")
                 obj.addProperty("App::PropertyIntegerList","LinkedVertices","Base",
                                 "The indices of the vertices from the base object to measure")
@@ -989,14 +989,14 @@ class ViewProviderDimension:
 		obj.addProperty("App::PropertyLength","LineWidth","Base","Line width")
 		obj.addProperty("App::PropertyColor","LineColor","Base","Line color")
 		obj.addProperty("App::PropertyLength","ExtLines","Base","Ext lines")
-                obj.addProperty("App::PropertyVector","TextPosition","Base","The position of the text. Leave (0,0,0) for automatic position")
-                obj.addProperty("App::PropertyString","TextOverride","Base","Text override. Use 'dim' to insert the dimension length")
+                obj.addProperty("App::PropertyVector","Position","Base","The position of the text. Leave (0,0,0) for automatic position")
+                obj.addProperty("App::PropertyString","Override","Base","Text override. Use 'dim' to insert the dimension length")
 		obj.Proxy = self
 		self.Object = obj.Object
                 obj.FontSize=prm.GetFloat("textheight")
                 obj.FontName=prm.GetString("textfont")
                 obj.ExtLines=0.3
-                obj.TextOverride = ''
+                obj.Override = ''
 
 	def calcGeom(self,obj):
 		p1 = obj.Start
@@ -1021,10 +1021,10 @@ class ViewProviderDimension:
 		if (angle >= math.pi/2) or (angle < -math.pi/2): angle = math.pi+angle
 		offset = fcvec.rotate(FreeCAD.Vector(obj.ViewObject.FontSize*.2,0,0),
                                       angle+math.pi/2)
-                if obj.ViewObject.TextPosition == Vector(0,0,0):
+                if obj.ViewObject.Position == Vector(0,0,0):
                         tbase = midpoint.add(offset)
                 else:
-                        tbase = obj.ViewObject.TextPosition
+                        tbase = obj.ViewObject.Position
 		if not proj: norm = Vector(0,0,1)
                 else: norm = fcvec.neg(p3.sub(p2).cross(proj))
 		return p1,p2,p3,p4,tbase,angle,norm
@@ -1128,8 +1128,8 @@ class ViewProviderDimension:
                                 if v1 != obj.Start: obj.Start = v1
                                 if v2 != obj.End: obj.End = v2
 		p1,p2,p3,p4,tbase,angle,norm = self.calcGeom(obj)
-                if 'TextOverride' in obj.ViewObject.PropertiesList:
-                        text = str(obj.ViewObject.TextOverride)
+                if 'Override' in obj.ViewObject.PropertiesList:
+                        text = str(obj.ViewObject.Override)
                 dtext = ("%.2f" % p3.sub(p2).Length)
                 if text:
                         text = text.replace("dim",dtext)
