@@ -79,7 +79,7 @@ App::DocumentObjectExecReturn *SketchObject::execute(void)
     // and now solve the sketch
     Sketch sketch;
 
-    sketch.setUpSketch(Geometry.getValues(),Constraints.getValues());
+    sketch.setUpSketch(Geometry.getValues(), Constraints.getValues());
  
     // solve the sketch with no fixed points
     double * fixed[2]={0,0};
@@ -210,7 +210,6 @@ void SketchObject::Restore(XMLReader &reader)
 {
     // read the father classes
     Part::Part2DObject::Restore(reader);
-
 }
 
 void SketchObject::getGeoVertexIndex(int VertexId,int &GeoId,int &PointPos)
