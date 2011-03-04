@@ -143,7 +143,7 @@ public:
     float SolveTime;
 
 protected:
-    /// container element to store and work with the gometric elements of this sketch
+    /// container element to store and work with the geometric elements of this sketch
     struct GeoDef {
         Part::Geometry  * geo;                 // pointer to the geometry
         GeoType           type;                // type of the geometry
@@ -179,7 +179,6 @@ protected:
     };
 
     std::map<int,PoPConst> PoPMap;
-
 
 };
 

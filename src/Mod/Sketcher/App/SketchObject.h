@@ -72,11 +72,11 @@ public:
     int delConstraint(int ConstrNbr);
 
     /// set the datum of a Distance or Angle constraint
-    void setDatum(double Datum,int ConstrNbr);
+    void setDatum(double Datum, int ConstrNbr);
 
     /** retrieves for a Vertex number the corosponding GeoId and PointPosition
     */
-    void getGeoVertexIndex(int VertexId,int &GeoId,int &PointPos);
+    void getGeoVertexIndex(int VertexId, int &GeoId, int &PointPos);
 
     // from base class
     virtual PyObject *getPyObject(void);
