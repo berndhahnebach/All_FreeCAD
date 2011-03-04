@@ -78,10 +78,10 @@ PyObject* SketchObjectPy::setDatum(PyObject *args)
 {
     double Datum;
     int    Index;
-    if (!PyArg_ParseTuple(args, "di", &Datum,&Index))
+    if (!PyArg_ParseTuple(args, "di", &Datum, &Index))
         return 0;
 
-    this->getSketchObjectPtr()->setDatum(Datum,Index);
+    this->getSketchObjectPtr()->setDatum(Datum, Index);
 
     Py_Return; 
 }

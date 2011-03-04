@@ -935,7 +935,7 @@ void NavigationStyle::openPopupMenu(const SbVec2s& position)
     subMenuGroup.setExclusive(true);
     subMenu.setTitle(QObject::tr("Navigation styles"));
 
-    MenuManager::getInstance()->setupContextMenu(view,contextMenu);
+    MenuManager::getInstance()->setupContextMenu(view, contextMenu);
     contextMenu.addMenu(&subMenu);
 
     // add submenu at the end to select navigation style

@@ -61,7 +61,7 @@ namespace SketcherGui {
 class DrawSketchHandler;
 
 /** The Sketch ViewProvider
-  * This class handles mainly the drawing and edeting of the sketch.
+  * This class handles mainly the drawing and editing of the sketch.
   * It draws the geometry and the constraints applied to the sketch.
   * It uses the class DrawSketchHandler to facilitade the creation 
   * of new geometry while editing.
@@ -105,9 +105,9 @@ public:
         STATUS_SKETCH_UseHandler, /**< enum value A DrawSketchHandler is in control. */  
     };
     /// is called by GuiCommands to set the drawing mode
-    void setSketchMode(SketchMode mode){Mode = mode;}
+    void setSketchMode(SketchMode mode) {Mode = mode;}
     /// get the sketch mode
-    SketchMode getSketchMode(void){return Mode;}
+    SketchMode getSketchMode(void) {return Mode;}
     //@}
 
     /** @name helper functions */
@@ -123,9 +123,9 @@ public:
     /// get the pointer to the sketch document object
     Sketcher::SketchObject* getSketchObject(void) const;
 
-	int getPreselectPoint(void)const;
-	int getPreselectCurve(void)const;
-    int getPreselectConstraint(void)const;
+    int getPreselectPoint(void) const;
+    int getPreselectCurve(void) const;
+    int getPreselectConstraint(void) const;
     //@}
 
     /** @name base class implementer */

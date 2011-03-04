@@ -76,9 +76,9 @@ public:
     void setUpSketch(const std::vector<Part::Geometry *> &geo,const std::vector<Constraint *> &ConstraintList);
     /// return the actual geometry of the sketch a TopoShape
     Part::TopoShape toShape(void) const;
-    /// add unspecified geomtry
+    /// add unspecified geometry
     int addGeometry(const Part::Geometry *geo);
-    /// add unspecified geomtry
+    /// add unspecified geometry
     void addGeometry(const std::vector<Part::Geometry *> &geo);
     /// returns the actual geometry 
     std::vector<Part::Geometry *> getGeometry(bool withConstrucionElements = false) const;

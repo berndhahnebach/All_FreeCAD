@@ -390,7 +390,7 @@ StdWorkbench::~StdWorkbench()
 {
 }
 
-void StdWorkbench::setupContextMenu(const char* recipient,MenuItem* item) const
+void StdWorkbench::setupContextMenu(const char* recipient, MenuItem* item) const
 {
     if (strcmp(recipient,"View") == 0)
     {

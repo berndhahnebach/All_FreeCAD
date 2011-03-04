@@ -550,7 +550,7 @@ void TreeWidget::onTestStatus(void)
     }
 
     this->statusTimer->setSingleShot(true);
-    this->statusTimer->start(300);	
+    this->statusTimer->start(300);
 }
 
 void TreeWidget::onItemEntered(QTreeWidgetItem * item)

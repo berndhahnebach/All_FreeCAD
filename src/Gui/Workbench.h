@@ -132,7 +132,7 @@ public:
 
 public:
     /** Defines the standard context menu. */
-    virtual void setupContextMenu(const char* recipient,MenuItem*) const;
+    virtual void setupContextMenu(const char* recipient, MenuItem*) const;
     virtual void createMainWindowPopupMenu(MenuItem*) const;
 
 protected:

@@ -192,7 +192,7 @@ public:
  *  - list of subelements (list of strings)
  *  - 3D coordinates where the user clicks to select (Vector3d)
  *
- *  Also the preselction is managed. That means you can add a filter to prevent selection 
+ *  Also the preselection is managed. That means you can add a filter to prevent selection 
  *  of unwanted objects or subelements.
  */
 class GuiExport SelectionSingleton : public Base::Subject<const SelectionChanges&>
@@ -334,7 +334,7 @@ protected:
         std::string SubName;
         std::string TypeName;
         App::Document* pDoc;
-        App::DocumentObject*  pObject;
+        App::DocumentObject* pObject;
         float x,y,z;
     };
     std::list<_SelObj> _SelList;
