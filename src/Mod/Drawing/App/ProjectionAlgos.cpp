@@ -60,6 +60,16 @@
 #include <BRep_Tool.hxx>
 #include <BRepMesh.hxx>
 
+#include <BRepAdaptor_CompCurve.hxx>
+#include <Handle_BRepAdaptor_HCompCurve.hxx>
+#include <Approx_Curve3d.hxx>
+#include <BRepAdaptor_HCurve.hxx>
+#include <Handle_BRepAdaptor_HCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Handle_Geom_BSplineCurve.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <GeomConvert_BSplineCurveToBezierCurve.hxx>
+
 
 #include <Base/Exception.h>
 #include <Base/FileInfo.h>
@@ -230,24 +240,32 @@ std::string ProjectionAlgos::Edges2SVG(const TopoDS_Shape &Input)
         if (adapt.GetType() == GeomAbs_Circle) {
             printCircle(adapt, result);
         }
+        else if (adapt.GetType() == GeomAbs_BSplineCurve) {
+            printBSpline(adapt, i, result);
+        }
         // fallback
         else {
-            TopLoc_Location location;
-            Handle(Poly_Polygon3D) polygon = BRep_Tool::Polygon3D(edge, location);
-            if (!polygon.IsNull()) {
-                const TColgp_Array1OfPnt& nodes = polygon->Nodes();
-                char c = 'M';
-                result << "<path id= \"" /*<< ViewName*/ << i << "\" d=\" "; 
-                for (int i = nodes.Lower(); i <= nodes.Upper(); i++){
-                    result << c << " " << nodes(i).X() << " " << nodes(i).Y()<< " " ; 
-                    c = 'L';
-                }
-                result << "\" />" << endl;
-            }
+            printGeneric(adapt, i, result);
         }
     }
 
     return result.str();
+}
+
+void ProjectionAlgos::printGeneric(const BRepAdaptor_Curve& c, int id, std::ostream& out)
+{
+    TopLoc_Location location;
+    Handle(Poly_Polygon3D) polygon = BRep_Tool::Polygon3D(c.Edge(), location);
+    if (!polygon.IsNull()) {
+        const TColgp_Array1OfPnt& nodes = polygon->Nodes();
+        char c = 'M';
+        out << "<path id= \"" /*<< ViewName*/ << id << "\" d=\" "; 
+        for (int i = nodes.Lower(); i <= nodes.Upper(); i++){
+            out << c << " " << nodes(i).X() << " " << nodes(i).Y()<< " " ; 
+            c = 'L';
+        }
+        out << "\" />" << endl;
+    }
 }
 
 void ProjectionAlgos::printCircle(const BRepAdaptor_Curve& c, std::ostream& out)
@@ -279,5 +297,76 @@ void ProjectionAlgos::printCircle(const BRepAdaptor_Curve& c, std::ostream& out)
             << " A" << r << " " << r << " "
             << xar << " " << las << " " << swp << " "
             << e.X() << " " << e.Y() << "\" />";
+    }
+}
+
+void ProjectionAlgos::printBSpline(const BRepAdaptor_Curve& c, int id, std::ostream& out)
+{
+    try {
+        std::stringstream str;
+        Handle_Geom_BSplineCurve spline = c.BSpline();
+        if (spline->Degree() > 3) {
+            Standard_Real tol3D = 0.001;
+            Standard_Integer maxDegree = 3, maxSegment = 10;
+            Handle_BRepAdaptor_HCurve hCurve = new BRepAdaptor_HCurve(c);
+            // approximate the curve using a tolerance
+            Approx_Curve3d approx(hCurve,tol3D,GeomAbs_C2,maxSegment,maxDegree);
+            if (approx.IsDone() && approx.HasResult()) {
+                // have the result
+                spline = approx.Curve();
+            }
+        }
+
+        GeomConvert_BSplineCurveToBezierCurve crt(spline);
+        Standard_Integer arcs = crt.NbArcs();
+        str << "<path d=\"M";
+        for (Standard_Integer i=1; i<=arcs; i++) {
+            Handle_Geom_BezierCurve bezier = crt.Arc(i);
+            Standard_Integer poles = bezier->NbPoles();
+            if (bezier->Degree() == 3) {
+                if (poles != 4)
+                    Standard_Failure::Raise("do it the generic way");
+                gp_Pnt p1 = bezier->Pole(1);
+                gp_Pnt p2 = bezier->Pole(2);
+                gp_Pnt p3 = bezier->Pole(3);
+                gp_Pnt p4 = bezier->Pole(4);
+                if (i == 1) {
+                    str << p1.X() << "," << p1.Y() << " C"
+                        << p2.X() << "," << p2.Y() << " "
+                        << p3.X() << "," << p3.Y() << " "
+                        << p4.X() << "," << p4.Y() << " ";
+                }
+                else {
+                    str << "S"
+                        << p3.X() << "," << p3.Y() << " "
+                        << p4.X() << "," << p4.Y() << " ";
+                }
+            }
+            else if (bezier->Degree() == 2) {
+                if (poles != 3)
+                    Standard_Failure::Raise("do it the generic way");
+                gp_Pnt p1 = bezier->Pole(1);
+                gp_Pnt p2 = bezier->Pole(2);
+                gp_Pnt p3 = bezier->Pole(3);
+                if (i == 1) {
+                    str << p1.X() << "," << p1.Y() << " Q"
+                        << p2.X() << "," << p2.Y() << " "
+                        << p3.X() << "," << p3.Y() << " ";
+                }
+                else {
+                    str << "T"
+                        << p3.X() << "," << p3.Y() << " ";
+                }
+            }
+            else {
+                Standard_Failure::Raise("do it the generic way");
+            }
+        }
+
+        str << "\" />";
+        out << str.str();
+    }
+    catch (Standard_Failure) {
+        printGeneric(c, id, out);
     }
 }

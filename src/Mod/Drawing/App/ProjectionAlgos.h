@@ -70,6 +70,8 @@ public:
 
 private:
     void printCircle(const BRepAdaptor_Curve&, std::ostream&);
+    void printBSpline(const BRepAdaptor_Curve&, int id, std::ostream&);
+    void printGeneric(const BRepAdaptor_Curve&, int id, std::ostream&);
 };
 
 } //namespace Drawing
