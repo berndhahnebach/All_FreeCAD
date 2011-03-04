@@ -63,13 +63,13 @@ public:
     /// add unspecified geometry
     int addGeometry(const std::vector<Part::Geometry *> &geoList);
     /// delete geometry
-    void delGeometry(int GeoNbr);
+    int delGeometry(int GeoNbr);
     /// add all constraints in the list
     int addConstraints(const std::vector<Constraint *> &ConstraintList);
     /// add constraint
-    int addConstraints(const Constraint *constraint);
+    int addConstraint(const Constraint *constraint);
     /// delete constraint
-    void delConstraints(int ConstrNbr);
+    int delConstraint(int ConstrNbr);
 
     /// set the datum of a Distance or Angle constraint
     void setDatum(double Datum,int ConstrNbr);

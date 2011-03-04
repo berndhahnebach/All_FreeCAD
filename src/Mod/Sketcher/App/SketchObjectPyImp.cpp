@@ -67,7 +67,10 @@ PyObject* SketchObjectPy::delGeometry(PyObject *args)
     if (!PyArg_ParseTuple(args, "i", &Index))
         return 0;
 
-    this->getSketchObjectPtr()->delGeometry(Index);
+    if (this->getSketchObjectPtr()->delGeometry(Index)) {
+        Base::Console().Error("Not able to delete a geometry with the given index.");
+        return 0;
+    }
 
     Py_Return; 
 }
@@ -80,7 +83,7 @@ PyObject* SketchObjectPy::addConstraint(PyObject *args)
 
     if (PyObject_TypeCheck(pcObj, &(Sketcher::ConstraintPy::Type))) {
         Sketcher::Constraint *constr = static_cast<Sketcher::ConstraintPy*>(pcObj)->getConstraintPtr();
-        return Py::new_reference_to(Py::Int(this->getSketchObjectPtr()->addConstraints(constr)));
+        return Py::new_reference_to(Py::Int(this->getSketchObjectPtr()->addConstraint(constr)));
     }
     Py_Return; 
 }
@@ -91,7 +94,10 @@ PyObject* SketchObjectPy::delConstraint(PyObject *args)
     if (!PyArg_ParseTuple(args, "i", &Index))
         return 0;
 
-    this->getSketchObjectPtr()->delConstraints(Index);
+    if (this->getSketchObjectPtr()->delConstraint(Index)) {
+        Base::Console().Error("Not able to delete a constraint with the given index.");
+        return 0;
+    }
 
     Py_Return; 
 }
