@@ -131,6 +131,32 @@ int SketchObject::addGeometry(const Part::Geometry *geo)
     return Geometry.getSize()-1;
 }
 
+void SketchObject::delGeometry(int GeoNbr)
+{
+    const std::vector< Part::Geometry * > &vals = this->Geometry.getValues();
+    assert(GeoNbr < (int)vals.size());
+
+    std::vector< Part::Geometry * > newVals(vals);
+    newVals.erase(newVals.begin()+GeoNbr);
+
+    std::vector< Constraint * > constraints = this->Constraints.getValues();
+    std::vector< Constraint * > newConstraints(constraints);
+    int i = 0;
+    for (std::vector<Constraint *>::iterator it = constraints.begin();
+         it != constraints.end(); ++it, ++i) {
+        if ((*it)->First == GeoNbr || (*it)->Second == GeoNbr)
+          newConstraints.erase(newConstraints.begin()+i);
+        else {
+            if ((*it)->First > GeoNbr)
+                (*it)->First -= 1;
+            if ((*it)->Second > GeoNbr)
+                (*it)->Second -= 1;
+            newConstraints.push_back(*it);
+        }
+    }
+    this->Constraints.setValues(newConstraints);
+    this->Geometry.setValues(newVals);
+}
 
 int SketchObject::addConstraints(const std::vector<Constraint *> &ConstraintList)
 {
@@ -149,6 +175,15 @@ int SketchObject::addConstraints(const Constraint *constraint)
     return this->Constraints.getSize()-1;
 }
 
+void SketchObject::delConstraints(int ConstrNbr)
+{
+    const std::vector< Constraint * > &vals = this->Constraints.getValues();
+    assert(ConstrNbr < (int)vals.size());
+
+    std::vector< Constraint * > newVals(vals);
+    newVals.erase(newVals.begin()+ConstrNbr);
+    this->Constraints.setValues(newVals);
+}
 
 PyObject *SketchObject::getPyObject(void)
 {
