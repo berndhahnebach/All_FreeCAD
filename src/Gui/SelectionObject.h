@@ -50,27 +50,27 @@ public:
      */
     PyObject* getPyObject();
 
-	/// get the SubElement name of this SelectionObject
-    inline const std::vector<std::string> &getSubNames(void) const{return SubNames;}
+    /// get the SubElement name of this SelectionObject
+    inline const std::vector<std::string> &getSubNames(void) const { return SubNames; }
     /// are there any SubNames selected
-    bool hasSubNames(void)const {return SubNames.size() != 0;}
-	/// get the name of the Document of this SelctionObject
-	inline const char* getDocName(void){return DocName.c_str();}
-	/// get the name of the Document Object of this SelectionObject
-	inline const char* getFeatName(void){return FeatName.c_str();}
-	/// get the Type of the selcted Object
-	inline const char* getTypeName(void){return TypeName.c_str();}
+    bool hasSubNames(void)const { return SubNames.size() != 0; }
+    /// get the name of the Document of this SelctionObject
+    inline const char* getDocName(void) { return DocName.c_str(); }
+    /// get the name of the Document Object of this SelectionObject
+    inline const char* getFeatName(void) { return FeatName.c_str(); }
+    /// get the Type of the selcted Object
+    inline const char* getTypeName(void) { return TypeName.c_str(); }
 
-	/// returns the selected DocumentObject or NULL if the object is already deleted
-	const App::DocumentObject *getObject(void)const;
-	/// returns the selected DocumentObject or NULL if the object is already deleted
-	App::DocumentObject *getObject(void);
+    /// returns the selected DocumentObject or NULL if the object is already deleted
+    const App::DocumentObject *getObject(void)const;
+    /// returns the selected DocumentObject or NULL if the object is already deleted
+    App::DocumentObject *getObject(void);
 
-	/// check the selected object is a special type or derived of
-	bool isObjectTypeOf(const Base::Type& typeId)const;
+    /// check the selected object is a special type or derived of
+    bool isObjectTypeOf(const Base::Type& typeId)const;
 
-	/// returns python expreasion sutably for assigning to a LinkSub property
-	std::string getAsPropertyLinkSubString(void)const;
+    /// returns python expreasion sutably for assigning to a LinkSub property
+    std::string getAsPropertyLinkSubString(void)const;
 
     friend class SelectionSingleton;
 

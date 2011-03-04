@@ -56,10 +56,10 @@ public:
 
 public Q_SLOTS:
     void on_comboBoxFilter_currentIndexChanged(int);
-    void on_listWidgetConstraints_itemSelectionChanged (void); 
-    void on_listWidgetConstraints_itemActivated ( QListWidgetItem *item); 
-    //void on_listWidgetConstraints_entered      ( const QModelIndex & index ); 
-    
+    void on_listWidgetConstraints_itemSelectionChanged(void); 
+    void on_listWidgetConstraints_itemActivated(QListWidgetItem *item); 
+    //void on_listWidgetConstraints_entered(const QModelIndex &index); 
+
 protected:
     void changeEvent(QEvent *e);
     ViewProviderSketch *sketchView;

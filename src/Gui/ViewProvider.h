@@ -108,7 +108,8 @@ public:
       * be used for any kind of grouping needed for a special 
       * purpose.
       */
-    virtual std::vector<App::DocumentObject*> claimChildren(void)const{return std::vector<App::DocumentObject*>();}
+    virtual std::vector<App::DocumentObject*> claimChildren(void) const
+    { return std::vector<App::DocumentObject*>(); }
     //@}
 
     /** @name Signals of the view provider */

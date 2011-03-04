@@ -292,7 +292,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                         // Do selection
                         std::stringstream ss;
                         ss << "Edge" << edit->PreselectCurve;
-                                            Gui::Selection().addSelection(getSketchObject()->getDocument()->getName()
+                        Gui::Selection().addSelection(getSketchObject()->getDocument()->getName()
                                                      ,getSketchObject()->getNameInDocument()
                                                      ,ss.str().c_str()
                                                      ,pp->getPoint()[0]
@@ -308,7 +308,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                          // Do selection
                         std::stringstream ss;
                         ss << "Constraint" << edit->PreselectConstraint;
-                                            Gui::Selection().addSelection(getSketchObject()->getDocument()->getName()
+                        Gui::Selection().addSelection(getSketchObject()->getDocument()->getName()
                                                      ,getSketchObject()->getNameInDocument()
                                                      ,ss.str().c_str()
                                                      ,pp->getPoint()[0]
@@ -378,7 +378,7 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
 
     switch (Mode) {
         case STATUS_NONE:
-            if(preselectChanged)
+            if (preselectChanged)
                 updateColor();
             return false;
         case STATUS_SELECT_Point:
@@ -399,7 +399,7 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
 
             return true;
         case STATUS_SKETCH_DragPoint:
-            if(edit->DragPoint != -1){
+            if (edit->DragPoint != -1) {
                 //Base::Console().Log("Drag Point:%d\n",edit->DragPoint);
                 int ret;
                 if ((ret=edit->ActSketch.movePoint(edit->DragPoint/2,edit->DragPoint%2==0?start:end,Base::Vector3d(x,y,0))) == 0){
@@ -414,7 +414,7 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
             }
             return true;
         case STATUS_SKETCH_UseHandler:
-            if(preselectChanged)
+            if (preselectChanged)
                 updateColor();
             edit->sketchHandler->mouseMove(Base::Vector2D(x,y));
             return true;

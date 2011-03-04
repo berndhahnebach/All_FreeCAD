@@ -15,7 +15,7 @@
     </Documentation>
     <Methode Name="solve">
       <Documentation>
-        <UserDocu>solve the actuall set of geometry and constraints</UserDocu>
+        <UserDocu>solve the actual set of geometry and constraints</UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="addGeometry">

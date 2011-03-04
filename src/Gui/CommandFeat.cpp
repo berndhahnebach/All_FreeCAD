@@ -80,8 +80,6 @@ void StdCmdRandomColor::activated(int iMsg)
     // get the complete selection
     std::vector<SelectionSingleton::SelObj> sel = Selection().getCompleteSelection();
     for (std::vector<SelectionSingleton::SelObj>::iterator it = sel.begin(); it != sel.end(); ++it) {
-        const char* docName = it->pDoc->getName();
-        const char* objName = it->pObject->getNameInDocument();
         float fMax = (float)RAND_MAX;
         float fRed = (float)rand()/fMax;
         float fGrn = (float)rand()/fMax;
@@ -92,7 +90,7 @@ void StdCmdRandomColor::activated(int iMsg)
         if (color && color->getTypeId() == App::PropertyColor::getClassTypeId()) {
             // get the view provider of the selected object and set the shape color
             doCommand(Gui, "Gui.getDocument(\"%s\").getObject(\"%s\").ShapeColor=(%.2f,%.2f,%.2f)"
-                         , docName, objName, fRed, fGrn, fBlu);
+                         , it->DocName, it->FeatName, fRed, fGrn, fBlu);
         }
     }
 }

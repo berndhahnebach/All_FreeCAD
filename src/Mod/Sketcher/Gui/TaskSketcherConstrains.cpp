@@ -71,20 +71,20 @@ TaskSketcherConstrains::TaskSketcherConstrains(ViewProviderSketch *sketchView)
 
     // connecting the needed signals
     QObject::connect(
-        ui->comboBoxFilter,SIGNAL(currentIndexChanged(int)),
-        this              ,SLOT  (on_comboBoxFilter_currentIndexChanged(int))
+        ui->comboBoxFilter, SIGNAL(currentIndexChanged(int)),
+        this              , SLOT  (on_comboBoxFilter_currentIndexChanged(int))
        );
     QObject::connect(
-        ui->listWidgetConstraints,SIGNAL(itemSelectionChanged ()),
-        this                     ,SLOT  (on_listWidgetConstraints_itemSelectionChanged ())
+        ui->listWidgetConstraints, SIGNAL(itemSelectionChanged()),
+        this                     , SLOT  (on_listWidgetConstraints_itemSelectionChanged())
        );
     QObject::connect(
-        ui->listWidgetConstraints,SIGNAL(itemActivated ( QListWidgetItem *)),
-        this                     ,SLOT  (on_listWidgetConstraints_itemActivated ( QListWidgetItem *) )
+        ui->listWidgetConstraints, SIGNAL(itemActivated(QListWidgetItem *)),
+        this                     , SLOT  (on_listWidgetConstraints_itemActivated(QListWidgetItem *))
        );
     //QObject::connect(
-    //    ui->listWidgetConstraints,SIGNAL(entered(const QModelIndex &)),
-    //    this                     ,SLOT  (on_listWidgetConstraints_entered(const QModelIndex &))
+    //    ui->listWidgetConstraints, SIGNAL(entered(const QModelIndex &)),
+    //    this                     , SLOT  (on_listWidgetConstraints_entered(const QModelIndex &))
     //   );
 
     connectionConstraintsChanged = sketchView->signalConstraintsChanged.connect(boost::bind(&SketcherGui::TaskSketcherConstrains::slotConstraintsChanged, this));
@@ -135,12 +135,12 @@ void TaskSketcherConstrains::on_comboBoxFilter_currentIndexChanged(int)
     slotConstraintsChanged();
 }
 
-void TaskSketcherConstrains::on_listWidgetConstraints_itemSelectionChanged (void)
+void TaskSketcherConstrains::on_listWidgetConstraints_itemSelectionChanged(void)
 {
     
 }
 
-void TaskSketcherConstrains::on_listWidgetConstraints_itemActivated ( QListWidgetItem *item)
+void TaskSketcherConstrains::on_listWidgetConstraints_itemActivated(QListWidgetItem *item)
 {
     ConstraintItem *it = dynamic_cast<ConstraintItem*>(item);
 
@@ -152,12 +152,12 @@ void TaskSketcherConstrains::on_listWidgetConstraints_itemActivated ( QListWidge
         double Datum = Const->Value;
 
         QDialog *Dlg = new QDialog;
-        Ui::InsertDatum ui;
-        ui.setupUi(Dlg);
+        Ui::InsertDatum ui_ins_datum;
+        ui_ins_datum.setupUi(Dlg);
 
-        ui.lineEdit->setText(QString::fromAscii("%1").arg(Datum)); 
+        ui_ins_datum.lineEdit->setText(QString::fromAscii("%1").arg(Datum)); 
         if(Dlg->exec()){
-            double newDatum = ui.lineEdit->text().toDouble();
+            double newDatum = ui_ins_datum.lineEdit->text().toDouble();
             Gui::Command::openCommand("Add sketch constraints");
             Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.setDatum(%f,%i)",
                       sketchView->getObject()->getNameInDocument(),
@@ -165,13 +165,10 @@ void TaskSketcherConstrains::on_listWidgetConstraints_itemActivated ( QListWidge
             sketchView->getSketchObject()->execute();
 
         }
-
     }
-
-
 }
 
-//void TaskSketcherConstrains::on_listWidgetConstraints_entered    ( const QModelIndex & index )
+//void TaskSketcherConstrains::on_listWidgetConstraints_entered(const QModelIndex &index)
 //{
 //    index;
 //}
@@ -196,10 +193,10 @@ void TaskSketcherConstrains::slotConstraintsChanged(void)
     int Filter = ui->comboBoxFilter->currentIndex();
 
     int i=1;
-	for(std::vector< Sketcher::Constraint * >::const_iterator it= vals.begin();it!=vals.end();++it,++i){
-        if((*it)->Name == ""){
+    for(std::vector< Sketcher::Constraint * >::const_iterator it= vals.begin();it!=vals.end();++it,++i){
+        if ((*it)->Name == "")
             name = QString(QString::fromLatin1("Constraint%1")).arg(i);
-        }else
+        else
             name = QString(QString::fromLatin1((*it)->Name.c_str()));
 
         switch((*it)->Type){

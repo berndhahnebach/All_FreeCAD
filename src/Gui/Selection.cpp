@@ -362,7 +362,6 @@ std::vector<SelectionObject> SelectionSingleton::getSelectionEx(const char* pDoc
     if (typeId == Base::Type::badType()) 
         return temp;
 
-
     App::Document *pcDoc;
     string DocName;
 
@@ -658,8 +657,8 @@ bool SelectionSingleton::addSelection(const char* pDocName, const char* pObjectN
         }
 
         temp.DocName  = pDocName;
-        temp.FeatName = pObjectName?pObjectName:"";
-        temp.SubName  = pSubName ?pSubName :"";
+        temp.FeatName = pObjectName ? pObjectName : "";
+        temp.SubName  = pSubName ? pSubName : "";
         temp.x        = x;
         temp.y        = y;
         temp.z        = z;
@@ -672,8 +671,8 @@ bool SelectionSingleton::addSelection(const char* pDocName, const char* pObjectN
         SelectionChanges Chng;
 
         Chng.pDocName  = pDocName;
-        Chng.pObjectName = pObjectName?pObjectName:"";
-        Chng.pSubName  = pSubName ?pSubName :"";
+        Chng.pObjectName = pObjectName ? pObjectName : "";
+        Chng.pSubName  = pSubName ? pSubName : "";
         Chng.x         = x;
         Chng.y         = y;
         Chng.z         = z;
@@ -949,7 +948,7 @@ void SelectionSingleton::removeObject(App::DocumentObject *f)
 //**************************************************************************
 // Python stuff
 
-// SelectionSingleton Methods						// Methods structure
+// SelectionSingleton Methods  // Methods structure
 PyMethodDef SelectionSingleton::Methods[] = {
     {"addSelection",         (PyCFunction) SelectionSingleton::sAddSelection, 1, 
      "addSelection(object) -- Add an object to the selection"},
@@ -983,7 +982,7 @@ PyMethodDef SelectionSingleton::Methods[] = {
     "'SELECT Robot::RobotObject'\n"},
     {"removeSelectionGate",      (PyCFunction) SelectionSingleton::sremoveSelectionGate, 1,
      "removeSelectionGate() -- remove the active slection gate\n"},
-    {NULL, NULL, 0, NULL}		/* Sentinel */
+    {NULL, NULL, 0, NULL}  /* Sentinel */
 };
 
 PyObject *SelectionSingleton::sAddSelection(PyObject * /*self*/, PyObject *args, PyObject * /*kwd*/)

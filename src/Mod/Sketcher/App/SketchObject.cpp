@@ -96,7 +96,7 @@ App::DocumentObjectExecReturn *SketchObject::execute(void)
     return App::DocumentObject::StdReturn;
 }
 
-void SketchObject::setDatum(double Datum,int ConstrNbr)
+void SketchObject::setDatum(double Datum, int ConstrNbr)
 {
     assert(ConstrNbr >= 0); 
 

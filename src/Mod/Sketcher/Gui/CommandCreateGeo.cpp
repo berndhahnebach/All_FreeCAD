@@ -192,8 +192,6 @@ CmdSketcherCreateLine::CmdSketcherCreateLine()
     sPixmap         = "Sketcher_CreateLine";
     iAccel          = Qt::Key_L;
     eType           = ForEdit;
-
-
 }
 
 void CmdSketcherCreateLine::activated(int iMsg)
@@ -332,7 +330,7 @@ public:
             Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Horizontal',%i)) "
                      ,sketchgui->getObject()->getNameInDocument()
                      ,firstCurve+2);
-            // add the vertical  constraints
+            // add the vertical constraints
             Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Vertical',%i)) "
                      ,sketchgui->getObject()->getNameInDocument()
                      ,firstCurve+1);
@@ -463,7 +461,7 @@ public:
             applyCursor();
             if (EditCurve[1] == EditCurve[0]) {
                 // set the old cursor
-                unsetCursor();	
+                unsetCursor();
                 // empty the edit draw
                 EditCurve.clear();
                 resetPositionText();
