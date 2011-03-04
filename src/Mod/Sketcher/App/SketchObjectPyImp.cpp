@@ -61,6 +61,17 @@ PyObject* SketchObjectPy::addGeometry(PyObject *args)
     Py_Return; 
 }
 
+PyObject* SketchObjectPy::delGeometry(PyObject *args)
+{
+    int Index;
+    if (!PyArg_ParseTuple(args, "i", &Index))
+        return 0;
+
+    this->getSketchObjectPtr()->delGeometry(Index);
+
+    Py_Return; 
+}
+
 PyObject* SketchObjectPy::addConstraint(PyObject *args)
 {
     PyObject *pcObj;
@@ -71,6 +82,17 @@ PyObject* SketchObjectPy::addConstraint(PyObject *args)
         Sketcher::Constraint *constr = static_cast<Sketcher::ConstraintPy*>(pcObj)->getConstraintPtr();
         return Py::new_reference_to(Py::Int(this->getSketchObjectPtr()->addConstraints(constr)));
     }
+    Py_Return; 
+}
+
+PyObject* SketchObjectPy::delConstraint(PyObject *args)
+{
+    int Index;
+    if (!PyArg_ParseTuple(args, "i", &Index))
+        return 0;
+
+    this->getSketchObjectPtr()->delConstraints(Index);
+
     Py_Return; 
 }
 
