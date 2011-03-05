@@ -1260,3 +1260,27 @@ Sketcher::SketchObject* ViewProviderSketch::getSketchObject(void) const
     return dynamic_cast<Sketcher::SketchObject*>(pcObject);
 }
 
+void ViewProviderSketch::delSelected(void)
+{
+    if (edit) {
+        std::set<int>::const_reverse_iterator rit;
+        for (rit = edit->SelConstraintSet.rbegin(); rit != edit->SelConstraintSet.rend(); rit++) {
+            Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.delConstraint(%i)"
+                                   ,getObject()->getNameInDocument(), *rit);
+        }
+        for (rit = edit->SelCurvSet.rbegin(); rit != edit->SelCurvSet.rend(); rit++) {
+            Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.delGeometry(%i)"
+                                   ,getObject()->getNameInDocument(), *rit);
+        }
+        for (rit = edit->SelPointSet.rbegin(); rit != edit->SelPointSet.rend(); rit++) {
+Base::Console().Warning("App.ActiveDocument.%s.delPoint(%i)"
+                                   ,getObject()->getNameInDocument(), *rit);
+        }
+
+        Gui::Selection().clearSelection();
+        edit->PreselectCurve = -1;
+        edit->PreselectPoint = -1;
+        edit->PreselectConstraint = -1;
+        updateColor();
+    }
+}
