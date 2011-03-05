@@ -840,6 +840,7 @@ StdCmdDelete::StdCmdDelete()
   sPixmap       = "edit-delete";
 #endif
   iAccel        = keySequenceToAccel(QKeySequence::Delete);
+  eType         = ForEdit;
 }
 
 void StdCmdDelete::activated(int iMsg)
@@ -847,16 +848,22 @@ void StdCmdDelete::activated(int iMsg)
     // go through all documents
     const SelectionSingleton& rSel = Selection();
     const std::vector<App::Document*> docs = App::GetApplication().getDocuments();
-    for ( std::vector<App::Document*>::const_iterator it = docs.begin(); it != docs.end(); ++it ) {
-        const std::vector<App::DocumentObject*> sel = rSel.getObjectsOfType(App::DocumentObject::getClassTypeId(), (*it)->getName());
+    for ( std::vector<App::Document*>::const_iterator it = docs.begin(); it != docs.end(); ++it) {
+        Gui::Document* pGuiDoc = Gui::Application::Instance->getDocument(*it);
+        std::vector<Gui::SelectionObject> sel = rSel.getSelectionEx((*it)->getName());
         if (!sel.empty()) {
             (*it)->openTransaction("Delete");
-            for(std::vector<App::DocumentObject*>::const_iterator ft=sel.begin();ft!=sel.end();ft++) {
-                if ((*ft)->getTypeId().isDerivedFrom(App::DocumentObjectGroup::getClassTypeId()))
-                doCommand(Doc,"App.getDocument(\"%s\").getObject(\"%s\").removeObjectsFromDocument()"
-                             ,(*it)->getName(), (*ft)->getNameInDocument());
-                doCommand(Doc,"App.getDocument(\"%s\").removeObject(\"%s\")"
-                             ,(*it)->getName(), (*ft)->getNameInDocument());
+            for (std::vector<Gui::SelectionObject>::iterator ft = sel.begin(); ft != sel.end(); ++ft) {
+                Gui::ViewProvider* vp = pGuiDoc->getViewProvider(ft->getObject());
+                if (vp->isEditing())
+                    vp->delSelected();
+                else {
+                    if (ft->isObjectTypeOf(App::DocumentObjectGroup::getClassTypeId()))
+                        doCommand(Doc,"App.getDocument(\"%s\").getObject(\"%s\").removeObjectsFromDocument()"
+                                     ,(*it)->getName(), ft->getFeatName());
+                    doCommand(Doc,"App.getDocument(\"%s\").removeObject(\"%s\")"
+                                 ,(*it)->getName(), ft->getFeatName());
+                }
             }
             (*it)->commitTransaction();
         }

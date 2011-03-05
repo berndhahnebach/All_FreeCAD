@@ -201,6 +201,9 @@ public:
     /// set up the context-menu with the supported edit modes
     virtual void setupContextMenu(QMenu*, QObject*, const char*) {}
 
+    /// is called when the Provider is in edit and a deletion request occurs
+    virtual void delSelected() {}
+
     /** @name direct handling methods
      *  This group of methods is to direct influence the 
      *  appearance of the viewed content. It's only for fast
