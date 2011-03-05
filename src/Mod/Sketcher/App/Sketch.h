@@ -63,7 +63,7 @@ public:
     virtual void Restore(Base::XMLReader &/*reader*/);
 
 
-    /** solve the actuall set up sketch
+    /** solve the actual set up sketch
       * If the two fixes pointers are non null it leafs out 
       * this two parameters from the solving. Its like a fixes
       * constraint on a point

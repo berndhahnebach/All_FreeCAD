@@ -258,7 +258,7 @@ public:
     /** @name checking of internal state */
     //@{
     /// returns the name to which the command belongs
-    const char* getAppModuleName(void) const {return sAppModule;}	
+    const char* getAppModuleName(void) const {return sAppModule;}
     /// Get the command name
     const char* getName() const { return sName; }
     /// Get the name of the grouping of the command
@@ -416,7 +416,7 @@ public:
     void removeCommand(Command* pCom);
 
     /// Adds the given command to a given widget
-    bool addTo(const char* Name,QWidget *pcWidget);
+    bool addTo(const char* Name, QWidget* pcWidget);
 
     /** Returns all commands of a special App Module
      *  delivers a vector of all comands in the given application module. When no 

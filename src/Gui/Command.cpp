@@ -259,7 +259,7 @@ App::DocumentObject* Command::getObject(const char* Name) const
         return 0;
 }
 
-void Command::invoke (int i)
+void Command::invoke(int i)
 {
     // Do not query _pcAction since it isn't created necessarily
 #ifdef FC_LOGUSERACTION
@@ -305,7 +305,7 @@ void Command::testActive(void)
         return;
     }
 
-    if(!(eType & ForEdit))  // special case for commands which are only in some edit modes active
+    if (!(eType & ForEdit))  // special case for commands which are only in some edit modes active
         
         if ((!Gui::Control().isAllowedAlterDocument()  && eType & AlterDoc)    ||
             (!Gui::Control().isAllowedAlterView()      && eType & Alter3DView) ||
@@ -786,7 +786,7 @@ CommandManager::~CommandManager()
 
 void CommandManager::addCommand(Command* pCom)
 {
-    _sCommands[pCom->getName()] = pCom;//	pCom->Init();
+    _sCommands[pCom->getName()] = pCom;// pCom->Init();
 }
 
 void CommandManager::removeCommand(Command* pCom)
@@ -805,7 +805,7 @@ void CommandManager::clearCommands()
     _sCommands.clear();
 }
 
-bool CommandManager::addTo(const char* Name,QWidget *pcWidget)
+bool CommandManager::addTo(const char* Name, QWidget *pcWidget)
 {
     if (_sCommands.find(Name) == _sCommands.end()) {
         // Print in release mode only a log message instead of an error message to avoid to annoy the user
