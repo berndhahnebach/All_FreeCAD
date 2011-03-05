@@ -84,7 +84,6 @@ public:
     /// Observer message from the Selection
     virtual void onSelectionChanged(const Gui::SelectionChanges& msg);
 
-    
     /** @name handler control */
     //@{
     /// sets an DrawSketchHandler in control
@@ -118,7 +117,7 @@ public:
     //bool handlePreselection(const SoPickedPoint* pp);
     /// helper to detect preselection
     bool detectPreselection(const SoPickedPoint* Point, int &PtIndex,int &CurvIndex, int &ConstrIndex);
-    /// helper change the color of the sketch acorting to selection and solver status
+    /// helper change the color of the sketch according to selection and solver status
     void updateColor(void);
     /// get the pointer to the sketch document object
     Sketcher::SketchObject* getSketchObject(void) const;
@@ -134,7 +133,7 @@ public:
     virtual void updateData(const App::Property*);
 
     virtual void setupContextMenu(QMenu* menu, QObject* receiver, const char* member);
-    /// Is called by the tree if the user double click on the object
+    /// is called by the tree if the user double click on the object
     virtual bool doubleClicked(void);
     /// is called when the Provider is in edit and the mouse is moved
     virtual bool mouseMove(const SbVec3f &pNear, const SbVec3f &pFar, const SoPickedPoint* pp);
