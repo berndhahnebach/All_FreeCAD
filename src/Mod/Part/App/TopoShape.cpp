@@ -140,8 +140,10 @@ const char* BRepBuilderAPI_FaceErrorText(BRepBuilderAPI_FaceError et)
         return "Curve projection failed";
     case BRepBuilderAPI_ParametersOutOfRange:
         return "Parameters out of range";
+#if OCC_HEX_VERSION < 0x060500
     case BRepBuilderAPI_SurfaceNotC2:
         return "Surface not C2-continous";
+#endif
     default:
         return "Unknown creation error";
     }
