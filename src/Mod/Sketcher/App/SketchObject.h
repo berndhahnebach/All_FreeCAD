@@ -80,8 +80,8 @@ public:
 
     // from base class
     virtual PyObject *getPyObject(void);
-    virtual unsigned int getMemSize (void) const;
-    virtual void Save (Base::Writer &/*writer*/) const;
+    virtual unsigned int getMemSize(void) const;
+    virtual void Save(Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
 
 };
