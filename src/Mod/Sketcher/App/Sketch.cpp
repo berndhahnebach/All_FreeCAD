@@ -480,7 +480,7 @@ int Sketch::addVerticalConstraint(int geoIndex, const char* name)
     return Const.size()-1;
 }
 
-int Sketch::addPointCoincidentConstraint(int geoIndex1,PointPos Pos1,int geoIndex2,PointPos Pos2, const char* name)
+int Sketch::addPointCoincidentConstraint(int geoIndex1, PointPos Pos1, int geoIndex2, PointPos Pos2, const char* name)
 {
     // this optimization alters point on point constraints for e.g Line segments
     // to one point. That means the Lines segments get altered to a polyline. 
