@@ -126,10 +126,32 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     Gui::MenuItem* root = StdWorkbench::setupMenuBar();
     Gui::MenuItem* item = root->findItem("&Windows");
 
+    Gui::MenuItem* geom = new Gui::MenuItem();
+    geom->setCommand("Sketcher geoms");
+    *geom /*<< "Sketcher_CreatePoint"*/
+          /*<< "Sketcher_CreateArc"*/
+          /*<< "Sketcher_CreateCircle"*/
+          << "Sketcher_CreateLine"
+          << "Sketcher_CreatePolyline"
+          << "Sketcher_CreateBox"
+          /*<< "Sketcher_CreateText"*/
+          /*<< "Sketcher_CreateDraftLine"*/;
+
+    Gui::MenuItem* cons = new Gui::MenuItem();
+    cons->setCommand("Sketcher constraints");
+    *cons /*<< "Sketcher_ConstrainLock"*/
+          << "Sketcher_ConstrainCoincident"
+          << "Sketcher_ConstrainVertical"
+          << "Sketcher_ConstrainHorizontal"
+          << "Sketcher_ConstrainDistance"
+          << "Sketcher_ConstrainParallel";
+
     Gui::MenuItem* part = new Gui::MenuItem;
     root->insertItem(item, part);
     part->setCommand("&Part Design");
     *part << "Sketcher_NewSketch" 
+          << geom
+          << cons
           << "Separator" 
           << "PartDesign_Pad" 
           << "PartDesign_Pocket"

@@ -31,6 +31,7 @@
 #    define COMPLETE_SHOW_SKETCHER
 #    define COMPLETE_USE_DRAFTING
 #else // for Linux
+#    define COMPLETE_SHOW_SKETCHER
 #    define COMPLETE_USE_DRAFTING
 #endif
 

@@ -492,7 +492,7 @@ bool View3DInventor::onMsg(const char* pMsg, const char** ppReturn)
     }
     else if(strcmp("ViewAxo",pMsg) == 0 ) {
         _viewer->setCameraOrientation(SbRotation
-            (-0.353553f, -0.146447f, -0.353553f, 0.853553f));
+            (-0.353553f, -0.146447f, -0.353553f, -0.853553f));
         _viewer->viewAll();
         return true;
     }
