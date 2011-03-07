@@ -1273,7 +1273,7 @@ void ViewProviderSketch::delSelected(void)
                                    ,getObject()->getNameInDocument(), *rit);
         }
         for (rit = edit->SelPointSet.rbegin(); rit != edit->SelPointSet.rend(); rit++) {
-Base::Console().Warning("App.ActiveDocument.%s.delPoint(%i)"
+            Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.delConstraintOnPoint(%i)"
                                    ,getObject()->getNameInDocument(), *rit);
         }
 
