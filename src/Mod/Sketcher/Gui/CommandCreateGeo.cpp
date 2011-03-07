@@ -351,28 +351,28 @@ protected:
 
 
 
-DEF_STD_CMD_A(CmdSketcherCreateBox);
+DEF_STD_CMD_A(CmdSketcherCreateRectangle);
 
-CmdSketcherCreateBox::CmdSketcherCreateBox()
-  : Command("Sketcher_CreateBox")
+CmdSketcherCreateRectangle::CmdSketcherCreateRectangle()
+  : Command("Sketcher_CreateRectangle")
 {
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
-    sMenuText       = QT_TR_NOOP("Create box");
-    sToolTipText    = QT_TR_NOOP("Create a box in the sketch");
+    sMenuText       = QT_TR_NOOP("Create rectangle");
+    sToolTipText    = QT_TR_NOOP("Create a rectangle in the sketch");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_CreateRectangle";
-    iAccel          = Qt::Key_B;
+    iAccel          = Qt::Key_R;
     eType           = ForEdit;
 }
 
-void CmdSketcherCreateBox::activated(int iMsg)
+void CmdSketcherCreateRectangle::activated(int iMsg)
 {
     ActivateHandler(getActiveGuiDocument(),new DrawSketchHandlerBox() );
 }
 
-bool CmdSketcherCreateBox::isActive(void)
+bool CmdSketcherCreateRectangle::isActive(void)
 {
     return isCreateGeoActive(getActiveGuiDocument());
 }
@@ -932,7 +932,7 @@ void CreateSketcherCommandsCreateGeo(void)
     rcCmdMgr.addCommand(new CmdSketcherCreateCircle());
     rcCmdMgr.addCommand(new CmdSketcherCreateLine());
     rcCmdMgr.addCommand(new CmdSketcherCreatePolyline());
-    rcCmdMgr.addCommand(new CmdSketcherCreateBox());
+    rcCmdMgr.addCommand(new CmdSketcherCreateRectangle());
     //rcCmdMgr.addCommand(new CmdSketcherCreateText());
     //rcCmdMgr.addCommand(new CmdSketcherCreateDraftLine());
 }
