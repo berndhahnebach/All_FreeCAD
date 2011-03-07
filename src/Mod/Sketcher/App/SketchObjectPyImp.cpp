@@ -102,6 +102,17 @@ PyObject* SketchObjectPy::delConstraint(PyObject *args)
     Py_Return; 
 }
 
+PyObject* SketchObjectPy::delConstraintOnPoint(PyObject *args)
+{
+    int Index;
+    if (!PyArg_ParseTuple(args, "i", &Index))
+        return 0;
+
+    this->getSketchObjectPtr()->delConstraintOnPoint(Index);
+
+    Py_Return; 
+}
+
 PyObject* SketchObjectPy::setDatum(PyObject *args)
 {
     double Datum;

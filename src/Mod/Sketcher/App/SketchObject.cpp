@@ -140,11 +140,13 @@ int SketchObject::delGeometry(int GeoNbr)
     std::vector< Part::Geometry * > newVals(vals);
     newVals.erase(newVals.begin()+GeoNbr);
 
-    std::vector< Constraint * > constraints = this->Constraints.getValues();
+    const std::vector< Constraint * > &constraints = this->Constraints.getValues();
     std::vector< Constraint * > newConstraints(0);
-    for (std::vector<Constraint *>::iterator it = constraints.begin();
+    for (std::vector<Constraint *>::const_iterator it = constraints.begin();
          it != constraints.end(); ++it) {
-        if ((*it)->First != GeoNbr && (*it)->Second != GeoNbr) {
+        if (((*it)->Type != Sketcher::Horizontal && (*it)->Type != Sketcher::Vertical
+             && (*it)->Type != Sketcher::Parallel && (*it)->Type != Sketcher::Distance)
+           || ((*it)->First != GeoNbr && (*it)->Second != GeoNbr)) {
             if ((*it)->First > GeoNbr)
                 (*it)->First -= 1;
             if ((*it)->Second > GeoNbr)
@@ -183,6 +185,27 @@ int SketchObject::delConstraint(int ConstrNbr)
     std::vector< Constraint * > newVals(vals);
     newVals.erase(newVals.begin()+ConstrNbr);
     this->Constraints.setValues(newVals);
+    return 0;
+}
+
+int SketchObject::delConstraintOnPoint(int PointNbr)
+{
+    int GeoId, PointPos;
+    getGeoVertexIndex(PointNbr, GeoId, PointPos);
+
+    const std::vector< Constraint * > &vals = this->Constraints.getValues();
+    const std::vector< Part::Geometry * > &geometry = this->Geometry.getValues();
+
+    std::vector< Constraint * > newVals(0);
+    for (std::vector<Constraint *>::const_iterator it = vals.begin(); it != vals.end(); ++it) {
+        if ((*it)->Type == Sketcher::Coincident)
+            if (((*it)->First == GeoId && (*it)->FirstPos == PointPos)
+               || ((*it)->Second == GeoId && (*it)->SecondPos == PointPos))
+               continue;
+        newVals.push_back(*it);
+    }
+    if (newVals.size() < vals.size())
+        this->Constraints.setValues(newVals);
     return 0;
 }
 

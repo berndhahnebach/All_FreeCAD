@@ -70,6 +70,7 @@ public:
     int addConstraint(const Constraint *constraint);
     /// delete constraint
     int delConstraint(int ConstrNbr);
+    int delConstraintOnPoint(int PointNbr);
 
     /// set the datum of a Distance or Angle constraint
     void setDatum(double Datum, int ConstrNbr);

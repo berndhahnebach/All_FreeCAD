@@ -38,6 +38,11 @@
         <UserDocu>delete a constraint from the sketch</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="delConstraintOnPoint">
+      <Documentation>
+        <UserDocu>delete coincident constraints associated with a sketch point</UserDocu>
+      </Documentation>
+    </Methode>
     <Methode Name="setDatum">
       <Documentation>
         <UserDocu>set the Datum of a Distance or Angle constraint</UserDocu>
