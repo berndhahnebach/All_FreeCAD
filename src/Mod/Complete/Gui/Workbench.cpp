@@ -259,7 +259,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
               << "Sketcher_CreateCircle"
               << "Sketcher_CreateLine"
               << "Sketcher_CreatePolyline"
-              << "Sketcher_CreateBox"
+              << "Sketcher_CreateRectangle"
               /*<< "Sketcher_CreateText"*/
               /*<< "Sketcher_CreateDraftLine"*/;
         Gui::MenuItem* cons = new Gui::MenuItem();
