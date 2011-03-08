@@ -485,10 +485,36 @@ int Sketch::addPointCoincidentConstraint(int geoIndex1, PointPos Pos1, int geoIn
     // this optimization alters point on point constraints for e.g Line segments
     // to one point. That means the Lines segments get altered to a polyline. 
 
-    // create one points for the constraint
-    int parameterStartIndex = Parameters.size();
-    Parameters.push_back(new double(0));
-    Parameters.push_back(new double(0));
+    int Index1=-1, Index2=-1;
+    // check if for the first point is already a constraint point present
+    switch(Pos1) {
+        case start: Index1 = PoPMap[geoIndex1].StartPointIndex; break;
+        case end  : Index1 = PoPMap[geoIndex1].EndPointIndex; break;
+        case mid  : Index1 = PoPMap[geoIndex1].MidPointIndex; break;
+        case none : break;
+    }
+    // check if for the second point is already a constraint point present
+    switch(Pos2) {
+        case start: Index2 = PoPMap[geoIndex2].StartPointIndex; break;
+        case end  : Index2 = PoPMap[geoIndex2].EndPointIndex; break;
+        case mid  : Index2 = PoPMap[geoIndex2].MidPointIndex; break;
+        case none : break;
+    }
+
+    int parameterStartIndex;
+    if (Index1 != -1 && Index2 != -1) {
+        Base::Console().Error("Cannot add coincident constraint between two points with already applied coincident constraints\n");
+        return -1;
+    } else if (Index1 != -1) {
+        parameterStartIndex = Index1;
+    } else if (Index2 != -1) {
+        parameterStartIndex = Index2;
+    } else {
+        // create one point for the constraint
+        parameterStartIndex = Parameters.size();
+        Parameters.push_back(new double(0));
+        Parameters.push_back(new double(0));
+    }
 
     // save the index belonging to the geo id for later usage in build up geo
     switch(Pos1) {
