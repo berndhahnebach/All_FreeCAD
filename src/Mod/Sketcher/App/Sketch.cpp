@@ -401,7 +401,7 @@ bool  Sketch::getConstruction(int geoIndex) const
 int Sketch::addConstraint(const Constraint *constraint)
 {
     // constraints on nothing makes no sense 
-    assert((int)Geoms.size()>0  );
+    assert((int)Geoms.size()>0);
     int rtn = -1;
     switch (constraint->Type) {
        case Horizontal:
@@ -507,7 +507,7 @@ int Sketch::addPointCoincidentConstraint(int geoIndex1, PointPos Pos1, int geoIn
     return Const.size()-1;
 }
 
-int Sketch::addParallelConstraint(int geoIndex1,int geoIndex2, const char* name)
+int Sketch::addParallelConstraint(int geoIndex1, int geoIndex2, const char* name)
 {   
     // index out of bounds?
     assert(geoIndex1 < (int)Geoms.size());
@@ -642,15 +642,13 @@ int Sketch::solve(double * fixed[2]) {
                 if (it->type == Line) {
                     GeomLineSegment *lineSeg = dynamic_cast<GeomLineSegment*>(it->geo);
                     lineSeg->setPoints(
-                             Vector3d(
-                                 *Points[it->pointStartIndex+0].x,
-                                 *Points[it->pointStartIndex+0].y,
-                                 0.0),
-                             Vector3d(
-                                 *Points[it->pointStartIndex+1].x,
-                                 *Points[it->pointStartIndex+1].y,
-                                 0.0)
-                         );
+                             Vector3d(*Points[it->pointStartIndex+0].x,
+                                      *Points[it->pointStartIndex+0].y,
+                                      0.0),
+                             Vector3d(*Points[it->pointStartIndex+1].x,
+                                      *Points[it->pointStartIndex+1].y,
+                                      0.0)
+                                      );
                 }
             } catch (Base::Exception e) {
                 Base::Console().Error("Solv: Error build geometry(%d): %s\n",i,e.what());
@@ -658,7 +656,7 @@ int Sketch::solve(double * fixed[2]) {
             }
 
         }
-    }else{
+    } else {
         //Base::Console().Log("NotSolved ");
     }
     Base::TimeInfo end_time;
