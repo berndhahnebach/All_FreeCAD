@@ -1,4 +1,4 @@
-LIBRARY	"ThumbnailProvider"
+LIBRARY	"FCStdThumbnail"
 
 EXPORTS
 	DllRegisterServer	PRIVATE
