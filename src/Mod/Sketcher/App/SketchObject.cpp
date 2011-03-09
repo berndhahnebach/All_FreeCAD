@@ -144,9 +144,7 @@ int SketchObject::delGeometry(int GeoNbr)
     std::vector< Constraint * > newConstraints(0);
     for (std::vector<Constraint *>::const_iterator it = constraints.begin();
          it != constraints.end(); ++it) {
-        if (((*it)->Type != Sketcher::Horizontal && (*it)->Type != Sketcher::Vertical
-             && (*it)->Type != Sketcher::Parallel && (*it)->Type != Sketcher::Distance)
-           || ((*it)->First != GeoNbr && (*it)->Second != GeoNbr)) {
+        if ((*it)->First != GeoNbr && (*it)->Second != GeoNbr) {
             if ((*it)->First > GeoNbr)
                 (*it)->First -= 1;
             if ((*it)->Second > GeoNbr)
