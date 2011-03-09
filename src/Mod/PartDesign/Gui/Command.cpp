@@ -147,6 +147,7 @@ void CmdPartDesignPad::activated(int iMsg)
         doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",support->getNameInDocument());
     updateActive();
     commitCommand();
+    adjustCameraPosition();
 }
 
 bool CmdPartDesignPad::isActive(void)
