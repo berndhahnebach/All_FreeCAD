@@ -161,6 +161,7 @@ protected:
     /// Applies the menu text, tool and status tip to the passed action object
     void applyCommandData(Action* );
     int keySequenceToAccel(int) const;
+    void adjustCameraPosition();
     //@}
 
 public:
