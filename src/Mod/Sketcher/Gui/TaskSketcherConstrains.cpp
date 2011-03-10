@@ -145,25 +145,25 @@ void TaskSketcherConstrains::on_listWidgetConstraints_itemActivated(QListWidgetI
     ConstraintItem *it = dynamic_cast<ConstraintItem*>(item);
 
     // if its the right constraint
-    if(it->Type == Sketcher::Distance){
+    if (it->Type == Sketcher::Distance) {
         const std::vector< Sketcher::Constraint * > &vals = sketchView->getSketchObject()->Constraints.getValues();
         Sketcher::Constraint *Const = vals[it->ConstraintNbr];
         assert(Const->Type == it->Type);
-        double Datum = Const->Value;
+        double datum = Const->Value;
 
-        QDialog *Dlg = new QDialog;
+        QDialog dlg(this);
         Ui::InsertDatum ui_ins_datum;
-        ui_ins_datum.setupUi(Dlg);
+        ui_ins_datum.setupUi(&dlg);
 
-        ui_ins_datum.lineEdit->setText(QString::fromAscii("%1").arg(Datum)); 
-        if(Dlg->exec()){
+        ui_ins_datum.lineEdit->setText(QString::number(datum));
+        if (dlg.exec()) {
             double newDatum = ui_ins_datum.lineEdit->text().toDouble();
             Gui::Command::openCommand("Add sketch constraints");
             Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.setDatum(%f,%i)",
                       sketchView->getObject()->getNameInDocument(),
                       newDatum,it->ConstraintNbr);
-            sketchView->getSketchObject()->execute();
-
+            // use recompute() instead of execute() to properly handle placement
+            sketchView->getSketchObject()->recompute();
         }
     }
 }
