@@ -117,8 +117,8 @@ App::DocumentObjectExecReturn *Pocket::execute(void)
     if (!SupportObject)
         return new App::DocumentObjectExecReturn("No support in Sketch!");
 
-	Handle(Geom_Surface) aSurf = new Geom_Plane (gp_Pln(gp_Pnt(0,0,0),gp_Dir(0,0,1)));
-	//anti-clockwise circles if too look from surface normal
+    Handle(Geom_Surface) aSurf = new Geom_Plane (gp_Pln(gp_Pnt(0,0,0),gp_Dir(0,0,1)));
+    //anti-clockwise circles if too look from surface normal
 
     //FIXME: Need a safe method to sort wire that the outermost one comes last
     // Currently it's done with the diagonal lengths of the bounding boxes
@@ -129,6 +129,8 @@ App::DocumentObjectExecReturn *Pocket::execute(void)
         mkFace.Add(*it);
     }
     TopoDS_Face aFace = mkFace.Face();
+    if (aFace.IsNull())
+        return new App::DocumentObjectExecReturn("Creating a face from sketch failed");
 
     // lengthen the vector
     SketchOrientationVector *= Length.getValue();
@@ -138,21 +140,22 @@ App::DocumentObjectExecReturn *Pocket::execute(void)
 
     // extrude the face to a solid
     gp_Vec vec(SketchOrientationVector.x,SketchOrientationVector.y,SketchOrientationVector.z);
-	BRepPrimAPI_MakePrism PrismMaker(aFace,vec,0,1);
-	if(PrismMaker.IsDone()){
+    BRepPrimAPI_MakePrism PrismMaker(aFace,vec,0,1);
+    if (PrismMaker.IsDone()) {
         // if the sketch has a support fuse them to get one result object (PAD!)
-        if(SupportObject){
+        if (SupportObject) {
             // Let's call algorithm computing a fuse operation:
             BRepAlgoAPI_Cut mkCut(SupportObject->Shape.getShape()._Shape, PrismMaker.Shape());
             // Let's check if the fusion has been successful
             if (!mkCut.IsDone()) 
                 throw Base::Exception("cut with support failed");
             this->Shape.setValue(mkCut.Shape());
-        }else{
-		    return new App::DocumentObjectExecReturn("Cannot create a tool out of Sketch!");
         }
-
-	}else
+        else{
+            return new App::DocumentObjectExecReturn("Cannot create a tool out of Sketch!");
+        }
+    }
+    else
         return new App::DocumentObjectExecReturn("Could not extrude the sketch!");
 
     return App::DocumentObject::StdReturn;

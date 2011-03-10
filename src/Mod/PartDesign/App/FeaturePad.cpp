@@ -146,11 +146,11 @@ App::DocumentObjectExecReturn *Pad::execute(void)
 	}
 	*/
 
-	Handle(Geom_Surface) aSurf = new Geom_Plane (gp_Pln(gp_Pnt(0,0,0),gp_Dir(0,0,1)));
-	//anti-clockwise circles if too look from surface normal
+    Handle(Geom_Surface) aSurf = new Geom_Plane (gp_Pln(gp_Pnt(0,0,0),gp_Dir(0,0,1)));
+    //anti-clockwise circles if too look from surface normal
 #if 0
-	//TopoDS_Wire theWire = TopoDS::Wire(shape);
-	//TopoDS_Face aFace = BRepBuilderAPI_MakeFace(theWire);
+    //TopoDS_Wire theWire = TopoDS::Wire(shape);
+    //TopoDS_Face aFace = BRepBuilderAPI_MakeFace(theWire);
 #else
     //FIXME: Need a safe method to sort wire that the outermost one comes last
     // Currently it's done with the diagonal lengths of the bounding boxes
@@ -161,27 +161,30 @@ App::DocumentObjectExecReturn *Pad::execute(void)
         mkFace.Add(*it);
     }
     TopoDS_Face aFace = mkFace.Face();
+    if (aFace.IsNull())
+        return new App::DocumentObjectExecReturn("Creating a face from sketch failed");
 #endif
     // lengthen the vector
     SketchOrientationVector *= Length.getValue();
 
     // extrude the face to a solid
     gp_Vec vec(SketchOrientationVector.x,SketchOrientationVector.y,SketchOrientationVector.z);
-	BRepPrimAPI_MakePrism PrismMaker(aFace,vec,0,1);
-	if(PrismMaker.IsDone()){
+    BRepPrimAPI_MakePrism PrismMaker(aFace,vec,0,1);
+    if (PrismMaker.IsDone()) {
         // if the sketch has a support fuse them to get one result object (PAD!)
-        if(SupportObject){
+        if (SupportObject) {
             // Let's call algorithm computing a fuse operation:
             BRepAlgoAPI_Fuse mkFuse(SupportObject->Shape.getShape()._Shape, PrismMaker.Shape());
             // Let's check if the fusion has been successful
             if (!mkFuse.IsDone()) 
                 throw Base::Exception("Fusion with support failed");
             this->Shape.setValue(mkFuse.Shape());
-        }else{
-		    this->Shape.setValue(PrismMaker.Shape());
         }
-
-	}else
+        else{
+            this->Shape.setValue(PrismMaker.Shape());
+        }
+    }
+    else
         return new App::DocumentObjectExecReturn("Could not extrude the sketch!");
 
     return App::DocumentObject::StdReturn;
