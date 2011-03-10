@@ -35,6 +35,7 @@
 #include "ToolBoxManager.h"
 #include "Window.h"
 #include "Selection.h"
+#include "MainWindow.h"
 #include <Gui/CombiView.h>
 #include <Gui/TaskView/TaskView.h>
 #include <Gui/TaskView/TaskWatcher.h>
@@ -582,6 +583,56 @@ DockWindowItems* StdWorkbench::setupDockWindows() const
     //root->addDockWidget("Std_TaskPanelView", Qt::RightDockWidgetArea, false, false);
     root->addDockWidget("Std_PythonView", Qt::BottomDockWidgetArea, true, true);
     return root;
+}
+
+// --------------------------------------------------------------------
+
+TYPESYSTEM_SOURCE(Gui::BlankWorkbench, Gui::Workbench)
+
+BlankWorkbench::BlankWorkbench()
+  : Workbench()
+{
+}
+
+BlankWorkbench::~BlankWorkbench()
+{
+}
+
+void BlankWorkbench::activated()
+{
+    QList<QDockWidget*> dw = getMainWindow()->findChildren<QDockWidget*>();
+    for (QList<QDockWidget*>::iterator it = dw.begin(); it != dw.end(); ++it)
+        (*it)->toggleViewAction()->setVisible(false);
+    getMainWindow()->statusBar()->hide();
+}
+
+void BlankWorkbench::deactivated()
+{
+    getMainWindow()->statusBar()->show();
+}
+
+void BlankWorkbench::setupContextMenu(const char* recipient,MenuItem* item) const
+{
+}
+
+MenuItem* BlankWorkbench::setupMenuBar() const
+{
+    return new MenuItem();
+}
+
+ToolBarItem* BlankWorkbench::setupToolBars() const
+{
+    return new ToolBarItem();
+}
+
+ToolBarItem* BlankWorkbench::setupCommandBars() const
+{
+    return new ToolBarItem();
+}
+
+DockWindowItems* BlankWorkbench::setupDockWindows() const
+{
+    return new DockWindowItems();
 }
 
 // --------------------------------------------------------------------

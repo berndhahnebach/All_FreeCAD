@@ -147,6 +147,36 @@ protected:
 };
 
 /**
+ * The BlankWorkbench class defines a complete empty workbench. 
+ * @author Werner Mayer
+ */
+class GuiExport BlankWorkbench : public Workbench
+{
+    TYPESYSTEM_HEADER();
+
+public:
+    BlankWorkbench();
+    virtual ~BlankWorkbench();
+
+    /** Defines the standard context menu. */
+    virtual void setupContextMenu(const char* recipient,MenuItem*) const;
+    /** Run some actions when the workbench gets activated. */
+    virtual void activated();
+    /** Run some actions when the workbench gets deactivated. */
+    virtual void deactivated();
+
+protected:
+    /** Defines the standard menus. */
+    virtual MenuItem* setupMenuBar() const;
+    /** Defines the standard toolbars. */
+    virtual ToolBarItem* setupToolBars() const;
+    /** Defines the standard command bars. */
+    virtual ToolBarItem* setupCommandBars() const;
+    /** Returns a DockWindowItems structure of dock windows this workbench. */
+    virtual DockWindowItems* setupDockWindows() const;
+};
+
+/**
  * The NoneWorkbench class defines a slim workbench. 
  * @author Werner Mayer
  */

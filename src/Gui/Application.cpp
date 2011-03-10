@@ -1394,6 +1394,7 @@ void Application::initTypes(void)
     // Workbench
     Gui::Workbench                              ::init();
     Gui::StdWorkbench                           ::init();
+    Gui::BlankWorkbench                         ::init();
     Gui::NoneWorkbench                          ::init();
     Gui::TestWorkbench                          ::init();
     Gui::PythonWorkbench                        ::init();
