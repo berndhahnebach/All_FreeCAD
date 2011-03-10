@@ -198,15 +198,24 @@ TaskView::TaskView(QWidget *parent)
     connectApplicationActiveDocument = 
     App::GetApplication().signalActiveDocument.connect
         (boost::bind(&Gui::TaskView::TaskView::slotActiveDocument, this, _1));
+    connectApplicationDeleteDocument = 
+    App::GetApplication().signalDeletedDocument.connect
+        (boost::bind(&Gui::TaskView::TaskView::slotDeletedDocument, this));
 }
 
 TaskView::~TaskView()
 {
     connectApplicationActiveDocument.disconnect();
+    connectApplicationDeleteDocument.disconnect();
     Gui::Selection().Detach(this);
 }
 
 void TaskView::slotActiveDocument(const App::Document& doc)
+{
+    updateWatcher();
+}
+
+void TaskView::slotDeletedDocument()
 {
     updateWatcher();
 }

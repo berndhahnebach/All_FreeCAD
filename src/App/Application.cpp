@@ -313,6 +313,9 @@ bool Application::closeDocument(const char* name)
     auto_ptr<Document> delDoc (pos->second);
     DocMap.erase( pos );
 
+    // Trigger observers after removing the document from the internal map.
+    signalDeletedDocument();
+
     return true;
 }
 
