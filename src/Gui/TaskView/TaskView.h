@@ -124,6 +124,7 @@ protected:
     void removeDialog(void);
 
     void slotActiveDocument(const App::Document&);
+    void slotDeletedDocument();
 
     std::vector<TaskWatcher*> ActiveWatcher;
 
@@ -132,6 +133,7 @@ protected:
     TaskEditControl *ActiveCtrl;
 
     Connection connectApplicationActiveDocument;
+    Connection connectApplicationDeleteDocument;
 };
 
 } //namespace TaskView

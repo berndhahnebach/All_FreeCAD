@@ -100,8 +100,10 @@ public:
     //@{
     /// signal on new Document
     boost::signal<void (const Document&)> signalNewDocument;
-    /// signal on deleted Document
+    /// signal on document getting deleted
     boost::signal<void (const Document&)> signalDeleteDocument;
+    /// signal on already deleted Document
+    boost::signal<void ()> signalDeletedDocument;
     /// signal on relabeling Document (user name)
     boost::signal<void (const Document&)> signalRelabelDocument;
     /// signal on renaming Document (internal name)
