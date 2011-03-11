@@ -143,9 +143,11 @@ App::DocumentObjectExecReturn *Edge2TracObject::execute(void)
                 Standard_Real beg = adapt.FirstParameter();
                 Standard_Real end = adapt.LastParameter();
                 Standard_Real stp = ParLength / NbrSegments;
+				bool reversed = false;
                 if (it2->Orientation() == TopAbs_REVERSED) {
                     std::swap(beg, end);
                     stp = - stp;
+					reversed = true;
                 }
 
                 if (first) 
@@ -153,12 +155,25 @@ App::DocumentObjectExecReturn *Edge2TracObject::execute(void)
                 else
                     beg += stp;
                 Base::SequencerLauncher seq("Create way points", static_cast<size_t>((end-beg)/stp));
-                for (;beg < end; beg += stp) {
-                    gp_Pnt P = adapt.Value(beg);
-                    Waypoint wp("Pt",Base::Placement(Base::Vector3d(P.X(),P.Y(),P.Z()),Base::Rotation()));
-                    trac.addWaypoint(wp);
-                    seq.next();
-                }
+				if(reversed)
+				{
+					for (;beg > end; beg += stp) {
+						gp_Pnt P = adapt.Value(beg);
+						Waypoint wp("Pt",Base::Placement(Base::Vector3d(P.X(),P.Y(),P.Z()),Base::Rotation()));
+						trac.addWaypoint(wp);
+						seq.next();
+					}
+				}
+				else
+				{
+					for (;beg < end; beg += stp) {
+						gp_Pnt P = adapt.Value(beg);
+						Waypoint wp("Pt",Base::Placement(Base::Vector3d(P.X(),P.Y(),P.Z()),Base::Rotation()));
+						trac.addWaypoint(wp);
+						seq.next();
+					}
+				}
+                
                 } break;
             case GeomAbs_Circle:
                 {
