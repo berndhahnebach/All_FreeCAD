@@ -167,6 +167,39 @@ FreeCADGui_setupWithoutGUI(PyObject * /*self*/, PyObject *args)
     return Py_None;
 }
 
+static PyObject *
+FreeCADGui_embedToWindow(PyObject * /*self*/, PyObject *args)
+{
+#if defined(Q_OS_WIN)
+    char* pointer;
+    if (!PyArg_ParseTuple(args, "s", &pointer))
+        return NULL;
+
+    std::string pointer_str = pointer;
+    void* window = 0;
+    std::stringstream str(pointer_str);
+    str >> window;
+
+    HWND hwnd = (HWND)window;
+    QWidget* widget = Gui::getMainWindow();
+    LONG oldLong = GetWindowLong(hwnd, GWL_STYLE);
+    SetWindowLong(hwnd, GWL_STYLE,
+    oldLong | WS_CLIPCHILDREN | WS_CLIPSIBLINGS);
+    //SetWindowLong(widget->winId(), GWL_STYLE,
+    //    WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS);
+    SetParent(widget->winId(), hwnd);
+
+    QEvent embeddingEvent(QEvent::EmbeddingControl);
+    QApplication::sendEvent(widget, &embeddingEvent);
+    
+    Py_INCREF(Py_None);
+    return Py_None;
+#else
+    PyErr_SetString(PyExc_NotImplementedError, "Not implemented for this platform");
+    return 0;
+#endif
+}
+
 struct PyMethodDef FreeCADGui_methods[] = { 
     {"showMainWindow",FreeCADGui_showMainWindow,METH_VARARGS,
      "showMainWindow() -- Show the main window\n"
@@ -177,6 +210,8 @@ struct PyMethodDef FreeCADGui_methods[] = {
     {"setupWithoutGUI",FreeCADGui_setupWithoutGUI,METH_VARARGS,
      "setupWithoutGUI() -- Uses this module without starting\n"
      "an event loop or showing up any GUI\n"},
+    {"embedToWindow",FreeCADGui_embedToWindow,METH_VARARGS,
+     "embedToWindow() -- Embeds the main window into another window\n"},
     {NULL, NULL}  /* sentinel */
 };
 
@@ -192,7 +227,8 @@ QWidget* setupMainWindow()
         Gui::MainWindow *mw = new Gui::MainWindow();
         QIcon icon = qApp->windowIcon();
         if (icon.isNull())
-            mw->setWindowIcon(Gui::BitmapFactory().pixmap(App::Application::Config()["AppIcon"].c_str()));
+            qApp->setWindowIcon(Gui::BitmapFactory().pixmap(App::Application::Config()["AppIcon"].c_str()));
+        mw->setWindowIcon(qApp->windowIcon());
         QString appName = qApp->applicationName();
         if (!appName.isEmpty())
             mw->setWindowTitle(appName);
@@ -249,7 +285,8 @@ PyMODINIT_FUNC initFreeCADGui()
     try {
         Base::Interpreter().loadModule("FreeCAD");
         App::Application::Config()["AppIcon"] = "freecad";
-        App::Application::Config()["ConsoleBanner"] = "(c) Juergen Riegel, Werner Mayer 2001-2009\n";
+        App::Application::Config()["SplashPicture"] = "freecadsplash";
+        App::Application::Config()["ConsoleBanner"] = "\xc2\xa9 Juergen Riegel, Werner Mayer, Yorik van Havre 2001-2011\n";
         Gui::Application::initApplication();
         Py_InitModule("FreeCADGui", FreeCADGui_methods);
     }
