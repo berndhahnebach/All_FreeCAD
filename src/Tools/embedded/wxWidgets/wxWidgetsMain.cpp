@@ -22,6 +22,9 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#ifdef __WXGTK__
+#   include "wx/gtk/win_gtk.h"
+#endif
 
 //helper functions
 enum wxbuildinfoformat {
@@ -185,8 +188,13 @@ void wxWidgetsFrame::OnNewDocument(wxCommandEvent &event)
 void wxWidgetsFrame::OnEmbed(wxCommandEvent &event)
 {
     void* hwnd = 0;
-#ifdef _WIN32
+#if defined (_WIN32)
     hwnd = this->GetHWND();
+#elif defined(__WXGTK__)
+    //http://old.nabble.com/wxWindow-and-x11-td2853615.html
+    //GdkWindow *window = GTK_PIZZA()->bin_window;
+    //GDK_WINDOW_XWINDOW( window );
+    //hwnd = window;
 #endif
     PyObject* main = PyImport_AddModule("__main__");
     PyObject* dict = PyModule_GetDict(main);
