@@ -191,7 +191,7 @@ FILE(GLOB StdMeshers_source_files src/StdMeshers/*.cpp src/MEFISTO2/*.cpp src/ME
 INCLUDE_DIRECTORIES(src/StdMeshers)
 
 ADD_LIBRARY(StdMeshers SHARED ${StdMeshers_source_files})
-TARGET_LINK_LIBRARIES(StdMeshers SMESH TKernel TKMath TKAdvTools f2c)
+TARGET_LINK_LIBRARIES(StdMeshers SMESH TKernel TKMath TKAdvTools f2c gfortran)
 SET(StdMeshers_CFLAGS "")
 IF(WIN32)
   SET(StdMeshers_CFLAGS "-DSTDMESHERS_EXPORTS -DMEFISTO2D_EXPORTS")
@@ -218,9 +218,9 @@ IF(UNIX)
     # Libraries are installed by default in /usr/local/lib/SMESH-5.1.2.7
     INSTALL(TARGETS SMDS Driver DriverSTL DriverDAT DriverUNV
             SMESHDS SMESH StdMeshers
-            DESTINATION /usr/local/lib/${INSTALL_PATH_NAME})
+            DESTINATION lib)
     # Headers are installed by default in /usr/local/include/SMESH-5.1.2.7
     INSTALL(DIRECTORY inc/
-            DESTINATION /usr/local/include/${INSTALL_PATH_NAME}
+            DESTINATION include
             FILES_MATCHING PATTERN "*.h*")
 ENDIF(UNIX)

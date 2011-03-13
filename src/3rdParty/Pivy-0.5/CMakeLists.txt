@@ -56,6 +56,7 @@ else(MSVC)
     set_target_properties(coin PROPERTIES OUTPUT_NAME "_coin")
     set_target_properties(coin PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/pivy)
     set_target_properties(coin PROPERTIES PREFIX "")
+    install(TARGETS coin DESTINATION bin/pivy)
 endif(MSVC)
 
 fc_copy_sources_outpath("bin/pivy" "coin"
