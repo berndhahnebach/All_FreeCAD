@@ -62,9 +62,22 @@ void TaskDlgTrajectoryDressUp::open()
 
 }
 
+void TaskDlgTrajectoryDressUp::clicked(int button)
+{
+    if(QDialogButtonBox::Apply == button)
+    {
+        // transfert the values to the object
+        param->writeValues();
+        // May throw an exception which we must handle here
+        pcObject->recompute();
+    }
+}
+
 bool TaskDlgTrajectoryDressUp::accept()
 {
     param->writeValues();
+    pcObject->recompute();
+
     Gui::Document* doc = Gui::Application::Instance->activeDocument();
     if(doc) 
         doc->resetEdit();

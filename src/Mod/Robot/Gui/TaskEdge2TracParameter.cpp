@@ -59,6 +59,8 @@ TaskEdge2TracParameter::TaskEdge2TracParameter(Robot::Edge2TracObject *pcObject,
     this->groupLayout()->addWidget(proxy);
 
     QObject::connect(ui->pushButton_HideShow,SIGNAL(clicked()),this,SLOT(hideShow()));
+    QObject::connect(ui->doubleSpinBoxSizing,SIGNAL(valueChanged (double)),this,SLOT(sizingValueChanged(double)));
+    QObject::connect(ui->checkBoxOrientation,SIGNAL(toggled  (bool)),this,SLOT(orientationToggled(bool)));
 
     setHideShowObject();
 
@@ -86,6 +88,16 @@ void TaskEdge2TracParameter::hideShow(void)
         else
             doc->getViewProvider(HideShowObj)->setVisible(true);
     }
+}
+
+void TaskEdge2TracParameter::sizingValueChanged(double Value)
+{
+    pcObject->SegValue.setValue(Value);
+}
+
+void TaskEdge2TracParameter::orientationToggled(bool Value)
+{
+    pcObject->UseRotation.setValue(Value);
 }
 
 void TaskEdge2TracParameter::setEdgeAndClusterNbr(int NbrEdges,int NbrClusters)

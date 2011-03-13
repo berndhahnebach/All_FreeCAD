@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>200</width>
-    <height>95</height>
+    <height>131</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -74,7 +74,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QDoubleSpinBox" name="doubleSpinBox">
+      <widget class="QDoubleSpinBox" name="doubleSpinBoxSizing">
        <property name="suffix">
         <string comment="mm" extracomment="max deviation in mm"/>
        </property>
@@ -96,6 +96,13 @@
       </widget>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="checkBoxOrientation">
+     <property name="text">
+      <string>Use orientation of edge</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

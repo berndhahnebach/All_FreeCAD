@@ -53,7 +53,8 @@ public:
 private Q_SLOTS:
     /// edit the placement
     void createPlacementDlg(void);
-    
+
+   
 protected:
     Base::Placement PosAdd;
 
