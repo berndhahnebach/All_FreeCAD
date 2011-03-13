@@ -57,6 +57,8 @@ public:
 
 private Q_SLOTS:
     void hideShow(void);
+    void sizingValueChanged(double Value);
+    void orientationToggled(bool Value);
 
 protected:
     Robot::Edge2TracObject *pcObject;

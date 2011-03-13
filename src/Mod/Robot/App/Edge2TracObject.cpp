@@ -118,20 +118,34 @@ App::DocumentObjectExecReturn *Edge2TracObject::execute(void)
                 gp_Pnt P1 = adapt.Value(adapt.FirstParameter());
                 gp_Pnt P2 = adapt.Value(adapt.LastParameter());
 
+                Base::Rotation R1;
+                Base::Rotation R2;
+
+                // if orientation is used 
+                if(UseRotation.getValue()) {
+                    // here get the orientation of the start and end point...
+                    //R1 = ;
+                    //R2 = ;
+
+                }
+
                 // if reverse orintation, switch the points
                 if ( it2->Orientation() == TopAbs_REVERSED )
                 {
-                     //switch the points
+                     //switch the points and orientation
                      gp_Pnt tmpP = P1;
+                     Base::Rotation tmpR = R1;
                      P1 = P2;
+                     R1 = R2;
+                     R2 = tmpR;
                      P2 = tmpP;
                 }
                 if(first){
-                    Waypoint wp("Pt",Base::Placement(Base::Vector3d(P1.X(),P1.Y(),P1.Z()),Base::Rotation()));
+                    Waypoint wp("Pt",Base::Placement(Base::Vector3d(P1.X(),P1.Y(),P1.Z()),R1));
                     trac.addWaypoint(wp);
                     first = false;
                 }
-                Waypoint wp("Pt",Base::Placement(Base::Vector3d(P2.X(),P2.Y(),P2.Z()),Base::Rotation()));
+                Waypoint wp("Pt",Base::Placement(Base::Vector3d(P2.X(),P2.Y(),P2.Z()),R2));
                 trac.addWaypoint(wp);
                 break;
                 }
@@ -160,7 +174,14 @@ App::DocumentObjectExecReturn *Edge2TracObject::execute(void)
 				{
 					for (;beg > end; beg += stp) {
 						gp_Pnt P = adapt.Value(beg);
-						Waypoint wp("Pt",Base::Placement(Base::Vector3d(P.X(),P.Y(),P.Z()),Base::Rotation()));
+                        Base::Rotation R1;
+                        // if orientation is used 
+                        if(UseRotation.getValue()) {
+                            // here get the orientation of the start and end point...
+                            //R1 = ;
+                        }
+
+						Waypoint wp("Pt",Base::Placement(Base::Vector3d(P.X(),P.Y(),P.Z()),R1));
 						trac.addWaypoint(wp);
 						seq.next();
 					}
@@ -169,7 +190,13 @@ App::DocumentObjectExecReturn *Edge2TracObject::execute(void)
 				{
 					for (;beg < end; beg += stp) {
 						gp_Pnt P = adapt.Value(beg);
-						Waypoint wp("Pt",Base::Placement(Base::Vector3d(P.X(),P.Y(),P.Z()),Base::Rotation()));
+                        Base::Rotation R1;
+                        // if orientation is used 
+                        if(UseRotation.getValue()) {
+                            // here get the orientation of the start and end point...
+                            //R1 = ;
+                        }
+						Waypoint wp("Pt",Base::Placement(Base::Vector3d(P.X(),P.Y(),P.Z()),R1));
 						trac.addWaypoint(wp);
 						seq.next();
 					}
@@ -193,7 +220,13 @@ App::DocumentObjectExecReturn *Edge2TracObject::execute(void)
 						i -= SegLength;
 					for (;i>adapt.FirstParameter();i-= SegLength){
 						gp_Pnt P = adapt.Value(i);
-						Waypoint wp("Pt",Base::Placement(Base::Vector3d(P.X(),P.Y(),P.Z()),Base::Rotation()));
+                        Base::Rotation R1;
+                        // if orientation is used 
+                        if(UseRotation.getValue()) {
+                            // here get the orientation of the start and end point...
+                            //R1 = ;
+                        }
+						Waypoint wp("Pt",Base::Placement(Base::Vector3d(P.X(),P.Y(),P.Z()),R1));
 						trac.addWaypoint(wp);
 					}
 				}
@@ -207,7 +240,13 @@ App::DocumentObjectExecReturn *Edge2TracObject::execute(void)
 					for (;i<adapt.LastParameter();i+= SegLength)
 					{
 						gp_Pnt P = adapt.Value(i);
-						Waypoint wp("Pt",Base::Placement(Base::Vector3d(P.X(),P.Y(),P.Z()),Base::Rotation()));
+                        Base::Rotation R1;
+                        // if orientation is used 
+                        if(UseRotation.getValue()) {
+                            // here get the orientation of the start and end point...
+                            //R1 = ;
+                        }
+						Waypoint wp("Pt",Base::Placement(Base::Vector3d(P.X(),P.Y(),P.Z()),R1));
 						trac.addWaypoint(wp);
 					}
 					

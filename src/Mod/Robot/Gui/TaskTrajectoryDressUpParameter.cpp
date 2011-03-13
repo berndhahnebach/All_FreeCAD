@@ -64,11 +64,10 @@ TaskTrajectoryDressUpParameter::TaskTrajectoryDressUpParameter(Robot::Trajectory
     ui->checkBoxUseSpeed  ->setChecked      (pcObject->UseSpeed.getValue()) ;
     ui->checkBoxUseAccel  ->setChecked      (pcObject->UseAcceleration.getValue()) ;
     ui->comboBoxCont      ->setCurrentIndex (pcObject->ContType.getValue()) ;
+    ui->comboBoxOrientation->setCurrentIndex (pcObject->AddType.getValue()) ;
 
     PosAdd = pcObject->PosAdd.getValue();
     viewPlacement();
-
-    //QObject::connect(ui->pushButton_HideShow,SIGNAL(clicked()),this,SLOT(hideShow()));
 
     QObject::connect(ui->toolButtonChoosePlacement,SIGNAL(clicked()),this,SLOT(createPlacementDlg()));
 
@@ -88,6 +87,7 @@ void TaskTrajectoryDressUpParameter::writeValues(void)
     pcObject->UseSpeed.setValue       ( ui->checkBoxUseSpeed  ->isChecked()   );
     pcObject->UseAcceleration.setValue( ui->checkBoxUseAccel  ->isChecked()   );
     pcObject->ContType.setValue       ( ui->comboBoxCont      ->currentIndex());
+    pcObject->AddType.setValue        ( ui->comboBoxOrientation->currentIndex());
     pcObject->PosAdd.setValue(PosAdd);
 }
 
@@ -101,6 +101,7 @@ void TaskTrajectoryDressUpParameter::createPlacementDlg(void)
     }
 
 }
+
 
 void TaskTrajectoryDressUpParameter::viewPlacement(void)
 {
