@@ -46,6 +46,7 @@ public:
 
     App::PropertyLinkSub         Source;
     App::PropertyFloatConstraint SegValue;
+    App::PropertyBool            UseRotation;
 
     /// set by execute with the number of clusters found
     int NbrOfCluster;
