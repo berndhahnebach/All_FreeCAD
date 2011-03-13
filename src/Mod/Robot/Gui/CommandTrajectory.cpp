@@ -347,32 +347,20 @@ void CmdRobotEdge2Trac::activated(int iMsg)
         Robot::Edge2TracObject *EdgeObj = static_cast<Robot::Edge2TracObject*>(ObjectFilter.Result[0][0].getObject());
         openCommand("Edit Edge2TracObject");
         doCommand(Gui,"Gui.activeDocument().setEdit('%s')",EdgeObj->getNameInDocument());
-//    }else if (EdgeFilter.match()) {
+    }else if (EdgeFilter.match()) {
         // get the selected object
-        //Part::Feature *part = static_cast<Part::Feature*>(EdgeFilter.Result[0][0].getObject());
-        //const std::vector<std::string> &sub = EdgeFilter.Result[0][0].getSubNames();
-        //assert (sub.size()==1);
-        //// get the selected sub shape (a Face)
-        //const Part::TopoShape &shape = part->Shape.getValue();
-        //TopoDS_Shape sh = shape.getSubShape(sub[0].c_str());
-        //TopoDS_Face face = TopoDS::Face(sh);
-        //assert(!face.IsNull());
+        Part::Feature *part = static_cast<Part::Feature*>(EdgeFilter.Result[0][0].getObject());
+        std::string obj_sub = EdgeFilter.Result[0][0].getAsPropertyLinkSubString();
 
-         // create Sketch on Face
-        //std::string FeatName = getUniqueObjectName("Sketch");
-
-        //openCommand("Create a Sketch on Face");
-        //doCommand(Doc,"App.activeDocument().addObject('Sketcher::SketchObject','%s')",FeatName.c_str());
-        //doCommand(Gui,"App.activeDocument().%s.Placement = FreeCAD.Placement(FreeCAD.Vector(%f,%f,%f),FreeCAD.Rotation(%f,%f,%f))",FeatName.c_str(),placement.getPosition().x,placement.getPosition().y,placement.getPosition().z,a,b,c);
-        ////doCommand(Gui,"Gui.activeDocument().activeView().setCamera('%s')",cam.c_str());
-        //doCommand(Gui,"Gui.activeDocument().setEdit('%s')",FeatName.c_str());
-
-    }else {
-        // do the standard Z+ new Sketch
-        const char camstring[] = "#Inventor V2.1 ascii \\n OrthographicCamera { \\n viewportMapping ADJUST_CAMERA \\n position 0 0 87 \\n orientation 0 0 1  0 \\n nearDistance 37 \\n farDistance 137 \\n aspectRatio 1 \\n focalDistance 87 \\n height 119 }";
         std::string FeatName = getUniqueObjectName("Edge2Trac");
 
-        std::string cam(camstring);
+        openCommand("Create a new Edge2TracObject");
+        doCommand(Doc,"App.activeDocument().addObject('Robot::Edge2TracObject','%s')",FeatName.c_str());
+        doCommand(Gui,"App.activeDocument().%s.Source = App.activeDocument().%s",FeatName.c_str(),obj_sub.c_str());
+        doCommand(Gui,"Gui.activeDocument().setEdit('%s')",FeatName.c_str());
+
+    }else {
+        std::string FeatName = getUniqueObjectName("Edge2Trac");
 
         openCommand("Create a new Edge2TracObject");
         doCommand(Doc,"App.activeDocument().addObject('Robot::Edge2TracObject','%s')",FeatName.c_str());
@@ -409,18 +397,24 @@ CmdRobotTrajectoryDressUp::CmdRobotTrajectoryDressUp()
 
 void CmdRobotTrajectoryDressUp::activated(int iMsg)
 {
-    Gui::SelectionFilter ObjectFilter("SELECT Robot::TrajectoryDressUpObject COUNT 1");
+    Gui::SelectionFilter ObjectFilterDressUp("SELECT Robot::TrajectoryDressUpObject COUNT 1");
+    Gui::SelectionFilter ObjectFilter("SELECT Robot::TrajectoryObject COUNT 1");
 
-    if (ObjectFilter.match()) {
-        Robot::TrajectoryDressUpObject *Object = static_cast<Robot::TrajectoryDressUpObject*>(ObjectFilter.Result[0][0].getObject());
+    if (ObjectFilterDressUp.match()) {
+        Robot::TrajectoryDressUpObject *Object = static_cast<Robot::TrajectoryDressUpObject*>(ObjectFilterDressUp.Result[0][0].getObject());
         openCommand("Edit Sketch");
         doCommand(Gui,"Gui.activeDocument().setEdit('%s')",Object->getNameInDocument());
-    }else {
+    }else if (ObjectFilter.match()) {
         std::string FeatName = getUniqueObjectName("DressUpObject");
-
+        Robot::TrajectoryObject *Object = static_cast<Robot::TrajectoryObject*>(ObjectFilter.Result[0][0].getObject());
         openCommand("Create a new TrajectoryDressUp");
         doCommand(Doc,"App.activeDocument().addObject('Robot::TrajectoryDressUpObject','%s')",FeatName.c_str());
+        doCommand(Gui,"App.activeDocument().%s.Source = App.activeDocument().%s",FeatName.c_str(),Object->getNameInDocument());
         doCommand(Gui,"Gui.activeDocument().setEdit('%s')",FeatName.c_str());
+    }else {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select the Trajectory which you want to dress up."));
+        return;
     }
  }
 
