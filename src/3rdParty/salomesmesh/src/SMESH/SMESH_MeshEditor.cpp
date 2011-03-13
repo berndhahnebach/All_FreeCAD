@@ -56,6 +56,7 @@
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <Precision.hxx>
+#include <Standard_Version.hxx>
 #include <TColStd_ListOfInteger.hxx>
 #include <TopAbs_State.hxx>
 #include <TopExp.hxx>
@@ -2205,8 +2206,13 @@ static bool getClosestUV (Extrema_GenExtPS& projector,
   if ( projector.IsDone() ) {
     double u, v, minVal = DBL_MAX;
     for ( int i = projector.NbExt(); i > 0; i-- )
+#if OCC_VERSION_HEX >= 0x060500
+      if ( projector.SquareDistance( i ) < minVal ) {
+        minVal = projector.SquareDistance( i );
+#else
       if ( projector.Value( i ) < minVal ) {
         minVal = projector.Value( i );
+#endif
         projector.Point( i ).Parameter( u, v );
       }
     result.SetCoord( u, v );

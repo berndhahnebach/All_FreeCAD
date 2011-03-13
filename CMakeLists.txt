@@ -61,7 +61,7 @@ endif(CMAKE_COMPILER_IS_GNUCXX)
 if(WIN32)
     SET(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR})
 else(WIN32)
-    SET(CMAKE_INSTALL_PREFIX "/usr/lib/freecad")
+#    SET(CMAKE_INSTALL_PREFIX "/usr/lib/freecad")
 endif(WIN32)
 
 # ================================================================================
