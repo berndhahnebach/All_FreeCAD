@@ -356,7 +356,7 @@ void CmdRobotEdge2Trac::activated(int iMsg)
 
         openCommand("Create a new Edge2TracObject");
         doCommand(Doc,"App.activeDocument().addObject('Robot::Edge2TracObject','%s')",FeatName.c_str());
-        doCommand(Gui,"App.activeDocument().%s.Source = App.activeDocument().%s",FeatName.c_str(),obj_sub.c_str());
+        doCommand(Gui,"App.activeDocument().%s.Source = %s",FeatName.c_str(),obj_sub.c_str());
         doCommand(Gui,"Gui.activeDocument().setEdit('%s')",FeatName.c_str());
 
     }else {
@@ -410,6 +410,7 @@ void CmdRobotTrajectoryDressUp::activated(int iMsg)
         openCommand("Create a new TrajectoryDressUp");
         doCommand(Doc,"App.activeDocument().addObject('Robot::TrajectoryDressUpObject','%s')",FeatName.c_str());
         doCommand(Gui,"App.activeDocument().%s.Source = App.activeDocument().%s",FeatName.c_str(),Object->getNameInDocument());
+        doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",Object->getNameInDocument());
         doCommand(Gui,"Gui.activeDocument().setEdit('%s')",FeatName.c_str());
     }else {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),

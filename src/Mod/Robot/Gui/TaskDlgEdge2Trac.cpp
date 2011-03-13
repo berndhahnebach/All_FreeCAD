@@ -31,6 +31,8 @@
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include <Gui/TaskView/TaskSelectLinkProperty.h>
+#include <Gui/Application.h>
+#include <Gui/Document.h>
 
 
 using namespace RobotGui;
@@ -93,7 +95,10 @@ bool TaskDlgEdge2Trac::accept()
     try {
         if (select->isSelectionValid()){
             select->accept();
-            Edge2TaskObject->execute();
+            Edge2TaskObject->recompute();
+            Gui::Document* doc = Gui::Application::Instance->activeDocument();
+            if(doc) 
+                doc->resetEdit();
             return true;
         }
         else

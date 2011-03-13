@@ -117,6 +117,8 @@ App::DocumentObjectExecReturn *TrajectoryDressUpObject::execute(void)
         result.addWaypoint(wpt);
     }
 
+    // set the resulting Trajectory to the object
+    Trajectory.setValue(result);
     
     return App::DocumentObject::StdReturn;
 }
