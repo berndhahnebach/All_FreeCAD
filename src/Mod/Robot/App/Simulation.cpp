@@ -56,7 +56,6 @@ Simulation::Simulation(const Robot::Trajectory &Trac,Robot::Robot6Axis &Rob)
     // simulate a trajectory with only one waypoint make no sense!
     assert(Trac.getSize() > 1);
         
-    setToTime(0);
 
 	startAxis[0] = Rob.getAxis(0);
     startAxis[1] = Rob.getAxis(1);
@@ -64,6 +63,8 @@ Simulation::Simulation(const Robot::Trajectory &Trac,Robot::Robot6Axis &Rob)
     startAxis[3] = Rob.getAxis(3);
     startAxis[4] = Rob.getAxis(4);
     startAxis[5] = Rob.getAxis(5);
+
+    setToTime(0);
 
 }
 
