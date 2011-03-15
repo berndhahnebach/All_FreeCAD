@@ -25,44 +25,44 @@ import FreeCAD,FreeCADGui,Part,Draft
 from draftlibs import fcgeo,fcvec
 from FreeCAD import Vector
 
-__title__="FreeCAD Floor"
+__title__="FreeCAD Cell"
 __author__ = "Yorik van Havre"
 __url__ = "http://free-cad.sourceforge.net"
 
-def makeFloor(objectslist):
-    '''makeFloor(objectslist): creates a floor including the
+def makeCell(objectslist):
+    '''makeCell(objectslist): creates a cell including the
     objects from the givne list'''
-    obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Floor")
-    Floor(obj)
-    ViewProviderFloor(obj.ViewObject)
+    obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Cell")
+    Cell(obj)
+    ViewProviderCell(obj.ViewObject)
     obj.Components = objectslist
     for comp in obj.Components:
         comp.ViewObject.hide()
     return obj
 
-class CommandFloor:
-    "the Arch Floor command definition"
+class CommandCell:
+    "the Arch Cell command definition"
     def GetResources(self):
-        return {'Pixmap'  : 'Arch_Floor',
-                'MenuText': "Floor",
-                'ToolTip': "Creates a floor object including selected objects"}
+        return {'Pixmap'  : 'Arch_Cell',
+                'MenuText': "Cell",
+                'ToolTip': "Creates a cell object including selected objects"}
         
     def Activated(self):
         sel = FreeCADGui.Selection.getSelection()
-        makeFloor(sel)
+        makeCell(sel)
 
-class Floor:
-    "The Floor object"
+class Cell:
+    "The Cell object"
     def __init__(self,obj):
         obj.addProperty("App::PropertyLinkList","Components","Base",
-                        "The objects that make part of this floor")
+                        "The objects that make part of this cell")
         obj.addProperty("App::PropertyLength","PlanHeight","Base",
-                        "The height of the section plane when making a plan view of this floor")
+                        "The height of the section plane when making a plan view of this cell")
         obj.addProperty("App::PropertyBool","DebugMode","Base",
                         "if debug mode, no face cleaning!")
         obj.PlanHeight = 1.8
         obj.Proxy = self
-        self.Type = "Floor"
+        self.Type = "Cell"
         
     def execute(self,obj):
         self.createGeometry(obj)
@@ -78,14 +78,14 @@ class Floor:
             f = components.pop(0)
             baseShape = f.Shape
             for comp in obj.Components:
-                if Draft.getType(comp) in ["Wall","Floor","Shape"]:
+                if Draft.getType(comp) in ["Wall","Cell","Shape"]:
                     baseShape = baseShape.fuse(comp.Shape)
             if not obj.DebugMode: baseShape = fcgeo.cleanFaces(baseShape)
             obj.Shape = baseShape
             obj.Placement = pl
 
-class ViewProviderFloor:
-    "A View Provider for the Floor object"
+class ViewProviderCell:
+    "A View Provider for the Cell object"
     def __init__(self,vobj):
         vobj.Proxy = self
         self.Object = vobj.Object
@@ -93,7 +93,7 @@ class ViewProviderFloor:
     def getIcon(self):          
         return """
                 /* XPM */
-                static char * Arch_Floor_xpm[] = {
+                static char * Arch_Cell_xpm[] = {
                 "16 16 9 1",
                 " 	c None",
                 ".	c #171817",
