@@ -594,7 +594,7 @@ bool CmdMeshFromGeometry::isActive(void)
 {
     App::Document* doc = App::GetApplication().getActiveDocument();
     if (!doc) return false;
-    return getSelection().countObjectsOfType(App::GeoFeature::getClassTypeId()) == 1;
+    return getSelection().countObjectsOfType(App::GeoFeature::getClassTypeId()) >= 1;
 }
 
 //--------------------------------------------------------------------------------------
