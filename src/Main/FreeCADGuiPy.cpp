@@ -34,6 +34,8 @@
 #include <Inventor/Qt/SoQt.h>
 #if defined(Q_OS_WIN)
 #include <windows.h>
+#elif defined(Q_WS_X11)
+#include <QX11EmbedWidget>
 #endif
 // FreeCAD Base header
 #include <Base/Exception.h>
@@ -192,16 +194,18 @@ FreeCADGui_embedToWindow(PyObject * /*self*/, PyObject *args)
     //SetWindowLong(widget->winId(), GWL_STYLE,
     //    WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS);
     SetParent(widget->winId(), winid);
+
+    QEvent embeddingEvent(QEvent::EmbeddingControl);
+    QApplication::sendEvent(widget, &embeddingEvent);
 #elif defined(Q_WS_X11)
-    //XUnmapWindow(X11->display, winid);
-    //XReparentWindow(X11->display, winid, RootWindow(X11->display, xinfo.screen()), 0, 0);
+    QX11EmbedWidget* x11 = new QX11EmbedWidget();
+    widget->setParent(x11);
+    x11->embedInto(winid);
+    x11->show();
 #else
     PyErr_SetString(PyExc_NotImplementedError, "Not implemented for this platform");
     return 0;
 #endif
-
-    QEvent embeddingEvent(QEvent::EmbeddingControl);
-    QApplication::sendEvent(widget, &embeddingEvent);
     
     Py_INCREF(Py_None);
     return Py_None;
