@@ -52,7 +52,7 @@
     <message>
       <location/>
       <source>Cuts a point cloud with a picked polygon</source>
-      <translation>在多边形选择中剪切点云</translation>
+      <translation>剪切多边形选择框中的点云</translation>
     </message>
   </context>
   <context>
@@ -70,7 +70,7 @@
     <message>
       <location/>
       <source>Test to transform a point cloud</source>
-      <translation>测试以改变一个点云</translation>
+      <translation>变换点云测试</translation>
     </message>
   </context>
   <context>
@@ -88,7 +88,7 @@
     <message>
       <location/>
       <source>Special lines</source>
-      <translation>专用线</translation>
+      <translation>特殊行</translation>
     </message>
     <message>
       <location/>
@@ -108,7 +108,7 @@
     <message>
       <location/>
       <source>Ignore lines starting with:</source>
-      <translation>忽略行的起始号码:</translation>
+      <translation>忽略以此开头的行:</translation>
     </message>
     <message>
       <location/>
@@ -168,12 +168,12 @@
     <message>
       <location/>
       <source>I,J,K (normal vector)</source>
-      <translation>I,J,K(标准向量)</translation>
+      <translation>I,J,K(法向量)</translation>
     </message>
     <message>
       <location/>
       <source>I,K (normal vector 2D)</source>
-      <translation>I,K(标准2D向量)</translation>
+      <translation>I,K(2D法向量)</translation>
     </message>
     <message>
       <location/>
@@ -216,7 +216,7 @@
     <message>
       <location/>
       <source>&amp;Points</source>
-      <translation>&amp;P 点</translation>
+      <translation>点(&amp;P)</translation>
     </message>
   </context>
   <context>
@@ -237,7 +237,7 @@
     <message>
       <location/>
       <source>&amp;Points</source>
-      <translation>&amp;P 点</translation>
+      <translation>点(&amp;P)</translation>
     </message>
   </context>
 </TS>

@@ -16,7 +16,7 @@
     <message>
       <location/>
       <source>Approximate a B-Spline surface</source>
-      <translation>B样条曲面近似</translation>
+      <translation>近似B样条曲面</translation>
     </message>
   </context>
   <context>

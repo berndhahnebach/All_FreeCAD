@@ -34,7 +34,7 @@
     <message>
       <location/>
       <source>Place a robot (experimental!)</source>
-      <translation>将一个机器人放(实验)</translation>
+      <translation>放置机器人(实验!)</translation>
     </message>
   </context>
   <context>
@@ -70,7 +70,7 @@
     <message>
       <location/>
       <source>Generate a Trajectory from a set of edges</source>
-      <translation>从组边缘生成的轨迹</translation>
+      <translation>从一组边生成轨迹</translation>
     </message>
   </context>
   <context>
@@ -83,12 +83,12 @@
     <message>
       <location/>
       <source>Kuka compact subroutine...</source>
-      <translation>库卡紧凑的子例程...</translation>
+      <translation>Kuka压缩子例程...</translation>
     </message>
     <message>
       <location/>
       <source>Export the trajectory as a compact KRL subroutine.</source>
-      <translation>导出为一个紧凑的 KRL 子例程的轨迹.</translation>
+      <translation>导出轨迹为压缩 KRL 子例程.</translation>
     </message>
   </context>
   <context>
@@ -101,12 +101,12 @@
     <message>
       <location/>
       <source>Kuka full subroutine...</source>
-      <translation>库卡完全子例程...</translation>
+      <translation>Kuka完整子例程...</translation>
     </message>
     <message>
       <location/>
       <source>Export the trajectory as a full KRL subroutine.</source>
-      <translation>导出为一个完整的 KRL 子例程的轨迹.</translation>
+      <translation>导出轨迹为完整 KRL 子例程.</translation>
     </message>
   </context>
   <context>
@@ -119,12 +119,12 @@
     <message>
       <location/>
       <source>Kuka IR125</source>
-      <translation>库卡IR125</translation>
+      <translation>Kuka IR125</translation>
     </message>
     <message>
       <location/>
       <source>Insert a Kuka IR125 into the document.</source>
-      <translation>将IR125导入文档.</translation>
+      <translation>将Kuka IR125导入文档.</translation>
     </message>
   </context>
   <context>
@@ -137,12 +137,12 @@
     <message>
       <location/>
       <source>Kuka IR16</source>
-      <translation>库卡IR16</translation>
+      <translation>Kuka IR16</translation>
     </message>
     <message>
       <location/>
       <source>Insert a Kuka IR16 into the document.</source>
-      <translation>将IR16导入文档.</translation>
+      <translation>将Kuka IR16导入文档.</translation>
     </message>
   </context>
   <context>
@@ -155,12 +155,12 @@
     <message>
       <location/>
       <source>Kuka IR210</source>
-      <translation>库卡IR210</translation>
+      <translation>Kuka IR210</translation>
     </message>
     <message>
       <location/>
       <source>Insert a Kuka IR210 into the document.</source>
-      <translation>将IR210导入文档.</translation>
+      <translation>将Kuka IR210导入文档.</translation>
     </message>
   </context>
   <context>
@@ -173,12 +173,12 @@
     <message>
       <location/>
       <source>Kuka IR500</source>
-      <translation>库卡IR500</translation>
+      <translation>Kuka IR500</translation>
     </message>
     <message>
       <location/>
       <source>Insert a Kuka IR500 into the document.</source>
-      <translation>将IR500导入文档.</translation>
+      <translation>将Kuka IR500导入文档.</translation>
     </message>
   </context>
   <context>
@@ -214,7 +214,7 @@
     <message>
       <location/>
       <source>Insert preselection position into trajectory (W)</source>
-      <translation>预选位置插入轨迹 (W)</translation>
+      <translation>预选位置插入轨迹(W)</translation>
     </message>
   </context>
   <context>
@@ -227,7 +227,7 @@
     <message>
       <location/>
       <source>Move to home</source>
-      <translation>移动到中心</translation>
+      <translation>移动到初始</translation>
     </message>
   </context>
   <context>
@@ -245,7 +245,7 @@
     <message>
       <location/>
       <source>set the default orientation for subsequent commands for waypoint creation</source>
-      <translation>根据后续创建命令设置默认方向</translation>
+      <translation>为后续创建路径点命令设置默认方向</translation>
     </message>
   </context>
   <context>
@@ -263,7 +263,7 @@
     <message>
       <location/>
       <source>set the default values for speed, acceleration and continuity for subsequent commands of waypoint creation</source>
-      <translation>设置默认值的速度、 加速度和路径创建后续命令的连续性</translation>
+      <translation>为后续创建路径点命令设置默认速度,加速度和连续性</translation>
     </message>
   </context>
   <context>
@@ -276,7 +276,7 @@
     <message>
       <location/>
       <source>Set the home position</source>
-      <translation>设置中心位置</translation>
+      <translation>设置初始位置</translation>
     </message>
   </context>
   <context>
@@ -348,17 +348,17 @@
     <message>
       <location/>
       <source>Trajectory not valid</source>
-      <translation>不是有效的轨迹</translation>
+      <translation>无效轨迹</translation>
     </message>
     <message>
       <location/>
       <source>You need at least two way points in a trajectory to simulate.</source>
-      <translation>你需要在轨迹模拟至少两个百分点.</translation>
+      <translation>你至少需要两个路径点以进行轨迹模拟.</translation>
     </message>
     <message>
       <location/>
       <source>KRL file(*.src)</source>
-      <translation>KRL文件（*.src）</translation>
+      <translation>KRL文件(*.src)</translation>
     </message>
     <message>
       <location/>
@@ -373,22 +373,22 @@
     <message>
       <location/>
       <source>Select one robot and one shape or VRML object.</source>
-      <translation>选择一个机器人和一个形状或VRML的对象.</translation>
+      <translation>选择一个机器人和一个形状或VRML对象.</translation>
     </message>
     <message>
       <location/>
       <source>No preselection</source>
-      <translation>没有预选</translation>
+      <translation>无预选</translation>
     </message>
     <message>
       <location/>
       <source>You have to hover above a geometry (Preselection) with the mouse to use this command. See documentation for details.</source>
-      <translation>你必须与上述悬停鼠标才能使用该命令几何（预选）.详情请参考文档.</translation>
+      <translation>您必须悬停鼠标于(预选)几何体以使用该命令.详情请参考文档.</translation>
     </message>
     <message>
       <location/>
       <source>Select one Robot to set home postion</source>
-      <translation>选中一个机器人并设置成中心位置</translation>
+      <translation>选中一个机器人并设置初始位置</translation>
     </message>
     <message>
       <location/>
@@ -408,12 +408,12 @@
     <message>
       <location/>
       <source>speed: (e.g. 1 m/s or 3 cm/s)</source>
-      <translation>速度: (e.g. 1 m/s or 3 cm/s)</translation>
+      <translation>速度: (如 1 m/s 或 3 cm/s)</translation>
     </message>
     <message>
       <location/>
       <source>set default continuity</source>
-      <translation>设置默认的连续性</translation>
+      <translation>设置默认连续性</translation>
     </message>
     <message>
       <location/>
@@ -423,22 +423,22 @@
     <message>
       <location/>
       <source>set default acceleration</source>
-      <translation>设置默认的加速</translation>
+      <translation>设置默认加速度</translation>
     </message>
     <message>
       <location/>
       <source>acceleration: (e.g. 1 m/s^2 or 3 cm/s^2)</source>
-      <translation>加速: (e.g. 1 m/s^2 or 3 cm/s^2)</translation>
+      <translation>加速度: (如 1 m/s^2 或 3 cm/s^2)</translation>
     </message>
     <message>
       <location/>
       <source>No robot files installed</source>
-      <translation>没有安装Robot文件</translation>
+      <translation>未安装机器人文件</translation>
     </message>
     <message>
       <location/>
       <source>Please visit %1 and copy the files to %2</source>
-      <translation>请访问 %1 和文件复制到 %2</translation>
+      <translation>请访问 %1 并复制文件到 %2</translation>
     </message>
   </context>
   <context>
@@ -514,7 +514,7 @@
     <message>
       <location/>
       <source>TaskEdge2TracParameter</source>
-      <translation>任务边缘参数</translation>
+      <translation>边转轨迹任务参数</translation>
     </message>
   </context>
   <context>
@@ -572,7 +572,7 @@
     <message>
       <location/>
       <source>TaskRobot6Axis</source>
-      <translation>任务机器人6维</translation>
+      <translation>机器人6轴任务</translation>
     </message>
   </context>
   <context>
@@ -588,7 +588,7 @@
     <message>
       <location/>
       <source>TaskRobotMessages</source>
-      <translation>任务机器人信息</translation>
+      <translation>机器人信息任务</translation>
     </message>
   </context>
   <context>
@@ -661,7 +661,7 @@
     <message>
       <location/>
       <source>Pos: (200.23, 300.23, 400.23, 234, 343 ,343)</source>
-      <translation>Pos: (200.23, 300.23, 400.23, 234, 343 ,343)</translation>
+      <translation>位置: (200.23, 300.23, 400.23, 234, 343 ,343)</translation>
     </message>
     <message>
       <location/>
@@ -800,7 +800,7 @@
     <message>
       <location/>
       <source>Tool 0</source>
-      <translation>工具0</translation>
+      <translation>工具 0</translation>
     </message>
     <message>
       <location/>
@@ -954,7 +954,7 @@
     <message>
       <location/>
       <source>&amp;Robot</source>
-      <translation>&amp;R 机器人</translation>
+      <translation>机器人(&amp;R)</translation>
     </message>
     <message>
       <location/>

@@ -16,7 +16,7 @@
     <message>
       <location/>
       <source>Add a tool shape to the robot</source>
-      <translation>Add a tool shape to the robot</translation>
+      <translation>Dodavanje alata za oblik za robota</translation>
     </message>
   </context>
   <context>
@@ -29,12 +29,12 @@
     <message>
       <location/>
       <source>Place robot...</source>
-      <translation>Place robot...</translation>
+      <translation>Mjesto robota ...</translation>
     </message>
     <message>
       <location/>
       <source>Place a robot (experimental!)</source>
-      <translation>Place a robot (experimental!)</translation>
+      <translation>Postavite robota (experimental!)</translation>
     </message>
   </context>
   <context>
@@ -52,7 +52,7 @@
     <message>
       <location/>
       <source>Create a new empty trajectory </source>
-      <translation>Create a new empty trajectory </translation>
+      <translation>Napravi novu prazanu putanju</translation>
     </message>
   </context>
   <context>
@@ -65,12 +65,12 @@
     <message>
       <location/>
       <source>Edge to Trajectory...</source>
-      <translation>Edge to Trajectory...</translation>
+      <translation>rub na putanji ...</translation>
     </message>
     <message>
       <location/>
       <source>Generate a Trajectory from a set of edges</source>
-      <translation>Generate a Trajectory from a set of edges</translation>
+      <translation>Generirajte putanju za set rubova</translation>
     </message>
   </context>
   <context>
@@ -83,12 +83,12 @@
     <message>
       <location/>
       <source>Kuka compact subroutine...</source>
-      <translation>Kuka compact subroutine...</translation>
+      <translation>Kuka kompaktni potprogram ...</translation>
     </message>
     <message>
       <location/>
       <source>Export the trajectory as a compact KRL subroutine.</source>
-      <translation>Export the trajectory as a compact KRL subroutine.</translation>
+      <translation>Izvoz putanje kao kompaktni KRL potprogram.</translation>
     </message>
   </context>
   <context>
@@ -101,12 +101,12 @@
     <message>
       <location/>
       <source>Kuka full subroutine...</source>
-      <translation>Kuka full subroutine...</translation>
+      <translation>Kuka puni potprogram ...</translation>
     </message>
     <message>
       <location/>
       <source>Export the trajectory as a full KRL subroutine.</source>
-      <translation>Export the trajectory as a full KRL subroutine.</translation>
+      <translation>Izvoz putanje kao pun KRL potprogram.</translation>
     </message>
   </context>
   <context>
@@ -124,7 +124,7 @@
     <message>
       <location/>
       <source>Insert a Kuka IR125 into the document.</source>
-      <translation>Insert a Kuka IR125 into the document.</translation>
+      <translation>Umetnite Kuka IR500 u dokument.</translation>
     </message>
   </context>
   <context>
@@ -142,7 +142,7 @@
     <message>
       <location/>
       <source>Insert a Kuka IR16 into the document.</source>
-      <translation>Insert a Kuka IR16 into the document.</translation>
+      <translation>Umetnite Kuka IR500 u dokument.</translation>
     </message>
   </context>
   <context>
@@ -160,7 +160,7 @@
     <message>
       <location/>
       <source>Insert a Kuka IR210 into the document.</source>
-      <translation>Insert a Kuka IR210 into the document.</translation>
+      <translation>Umetnite Kuka IR500 u dokument.</translation>
     </message>
   </context>
   <context>
@@ -178,7 +178,7 @@
     <message>
       <location/>
       <source>Insert a Kuka IR500 into the document.</source>
-      <translation>Insert a Kuka IR500 into the document.</translation>
+      <translation>Umetnite Kuka IR500 u dokument.</translation>
     </message>
   </context>
   <context>
@@ -191,12 +191,12 @@
     <message>
       <location/>
       <source>Insert in trajectory</source>
-      <translation>Insert in trajectory</translation>
+      <translation>Umetni u putanju</translation>
     </message>
     <message>
       <location/>
       <source>Insert robot Tool location into trajectory</source>
-      <translation>Insert robot Tool location into trajectory</translation>
+      <translation>Umetnite alata robota, mjesto u putanji</translation>
     </message>
   </context>
   <context>
@@ -209,12 +209,12 @@
     <message>
       <location/>
       <source>Insert in trajectory</source>
-      <translation>Insert in trajectory</translation>
+      <translation>Umetni u putanju</translation>
     </message>
     <message>
       <location/>
       <source>Insert preselection position into trajectory (W)</source>
-      <translation>Insert preselection position into trajectory (W)</translation>
+      <translation>Umetnite "preselekcija položaj" u putanju (W)</translation>
     </message>
   </context>
   <context>
@@ -227,7 +227,7 @@
     <message>
       <location/>
       <source>Move to home</source>
-      <translation>Move to home</translation>
+      <translation>Premjesti u kući</translation>
     </message>
   </context>
   <context>
@@ -276,7 +276,7 @@
     <message>
       <location/>
       <source>Set the home position</source>
-      <translation>Set the home position</translation>
+      <translation>Postavite početni položaj</translation>
     </message>
   </context>
   <context>
@@ -289,12 +289,12 @@
     <message>
       <location/>
       <source>Simulate a trajectory</source>
-      <translation>Simulate a trajectory</translation>
+      <translation>Simulirati putanju</translation>
     </message>
     <message>
       <location/>
       <source>Run a simulation on a trajectory</source>
-      <translation>Run a simulation on a trajectory</translation>
+      <translation>Pokrenite simulaciju na putanji</translation>
     </message>
   </context>
   <context>
@@ -307,12 +307,12 @@
     <message>
       <location/>
       <source>Trajectory compound...</source>
-      <translation>Trajectory compound...</translation>
+      <translation> Spoj Putanje  ...</translation>
     </message>
     <message>
       <location/>
       <source>Group and connect some trajectories to one</source>
-      <translation>Group and connect some trajectories to one</translation>
+      <translation>Grupiraj i poveži neke putanje kao jednu</translation>
     </message>
   </context>
   <context>
@@ -325,12 +325,12 @@
     <message>
       <location/>
       <source>Dress up trajectory...</source>
-      <translation>Dress up trajectory...</translation>
+      <translation>ravnati putanju ...</translation>
     </message>
     <message>
       <location/>
       <source>Create a dress up object which overide som aspects of a trajectory</source>
-      <translation>Create a dress up object which overide som aspects of a trajectory</translation>
+      <translation>Stvoriti ravni objekt koji poništi neko stajalište  putanje</translation>
     </message>
   </context>
   <context>
@@ -338,52 +338,52 @@
     <message>
       <location/>
       <source>Wrong selection</source>
-      <translation>Wrong selection</translation>
+      <translation>Pogrešan odabir</translation>
     </message>
     <message>
       <location/>
       <source>Select one Robot and one Trajectory object.</source>
-      <translation>Select one Robot and one Trajectory object.</translation>
+      <translation>Odaberite jedan robot i jedanu putanju objekta.</translation>
     </message>
     <message>
       <location/>
       <source>Trajectory not valid</source>
-      <translation>Trajectory not valid</translation>
+      <translation>Putanja ne vrijedi</translation>
     </message>
     <message>
       <location/>
       <source>You need at least two way points in a trajectory to simulate.</source>
-      <translation>You need at least two way points in a trajectory to simulate.</translation>
+      <translation>Trebate najmanje dvije točke u putanji za simuliranje.</translation>
     </message>
     <message>
       <location/>
       <source>KRL file(*.src)</source>
-      <translation>KRL file(*.src)</translation>
+      <translation>KRL datoteka (*. src)</translation>
     </message>
     <message>
       <location/>
       <source>All Files (*.*)</source>
-      <translation>All Files (*.*)</translation>
+      <translation>Sve datoteke (*.*)</translation>
     </message>
     <message>
       <location/>
       <source>Export program</source>
-      <translation>Export program</translation>
+      <translation>Prijenos programa</translation>
     </message>
     <message>
       <location/>
       <source>Select one robot and one shape or VRML object.</source>
-      <translation>Select one robot and one shape or VRML object.</translation>
+      <translation>Odaberite jedan robot i jedan oblik ili objekt VRML.</translation>
     </message>
     <message>
       <location/>
       <source>No preselection</source>
-      <translation>No preselection</translation>
+      <translation>Nema predselekcije</translation>
     </message>
     <message>
       <location/>
       <source>You have to hover above a geometry (Preselection) with the mouse to use this command. See documentation for details.</source>
-      <translation>You have to hover above a geometry (Preselection) with the mouse to use this command. See documentation for details.</translation>
+      <translation>Morate lebjeti iznad geometrije (predselekcije) s mišem kako bi koristili ovu naredbu. Pogledajte dokumentaciju za detalje.</translation>
     </message>
     <message>
       <location/>
@@ -446,7 +446,7 @@
     <message>
       <location/>
       <source>Simulation</source>
-      <translation>Simulation</translation>
+      <translation>Simuliranje</translation>
     </message>
     <message>
       <location/>
@@ -522,7 +522,7 @@
     <message>
       <location/>
       <source>Form</source>
-      <translation>Form</translation>
+      <translation>Obrazac</translation>
     </message>
     <message>
       <location/>
@@ -596,7 +596,7 @@
     <message>
       <location/>
       <source>Form</source>
-      <translation>Form</translation>
+      <translation>Obrazac</translation>
     </message>
     <message>
       <location/>
@@ -661,7 +661,7 @@
     <message>
       <location/>
       <source>Pos: (200.23, 300.23, 400.23, 234, 343 ,343)</source>
-      <translation>Pos: (200.23, 300.23, 400.23, 234, 343 ,343)</translation>
+      <translation>Poz: (200,23, 300,23, 400,23, 234, 343, 343)</translation>
     </message>
     <message>
       <location/>
@@ -699,7 +699,7 @@
     <message>
       <location/>
       <source>Dress Up Parameter</source>
-      <translation>Dress Up Parameter</translation>
+      <translation>Ravni parametar</translation>
     </message>
   </context>
   <context>
@@ -707,7 +707,7 @@
     <message>
       <location/>
       <source>Form</source>
-      <translation>Form</translation>
+      <translation>Obrazac</translation>
     </message>
     <message>
       <location/>
@@ -722,12 +722,12 @@
     <message>
       <location/>
       <source>Cluster: 0</source>
-      <translation>Cluster: 0</translation>
+      <translation>Grozd: 0</translation>
     </message>
     <message>
       <location/>
       <source>Sizing Value:</source>
-      <translation>Sizing Value:</translation>
+      <translation>Dimenzioniranje vrijednosti:</translation>
     </message>
   </context>
   <context>
@@ -735,7 +735,7 @@
     <message>
       <location/>
       <source>Form</source>
-      <translation>Form</translation>
+      <translation>Obrazac</translation>
     </message>
     <message>
       <location/>
@@ -820,7 +820,7 @@
     <message>
       <location/>
       <source>World</source>
-      <translation>World</translation>
+      <translation>Svijet</translation>
     </message>
     <message>
       <location/>
@@ -853,12 +853,12 @@
     <message>
       <location/>
       <source>Form</source>
-      <translation>Form</translation>
+      <translation>Obrazac</translation>
     </message>
     <message>
       <location/>
       <source>clear</source>
-      <translation>clear</translation>
+      <translation>jasno</translation>
     </message>
   </context>
   <context>
@@ -866,7 +866,7 @@
     <message>
       <location/>
       <source>Form</source>
-      <translation>Form</translation>
+      <translation>Obrazac</translation>
     </message>
     <message>
       <location/>
@@ -891,7 +891,7 @@
     <message>
       <location/>
       <source>Don't change Cont</source>
-      <translation>Don't change Cont</translation>
+      <translation>Nemojte mijenjati Cont</translation>
     </message>
     <message>
       <location/>

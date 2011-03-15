@@ -113,12 +113,12 @@
     <message>
       <location/>
       <source>&amp;OK</source>
-      <translation>&amp;O确定</translation>
+      <translation>确定(&amp;O)</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Cancel</source>
-      <translation>&amp;C 取消</translation>
+      <translation>取消(&amp;C)</translation>
     </message>
   </context>
   <context>
@@ -250,17 +250,17 @@
     <message>
       <location/>
       <source>&amp;Activate</source>
-      <translation>&amp;A 激活</translation>
+      <translation>激活(&amp;A)</translation>
     </message>
     <message>
       <location/>
       <source>Alt+A</source>
-      <translation>Alt + A</translation>
+      <translation>Alt+A</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Cancel</source>
-      <translation>&amp;C 取消</translation>
+      <translation>取消(&amp;C)</translation>
     </message>
     <message>
       <location/>
@@ -281,17 +281,17 @@
     <message>
       <location/>
       <source>Authorization</source>
-      <translation>身份认证</translation>
+      <translation>身份验证</translation>
     </message>
     <message>
       <location/>
       <source>&amp;OK</source>
-      <translation>&amp;O确定</translation>
+      <translation>确定(&amp;O)</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Cancel</source>
-      <translation>&amp;C 取消</translation>
+      <translation>取消(&amp;C)</translation>
     </message>
     <message>
       <location/>
@@ -410,12 +410,12 @@
     <message>
       <location/>
       <source>No macro</source>
-      <translation>没有宏</translation>
+      <translation>无宏定义</translation>
     </message>
     <message>
       <location/>
       <source>No macros found.</source>
-      <translation>没有发现宏.</translation>
+      <translation>未发现宏.</translation>
     </message>
     <message>
       <location/>
@@ -425,7 +425,7 @@
     <message>
       <location/>
       <source>Sorry, couldn't find macro file '%1'.</source>
-      <translation>对不起，无法找到宏文件-'%1'.</translation>
+      <translation>对不起，无法找到宏文件 '%1'.</translation>
     </message>
     <message>
       <location/>
@@ -435,7 +435,7 @@
     <message>
       <location/>
       <source>Please specify the macro first.</source>
-      <translation>请先指定唯一宏.</translation>
+      <translation>请先指定宏.</translation>
     </message>
     <message>
       <location/>
@@ -445,7 +445,7 @@
     <message>
       <location/>
       <source>Please specify the menu text first.</source>
-      <translation>请先指定唯一菜单文本.</translation>
+      <translation>请先指定菜单文本.</translation>
     </message>
     <message>
       <location/>
@@ -504,7 +504,7 @@
     <message>
       <location/>
       <source>&amp;Category:</source>
-      <translation>(&amp;C)分类:</translation>
+      <translation>分类(&amp;C):</translation>
     </message>
     <message>
       <location/>
@@ -519,7 +519,7 @@
     <message>
       <location/>
       <source>Press &amp;new shortcut:</source>
-      <translation>按下(&amp;N)新快捷键:</translation>
+      <translation>按下新快捷键(&amp;N):</translation>
     </message>
     <message>
       <location/>
@@ -529,12 +529,12 @@
     <message>
       <location/>
       <source>&amp;Assign</source>
-      <translation>对齐（&amp;A)</translation>
+      <translation>分配(&amp;A)</translation>
     </message>
     <message>
       <location/>
       <source>Alt+A</source>
-      <translation>Alt + A</translation>
+      <translation>Alt+A</translation>
     </message>
     <message>
       <location/>
@@ -599,7 +599,8 @@
       <source>The shortcut '%1' is already assigned to '%2'.
 
 Please define another shortcut.</source>
-      <translation>快捷键'%1'已经分配给了'%2'.</translation>
+      <translation>快捷键'%1'已经分配给了'%2'.
+请重新定义.</translation>
     </message>
   </context>
   <context>
@@ -620,7 +621,7 @@ Please define another shortcut.</source>
     <message>
       <location/>
       <source>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600;"&gt;Note:&lt;/span&gt; The changes become active the next time you load the appropriate workbench&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600;"&gt;Note:&lt;/span&gt; 改动将在你下一次启动程序时启用&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600;"&gt;Note:&lt;/span&gt; 改动将在你下一次加载工作台时生效&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
       <location/>
@@ -630,7 +631,7 @@ Please define another shortcut.</source>
     <message>
       <location/>
       <source>&lt;b&gt;Move the selected item one level down.&lt;/b&gt;&lt;p&gt;This will also change the level of the parent item.&lt;/p&gt;</source>
-      <translation>&lt;b&gt;移动选中对象到下一级别.&lt;/b&gt;&lt;p&gt;这将同时改变父级对象.&lt;/p&gt;</translation>
+      <translation>&lt;b&gt;移动选中对象到下一层级.&lt;/b&gt;&lt;p&gt;这将同时改变父级对象.&lt;/p&gt;</translation>
     </message>
     <message>
       <location/>
@@ -640,7 +641,7 @@ Please define another shortcut.</source>
     <message>
       <location/>
       <source>&lt;b&gt;Move the selected item one level up.&lt;/b&gt;&lt;p&gt;This will also change the level of the parent item.&lt;/p&gt;</source>
-      <translation>&lt;b&gt;移动选中对象到下一级别.&lt;/b&gt;&lt;p&gt;这将同时改变父级对象.&lt;/p&gt;</translation>
+      <translation>&lt;b&gt;移动选中对象到上一层级.&lt;/b&gt;&lt;p&gt;这将同时改变父级对象.&lt;/p&gt;</translation>
     </message>
     <message>
       <location/>
@@ -650,7 +651,7 @@ Please define another shortcut.</source>
     <message>
       <location/>
       <source>&lt;b&gt;Move the selected item down.&lt;/b&gt;&lt;p&gt;The item will be moved within the hierarchy level.&lt;/p&gt;</source>
-      <translation>&lt;b&gt;下移动选中对象.&lt;/b&gt;&lt;p&gt;这将同时移动它层级关系.&lt;/p&gt;</translation>
+      <translation>&lt;b&gt;下移选中对象.&lt;/b&gt;&lt;p&gt;仅在层级中移动.&lt;/p&gt;</translation>
     </message>
     <message>
       <location/>
@@ -660,7 +661,7 @@ Please define another shortcut.</source>
     <message>
       <location/>
       <source>&lt;b&gt;Move the selected item up.&lt;/b&gt;&lt;p&gt;The item will be moved within the hierarchy level.&lt;/p&gt;</source>
-      <translation>&lt;b&gt;上移动选中对象.&lt;/b&gt;&lt;p&gt;这将同时移动它层级关系.&lt;/p&gt;</translation>
+      <translation>&lt;b&gt;上移选中对象.&lt;/b&gt;&lt;p&gt;仅在层级中移动.&lt;/p&gt;</translation>
     </message>
     <message>
       <location/>
@@ -690,7 +691,7 @@ Please define another shortcut.</source>
     <message>
       <location/>
       <source>&lt;Separator&gt;</source>
-      <translation>&lt;分割器&gt;</translation>
+      <translation>&lt;分隔符&gt;</translation>
     </message>
     <message>
       <location/>
@@ -710,7 +711,7 @@ Please define another shortcut.</source>
     <message>
       <location/>
       <source>The toolbar name '%1' is already used</source>
-      <translation>在工具栏名称'%1'已被使用</translation>
+      <translation>工具栏名称'%1'已被使用</translation>
     </message>
     <message>
       <location/>
@@ -771,7 +772,7 @@ Please define another shortcut.</source>
     <message>
       <location/>
       <source>Material</source>
-      <translation>材料</translation>
+      <translation>材质</translation>
     </message>
     <message>
       <location/>
@@ -791,7 +792,7 @@ Please define another shortcut.</source>
     <message>
       <location/>
       <source>Display mode:</source>
-      <translation>显示方式:</translation>
+      <translation>显示模式:</translation>
     </message>
     <message>
       <location/>
@@ -811,12 +812,12 @@ Please define another shortcut.</source>
     <message>
       <location/>
       <source>Line color:</source>
-      <translation>线颜色:</translation>
+      <translation>线条颜色:</translation>
     </message>
     <message>
       <location/>
       <source>Shape color:</source>
-      <translation>形状的颜色:</translation>
+      <translation>形状颜色:</translation>
     </message>
   </context>
   <context>
@@ -907,12 +908,12 @@ Please define another shortcut.</source>
     <message>
       <location/>
       <source>Enable splash screen at start up</source>
-      <translation>打开软件启动闪屏</translation>
+      <translation>打开软件启动界面</translation>
     </message>
     <message>
       <location/>
       <source>Switch to tab of report window:</source>
-      <translation>切换到标签报告窗口:</translation>
+      <translation>切换到报告窗口标签:</translation>
     </message>
     <message>
       <location/>
@@ -973,7 +974,7 @@ Please define another shortcut.</source>
     <message>
       <location/>
       <source>Scene Inspector</source>
-      <translation>背景巡游</translation>
+      <translation>场景检索</translation>
     </message>
   </context>
   <context>
@@ -1039,7 +1040,7 @@ Please define another shortcut.</source>
     <message>
       <location/>
       <source>Existing file</source>
-      <translation>已存在的文件</translation>
+      <translation>已存在文件</translation>
     </message>
     <message>
       <location/>
@@ -1066,7 +1067,7 @@ This file already exists.</source>
     <message>
       <location/>
       <source>Creation of file '%1' failed.</source>
-      <translation>文件'%1'创建失败.</translation>
+      <translation>文件 '%1' 创建失败.</translation>
     </message>
   </context>
   <context>
@@ -1104,7 +1105,7 @@ This file already exists.</source>
     <message>
       <location/>
       <source>Record</source>
-      <translation>记录</translation>
+      <translation>录制</translation>
     </message>
   </context>
   <context>
@@ -1160,7 +1161,7 @@ This file already exists.</source>
     <message>
       <location/>
       <source>Material</source>
-      <translation>材料</translation>
+      <translation>材质</translation>
     </message>
     <message>
       <location/>
@@ -1221,7 +1222,7 @@ This file already exists.</source>
     <message>
       <location/>
       <source>HTML files (*.html *.htm)</source>
-      <translation>HTML文件（*.html *.htm ）</translation>
+      <translation>HTML文件(*.html *.htm)</translation>
     </message>
     <message>
       <location/>
@@ -1246,7 +1247,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Save to disk</source>
-      <translation>保存到</translation>
+      <translation>保存到磁盘</translation>
     </message>
     <message>
       <location/>
@@ -1322,7 +1323,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>&amp;OK</source>
-      <translation>&amp;O确定</translation>
+      <translation>确定(&amp;O)</translation>
     </message>
     <message>
       <location/>
@@ -1332,12 +1333,12 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Alt+A</source>
-      <translation>Alt + A</translation>
+      <translation>Alt+A</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Cancel</source>
-      <translation>&amp;C 取消</translation>
+      <translation>取消(&amp;C)</translation>
     </message>
     <message>
       <location/>
@@ -1358,12 +1359,12 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Project information</source>
-      <translation>工程信息</translation>
+      <translation>项目信息</translation>
     </message>
     <message>
       <location/>
       <source>Information</source>
-      <translation>工程</translation>
+      <translation>信息</translation>
     </message>
     <message>
       <location/>
@@ -1393,7 +1394,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Com&amp;pany:</source>
-      <translation>公司(&amp;C):</translation>
+      <translation>公司(&amp;p):</translation>
     </message>
     <message>
       <location/>
@@ -1408,12 +1409,12 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>&amp;OK</source>
-      <translation>&amp;O确定</translation>
+      <translation>确定(&amp;O)</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Cancel</source>
-      <translation>&amp;C 取消</translation>
+      <translation>取消(&amp;C)</translation>
     </message>
     <message>
       <location/>
@@ -1481,7 +1482,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Redirect internal Python errors to report view</source>
-      <translation>Python的错误重定向到报表视图</translation>
+      <translation>Python的错误重定向到报告浏览器</translation>
     </message>
   </context>
   <context>
@@ -1494,7 +1495,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>In order to take effect this change you must restart the application.</source>
-      <translation>为了此更改生效，必须重新启动该应用程序.</translation>
+      <translation>为使此更改生效，必须重新启动应用程序.</translation>
     </message>
   </context>
   <context>
@@ -1532,7 +1533,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Abort program</source>
-      <translation>中止程序</translation>
+      <translation>终止程序</translation>
     </message>
     <message>
       <location/>
@@ -1565,7 +1566,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Show counter of frames per second</source>
-      <translation>每秒显示的帧数</translation>
+      <translation>显示每秒运行帧数</translation>
     </message>
     <message>
       <location/>
@@ -1575,12 +1576,12 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Enable anti-aliasing (slower)</source>
-      <translation>启用反锯齿(慢)</translation>
+      <translation>启用抗锯齿(慢)</translation>
     </message>
     <message>
       <location/>
       <source>Eye to eye distance for stereo modes:</source>
-      <translation>立体模式的视觉距离:</translation>
+      <translation>立体模式的双眼距离:</translation>
     </message>
     <message>
       <location/>
@@ -1590,12 +1591,12 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Orthographic rendering</source>
-      <translation>正交</translation>
+      <translation>等轴侧渲染</translation>
     </message>
     <message>
       <location/>
       <source>Perspective rendering</source>
-      <translation>透视效果</translation>
+      <translation>透视渲染</translation>
     </message>
     <message>
       <location/>
@@ -1610,7 +1611,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Mouse...</source>
-      <translation>背光强度</translation>
+      <translation>鼠标...</translation>
     </message>
     <message>
       <location/>
@@ -1641,27 +1642,27 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>&amp;Gradient:</source>
-      <translation>渐变填充(&amp;G):</translation>
+      <translation>渐变(&amp;G):</translation>
     </message>
     <message>
       <location/>
       <source>red-yellow-green-cyan-blue</source>
-      <translation>red-yellow-green-cyan-blue</translation>
+      <translation>红-黄-绿-青-蓝</translation>
     </message>
     <message>
       <location/>
       <source>blue-cyan-green-yellow-red</source>
-      <translation>blue-cyan-green-yellow-red</translation>
+      <translation>蓝-青-绿-黄-红</translation>
     </message>
     <message>
       <location/>
       <source>white-black</source>
-      <translation>黑白</translation>
+      <translation>白黑</translation>
     </message>
     <message>
       <location/>
       <source>black-white</source>
-      <translation>白黑</translation>
+      <translation>黑白</translation>
     </message>
     <message>
       <location/>
@@ -1716,12 +1717,12 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>&amp;OK</source>
-      <translation>&amp;O确定</translation>
+      <translation>确定(&amp;O)</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Cancel</source>
-      <translation>&amp;C 取消</translation>
+      <translation>取消(&amp;C)</translation>
     </message>
     <message>
       <location/>
@@ -1788,7 +1789,7 @@ Specify another directory, please.</source>
       <location/>
       <source>Document save compression level
 (0 = none, 9 = highest, 3 = default)</source>
-      <translation>保存文件的压缩级别（0 =无，9 =最高，3 =默认）</translation>
+      <translation>保存文件的压缩级别(0 = 无，9 = 最高，3 = 默认)</translation>
     </message>
     <message>
       <location/>
@@ -1803,7 +1804,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Using Undo/Redo on documents (can be very memory consuming)</source>
-      <translation>使用文件撤消/重做（会非常耗费内存）</translation>
+      <translation>文档中允许撤消/重做(会非常耗费内存)</translation>
     </message>
     <message>
       <location/>
@@ -1813,7 +1814,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Saving transactions (Auto-save)</source>
-      <translation>保存历史记录（自动保存）</translation>
+      <translation>保存交互记录(自动保存)</translation>
     </message>
     <message>
       <location/>
@@ -1828,7 +1829,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Create up to backup files when resaving document</source>
-      <translation>创建备份文件时重新保存文档</translation>
+      <translation>重新保存文件时创建备份</translation>
     </message>
     <message>
       <location/>
@@ -1866,7 +1867,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Comment</source>
-      <translation>评论</translation>
+      <translation>注释</translation>
     </message>
     <message>
       <location/>
@@ -2029,22 +2030,22 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>HD720   1280 x 720</source>
-      <translation>HD720   1280 x 720</translation>
+      <translation>HD720 1280 x 720</translation>
     </message>
     <message>
       <location/>
       <source>SXGA     1280 x 1024</source>
-      <translation>SXGA     1280 x 1024</translation>
+      <translation>SXGA 1280 x 1024</translation>
     </message>
     <message>
       <location/>
       <source>SXGA+   1400 x 1050</source>
-      <translation>SXGA+   1400 x 1050</translation>
+      <translation>SXGA+ 1400 x 1050</translation>
     </message>
     <message>
       <location/>
       <source>UXGA     1600 x 1200</source>
-      <translation>UXGA     1600 x 1200</translation>
+      <translation>UXGA 1600 x 1200</translation>
     </message>
     <message>
       <location/>
@@ -2054,32 +2055,32 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>WUXGA  1920 x 1200</source>
-      <translation>WUXGA  1920 x 1200</translation>
+      <translation>WUXGA 1920 x 1200</translation>
     </message>
     <message>
       <location/>
       <source>QXGA     2048 x 1538</source>
-      <translation>QXGA     2048 x 1538</translation>
+      <translation>QXGA 2048 x 1538</translation>
     </message>
     <message>
       <location/>
       <source>WQXGA  2560 x 1600</source>
-      <translation>WQXGA  2560 x 1600</translation>
+      <translation>WQXGA 2560 x 1600</translation>
     </message>
     <message>
       <location/>
       <source>QSXGA   2560 x 2048</source>
-      <translation>QSXGA   2560 x 2048</translation>
+      <translation>QSXGA 2560 x 2048</translation>
     </message>
     <message>
       <location/>
       <source>QUXGA   3200 × 2400</source>
-      <translation>QUXGA   3200 × 2400</translation>
+      <translation>QUXGA 3200 × 2400</translation>
     </message>
     <message>
       <location/>
       <source>HUXGA   6400 × 4800</source>
-      <translation>HUXGA   6400 × 4800</translation>
+      <translation>HUXGA 6400 × 4800</translation>
     </message>
     <message>
       <location/>
@@ -2114,12 +2115,12 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>&amp;4:3</source>
-      <translation>＆4:3</translation>
+      <translation>&amp;4:3</translation>
     </message>
     <message>
       <location/>
       <source>Alt+4</source>
-      <translation>Alt + 4</translation>
+      <translation>Alt+4</translation>
     </message>
     <message>
       <location/>
@@ -2202,7 +2203,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Record as comment</source>
-      <translation>记录为评论</translation>
+      <translation>录制为注释</translation>
     </message>
     <message>
       <location/>
@@ -2230,12 +2231,12 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>MKS (m/kg/s/degree)</source>
-      <translation>MKS (m/kg/s/degree)</translation>
+      <translation>公制(m/kg/s/degree)</translation>
     </message>
     <message>
       <location/>
       <source>Magnitude</source>
-      <translation>大小</translation>
+      <translation>量纲</translation>
     </message>
     <message>
       <location/>
@@ -2250,7 +2251,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Imperial (in/lb)</source>
-      <translation>Imperial (in/lb)</translation>
+      <translation>英制 (in/lb)</translation>
     </message>
   </context>
   <context>
@@ -2311,7 +2312,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>&amp;Show tips at start up</source>
-      <translation>(&amp;S) 启动后显示</translation>
+      <translation>启动时提示(&amp;S)</translation>
     </message>
     <message>
       <location/>
@@ -2350,13 +2351,13 @@ Specify another directory, please.</source>
       <location/>
       <source>Download failed: %1
 </source>
-      <translation>下载失败:'%1'
+      <translation>下载失败: %1
 </translation>
     </message>
     <message>
       <location/>
       <source>If you want to learn more about FreeCAD you must go to %1 or press the Help item in the Help menu.</source>
-      <translation>如果您想了解更多有关FreeCAD,你必须去到'%1'或点击帮助菜单中的帮助文件.</translation>
+      <translation>如果您想了解更多有关FreeCAD,请访问 %1 或点击帮助菜单中的帮助文件.</translation>
     </message>
   </context>
   <context>
@@ -2443,7 +2444,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Add sub-group</source>
-      <translation>增加高级组</translation>
+      <translation>添加子组</translation>
     </message>
     <message>
       <location/>
@@ -2478,12 +2479,12 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Existing sub-group</source>
-      <translation>已存在高级组</translation>
+      <translation>已存在子组</translation>
     </message>
     <message>
       <location/>
       <source>The sub-group '%1' already exists.</source>
-      <translation>高级组'%1'已经存在.</translation>
+      <translation>子组'%1'已经存在.</translation>
     </message>
     <message>
       <location/>
@@ -2508,7 +2509,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Reading from '%1' failed.</source>
-      <translation>从'%1'中的读取失败.</translation>
+      <translation>读取'%1'失败.</translation>
     </message>
   </context>
   <context>
@@ -2551,7 +2552,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>New unsigned item</source>
-      <translation>新无符号</translation>
+      <translation>新无符号数</translation>
     </message>
     <message>
       <location/>
@@ -2561,12 +2562,12 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Existing item</source>
-      <translation>已存在</translation>
+      <translation>已存在项目</translation>
     </message>
     <message>
       <location/>
       <source>The item '%1' already exists.</source>
-      <translation>'%1'已经存在.</translation>
+      <translation>对象'%1'已经存在.</translation>
     </message>
   </context>
   <context>
@@ -2728,12 +2729,12 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Image files (%1)</source>
-      <translation>图像文件（%1）</translation>
+      <translation>图像文件(%1)</translation>
     </message>
     <message>
       <location/>
       <source>No image</source>
-      <translation>没有图片</translation>
+      <translation>无图片</translation>
     </message>
     <message>
       <location/>
@@ -2743,12 +2744,12 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>No 3d view</source>
-      <translation>没有3D视图</translation>
+      <translation>无3D视图</translation>
     </message>
     <message>
       <location/>
       <source>No active 3d view found.</source>
-      <translation>没有找到活动的3d视图.</translation>
+      <translation>未发现活动的3d视图.</translation>
     </message>
   </context>
   <context>
@@ -2761,7 +2762,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Transform</source>
-      <translation>变形</translation>
+      <translation>变换</translation>
     </message>
   </context>
   <context>
@@ -2825,7 +2826,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Home</source>
-      <translation>Home</translation>
+      <translation>主页</translation>
     </message>
     <message>
       <location/>
@@ -2840,7 +2841,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>All HTML files (*.html *.htm)</source>
-      <translation>所有的HTML文件（*.html *.htm）</translation>
+      <translation>所有HTML文件（*.html *.htm）</translation>
     </message>
     <message>
       <location/>
@@ -2855,7 +2856,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Starting of %1 failed</source>
-      <translation>启动 '%1' 失败</translation>
+      <translation>启动 %1 失败</translation>
     </message>
   </context>
   <context>
@@ -2863,7 +2864,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Property View</source>
-      <translation>属性视图</translation>
+      <translation>属性浏览</translation>
     </message>
   </context>
   <context>
@@ -2901,7 +2902,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Save Report Output</source>
-      <translation>保存输出报表</translation>
+      <translation>保存输出报告</translation>
     </message>
     <message>
       <location/>
@@ -2932,7 +2933,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Property View</source>
-      <translation>属性视图</translation>
+      <translation>属性浏览</translation>
     </message>
   </context>
   <context>
@@ -2940,7 +2941,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Task View</source>
-      <translation>任务视图</translation>
+      <translation>任务浏览器</translation>
     </message>
   </context>
   <context>
@@ -2958,12 +2959,12 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Connecting to %1</source>
-      <translation>连接到'%1'</translation>
+      <translation>连接到 %1</translation>
     </message>
     <message>
       <location/>
       <source>Sending to %1</source>
-      <translation>发送到'%1'</translation>
+      <translation>发送到 %1</translation>
     </message>
     <message>
       <location/>
@@ -2973,7 +2974,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Download failed: %1.</source>
-      <translation>下载失败:'%1'.</translation>
+      <translation>下载失败: %1.</translation>
     </message>
     <message>
       <location/>
@@ -2988,7 +2989,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Home</source>
-      <translation>Home</translation>
+      <translation>主页</translation>
     </message>
     <message>
       <location/>
@@ -3008,7 +3009,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>No description for</source>
-      <translation>没有说明</translation>
+      <translation>无说明</translation>
     </message>
   </context>
   <context>
@@ -3016,12 +3017,12 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Application</source>
-      <translation>程序</translation>
+      <translation>工程</translation>
     </message>
     <message>
       <location/>
       <source>Labels &amp; Attributes</source>
-      <translation>标签&amp;属性</translation>
+      <translation>标签 &amp; 属性</translation>
     </message>
   </context>
   <context>
@@ -3036,7 +3037,7 @@ Specify another directory, please.</source>
       <source>%1.
 
 This has been modified outside of the source editor. Do you want to reload it?</source>
-      <translation>'%1'.
+      <translation>%1.
 它已被代码编辑器之外的程序修改.是否重新加载?</translation>
     </message>
     <message>
@@ -3079,12 +3080,12 @@ Do you want to save your changes?</source>
     <message>
       <location/>
       <source>%1 chars removed</source>
-      <translation>删除了'%1'个字符</translation>
+      <translation>删除了 %1 个字符</translation>
     </message>
     <message>
       <location/>
       <source>%1 chars added</source>
-      <translation>增加了'%1'个字符</translation>
+      <translation>增加了 %1 个字符</translation>
     </message>
     <message>
       <location/>
@@ -3187,7 +3188,7 @@ Do you want to save your changes?</source>
     <message>
       <location/>
       <source>Wrong direction</source>
-      <translation>错误的方向</translation>
+      <translation>方向错误</translation>
     </message>
     <message>
       <location/>
@@ -3228,7 +3229,7 @@ Do you want to save your changes?</source>
     <message>
       <location/>
       <source>Dimension</source>
-      <translation>尺寸</translation>
+      <translation>尺寸标注</translation>
     </message>
     <message>
       <location/>
@@ -3257,8 +3258,7 @@ Do you want to save your changes?</source>
       <location/>
       <source>Download started...
 </source>
-      <translation>下载开始
-</translation>
+      <translation>下载开始...</translation>
     </message>
   </context>
   <context>
@@ -3355,7 +3355,7 @@ Do you want to exit without saving your data?</source>
     <message>
       <location/>
       <source>Unhandled unknown C++ exception.</source>
-      <translation>未处理未知的c++异常.</translation>
+      <translation>未处理的未知c++异常.</translation>
     </message>
     <message>
       <location/>
@@ -3418,7 +3418,7 @@ Do you want to exit without saving your data?</source>
     <message>
       <location/>
       <source>Comment</source>
-      <translation>评论</translation>
+      <translation>注释</translation>
     </message>
     <message>
       <location/>
@@ -3467,7 +3467,7 @@ Do you want to exit without saving your data?</source>
     <message>
       <location/>
       <source>Open %1 as</source>
-      <translation>打开'%1'作为</translation>
+      <translation>打开 %1 作为</translation>
     </message>
     <message>
       <location/>
@@ -3508,7 +3508,7 @@ Do you want to exit without saving your data?</source>
     <message>
       <location/>
       <source>Download %1's online help</source>
-      <translation>下载'%1'的联机帮助</translation>
+      <translation>下载 %1 的联机帮助</translation>
     </message>
     <message>
       <location/>
@@ -3533,8 +3533,8 @@ Do you want to specify an existing directory?</source>
       <source>You don't have write permission to '%1'
 
 Do you want to specify another directory?</source>
-      <translation>您没有写权限到'%1'
-你要指定另一个目录?</translation>
+      <translation>您没有写入'%1'权限
+要指定另一个目录?</translation>
     </message>
     <message>
       <location/>
@@ -3581,7 +3581,7 @@ Do you want to specify another directory?</source>
     <message>
       <location/>
       <source>Display mode:</source>
-      <translation>显示方式:</translation>
+      <translation>显示模式:</translation>
     </message>
     <message>
       <location/>
@@ -3640,7 +3640,7 @@ Do you want to specify another directory?</source>
     <message>
       <location/>
       <source>English</source>
-      <translation>English</translation>
+      <translation>英语</translation>
     </message>
     <message>
       <location/>
@@ -3665,7 +3665,7 @@ Do you want to specify another directory?</source>
     <message>
       <location/>
       <source>Chinese</source>
-      <translation>中文</translation>
+      <translation>简体中文</translation>
     </message>
     <message>
       <location/>
@@ -3693,7 +3693,7 @@ Do you want to specify another directory?</source>
     <message>
       <location/>
       <source>Tree view</source>
-      <translation>树视图</translation>
+      <translation>树状浏览器</translation>
     </message>
   </context>
   <context>
@@ -3726,12 +3726,12 @@ Do you want to specify another directory?</source>
     <message>
       <location/>
       <source>Labels &amp; Attributes</source>
-      <translation>标签&amp;属性</translation>
+      <translation>标签 &amp; 属性</translation>
     </message>
     <message>
       <location/>
       <source>Application</source>
-      <translation>程序</translation>
+      <translation>工程</translation>
     </message>
     <message>
       <location/>
@@ -3746,12 +3746,12 @@ Do you want to specify another directory?</source>
     <message>
       <location/>
       <source>Activate document</source>
-      <translation>当前文档</translation>
+      <translation>激活文档</translation>
     </message>
     <message>
       <location/>
       <source>Activate document %1</source>
-      <translation>启动文件%1</translation>
+      <translation>激活文档 %1</translation>
     </message>
   </context>
   <context>
@@ -3878,27 +3878,27 @@ Do you want to specify another directory?</source>
     <message>
       <location/>
       <source>Tree view</source>
-      <translation>树视图</translation>
+      <translation>树状浏览器</translation>
     </message>
     <message>
       <location/>
       <source>Property view</source>
-      <translation>属性视图</translation>
+      <translation>属性浏览</translation>
     </message>
     <message>
       <location/>
       <source>Selection view</source>
-      <translation>选择视图</translation>
+      <translation>选择查看器</translation>
     </message>
     <message>
       <location/>
       <source>Report view</source>
-      <translation>报告视图</translation>
+      <translation>报告浏览器</translation>
     </message>
     <message>
       <location/>
       <source>Task View</source>
-      <translation>任务视图</translation>
+      <translation>任务浏览器</translation>
     </message>
     <message>
       <location/>
@@ -3936,12 +3936,12 @@ Do you want to specify another directory?</source>
     <message>
       <location/>
       <source>Cannot open unknown filetype: %1</source>
-      <translation>无法打开未知文件类型:'%1'</translation>
+      <translation>无法打开未知文件类型: %1</translation>
     </message>
     <message>
       <location/>
       <source>Cannot save to unknown filetype: %1</source>
-      <translation>无法保存为未知的文件类型:'%1'</translation>
+      <translation>无法保存为未知的文件类型: %1</translation>
     </message>
     <message>
       <location/>
@@ -3991,7 +3991,7 @@ Do you want to specify another directory?</source>
     <message>
       <location/>
       <source>A general error occurred while loading the workbench</source>
-      <translation>加载工作台时发生一般错误</translation>
+      <translation>加载工作台时出错</translation>
     </message>
     <message>
       <location/>
@@ -4026,7 +4026,7 @@ Do you want to specify another directory?</source>
     <message>
       <location/>
       <source>Restore view &amp;%1</source>
-      <translation>还原视图 &amp; %1</translation>
+      <translation>还原视图 &amp;%1</translation>
     </message>
     <message>
       <location/>
@@ -4067,7 +4067,7 @@ Do you want to continue?</source>
     <message>
       <location/>
       <source>Undocked</source>
-      <translation>脱离</translation>
+      <translation>不停靠</translation>
     </message>
     <message>
       <location/>
@@ -4117,7 +4117,7 @@ Do you want to continue?</source>
     <message>
       <location/>
       <source>New unsigned item</source>
-      <translation>新无符号</translation>
+      <translation>新无符号数</translation>
     </message>
     <message>
       <location/>
@@ -4212,7 +4212,7 @@ Do you want to continue?</source>
     <message>
       <location/>
       <source>No Browser</source>
-      <translation>没有浏览器</translation>
+      <translation>无浏览器</translation>
     </message>
     <message>
       <location/>
@@ -4224,7 +4224,7 @@ Please open a browser window and type in: http://localhost:%1.</source>
     <message>
       <location/>
       <source>No Server</source>
-      <translation>没有服务器</translation>
+      <translation>无服务器</translation>
     </message>
     <message>
       <location/>
@@ -4254,12 +4254,12 @@ Please open a browser window and type in: http://localhost:%1.</source>
     <message>
       <location/>
       <source>Cannot find file %1</source>
-      <translation>找不到文件“%1”</translation>
+      <translation>找不到文件 %1</translation>
     </message>
     <message>
       <location/>
       <source>Cannot find file %1 neither in %2 nor in %3</source>
-      <translation>在“%2”或“%3”找不到文件“%1”</translation>
+      <translation>在 %2 或 %3 中找不到文件 %1</translation>
     </message>
     <message>
       <location/>
@@ -4280,7 +4280,7 @@ Please open a browser window and type in: http://localhost:%1.</source>
       <location/>
       <source>%1 already exists.
 Do you want to replace it?</source>
-      <translation>%1已经存在.你想覆盖它吗?</translation>
+      <translation>%1 已存在.想覆盖它吗?</translation>
     </message>
     <message>
       <location/>
@@ -4295,7 +4295,7 @@ Do you want to replace it?</source>
     <message>
       <location/>
       <source>No OpenGL</source>
-      <translation>没有 OpenGL</translation>
+      <translation>无 OpenGL</translation>
     </message>
     <message>
       <location/>
@@ -4312,7 +4312,7 @@ Do you want to replace it?</source>
       <source>Unable to load documentation.
 In order to load it Qt 4.4 or higher is required.</source>
       <translation>无法加载文档.
-加载它需要Qt4.4或更高.</translation>
+加载它需要Qt4.4或更高版本.</translation>
     </message>
     <message>
       <location/>
@@ -4334,19 +4334,19 @@ In order to load it Qt 4.4 or higher is required.</source>
       <source>Only one object selected. Please select two objects.
 Be aware the point where you click matters.</source>
       <translation>只有一个对象选中.请选择两个对象.
-请注意您单击的点.</translation>
+请注意您的点击位置.</translation>
     </message>
     <message>
       <location/>
       <source>Please select two objects.
 Be aware the point where you click matters.</source>
       <translation>请选择两个对象.
-请注意您单击的点.</translation>
+请注意您的点击位置.</translation>
     </message>
     <message>
       <location/>
       <source>New boolean item</source>
-      <translation>新的布尔值</translation>
+      <translation>新布尔值</translation>
     </message>
     <message>
       <location/>
@@ -4366,7 +4366,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Transform</source>
-      <translation>变形</translation>
+      <translation>变换</translation>
     </message>
   </context>
   <context>
@@ -4402,7 +4402,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>About %1</source>
-      <translation>关于%1</translation>
+      <translation>关于 %1</translation>
     </message>
   </context>
   <context>
@@ -4415,12 +4415,12 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>About &amp;Qt</source>
-      <translation>关于Qt(&amp;Q)</translation>
+      <translation>关于 Qt(&amp;Q)</translation>
     </message>
     <message>
       <location/>
       <source>About Qt</source>
-      <translation>关于Qt</translation>
+      <translation>关于 Qt</translation>
     </message>
   </context>
   <context>
@@ -4469,7 +4469,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Arrange &amp;Icons</source>
-      <translation>排列 &amp; 图标</translation>
+      <translation>排列图标(&amp;I)</translation>
     </message>
     <message>
       <location/>
@@ -4487,7 +4487,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>&amp;Cascade</source>
-      <translation>&amp;Cascade</translation>
+      <translation>层叠(&amp;C)</translation>
     </message>
     <message>
       <location/>
@@ -4505,7 +4505,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Cl&amp;ose</source>
-      <translation>关闭(&amp;L)</translation>
+      <translation>关闭(&amp;o)</translation>
     </message>
     <message>
       <location/>
@@ -4631,12 +4631,12 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>View turntable...</source>
-      <translation>查看云台...</translation>
+      <translation>视图云台...</translation>
     </message>
     <message>
       <location/>
       <source>View turntable</source>
-      <translation>查看云台</translation>
+      <translation>视图云台</translation>
     </message>
   </context>
   <context>
@@ -4667,7 +4667,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Opens a dialog to let you execute a recorded macro</source>
-      <translation>打开一个对话框,执行一个记录的宏</translation>
+      <translation>打开一个对话框,执行一个录制的宏</translation>
     </message>
     <message>
       <location/>
@@ -4739,12 +4739,12 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>&amp;Preferences ...</source>
-      <translation>首选项 ...</translation>
+      <translation>选项(&amp;P)...</translation>
     </message>
     <message>
       <location/>
       <source>Opens a Dialog to edit the preferences</source>
-      <translation>打开一个对话框,编辑偏好</translation>
+      <translation>打开一个对话框编辑首选项</translation>
     </message>
   </context>
   <context>
@@ -4803,7 +4803,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Recompute feature or document</source>
-      <translation>重新计算"功能"或"文件"</translation>
+      <translation>重新计算"特征"或"文档"</translation>
     </message>
   </context>
   <context>
@@ -5001,7 +5001,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Measures distance between two selected objects</source>
-      <translation>在选中的2个物体间测量距离</translation>
+      <translation>测量两个选中物体间距离</translation>
     </message>
   </context>
   <context>
@@ -5281,7 +5281,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Recent file list</source>
-      <translation>最近打开文件的清单</translation>
+      <translation>最近文件列表</translation>
     </message>
   </context>
   <context>
@@ -5330,7 +5330,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>&amp;Save</source>
-      <translation>保存(S)</translation>
+      <translation>保存(&amp;S)</translation>
     </message>
     <message>
       <location/>
@@ -5353,7 +5353,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Save the active document under a new file name</source>
-      <translation>保存当前文档并指定一个新名字</translation>
+      <translation>使用新文件名保存当前文档</translation>
     </message>
   </context>
   <context>
@@ -5366,12 +5366,12 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Scene inspector...</source>
-      <translation>背景巡游...</translation>
+      <translation>场景检索...</translation>
     </message>
     <message>
       <location/>
       <source>Scene inspector</source>
-      <translation>背景巡游</translation>
+      <translation>场景检索</translation>
     </message>
   </context>
   <context>
@@ -5438,7 +5438,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Show selection</source>
-      <translation>显示选区</translation>
+      <translation>显示选择</translation>
     </message>
     <message>
       <location/>
@@ -5582,7 +5582,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Toggles visibility of all objects in the active document</source>
-      <translation>切换活动文档中所有对象的可访问性</translation>
+      <translation>切换当前文档中所有对象的可见性</translation>
     </message>
   </context>
   <context>
@@ -5631,7 +5631,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Tool&amp;bars</source>
-      <translation>工具条(&amp;B)</translation>
+      <translation>工具栏(&amp;B)</translation>
     </message>
     <message>
       <location/>
@@ -5649,12 +5649,12 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Transform...</source>
-      <translation>变形...</translation>
+      <translation>变换...</translation>
     </message>
     <message>
       <location/>
       <source>Transform the geometry of selected objects</source>
-      <translation>改变选中对象的几何形状</translation>
+      <translation>几何变换选中对象</translation>
     </message>
   </context>
   <context>
@@ -5667,7 +5667,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Go to selection</source>
-      <translation>去选择</translation>
+      <translation>转到选择</translation>
     </message>
     <message>
       <location/>
@@ -5690,7 +5690,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Undo exactly one action</source>
-      <translation>撤消是一个动作</translation>
+      <translation>仅撤消一个操作</translation>
     </message>
   </context>
   <context>
@@ -5726,7 +5726,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Set to axometric view</source>
-      <translation>设置为Axometric视图</translation>
+      <translation>设置为轴侧视图</translation>
     </message>
   </context>
   <context>
@@ -5798,7 +5798,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Shows spheres and drag-lights</source>
-      <translation>显示球和拖曳</translation>
+      <translation>显示操控球和拖放指示</translation>
     </message>
   </context>
   <context>
@@ -5834,7 +5834,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Fits the whole content on the screen</source>
-      <translation>在屏幕上容纳的整个内容</translation>
+      <translation>在屏幕上容纳全部内容</translation>
     </message>
   </context>
   <context>
@@ -5865,7 +5865,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Front</source>
-      <translation>前</translation>
+      <translation>前视</translation>
     </message>
     <message>
       <location/>
@@ -5883,12 +5883,12 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Issue camera position</source>
-      <translation>相机位置</translation>
+      <translation>发布相机位置</translation>
     </message>
     <message>
       <location/>
       <source>Issue the camera position to the console and to a macro, to easily recall this position</source>
-      <translation>从控制台和宏布置摄像机位置,记录位置很容易</translation>
+      <translation>发布相机位置至控制台或宏,以便重新访问</translation>
     </message>
   </context>
   <context>
@@ -5901,12 +5901,12 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Stereo Interleaved Columns</source>
-      <translation>空间交叉列</translation>
+      <translation>三维成像列扫描</translation>
     </message>
     <message>
       <location/>
       <source>Switch stereo viewing to Interleaved Columns</source>
-      <translation>切换空间交叉列</translation>
+      <translation>切换三维成像视图为列扫描显示</translation>
     </message>
   </context>
   <context>
@@ -5919,12 +5919,12 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Stereo Interleaved Rows</source>
-      <translation>空间交叉行</translation>
+      <translation>三维成像行扫描</translation>
     </message>
     <message>
       <location/>
       <source>Switch stereo viewing to Interleaved Rows</source>
-      <translation>切换空间交叉行</translation>
+      <translation>切换三维成像视图为行扫描显示</translation>
     </message>
   </context>
   <context>
@@ -5937,12 +5937,12 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Stereo Off</source>
-      <translation>关闭空间</translation>
+      <translation>关闭三维成像</translation>
     </message>
     <message>
       <location/>
       <source>Switch stereo viewing off</source>
-      <translation>切换空间视图开关</translation>
+      <translation>关闭三维成像视图</translation>
     </message>
   </context>
   <context>
@@ -5955,12 +5955,12 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Stereo quad buffer</source>
-      <translation>立体缓冲</translation>
+      <translation>三维成像缓存</translation>
     </message>
     <message>
       <location/>
       <source>Switch stereo viewing to quad buffer</source>
-      <translation>切换空间视图和立体缓冲</translation>
+      <translation>切换三维成像视图为缓存显示</translation>
     </message>
   </context>
   <context>
@@ -5973,12 +5973,12 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Stereo red/green</source>
-      <translation>立体红/绿</translation>
+      <translation>三维成像 红/绿</translation>
     </message>
     <message>
       <location/>
       <source>Switch stereo viewing to red/green</source>
-      <translation>切换立体显示和红/绿</translation>
+      <translation>切换三维成像视图为红/绿显示</translation>
     </message>
   </context>
   <context>
@@ -5991,7 +5991,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Left</source>
-      <translation>左</translation>
+      <translation>左视</translation>
     </message>
     <message>
       <location/>
@@ -6027,7 +6027,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Right</source>
-      <translation>右</translation>
+      <translation>右视</translation>
     </message>
     <message>
       <location/>
@@ -6045,7 +6045,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Top</source>
-      <translation>上</translation>
+      <translation>顶视</translation>
     </message>
     <message>
       <location/>
@@ -6166,7 +6166,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Box zoom</source>
-      <translation>框缩放</translation>
+      <translation>框选缩放</translation>
     </message>
   </context>
   <context>
@@ -6251,7 +6251,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>&amp;Stereo</source>
-      <translation>空间(&amp;S)</translation>
+      <translation>立体成像(&amp;S)</translation>
     </message>
     <message>
       <location/>

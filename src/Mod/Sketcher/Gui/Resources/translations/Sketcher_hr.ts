@@ -6,22 +6,22 @@
     <message>
       <location/>
       <source>Sketcher</source>
-      <translation>Sketcher</translation>
+      <translation>Skica</translation>
     </message>
     <message>
       <location/>
       <source>Constrain lock</source>
-      <translation>Constrain lock</translation>
+      <translation>Ograniči pomicanje</translation>
     </message>
     <message>
       <location/>
       <source>Constrain coincident</source>
-      <translation>Constrain coincident</translation>
+      <translation>Ograničiti zajedničko</translation>
     </message>
     <message>
       <location/>
       <source>Create a coincident constraint on the selected item</source>
-      <translation>Create a coincident constraint on the selected item</translation>
+      <translation>Napravi zajedničko ograničenje na odabranim jedinicama</translation>
     </message>
   </context>
   <context>
@@ -29,17 +29,17 @@
     <message>
       <location/>
       <source>Sketcher</source>
-      <translation>Sketcher</translation>
+      <translation>Skica</translation>
     </message>
     <message>
       <location/>
       <source>Constrain distance</source>
-      <translation>Constrain distance</translation>
+      <translation>Ograniči udaljenost</translation>
     </message>
     <message>
       <location/>
       <source>Fix a length of a line or the distance between a line and a vertex</source>
-      <translation>Fix a length of a line or the distance between a line and a vertex</translation>
+      <translation>Ograniči duljinu linije ili udaljenost između linije i vrha</translation>
     </message>
   </context>
   <context>
@@ -47,27 +47,27 @@
     <message>
       <location/>
       <source>Sketcher</source>
-      <translation>Sketcher</translation>
+      <translation>Skica</translation>
     </message>
     <message>
       <location/>
       <source>Constrain orizontal</source>
-      <translation>Constrain orizontal</translation>
+      <translation>Ograniči vodoravno</translation>
     </message>
     <message>
       <location/>
       <source>Create a horizontal constrain on the selcted item</source>
-      <translation>Create a horizontal constrain on the selcted item</translation>
+      <translation>Napravi vodoravno ograničenje na odabranoj jedinici</translation>
     </message>
     <message>
       <location/>
       <source>Constrain horizontally</source>
-      <translation>Constrain horizontally</translation>
+      <translation>Ograniči vodoravno</translation>
     </message>
     <message>
       <location/>
       <source>Create a horizontal constraint on the selected item</source>
-      <translation>Create a horizontal constraint on the selected item</translation>
+      <translation>Napravi vodoravno ograničenje na odabranoj jedinici</translation>
     </message>
   </context>
   <context>
@@ -75,27 +75,27 @@
     <message>
       <location/>
       <source>Sketcher</source>
-      <translation>Sketcher</translation>
+      <translation>Skica</translation>
     </message>
     <message>
       <location/>
       <source>Constrain Lock</source>
-      <translation>Constrain Lock</translation>
+      <translation>Ograniči pomicanje</translation>
     </message>
     <message>
       <location/>
       <source>Create a Lock constrain on the selcted item</source>
-      <translation>Create a Lock constrain on the selcted item</translation>
+      <translation>Napravi ograničiti pomicanja odabrane stavke</translation>
     </message>
     <message>
       <location/>
       <source>Create a lock constrain on the selected item</source>
-      <translation>Create a lock constrain on the selected item</translation>
+      <translation>Zaključaj odabranu jedinicu</translation>
     </message>
     <message>
       <location/>
       <source>Constrain lock</source>
-      <translation>Constrain lock</translation>
+      <translation>Ograniči pomicanje</translation>
     </message>
   </context>
   <context>
@@ -103,17 +103,17 @@
     <message>
       <location/>
       <source>Sketcher</source>
-      <translation>Sketcher</translation>
+      <translation>Skica</translation>
     </message>
     <message>
       <location/>
       <source>Constrain parallel</source>
-      <translation>Constrain parallel</translation>
+      <translation>Ograniči paralelno</translation>
     </message>
     <message>
       <location/>
       <source>Create a parallel constraint between two lines</source>
-      <translation>Create a parallel constraint between two lines</translation>
+      <translation>Napravi paralelno ograničenje između dvije linije</translation>
     </message>
   </context>
   <context>
@@ -121,27 +121,27 @@
     <message>
       <location/>
       <source>Sketcher</source>
-      <translation>Sketcher</translation>
+      <translation>Skica</translation>
     </message>
     <message>
       <location/>
       <source>Constrain vertical</source>
-      <translation>Constrain vertical</translation>
+      <translation>Ograniči okomito</translation>
     </message>
     <message>
       <location/>
       <source>Create a vertical constrain on the selcted item</source>
-      <translation>Create a vertical constrain on the selcted item</translation>
+      <translation>Napravite horizontalno ograničenje na odabranoj jedinici</translation>
     </message>
     <message>
       <location/>
       <source>Constrain vertically</source>
-      <translation>Constrain vertically</translation>
+      <translation>Ograniči okomito</translation>
     </message>
     <message>
       <location/>
       <source>Create a vertical constraint on the selected item</source>
-      <translation>Create a vertical constraint on the selected item</translation>
+      <translation>Napravi okomito ograničenje na odabranoj jedinici</translation>
     </message>
   </context>
   <context>
@@ -149,7 +149,7 @@
     <message>
       <location/>
       <source>Sketcher</source>
-      <translation>Sketcher</translation>
+      <translation>Skica</translation>
     </message>
     <message>
       <location/>
@@ -167,17 +167,17 @@
     <message>
       <location/>
       <source>Sketcher</source>
-      <translation>Sketcher</translation>
+      <translation>Skica</translation>
     </message>
     <message>
       <location/>
       <source>Create box</source>
-      <translation>Create box</translation>
+      <translation>Napravi okvir</translation>
     </message>
     <message>
       <location/>
       <source>Create a box in the sketch</source>
-      <translation>Create a box in the sketch</translation>
+      <translation>Napravi okvir u skici</translation>
     </message>
   </context>
   <context>
@@ -185,7 +185,7 @@
     <message>
       <location/>
       <source>Sketcher</source>
-      <translation>Sketcher</translation>
+      <translation>Skica</translation>
     </message>
     <message>
       <location/>
@@ -203,17 +203,17 @@
     <message>
       <location/>
       <source>Sketcher</source>
-      <translation>Sketcher</translation>
+      <translation>Skica</translation>
     </message>
     <message>
       <location/>
       <source>Create draft line</source>
-      <translation>Create draft line</translation>
+      <translation>Napravi liniju</translation>
     </message>
     <message>
       <location/>
       <source>Create a draft line in the sketch</source>
-      <translation>Create a draft line in the sketch</translation>
+      <translation>Napravi liniju u skici</translation>
     </message>
   </context>
   <context>
@@ -221,7 +221,7 @@
     <message>
       <location/>
       <source>Sketcher</source>
-      <translation>Sketcher</translation>
+      <translation>Skica</translation>
     </message>
     <message>
       <location/>
@@ -239,7 +239,7 @@
     <message>
       <location/>
       <source>Sketcher</source>
-      <translation>Sketcher</translation>
+      <translation>Skica</translation>
     </message>
     <message>
       <location/>
@@ -257,17 +257,17 @@
     <message>
       <location/>
       <source>Sketcher</source>
-      <translation>Sketcher</translation>
+      <translation>Skica</translation>
     </message>
     <message>
       <location/>
       <source>Create polyline</source>
-      <translation>Create polyline</translation>
+      <translation>Napravi poliliniju</translation>
     </message>
     <message>
       <location/>
       <source>Create a polyline in the sketch</source>
-      <translation>Create a polyline in the sketch</translation>
+      <translation>Napravite poliliniju u skici</translation>
     </message>
   </context>
   <context>
@@ -275,7 +275,7 @@
     <message>
       <location/>
       <source>Sketcher</source>
-      <translation>Sketcher</translation>
+      <translation>Skica</translation>
     </message>
     <message>
       <location/>
@@ -293,22 +293,22 @@
     <message>
       <location/>
       <source>Sketcher</source>
-      <translation>Sketcher</translation>
+      <translation>Skica</translation>
     </message>
     <message>
       <location/>
       <source>Create text</source>
-      <translation>Create text</translation>
+      <translation>Napravi tekst</translation>
     </message>
     <message>
       <location/>
       <source>Create text in the scetch</source>
-      <translation>Create text in the scetch</translation>
+      <translation>Napravi tekst u skici</translation>
     </message>
     <message>
       <location/>
       <source>Create text in the sketch</source>
-      <translation>Create text in the sketch</translation>
+      <translation>Napravi tekst u skici</translation>
     </message>
   </context>
   <context>
@@ -316,12 +316,12 @@
     <message>
       <location/>
       <source>Sketcher</source>
-      <translation>Sketcher</translation>
+      <translation>Skica</translation>
     </message>
     <message>
       <location/>
       <source>Leave sketch</source>
-      <translation>Leave sketch</translation>
+      <translation>Zatvori skicu</translation>
     </message>
     <message>
       <location/>
@@ -334,7 +334,7 @@
     <message>
       <location/>
       <source>Sketcher</source>
-      <translation>Sketcher</translation>
+      <translation>Skica</translation>
     </message>
     <message>
       <location/>
@@ -352,17 +352,17 @@
     <message>
       <location/>
       <source>Sketcher</source>
-      <translation>Sketcher</translation>
+      <translation>Skica</translation>
     </message>
     <message>
       <location/>
       <source>Sketchflat sketch</source>
-      <translation>Sketchflat sketch</translation>
+      <translation>Sketchflat skica</translation>
     </message>
     <message>
       <location/>
       <source>Create a new sketchflat sketch by starting externel editor</source>
-      <translation>Create a new sketchflat sketch by starting externel editor</translation>
+      <translation>Napravi novu sketchflat skicu pokretanjem vanjskog urednika</translation>
     </message>
   </context>
   <context>
@@ -383,17 +383,17 @@
     <message>
       <location/>
       <source>Select an edge from the sketch.</source>
-      <translation>Select an edge from the sketch.</translation>
+      <translation>Odaberite rub skice.</translation>
     </message>
     <message>
       <location/>
       <source>Double constraint</source>
-      <translation>Double constraint</translation>
+      <translation>Ograničenje dvaput</translation>
     </message>
     <message>
       <location/>
       <source>The selected edge has already a horizontal constraint!</source>
-      <translation>The selected edge has already a horizontal constraint!</translation>
+      <translation>Odabrani rub već ima vodoravno ograničenje!</translation>
     </message>
     <message>
       <location/>
@@ -403,32 +403,32 @@
     <message>
       <location/>
       <source>The selected edge has already a vertical constraint!</source>
-      <translation>The selected edge has already a vertical constraint!</translation>
+      <translation>Odabrani rub već ima okomito ograničenje!</translation>
     </message>
     <message>
       <location/>
       <source>Select vertexes from the sketch.</source>
-      <translation>Select vertexes from the sketch.</translation>
+      <translation>Odaberite vrhove sa skice.</translation>
     </message>
     <message>
       <location/>
       <source>Select exactly two vertexes from the sketch.</source>
-      <translation>Select exactly two vertexes from the sketch.</translation>
+      <translation>Odaberite točno dva vrha iz skice.</translation>
     </message>
     <message>
       <location/>
       <source>Select exactly one line from the sketch.</source>
-      <translation>Select exactly one line from the sketch.</translation>
+      <translation>Odaberite samo jednu liniju iz skice.</translation>
     </message>
     <message>
       <location/>
       <source>Select two lines from the sketch.</source>
-      <translation>Select two lines from the sketch.</translation>
+      <translation>Odaberite dvije linije iz skice.</translation>
     </message>
     <message>
       <location/>
       <source>Select exactly two lines from the sketch.</source>
-      <translation>Select exactly two lines from the sketch.</translation>
+      <translation>Odaberite točno dvije linije iz skice.</translation>
     </message>
     <message>
       <location/>
@@ -438,7 +438,7 @@
     <message>
       <location/>
       <source>A dialog is already open in the task panel</source>
-      <translation>A dialog is already open in the task panel</translation>
+      <translation>Dijalog je već otvoren u ploči zadataka</translation>
     </message>
     <message>
       <location/>
@@ -448,32 +448,32 @@
     <message>
       <location/>
       <source>Several sub-elements selected</source>
-      <translation>Several sub-elements selected</translation>
+      <translation>Nekoliko pod-elemenata odabrano</translation>
     </message>
     <message>
       <location/>
       <source>You have to select a single face as support for a sketch!</source>
-      <translation>You have to select a single face as support for a sketch!</translation>
+      <translation>Morate odabrati jednu površinu kao podršku za skicu!</translation>
     </message>
     <message>
       <location/>
       <source>No support face selected</source>
-      <translation>No support face selected</translation>
+      <translation>Nije odabrana površina za podršku</translation>
     </message>
     <message>
       <location/>
       <source>You have to select a face as support for a sketch!</source>
-      <translation>You have to select a face as support for a sketch!</translation>
+      <translation>Morate odabrati površinu kao podršku za skicu!</translation>
     </message>
     <message>
       <location/>
       <source>No planar support</source>
-      <translation>No planar support</translation>
+      <translation>Nema planarni podršku</translation>
     </message>
     <message>
       <location/>
       <source>You need a planar face as support for a sketch!</source>
-      <translation>You need a planar face as support for a sketch!</translation>
+      <translation>Trebate planarnu površinu kao podršku za skicu!</translation>
     </message>
   </context>
   <context>
@@ -494,7 +494,7 @@
     <message>
       <location/>
       <source>Form</source>
-      <translation>Form</translation>
+      <translation>Obrazac</translation>
     </message>
     <message>
       <location/>
@@ -519,7 +519,7 @@
     <message>
       <location/>
       <source>Named</source>
-      <translation>Named</translation>
+      <translation>Imenovan</translation>
     </message>
     <message>
       <location/>
@@ -532,7 +532,7 @@
     <message>
       <location/>
       <source>Form</source>
-      <translation>Form</translation>
+      <translation>Obrazac</translation>
     </message>
     <message>
       <location/>
@@ -542,7 +542,7 @@
     <message>
       <location/>
       <source>Grid Snap</source>
-      <translation>Grid Snap</translation>
+      <translation>Ograničenje sa rešetkom</translation>
     </message>
     <message>
       <location/>
@@ -645,12 +645,12 @@
     <message>
       <location/>
       <source>Sketcher geoms</source>
-      <translation>Sketcher geoms</translation>
+      <translation>Geometrije skice</translation>
     </message>
     <message>
       <location/>
       <source>Sketcher constrains</source>
-      <translation>Sketcher constrains</translation>
+      <translation>Ograničenja u skici</translation>
     </message>
   </context>
   <context>
@@ -658,17 +658,17 @@
     <message>
       <location/>
       <source>Sketcher</source>
-      <translation>Sketcher</translation>
+      <translation>Skica</translation>
     </message>
     <message>
       <location/>
       <source>Sketcher geoms</source>
-      <translation>Sketcher geoms</translation>
+      <translation>Geometrije skice</translation>
     </message>
     <message>
       <location/>
       <source>Sketcher constraints</source>
-      <translation>Sketcher constraints</translation>
+      <translation>Ograničenja u skici</translation>
     </message>
   </context>
 </TS>

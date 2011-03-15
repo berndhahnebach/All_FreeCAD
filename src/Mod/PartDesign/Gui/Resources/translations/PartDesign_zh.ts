@@ -11,7 +11,7 @@
     <message>
       <location/>
       <source>Chamfer...</source>
-      <translation>倒角...</translation>
+      <translation>倒直角...</translation>
     </message>
     <message>
       <location/>
@@ -34,7 +34,7 @@
     <message>
       <location/>
       <source>Make a fillet on an edge, face or body</source>
-      <translation>给边缘、面或者实体导圆角</translation>
+      <translation>给边、面或者实体倒圆角</translation>
     </message>
   </context>
   <context>
@@ -55,12 +55,12 @@
     <message>
       <location/>
       <source>Pad</source>
-      <translation>填充</translation>
+      <translation>凸台</translation>
     </message>
     <message>
       <location/>
       <source>Pad a selected sketch</source>
-      <translation>填充选定的草图</translation>
+      <translation>基于选定草图创建凸台</translation>
     </message>
   </context>
   <context>
@@ -73,12 +73,12 @@
     <message>
       <location/>
       <source>Pocket</source>
-      <translation>闭合形</translation>
+      <translation>凹槽</translation>
     </message>
     <message>
       <location/>
       <source>create a pocket with the selected sketch</source>
-      <translation>由选中的草图创建一个闭合形</translation>
+      <translation>基于选中的草图创建凹槽</translation>
     </message>
   </context>
   <context>
@@ -86,17 +86,17 @@
     <message>
       <location/>
       <source>Edges to chamfer</source>
-      <translation>边倒角</translation>
+      <translation>倒角边</translation>
     </message>
     <message>
       <location/>
       <source>Start distance</source>
-      <translation>开始距离</translation>
+      <translation>起端距离</translation>
     </message>
     <message>
       <location/>
       <source>End distance</source>
-      <translation>末端距</translation>
+      <translation>末端距离</translation>
     </message>
     <message>
       <location/>
@@ -111,24 +111,24 @@
     <message>
       <location/>
       <source>No shape selected</source>
-      <translation>没有选定的形</translation>
+      <translation>未选定形状</translation>
     </message>
     <message>
       <location/>
       <source>No valid shape is selected.
 Please select a valid shape in the drop-down box first.</source>
-      <translation>没有有效的形状被选中.请先在下拉框中选择一个有效的形状.</translation>
+      <translation>无有效形状被选中.请先在下拉框中选择一个有效的形状.</translation>
     </message>
     <message>
       <location/>
       <source>No edge selected</source>
-      <translation>没有选定边缘</translation>
+      <translation>未选定边缘</translation>
     </message>
     <message>
       <location/>
       <source>No edge entity is checked to chamfer.
 Please check one or more edge entities first.</source>
-      <translation>没有合法边缘经验证可倒角.请先检查一个或更多合法的边缘.</translation>
+      <translation>未选择倒角边.请先选择一个或更多边缘.</translation>
     </message>
   </context>
   <context>
@@ -224,7 +224,7 @@ Please check one or more edge entities first.</source>
     <message>
       <location/>
       <source>TaskPadParameters</source>
-      <translation>任务编辑器参数</translation>
+      <translation>凸台操作参数</translation>
     </message>
   </context>
   <context>
@@ -242,12 +242,12 @@ Please check one or more edge entities first.</source>
     <message>
       <location/>
       <source>The shape of the selected object is empty.</source>
-      <translation>所选对象的形为空.</translation>
+      <translation>所选形状为空.</translation>
     </message>
     <message>
       <location/>
       <source>The shape of the selected object is not a wire.</source>
-      <translation>所选择对象的型不是闭合线.</translation>
+      <translation>所选形状不是线框.</translation>
     </message>
     <message>
       <location/>
@@ -273,7 +273,8 @@ Please check one or more edge entities first.</source>
       <location/>
       <source>The sketch has to have a support for the pocket feature.
 Create the sketch on a face.</source>
-      <translation>草图必须支持闭合特性.在面上创建草图.</translation>
+      <translation>凹槽特性要求草图必须存在一个支持面.
+请在面上创建草图.</translation>
     </message>
   </context>
   <context>

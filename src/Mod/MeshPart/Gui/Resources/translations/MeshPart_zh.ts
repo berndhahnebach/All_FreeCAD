@@ -54,7 +54,7 @@
     <message>
       <location/>
       <source>No such document '%1'.</source>
-      <translation>没有这样的文档 '%1'。</translation>
+      <translation>无此文档 '%1'。</translation>
     </message>
   </context>
   <context>

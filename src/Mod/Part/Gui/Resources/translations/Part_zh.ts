@@ -31,27 +31,27 @@
     <message>
       <location/>
       <source>Dimension</source>
-      <translation>尺寸</translation>
+      <translation>尺寸标注</translation>
     </message>
     <message>
       <location/>
       <source>Up to next</source>
-      <translation>到下一步</translation>
+      <translation>直到下一个</translation>
     </message>
     <message>
       <location/>
       <source>Up to last</source>
-      <translation>到最后</translation>
+      <translation>直到最后</translation>
     </message>
     <message>
       <location/>
       <source>Up to plane</source>
-      <translation>至平面</translation>
+      <translation>直到平面</translation>
     </message>
     <message>
       <location/>
       <source>Up to face</source>
-      <translation>到面</translation>
+      <translation>直到表面</translation>
     </message>
     <message>
       <location/>
@@ -76,7 +76,7 @@
     <message>
       <location/>
       <source>Reverse</source>
-      <translation>镜像</translation>
+      <translation>反转</translation>
     </message>
     <message>
       <location/>
@@ -134,7 +134,7 @@
     <message>
       <location/>
       <source>Run a boolean operation with two shapes selected</source>
-      <translation>使用所选的两个形状进行布尔运算</translation>
+      <translation>对所选的两个形状进行布尔运算</translation>
     </message>
   </context>
   <context>
@@ -152,7 +152,7 @@
     <message>
       <location/>
       <source>Create a Box feature</source>
-      <translation>创建一个立方体</translation>
+      <translation>创建一个立方体特征</translation>
     </message>
     <message>
       <location/>
@@ -170,12 +170,12 @@
     <message>
       <location/>
       <source>Box fix 1</source>
-      <translation>立方体修复 1</translation>
+      <translation>立方体固定 1</translation>
     </message>
     <message>
       <location/>
       <source>Create a box feature without dialog</source>
-      <translation>创建一个立方体而不用对话框</translation>
+      <translation>创建一个无会话立方体特征</translation>
     </message>
   </context>
   <context>
@@ -188,12 +188,12 @@
     <message>
       <location/>
       <source>Box fix 2</source>
-      <translation>立方体 2</translation>
+      <translation>立方体固定 2</translation>
     </message>
     <message>
       <location/>
       <source>Create a box feature without dialog</source>
-      <translation>创建一个立方体而不用对话框</translation>
+      <translation>创建一个无会话立方体特征</translation>
     </message>
   </context>
   <context>
@@ -265,7 +265,7 @@
     <message>
       <location/>
       <source>Create a Cut feature</source>
-      <translation>创建一个切割</translation>
+      <translation>创建一个切割特征</translation>
     </message>
   </context>
   <context>
@@ -306,7 +306,7 @@
     <message>
       <location/>
       <source>Extrude a selected sketch</source>
-      <translation>挤压选定的截面</translation>
+      <translation>挤压选定的草绘</translation>
     </message>
   </context>
   <context>
@@ -319,12 +319,12 @@
     <message>
       <location/>
       <source>Fillet...</source>
-      <translation>倒角...</translation>
+      <translation>倒圆角...</translation>
     </message>
     <message>
       <location/>
       <source>Fillet the selected edges of a shape</source>
-      <translation>给选定形状的边倒角</translation>
+      <translation>给选定形状的边倒圆角</translation>
     </message>
   </context>
   <context>
@@ -337,12 +337,12 @@
     <message>
       <location/>
       <source>Fillet...</source>
-      <translation>倒角...</translation>
+      <translation>倒圆角...</translation>
     </message>
     <message>
       <location/>
       <source>Fillet the selected edges of a shape</source>
-      <translation>给选定形状的边倒角</translation>
+      <translation>给选定形状的边倒圆角</translation>
     </message>
   </context>
   <context>
@@ -360,12 +360,12 @@
     <message>
       <location/>
       <source>Make union of two shapes</source>
-      <translation>取2个形状的并集</translation>
+      <translation>取两个形状的并集</translation>
     </message>
     <message>
       <location/>
       <source>Make union of several shapes</source>
-      <translation>取多个形状的交集</translation>
+      <translation>取多个形状的并集</translation>
     </message>
   </context>
   <context>
@@ -378,7 +378,7 @@
     <message>
       <location/>
       <source>Imports a CAD file</source>
-      <translation>CAD 文件导入</translation>
+      <translation>导入CAD文件</translation>
     </message>
     <message>
       <location/>
@@ -522,7 +522,7 @@
     <message>
       <location/>
       <source>Create ruled surface</source>
-      <translation>创建曲面</translation>
+      <translation>创建直纹曲面</translation>
     </message>
     <message>
       <location/>
@@ -599,7 +599,7 @@
     <message>
       <location/>
       <source>Create a sphere feature</source>
-      <translation>创建一个球体</translation>
+      <translation>创建一个球体特征</translation>
     </message>
   </context>
   <context>
@@ -617,7 +617,7 @@
     <message>
       <location/>
       <source>Create a torus feature</source>
-      <translation>创建一个圆环</translation>
+      <translation>创建一个圆环特征</translation>
     </message>
   </context>
   <context>
@@ -754,7 +754,7 @@
     <message>
       <location/>
       <source>Cannot perform a boolean operation with the same shape</source>
-      <translation>不能执行相同形状的布尔操作</translation>
+      <translation>不能对同一形状作布尔操作</translation>
     </message>
     <message>
       <location/>
@@ -794,12 +794,12 @@
     <message>
       <location/>
       <source>No active document available</source>
-      <translation>没有可用的活动文档</translation>
+      <translation>无可用活动文档</translation>
     </message>
     <message>
       <location/>
       <source>One of the selected objects doesn't exist anymore</source>
-      <translation>所选择的对象不存在了</translation>
+      <translation>所选对象之一已不存在</translation>
     </message>
     <message>
       <location/>
@@ -832,7 +832,7 @@
     <message>
       <location/>
       <source>Along normal</source>
-      <translation>仅普通</translation>
+      <translation>沿法向</translation>
     </message>
     <message>
       <location/>
@@ -897,7 +897,7 @@
     <message>
       <location/>
       <source>Select a shape for extrusion, first.</source>
-      <translation>先选择一个形状已执行挤压操作.</translation>
+      <translation>请先选择一个形状执行挤压操作.</translation>
     </message>
   </context>
   <context>
@@ -905,12 +905,12 @@
     <message>
       <location/>
       <source>Fillet Edges</source>
-      <translation>倒角边</translation>
+      <translation>圆角边</translation>
     </message>
     <message>
       <location/>
       <source>Fillet Parameter</source>
-      <translation>倒角参数</translation>
+      <translation>圆角参数</translation>
     </message>
     <message>
       <location/>
@@ -920,7 +920,7 @@
     <message>
       <location/>
       <source>Fillet type:</source>
-      <translation>倒角类型:</translation>
+      <translation>圆角类型:</translation>
     </message>
     <message>
       <location/>
@@ -960,7 +960,7 @@
     <message>
       <location/>
       <source>Edges to fillet</source>
-      <translation>倒角边</translation>
+      <translation>倒圆角边</translation>
     </message>
     <message>
       <location/>
@@ -985,13 +985,13 @@
     <message>
       <location/>
       <source>No edge selected</source>
-      <translation>没有选定边</translation>
+      <translation>未选定边</translation>
     </message>
     <message>
       <location/>
       <source>No edge entity is checked to fillet.
 Please check one or more edge entities first.</source>
-      <translation>没有实体边经检查被倒角.
+      <translation>为选择倒圆角的实体边.
 请先检查一个或多个实体边.</translation>
     </message>
     <message>
@@ -1012,13 +1012,13 @@ Please check one or more edge entities first.</source>
     <message>
       <location/>
       <source>No shape selected</source>
-      <translation>没有选定的形状</translation>
+      <translation>无选定的形状</translation>
     </message>
     <message>
       <location/>
       <source>No valid shape is selected.
 Please select a valid shape in the drop-down box first.</source>
-      <translation>没有有效的形状被选中.请先在下拉框中选择一个有效的形状.</translation>
+      <translation>未选中有效形状.请先在下拉框中选择一个有效形状.</translation>
     </message>
   </context>
   <context>
@@ -1434,7 +1434,7 @@ Please select a valid shape in the drop-down box first.</source>
     <message>
       <location/>
       <source>No active document</source>
-      <translation>没有活动文档</translation>
+      <translation>无活动文档</translation>
     </message>
     <message>
       <location/>
@@ -1444,7 +1444,7 @@ Please select a valid shape in the drop-down box first.</source>
     <message>
       <location/>
       <source>Helix</source>
-      <translation>螺旋</translation>
+      <translation>螺旋体</translation>
     </message>
     <message>
       <location/>
@@ -1500,7 +1500,7 @@ Please select a valid shape in the drop-down box first.</source>
     <message>
       <location/>
       <source>View accuracy / Performance</source>
-      <translation>查看精度 / 性能</translation>
+      <translation>查看精度/性能</translation>
     </message>
     <message>
       <location/>
@@ -1656,7 +1656,7 @@ Please select a valid shape in the drop-down box first.</source>
     <message>
       <location/>
       <source>Select a shape for mirroring, first.</source>
-      <translation>请先选择形状执行镜像操作.</translation>
+      <translation>请先选择一个形状执行镜像操作.</translation>
     </message>
     <message>
       <location/>
@@ -1767,12 +1767,12 @@ Please select a valid shape in the drop-down box first.</source>
     <message>
       <location/>
       <source>You have to select either two edges or two wires.</source>
-      <translation>你必须选择二个边或者二个线框.</translation>
+      <translation>你必须选择二条边或者二个线框.</translation>
     </message>
     <message>
       <location/>
       <source>Edit fillet edges</source>
-      <translation>编辑倒角边</translation>
+      <translation>编辑圆角边</translation>
     </message>
   </context>
   <context>

@@ -11,7 +11,7 @@
     <message>
       <location/>
       <source>&amp;Export project...</source>
-      <translation>&amp;E 导出项目...</translation>
+      <translation>导出项目(&amp;E)...</translation>
     </message>
     <message>
       <location/>
@@ -47,12 +47,12 @@
     <message>
       <location/>
       <source>New Povray project</source>
-      <translation>新的 Povray 项目</translation>
+      <translation>新建 Povray 项目</translation>
     </message>
     <message>
       <location/>
       <source>Insert new Povray project into the document</source>
-      <translation>将新的PovRay工程插入文档</translation>
+      <translation>在文档中插入新PovRay项目</translation>
     </message>
   </context>
   <context>
@@ -81,12 +81,12 @@
     <message>
       <location/>
       <source>Export camera to povray</source>
-      <translation>输出相机为PovRay文件</translation>
+      <translation>输出相机到PovRay文件</translation>
     </message>
     <message>
       <location/>
       <source>Export the camera positon of the active 3D view in PovRay format to a file</source>
-      <translation>根据相机位置将当前3D视图输出为一个PovRay文件</translation>
+      <translation>将PovRay格式中当前3d视图的相机位置输出到文件</translation>
     </message>
   </context>
   <context>
@@ -99,12 +99,12 @@
     <message>
       <location/>
       <source>Export part to povray...</source>
-      <translation>输出零件为Povray...</translation>
+      <translation>输出零件到Povray...</translation>
     </message>
     <message>
       <location/>
       <source>Write the selected Part (object) as a povray file</source>
-      <translation>将已选择零件(对象)写入Povray文件</translation>
+      <translation>将选中零件(对象)写入Povray文件</translation>
     </message>
   </context>
   <context>
@@ -122,7 +122,7 @@
     <message>
       <location/>
       <source>Write the active 3D view with camera and all its content to a povray file</source>
-      <translation>使用相机将当前3D动态视图以及文本写入到Povray文件</translation>
+      <translation>将当前相机3D视图以及所有内容写入到Povray文件</translation>
     </message>
   </context>
   <context>
@@ -155,7 +155,7 @@
     <message>
       <location/>
       <source>No Povray project to insert</source>
-      <translation>没有Povray项目可插入</translation>
+      <translation>无Povray项目可插入</translation>
     </message>
     <message>
       <location/>
@@ -183,7 +183,7 @@
     <message>
       <location/>
       <source>Default Project dir:</source>
-      <translation>默认的项目路径:</translation>
+      <translation>默认项目路径:</translation>
     </message>
     <message>
       <location/>
@@ -193,7 +193,7 @@
     <message>
       <location/>
       <source>Part file name:</source>
-      <translation>零件的名称:</translation>
+      <translation>零件文件名称:</translation>
     </message>
     <message>
       <location/>
@@ -208,12 +208,12 @@
     <message>
       <location/>
       <source>Mesh export settings</source>
-      <translation>网格的导出设置</translation>
+      <translation>网格导出设置</translation>
     </message>
     <message>
       <location/>
       <source>max mesh deviation:</source>
-      <translation>最大网偏差:</translation>
+      <translation>最大网格偏差:</translation>
     </message>
     <message>
       <location/>
@@ -231,7 +231,7 @@
     <message>
       <location/>
       <source>&amp;Raytracing</source>
-      <translation>&amp;R 光线追踪</translation>
+      <translation>光线追踪(&amp;R)</translation>
     </message>
   </context>
 </TS>

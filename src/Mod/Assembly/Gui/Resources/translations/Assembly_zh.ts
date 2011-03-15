@@ -6,7 +6,7 @@
     <message>
       <location/>
       <source>Assembly</source>
-      <translation>组合</translation>
+      <translation>装配</translation>
     </message>
   </context>
   <context>
@@ -14,7 +14,7 @@
     <message>
       <location/>
       <source>Assembly</source>
-      <translation>组合</translation>
+      <translation>装配</translation>
     </message>
     <message>
       <location/>
@@ -24,7 +24,7 @@
     <message>
       <location/>
       <source>set a axle constraint between two objects</source>
-      <translation>设置两个对象之间的轴约束</translation>
+      <translation>两个对象之间设置轴约束</translation>
     </message>
   </context>
 </TS>

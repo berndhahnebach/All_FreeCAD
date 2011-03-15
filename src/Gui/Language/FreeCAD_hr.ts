@@ -6,7 +6,7 @@
     <message>
       <location/>
       <source>Form</source>
-      <translation>Form</translation>
+      <translation>Obrazac</translation>
     </message>
     <message>
       <location/>
@@ -26,7 +26,7 @@
     <message>
       <location/>
       <source>Angle Snap</source>
-      <translation>Angle Snap</translation>
+      <translation>Kut Snap</translation>
     </message>
     <message>
       <location/>
@@ -82,22 +82,22 @@
     <message>
       <location/>
       <source>Press left mouse button</source>
-      <translation>Press left mouse button</translation>
+      <translation>Pritisnite lijevu tipku miša</translation>
     </message>
     <message>
       <location/>
       <source>Press middle mouse button</source>
-      <translation>Press middle mouse button</translation>
+      <translation>Pritisnite srednju tipku miša</translation>
     </message>
     <message>
       <location/>
       <source>Press left and middle mouse button</source>
-      <translation>Press left and middle mouse button</translation>
+      <translation>Pritisnite lijevu i srednju tipku miša</translation>
     </message>
     <message>
       <location/>
       <source>Scroll middle mouse button</source>
-      <translation>Scroll middle mouse button</translation>
+      <translation>Kotrljajte kotačić na mišu</translation>
     </message>
   </context>
   <context>
@@ -126,7 +126,7 @@
     <message>
       <location/>
       <source>Task panel</source>
-      <translation>Task panel</translation>
+      <translation>Ploča zadataka</translation>
     </message>
   </context>
   <context>
@@ -177,17 +177,17 @@
     <message>
       <location/>
       <source>View Turntable</source>
-      <translation>View Turntable</translation>
+      <translation>Prikaži Turntable</translation>
     </message>
     <message>
       <location/>
       <source>Speed</source>
-      <translation>Speed</translation>
+      <translation>Brzina</translation>
     </message>
     <message>
       <location/>
       <source>Maximum</source>
-      <translation>Maximum</translation>
+      <translation>Maksimum</translation>
     </message>
     <message>
       <location/>
@@ -197,12 +197,12 @@
     <message>
       <location/>
       <source>Fullscreen</source>
-      <translation>Fullscreen</translation>
+      <translation>Preko cijelog ekrana</translation>
     </message>
     <message>
       <location/>
       <source>Enable timer</source>
-      <translation>Enable timer</translation>
+      <translation>Omogući timer</translation>
     </message>
     <message>
       <location/>
@@ -212,22 +212,22 @@
     <message>
       <location/>
       <source>Angle</source>
-      <translation>Angle</translation>
+      <translation>Kut</translation>
     </message>
     <message>
       <location/>
       <source>90°</source>
-      <translation>90°</translation>
+      <translation>90 °</translation>
     </message>
     <message>
       <location/>
       <source>-90°</source>
-      <translation>-90°</translation>
+      <translation>-90 °</translation>
     </message>
     <message>
       <location/>
       <source>Play</source>
-      <translation>Play</translation>
+      <translation>Pokreni</translation>
     </message>
     <message>
       <location/>
@@ -237,7 +237,7 @@
     <message>
       <location/>
       <source>Close</source>
-      <translation>Close</translation>
+      <translation>Zatvori</translation>
     </message>
   </context>
   <context>
@@ -509,27 +509,27 @@
     <message>
       <location/>
       <source>C&amp;ommands:</source>
-      <translation>C&amp;ommands:</translation>
+      <translation>N&amp;aredbe:</translation>
     </message>
     <message>
       <location/>
       <source>Current shortcut:</source>
-      <translation>Current shortcut:</translation>
+      <translation>Trenutni prečac:</translation>
     </message>
     <message>
       <location/>
       <source>Press &amp;new shortcut:</source>
-      <translation>Press &amp;new shortcut:</translation>
+      <translation>Pritisnite &amp;novi prečac:</translation>
     </message>
     <message>
       <location/>
       <source>Currently assigned to:</source>
-      <translation>Currently assigned to:</translation>
+      <translation>Trenutno dodijeljen:</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Assign</source>
-      <translation>&amp;Assign</translation>
+      <translation>&amp;Dodijeli</translation>
     </message>
     <message>
       <location/>
@@ -607,7 +607,7 @@ Please define another shortcut.</source>
     <message>
       <location/>
       <source>Toolbox bars</source>
-      <translation>Toolbox bars</translation>
+      <translation>Toolbox barovi</translation>
     </message>
   </context>
   <context>
@@ -615,67 +615,67 @@ Please define another shortcut.</source>
     <message>
       <location/>
       <source>Toolbars</source>
-      <translation>Toolbars</translation>
+      <translation>Alatne trake</translation>
     </message>
     <message>
       <location/>
       <source>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600;"&gt;Note:&lt;/span&gt; The changes become active the next time you load the appropriate workbench&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600;"&gt;Note:&lt;/span&gt; The changes become active the next time you load the appropriate workbench&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt; &lt;span style=" font-weight:600;"&gt;Napomena:&lt;/span&gt; promjene postanu aktivni sljedeći put kada se učitati prikladni radni stol &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
       <location/>
       <source>Move right</source>
-      <translation>Move right</translation>
+      <translation>Pomakni desno</translation>
     </message>
     <message>
       <location/>
       <source>&lt;b&gt;Move the selected item one level down.&lt;/b&gt;&lt;p&gt;This will also change the level of the parent item.&lt;/p&gt;</source>
-      <translation>&lt;b&gt;Move the selected item one level down.&lt;/b&gt;&lt;p&gt;This will also change the level of the parent item.&lt;/p&gt;</translation>
+      <translation>&lt;b&gt;Premještanje odabrane stavke jednu razinu prema dolje.&lt;/b&gt; &lt;p&gt; To će također promijeniti razinu roditelja stavke. &lt;/p&gt;</translation>
     </message>
     <message>
       <location/>
       <source>Move left</source>
-      <translation>Move left</translation>
+      <translation>Pomakni lijevo</translation>
     </message>
     <message>
       <location/>
       <source>&lt;b&gt;Move the selected item one level up.&lt;/b&gt;&lt;p&gt;This will also change the level of the parent item.&lt;/p&gt;</source>
-      <translation>&lt;b&gt;Move the selected item one level up.&lt;/b&gt;&lt;p&gt;This will also change the level of the parent item.&lt;/p&gt;</translation>
+      <translation>&lt;b&gt;Premještanje odabrane stavke jednu razinu gore.&lt;/b&gt; &lt;p&gt; To će također promijeniti razinu roditelja stavke. &lt;/p&gt;</translation>
     </message>
     <message>
       <location/>
       <source>Move down</source>
-      <translation>Move down</translation>
+      <translation>Pomakni dolje</translation>
     </message>
     <message>
       <location/>
       <source>&lt;b&gt;Move the selected item down.&lt;/b&gt;&lt;p&gt;The item will be moved within the hierarchy level.&lt;/p&gt;</source>
-      <translation>&lt;b&gt;Move the selected item down.&lt;/b&gt;&lt;p&gt;The item will be moved within the hierarchy level.&lt;/p&gt;</translation>
+      <translation>&lt;b&gt;Premještanje odabrane stavke prema dolje.&lt;/b&gt; &lt;p&gt; Jedinica će biti premještena unutar razine hijerarhije. &lt;/p&gt;</translation>
     </message>
     <message>
       <location/>
       <source>Move up</source>
-      <translation>Move up</translation>
+      <translation>Pomakni gore</translation>
     </message>
     <message>
       <location/>
       <source>&lt;b&gt;Move the selected item up.&lt;/b&gt;&lt;p&gt;The item will be moved within the hierarchy level.&lt;/p&gt;</source>
-      <translation>&lt;b&gt;Move the selected item up.&lt;/b&gt;&lt;p&gt;The item will be moved within the hierarchy level.&lt;/p&gt;</translation>
+      <translation>&lt;b&gt;Premještanje odabrane stavke gore.&lt;/b&gt; &lt;p&gt; Jedinica će biti premještena unutar razine hijerarhije. &lt;/p&gt;</translation>
     </message>
     <message>
       <location/>
       <source>New...</source>
-      <translation>New...</translation>
+      <translation>Novi ...</translation>
     </message>
     <message>
       <location/>
       <source>Rename...</source>
-      <translation>Rename...</translation>
+      <translation>Preimenuj ...</translation>
     </message>
     <message>
       <location/>
       <source>Delete</source>
-      <translation>Delete</translation>
+      <translation>Izbriši</translation>
     </message>
     <message>
       <location/>
@@ -695,27 +695,27 @@ Please define another shortcut.</source>
     <message>
       <location/>
       <source>New toolbar</source>
-      <translation>New toolbar</translation>
+      <translation>Nova alatna traka</translation>
     </message>
     <message>
       <location/>
       <source>Toolbar name:</source>
-      <translation>Toolbar name:</translation>
+      <translation>Ime alatne trake:</translation>
     </message>
     <message>
       <location/>
       <source>Duplicated name</source>
-      <translation>Duplicated name</translation>
+      <translation>Dvostruki naziv</translation>
     </message>
     <message>
       <location/>
       <source>The toolbar name '%1' is already used</source>
-      <translation>The toolbar name '%1' is already used</translation>
+      <translation>Ime alatne trake '%1' se već koristi</translation>
     </message>
     <message>
       <location/>
       <source>Rename toolbar</source>
-      <translation>Rename toolbar</translation>
+      <translation>Preimenuj alatnu traku</translation>
     </message>
     <message>
       <location/>
@@ -728,12 +728,12 @@ Please define another shortcut.</source>
     <message>
       <location/>
       <source>Customize</source>
-      <translation>Customize</translation>
+      <translation>Prilagodi</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Help</source>
-      <translation>&amp;Help</translation>
+      <translation>&amp;Pomoć</translation>
     </message>
     <message>
       <location/>
@@ -746,32 +746,32 @@ Please define another shortcut.</source>
     <message>
       <location/>
       <source>Display properties</source>
-      <translation>Display properties</translation>
+      <translation>Prikaz svojstava</translation>
     </message>
     <message>
       <location/>
       <source>Display</source>
-      <translation>Display</translation>
+      <translation>Prikaz</translation>
     </message>
     <message>
       <location/>
       <source>Transparency:</source>
-      <translation>Transparency:</translation>
+      <translation>Prozirnost:</translation>
     </message>
     <message>
       <location/>
       <source>Line width:</source>
-      <translation>Line width:</translation>
+      <translation>Širina linije:</translation>
     </message>
     <message>
       <location/>
       <source>Point size:</source>
-      <translation>Point size:</translation>
+      <translation>Veličina točke:</translation>
     </message>
     <message>
       <location/>
       <source>Material</source>
-      <translation>Material</translation>
+      <translation>Materijal</translation>
     </message>
     <message>
       <location/>
@@ -781,7 +781,7 @@ Please define another shortcut.</source>
     <message>
       <location/>
       <source>Close</source>
-      <translation>Close</translation>
+      <translation>Zatvori</translation>
     </message>
     <message>
       <location/>
@@ -806,17 +806,17 @@ Please define another shortcut.</source>
     <message>
       <location/>
       <source>Line transparency:</source>
-      <translation>Line transparency:</translation>
+      <translation>Transparentnost linije:</translation>
     </message>
     <message>
       <location/>
       <source>Line color:</source>
-      <translation>Line color:</translation>
+      <translation>Boja linije:</translation>
     </message>
     <message>
       <location/>
       <source>Shape color:</source>
-      <translation>Shape color:</translation>
+      <translation>Boja oblika:</translation>
     </message>
   </context>
   <context>
@@ -1001,7 +1001,7 @@ Please define another shortcut.</source>
     <message>
       <location/>
       <source>Close</source>
-      <translation>Close</translation>
+      <translation>Zatvori</translation>
     </message>
     <message>
       <location/>
@@ -1011,7 +1011,7 @@ Please define another shortcut.</source>
     <message>
       <location/>
       <source>Delete</source>
-      <translation>Delete</translation>
+      <translation>Izbriši</translation>
     </message>
     <message>
       <location/>
@@ -1060,12 +1060,12 @@ This file already exists.</source>
     <message>
       <location/>
       <source>Cannot create file</source>
-      <translation>Cannot create file</translation>
+      <translation>Ne mogu stvoriti datoteku</translation>
     </message>
     <message>
       <location/>
       <source>Creation of file '%1' failed.</source>
-      <translation>Creation of file '%1' failed.</translation>
+      <translation>Kreiranje datoteke '%1' nije uspjelo.</translation>
     </message>
   </context>
   <context>
@@ -1093,7 +1093,7 @@ This file already exists.</source>
     <message>
       <location/>
       <source>Macro path:</source>
-      <translation>Macro path:</translation>
+      <translation>Makro put:</translation>
     </message>
     <message>
       <location/>
@@ -1103,7 +1103,7 @@ This file already exists.</source>
     <message>
       <location/>
       <source>Record</source>
-      <translation>Record</translation>
+      <translation>Snimak</translation>
     </message>
   </context>
   <context>
@@ -1131,12 +1131,12 @@ This file already exists.</source>
     <message>
       <location/>
       <source>The macro directory doesn't exist. Please, choose another one.</source>
-      <translation>The macro directory doesn't exist. Please, choose another one.</translation>
+      <translation>Makro direktorij ne postoji. Molimo, odaberite drugi.</translation>
     </message>
     <message>
       <location/>
       <source>Choose macro directory</source>
-      <translation>Choose macro directory</translation>
+      <translation>Odaberite makro direktorij</translation>
     </message>
   </context>
   <context>
@@ -1159,7 +1159,7 @@ This file already exists.</source>
     <message>
       <location/>
       <source>Material</source>
-      <translation>Material</translation>
+      <translation>Materijal</translation>
     </message>
     <message>
       <location/>
@@ -1174,7 +1174,7 @@ This file already exists.</source>
     <message>
       <location/>
       <source>Shininess:</source>
-      <translation>Shininess:</translation>
+      <translation>Sjaj:</translation>
     </message>
     <message>
       <location/>
@@ -1184,7 +1184,7 @@ This file already exists.</source>
     <message>
       <location/>
       <source>Ambient color:</source>
-      <translation>Ambient color:</translation>
+      <translation>Boja ambienta:</translation>
     </message>
     <message>
       <location/>
@@ -1194,7 +1194,7 @@ This file already exists.</source>
     <message>
       <location/>
       <source>Emissive color:</source>
-      <translation>Emissive color:</translation>
+      <translation>Emitivna boja:</translation>
     </message>
   </context>
   <context>
@@ -1202,17 +1202,17 @@ This file already exists.</source>
     <message>
       <location/>
       <source>On-line help</source>
-      <translation>On-line help</translation>
+      <translation>On-line pomoć</translation>
     </message>
     <message>
       <location/>
       <source>Help viewer</source>
-      <translation>Help viewer</translation>
+      <translation>Pomoć preglednik</translation>
     </message>
     <message>
       <location/>
       <source>Location of start page</source>
-      <translation>Location of start page</translation>
+      <translation>Lokacija početne stranice</translation>
     </message>
   </context>
   <context>
@@ -1220,21 +1220,19 @@ This file already exists.</source>
     <message>
       <location/>
       <source>HTML files (*.html *.htm)</source>
-      <translation>HTML files (*.html *.htm)</translation>
+      <translation>HTML datoteke (*. html *. htm)</translation>
     </message>
     <message>
       <location/>
       <source>Access denied</source>
-      <translation>Access denied</translation>
+      <translation>Pristup odbijen</translation>
     </message>
     <message>
       <location/>
       <source>Access denied to '%1'
 
 Specify another directory, please.</source>
-      <translation>Access denied to '%1'
-
-Specify another directory, please.</translation>
+      <translation>Pristup je odbijen u '%1' Odredite drugi direktorij, molim.</translation>
     </message>
   </context>
   <context>
@@ -1242,12 +1240,12 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Parameter Editor</source>
-      <translation>Parameter Editor</translation>
+      <translation>Parametar Editor</translation>
     </message>
     <message>
       <location/>
       <source>Save to disk</source>
-      <translation>Save to disk</translation>
+      <translation>Spremi na disk</translation>
     </message>
     <message>
       <location/>
@@ -1265,42 +1263,42 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Group</source>
-      <translation>Group</translation>
+      <translation>Grupa</translation>
     </message>
     <message>
       <location/>
       <source>Name</source>
-      <translation>Name</translation>
+      <translation>Ime</translation>
     </message>
     <message>
       <location/>
       <source>Type</source>
-      <translation>Type</translation>
+      <translation>Tip</translation>
     </message>
     <message>
       <location/>
       <source>Value</source>
-      <translation>Value</translation>
+      <translation>Vrijednost</translation>
     </message>
     <message>
       <location/>
       <source>User parameter</source>
-      <translation>User parameter</translation>
+      <translation>Korisnički parametar</translation>
     </message>
     <message>
       <location/>
       <source>Invalid input</source>
-      <translation>Invalid input</translation>
+      <translation>Neispravan unos</translation>
     </message>
     <message>
       <location/>
       <source>Invalid key name '%1'</source>
-      <translation>Invalid key name '%1'</translation>
+      <translation>Nevažeći ključ ime '%1;"</translation>
     </message>
     <message>
       <location/>
       <source>System parameter</source>
-      <translation>System parameter</translation>
+      <translation>Parametar sustava</translation>
     </message>
   </context>
   <context>
@@ -1308,17 +1306,17 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Preferences</source>
-      <translation>Preferences</translation>
+      <translation>Postavke</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Help</source>
-      <translation>&amp;Help</translation>
+      <translation>&amp;Pomoć</translation>
     </message>
     <message>
       <location/>
       <source>Alt+H</source>
-      <translation>Alt+H</translation>
+      <translation>Alt + H</translation>
     </message>
     <message>
       <location/>
@@ -1328,7 +1326,7 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>&amp;Apply</source>
-      <translation>&amp;Apply</translation>
+      <translation>&amp;Primijeni</translation>
     </message>
     <message>
       <location/>
@@ -1351,7 +1349,7 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Wrong parameter</source>
-      <translation>Wrong parameter</translation>
+      <translation>Pogrešan parametar</translation>
     </message>
   </context>
   <context>
@@ -1359,52 +1357,52 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Project information</source>
-      <translation>Project information</translation>
+      <translation>Informacije o projektu</translation>
     </message>
     <message>
       <location/>
       <source>Information</source>
-      <translation>Information</translation>
+      <translation>Informacije</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Name:</source>
-      <translation>&amp;Name:</translation>
+      <translation>&amp;Ime:</translation>
     </message>
     <message>
       <location/>
       <source>Commen&amp;t:</source>
-      <translation>Commen&amp;t:</translation>
+      <translation>Komen&amp;tar:</translation>
     </message>
     <message>
       <location/>
       <source>Path:</source>
-      <translation>Path:</translation>
+      <translation>Put:</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Last modified by:</source>
-      <translation>&amp;Last modified by:</translation>
+      <translation>&amp;Zadnja izmjena od:</translation>
     </message>
     <message>
       <location/>
       <source>Created &amp;by:</source>
-      <translation>Created &amp;by:</translation>
+      <translation>Kreirano &amp;od:</translation>
     </message>
     <message>
       <location/>
       <source>Com&amp;pany:</source>
-      <translation>Com&amp;pany:</translation>
+      <translation>Kom&amp;panija:</translation>
     </message>
     <message>
       <location/>
       <source>Last &amp;modification date:</source>
-      <translation>Last &amp;modification date:</translation>
+      <translation>Posljednja iz&amp;mjena i datum:</translation>
     </message>
     <message>
       <location/>
       <source>Creation &amp;date:</source>
-      <translation>Creation &amp;date:</translation>
+      <translation>Izrada i &amp;datum:</translation>
     </message>
     <message>
       <location/>
@@ -1427,52 +1425,52 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Output window</source>
-      <translation>Output window</translation>
+      <translation>Izlazni prozor</translation>
     </message>
     <message>
       <location/>
       <source>Output</source>
-      <translation>Output</translation>
+      <translation>Izlaz</translation>
     </message>
     <message>
       <location/>
       <source>Record log messages</source>
-      <translation>Record log messages</translation>
+      <translation>Snimanje log poruke</translation>
     </message>
     <message>
       <location/>
       <source>Record warnings</source>
-      <translation>Record warnings</translation>
+      <translation>Snimanje upozorenja</translation>
     </message>
     <message>
       <location/>
       <source>Record error messages</source>
-      <translation>Record error messages</translation>
+      <translation>Snimanje poruka o pogrešci</translation>
     </message>
     <message>
       <location/>
       <source>Colors</source>
-      <translation>Colors</translation>
+      <translation>Boje</translation>
     </message>
     <message>
       <location/>
       <source>Normal messages:</source>
-      <translation>Normal messages:</translation>
+      <translation>Normalne poruke:</translation>
     </message>
     <message>
       <location/>
       <source>Log messages:</source>
-      <translation>Log messages:</translation>
+      <translation>Log poruke:</translation>
     </message>
     <message>
       <location/>
       <source>Warnings:</source>
-      <translation>Warnings:</translation>
+      <translation>Upozorenja:</translation>
     </message>
     <message>
       <location/>
       <source>Errors:</source>
-      <translation>Errors:</translation>
+      <translation>Pogreške:</translation>
     </message>
     <message>
       <location/>
@@ -1482,7 +1480,7 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Redirect internal Python errors to report view</source>
-      <translation>Redirect internal Python errors to report view</translation>
+      <translation>Preusmjeravanje unutarnjih Python grešaka u prikaz pogrešaka</translation>
     </message>
   </context>
   <context>
@@ -1490,12 +1488,12 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Redirect Python errors</source>
-      <translation>Redirect Python errors</translation>
+      <translation>Preusmjeravanje Python pogreški</translation>
     </message>
     <message>
       <location/>
       <source>In order to take effect this change you must restart the application.</source>
-      <translation>In order to take effect this change you must restart the application.</translation>
+      <translation>Da bi ove promjene stupile na snagu morate ponovno pokrenuti aplikaciju.</translation>
     </message>
   </context>
   <context>
@@ -1503,17 +1501,17 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Running external program</source>
-      <translation>Running external program</translation>
+      <translation>Izvođenje vanjskog programa</translation>
     </message>
     <message>
       <location/>
       <source>TextLabel</source>
-      <translation>TextLabel</translation>
+      <translation>Tekst oznaka</translation>
     </message>
     <message>
       <location/>
       <source>Advanced &gt;&gt;</source>
-      <translation>Advanced &gt;&gt;</translation>
+      <translation>Napredno &gt;&gt;</translation>
     </message>
     <message>
       <location/>
@@ -1523,27 +1521,27 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Accept changes</source>
-      <translation>Accept changes</translation>
+      <translation>Prihvati promjene</translation>
     </message>
     <message>
       <location/>
       <source>Discard changes</source>
-      <translation>Discard changes</translation>
+      <translation>Odbaci promjene</translation>
     </message>
     <message>
       <location/>
       <source>Abort program</source>
-      <translation>Abort program</translation>
+      <translation>Prekini program</translation>
     </message>
     <message>
       <location/>
       <source>Help</source>
-      <translation>Help</translation>
+      <translation>Pomoć</translation>
     </message>
     <message>
       <location/>
       <source>Select a file</source>
-      <translation>Select a file</translation>
+      <translation>Odaberite datoteku</translation>
     </message>
   </context>
   <context>
@@ -1551,32 +1549,32 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>3D View</source>
-      <translation>3D View</translation>
+      <translation>3D Prikaz</translation>
     </message>
     <message>
       <location/>
       <source>3D View settings</source>
-      <translation>3D View settings</translation>
+      <translation>Postavke 3D prikaza</translation>
     </message>
     <message>
       <location/>
       <source>Show coordinate system in the corner</source>
-      <translation>Show coordinate system in the corner</translation>
+      <translation>Prikaži koordinatni sustav u kutu</translation>
     </message>
     <message>
       <location/>
       <source>Show counter of frames per second</source>
-      <translation>Show counter of frames per second</translation>
+      <translation>Pokaži brojač sličica u sekundi</translation>
     </message>
     <message>
       <location/>
       <source>Enable animation</source>
-      <translation>Enable animation</translation>
+      <translation>Omogući animacije</translation>
     </message>
     <message>
       <location/>
       <source>Enable anti-aliasing (slower)</source>
-      <translation>Enable anti-aliasing (slower)</translation>
+      <translation>Omogući anti-aliasing (sporije)</translation>
     </message>
     <message>
       <location/>
@@ -1596,7 +1594,7 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Perspective rendering</source>
-      <translation>Perspective rendering</translation>
+      <translation>Perspektivna projekcija</translation>
     </message>
     <message>
       <location/>
@@ -1606,22 +1604,22 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>3D Navigation</source>
-      <translation>3D Navigation</translation>
+      <translation>3D navigacija</translation>
     </message>
     <message>
       <location/>
       <source>Mouse...</source>
-      <translation>Mouse...</translation>
+      <translation>Miš...</translation>
     </message>
     <message>
       <location/>
       <source>Intensity of backlight</source>
-      <translation>Intensity of backlight</translation>
+      <translation>Intenzitet osvjetljenja</translation>
     </message>
     <message>
       <location/>
       <source>Enable backlight color</source>
-      <translation>Enable backlight color</translation>
+      <translation>Omogući pozadinskog osvjetljenje</translation>
     </message>
   </context>
   <context>
@@ -1629,7 +1627,7 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>%1 navigation</source>
-      <translation>%1 navigation</translation>
+      <translation>%1 navigacija</translation>
     </message>
   </context>
   <context>
@@ -1637,7 +1635,7 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Color model</source>
-      <translation>Color model</translation>
+      <translation>Model boja</translation>
     </message>
     <message>
       <location/>
@@ -1647,32 +1645,32 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>red-yellow-green-cyan-blue</source>
-      <translation>red-yellow-green-cyan-blue</translation>
+      <translation>crveno-žuto-zeleno-cijan-plavo</translation>
     </message>
     <message>
       <location/>
       <source>blue-cyan-green-yellow-red</source>
-      <translation>blue-cyan-green-yellow-red</translation>
+      <translation>plavo-cijan-zeleno-žuto-crveno</translation>
     </message>
     <message>
       <location/>
       <source>white-black</source>
-      <translation>white-black</translation>
+      <translation>bijelo-crna</translation>
     </message>
     <message>
       <location/>
       <source>black-white</source>
-      <translation>black-white</translation>
+      <translation>crno-bijela</translation>
     </message>
     <message>
       <location/>
       <source>Visibility</source>
-      <translation>Visibility</translation>
+      <translation>Vidljivost</translation>
     </message>
     <message>
       <location/>
       <source>Out g&amp;rayed</source>
-      <translation>Out g&amp;rayed</translation>
+      <translation>Od G &amp; rayed</translation>
     </message>
     <message>
       <location/>
@@ -1682,37 +1680,37 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Out &amp;invisible</source>
-      <translation>Out &amp;invisible</translation>
+      <translation>van &amp; nevidljiv</translation>
     </message>
     <message>
       <location/>
       <source>Alt+I</source>
-      <translation>Alt+I</translation>
+      <translation>Alt + I</translation>
     </message>
     <message>
       <location/>
       <source>Style</source>
-      <translation>Style</translation>
+      <translation>Stil</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Zero</source>
-      <translation>&amp;Zero</translation>
+      <translation>&amp;Nula</translation>
     </message>
     <message>
       <location/>
       <source>Alt+Z</source>
-      <translation>Alt+Z</translation>
+      <translation>Alt + Z</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Flow</source>
-      <translation>&amp;Flow</translation>
+      <translation>&amp;Tok</translation>
     </message>
     <message>
       <location/>
       <source>Alt+F</source>
-      <translation>Alt+F</translation>
+      <translation>Alt + F</translation>
     </message>
     <message>
       <location/>
@@ -1727,7 +1725,7 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Parameter range</source>
-      <translation>Parameter range</translation>
+      <translation>Raspon parametra</translation>
     </message>
     <message>
       <location/>
@@ -1737,17 +1735,17 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Ma&amp;ximum:</source>
-      <translation>Ma&amp;ximum:</translation>
+      <translation>Ma&amp;ksimum:</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Labels:</source>
-      <translation>&amp;Labels:</translation>
+      <translation>&amp;Oznake:</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Decimals:</source>
-      <translation>&amp;Decimals:</translation>
+      <translation>&amp;Decimale:</translation>
     </message>
     <message>
       <location/>
@@ -1757,7 +1755,7 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Color-gradient settings</source>
-      <translation>Color-gradient settings</translation>
+      <translation>Boja-gradijent postavke</translation>
     </message>
   </context>
   <context>
@@ -1765,12 +1763,12 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Wrong parameter</source>
-      <translation>Wrong parameter</translation>
+      <translation>Pogrešan parametar</translation>
     </message>
     <message>
       <location/>
       <source>The maximum value must be higher than the minimum value.</source>
-      <translation>The maximum value must be higher than the minimum value.</translation>
+      <translation>Maksimalna vrijednost mora biti veći od minimalne vrijednosti.</translation>
     </message>
   </context>
   <context>
@@ -1778,7 +1776,7 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Document</source>
-      <translation>Document</translation>
+      <translation>Dokument</translation>
     </message>
     <message>
       <location/>
@@ -1789,58 +1787,57 @@ Specify another directory, please.</translation>
       <location/>
       <source>Document save compression level
 (0 = none, 9 = highest, 3 = default)</source>
-      <translation>Document save compression level
-(0 = none, 9 = highest, 3 = default)</translation>
+      <translation>Razina kompresije spremanja dokumenta (0 = ništa, 9 = najviši, 3 = zadana vrijednost)</translation>
     </message>
     <message>
       <location/>
       <source>Undo Redo Size (in Megabyte)</source>
-      <translation>Undo Redo Size (in Megabyte)</translation>
+      <translation>Vrati Ponovi (Undo Redo) Veličina (u megabajtima)</translation>
     </message>
     <message>
       <location/>
       <source>Create new document at start up</source>
-      <translation>Create new document at start up</translation>
+      <translation>Stvaranje novog dokumenta prilikom pokretanja</translation>
     </message>
     <message>
       <location/>
       <source>Using Undo/Redo on documents (can be very memory consuming)</source>
-      <translation>Using Undo/Redo on documents (can be very memory consuming)</translation>
+      <translation>Korištenje vrati ponovi (Undo / Redo) na dokumentima (može zahtjevati mnogo memorije)</translation>
     </message>
     <message>
       <location/>
       <source>Storage</source>
-      <translation>Storage</translation>
+      <translation>Skladištenje</translation>
     </message>
     <message>
       <location/>
       <source>Saving transactions (Auto-save)</source>
-      <translation>Saving transactions (Auto-save)</translation>
+      <translation>Spremanje transakcije (Auto-save)</translation>
     </message>
     <message>
       <location/>
       <source>Discard saved transaction after saving document</source>
-      <translation>Discard saved transaction after saving document</translation>
+      <translation>Odbaci spremljene transakcije nakon spremanja dokumenta</translation>
     </message>
     <message>
       <location/>
       <source>Save thumbnail into project file when saving document</source>
-      <translation>Save thumbnail into project file when saving document</translation>
+      <translation>Spremi thumbnail u projekt datoteku prilikom spremanja dokumenta</translation>
     </message>
     <message>
       <location/>
       <source>Create up to backup files when resaving document</source>
-      <translation>Create up to backup files when resaving document</translation>
+      <translation>Napravite sigurnosnih kopija datoteka prilikom spremanja</translation>
     </message>
     <message>
       <location/>
       <source>Document objects</source>
-      <translation>Document objects</translation>
+      <translation>Objekti dokumenta</translation>
     </message>
     <message>
       <location/>
       <source>Allow duplicate object labels in one document</source>
-      <translation>Allow duplicate object labels in one document</translation>
+      <translation>Dopusti dvostruke nazive objekata u jednom dokumentu</translation>
     </message>
   </context>
   <context>
@@ -1848,7 +1845,7 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Text</source>
-      <translation>Text</translation>
+      <translation>Tekst</translation>
     </message>
     <message>
       <location/>
@@ -1858,47 +1855,47 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Breakpoint</source>
-      <translation>Breakpoint</translation>
+      <translation>Prijelomna točka</translation>
     </message>
     <message>
       <location/>
       <source>Keyword</source>
-      <translation>Keyword</translation>
+      <translation>Kljušna riječ</translation>
     </message>
     <message>
       <location/>
       <source>Comment</source>
-      <translation>Comment</translation>
+      <translation>Komentar</translation>
     </message>
     <message>
       <location/>
       <source>Block comment</source>
-      <translation>Block comment</translation>
+      <translation>Blok komentar</translation>
     </message>
     <message>
       <location/>
       <source>Number</source>
-      <translation>Number</translation>
+      <translation>Broj</translation>
     </message>
     <message>
       <location/>
       <source>String</source>
-      <translation>String</translation>
+      <translation>Tekst (string)</translation>
     </message>
     <message>
       <location/>
       <source>Character</source>
-      <translation>Character</translation>
+      <translation>Simbol</translation>
     </message>
     <message>
       <location/>
       <source>Class name</source>
-      <translation>Class name</translation>
+      <translation>Ime klase</translation>
     </message>
     <message>
       <location/>
       <source>Define name</source>
-      <translation>Define name</translation>
+      <translation>Odredite naziv</translation>
     </message>
     <message>
       <location/>
@@ -1908,17 +1905,17 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Python output</source>
-      <translation>Python output</translation>
+      <translation>Python izlaz</translation>
     </message>
     <message>
       <location/>
       <source>Python error</source>
-      <translation>Python error</translation>
+      <translation>Python pogreška</translation>
     </message>
     <message>
       <location/>
       <source>Items</source>
-      <translation>Items</translation>
+      <translation>Jedinice</translation>
     </message>
   </context>
   <context>
@@ -1926,127 +1923,127 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Image settings</source>
-      <translation>Image settings</translation>
+      <translation>Postavke slike</translation>
     </message>
     <message>
       <location/>
       <source>Image properties</source>
-      <translation>Image properties</translation>
+      <translation>Opcije slike</translation>
     </message>
     <message>
       <location/>
       <source>Back&amp;ground:</source>
-      <translation>Back&amp;ground:</translation>
+      <translation>Poza&amp;dina:</translation>
     </message>
     <message>
       <location/>
       <source>Current</source>
-      <translation>Current</translation>
+      <translation>Trenutna</translation>
     </message>
     <message>
       <location/>
       <source>White</source>
-      <translation>White</translation>
+      <translation>Bijela</translation>
     </message>
     <message>
       <location/>
       <source>Black</source>
-      <translation>Black</translation>
+      <translation>Crna</translation>
     </message>
     <message>
       <location/>
       <source>Transparent</source>
-      <translation>Transparent</translation>
+      <translation>Transparentan</translation>
     </message>
     <message>
       <location/>
       <source>Image dimensions</source>
-      <translation>Image dimensions</translation>
+      <translation>Dimenzije slike</translation>
     </message>
     <message>
       <location/>
       <source>Pixel</source>
-      <translation>Pixel</translation>
+      <translation>Piksel</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Width:</source>
-      <translation>&amp;Width:</translation>
+      <translation>&amp;Širina:</translation>
     </message>
     <message>
       <location/>
       <source>Current screen</source>
-      <translation>Current screen</translation>
+      <translation>Trenutni ekran</translation>
     </message>
     <message>
       <location/>
       <source>Icon       32  x 32</source>
-      <translation>Icon       32  x 32</translation>
+      <translation>Ikona 32 x 32</translation>
     </message>
     <message>
       <location/>
       <source>Icon       64 x 64</source>
-      <translation>Icon       64 x 64</translation>
+      <translation>Ikona 64 x 64</translation>
     </message>
     <message>
       <location/>
       <source>Icon       128 x 128</source>
-      <translation>Icon       128 x 128</translation>
+      <translation>Icon 128 x 128</translation>
     </message>
     <message>
       <location/>
       <source>CGA       320 x 200</source>
-      <translation>CGA       320 x 200</translation>
+      <translation>CGA 320 x 200</translation>
     </message>
     <message>
       <location/>
       <source>QVGA     320 x 240</source>
-      <translation>QVGA     320 x 240</translation>
+      <translation>QVGA 320 x 240</translation>
     </message>
     <message>
       <location/>
       <source>VGA       640 x 480</source>
-      <translation>VGA       640 x 480</translation>
+      <translation>VGA 640 x 480</translation>
     </message>
     <message>
       <location/>
       <source>NTSC     720 x 480</source>
-      <translation>NTSC     720 x 480</translation>
+      <translation>NTSC 720 x 480</translation>
     </message>
     <message>
       <location/>
       <source>PAL        768 x 578</source>
-      <translation>PAL        768 x 578</translation>
+      <translation>PAL 768 x 578</translation>
     </message>
     <message>
       <location/>
       <source>SVGA     800 x 600</source>
-      <translation>SVGA     800 x 600</translation>
+      <translation>SVGA 800 x 600</translation>
     </message>
     <message>
       <location/>
       <source>XGA       1024 x 768</source>
-      <translation>XGA       1024 x 768</translation>
+      <translation>XGA 1024 x 768</translation>
     </message>
     <message>
       <location/>
       <source>HD720   1280 x 720</source>
-      <translation>HD720   1280 x 720</translation>
+      <translation>HD720 1280 x 720</translation>
     </message>
     <message>
       <location/>
       <source>SXGA     1280 x 1024</source>
-      <translation>SXGA     1280 x 1024</translation>
+      <translation>SXGA 1280 x 1024</translation>
     </message>
     <message>
       <location/>
       <source>SXGA+   1400 x 1050</source>
-      <translation>SXGA+   1400 x 1050</translation>
+      <translation>SXGA + 1400 x 1050</translation>
     </message>
     <message>
       <location/>
       <source>UXGA     1600 x 1200</source>
-      <translation>UXGA     1600 x 1200</translation>
+      <translation>UXGA 1600 x 1200</translation>
     </message>
     <message>
       <location/>
@@ -2056,57 +2053,57 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>WUXGA  1920 x 1200</source>
-      <translation>WUXGA  1920 x 1200</translation>
+      <translation>WUXGA 1920 x 1200</translation>
     </message>
     <message>
       <location/>
       <source>QXGA     2048 x 1538</source>
-      <translation>QXGA     2048 x 1538</translation>
+      <translation>QXGA 2048 x 1538</translation>
     </message>
     <message>
       <location/>
       <source>WQXGA  2560 x 1600</source>
-      <translation>WQXGA  2560 x 1600</translation>
+      <translation>WQXGA 2560 x 1600</translation>
     </message>
     <message>
       <location/>
       <source>QSXGA   2560 x 2048</source>
-      <translation>QSXGA   2560 x 2048</translation>
+      <translation>QSXGA 2560 x 2048</translation>
     </message>
     <message>
       <location/>
       <source>QUXGA   3200 × 2400</source>
-      <translation>QUXGA   3200 × 2400</translation>
+      <translation>QUXGA 3200 × 2400</translation>
     </message>
     <message>
       <location/>
       <source>HUXGA   6400 × 4800</source>
-      <translation>HUXGA   6400 × 4800</translation>
+      <translation>HUXGA 6400 × 4800</translation>
     </message>
     <message>
       <location/>
       <source>!!!          10000 x 10000</source>
-      <translation>!!!          10000 x 10000</translation>
+      <translation>!!! 10000 x 10000</translation>
     </message>
     <message>
       <location/>
       <source>Standard sizes:</source>
-      <translation>Standard sizes:</translation>
+      <translation>Standardne veličine:</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Height:</source>
-      <translation>&amp;Height:</translation>
+      <translation>&amp;Visina:</translation>
     </message>
     <message>
       <location/>
       <source>Aspect ratio:</source>
-      <translation>Aspect ratio:</translation>
+      <translation>Omjer:</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Screen</source>
-      <translation>&amp;Screen</translation>
+      <translation>&amp;Ekran</translation>
     </message>
     <message>
       <location/>
@@ -2141,22 +2138,22 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Alt+1</source>
-      <translation>Alt+1</translation>
+      <translation>ALT+1</translation>
     </message>
     <message>
       <location/>
       <source>Image comment</source>
-      <translation>Image comment</translation>
+      <translation>Komentar slike</translation>
     </message>
     <message>
       <location/>
       <source>Insert MIBA</source>
-      <translation>Insert MIBA</translation>
+      <translation>Umetni MIBA</translation>
     </message>
     <message>
       <location/>
       <source>Insert comment</source>
-      <translation>Insert comment</translation>
+      <translation>Umetni komentar</translation>
     </message>
   </context>
   <context>
@@ -2164,27 +2161,27 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Macro</source>
-      <translation>Macro</translation>
+      <translation>Makro</translation>
     </message>
     <message>
       <location/>
       <source>Macro recording settings</source>
-      <translation>Macro recording settings</translation>
+      <translation>Postavke snimanja za makro</translation>
     </message>
     <message>
       <location/>
       <source>Logging Commands</source>
-      <translation>Logging Commands</translation>
+      <translation>Prijava Naredbi</translation>
     </message>
     <message>
       <location/>
       <source>Show script commands in python console</source>
-      <translation>Show script commands in python console</translation>
+      <translation>Prikaži naredbe skripta u python konzoli</translation>
     </message>
     <message>
       <location/>
       <source>Log all commands issued by menus to file:</source>
-      <translation>Log all commands issued by menus to file:</translation>
+      <translation>Prijavite se sve naredbe izdane od strane izbornika u datoteku:</translation>
     </message>
     <message>
       <location/>
@@ -2194,22 +2191,22 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Gui commands</source>
-      <translation>Gui commands</translation>
+      <translation>GUI naredbe</translation>
     </message>
     <message>
       <location/>
       <source>Recording GUI commands</source>
-      <translation>Recording GUI commands</translation>
+      <translation>Snimanje GUI naredbi</translation>
     </message>
     <message>
       <location/>
       <source>Record as comment</source>
-      <translation>Record as comment</translation>
+      <translation>Snimiti kao komentar</translation>
     </message>
     <message>
       <location/>
       <source>Macro path</source>
-      <translation>Macro path</translation>
+      <translation>Makro put</translation>
     </message>
   </context>
   <context>
@@ -2217,42 +2214,42 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Units</source>
-      <translation>Units</translation>
+      <translation>Mjerne jedinice</translation>
     </message>
     <message>
       <location/>
       <source>Units settings</source>
-      <translation>Units settings</translation>
+      <translation>Postavke mjernih jedinica</translation>
     </message>
     <message>
       <location/>
       <source>Standard (mm/kg/s/degree)</source>
-      <translation>Standard (mm/kg/s/degree)</translation>
+      <translation>Standardno (mm/kg/s/°)</translation>
     </message>
     <message>
       <location/>
       <source>MKS (m/kg/s/degree)</source>
-      <translation>MKS (m/kg/s/degree)</translation>
+      <translation>MKS (m/kg/s/°)</translation>
     </message>
     <message>
       <location/>
       <source>Magnitude</source>
-      <translation>Magnitude</translation>
+      <translation>Povečanje</translation>
     </message>
     <message>
       <location/>
       <source>Unit</source>
-      <translation>Unit</translation>
+      <translation>Jedinica</translation>
     </message>
     <message>
       <location/>
       <source>User system:</source>
-      <translation>User system:</translation>
+      <translation>Sustav korisnika:</translation>
     </message>
     <message>
       <location/>
       <source>Imperial (in/lb)</source>
-      <translation>Imperial (in/lb)</translation>
+      <translation>Imperial (u / lb)</translation>
     </message>
   </context>
   <context>
@@ -2260,7 +2257,7 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Colors</source>
-      <translation>Colors</translation>
+      <translation>Boje</translation>
     </message>
     <message>
       <location/>
@@ -2275,27 +2272,27 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Enable preselection highlighting</source>
-      <translation>Enable preselection highlighting</translation>
+      <translation>Omogući isticanje prelaskom miša</translation>
     </message>
     <message>
       <location/>
       <source>Background color</source>
-      <translation>Background color</translation>
+      <translation>Boja pozadine</translation>
     </message>
     <message>
       <location/>
       <source>Middle color</source>
-      <translation>Middle color</translation>
+      <translation>Srednja boja</translation>
     </message>
     <message>
       <location/>
       <source>Color gradient</source>
-      <translation>Color gradient</translation>
+      <translation>Gradijent boje</translation>
     </message>
     <message>
       <location/>
       <source>Simple color</source>
-      <translation>Simple color</translation>
+      <translation>Jednostavna boja</translation>
     </message>
   </context>
   <context>
@@ -2303,17 +2300,17 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Tip of the day</source>
-      <translation>Tip of the day</translation>
+      <translation>Savjet dana</translation>
     </message>
     <message>
       <location/>
       <source>&lt;b&gt;&lt;font face="Times New Roman"&gt;&lt;font size="+3"&gt;Did you know...&lt;/font&gt;&lt;/font&gt;&lt;/b&gt;</source>
-      <translation>&lt;b&gt;&lt;font face="Times New Roman"&gt;&lt;font size="+3"&gt;Did you know...&lt;/font&gt;&lt;/font&gt;&lt;/b&gt;</translation>
+      <translation>&lt;font size="+3"&gt;&lt;font face="Times New Roman"&gt;&lt;b&gt;Jeste li znali ...&lt;/b&gt;&lt;/font&gt;&lt;/font&gt;</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Show tips at start up</source>
-      <translation>&amp;Show tips at start up</translation>
+      <translation>&amp;Pokaži savjete prilikom pokretanja</translation>
     </message>
     <message>
       <location/>
@@ -2323,12 +2320,12 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>&amp;Next Tip</source>
-      <translation>&amp;Next Tip</translation>
+      <translation>&amp;Sljedeći savjet</translation>
     </message>
     <message>
       <location/>
       <source>Alt+N</source>
-      <translation>Alt+N</translation>
+      <translation>Alt + N</translation>
     </message>
     <message>
       <location/>
@@ -2352,13 +2349,12 @@ Specify another directory, please.</translation>
       <location/>
       <source>Download failed: %1
 </source>
-      <translation>Download failed: %1
-</translation>
+      <translation>Preuzimanje nije uspjelo:%1 </translation>
     </message>
     <message>
       <location/>
       <source>If you want to learn more about FreeCAD you must go to %1 or press the Help item in the Help menu.</source>
-      <translation>If you want to learn more about FreeCAD you must go to %1 or press the Help item in the Help menu.</translation>
+      <translation>Ako želite saznati više o FreeCADu možete ići na %1 ili pritisnite Pomoć stavku u izborniku Pomoć.</translation>
     </message>
   </context>
   <context>
@@ -2366,7 +2362,7 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Placement</source>
-      <translation>Placement</translation>
+      <translation>Položaj</translation>
     </message>
   </context>
   <context>
@@ -2374,12 +2370,12 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Input vector</source>
-      <translation>Input vector</translation>
+      <translation>Ulazni vektor</translation>
     </message>
     <message>
       <location/>
       <source>Vector</source>
-      <translation>Vector</translation>
+      <translation>Vektor</translation>
     </message>
     <message>
       <location/>
@@ -2407,32 +2403,32 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Mouse buttons</source>
-      <translation>Mouse buttons</translation>
+      <translation>Tipke miša</translation>
     </message>
     <message>
       <location/>
       <source>Configuration</source>
-      <translation>Configuration</translation>
+      <translation>Konfiguracija</translation>
     </message>
     <message>
       <location/>
       <source>Selection:</source>
-      <translation>Selection:</translation>
+      <translation>Odabrano:</translation>
     </message>
     <message>
       <location/>
       <source>Panning</source>
-      <translation>Panning</translation>
+      <translation>Pomicanje pogleda</translation>
     </message>
     <message>
       <location/>
       <source>Rotation:</source>
-      <translation>Rotation:</translation>
+      <translation>Rotacija:</translation>
     </message>
     <message>
       <location/>
       <source>Zooming:</source>
-      <translation>Zooming:</translation>
+      <translation>Zumiranje:</translation>
     </message>
   </context>
   <context>
@@ -2440,77 +2436,77 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Expand</source>
-      <translation>Expand</translation>
+      <translation>Proširi</translation>
     </message>
     <message>
       <location/>
       <source>Add sub-group</source>
-      <translation>Add sub-group</translation>
+      <translation>Dodaj podgrupu</translation>
     </message>
     <message>
       <location/>
       <source>Remove group</source>
-      <translation>Remove group</translation>
+      <translation>Ukloni grupu</translation>
     </message>
     <message>
       <location/>
       <source>Rename group</source>
-      <translation>Rename group</translation>
+      <translation>Preimenuj grupu</translation>
     </message>
     <message>
       <location/>
       <source>Export parameter</source>
-      <translation>Export parameter</translation>
+      <translation>Izvoz parametra</translation>
     </message>
     <message>
       <location/>
       <source>Import parameter</source>
-      <translation>Import parameter</translation>
+      <translation>Uvoz parametra</translation>
     </message>
     <message>
       <location/>
       <source>Collapse</source>
-      <translation>Collapse</translation>
+      <translation>Kolaps</translation>
     </message>
     <message>
       <location/>
       <source>Do really want to remove this parameter group?</source>
-      <translation>Do really want to remove this parameter group?</translation>
+      <translation>Da li stvarno želite ukloniti ovu grupu parametara?</translation>
     </message>
     <message>
       <location/>
       <source>Existing sub-group</source>
-      <translation>Existing sub-group</translation>
+      <translation>Postojeća podgrupa</translation>
     </message>
     <message>
       <location/>
       <source>The sub-group '%1' already exists.</source>
-      <translation>The sub-group '%1' already exists.</translation>
+      <translation>Pod-grupa '%1' već postoji.</translation>
     </message>
     <message>
       <location/>
       <source>Export parameter to file</source>
-      <translation>Export parameter to file</translation>
+      <translation>Izvoz parametra u datoteku</translation>
     </message>
     <message>
       <location/>
       <source>XML (*.FCParam)</source>
-      <translation>XML (*.FCParam)</translation>
+      <translation>XML (*. FCParam)</translation>
     </message>
     <message>
       <location/>
       <source>Import parameter from file</source>
-      <translation>Import parameter from file</translation>
+      <translation>Uvoz parametara iz datoteke</translation>
     </message>
     <message>
       <location/>
       <source>Import Error</source>
-      <translation>Import Error</translation>
+      <translation>Greška uvoza</translation>
     </message>
     <message>
       <location/>
       <source>Reading from '%1' failed.</source>
-      <translation>Reading from '%1' failed.</translation>
+      <translation>Čitanje iz '%1' nije uspjelo.</translation>
     </message>
   </context>
   <context>
@@ -2518,57 +2514,57 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Change value</source>
-      <translation>Change value</translation>
+      <translation>Promjena vrijednosti</translation>
     </message>
     <message>
       <location/>
       <source>Remove key</source>
-      <translation>Remove key</translation>
+      <translation>Odbaci tipka</translation>
     </message>
     <message>
       <location/>
       <source>Rename key</source>
-      <translation>Rename key</translation>
+      <translation>Preimenuj tipka</translation>
     </message>
     <message>
       <location/>
       <source>New</source>
-      <translation>New</translation>
+      <translation>Novi</translation>
     </message>
     <message>
       <location/>
       <source>New string item</source>
-      <translation>New string item</translation>
+      <translation>Nova niz (string) jedinica</translation>
     </message>
     <message>
       <location/>
       <source>New float item</source>
-      <translation>New float item</translation>
+      <translation>Nova float jedinica</translation>
     </message>
     <message>
       <location/>
       <source>New integer item</source>
-      <translation>New integer item</translation>
+      <translation>Nova integer jedinica</translation>
     </message>
     <message>
       <location/>
       <source>New unsigned item</source>
-      <translation>New unsigned item</translation>
+      <translation>Nova unsigned jedinica</translation>
     </message>
     <message>
       <location/>
       <source>New Boolean item</source>
-      <translation>New Boolean item</translation>
+      <translation>Nova Boolean jedinica</translation>
     </message>
     <message>
       <location/>
       <source>Existing item</source>
-      <translation>Existing item</translation>
+      <translation>Postojeća jedinica</translation>
     </message>
     <message>
       <location/>
       <source>The item '%1' already exists.</source>
-      <translation>The item '%1' already exists.</translation>
+      <translation>Jedinica '%1' već postoji.</translation>
     </message>
   </context>
   <context>
@@ -2576,7 +2572,7 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Placement</source>
-      <translation>Placement</translation>
+      <translation>Položaj</translation>
     </message>
     <message>
       <location/>
@@ -2586,7 +2582,7 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Translation:</source>
-      <translation>Translation:</translation>
+      <translation>Translacija:</translation>
     </message>
     <message>
       <location/>
@@ -2606,72 +2602,72 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Rotation:</source>
-      <translation>Rotation:</translation>
+      <translation>Rotacija:</translation>
     </message>
     <message>
       <location/>
       <source>Angle:</source>
-      <translation>Angle:</translation>
+      <translation>Kut:</translation>
     </message>
     <message>
       <location/>
       <source>Axis:</source>
-      <translation>Axis:</translation>
+      <translation>Os:</translation>
     </message>
     <message>
       <location/>
       <source>Center:</source>
-      <translation>Center:</translation>
+      <translation>Centar:</translation>
     </message>
     <message>
       <location/>
       <source>Pitch:</source>
-      <translation>Pitch:</translation>
+      <translation>Vrh:</translation>
     </message>
     <message>
       <location/>
       <source>Roll:</source>
-      <translation>Roll:</translation>
+      <translation>Svitak:</translation>
     </message>
     <message>
       <location/>
       <source>Yaw:</source>
-      <translation>Yaw:</translation>
+      <translation>Skretati sa pravca:</translation>
     </message>
     <message>
       <location/>
       <source>Rotation axis wih angle</source>
-      <translation>Rotation axis wih angle</translation>
+      <translation>Os rotacije s kutem</translation>
     </message>
     <message>
       <location/>
       <source>Euler angles</source>
-      <translation>Euler angles</translation>
+      <translation>Eulerovi kutevi</translation>
     </message>
     <message>
       <location/>
       <source>Apply placement changes immediately</source>
-      <translation>Apply placement changes immediately</translation>
+      <translation>Primijeni promjene položaja odmah</translation>
     </message>
     <message>
       <location/>
       <source>Apply incremental changes to object placement</source>
-      <translation>Apply incremental changes to object placement</translation>
+      <translation>Primijeni inkrementalne promjene položaju objekta</translation>
     </message>
     <message>
       <location/>
       <source>Apply</source>
-      <translation>Apply</translation>
+      <translation>Primijeni</translation>
     </message>
     <message>
       <location/>
       <source>Reset</source>
-      <translation>Reset</translation>
+      <translation>Odbaci</translation>
     </message>
     <message>
       <location/>
       <source>Close</source>
-      <translation>Close</translation>
+      <translation>Zatvori</translation>
     </message>
   </context>
   <context>
@@ -2679,17 +2675,17 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Dialog</source>
-      <translation>Dialog</translation>
+      <translation>Dijalog</translation>
     </message>
     <message>
       <location/>
       <source>Close</source>
-      <translation>Close</translation>
+      <translation>Zatvori</translation>
     </message>
     <message>
       <location/>
       <source>Refresh</source>
-      <translation>Refresh</translation>
+      <translation>Osvježi</translation>
     </message>
   </context>
   <context>
@@ -2697,12 +2693,12 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Inventor Tree</source>
-      <translation>Inventor Tree</translation>
+      <translation>Inventor stablo</translation>
     </message>
     <message>
       <location/>
       <source>Nodes</source>
-      <translation>Nodes</translation>
+      <translation>Čvorovi</translation>
     </message>
   </context>
   <context>
@@ -2710,47 +2706,47 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Texture</source>
-      <translation>Texture</translation>
+      <translation>Tekstura</translation>
     </message>
     <message>
       <location/>
       <source>Texture mapping</source>
-      <translation>Texture mapping</translation>
+      <translation>Mapiranje tekstura</translation>
     </message>
     <message>
       <location/>
       <source>Global</source>
-      <translation>Global</translation>
+      <translation>Globalna</translation>
     </message>
     <message>
       <location/>
       <source>Environment</source>
-      <translation>Environment</translation>
+      <translation>Okolina</translation>
     </message>
     <message>
       <location/>
       <source>Image files (%1)</source>
-      <translation>Image files (%1)</translation>
+      <translation>Slikovne datoteke (%1)</translation>
     </message>
     <message>
       <location/>
       <source>No image</source>
-      <translation>No image</translation>
+      <translation>Nema slike</translation>
     </message>
     <message>
       <location/>
       <source>The specified file is not a valid image file.</source>
-      <translation>The specified file is not a valid image file.</translation>
+      <translation>Navedena datoteka nije valjana datoteka slike.</translation>
     </message>
     <message>
       <location/>
       <source>No 3d view</source>
-      <translation>No 3d view</translation>
+      <translation>Nema 3D prikaza</translation>
     </message>
     <message>
       <location/>
       <source>No active 3d view found.</source>
-      <translation>No active 3d view found.</translation>
+      <translation>Nije pronađen aktivni 3D prikaz.</translation>
     </message>
   </context>
   <context>
@@ -2763,7 +2759,7 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Transform</source>
-      <translation>Transform</translation>
+      <translation>Transformiraj</translation>
     </message>
   </context>
   <context>
@@ -2771,12 +2767,12 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Dialog</source>
-      <translation>Dialog</translation>
+      <translation>Dijalog</translation>
     </message>
     <message>
       <location/>
       <source>Items</source>
-      <translation>Items</translation>
+      <translation>Jedinice</translation>
     </message>
     <message>
       <location/>
@@ -2817,47 +2813,47 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Previous</source>
-      <translation>Previous</translation>
+      <translation>Prethodna</translation>
     </message>
     <message>
       <location/>
       <source>Next</source>
-      <translation>Next</translation>
+      <translation>Slijedeća</translation>
     </message>
     <message>
       <location/>
       <source>Home</source>
-      <translation>Home</translation>
+      <translation>Početna stranica</translation>
     </message>
     <message>
       <location/>
       <source>Open</source>
-      <translation>Open</translation>
+      <translation>Otvori</translation>
     </message>
     <message>
       <location/>
       <source>Open file</source>
-      <translation>Open file</translation>
+      <translation>Otvori datoteku</translation>
     </message>
     <message>
       <location/>
       <source>All HTML files (*.html *.htm)</source>
-      <translation>All HTML files (*.html *.htm)</translation>
+      <translation>Sve HTML datoteke (*. html *. htm)</translation>
     </message>
     <message>
       <location/>
       <source>External browser</source>
-      <translation>External browser</translation>
+      <translation>Vanjski preglednik</translation>
     </message>
     <message>
       <location/>
       <source>No external browser found. Specify in preferences, please</source>
-      <translation>No external browser found. Specify in preferences, please</translation>
+      <translation>Nije pronađen vanjski preglednik. Navedite u postavkama, molim</translation>
     </message>
     <message>
       <location/>
       <source>Starting of %1 failed</source>
-      <translation>Starting of %1 failed</translation>
+      <translation>Pokretanje %1 nije uspjelo</translation>
     </message>
   </context>
   <context>
@@ -2865,7 +2861,7 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Property View</source>
-      <translation>Property View</translation>
+      <translation>Pregled vlasništva</translation>
     </message>
   </context>
   <context>
@@ -2873,17 +2869,17 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Logging</source>
-      <translation>Logging</translation>
+      <translation>Prijava</translation>
     </message>
     <message>
       <location/>
       <source>Warning</source>
-      <translation>Warning</translation>
+      <translation>Upozorenje</translation>
     </message>
     <message>
       <location/>
       <source>Error</source>
-      <translation>Error</translation>
+      <translation>Pogreška</translation>
     </message>
     <message>
       <location/>
@@ -2893,27 +2889,27 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Clear</source>
-      <translation>Clear</translation>
+      <translation>Brisanje</translation>
     </message>
     <message>
       <location/>
       <source>Save As...</source>
-      <translation>Save As...</translation>
+      <translation>Spremi kao ...</translation>
     </message>
     <message>
       <location/>
       <source>Save Report Output</source>
-      <translation>Save Report Output</translation>
+      <translation>Spremi izvješće izlaza</translation>
     </message>
     <message>
       <location/>
       <source>Plain Text Files (*.txt *.log)</source>
-      <translation>Plain Text Files (*.txt *.log)</translation>
+      <translation>Obične tekstualne datoteke (*. txt *. log)</translation>
     </message>
     <message>
       <location/>
       <source>Go to end</source>
-      <translation>Go to end</translation>
+      <translation>Idi na kraj</translation>
     </message>
   </context>
   <context>
@@ -2921,12 +2917,12 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Output</source>
-      <translation>Output</translation>
+      <translation>Izlaz</translation>
     </message>
     <message>
       <location/>
       <source>Python console</source>
-      <translation>Python console</translation>
+      <translation>Python konzola</translation>
     </message>
   </context>
   <context>
@@ -2934,7 +2930,7 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Property View</source>
-      <translation>Property View</translation>
+      <translation>Pregled vlasništva</translation>
     </message>
   </context>
   <context>
@@ -2942,7 +2938,7 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Task View</source>
-      <translation>Task View</translation>
+      <translation>Pregled zadataka</translation>
     </message>
   </context>
   <context>
@@ -2950,67 +2946,67 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Could not open file.</source>
-      <translation>Could not open file.</translation>
+      <translation>Ne mogu otvoriti datoteku.</translation>
     </message>
     <message>
       <location/>
       <source>You tried to access the address %1 which is currently unavailable. Please make sure that the URL exists and try reloading the page.</source>
-      <translation>You tried to access the address %1 which is currently unavailable. Please make sure that the URL exists and try reloading the page.</translation>
+      <translation>Pokušali ste pristupiti adresi %1, koja je trenutno nedostupna. Molimo provjerite je li URL postoji i pokušajte ponovno učitati stranicu.</translation>
     </message>
     <message>
       <location/>
       <source>Connecting to %1</source>
-      <translation>Connecting to %1</translation>
+      <translation>Spajanje na %1</translation>
     </message>
     <message>
       <location/>
       <source>Sending to %1</source>
-      <translation>Sending to %1</translation>
+      <translation>Slanje na %1</translation>
     </message>
     <message>
       <location/>
       <source>Reading from %1</source>
-      <translation>Reading from %1</translation>
+      <translation>Čitanje iz %1</translation>
     </message>
     <message>
       <location/>
       <source>Download failed: %1.</source>
-      <translation>Download failed: %1.</translation>
+      <translation>Preuzimanje nije uspjelo: %1.</translation>
     </message>
     <message>
       <location/>
       <source>Previous</source>
-      <translation>Previous</translation>
+      <translation>Prethodna</translation>
     </message>
     <message>
       <location/>
       <source>Forward</source>
-      <translation>Forward</translation>
+      <translation>Naprijed</translation>
     </message>
     <message>
       <location/>
       <source>Home</source>
-      <translation>Home</translation>
+      <translation>Početna stranica</translation>
     </message>
     <message>
       <location/>
       <source>Refresh</source>
-      <translation>Refresh</translation>
+      <translation>Osvježi</translation>
     </message>
     <message>
       <location/>
       <source>Copy</source>
-      <translation>Copy</translation>
+      <translation>Kopija</translation>
     </message>
     <message>
       <location/>
       <source>Select all</source>
-      <translation>Select all</translation>
+      <translation>Označi sve</translation>
     </message>
     <message>
       <location/>
       <source>No description for</source>
-      <translation>No description for</translation>
+      <translation>Nema opisa za</translation>
     </message>
   </context>
   <context>
@@ -3018,12 +3014,12 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Application</source>
-      <translation>Application</translation>
+      <translation>Aplikacija</translation>
     </message>
     <message>
       <location/>
       <source>Labels &amp; Attributes</source>
-      <translation>Labels &amp; Attributes</translation>
+      <translation>Etikete i atributi</translation>
     </message>
   </context>
   <context>
@@ -3031,68 +3027,66 @@ Specify another directory, please.</translation>
     <message>
       <location/>
       <source>Modified file</source>
-      <translation>Modified file</translation>
+      <translation>Promjena datoteke</translation>
     </message>
     <message>
       <location/>
       <source>%1.
 
 This has been modified outside of the source editor. Do you want to reload it?</source>
-      <translation>%1.
-
-This has been modified outside of the source editor. Do you want to reload it?</translation>
+      <translation>%1. 
+Ovo je modificirano izvan izvornog editora. Želite li ga ponovno učitati?</translation>
     </message>
     <message>
       <location/>
       <source>Unsaved document</source>
-      <translation>Unsaved document</translation>
+      <translation>Nespremljeni dokument</translation>
     </message>
     <message>
       <location/>
       <source>The document has been modified.
 Do you want to save your changes?</source>
-      <translation>The document has been modified.
-Do you want to save your changes?</translation>
+      <translation>Dokument je promijenjen. Želite li spremiti promjene?</translation>
     </message>
     <message>
       <location/>
       <source>FreeCAD macro (*.FCMacro);;Python (*.py)</source>
-      <translation>FreeCAD macro (*.FCMacro);;Python (*.py)</translation>
+      <translation>FreeCAD makro (*.FCMacro); Python (*.py)</translation>
     </message>
     <message>
       <location/>
       <source>Export PDF</source>
-      <translation>Export PDF</translation>
+      <translation>Izvoz PDF</translation>
     </message>
     <message>
       <location/>
       <source>PDF file (*.pdf)</source>
-      <translation>PDF file (*.pdf)</translation>
+      <translation>PDF datoteke (*.pdf)</translation>
     </message>
     <message>
       <location/>
       <source>untitled[*]</source>
-      <translation>untitled[*]</translation>
+      <translation>Bez imena[*]</translation>
     </message>
     <message>
       <location/>
       <source> - Editor</source>
-      <translation> - Editor</translation>
+      <translation> - Urednik</translation>
     </message>
     <message>
       <location/>
       <source>%1 chars removed</source>
-      <translation>%1 chars removed</translation>
+      <translation>%1 znakova uklonjeno</translation>
     </message>
     <message>
       <location/>
       <source>%1 chars added</source>
-      <translation>%1 chars added</translation>
+      <translation>%1 znakova dodano</translation>
     </message>
     <message>
       <location/>
       <source>Formatted</source>
-      <translation>Formatted</translation>
+      <translation>Oblikovano</translation>
     </message>
   </context>
   <context>
@@ -3100,12 +3094,12 @@ Do you want to save your changes?</translation>
     <message>
       <location/>
       <source>Select a file</source>
-      <translation>Select a file</translation>
+      <translation>Odaberite datoteku</translation>
     </message>
     <message>
       <location/>
       <source>Select a directory</source>
-      <translation>Select a directory</translation>
+      <translation>Odaberite direktorij</translation>
     </message>
   </context>
   <context>
@@ -3113,12 +3107,12 @@ Do you want to save your changes?</translation>
     <message>
       <location/>
       <source>Save as</source>
-      <translation>Save as</translation>
+      <translation>Spremi kao</translation>
     </message>
     <message>
       <location/>
       <source>Open</source>
-      <translation>Open</translation>
+      <translation>Otvori</translation>
     </message>
   </context>
   <context>
@@ -3126,12 +3120,12 @@ Do you want to save your changes?</translation>
     <message>
       <location/>
       <source>Extended</source>
-      <translation>Extended</translation>
+      <translation>Produženo</translation>
     </message>
     <message>
       <location/>
       <source>All files (*.*)</source>
-      <translation>All files (*.*)</translation>
+      <translation>Sve datoteke (*.*)</translation>
     </message>
   </context>
   <context>
@@ -3139,22 +3133,22 @@ Do you want to save your changes?</translation>
     <message>
       <location/>
       <source>Top left</source>
-      <translation>Top left</translation>
+      <translation>Gore lijevo</translation>
     </message>
     <message>
       <location/>
       <source>Bottom left</source>
-      <translation>Bottom left</translation>
+      <translation>Dolje lijevo</translation>
     </message>
     <message>
       <location/>
       <source>Top right</source>
-      <translation>Top right</translation>
+      <translation>Gore desno</translation>
     </message>
     <message>
       <location/>
       <source>Bottom right</source>
-      <translation>Bottom right</translation>
+      <translation>Dolje desno</translation>
     </message>
     <message>
       <location/>
@@ -3167,22 +3161,22 @@ Do you want to save your changes?</translation>
     <message>
       <location/>
       <source>Press CTRL and left mouse button</source>
-      <translation>Press CTRL and left mouse button</translation>
+      <translation>Pritisnite CTRL i lijevu tipku miša</translation>
     </message>
     <message>
       <location/>
       <source>Press middle mouse button</source>
-      <translation>Press middle mouse button</translation>
+      <translation>Pritisnite srednju tipku miša</translation>
     </message>
     <message>
       <location/>
       <source>Press left mouse button</source>
-      <translation>Press left mouse button</translation>
+      <translation>Pritisnite lijevu tipku miša</translation>
     </message>
     <message>
       <location/>
       <source>Scroll middle mouse button</source>
-      <translation>Scroll middle mouse button</translation>
+      <translation>Kotrljajte kotačić na mišu</translation>
     </message>
   </context>
   <context>
@@ -3190,12 +3184,12 @@ Do you want to save your changes?</translation>
     <message>
       <location/>
       <source>Wrong direction</source>
-      <translation>Wrong direction</translation>
+      <translation>Pogrešan smjer</translation>
     </message>
     <message>
       <location/>
       <source>Direction must not be the null vector</source>
-      <translation>Direction must not be the null vector</translation>
+      <translation>Smjer ne smije biti nula</translation>
     </message>
     <message>
       <location/>
@@ -3215,7 +3209,7 @@ Do you want to save your changes?</translation>
     <message>
       <location/>
       <source>User defined...</source>
-      <translation>User defined...</translation>
+      <translation>Korisnički definirano...</translation>
     </message>
   </context>
   <context>
@@ -3231,27 +3225,27 @@ Do you want to save your changes?</translation>
     <message>
       <location/>
       <source>Dimension</source>
-      <translation>Dimension</translation>
+      <translation>Dimenzija</translation>
     </message>
     <message>
       <location/>
       <source>Ready</source>
-      <translation>Ready</translation>
+      <translation>Spreman</translation>
     </message>
     <message>
       <location/>
       <source>Toggles this toolbar</source>
-      <translation>Toggles this toolbar</translation>
+      <translation>Uključuje ove alatne trake</translation>
     </message>
     <message>
       <location/>
       <source>Toggles this dockable window</source>
-      <translation>Toggles this dockable window</translation>
+      <translation>Uključuje ovaj usidrivi prozor</translation>
     </message>
     <message>
       <location/>
       <source>Close All</source>
-      <translation>Close All</translation>
+      <translation>Zatvori sve</translation>
     </message>
   </context>
   <context>
@@ -3260,8 +3254,7 @@ Do you want to save your changes?</translation>
       <location/>
       <source>Download started...
 </source>
-      <translation>Download started...
-</translation>
+      <translation>Preuzimanje je započelo...</translation>
     </message>
   </context>
   <context>
@@ -3269,17 +3262,17 @@ Do you want to save your changes?</translation>
     <message>
       <location/>
       <source>Remaining: %1</source>
-      <translation>Remaining: %1</translation>
+      <translation>Preostalo: %1</translation>
     </message>
     <message>
       <location/>
       <source>Aborting</source>
-      <translation>Aborting</translation>
+      <translation>Odustani</translation>
     </message>
     <message>
       <location/>
       <source>Do you really want to abort the operation?</source>
-      <translation>Do you really want to abort the operation?</translation>
+      <translation>Želite li zaista prekinuti operaciju?</translation>
     </message>
   </context>
   <context>
@@ -3287,17 +3280,17 @@ Do you want to save your changes?</translation>
     <message>
       <location/>
       <source>Remaining: %1</source>
-      <translation>Remaining: %1</translation>
+      <translation>Preostalo: %1</translation>
     </message>
     <message>
       <location/>
       <source>Aborting</source>
-      <translation>Aborting</translation>
+      <translation>Odustani</translation>
     </message>
     <message>
       <location/>
       <source>Do you really want to abort the operation?</source>
-      <translation>Do you really want to abort the operation?</translation>
+      <translation>Želite li zaista prekinuti operaciju?</translation>
     </message>
   </context>
   <context>
@@ -3305,12 +3298,12 @@ Do you want to save your changes?</translation>
     <message>
       <location/>
       <source>Property</source>
-      <translation>Property</translation>
+      <translation>Opcije</translation>
     </message>
     <message>
       <location/>
       <source>Value</source>
-      <translation>Value</translation>
+      <translation>Vrijednost</translation>
     </message>
   </context>
   <context>
@@ -3318,12 +3311,12 @@ Do you want to save your changes?</translation>
     <message>
       <location/>
       <source>View</source>
-      <translation>View</translation>
+      <translation>Pregled</translation>
     </message>
     <message>
       <location/>
       <source>Data</source>
-      <translation>Data</translation>
+      <translation>Podaci</translation>
     </message>
   </context>
   <context>
@@ -3331,89 +3324,88 @@ Do you want to save your changes?</translation>
     <message>
       <location/>
       <source>System exit</source>
-      <translation>System exit</translation>
+      <translation>Izlaz iz sustava</translation>
     </message>
     <message>
       <location/>
       <source>The application is still running.
 Do you want to exit without saving your data?</source>
-      <translation>The application is still running.
-Do you want to exit without saving your data?</translation>
+      <translation>Primjena se još uvijek izvršava. Želite li izaći bez snimanja podataka?</translation>
     </message>
     <message>
       <location/>
       <source>Python console</source>
-      <translation>Python console</translation>
+      <translation>Python konzola</translation>
     </message>
     <message>
       <location/>
       <source>Unhandled PyCXX exception.</source>
-      <translation>Unhandled PyCXX exception.</translation>
+      <translation>Neobrađena PyCXX iznimka.</translation>
     </message>
     <message>
       <location/>
       <source>Unhandled FreeCAD exception.</source>
-      <translation>Unhandled FreeCAD exception.</translation>
+      <translation>Neobrađena FreeCAD iznimka.</translation>
     </message>
     <message>
       <location/>
       <source>Unhandled unknown C++ exception.</source>
-      <translation>Unhandled unknown C++ exception.</translation>
+      <translation>Neobrađena nepoznata C++ iznimka.</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Copy command</source>
-      <translation>&amp;Copy command</translation>
+      <translation>&amp;Kopiraj naredba</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Copy history</source>
-      <translation>&amp;Copy history</translation>
+      <translation>&amp;Kopiraj povijest</translation>
     </message>
     <message>
       <location/>
       <source>Save history as...</source>
-      <translation>Save history as...</translation>
+      <translation>Spremi povijest kao ...</translation>
     </message>
     <message>
       <location/>
       <source>Insert file name...</source>
-      <translation>Insert file name...</translation>
+      <translation>Umetni ime datoteke ...</translation>
     </message>
     <message>
       <location/>
       <source>Save History</source>
-      <translation>Save History</translation>
+      <translation>Spremi povijest</translation>
     </message>
     <message>
       <location/>
       <source>Macro Files (*.FCMacro *.py)</source>
-      <translation>Macro Files (*.FCMacro *.py)</translation>
+      <translation>Makro datoteke (*. FCMacro *. py)</translation>
     </message>
     <message>
       <location/>
       <source>Insert file name</source>
-      <translation>Insert file name</translation>
+      <translation>Umetni ime datoteke</translation>
     </message>
     <message>
       <location/>
       <source>All Files (*.*)</source>
-      <translation>All Files (*.*)</translation>
+      <translation>Sve datoteke (*.*)</translation>
     </message>
     <message>
       <location/>
       <source>Python Input Dialog</source>
-      <translation>Python Input Dialog</translation>
+      <translation>Ulazbi Python dijalog</translation>
     </message>
     <message>
       <location/>
       <source>Unhandled std C++ exception.</source>
-      <translation>Unhandled std C++ exception.</translation>
+      <translation>Neobrađena STD C++ iznimka.</translation>
     </message>
     <message>
       <location/>
       <source>Word wrap</source>
-      <translation>Word wrap</translation>
+      <translation>Automatsko dovršavanje</translation>
     </message>
   </context>
   <context>
@@ -3421,12 +3413,12 @@ Do you want to exit without saving your data?</translation>
     <message>
       <location/>
       <source>Comment</source>
-      <translation>Comment</translation>
+      <translation>Komentar</translation>
     </message>
     <message>
       <location/>
       <source>Uncomment</source>
-      <translation>Uncomment</translation>
+      <translation>Bez komentara</translation>
     </message>
   </context>
   <context>
@@ -3439,7 +3431,7 @@ Do you want to exit without saving your data?</translation>
     <message>
       <location/>
       <source>Clear</source>
-      <translation>Clear</translation>
+      <translation>Brisanje</translation>
     </message>
   </context>
   <context>
@@ -3447,17 +3439,17 @@ Do you want to exit without saving your data?</translation>
     <message>
       <location/>
       <source>Open file %1</source>
-      <translation>Open file %1</translation>
+      <translation>Otvoriti datoteku %1</translation>
     </message>
     <message>
       <location/>
       <source>File not found</source>
-      <translation>File not found</translation>
+      <translation>Datoteka nije pronađena</translation>
     </message>
     <message>
       <location/>
       <source>The file '%1' cannot be opened.</source>
-      <translation>The file '%1' cannot be opened.</translation>
+      <translation>Datoteka '%1' ne može biti otvorena.</translation>
     </message>
   </context>
   <context>
@@ -3465,17 +3457,17 @@ Do you want to exit without saving your data?</translation>
     <message>
       <location/>
       <source>Select module</source>
-      <translation>Select module</translation>
+      <translation>Odaberite modul</translation>
     </message>
     <message>
       <location/>
       <source>Open %1 as</source>
-      <translation>Open %1 as</translation>
+      <translation>Otvori %1 kao</translation>
     </message>
     <message>
       <location/>
       <source>Select</source>
-      <translation>Select</translation>
+      <translation>Odaberite</translation>
     </message>
   </context>
   <context>
@@ -3483,17 +3475,17 @@ Do you want to exit without saving your data?</translation>
     <message>
       <location/>
       <source>Help</source>
-      <translation>Help</translation>
+      <translation>Pomoć</translation>
     </message>
     <message>
       <location/>
       <source>Des&amp;cription</source>
-      <translation>Des&amp;cription</translation>
+      <translation>Opi&amp;s</translation>
     </message>
     <message>
       <location/>
       <source>Long description of commands</source>
-      <translation>Long description of commands</translation>
+      <translation>Dugi opis naredbi</translation>
     </message>
   </context>
   <context>
@@ -3501,50 +3493,46 @@ Do you want to exit without saving your data?</translation>
     <message>
       <location/>
       <source>Help</source>
-      <translation>Help</translation>
+      <translation>Pomoć</translation>
     </message>
     <message>
       <location/>
       <source>Download online help</source>
-      <translation>Download online help</translation>
+      <translation>Preuzimanje on-line pomoći</translation>
     </message>
     <message>
       <location/>
       <source>Download %1's online help</source>
-      <translation>Download %1's online help</translation>
+      <translation>Preuzimanje %1 on-line pomoći</translation>
     </message>
     <message>
       <location/>
       <source>Non-existing directory</source>
-      <translation>Non-existing directory</translation>
+      <translation>Nepostojeći direktorij</translation>
     </message>
     <message>
       <location/>
       <source>The directory '%1' does not exist.
 
 Do you want to specify an existing directory?</source>
-      <translation>The directory '%1' does not exist.
-
-Do you want to specify an existing directory?</translation>
+      <translation>Direktorij "%1" ne postoji. Želite li navesti postojeći direktorij?</translation>
     </message>
     <message>
       <location/>
       <source>Missing permission</source>
-      <translation>Missing permission</translation>
+      <translation>Nedostaju ovlasti</translation>
     </message>
     <message>
       <location/>
       <source>You don't have write permission to '%1'
 
 Do you want to specify another directory?</source>
-      <translation>You don't have write permission to '%1'
-
-Do you want to specify another directory?</translation>
+      <translation>Nemate dopuštenje pisati u '%1' Želite li odrediti drugi direktorij?</translation>
     </message>
     <message>
       <location/>
       <source>Stop downloading</source>
-      <translation>Stop downloading</translation>
+      <translation>Zaustavi preuzimanje</translation>
     </message>
   </context>
   <context>
@@ -3552,17 +3540,17 @@ Do you want to specify another directory?</translation>
     <message>
       <location/>
       <source>Tools</source>
-      <translation>Tools</translation>
+      <translation>Alati</translation>
     </message>
     <message>
       <location/>
       <source>Python Modules</source>
-      <translation>Python Modules</translation>
+      <translation>Python moduli</translation>
     </message>
     <message>
       <location/>
       <source>Opens a browser to show the Python modules</source>
-      <translation>Opens a browser to show the Python modules</translation>
+      <translation>Otvara preglednik za prikaz Python modula</translation>
     </message>
   </context>
   <context>
@@ -3570,7 +3558,7 @@ Do you want to specify another directory?</translation>
     <message>
       <location/>
       <source>Angle</source>
-      <translation>Angle</translation>
+      <translation>Kut</translation>
     </message>
   </context>
   <context>
@@ -3578,7 +3566,7 @@ Do you want to specify another directory?</translation>
     <message>
       <location/>
       <source>Position</source>
-      <translation>Position</translation>
+      <translation>Položaj</translation>
     </message>
   </context>
   <context>
@@ -3596,22 +3584,22 @@ Do you want to specify another directory?</translation>
     <message>
       <location/>
       <source>Point size:</source>
-      <translation>Point size:</translation>
+      <translation>Veličina točke:</translation>
     </message>
     <message>
       <location/>
       <source>Line width:</source>
-      <translation>Line width:</translation>
+      <translation>Širina linije:</translation>
     </message>
     <message>
       <location/>
       <source>Transparency:</source>
-      <translation>Transparency:</translation>
+      <translation>Prozirnost:</translation>
     </message>
     <message>
       <location/>
       <source>Appearance</source>
-      <translation>Appearance</translation>
+      <translation>Izgled</translation>
     </message>
   </context>
   <context>
@@ -3627,7 +3615,7 @@ Do you want to specify another directory?</translation>
     <message>
       <location/>
       <source>Appearance</source>
-      <translation>Appearance</translation>
+      <translation>Izgled</translation>
     </message>
     <message>
       <location/>
@@ -3637,7 +3625,7 @@ Do you want to specify another directory?</translation>
     <message>
       <location/>
       <source>edit selection</source>
-      <translation>edit selection</translation>
+      <translation>uredi odabir</translation>
     </message>
   </context>
   <context>
@@ -3645,52 +3633,52 @@ Do you want to specify another directory?</translation>
     <message>
       <location/>
       <source>English</source>
-      <translation>English</translation>
+      <translation>Engleski</translation>
     </message>
     <message>
       <location/>
       <source>German</source>
-      <translation>German</translation>
+      <translation>Njemački</translation>
     </message>
     <message>
       <location/>
       <source>French</source>
-      <translation>French</translation>
+      <translation>Francuski</translation>
     </message>
     <message>
       <location/>
       <source>Italian</source>
-      <translation>Italian</translation>
+      <translation>Talijanski</translation>
     </message>
     <message>
       <location/>
       <source>Japanese</source>
-      <translation>Japanese</translation>
+      <translation>Japanski</translation>
     </message>
     <message>
       <location/>
       <source>Chinese</source>
-      <translation>Chinese</translation>
+      <translation>Kineski</translation>
     </message>
     <message>
       <location/>
       <source>Spanish</source>
-      <translation>Spanish</translation>
+      <translation>Španski</translation>
     </message>
     <message>
       <location/>
       <source>Korean</source>
-      <translation>Korean</translation>
+      <translation>Korejski</translation>
     </message>
     <message>
       <location/>
       <source>Russian</source>
-      <translation>Russian</translation>
+      <translation>Ruski</translation>
     </message>
     <message>
       <location/>
       <source>Swedish</source>
-      <translation>Swedish</translation>
+      <translation>Švedski</translation>
     </message>
   </context>
   <context>
@@ -3698,7 +3686,7 @@ Do you want to specify another directory?</translation>
     <message>
       <location/>
       <source>Tree view</source>
-      <translation>Tree view</translation>
+      <translation>Pogled hijerarhije</translation>
     </message>
   </context>
   <context>
@@ -3706,57 +3694,57 @@ Do you want to specify another directory?</translation>
     <message>
       <location/>
       <source>Create group...</source>
-      <translation>Create group...</translation>
+      <translation>Napravi grupu ...</translation>
     </message>
     <message>
       <location/>
       <source>Create a group</source>
-      <translation>Create a group</translation>
+      <translation>Napravite grupu</translation>
     </message>
     <message>
       <location/>
       <source>Group</source>
-      <translation>Group</translation>
+      <translation>Grupa</translation>
     </message>
     <message>
       <location/>
       <source>Rename</source>
-      <translation>Rename</translation>
+      <translation>Preimenuj</translation>
     </message>
     <message>
       <location/>
       <source>Rename object</source>
-      <translation>Rename object</translation>
+      <translation>Preimenovanje objekta</translation>
     </message>
     <message>
       <location/>
       <source>Labels &amp; Attributes</source>
-      <translation>Labels &amp; Attributes</translation>
+      <translation>Etikete i atributi</translation>
     </message>
     <message>
       <location/>
       <source>Application</source>
-      <translation>Application</translation>
+      <translation>Aplikacija</translation>
     </message>
     <message>
       <location/>
       <source>Finish editing</source>
-      <translation>Finish editing</translation>
+      <translation>Završi uređivanje</translation>
     </message>
     <message>
       <location/>
       <source>Finish editing object</source>
-      <translation>Finish editing object</translation>
+      <translation>Završi uređivanje objekta</translation>
     </message>
     <message>
       <location/>
       <source>Activate document</source>
-      <translation>Activate document</translation>
+      <translation>Aktiviraj dokument</translation>
     </message>
     <message>
       <location/>
       <source>Activate document %1</source>
-      <translation>Activate document %1</translation>
+      <translation>Aktiviraj dokument %1</translation>
     </message>
   </context>
   <context>
@@ -3764,12 +3752,12 @@ Do you want to specify another directory?</translation>
     <message>
       <location/>
       <source>Export PDF</source>
-      <translation>Export PDF</translation>
+      <translation>Izvoz PDF</translation>
     </message>
     <message>
       <location/>
       <source>PDF file (*.pdf)</source>
-      <translation>PDF file (*.pdf)</translation>
+      <translation>PDF datoteke (*.pdf)</translation>
     </message>
   </context>
   <context>
@@ -3777,7 +3765,7 @@ Do you want to specify another directory?</translation>
     <message>
       <location/>
       <source>Select the '%1' workbench</source>
-      <translation>Select the '%1' workbench</translation>
+      <translation>Odaberite '%1; radni stol</translation>
     </message>
   </context>
   <context>
@@ -3785,7 +3773,7 @@ Do you want to specify another directory?</translation>
     <message>
       <location/>
       <source>Form</source>
-      <translation>Form</translation>
+      <translation>Obrazac</translation>
     </message>
     <message>
       <location/>
@@ -3883,42 +3871,42 @@ Do you want to specify another directory?</translation>
     <message>
       <location/>
       <source>Tree view</source>
-      <translation>Tree view</translation>
+      <translation>Pogled hijerarhije</translation>
     </message>
     <message>
       <location/>
       <source>Property view</source>
-      <translation>Property view</translation>
+      <translation>Pregled vlasništva</translation>
     </message>
     <message>
       <location/>
       <source>Selection view</source>
-      <translation>Selection view</translation>
+      <translation>Pregled selekcije</translation>
     </message>
     <message>
       <location/>
       <source>Report view</source>
-      <translation>Report view</translation>
+      <translation>Pregled izvještaja</translation>
     </message>
     <message>
       <location/>
       <source>Task View</source>
-      <translation>Task View</translation>
+      <translation>Pregled zadataka</translation>
     </message>
     <message>
       <location/>
       <source>Combo View</source>
-      <translation>Combo View</translation>
+      <translation>Kombinirani pregled</translation>
     </message>
     <message>
       <location/>
       <source>Toolbox</source>
-      <translation>Toolbox</translation>
+      <translation>Traka s alatima</translation>
     </message>
     <message>
       <location/>
       <source>Python console</source>
-      <translation>Python console</translation>
+      <translation>Python konzola</translation>
     </message>
   </context>
   <context>
@@ -3931,27 +3919,27 @@ Do you want to specify another directory?</translation>
     <message>
       <location/>
       <source>Display</source>
-      <translation>Display</translation>
+      <translation>Prikaz</translation>
     </message>
     <message>
       <location/>
       <source>Unknown filetype</source>
-      <translation>Unknown filetype</translation>
+      <translation>Nepoznata vrsta datoteke</translation>
     </message>
     <message>
       <location/>
       <source>Cannot open unknown filetype: %1</source>
-      <translation>Cannot open unknown filetype: %1</translation>
+      <translation>Ne mogu otvoriti nepoznatu vrstu datoteke: %1</translation>
     </message>
     <message>
       <location/>
       <source>Cannot save to unknown filetype: %1</source>
-      <translation>Cannot save to unknown filetype: %1</translation>
+      <translation>Ne mogu spremiti nepoznatu vrstu datoteke: %1</translation>
     </message>
     <message>
       <location/>
       <source>Workbench failure</source>
-      <translation>Workbench failure</translation>
+      <translation>Workbench neuspjeh</translation>
     </message>
     <message>
       <location/>
@@ -3961,244 +3949,243 @@ Do you want to specify another directory?</translation>
     <message>
       <location/>
       <source>Unable to launch Qt Assistant (%1)</source>
-      <translation>Unable to launch Qt Assistant (%1)</translation>
+      <translation>Nije moguće pokrenuti Qt Assistant (%1)</translation>
     </message>
     <message>
       <location/>
       <source>Exception</source>
-      <translation>Exception</translation>
+      <translation>Iznimka</translation>
     </message>
     <message>
       <location/>
       <source>Open document</source>
-      <translation>Open document</translation>
+      <translation>Otvori dokument</translation>
     </message>
     <message>
       <location/>
       <source>Import file</source>
-      <translation>Import file</translation>
+      <translation>Uvoz datoteke</translation>
     </message>
     <message>
       <location/>
       <source>Export file</source>
-      <translation>Export file</translation>
+      <translation>Izvoz datoteke</translation>
     </message>
     <message>
       <location/>
       <source>Printing...</source>
-      <translation>Printing...</translation>
+      <translation>Ispis ...</translation>
     </message>
     <message>
       <location/>
       <source>Cannot load workbench</source>
-      <translation>Cannot load workbench</translation>
+      <translation>Ne mogu učitati radni stol</translation>
     </message>
     <message>
       <location/>
       <source>A general error occurred while loading the workbench</source>
-      <translation>A general error occurred while loading the workbench</translation>
+      <translation>Došlo je do pogreške tijekom učitavanja radnog stola</translation>
     </message>
     <message>
       <location/>
       <source>File not found</source>
-      <translation>File not found</translation>
+      <translation>Datoteka nije pronađena</translation>
     </message>
     <message>
       <location/>
       <source>Cannot open file %1</source>
-      <translation>Cannot open file %1</translation>
+      <translation>Ne mogu otvoriti datoteku %1</translation>
     </message>
     <message>
       <location/>
       <source>Save views...</source>
-      <translation>Save views...</translation>
+      <translation>Spremi poglede ...</translation>
     </message>
     <message>
       <location/>
       <source>Load views...</source>
-      <translation>Load views...</translation>
+      <translation>Učitavanje pregleda ...</translation>
     </message>
     <message>
       <location/>
       <source>Freeze view</source>
-      <translation>Freeze view</translation>
+      <translation>Zamrzni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Clear views</source>
-      <translation>Clear views</translation>
+      <translation>Obriši poglede</translation>
     </message>
     <message>
       <location/>
       <source>Restore view &amp;%1</source>
-      <translation>Restore view &amp;%1</translation>
+      <translation>Vrati pogled &amp;%1</translation>
     </message>
     <message>
       <location/>
       <source>Save frozen views</source>
-      <translation>Save frozen views</translation>
+      <translation>Spremi smrznute poglede</translation>
     </message>
     <message>
       <location/>
       <source>Frozen views (*.cam)</source>
-      <translation>Frozen views (*.cam)</translation>
+      <translation>Smrznuti prikazi (*.CAM)</translation>
     </message>
     <message>
       <location/>
       <source>Restore views</source>
-      <translation>Restore views</translation>
+      <translation>Vraćanje pogleda</translation>
     </message>
     <message>
       <location/>
       <source>Importing the restored views would clear the already stored views.
 Do you want to continue?</source>
-      <translation>Importing the restored views would clear the already stored views.
-Do you want to continue?</translation>
+      <translation>Uvoz obnovljena pogleda bi obrisao već pohranjene poglede. Želite li nastaviti?</translation>
     </message>
     <message>
       <location/>
       <source>Restore frozen views</source>
-      <translation>Restore frozen views</translation>
+      <translation>Vraćanje smrznutih pogleda</translation>
     </message>
     <message>
       <location/>
       <source>Cannot open file '%1'.</source>
-      <translation>Cannot open file '%1'.</translation>
+      <translation>Ne mogu otvoriti datoteku '%1'.</translation>
     </message>
     <message>
       <location/>
       <source>Docked</source>
-      <translation>Docked</translation>
+      <translation>Usidren</translation>
     </message>
     <message>
       <location/>
       <source>Undocked</source>
-      <translation>Undocked</translation>
+      <translation>Odsidren</translation>
     </message>
     <message>
       <location/>
       <source>Fullscreen</source>
-      <translation>Fullscreen</translation>
+      <translation>Preko cijelog ekrana</translation>
     </message>
     <message>
       <location/>
       <source>files</source>
-      <translation>files</translation>
+      <translation>datoteke</translation>
     </message>
     <message>
       <location/>
       <source>Save picture</source>
-      <translation>Save picture</translation>
+      <translation>Spremi sliku</translation>
     </message>
     <message>
       <location/>
       <source>New sub-group</source>
-      <translation>New sub-group</translation>
+      <translation>Nova podgrupa</translation>
     </message>
     <message>
       <location/>
       <source>Enter the name:</source>
-      <translation>Enter the name:</translation>
+      <translation>Unesite naziv:</translation>
     </message>
     <message>
       <location/>
       <source>New text item</source>
-      <translation>New text item</translation>
+      <translation>Nova tekst jedinica</translation>
     </message>
     <message>
       <location/>
       <source>Enter your text:</source>
-      <translation>Enter your text:</translation>
+      <translation>Unesite tekst:</translation>
     </message>
     <message>
       <location/>
       <source>New integer item</source>
-      <translation>New integer item</translation>
+      <translation>Nova integer jedinica</translation>
     </message>
     <message>
       <location/>
       <source>Enter your number:</source>
-      <translation>Enter your number:</translation>
+      <translation>Unesite broj:</translation>
     </message>
     <message>
       <location/>
       <source>New unsigned item</source>
-      <translation>New unsigned item</translation>
+      <translation>Nova unsigned jedinica</translation>
     </message>
     <message>
       <location/>
       <source>New float item</source>
-      <translation>New float item</translation>
+      <translation>Nova float jedinica</translation>
     </message>
     <message>
       <location/>
       <source>New Boolean item</source>
-      <translation>New Boolean item</translation>
+      <translation>Nova Boolean jedinica</translation>
     </message>
     <message>
       <location/>
       <source>Choose an item:</source>
-      <translation>Choose an item:</translation>
+      <translation>Izaberite jedinicu:</translation>
     </message>
     <message>
       <location/>
       <source>Rename group</source>
-      <translation>Rename group</translation>
+      <translation>Preimenuj grupu</translation>
     </message>
     <message>
       <location/>
       <source>The group '%1' cannot be renamed.</source>
-      <translation>The group '%1' cannot be renamed.</translation>
+      <translation>Grupa '%1' ne može biti preimenovana.</translation>
     </message>
     <message>
       <location/>
       <source>Existing group</source>
-      <translation>Existing group</translation>
+      <translation>Postojeća grupa</translation>
     </message>
     <message>
       <location/>
       <source>The group '%1' already exists.</source>
-      <translation>The group '%1' already exists.</translation>
+      <translation>Grupa '%1' već postoji.</translation>
     </message>
     <message>
       <location/>
       <source>Change value</source>
-      <translation>Change value</translation>
+      <translation>Promjena vrijednosti</translation>
     </message>
     <message>
       <location/>
       <source>Save document under new filename...</source>
-      <translation>Save document under new filename...</translation>
+      <translation>Spremi dokument pod novim imenom ...</translation>
     </message>
     <message>
       <location/>
       <source>Saving aborted</source>
-      <translation>Saving aborted</translation>
+      <translation>Spremanje prekinuto</translation>
     </message>
     <message>
       <location/>
       <source>Unsaved document</source>
-      <translation>Unsaved document</translation>
+      <translation>Nespremljeni dokument</translation>
     </message>
     <message>
       <location/>
       <source>Save document before close?</source>
-      <translation>Save document before close?</translation>
+      <translation>Spremi dokument prije zatvaranja?</translation>
     </message>
     <message>
       <location/>
       <source>Save Macro</source>
-      <translation>Save Macro</translation>
+      <translation>Spremi Makro</translation>
     </message>
     <message>
       <location/>
       <source>Finish</source>
-      <translation>Finish</translation>
+      <translation>Završiti</translation>
     </message>
     <message>
       <location/>
       <source>Clear</source>
-      <translation>Clear</translation>
+      <translation>Brisanje</translation>
     </message>
     <message>
       <location/>
@@ -4208,174 +4195,171 @@ Do you want to continue?</translation>
     <message>
       <location/>
       <source>Inner</source>
-      <translation>Inner</translation>
+      <translation>Unutrašnji</translation>
     </message>
     <message>
       <location/>
       <source>Outer</source>
-      <translation>Outer</translation>
+      <translation>Vanjski</translation>
     </message>
     <message>
       <location/>
       <source>No Browser</source>
-      <translation>No Browser</translation>
+      <translation>Nema preglednika</translation>
     </message>
     <message>
       <location/>
       <source>Unable to open your browser.
 
 Please open a browser window and type in: http://localhost:%1.</source>
-      <translation>Unable to open your browser.
-
-Please open a browser window and type in: http://localhost:%1.</translation>
+      <translation>Nije moguće otvoriti pregledniku. Molimo vas da otvorite prozor preglednika i unesete: http://localhost:%1.</translation>
     </message>
     <message>
       <location/>
       <source>No Server</source>
-      <translation>No Server</translation>
+      <translation>Nema Servera</translation>
     </message>
     <message>
       <location/>
       <source>Unable to start the server to port %1: %2.</source>
-      <translation>Unable to start the server to port %1: %2.</translation>
+      <translation>Nije moguće pokrenuti poslužitelja na portu %1: %2.</translation>
     </message>
     <message>
       <location/>
       <source>Unable to open your system browser.</source>
-      <translation>Unable to open your system browser.</translation>
+      <translation>Ne mogu otvoriti vaš preglednik sustava.</translation>
     </message>
     <message>
       <location/>
       <source>Options...</source>
-      <translation>Options...</translation>
+      <translation>Opcije ...</translation>
     </message>
     <message>
       <location/>
       <source>Out of memory</source>
-      <translation>Out of memory</translation>
+      <translation>Bez memorije</translation>
     </message>
     <message>
       <location/>
       <source>Not enough memory available to display the data.</source>
-      <translation>Not enough memory available to display the data.</translation>
+      <translation>Nema dovoljno dostupne memorije za prikaz podataka.</translation>
     </message>
     <message>
       <location/>
       <source>Cannot find file %1</source>
-      <translation>Cannot find file %1</translation>
+      <translation>Ne mogu pronaći datoteku %1</translation>
     </message>
     <message>
       <location/>
       <source>Cannot find file %1 neither in %2 nor in %3</source>
-      <translation>Cannot find file %1 neither in %2 nor in %3</translation>
+      <translation>Ne mogu pronaći datoteku %1 niti u %2 niti u %3</translation>
     </message>
     <message>
       <location/>
       <source>Save %1 Document</source>
-      <translation>Save %1 Document</translation>
+      <translation>Spremi %1 dokument</translation>
     </message>
     <message>
       <location/>
       <source>%1 document (*.FCStd)</source>
-      <translation>%1 document (*.FCStd)</translation>
+      <translation>%1 dokument (*.FCStd)</translation>
     </message>
     <message>
       <location/>
       <source>Save As</source>
-      <translation>Save As</translation>
+      <translation>Spremi kao</translation>
     </message>
     <message>
       <location/>
       <source>%1 already exists.
 Do you want to replace it?</source>
-      <translation>%1 already exists.
-Do you want to replace it?</translation>
+      <translation>%1 već postoji. Želite li ga zamijeniti?</translation>
     </message>
     <message>
       <location/>
       <source>Document not closable</source>
-      <translation>Document not closable</translation>
+      <translation>Dokument nije moguće zatvoriti</translation>
     </message>
     <message>
       <location/>
       <source>The document is not closable for the moment.</source>
-      <translation>The document is not closable for the moment.</translation>
+      <translation>Dokument trenutno nije moguće zatvoriti.</translation>
     </message>
     <message>
       <location/>
       <source>No OpenGL</source>
-      <translation>No OpenGL</translation>
+      <translation>Nema OpenGL</translation>
     </message>
     <message>
       <location/>
       <source>This system does not support OpenGL</source>
-      <translation>This system does not support OpenGL</translation>
+      <translation>Ovaj sustav ne podržava OpenGL</translation>
     </message>
     <message>
       <location/>
       <source>Help</source>
-      <translation>Help</translation>
+      <translation>Pomoć</translation>
     </message>
     <message>
       <location/>
       <source>Unable to load documentation.
 In order to load it Qt 4.4 or higher is required.</source>
-      <translation>Unable to load documentation.
-In order to load it Qt 4.4 or higher is required.</translation>
+      <translation>Nije moguće učitati dokument. 
+Da bi se to omogućilo potreban je Qt verzije 4,4 ili više.</translation>
     </message>
     <message>
       <location/>
       <source>%1 Help</source>
-      <translation>%1 Help</translation>
+      <translation>%1 Pomoć</translation>
     </message>
     <message>
       <location/>
       <source>Exporting PDF...</source>
-      <translation>Exporting PDF...</translation>
+      <translation>Izvoz PDF ...</translation>
     </message>
     <message>
       <location/>
       <source>Wrong selection</source>
-      <translation>Wrong selection</translation>
+      <translation>Pogrešan odabir</translation>
     </message>
     <message>
       <location/>
       <source>Only one object selected. Please select two objects.
 Be aware the point where you click matters.</source>
-      <translation>Only one object selected. Please select two objects.
-Be aware the point where you click matters.</translation>
+      <translation>Samo jedan objekt odabran. Odaberite dva objekta.
+Pazite jer točke odabira utječu.</translation>
     </message>
     <message>
       <location/>
       <source>Please select two objects.
 Be aware the point where you click matters.</source>
-      <translation>Please select two objects.
-Be aware the point where you click matters.</translation>
+      <translation>Odaberite dva objekta.
+Pazite jer točke odabira utječu.</translation>
     </message>
     <message>
       <location/>
       <source>New boolean item</source>
-      <translation>New boolean item</translation>
+      <translation>Nova boolean jedinica</translation>
     </message>
     <message>
       <location/>
       <source>Navigation styles</source>
-      <translation>Navigation styles</translation>
+      <translation>Načini navigacije</translation>
     </message>
     <message>
       <location/>
       <source>%1 navigation</source>
-      <translation>%1 navigation</translation>
+      <translation>%1 navigacija</translation>
     </message>
     <message>
       <location/>
       <source>Move annotation</source>
-      <translation>Move annotation</translation>
+      <translation>Premjesti primjedbu</translation>
     </message>
     <message>
       <location/>
       <source>Transform</source>
-      <translation>Transform</translation>
+      <translation>Transformiraj</translation>
     </message>
   </context>
   <context>
@@ -4383,17 +4367,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>&amp;Copy</source>
-      <translation>&amp;Copy</translation>
+      <translation>&amp;Kopiraj</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Paste</source>
-      <translation>&amp;Paste</translation>
+      <translation>&amp;Zalijepi</translation>
     </message>
     <message>
       <location/>
       <source>Select All</source>
-      <translation>Select All</translation>
+      <translation>Označi sve</translation>
     </message>
   </context>
   <context>
@@ -4401,17 +4385,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Help</source>
-      <translation>Help</translation>
+      <translation>Pomoć</translation>
     </message>
     <message>
       <location/>
       <source>&amp;About %1</source>
-      <translation>&amp;About %1</translation>
+      <translation>&amp;O %1</translation>
     </message>
     <message>
       <location/>
       <source>About %1</source>
-      <translation>About %1</translation>
+      <translation>O %1</translation>
     </message>
   </context>
   <context>
@@ -4419,17 +4403,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Help</source>
-      <translation>Help</translation>
+      <translation>Pomoć</translation>
     </message>
     <message>
       <location/>
       <source>About &amp;Qt</source>
-      <translation>About &amp;Qt</translation>
+      <translation>O &amp;Qt</translation>
     </message>
     <message>
       <location/>
       <source>About Qt</source>
-      <translation>About Qt</translation>
+      <translation>O Qt</translation>
     </message>
   </context>
   <context>
@@ -4437,17 +4421,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Window</source>
-      <translation>Window</translation>
+      <translation>Prozor</translation>
     </message>
     <message>
       <location/>
       <source>Ne&amp;xt</source>
-      <translation>Ne&amp;xt</translation>
+      <translation>Slijede&amp;ći</translation>
     </message>
     <message>
       <location/>
       <source>Activate next window</source>
-      <translation>Activate next window</translation>
+      <translation>Aktiviraj slijedeći prozor</translation>
     </message>
   </context>
   <context>
@@ -4455,17 +4439,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Window</source>
-      <translation>Window</translation>
+      <translation>Prozor</translation>
     </message>
     <message>
       <location/>
       <source>Pre&amp;vious</source>
-      <translation>Pre&amp;vious</translation>
+      <translation>Pre&amp;thodni</translation>
     </message>
     <message>
       <location/>
       <source>Activate previous window</source>
-      <translation>Activate previous window</translation>
+      <translation>Aktiviraj prethodni prozor</translation>
     </message>
   </context>
   <context>
@@ -4473,17 +4457,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Window</source>
-      <translation>Window</translation>
+      <translation>Prozor</translation>
     </message>
     <message>
       <location/>
       <source>Arrange &amp;Icons</source>
-      <translation>Arrange &amp;Icons</translation>
+      <translation>Rasporedi &amp;ikone</translation>
     </message>
     <message>
       <location/>
       <source>Arrange Icons</source>
-      <translation>Arrange Icons</translation>
+      <translation>Rasporedi ikone</translation>
     </message>
   </context>
   <context>
@@ -4491,17 +4475,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Window</source>
-      <translation>Window</translation>
+      <translation>Prozor</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Cascade</source>
-      <translation>&amp;Cascade</translation>
+      <translation>Na&amp;slaži</translation>
     </message>
     <message>
       <location/>
       <source>Tile pragmatic</source>
-      <translation>Tile pragmatic</translation>
+      <translation>Crijep pragmatičan</translation>
     </message>
   </context>
   <context>
@@ -4509,17 +4493,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Window</source>
-      <translation>Window</translation>
+      <translation>Prozor</translation>
     </message>
     <message>
       <location/>
       <source>Cl&amp;ose</source>
-      <translation>Cl&amp;ose</translation>
+      <translation>Zatv&amp;ori</translation>
     </message>
     <message>
       <location/>
       <source>Close active window</source>
-      <translation>Close active window</translation>
+      <translation>Zatvori aktivni prozor</translation>
     </message>
   </context>
   <context>
@@ -4527,17 +4511,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Window</source>
-      <translation>Window</translation>
+      <translation>Prozor</translation>
     </message>
     <message>
       <location/>
       <source>Close Al&amp;l</source>
-      <translation>Close Al&amp;l</translation>
+      <translation>Zatvori Sv&amp;e</translation>
     </message>
     <message>
       <location/>
       <source>Close all windows</source>
-      <translation>Close all windows</translation>
+      <translation>Zatvori sve prozore</translation>
     </message>
   </context>
   <context>
@@ -4545,17 +4529,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Tools</source>
-      <translation>Tools</translation>
+      <translation>Alati</translation>
     </message>
     <message>
       <location/>
       <source>Start command &amp;line...</source>
-      <translation>Start command &amp;line...</translation>
+      <translation>Pokreni komandnu &amp;liniju ...</translation>
     </message>
     <message>
       <location/>
       <source>Opens the command line in the console</source>
-      <translation>Opens the command line in the console</translation>
+      <translation>Otvara komandnu liniju u konzoli</translation>
     </message>
   </context>
   <context>
@@ -4568,12 +4552,12 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>C&amp;opy</source>
-      <translation>C&amp;opy</translation>
+      <translation>K&amp;opiraj</translation>
     </message>
     <message>
       <location/>
       <source>Copy operation</source>
-      <translation>Copy operation</translation>
+      <translation>Kopirati</translation>
     </message>
   </context>
   <context>
@@ -4586,12 +4570,12 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>&amp;Cut</source>
-      <translation>&amp;Cut</translation>
+      <translation>&amp;Izreži</translation>
     </message>
     <message>
       <location/>
       <source>Cut out</source>
-      <translation>Cut out</translation>
+      <translation>Izrezati</translation>
     </message>
   </context>
   <context>
@@ -4604,12 +4588,12 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Duplicate selection</source>
-      <translation>Duplicate selection</translation>
+      <translation>Udvostruči odabir</translation>
     </message>
     <message>
       <location/>
       <source>Put duplicates of the selected objects to the active document</source>
-      <translation>Put duplicates of the selected objects to the active document</translation>
+      <translation>Stavilja kopije odabranih objekata na aktivni dokument</translation>
     </message>
   </context>
   <context>
@@ -4622,12 +4606,12 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>&amp;Delete</source>
-      <translation>&amp;Delete</translation>
+      <translation>&amp;Izbriši</translation>
     </message>
     <message>
       <location/>
       <source>Deletes the selected objects</source>
-      <translation>Deletes the selected objects</translation>
+      <translation>Briše odabrane objekte</translation>
     </message>
   </context>
   <context>
@@ -4635,17 +4619,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>View turntable...</source>
-      <translation>View turntable...</translation>
+      <translation>Prikaži okretnicu...</translation>
     </message>
     <message>
       <location/>
       <source>View turntable</source>
-      <translation>View turntable</translation>
+      <translation>Prikaži okretnicu</translation>
     </message>
   </context>
   <context>
@@ -4653,17 +4637,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Tools</source>
-      <translation>Tools</translation>
+      <translation>Alati</translation>
     </message>
     <message>
       <location/>
       <source>Cu&amp;stomize...</source>
-      <translation>Cu&amp;stomize...</translation>
+      <translation>Prilago&amp;dba...</translation>
     </message>
     <message>
       <location/>
       <source>Customize toolbars and command bars</source>
-      <translation>Customize toolbars and command bars</translation>
+      <translation>Prilagodba alatnih traka i traki s naredbama</translation>
     </message>
   </context>
   <context>
@@ -4671,17 +4655,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Macros ...</source>
-      <translation>Macros ...</translation>
+      <translation>Makronaredbe ...</translation>
     </message>
     <message>
       <location/>
       <source>Opens a dialog to let you execute a recorded macro</source>
-      <translation>Opens a dialog to let you execute a recorded macro</translation>
+      <translation>Otvara dijalog kako bi Vam omogućio izvršavanje snimljenih makro naredbi</translation>
     </message>
     <message>
       <location/>
       <source>Macro</source>
-      <translation>Macro</translation>
+      <translation>Makro</translation>
     </message>
   </context>
   <context>
@@ -4689,7 +4673,7 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Macro</source>
-      <translation>Macro</translation>
+      <translation>Makro</translation>
     </message>
     <message>
       <location/>
@@ -4699,7 +4683,7 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Execute the macro in the editor</source>
-      <translation>Execute the macro in the editor</translation>
+      <translation>Izvrši makro u editoru</translation>
     </message>
   </context>
   <context>
@@ -4707,17 +4691,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>&amp;Macro recording ...</source>
-      <translation>&amp;Macro recording ...</translation>
+      <translation>&amp;Makro snimanje ...</translation>
     </message>
     <message>
       <location/>
       <source>Opens a dialog to record a macro</source>
-      <translation>Opens a dialog to record a macro</translation>
+      <translation>Otvara dijalog za snimanje makro naredbe</translation>
     </message>
     <message>
       <location/>
       <source>Macro</source>
-      <translation>Macro</translation>
+      <translation>Makro</translation>
     </message>
   </context>
   <context>
@@ -4725,17 +4709,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Tools</source>
-      <translation>Tools</translation>
+      <translation>Alati</translation>
     </message>
     <message>
       <location/>
       <source>E&amp;dit parameters ...</source>
-      <translation>E&amp;dit parameters ...</translation>
+      <translation>Ure&amp;đivanje parametara ...</translation>
     </message>
     <message>
       <location/>
       <source>Opens a Dialog to edit the parameters</source>
-      <translation>Opens a Dialog to edit the parameters</translation>
+      <translation>Otvara Dialog za uređivanje parametara</translation>
     </message>
   </context>
   <context>
@@ -4743,17 +4727,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Tools</source>
-      <translation>Tools</translation>
+      <translation>Alati</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Preferences ...</source>
-      <translation>&amp;Preferences ...</translation>
+      <translation>&amp;Postavke ...</translation>
     </message>
     <message>
       <location/>
       <source>Opens a Dialog to edit the preferences</source>
-      <translation>Opens a Dialog to edit the preferences</translation>
+      <translation>Otvara Dialog kako biste uredili postavke</translation>
     </message>
   </context>
   <context>
@@ -4761,17 +4745,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>View</source>
-      <translation>View</translation>
+      <translation>Pregled</translation>
     </message>
     <message>
       <location/>
       <source>Vie&amp;ws</source>
-      <translation>Vie&amp;ws</translation>
+      <translation>Pogl&amp;edi</translation>
     </message>
     <message>
       <location/>
       <source>Toggles this window</source>
-      <translation>Toggles this window</translation>
+      <translation>Uključuje ovaj prozor</translation>
     </message>
   </context>
   <context>
@@ -4779,22 +4763,22 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>File</source>
-      <translation>File</translation>
+      <translation>Datoteka</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Export...</source>
-      <translation>&amp;Export...</translation>
+      <translation>Iz&amp;voz...</translation>
     </message>
     <message>
       <location/>
       <source>Export an object in the active document</source>
-      <translation>Export an object in the active document</translation>
+      <translation>Izvoz objekta u aktivni dokument</translation>
     </message>
     <message>
       <location/>
       <source>Supported formats</source>
-      <translation>Supported formats</translation>
+      <translation>Podržani formati</translation>
     </message>
   </context>
   <context>
@@ -4802,17 +4786,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>File</source>
-      <translation>File</translation>
+      <translation>Datoteka</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Recompute</source>
-      <translation>&amp;Recompute</translation>
+      <translation>&amp;Ponovno proračunavanje</translation>
     </message>
     <message>
       <location/>
       <source>Recompute feature or document</source>
-      <translation>Recompute feature or document</translation>
+      <translation>Ponovno proračunaj značajku ili dokument</translation>
     </message>
   </context>
   <context>
@@ -4820,17 +4804,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Help</source>
-      <translation>Help</translation>
+      <translation>Pomoć</translation>
     </message>
     <message>
       <location/>
       <source>FreeCAD Website</source>
-      <translation>FreeCAD Website</translation>
+      <translation>FreeCAD Web stranica</translation>
     </message>
     <message>
       <location/>
       <source>The FreeCAD website</source>
-      <translation>The FreeCAD website</translation>
+      <translation>FreeCAD web stranica</translation>
     </message>
   </context>
   <context>
@@ -4838,17 +4822,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Freeze display</source>
-      <translation>Freeze display</translation>
+      <translation>Zamrzni prikaz</translation>
     </message>
     <message>
       <location/>
       <source>Freezes the current view position</source>
-      <translation>Freezes the current view position</translation>
+      <translation>Zamrznii trenutni prikaz položaja</translation>
     </message>
   </context>
   <context>
@@ -4856,17 +4840,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Hide all objects</source>
-      <translation>Hide all objects</translation>
+      <translation>Sakrij sve objekte</translation>
     </message>
     <message>
       <location/>
       <source>Hide all objects in the document</source>
-      <translation>Hide all objects in the document</translation>
+      <translation>Sakrij sve objekte u dokument</translation>
     </message>
   </context>
   <context>
@@ -4874,17 +4858,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Hide selection</source>
-      <translation>Hide selection</translation>
+      <translation>Sakrij odabir</translation>
     </message>
     <message>
       <location/>
       <source>Hide all selected objects</source>
-      <translation>Hide all selected objects</translation>
+      <translation>Sakrij sve odabrane objekte</translation>
     </message>
   </context>
   <context>
@@ -4892,27 +4876,27 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>File</source>
-      <translation>File</translation>
+      <translation>Datoteka</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Import...</source>
-      <translation>&amp;Import...</translation>
+      <translation>&amp;Uvoz...</translation>
     </message>
     <message>
       <location/>
       <source>Import a file in the active document</source>
-      <translation>Import a file in the active document</translation>
+      <translation>Uvoz datoteke u aktivnom dokumentu</translation>
     </message>
     <message>
       <location/>
       <source>Supported formats</source>
-      <translation>Supported formats</translation>
+      <translation>Podržani formati</translation>
     </message>
     <message>
       <location/>
       <source>All files (*.*)</source>
-      <translation>All files (*.*)</translation>
+      <translation>Sve datoteke (*.*)</translation>
     </message>
   </context>
   <context>
@@ -4920,17 +4904,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Macro</source>
-      <translation>Macro</translation>
+      <translation>Makro</translation>
     </message>
     <message>
       <location/>
       <source>Debug macro</source>
-      <translation>Debug macro</translation>
+      <translation>Ispravljanje pogrešaka na makro naredbi</translation>
     </message>
     <message>
       <location/>
       <source>Start debugging of macro</source>
-      <translation>Start debugging of macro</translation>
+      <translation>Pokreni ispravljanje pogrešaka na makro naredbi</translation>
     </message>
   </context>
   <context>
@@ -4938,12 +4922,12 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Macro</source>
-      <translation>Macro</translation>
+      <translation>Makro</translation>
     </message>
     <message>
       <location/>
       <source>Step over</source>
-      <translation>Step over</translation>
+      <translation>Korak preko</translation>
     </message>
   </context>
   <context>
@@ -4951,17 +4935,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Macro</source>
-      <translation>Macro</translation>
+      <translation>Makro</translation>
     </message>
     <message>
       <location/>
       <source>Stop debugging</source>
-      <translation>Stop debugging</translation>
+      <translation>Zaustavi provjeru pogrešaka</translation>
     </message>
     <message>
       <location/>
       <source>Stop debugging of macro</source>
-      <translation>Stop debugging of macro</translation>
+      <translation>Zaustavi provjeru pogrešaka na makro naredbi</translation>
     </message>
   </context>
   <context>
@@ -4969,17 +4953,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Macro</source>
-      <translation>Macro</translation>
+      <translation>Makro</translation>
     </message>
     <message>
       <location/>
       <source>S&amp;top macro recording</source>
-      <translation>S&amp;top macro recording</translation>
+      <translation>Zaus&amp;tavljanje snimanja makro naredbe</translation>
     </message>
     <message>
       <location/>
       <source>Stop the macro recording session</source>
-      <translation>Stop the macro recording session</translation>
+      <translation>Zaustavljanje snimanja makro naredbe</translation>
     </message>
   </context>
   <context>
@@ -4987,12 +4971,12 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>View</source>
-      <translation>View</translation>
+      <translation>Pregled</translation>
     </message>
     <message>
       <location/>
       <source>Measure distance</source>
-      <translation>Measure distance</translation>
+      <translation>Mjerenje udaljenosti</translation>
     </message>
   </context>
   <context>
@@ -5000,17 +4984,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Tools</source>
-      <translation>Tools</translation>
+      <translation>Alati</translation>
     </message>
     <message>
       <location/>
       <source>Mesure distance</source>
-      <translation>Mesure distance</translation>
+      <translation>Izmjeri udaljenost</translation>
     </message>
     <message>
       <location/>
       <source>Measures distance between two selected objects</source>
-      <translation>Measures distance between two selected objects</translation>
+      <translation>Mjeri udaljenost između dvaju odabranih objekata</translation>
     </message>
   </context>
   <context>
@@ -5018,27 +5002,27 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>File</source>
-      <translation>File</translation>
+      <translation>Datoteka</translation>
     </message>
     <message>
       <location/>
       <source>Merge project...</source>
-      <translation>Merge project...</translation>
+      <translation>Spoji projekt ...</translation>
     </message>
     <message>
       <location/>
       <source>Merge project</source>
-      <translation>Merge project</translation>
+      <translation>Spoji projekt</translation>
     </message>
     <message>
       <location/>
       <source>%1 document (*.fcstd)</source>
-      <translation>%1 document (*.fcstd)</translation>
+      <translation>%1 dokument (*.fcstd)</translation>
     </message>
     <message>
       <location/>
       <source>Cannot merge project with itself.</source>
-      <translation>Cannot merge project with itself.</translation>
+      <translation>Ne mogu spojiti projekt sa samim sobom.</translation>
     </message>
   </context>
   <context>
@@ -5046,17 +5030,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>File</source>
-      <translation>File</translation>
+      <translation>Datoteka</translation>
     </message>
     <message>
       <location/>
       <source>&amp;New</source>
-      <translation>&amp;New</translation>
+      <translation>&amp;Novi</translation>
     </message>
     <message>
       <location/>
       <source>Create a new empty document</source>
-      <translation>Create a new empty document</translation>
+      <translation>Kreira novi prazni dokument</translation>
     </message>
   </context>
   <context>
@@ -5064,12 +5048,12 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Help</source>
-      <translation>Help</translation>
+      <translation>Pomoć</translation>
     </message>
     <message>
       <location/>
       <source>Show help to the application</source>
-      <translation>Show help to the application</translation>
+      <translation>Pokaži pomoć za primjenu</translation>
     </message>
   </context>
   <context>
@@ -5077,17 +5061,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Help</source>
-      <translation>Help</translation>
+      <translation>Pomoć</translation>
     </message>
     <message>
       <location/>
       <source>Python Manuals</source>
-      <translation>Python Manuals</translation>
+      <translation>Python priručnici</translation>
     </message>
     <message>
       <location/>
       <source>Show the Python documentation</source>
-      <translation>Show the Python documentation</translation>
+      <translation>Pokaži Python dokumentaciju</translation>
     </message>
   </context>
   <context>
@@ -5095,17 +5079,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Help</source>
-      <translation>Help</translation>
+      <translation>Pomoć</translation>
     </message>
     <message>
       <location/>
       <source>Help Website</source>
-      <translation>Help Website</translation>
+      <translation>Pomoć Web stranica</translation>
     </message>
     <message>
       <location/>
       <source>The website where the help is maintained</source>
-      <translation>The website where the help is maintained</translation>
+      <translation>Web stranica gdje se održava pomoć</translation>
     </message>
   </context>
   <context>
@@ -5113,27 +5097,27 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>File</source>
-      <translation>File</translation>
+      <translation>Datoteka</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Open...</source>
-      <translation>&amp;Open...</translation>
+      <translation>&amp;Otvori...</translation>
     </message>
     <message>
       <location/>
       <source>Open a document or import files</source>
-      <translation>Open a document or import files</translation>
+      <translation>Otvorite dokument ili uvoz datoteke</translation>
     </message>
     <message>
       <location/>
       <source>Supported formats</source>
-      <translation>Supported formats</translation>
+      <translation>Podržani formati</translation>
     </message>
     <message>
       <location/>
       <source>All files (*.*)</source>
-      <translation>All files (*.*)</translation>
+      <translation>Sve datoteke (*.*)</translation>
     </message>
   </context>
   <context>
@@ -5146,12 +5130,12 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>&amp;Paste</source>
-      <translation>&amp;Paste</translation>
+      <translation>&amp;Zalijepi</translation>
     </message>
     <message>
       <location/>
       <source>Paste operation</source>
-      <translation>Paste operation</translation>
+      <translation>Zalijepi</translation>
     </message>
   </context>
   <context>
@@ -5164,12 +5148,12 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Placement...</source>
-      <translation>Placement...</translation>
+      <translation>Postavljanje...</translation>
     </message>
     <message>
       <location/>
       <source>Place the selected objects</source>
-      <translation>Place the selected objects</translation>
+      <translation>Postavlja odabrane objekte</translation>
     </message>
   </context>
   <context>
@@ -5177,17 +5161,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>File</source>
-      <translation>File</translation>
+      <translation>Datoteka</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Print...</source>
-      <translation>&amp;Print...</translation>
+      <translation>Is&amp;pis ...</translation>
     </message>
     <message>
       <location/>
       <source>Print the document</source>
-      <translation>Print the document</translation>
+      <translation>Ispis dokumenta</translation>
     </message>
   </context>
   <context>
@@ -5195,17 +5179,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>File</source>
-      <translation>File</translation>
+      <translation>Datoteka</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Export PDF...</source>
-      <translation>&amp;Export PDF...</translation>
+      <translation>PDF I&amp;zlaz...</translation>
     </message>
     <message>
       <location/>
       <source>Export the document as PDF</source>
-      <translation>Export the document as PDF</translation>
+      <translation>Izvoz kao PDF dokument</translation>
     </message>
   </context>
   <context>
@@ -5213,17 +5197,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>File</source>
-      <translation>File</translation>
+      <translation>Datoteka</translation>
     </message>
     <message>
       <location/>
       <source>Project i&amp;nformation...</source>
-      <translation>Project i&amp;nformation...</translation>
+      <translation>I&amp;nformacije o projektu ...</translation>
     </message>
     <message>
       <location/>
       <source>Show details of the currently active project</source>
-      <translation>Show details of the currently active project</translation>
+      <translation>Pokaži detalje o trenutno aktivnom projektu</translation>
     </message>
   </context>
   <context>
@@ -5231,17 +5215,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Help</source>
-      <translation>Help</translation>
+      <translation>Pomoć</translation>
     </message>
     <message>
       <location/>
       <source>Python Website</source>
-      <translation>Python Website</translation>
+      <translation>Python Web stranica</translation>
     </message>
     <message>
       <location/>
       <source>The official Python website</source>
-      <translation>The official Python website</translation>
+      <translation>Službena web stranica Python</translation>
     </message>
   </context>
   <context>
@@ -5249,17 +5233,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>File</source>
-      <translation>File</translation>
+      <translation>Datoteka</translation>
     </message>
     <message>
       <location/>
       <source>E&amp;xit</source>
-      <translation>E&amp;xit</translation>
+      <translation>Iz&amp;laz</translation>
     </message>
     <message>
       <location/>
       <source>Quits the application</source>
-      <translation>Quits the application</translation>
+      <translation>Zatvara aplikaciju</translation>
     </message>
   </context>
   <context>
@@ -5267,12 +5251,12 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>File</source>
-      <translation>File</translation>
+      <translation>Datoteka</translation>
     </message>
     <message>
       <location/>
       <source>Random color</source>
-      <translation>Random color</translation>
+      <translation>Random boja</translation>
     </message>
   </context>
   <context>
@@ -5280,17 +5264,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>File</source>
-      <translation>File</translation>
+      <translation>Datoteka</translation>
     </message>
     <message>
       <location/>
       <source>Recent files</source>
-      <translation>Recent files</translation>
+      <translation>Nedavne datoteke</translation>
     </message>
     <message>
       <location/>
       <source>Recent file list</source>
-      <translation>Recent file list</translation>
+      <translation>Popis nedavnih datoteka</translation>
     </message>
   </context>
   <context>
@@ -5303,12 +5287,12 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>&amp;Redo</source>
-      <translation>&amp;Redo</translation>
+      <translation>&amp;Ponovi</translation>
     </message>
     <message>
       <location/>
       <source>Redoes a previously undone action</source>
-      <translation>Redoes a previously undone action</translation>
+      <translation>Vraća prethodno poništenog akciju</translation>
     </message>
   </context>
   <context>
@@ -5321,12 +5305,12 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>&amp;Refresh</source>
-      <translation>&amp;Refresh</translation>
+      <translation>&amp;Osvježi</translation>
     </message>
     <message>
       <location/>
       <source>Recomputes the current active document</source>
-      <translation>Recomputes the current active document</translation>
+      <translation>Ponovno proračunava trenutni aktivni dokument</translation>
     </message>
   </context>
   <context>
@@ -5334,17 +5318,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>File</source>
-      <translation>File</translation>
+      <translation>Datoteka</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Save</source>
-      <translation>&amp;Save</translation>
+      <translation>&amp;Spremi</translation>
     </message>
     <message>
       <location/>
       <source>Save the active document</source>
-      <translation>Save the active document</translation>
+      <translation>Spremi aktivni dokument</translation>
     </message>
   </context>
   <context>
@@ -5352,17 +5336,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>File</source>
-      <translation>File</translation>
+      <translation>Datoteka</translation>
     </message>
     <message>
       <location/>
       <source>Save &amp;As...</source>
-      <translation>Save &amp;As...</translation>
+      <translation>Spremi k&amp;ao...</translation>
     </message>
     <message>
       <location/>
       <source>Save the active document under a new file name</source>
-      <translation>Save the active document under a new file name</translation>
+      <translation>Spremi aktivni dokument pod novim imenom</translation>
     </message>
   </context>
   <context>
@@ -5370,17 +5354,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Tools</source>
-      <translation>Tools</translation>
+      <translation>Alati</translation>
     </message>
     <message>
       <location/>
       <source>Scene inspector...</source>
-      <translation>Scene inspector...</translation>
+      <translation>Pregled scene...</translation>
     </message>
     <message>
       <location/>
       <source>Scene inspector</source>
-      <translation>Scene inspector</translation>
+      <translation>Pregled scene</translation>
     </message>
   </context>
   <context>
@@ -5393,12 +5377,12 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Select &amp;All</source>
-      <translation>Select &amp;All</translation>
+      <translation>Ozn&amp;ači sve</translation>
     </message>
     <message>
       <location/>
       <source>Select all</source>
-      <translation>Select all</translation>
+      <translation>Označi sve</translation>
     </message>
   </context>
   <context>
@@ -5406,17 +5390,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Appearance...</source>
-      <translation>Appearance...</translation>
+      <translation>Izgled...</translation>
     </message>
     <message>
       <location/>
       <source>Sets the display properties of the selected object</source>
-      <translation>Sets the display properties of the selected object</translation>
+      <translation>Postavlja prikaz svojstava odabranog objekta</translation>
     </message>
   </context>
   <context>
@@ -5424,17 +5408,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Show all objects</source>
-      <translation>Show all objects</translation>
+      <translation>Prikaži sve objekte</translation>
     </message>
     <message>
       <location/>
       <source>Show all objects in the document</source>
-      <translation>Show all objects in the document</translation>
+      <translation>Prikazuje sve objekte u dokument</translation>
     </message>
   </context>
   <context>
@@ -5442,17 +5426,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Show selection</source>
-      <translation>Show selection</translation>
+      <translation>Prikaži izbor</translation>
     </message>
     <message>
       <location/>
       <source>Show all selected objects</source>
-      <translation>Show all selected objects</translation>
+      <translation>Prikazuje sve odabrane objekte</translation>
     </message>
   </context>
   <context>
@@ -5460,17 +5444,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>View</source>
-      <translation>View</translation>
+      <translation>Pregled</translation>
     </message>
     <message>
       <location/>
       <source>Status bar</source>
-      <translation>Status bar</translation>
+      <translation>Statusna traka</translation>
     </message>
     <message>
       <location/>
       <source>Toggles the status bar</source>
-      <translation>Toggles the status bar</translation>
+      <translation>Uključuje/isključuje statusnu traku</translation>
     </message>
   </context>
   <context>
@@ -5478,17 +5462,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Tools</source>
-      <translation>Tools</translation>
+      <translation>Alati</translation>
     </message>
     <message>
       <location/>
       <source>Texture mapping...</source>
-      <translation>Texture mapping...</translation>
+      <translation>Mapiranje tekstura ...</translation>
     </message>
     <message>
       <location/>
       <source>Texture mapping</source>
-      <translation>Texture mapping</translation>
+      <translation>Mapiranje tekstura</translation>
     </message>
   </context>
   <context>
@@ -5496,17 +5480,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Window</source>
-      <translation>Window</translation>
+      <translation>Prozor</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Tile</source>
-      <translation>&amp;Tile</translation>
+      <translation>&amp;Naslov</translation>
     </message>
     <message>
       <location/>
       <source>Tile the windows</source>
-      <translation>Tile the windows</translation>
+      <translation>Tile Windows</translation>
     </message>
   </context>
   <context>
@@ -5514,17 +5498,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Help</source>
-      <translation>Help</translation>
+      <translation>Pomoć</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Tip of the day...</source>
-      <translation>&amp;Tip of the day...</translation>
+      <translation>Savje&amp;t dana...</translation>
     </message>
     <message>
       <location/>
       <source>Tip of the day</source>
-      <translation>Tip of the day</translation>
+      <translation>Savjet dana</translation>
     </message>
   </context>
   <context>
@@ -5532,12 +5516,12 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Macro</source>
-      <translation>Macro</translation>
+      <translation>Makro</translation>
     </message>
     <message>
       <location/>
       <source>Toggle breakpoint</source>
-      <translation>Toggle breakpoint</translation>
+      <translation>Uključi/isključi prijelomnu točku</translation>
     </message>
   </context>
   <context>
@@ -5545,17 +5529,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Clipping plane</source>
-      <translation>Clipping plane</translation>
+      <translation> ravni isječak</translation>
     </message>
     <message>
       <location/>
       <source>Toggles clipping plane for active view</source>
-      <translation>Toggles clipping plane for active view</translation>
+      <translation>Uključuje ravni isječak za aktivan prikaz</translation>
     </message>
   </context>
   <context>
@@ -5563,17 +5547,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Toggle navigation/Edit mode</source>
-      <translation>Toggle navigation/Edit mode</translation>
+      <translation>Toggle navigacija / Edit modu</translation>
     </message>
     <message>
       <location/>
       <source>Toggle between navigation and edit mode</source>
-      <translation>Toggle between navigation and edit mode</translation>
+      <translation>Šetanje između navigacije i način za uređivanje</translation>
     </message>
   </context>
   <context>
@@ -5581,17 +5565,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Toggle all objects</source>
-      <translation>Toggle all objects</translation>
+      <translation>Uključi / isključi sve objekte</translation>
     </message>
     <message>
       <location/>
       <source>Toggles visibility of all objects in the active document</source>
-      <translation>Toggles visibility of all objects in the active document</translation>
+      <translation>Uključuje/isključuje vidljivost svih objekata u aktivnom dokumentu</translation>
     </message>
   </context>
   <context>
@@ -5599,17 +5583,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Toggle selectability</source>
-      <translation>Toggle selectability</translation>
+      <translation>Uključi/isključi mogućnost odabira</translation>
     </message>
     <message>
       <location/>
       <source>Toggles the property of the objects to get selected in the 3D-View</source>
-      <translation>Toggles the property of the objects to get selected in the 3D-View</translation>
+      <translation>Uključiuje/isključuje mogućnost odabira objekta u 3D prikazu</translation>
     </message>
   </context>
   <context>
@@ -5617,17 +5601,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Toggle visibility</source>
-      <translation>Toggle visibility</translation>
+      <translation>Promjeni vidljivost</translation>
     </message>
     <message>
       <location/>
       <source>Toggles visibility</source>
-      <translation>Toggles visibility</translation>
+      <translation>Uključuje/isključuje vidljivost</translation>
     </message>
   </context>
   <context>
@@ -5635,17 +5619,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>View</source>
-      <translation>View</translation>
+      <translation>Pregled</translation>
     </message>
     <message>
       <location/>
       <source>Tool&amp;bars</source>
-      <translation>Tool&amp;bars</translation>
+      <translation>Alatne tra&amp;ke</translation>
     </message>
     <message>
       <location/>
       <source>Toggles this window</source>
-      <translation>Toggles this window</translation>
+      <translation>Uključuje ovaj prozor</translation>
     </message>
   </context>
   <context>
@@ -5658,12 +5642,12 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Transform...</source>
-      <translation>Transform...</translation>
+      <translation>Transformacija ...</translation>
     </message>
     <message>
       <location/>
       <source>Transform the geometry of selected objects</source>
-      <translation>Transform the geometry of selected objects</translation>
+      <translation>Preobraziti geometriju odabranih objekata</translation>
     </message>
   </context>
   <context>
@@ -5671,17 +5655,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>View</source>
-      <translation>View</translation>
+      <translation>Pregled</translation>
     </message>
     <message>
       <location/>
       <source>Go to selection</source>
-      <translation>Go to selection</translation>
+      <translation>Idi na odabrane objekte</translation>
     </message>
     <message>
       <location/>
       <source>Scroll to first selected item</source>
-      <translation>Scroll to first selected item</translation>
+      <translation>Dođite na prvu odabranu stavku</translation>
     </message>
   </context>
   <context>
@@ -5694,12 +5678,12 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>&amp;Undo</source>
-      <translation>&amp;Undo</translation>
+      <translation>Poni&amp;šti</translation>
     </message>
     <message>
       <location/>
       <source>Undo exactly one action</source>
-      <translation>Undo exactly one action</translation>
+      <translation>Poništi točno jednu radnju</translation>
     </message>
   </context>
   <context>
@@ -5707,17 +5691,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>View</source>
-      <translation>View</translation>
+      <translation>Pregled</translation>
     </message>
     <message>
       <location/>
       <source>Dock views</source>
-      <translation>Dock views</translation>
+      <translation>Usidri poglede</translation>
     </message>
     <message>
       <location/>
       <source>Dock all top-level views</source>
-      <translation>Dock all top-level views</translation>
+      <translation>Usidri sve poglede najviše razine</translation>
     </message>
   </context>
   <context>
@@ -5725,7 +5709,7 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
@@ -5735,7 +5719,7 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Set to axometric view</source>
-      <translation>Set to axometric view</translation>
+      <translation>Postavite axometric prikaz</translation>
     </message>
   </context>
   <context>
@@ -5743,17 +5727,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Bottom</source>
-      <translation>Bottom</translation>
+      <translation>Ispod</translation>
     </message>
     <message>
       <location/>
       <source>Set to bottom view</source>
-      <translation>Set to bottom view</translation>
+      <translation>Postavite pogled od dolje</translation>
     </message>
   </context>
   <context>
@@ -5761,17 +5745,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Create new view</source>
-      <translation>Create new view</translation>
+      <translation>Napravi novi pogled</translation>
     </message>
     <message>
       <location/>
       <source>Creates a new  view window for the active document</source>
-      <translation>Creates a new  view window for the active document</translation>
+      <translation>Stvara novi prikaz prozora za aktivni dokument</translation>
     </message>
   </context>
   <context>
@@ -5779,17 +5763,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Inventor example #1</source>
-      <translation>Inventor example #1</translation>
+      <translation>Inventor primjer #1</translation>
     </message>
     <message>
       <location/>
       <source>Shows a 3D texture with manipulator</source>
-      <translation>Shows a 3D texture with manipulator</translation>
+      <translation>Pokazuje 3D teksturu sa manipulatorom</translation>
     </message>
   </context>
   <context>
@@ -5797,17 +5781,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Inventor example #2</source>
-      <translation>Inventor example #2</translation>
+      <translation>Inventor primjer #2</translation>
     </message>
     <message>
       <location/>
       <source>Shows spheres and drag-lights</source>
-      <translation>Shows spheres and drag-lights</translation>
+      <translation>Pokazuje sferu i pomicanje svjetla</translation>
     </message>
   </context>
   <context>
@@ -5815,17 +5799,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Inventor example #3</source>
-      <translation>Inventor example #3</translation>
+      <translation>Inventor primjer #3</translation>
     </message>
     <message>
       <location/>
       <source>Shows a animated texture</source>
-      <translation>Shows a animated texture</translation>
+      <translation>Pokazuje animirane teksture</translation>
     </message>
   </context>
   <context>
@@ -5833,17 +5817,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Fit all</source>
-      <translation>Fit all</translation>
+      <translation>Prikaži sve</translation>
     </message>
     <message>
       <location/>
       <source>Fits the whole content on the screen</source>
-      <translation>Fits the whole content on the screen</translation>
+      <translation>Prikazuje sav sadržaj na zaslonu</translation>
     </message>
   </context>
   <context>
@@ -5851,17 +5835,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Fit selection</source>
-      <translation>Fit selection</translation>
+      <translation>Prikaži odabir</translation>
     </message>
     <message>
       <location/>
       <source>Fits the selected content on the screen</source>
-      <translation>Fits the selected content on the screen</translation>
+      <translation>Prikazuje odabrani sadržaj na zaslonu</translation>
     </message>
   </context>
   <context>
@@ -5869,17 +5853,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Front</source>
-      <translation>Front</translation>
+      <translation>Ispred</translation>
     </message>
     <message>
       <location/>
       <source>Set to front view</source>
-      <translation>Set to front view</translation>
+      <translation>Postavlja pogled od gore</translation>
     </message>
   </context>
   <context>
@@ -5887,17 +5871,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Issue camera position</source>
-      <translation>Issue camera position</translation>
+      <translation>Upit za položaj kamere</translation>
     </message>
     <message>
       <location/>
       <source>Issue the camera position to the console and to a macro, to easily recall this position</source>
-      <translation>Issue the camera position to the console and to a macro, to easily recall this position</translation>
+      <translation>Sprema poziciju kamere na konzolu i makro, radi lakšeg vraćanja na ovaj pogled</translation>
     </message>
   </context>
   <context>
@@ -5905,17 +5889,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Stereo Interleaved Columns</source>
-      <translation>Stereo Interleaved Columns</translation>
+      <translation>Stereo Interleaved Kolumne</translation>
     </message>
     <message>
       <location/>
       <source>Switch stereo viewing to Interleaved Columns</source>
-      <translation>Switch stereo viewing to Interleaved Columns</translation>
+      <translation>Prebaci stereo gledanje na Interleaved stupce</translation>
     </message>
   </context>
   <context>
@@ -5923,17 +5907,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Stereo Interleaved Rows</source>
-      <translation>Stereo Interleaved Rows</translation>
+      <translation>Stereo Interleaved redak</translation>
     </message>
     <message>
       <location/>
       <source>Switch stereo viewing to Interleaved Rows</source>
-      <translation>Switch stereo viewing to Interleaved Rows</translation>
+      <translation>Prebaci stereo gledanje na retke Interleaved</translation>
     </message>
   </context>
   <context>
@@ -5941,7 +5925,7 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
@@ -5951,7 +5935,7 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Switch stereo viewing off</source>
-      <translation>Switch stereo viewing off</translation>
+      <translation>Prebacite stereo gledanje off</translation>
     </message>
   </context>
   <context>
@@ -5959,17 +5943,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Stereo quad buffer</source>
-      <translation>Stereo quad buffer</translation>
+      <translation>Stereo quad tampon</translation>
     </message>
     <message>
       <location/>
       <source>Switch stereo viewing to quad buffer</source>
-      <translation>Switch stereo viewing to quad buffer</translation>
+      <translation>Prebaci stereo gledanje na quad tampon</translation>
     </message>
   </context>
   <context>
@@ -5977,17 +5961,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Stereo red/green</source>
-      <translation>Stereo red/green</translation>
+      <translation>Stereo crveno / zeleno</translation>
     </message>
     <message>
       <location/>
       <source>Switch stereo viewing to red/green</source>
-      <translation>Switch stereo viewing to red/green</translation>
+      <translation>Prebaci stereo gledanje u crveno / zeleno</translation>
     </message>
   </context>
   <context>
@@ -5995,17 +5979,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Left</source>
-      <translation>Left</translation>
+      <translation>Lijevo</translation>
     </message>
     <message>
       <location/>
       <source>Set to left view</source>
-      <translation>Set to left view</translation>
+      <translation>Postavlja pogled s lijeve strane</translation>
     </message>
   </context>
   <context>
@@ -6013,17 +5997,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Rear</source>
-      <translation>Rear</translation>
+      <translation>Iza</translation>
     </message>
     <message>
       <location/>
       <source>Set to rear view</source>
-      <translation>Set to rear view</translation>
+      <translation>Postavlja pogled sa stražnje strane</translation>
     </message>
   </context>
   <context>
@@ -6031,17 +6015,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Right</source>
-      <translation>Right</translation>
+      <translation>Desno</translation>
     </message>
     <message>
       <location/>
       <source>Set to right view</source>
-      <translation>Set to right view</translation>
+      <translation>Postavlja pogled sa desne strane</translation>
     </message>
   </context>
   <context>
@@ -6049,17 +6033,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Top</source>
-      <translation>Top</translation>
+      <translation>Gore</translation>
     </message>
     <message>
       <location/>
       <source>Set to top view</source>
-      <translation>Set to top view</translation>
+      <translation>Postavlja pogled sa gornje strane</translation>
     </message>
   </context>
   <context>
@@ -6067,17 +6051,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Help</source>
-      <translation>Help</translation>
+      <translation>Pomoć</translation>
     </message>
     <message>
       <location/>
       <source>&amp;What's This?</source>
-      <translation>&amp;What's This?</translation>
+      <translation>&amp;Što je ovo?</translation>
     </message>
     <message>
       <location/>
       <source>What's This</source>
-      <translation>What's This</translation>
+      <translation>Što je ovo</translation>
     </message>
   </context>
   <context>
@@ -6085,17 +6069,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Window</source>
-      <translation>Window</translation>
+      <translation>Prozor</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Windows...</source>
-      <translation>&amp;Windows...</translation>
+      <translation>&amp;Prozori ...</translation>
     </message>
     <message>
       <location/>
       <source>Windows list</source>
-      <translation>Windows list</translation>
+      <translation>Popis prozora</translation>
     </message>
   </context>
   <context>
@@ -6103,12 +6087,12 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Window</source>
-      <translation>Window</translation>
+      <translation>Prozor</translation>
     </message>
     <message>
       <location/>
       <source>Activates this window</source>
-      <translation>Activates this window</translation>
+      <translation>Aktivira ovaj prozor</translation>
     </message>
   </context>
   <context>
@@ -6116,7 +6100,7 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>View</source>
-      <translation>View</translation>
+      <translation>Pregled</translation>
     </message>
     <message>
       <location/>
@@ -6126,7 +6110,7 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Switch between workbenches</source>
-      <translation>Switch between workbenches</translation>
+      <translation>Prebacivanje između workbenches</translation>
     </message>
   </context>
   <context>
@@ -6134,17 +6118,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Orthographic view</source>
-      <translation>Orthographic view</translation>
+      <translation>Ortografski pogled</translation>
     </message>
     <message>
       <location/>
       <source>Switches to orthographic view mode</source>
-      <translation>Switches to orthographic view mode</translation>
+      <translation>Postavlja ortografski način pregleda</translation>
     </message>
   </context>
   <context>
@@ -6152,17 +6136,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Perspective view</source>
-      <translation>Perspective view</translation>
+      <translation>Perspektivni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Switches to perspective view mode</source>
-      <translation>Switches to perspective view mode</translation>
+      <translation>Prebacuje u perspektivan način pregleda</translation>
     </message>
   </context>
   <context>
@@ -6170,12 +6154,12 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Box zoom</source>
-      <translation>Box zoom</translation>
+      <translation>Zumiranje u okvir</translation>
     </message>
   </context>
   <context>
@@ -6183,17 +6167,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Display mode</source>
-      <translation>Display mode</translation>
+      <translation>Način prikaza</translation>
     </message>
     <message>
       <location/>
       <source>Display the active view either in fullscreen, in undocked or docked mode</source>
-      <translation>Display the active view either in fullscreen, in undocked or docked mode</translation>
+      <translation>Prikaz aktivnog pogleda preko cijelog zaslona, u plutajućem ili usidrenom načinu</translation>
     </message>
   </context>
   <context>
@@ -6201,17 +6185,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Save picture...</source>
-      <translation>Save picture...</translation>
+      <translation>Spremi sliku...</translation>
     </message>
     <message>
       <location/>
       <source>Creates a screenshot of the active view</source>
-      <translation>Creates a screenshot of the active view</translation>
+      <translation>Stvara sliku aktivnog pogleda</translation>
     </message>
   </context>
   <context>
@@ -6219,12 +6203,12 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Zoom In</source>
-      <translation>Zoom In</translation>
+      <translation>Zumirati unutra</translation>
     </message>
   </context>
   <context>
@@ -6232,12 +6216,12 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>Standard-View</source>
-      <translation>Standard-View</translation>
+      <translation>Standardni pogled</translation>
     </message>
     <message>
       <location/>
       <source>Zoom Out</source>
-      <translation>Zoom Out</translation>
+      <translation>Zumirati van</translation>
     </message>
   </context>
   <context>
@@ -6245,17 +6229,17 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>&amp;File</source>
-      <translation>&amp;File</translation>
+      <translation>&amp;Datoteka</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Edit</source>
-      <translation>&amp;Edit</translation>
+      <translation>&amp;Uredi</translation>
     </message>
     <message>
       <location/>
       <source>Standard views</source>
-      <translation>Standard views</translation>
+      <translation>Standardni pogledi</translation>
     </message>
     <message>
       <location/>
@@ -6265,62 +6249,62 @@ Be aware the point where you click matters.</translation>
     <message>
       <location/>
       <source>&amp;Zoom</source>
-      <translation>&amp;Zoom</translation>
+      <translation>&amp;Zumiraj</translation>
     </message>
     <message>
       <location/>
       <source>Visibility</source>
-      <translation>Visibility</translation>
+      <translation>Vidljivost</translation>
     </message>
     <message>
       <location/>
       <source>&amp;View</source>
-      <translation>&amp;View</translation>
+      <translation>&amp;Pogled</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Tools</source>
-      <translation>&amp;Tools</translation>
+      <translation>&amp;Alati</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Macro</source>
-      <translation>&amp;Macro</translation>
+      <translation>&amp;Makro</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Windows</source>
-      <translation>&amp;Windows</translation>
+      <translation>&amp;Prozori</translation>
     </message>
     <message>
       <location/>
       <source>&amp;On-line help</source>
-      <translation>&amp;On-line help</translation>
+      <translation>&amp;On-line pomoć</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Help</source>
-      <translation>&amp;Help</translation>
+      <translation>&amp;Pomoć</translation>
     </message>
     <message>
       <location/>
       <source>File</source>
-      <translation>File</translation>
+      <translation>Datoteka</translation>
     </message>
     <message>
       <location/>
       <source>Macro</source>
-      <translation>Macro</translation>
+      <translation>Makro</translation>
     </message>
     <message>
       <location/>
       <source>View</source>
-      <translation>View</translation>
+      <translation>Pregled</translation>
     </message>
     <message>
       <location/>
       <source>Special Ops</source>
-      <translation>Special Ops</translation>
+      <translation>Specijalne radnje</translation>
     </message>
   </context>
   <context>
@@ -6342,22 +6326,17 @@ p, li { white-space: pre-wrap; }
 &lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;"&gt;www.ii-system.com&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
       <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;"&gt;
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-size:20pt; font-weight:600;"&gt;iisTaskPanel&lt;/span&gt;&lt;/p&gt;
-&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;"&gt;&lt;/p&gt;
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;"&gt;&lt;span style=" font-size:12pt;"&gt;Created for Qt 4.3.x&lt;/span&gt;&lt;/p&gt;
-&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;"&gt;&lt;/p&gt;
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;"&gt;www.ii-system.com&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt; &lt;span style=" font-size:20pt; font-weight:600;"&gt;iisTaskPanel&lt;/span&gt; &lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;"&gt; &lt;span style=" font-size:12pt;"&gt;Kreirano za Qt 4.3.x&lt;/span&gt; &lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;"&gt; www.ii-system.com &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
       <location/>
       <source>Choose the style of the Task Panel</source>
-      <translation>Choose the style of the Task Panel</translation>
+      <translation>Odaberite stil Radne ploče</translation>
     </message>
     <message>
       <location/>
       <source>Default</source>
-      <translation>Default</translation>
+      <translation>Inicijalno</translation>
     </message>
     <message>
       <location/>
