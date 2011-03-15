@@ -3,6 +3,9 @@
 #include <string>
 #include <sstream>
 #include <QtGui>
+#if defined(Q_WS_X11)
+# include <QX11EmbedContainer>
+#endif
 
 #include "mainwindow.h"
 
@@ -10,7 +13,11 @@ MainWindow::MainWindow()
 {
     createActions();
     createMenus();
+#if defined(Q_WS_X11)
+    setCentralWidget(new QX11EmbedContainer(this));
+#else
     setCentralWidget(new QWidget(this));
+#endif
 }
 
 void MainWindow::createActions()
@@ -112,8 +119,7 @@ void MainWindow::newDocument()
 
 void MainWindow::embedWindow()
 {
-    void* hwnd = 0;
-    hwnd = this->centralWidget()->winId();
+    WId hwnd = this->centralWidget()->winId();
     PyObject* main = PyImport_AddModule("__main__");
     PyObject* dict = PyModule_GetDict(main);
     std::stringstream cmd;
