@@ -181,13 +181,15 @@ FreeCADGui_embedToWindow(PyObject * /*self*/, PyObject *args)
         PyErr_SetString(PyExc_Exception, "No main window");
         return 0;
     }
+
     std::string pointer_str = pointer;
-    void* window = 0;
     std::stringstream str(pointer_str);
+
+#if defined(Q_OS_WIN)
+    void* window = 0;
     str >> window;
     WId winid = (WId)window;
 
-#if defined(Q_OS_WIN)
     LONG oldLong = GetWindowLong(winid, GWL_STYLE);
     SetWindowLong(winid, GWL_STYLE,
     oldLong | WS_CLIPCHILDREN | WS_CLIPSIBLINGS);
@@ -198,6 +200,9 @@ FreeCADGui_embedToWindow(PyObject * /*self*/, PyObject *args)
     QEvent embeddingEvent(QEvent::EmbeddingControl);
     QApplication::sendEvent(widget, &embeddingEvent);
 #elif defined(Q_WS_X11)
+    WId winid;
+    str >> winid;
+
     QX11EmbedWidget* x11 = new QX11EmbedWidget();
     widget->setParent(x11);
     x11->embedInto(winid);
@@ -206,7 +211,7 @@ FreeCADGui_embedToWindow(PyObject * /*self*/, PyObject *args)
     PyErr_SetString(PyExc_NotImplementedError, "Not implemented for this platform");
     return 0;
 #endif
-    
+
     Py_INCREF(Py_None);
     return Py_None;
 }
