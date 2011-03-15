@@ -16,7 +16,7 @@
     <message>
       <location/>
       <source>Export the Povray project file</source>
-      <translation>Export the Povray project file</translation>
+      <translation>Izvoz datoteka Povray projekt</translation>
     </message>
   </context>
   <context>
@@ -24,7 +24,7 @@
     <message>
       <location/>
       <source>Raytracing</source>
-      <translation>Raytracing</translation>
+      <translation>Metode trasiranja putem zrake</translation>
     </message>
     <message>
       <location/>
@@ -34,7 +34,7 @@
     <message>
       <location/>
       <source>Insert a new part object into a Povray project</source>
-      <translation>Insert a new part object into a Povray project</translation>
+      <translation>Umetnite novi dio objekta u Povray-projekta</translation>
     </message>
   </context>
   <context>
@@ -42,17 +42,17 @@
     <message>
       <location/>
       <source>Raytracing</source>
-      <translation>Raytracing</translation>
+      <translation>Metode trasiranja putem zrake</translation>
     </message>
     <message>
       <location/>
       <source>New Povray project</source>
-      <translation>New Povray project</translation>
+      <translation>Novi projekt Povray</translation>
     </message>
     <message>
       <location/>
       <source>Insert new Povray project into the document</source>
-      <translation>Insert new Povray project into the document</translation>
+      <translation>Umetanje novog Povray projekta u dokument</translation>
     </message>
   </context>
   <context>
@@ -60,7 +60,7 @@
     <message>
       <location/>
       <source>Raytracing</source>
-      <translation>Raytracing</translation>
+      <translation>Metode trasiranja putem zrake</translation>
     </message>
   </context>
   <context>
@@ -68,7 +68,7 @@
     <message>
       <location/>
       <source>Raytracing</source>
-      <translation>Raytracing</translation>
+      <translation>Metode trasiranja putem zrake</translation>
     </message>
   </context>
   <context>
@@ -76,17 +76,17 @@
     <message>
       <location/>
       <source>Raytracing</source>
-      <translation>Raytracing</translation>
+      <translation>Metode trasiranja putem zrake</translation>
     </message>
     <message>
       <location/>
       <source>Export camera to povray</source>
-      <translation>Export camera to povray</translation>
+      <translation>Prenesi fotoaparat na povray</translation>
     </message>
     <message>
       <location/>
       <source>Export the camera positon of the active 3D view in PovRay format to a file</source>
-      <translation>Export the camera positon of the active 3D view in PovRay format to a file</translation>
+      <translation>Prenesi položaj kamere iz  3D aktivnog prikaza u povray format, u datoteku</translation>
     </message>
   </context>
   <context>
@@ -94,7 +94,7 @@
     <message>
       <location/>
       <source>Raytracing</source>
-      <translation>Raytracing</translation>
+      <translation>Metode trasiranja putem zrake</translation>
     </message>
     <message>
       <location/>
@@ -112,7 +112,7 @@
     <message>
       <location/>
       <source>Raytracing</source>
-      <translation>Raytracing</translation>
+      <translation>Metode trasiranja putem zrake</translation>
     </message>
     <message>
       <location/>
@@ -173,7 +173,7 @@
     <message>
       <location/>
       <source>Raytracing</source>
-      <translation>Raytracing</translation>
+      <translation>Metode trasiranja putem zrake</translation>
     </message>
     <message>
       <location/>
@@ -183,17 +183,17 @@
     <message>
       <location/>
       <source>Default Project dir:</source>
-      <translation>Default Project dir:</translation>
+      <translation>Osnovni Projekt dir:</translation>
     </message>
     <message>
       <location/>
       <source>Camera file name:</source>
-      <translation>Camera file name:</translation>
+      <translation>Kamera, ime datoteke:</translation>
     </message>
     <message>
       <location/>
       <source>Part file name:</source>
-      <translation>Part file name:</translation>
+      <translation>Dio naziva datoteke:</translation>
     </message>
     <message>
       <location/>
@@ -213,12 +213,12 @@
     <message>
       <location/>
       <source>max mesh deviation:</source>
-      <translation>max mesh deviation:</translation>
+      <translation>max devijacija mreže:</translation>
     </message>
     <message>
       <location/>
       <source>Do not calculate vertex normals</source>
-      <translation>Do not calculate vertex normals</translation>
+      <translation>Ne izračunati vrh normale </translation>
     </message>
     <message>
       <location/>

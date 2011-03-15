@@ -16,7 +16,7 @@
     <message>
       <location/>
       <source>set a axle constraint between two objects</source>
-      <translation>两个对象之间设置一个轴约束</translation>
+      <translation>两个对象之间设置轴约束</translation>
     </message>
   </context>
   <context>
@@ -24,12 +24,12 @@
     <message>
       <location/>
       <source>&amp;File</source>
-      <translation>&amp;F 文件</translation>
+      <translation>文件(&amp;F)</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Edit</source>
-      <translation>&amp;E 编辑</translation>
+      <translation>编辑(&amp;E)</translation>
     </message>
     <message>
       <location/>
@@ -39,12 +39,12 @@
     <message>
       <location/>
       <source>&amp;Stereo</source>
-      <translation>&amp;S 立体声</translation>
+      <translation>三维成像(&amp;S)</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Zoom</source>
-      <translation>&amp;Z 缩放</translation>
+      <translation>缩放(&amp;Z)</translation>
     </message>
     <message>
       <location/>
@@ -54,12 +54,12 @@
     <message>
       <location/>
       <source>&amp;View</source>
-      <translation>&amp;V 视图</translation>
+      <translation>视图(&amp;V)</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Tools</source>
-      <translation>&amp;T 工具</translation>
+      <translation>工具(&amp;T)</translation>
     </message>
     <message>
       <location/>
@@ -74,12 +74,12 @@
     <message>
       <location/>
       <source>&amp;Meshes</source>
-      <translation>&amp;M 网格</translation>
+      <translation>网格(&amp;M)</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Part</source>
-      <translation>&amp;P 零件</translation>
+      <translation>零件(&amp;P)</translation>
     </message>
     <message>
       <location/>
@@ -89,37 +89,37 @@
     <message>
       <location/>
       <source>Ske&amp;tch</source>
-      <translation>%t草图</translation>
+      <translation>草图(&amp;T)</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Drawing</source>
-      <translation>&amp; 绘图</translation>
+      <translation>绘图(&amp;D)</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Raytracing</source>
-      <translation>&amp; 光线追踪</translation>
+      <translation>光线追踪(&amp;R)</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Drafting</source>
-      <translation>&amp; 绘图</translation>
+      <translation>绘图(&amp;D)</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Windows</source>
-      <translation>&amp; 窗口</translation>
+      <translation>窗口(&amp;W)</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Online-help</source>
-      <translation>&amp; 联机帮助</translation>
+      <translation>联机帮助(&amp;O)</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Help</source>
-      <translation>＆帮助</translation>
+      <translation>帮助(&amp;H)</translation>
     </message>
     <message>
       <location/>
@@ -144,7 +144,7 @@
     <message>
       <location/>
       <source>Sketch based</source>
-      <translation>草图基础</translation>
+      <translation>基于草绘</translation>
     </message>
     <message>
       <location/>
@@ -167,12 +167,12 @@
     <message>
       <location/>
       <source>&amp;File</source>
-      <translation>&amp;F 文件</translation>
+      <translation>文件(&amp;F)</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Edit</source>
-      <translation>&amp;E 编辑</translation>
+      <translation>编辑(&amp;E)</translation>
     </message>
     <message>
       <location/>
@@ -187,17 +187,17 @@
     <message>
       <location/>
       <source>&amp;Zoom</source>
-      <translation>&amp;Z 缩放</translation>
+      <translation>缩放(&amp;Z)</translation>
     </message>
     <message>
       <location/>
       <source>&amp;View</source>
-      <translation>&amp;V 视图</translation>
+      <translation>视图(&amp;V)</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Tools</source>
-      <translation>&amp;T 工具</translation>
+      <translation>工具(&amp;T)</translation>
     </message>
     <message>
       <location/>
@@ -212,32 +212,32 @@
     <message>
       <location/>
       <source>&amp;Meshes</source>
-      <translation>&amp;M 网格</translation>
+      <translation>网格(&amp;M)</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Part</source>
-      <translation>&amp;P 零件</translation>
+      <translation>零件(&amp;P)</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Drawing</source>
-      <translation>&amp; 绘图</translation>
+      <translation>绘图(&amp;D)</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Windows</source>
-      <translation>&amp; 窗口</translation>
+      <translation>窗口(&amp;W)</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Online-help</source>
-      <translation>&amp; 联机帮助</translation>
+      <translation>联机帮助(&amp;O)</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Help</source>
-      <translation>＆帮助</translation>
+      <translation>帮助(&amp;H)</translation>
     </message>
     <message>
       <location/>
@@ -257,22 +257,22 @@
     <message>
       <location/>
       <source>Ske&amp;tch</source>
-      <translation>%t草图</translation>
+      <translation>草图(&amp;T)</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Raytracing</source>
-      <translation>&amp; 光线追踪</translation>
+      <translation>光线追踪(&amp;R)</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Drafting</source>
-      <translation>&amp; 绘图</translation>
+      <translation>绘图(&amp;D)</translation>
     </message>
     <message>
       <location/>
       <source>Sketch based</source>
-      <translation>草图基础</translation>
+      <translation>基于草绘</translation>
     </message>
     <message>
       <location/>

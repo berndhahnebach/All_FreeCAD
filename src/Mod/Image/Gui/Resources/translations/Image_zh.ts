@@ -47,7 +47,7 @@
     <message>
       <location/>
       <source>Image pixel format</source>
-      <translation>图像的像素格式</translation>
+      <translation>图像像素格式</translation>
     </message>
   </context>
   <context>
@@ -55,7 +55,7 @@
     <message>
       <location/>
       <source>&amp;Fit image</source>
-      <translation>&amp;F 图形预览</translation>
+      <translation>适应图像大小(&amp;F)</translation>
     </message>
     <message>
       <location/>
@@ -65,7 +65,7 @@
     <message>
       <location/>
       <source>&amp;1:1 scale</source>
-      <translation>&amp; 1:1 比例</translation>
+      <translation>&amp;1:1 缩放</translation>
     </message>
     <message>
       <location/>
@@ -75,22 +75,22 @@
     <message>
       <location/>
       <source>&amp;Original color</source>
-      <translation>&amp;O 原色</translation>
+      <translation>原始色(&amp;O)</translation>
     </message>
     <message>
       <location/>
       <source>Display the image with its original color(s)</source>
-      <translation>以原色显示图片</translation>
+      <translation>以原始色显示图片</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Brightened color</source>
-      <translation>&amp;B 色彩明亮</translation>
+      <translation>高亮色(&amp;B)</translation>
     </message>
     <message>
       <location/>
       <source>Display the image with brightened color(s)</source>
-      <translation>以亮色显示图片</translation>
+      <translation>以高亮色显示图片</translation>
     </message>
     <message>
       <location/>
@@ -131,12 +131,12 @@
     <message>
       <location/>
       <source>Image viewer</source>
-      <translation>图片查看器</translation>
+      <translation>图片浏览器</translation>
     </message>
     <message>
       <location/>
       <source>Images (*.png *.xpm *.jpg *.bmp)</source>
-      <translation>图像格式(*.png *.xpm *.jpg *.bmp)</translation>
+      <translation>图像(*.png *.xpm *.jpg *.bmp)</translation>
     </message>
     <message>
       <location/>

@@ -16,7 +16,7 @@
     <message>
       <location/>
       <source>Exports a point cloud</source>
-      <translation>Exports a point cloud</translation>
+      <translation>prenesi pokazni oblak </translation>
     </message>
   </context>
   <context>
@@ -34,7 +34,7 @@
     <message>
       <location/>
       <source>Imports a point cloud</source>
-      <translation>Imports a point cloud</translation>
+      <translation>prenesi pokazni oblak</translation>
     </message>
   </context>
   <context>
@@ -47,12 +47,12 @@
     <message>
       <location/>
       <source>Cut point cloud</source>
-      <translation>Cut point cloud</translation>
+      <translation>odreži pokazni oblak</translation>
     </message>
     <message>
       <location/>
       <source>Cuts a point cloud with a picked polygon</source>
-      <translation>Cuts a point cloud with a picked polygon</translation>
+      <translation>Izreže pokazni oblak s bere poligona</translation>
     </message>
   </context>
   <context>
@@ -70,7 +70,7 @@
     <message>
       <location/>
       <source>Test to transform a point cloud</source>
-      <translation>Test to transform a point cloud</translation>
+      <translation>Test za pretvaranje pokaznog oblaka</translation>
     </message>
   </context>
   <context>
@@ -78,7 +78,7 @@
     <message>
       <location/>
       <source>ASCII points import</source>
-      <translation>ASCII points import</translation>
+      <translation>ASCII uvoz bodova</translation>
     </message>
     <message>
       <location/>
@@ -103,7 +103,7 @@
     <message>
       <location/>
       <source>Cluster by lines starting with:</source>
-      <translation>Cluster by lines starting with:</translation>
+      <translation>Klaster linijama koje počinju sa:</translation>
     </message>
     <message>
       <location/>
@@ -118,12 +118,12 @@
     <message>
       <location/>
       <source>Number seperator:</source>
-      <translation>Number seperator:</translation>
+      <translation>Broj seperatora:</translation>
     </message>
     <message>
       <location/>
       <source>Points format:</source>
-      <translation>Points format:</translation>
+      <translation>Bodovi formata:</translation>
     </message>
     <message>
       <location/>

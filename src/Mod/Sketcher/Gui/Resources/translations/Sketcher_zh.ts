@@ -11,17 +11,17 @@
     <message>
       <location/>
       <source>Constrain lock</source>
-      <translation>固定约束</translation>
+      <translation>锁定约束</translation>
     </message>
     <message>
       <location/>
       <source>Constrain coincident</source>
-      <translation>约束相一致</translation>
+      <translation>重合约束</translation>
     </message>
     <message>
       <location/>
       <source>Create a coincident constraint on the selected item</source>
-      <translation>创建所选对象的同步约束</translation>
+      <translation>在所选对象上创建重合约束</translation>
     </message>
   </context>
   <context>
@@ -57,7 +57,7 @@
     <message>
       <location/>
       <source>Create a horizontal constrain on the selcted item</source>
-      <translation>在选中对象上创建水平约束</translation>
+      <translation>在所选对象上创建水平约束</translation>
     </message>
     <message>
       <location/>
@@ -67,7 +67,7 @@
     <message>
       <location/>
       <source>Create a horizontal constraint on the selected item</source>
-      <translation>创建所选对象的水平约束</translation>
+      <translation>在所选对象上创建水平约束</translation>
     </message>
   </context>
   <context>
@@ -80,22 +80,22 @@
     <message>
       <location/>
       <source>Constrain Lock</source>
-      <translation>固定约束</translation>
+      <translation>锁定约束</translation>
     </message>
     <message>
       <location/>
       <source>Create a Lock constrain on the selcted item</source>
-      <translation>在选中对象上创建固定约束</translation>
+      <translation>在所选对象上创建锁定约束</translation>
     </message>
     <message>
       <location/>
       <source>Create a lock constrain on the selected item</source>
-      <translation>为选择对象创建一个固定约束</translation>
+      <translation>在所选对象上创建锁定约束</translation>
     </message>
     <message>
       <location/>
       <source>Constrain lock</source>
-      <translation>固定约束</translation>
+      <translation>锁定约束</translation>
     </message>
   </context>
   <context>
@@ -108,12 +108,12 @@
     <message>
       <location/>
       <source>Constrain parallel</source>
-      <translation>固定约束</translation>
+      <translation>平行约束</translation>
     </message>
     <message>
       <location/>
       <source>Create a parallel constraint between two lines</source>
-      <translation>两条线之间创建一个平行约束</translation>
+      <translation>两条线之间创建平行约束</translation>
     </message>
   </context>
   <context>
@@ -131,7 +131,7 @@
     <message>
       <location/>
       <source>Create a vertical constrain on the selcted item</source>
-      <translation>为选中对象创建垂直约束</translation>
+      <translation>在所选对象上创建垂直约束</translation>
     </message>
     <message>
       <location/>
@@ -141,7 +141,7 @@
     <message>
       <location/>
       <source>Create a vertical constraint on the selected item</source>
-      <translation>为所选项目创建一个垂直约束</translation>
+      <translation>在所选对象上创建垂直约束</translation>
     </message>
   </context>
   <context>
@@ -159,7 +159,7 @@
     <message>
       <location/>
       <source>Create an arc in the sketch</source>
-      <translation>在草图中创建一个弧形</translation>
+      <translation>在草绘中创建一个弧</translation>
     </message>
   </context>
   <context>
@@ -177,7 +177,7 @@
     <message>
       <location/>
       <source>Create a box in the sketch</source>
-      <translation>在草图中创建一个立方体</translation>
+      <translation>在草绘中创建一个立方体</translation>
     </message>
   </context>
   <context>
@@ -195,7 +195,7 @@
     <message>
       <location/>
       <source>Create a circle in the sketch</source>
-      <translation>在草图中创建一个圆</translation>
+      <translation>在草绘中创建一个圆</translation>
     </message>
   </context>
   <context>
@@ -213,7 +213,7 @@
     <message>
       <location/>
       <source>Create a draft line in the sketch</source>
-      <translation>在草图中创建一个线</translation>
+      <translation>在草绘中创建一根线</translation>
     </message>
   </context>
   <context>
@@ -231,7 +231,7 @@
     <message>
       <location/>
       <source>Create a line in the sketch</source>
-      <translation>在草图中创建一条线</translation>
+      <translation>在草图中创建一根线</translation>
     </message>
   </context>
   <context>
@@ -249,7 +249,7 @@
     <message>
       <location/>
       <source>Create a point in the sketch</source>
-      <translation>在草图中创建一个点</translation>
+      <translation>在草绘中创建一个点</translation>
     </message>
   </context>
   <context>
@@ -262,12 +262,12 @@
     <message>
       <location/>
       <source>Create polyline</source>
-      <translation>创建折线</translation>
+      <translation>创建多段线</translation>
     </message>
     <message>
       <location/>
       <source>Create a polyline in the sketch</source>
-      <translation>在草绘中创建一条折线</translation>
+      <translation>在草图中创建多段线</translation>
     </message>
   </context>
   <context>
@@ -285,7 +285,7 @@
     <message>
       <location/>
       <source>Create a rectangle in the sketch</source>
-      <translation>在草绘中创建一个矩形</translation>
+      <translation>在草绘中创建矩形</translation>
     </message>
   </context>
   <context>
@@ -303,7 +303,7 @@
     <message>
       <location/>
       <source>Create text in the scetch</source>
-      <translation>在草图中创建文本</translation>
+      <translation>在草绘中创建文本</translation>
     </message>
     <message>
       <location/>
@@ -326,7 +326,7 @@
     <message>
       <location/>
       <source>Close the editing of the sketch</source>
-      <translation>关闭的草图编辑状态</translation>
+      <translation>关闭草图编辑</translation>
     </message>
   </context>
   <context>
@@ -357,12 +357,12 @@
     <message>
       <location/>
       <source>Sketchflat sketch</source>
-      <translation>草图绘制</translation>
+      <translation>Sketchflat草绘</translation>
     </message>
     <message>
       <location/>
       <source>Create a new sketchflat sketch by starting externel editor</source>
-      <translation>通过启动程序创建一个新的草图</translation>
+      <translation>启动外部编辑器创建一个新sketchflat草绘</translation>
     </message>
   </context>
   <context>
@@ -383,7 +383,7 @@
     <message>
       <location/>
       <source>Select an edge from the sketch.</source>
-      <translation>从草绘中选择边缘.</translation>
+      <translation>从草绘中选择边.</translation>
     </message>
     <message>
       <location/>
@@ -398,47 +398,47 @@
     <message>
       <location/>
       <source>Impossible constraint</source>
-      <translation>不可能约束</translation>
+      <translation>不可约束</translation>
     </message>
     <message>
       <location/>
       <source>The selected edge has already a vertical constraint!</source>
-      <translation>已选定的边垂直约束!</translation>
+      <translation>所选的边已垂直约束!</translation>
     </message>
     <message>
       <location/>
       <source>Select vertexes from the sketch.</source>
-      <translation>从草图中选择顶点.</translation>
+      <translation>从草绘中选择顶点.</translation>
     </message>
     <message>
       <location/>
       <source>Select exactly two vertexes from the sketch.</source>
-      <translation>精确地选择草图的两个顶点.</translation>
+      <translation>仅从草绘中选择两个顶点.</translation>
     </message>
     <message>
       <location/>
       <source>Select exactly one line from the sketch.</source>
-      <translation>从草图精确地选择一条线.</translation>
+      <translation>仅从草绘中选择一根线.</translation>
     </message>
     <message>
       <location/>
       <source>Select two lines from the sketch.</source>
-      <translation>从草图选择两个线.</translation>
+      <translation>从草绘中选择两根线.</translation>
     </message>
     <message>
       <location/>
       <source>Select exactly two lines from the sketch.</source>
-      <translation>从草图精确地选择两个线.</translation>
+      <translation>仅从草绘中选择两根线.</translation>
     </message>
     <message>
       <location/>
       <source>Edit sketch</source>
-      <translation>编辑草图</translation>
+      <translation>编辑草绘</translation>
     </message>
     <message>
       <location/>
       <source>A dialog is already open in the task panel</source>
-      <translation>一个对话框，已在任务面板打开</translation>
+      <translation>一个对话框已在任务面板打开</translation>
     </message>
     <message>
       <location/>
@@ -453,27 +453,27 @@
     <message>
       <location/>
       <source>You have to select a single face as support for a sketch!</source>
-      <translation>您必须选择一个面以绘制草图!</translation>
+      <translation>您必须选择一个支持面以绘制草图!</translation>
     </message>
     <message>
       <location/>
       <source>No support face selected</source>
-      <translation>没有选中支持的面</translation>
+      <translation>未选中支持面</translation>
     </message>
     <message>
       <location/>
       <source>You have to select a face as support for a sketch!</source>
-      <translation>你必须选择一个面作为草图绘制面!</translation>
+      <translation>您必须选择一个支持面以绘制草图!</translation>
     </message>
     <message>
       <location/>
       <source>No planar support</source>
-      <translation>没有平面支持</translation>
+      <translation>无支持平面</translation>
     </message>
     <message>
       <location/>
       <source>You need a planar face as support for a sketch!</source>
-      <translation>你需要一个水平面来绘制草图!</translation>
+      <translation>您需要一个支持平面以绘制草图!</translation>
     </message>
   </context>
   <context>
@@ -481,7 +481,7 @@
     <message>
       <location/>
       <source>Insert datum</source>
-      <translation>插入数据</translation>
+      <translation>插入基准</translation>
     </message>
     <message>
       <location/>
@@ -509,7 +509,7 @@
     <message>
       <location/>
       <source>Normal</source>
-      <translation>普通</translation>
+      <translation>法向</translation>
     </message>
     <message>
       <location/>
@@ -537,12 +537,12 @@
     <message>
       <location/>
       <source>Unsolved</source>
-      <translation>未解决的</translation>
+      <translation>未解决</translation>
     </message>
     <message>
       <location/>
       <source>Grid Snap</source>
-      <translation>网格对齐</translation>
+      <translation>网格捕捉</translation>
     </message>
     <message>
       <location/>
@@ -645,7 +645,7 @@
     <message>
       <location/>
       <source>Sketcher geoms</source>
-      <translation>草绘几何学</translation>
+      <translation>草绘几何</translation>
     </message>
     <message>
       <location/>
@@ -663,7 +663,7 @@
     <message>
       <location/>
       <source>Sketcher geoms</source>
-      <translation>草绘几何学</translation>
+      <translation>草绘几何</translation>
     </message>
     <message>
       <location/>

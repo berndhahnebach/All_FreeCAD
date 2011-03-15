@@ -16,7 +16,7 @@
     <message>
       <location/>
       <source>Add triangle manually to a mesh</source>
-      <translation>Add triangle manually to a mesh</translation>
+      <translation>Ručno dodaj trokut mreži</translation>
     </message>
   </context>
   <context>
@@ -29,12 +29,12 @@
     <message>
       <location/>
       <source>Boundings info...</source>
-      <translation>Boundings info...</translation>
+      <translation>Informacije o granicama...</translation>
     </message>
     <message>
       <location/>
       <source>Shows the boundings of the selected mesh</source>
-      <translation>Shows the boundings of the selected mesh</translation>
+      <translation>Prikazuje granicu odabrane mreže</translation>
     </message>
   </context>
   <context>
@@ -47,12 +47,12 @@
     <message>
       <location/>
       <source>Regular solid...</source>
-      <translation>Regular solid...</translation>
+      <translation>Obično tijelo...</translation>
     </message>
     <message>
       <location/>
       <source>Builds a regular solid</source>
-      <translation>Builds a regular solid</translation>
+      <translation>Kreira obično tijelo</translation>
     </message>
   </context>
   <context>
@@ -60,7 +60,7 @@
     <message>
       <location/>
       <source>Interactive demolding direction</source>
-      <translation>Interactive demolding direction</translation>
+      <translation>Smjer interaktivnog oblikovanja</translation>
     </message>
     <message>
       <location/>
@@ -78,7 +78,7 @@
     <message>
       <location/>
       <source>Difference</source>
-      <translation>Difference</translation>
+      <translation>Razlika</translation>
     </message>
   </context>
   <context>
@@ -91,12 +91,12 @@
     <message>
       <location/>
       <source>Face info</source>
-      <translation>Face info</translation>
+      <translation>Informacije površine</translation>
     </message>
     <message>
       <location/>
       <source>Information about face</source>
-      <translation>Information about face</translation>
+      <translation>Informacije o površini</translation>
     </message>
   </context>
   <context>
@@ -109,12 +109,12 @@
     <message>
       <location/>
       <source>Check solid mesh</source>
-      <translation>Check solid mesh</translation>
+      <translation>Provjerite tijelo MESH-a</translation>
     </message>
     <message>
       <location/>
       <source>Checks whether the mesh is a solid</source>
-      <translation>Checks whether the mesh is a solid</translation>
+      <translation>Provjerava je li MESH tijelo</translation>
     </message>
   </context>
   <context>
@@ -127,17 +127,17 @@
     <message>
       <location/>
       <source>Evaluate mesh...</source>
-      <translation>Evaluate mesh...</translation>
+      <translation>Ocijeni MESH...</translation>
     </message>
     <message>
       <location/>
       <source>Opens a dialog to analyze and repair a mesh</source>
-      <translation>Opens a dialog to analyze and repair a mesh</translation>
+      <translation>Otvara dijalog za analizu i popravak MESH-a</translation>
     </message>
     <message>
       <location/>
       <source>Evaluate &amp;&amp; Repair mesh...</source>
-      <translation>Evaluate &amp;&amp; Repair mesh...</translation>
+      <translation>Procijeni i Pop&amp;ravi MESH...</translation>
     </message>
   </context>
   <context>
@@ -150,7 +150,7 @@
     <message>
       <location/>
       <source>Make a Box</source>
-      <translation>Make a Box</translation>
+      <translation>Napravi kvadar</translation>
     </message>
   </context>
   <context>
@@ -163,7 +163,7 @@
     <message>
       <location/>
       <source>Make a Tool</source>
-      <translation>Make a Tool</translation>
+      <translation>Napravi Alat</translation>
     </message>
   </context>
   <context>
@@ -176,7 +176,7 @@
     <message>
       <location/>
       <source>Make Union</source>
-      <translation>Make Union</translation>
+      <translation>Napravi uniju</translation>
     </message>
   </context>
   <context>
@@ -189,12 +189,12 @@
     <message>
       <location/>
       <source>Export mesh...</source>
-      <translation>Export mesh...</translation>
+      <translation>Izvoz MESH-a...</translation>
     </message>
     <message>
       <location/>
       <source>Exports a mesh to file</source>
-      <translation>Exports a mesh to file</translation>
+      <translation>Izvoz MESH-a u datoteku</translation>
     </message>
   </context>
   <context>
@@ -207,12 +207,12 @@
     <message>
       <location/>
       <source>Close hole</source>
-      <translation>Close hole</translation>
+      <translation>Zatvori rupe</translation>
     </message>
     <message>
       <location/>
       <source>Close holes interactively</source>
-      <translation>Close holes interactively</translation>
+      <translation>Zatvori rupe interaktivno</translation>
     </message>
   </context>
   <context>
@@ -225,12 +225,12 @@
     <message>
       <location/>
       <source>Fill holes...</source>
-      <translation>Fill holes...</translation>
+      <translation>Ispuni rupe...</translation>
     </message>
     <message>
       <location/>
       <source>Fill holes of the mesh</source>
-      <translation>Fill holes of the mesh</translation>
+      <translation>Ispuni rupe MESH-a</translation>
     </message>
   </context>
   <context>
@@ -243,12 +243,12 @@
     <message>
       <location/>
       <source>Remove degenerated faces</source>
-      <translation>Remove degenerated faces</translation>
+      <translation>Ukloni degenerirane površine</translation>
     </message>
     <message>
       <location/>
       <source>Remove degenerated faces from the mesh</source>
-      <translation>Remove degenerated faces from the mesh</translation>
+      <translation>Uklonite degenerirane površine iz MESH-a</translation>
     </message>
   </context>
   <context>
@@ -261,12 +261,12 @@
     <message>
       <location/>
       <source>Remove duplicated faces</source>
-      <translation>Remove duplicated faces</translation>
+      <translation>Ukloni dvostruke površine</translation>
     </message>
     <message>
       <location/>
       <source>Remove duplicated faces from the mesh</source>
-      <translation>Remove duplicated faces from the mesh</translation>
+      <translation>Uklonite dvostruke površine iz MESH-a</translation>
     </message>
   </context>
   <context>
@@ -279,12 +279,12 @@
     <message>
       <location/>
       <source>Remove duplicated points</source>
-      <translation>Remove duplicated points</translation>
+      <translation>Ukloni dvostruke točke</translation>
     </message>
     <message>
       <location/>
       <source>Remove duplicated points from the mesh</source>
-      <translation>Remove duplicated points from the mesh</translation>
+      <translation>Ukloanja dvostruke točke iz mreže</translation>
     </message>
   </context>
   <context>
@@ -297,12 +297,12 @@
     <message>
       <location/>
       <source>Fix indices</source>
-      <translation>Fix indices</translation>
+      <translation>Popravljanje indeksa</translation>
     </message>
     <message>
       <location/>
       <source>Fixes invalid indices in the mesh structure</source>
-      <translation>Fixes invalid indices in the mesh structure</translation>
+      <translation>Popravlja nevažeći indekse MESH strukture</translation>
     </message>
   </context>
   <context>
@@ -315,12 +315,12 @@
     <message>
       <location/>
       <source>Flip normals</source>
-      <translation>Flip normals</translation>
+      <translation>Zrcali normale</translation>
     </message>
     <message>
       <location/>
       <source>Flips the normals of the mesh</source>
-      <translation>Flips the normals of the mesh</translation>
+      <translation>Zrcali normale MESH-a</translation>
     </message>
   </context>
   <context>
@@ -333,12 +333,12 @@
     <message>
       <location/>
       <source>Create mesh from geometry...</source>
-      <translation>Create mesh from geometry...</translation>
+      <translation>Stvaranje MESH iz geometrije ...</translation>
     </message>
     <message>
       <location/>
       <source>Create mesh from the selected geometry</source>
-      <translation>Create mesh from the selected geometry</translation>
+      <translation>Stvori MESH od odabranih objekata</translation>
     </message>
   </context>
   <context>
@@ -351,12 +351,12 @@
     <message>
       <location/>
       <source>Harmonize normals</source>
-      <translation>Harmonize normals</translation>
+      <translation>Uskladi normale</translation>
     </message>
     <message>
       <location/>
       <source>Harmonizes the normals of the mesh</source>
-      <translation>Harmonizes the normals of the mesh</translation>
+      <translation>Usklađuje normale MESH-a</translation>
     </message>
   </context>
   <context>
@@ -369,12 +369,12 @@
     <message>
       <location/>
       <source>Import mesh...</source>
-      <translation>Import mesh...</translation>
+      <translation>Uvezi MESH...</translation>
     </message>
     <message>
       <location/>
       <source>Imports a mesh from file</source>
-      <translation>Imports a mesh from file</translation>
+      <translation>Uvoz MESH-a iz datoteke</translation>
     </message>
   </context>
   <context>
@@ -387,7 +387,7 @@
     <message>
       <location/>
       <source>Intersection</source>
-      <translation>Intersection</translation>
+      <translation>Presjek</translation>
     </message>
   </context>
   <context>
@@ -400,12 +400,12 @@
     <message>
       <location/>
       <source>Cut mesh</source>
-      <translation>Cut mesh</translation>
+      <translation>Izreži MESH</translation>
     </message>
     <message>
       <location/>
       <source>Cuts a mesh with a picked polygon</source>
-      <translation>Cuts a mesh with a picked polygon</translation>
+      <translation>Presjeca MESH sa odabranim poligonom</translation>
     </message>
   </context>
   <context>
@@ -418,12 +418,12 @@
     <message>
       <location/>
       <source>Make segment</source>
-      <translation>Make segment</translation>
+      <translation>Stvori segment</translation>
     </message>
     <message>
       <location/>
       <source>Creates a mesh segment</source>
-      <translation>Creates a mesh segment</translation>
+      <translation>Stvara segment MESH-a</translation>
     </message>
   </context>
   <context>
@@ -436,12 +436,12 @@
     <message>
       <location/>
       <source>Select mesh</source>
-      <translation>Select mesh</translation>
+      <translation>Odaberi MESH</translation>
     </message>
     <message>
       <location/>
       <source>Select an area of the mesh</source>
-      <translation>Select an area of the mesh</translation>
+      <translation>Odaberite područje MESH-a</translation>
     </message>
   </context>
   <context>
@@ -454,12 +454,12 @@
     <message>
       <location/>
       <source>Split mesh</source>
-      <translation>Split mesh</translation>
+      <translation>Podjeli MESH</translation>
     </message>
     <message>
       <location/>
       <source>Splits a mesh into two meshes</source>
-      <translation>Splits a mesh into two meshes</translation>
+      <translation>Podijeli MESH na dva dijela</translation>
     </message>
   </context>
   <context>
@@ -472,12 +472,12 @@
     <message>
       <location/>
       <source>Remove components by hand...</source>
-      <translation>Remove components by hand...</translation>
+      <translation>Ukloniti komponente ručno...</translation>
     </message>
     <message>
       <location/>
       <source>Mark a component to remove it from the mesh</source>
-      <translation>Mark a component to remove it from the mesh</translation>
+      <translation>Označi komponenta koju želite uklonili iz MESH-a</translation>
     </message>
   </context>
   <context>
@@ -490,12 +490,12 @@
     <message>
       <location/>
       <source>Remove components...</source>
-      <translation>Remove components...</translation>
+      <translation>Ukloniti komponente...</translation>
     </message>
     <message>
       <location/>
       <source>Remove topologic independant components from the mesh</source>
-      <translation>Remove topologic independant components from the mesh</translation>
+      <translation>Izvadite neovisne komponente iz MESH-a</translation>
     </message>
   </context>
   <context>
@@ -508,12 +508,12 @@
     <message>
       <location/>
       <source>Smooth...</source>
-      <translation>Smooth...</translation>
+      <translation>Izgladi...</translation>
     </message>
     <message>
       <location/>
       <source>Smooth the selected meshes</source>
-      <translation>Smooth the selected meshes</translation>
+      <translation>Izgladi odabrani MESH</translation>
     </message>
   </context>
   <context>
@@ -526,12 +526,12 @@
     <message>
       <location/>
       <source>Segment by tool mesh</source>
-      <translation>Segment by tool mesh</translation>
+      <translation>Segmentiraj pomoću MESH-a</translation>
     </message>
     <message>
       <location/>
       <source>Creates a segment from a given tool mesh</source>
-      <translation>Creates a segment from a given tool mesh</translation>
+      <translation>Stvara segment iz danog alata MESH-a</translation>
     </message>
   </context>
   <context>
@@ -544,12 +544,12 @@
     <message>
       <location/>
       <source>Transform mesh</source>
-      <translation>Transform mesh</translation>
+      <translation>Transformacija MESH-a</translation>
     </message>
     <message>
       <location/>
       <source>Rotate or move a mesh</source>
-      <translation>Rotate or move a mesh</translation>
+      <translation>Zakretanje ili premještanje MESH-a</translation>
     </message>
   </context>
   <context>
@@ -562,7 +562,7 @@
     <message>
       <location/>
       <source>Union</source>
-      <translation>Union</translation>
+      <translation>Unija</translation>
     </message>
   </context>
   <context>
@@ -575,12 +575,12 @@
     <message>
       <location/>
       <source>Calculates the curvature of the vertices of a mesh</source>
-      <translation>Calculates the curvature of the vertices of a mesh</translation>
+      <translation>Izračunava zakrivljenost vrhova mreže</translation>
     </message>
     <message>
       <location/>
       <source>Curvature plot</source>
-      <translation>Curvature plot</translation>
+      <translation>Iscrtavanje krivina</translation>
     </message>
   </context>
   <context>
@@ -593,12 +593,12 @@
     <message>
       <location/>
       <source>Curvature info</source>
-      <translation>Curvature info</translation>
+      <translation>Informacije krivina</translation>
     </message>
     <message>
       <location/>
       <source>Information about curvature</source>
-      <translation>Information about curvature</translation>
+      <translation>Informacije o zakrivljenosti</translation>
     </message>
   </context>
   <context>
@@ -606,7 +606,7 @@
     <message>
       <location/>
       <source>Evaluate Mesh</source>
-      <translation>Evaluate Mesh</translation>
+      <translation>Ocijenite MMESH</translation>
     </message>
   </context>
   <context>
@@ -614,12 +614,12 @@
     <message>
       <location/>
       <source>Evaluate Mesh</source>
-      <translation>Evaluate Mesh</translation>
+      <translation>Ocijenite MMESH</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Help</source>
-      <translation>&amp;Help</translation>
+      <translation>&amp;Pomoć</translation>
     </message>
     <message>
       <location/>
@@ -629,7 +629,7 @@
     <message>
       <location/>
       <source>&amp;Close</source>
-      <translation>&amp;Close</translation>
+      <translation>&amp;Zatvori</translation>
     </message>
     <message>
       <location/>
@@ -639,27 +639,27 @@
     <message>
       <location/>
       <source>Mesh information</source>
-      <translation>Mesh information</translation>
+      <translation>Informacije MESH-a</translation>
     </message>
     <message>
       <location/>
       <source>No information</source>
-      <translation>No information</translation>
+      <translation>Nema informacija</translation>
     </message>
     <message>
       <location/>
       <source>Number of points:</source>
-      <translation>Number of points:</translation>
+      <translation>Broj vrhova:</translation>
     </message>
     <message>
       <location/>
       <source>Number of edges:</source>
-      <translation>Number of edges:</translation>
+      <translation>Broj rubova:</translation>
     </message>
     <message>
       <location/>
       <source>Refresh</source>
-      <translation>Refresh</translation>
+      <translation>Osvježi</translation>
     </message>
     <message>
       <location/>
@@ -679,42 +679,42 @@
     <message>
       <location/>
       <source>Degenerated faces</source>
-      <translation>Degenerated faces</translation>
+      <translation>Degenerirane površine</translation>
     </message>
     <message>
       <location/>
       <source>Face indices</source>
-      <translation>Face indices</translation>
+      <translation>Indeksi površina</translation>
     </message>
     <message>
       <location/>
       <source>Number of faces:</source>
-      <translation>Number of faces:</translation>
+      <translation>Broj površina:</translation>
     </message>
     <message>
       <location/>
       <source>Duplicated faces</source>
-      <translation>Duplicated faces</translation>
+      <translation>Dvostruke površine</translation>
     </message>
     <message>
       <location/>
       <source>Duplicated points</source>
-      <translation>Duplicated points</translation>
+      <translation>Dvostruki vrhovi</translation>
     </message>
     <message>
       <location/>
       <source>Non-manifolds</source>
-      <translation>Non-manifolds</translation>
+      <translation>Jednostruki</translation>
     </message>
     <message>
       <location/>
       <source>Self-intersections</source>
-      <translation>Self-intersections</translation>
+      <translation>Preklapanja</translation>
     </message>
     <message>
       <location/>
       <source>All above tests together</source>
-      <translation>All above tests together</translation>
+      <translation>Sve gore testovi zajedno</translation>
     </message>
     <message>
       <location/>
@@ -724,7 +724,7 @@
     <message>
       <location/>
       <source>Evaluate &amp; Repair Mesh</source>
-      <translation>Procijeni &amp; Popravi mrežu</translation>
+      <translation>Procijeni &amp; Popravi MESH</translation>
     </message>
     <message>
       <location/>
@@ -737,17 +737,17 @@
     <message>
       <location/>
       <source>No information</source>
-      <translation>No information</translation>
+      <translation>Nema informacija</translation>
     </message>
     <message>
       <location/>
       <source>Invalid neighbour indices</source>
-      <translation>Invalid neighbour indices</translation>
+      <translation>Nevažeći susjedni indeksi</translation>
     </message>
     <message>
       <location/>
       <source>Invalid face indices</source>
-      <translation>Invalid face indices</translation>
+      <translation>Nevaljani indeksi površina</translation>
     </message>
     <message>
       <location/>
@@ -757,17 +757,17 @@
     <message>
       <location/>
       <source>Multiple point indices</source>
-      <translation>Multiple point indices</translation>
+      <translation>Višestruki indeksi točaka</translation>
     </message>
     <message>
       <location/>
       <source>Non-manifolds</source>
-      <translation>Non-manifolds</translation>
+      <translation>Jednostruki</translation>
     </message>
     <message>
       <location/>
       <source>Cannot remove non-manifolds</source>
-      <translation>Cannot remove non-manifolds</translation>
+      <translation>Ne mogu ukloniti jednostruke</translation>
     </message>
     <message>
       <location/>
@@ -777,22 +777,22 @@
     <message>
       <location/>
       <source>No flipped normals</source>
-      <translation>No flipped normals</translation>
+      <translation>Nema zrcaljenih normala</translation>
     </message>
     <message>
       <location/>
       <source>%1 flipped normals</source>
-      <translation>%1 flipped normals</translation>
+      <translation>%1 zrcaljenih normala</translation>
     </message>
     <message>
       <location/>
       <source>No non-manifolds</source>
-      <translation>No non-manifolds</translation>
+      <translation>Nema jednostrukih</translation>
     </message>
     <message>
       <location/>
       <source>%1 non-manifolds</source>
-      <translation>%1 non-manifolds</translation>
+      <translation>%1 jednostrukih</translation>
     </message>
     <message>
       <location/>
@@ -802,22 +802,22 @@
     <message>
       <location/>
       <source>No degenerations</source>
-      <translation>No degenerations</translation>
+      <translation>Nema degeneracija</translation>
     </message>
     <message>
       <location/>
       <source>%1 degenerated faces</source>
-      <translation>%1 degenerated faces</translation>
+      <translation>%1 degeneriranih površina</translation>
     </message>
     <message>
       <location/>
       <source>No duplicated faces</source>
-      <translation>No duplicated faces</translation>
+      <translation>Nema dvostrukih površina</translation>
     </message>
     <message>
       <location/>
       <source>%1 duplicated faces</source>
-      <translation>%1 duplicated faces</translation>
+      <translation>%1 dvostrukih površina</translation>
     </message>
     <message>
       <location/>
@@ -827,7 +827,7 @@
     <message>
       <location/>
       <source>Duplicated points</source>
-      <translation>Duplicated points</translation>
+      <translation>Dvostruki vrhovi</translation>
     </message>
     <message>
       <location/>
@@ -837,44 +837,44 @@
     <message>
       <location/>
       <source>Indices</source>
-      <translation>Indices</translation>
+      <translation>Indeksi</translation>
     </message>
     <message>
       <location/>
       <source>Degenerations</source>
-      <translation>Degenerations</translation>
+      <translation>Degeneracije</translation>
     </message>
     <message>
       <location/>
       <source>Duplicated faces</source>
-      <translation>Duplicated faces</translation>
+      <translation>Dvostruke površine</translation>
     </message>
     <message>
       <location/>
       <source>No self-intersections</source>
-      <translation>No self-intersections</translation>
+      <translation>Nema prekalpanja</translation>
     </message>
     <message>
       <location/>
       <source>Self-intersections</source>
-      <translation>Self-intersections</translation>
+      <translation>Preklapanja</translation>
     </message>
     <message>
       <location/>
       <source>Mesh repair</source>
-      <translation>Popravi mrežu</translation>
+      <translation>Popravi MESH</translation>
     </message>
     <message>
       <location/>
       <source>Flipped normals found</source>
-      <translation>Flipped normals found</translation>
+      <translation>Pronađene zrcaljene normale</translation>
     </message>
     <message>
       <location/>
       <source>Check failed due to folds on the surface.
 Please run the command to repair folds first</source>
-      <translation>Check failed due to folds on the surface.
-Please run the command to repair folds first</translation>
+      <translation>Provjera nije uspjela zbog nabora na površini.
+Molimo pokrenite naredbu za popravak nabora</translation>
     </message>
     <message>
       <location/>
@@ -897,7 +897,7 @@ Please run the command to repair folds first</translation>
     <message>
       <location/>
       <source>Regular Solid</source>
-      <translation>Regular Solid</translation>
+      <translation>Obično tijelo</translation>
     </message>
     <message>
       <location/>
@@ -952,7 +952,7 @@ Please run the command to repair folds first</translation>
     <message>
       <location/>
       <source>Torus</source>
-      <translation>Torus</translation>
+      <translation>Zavojnica</translation>
     </message>
     <message>
       <location/>
@@ -982,12 +982,12 @@ Please run the command to repair folds first</translation>
     <message>
       <location/>
       <source>Sampling:</source>
-      <translation>Sampling:</translation>
+      <translation>Uzorkovanje:</translation>
     </message>
     <message>
       <location/>
       <source>Edge length:</source>
-      <translation>Edge length:</translation>
+      <translation>Duljina ruba:</translation>
     </message>
     <message>
       <location/>
@@ -1018,7 +1018,7 @@ Please run the command to repair folds first</translation>
     <message>
       <location/>
       <source>Mesh view</source>
-      <translation>Pregled mreže</translation>
+      <translation>Pregled MESH-a</translation>
     </message>
     <message>
       <location/>
@@ -1028,42 +1028,42 @@ Please run the command to repair folds first</translation>
     <message>
       <location/>
       <source>Face color</source>
-      <translation>Face color</translation>
+      <translation>Boja površine</translation>
     </message>
     <message>
       <location/>
       <source>Two-side rendering</source>
-      <translation>Two-side rendering</translation>
+      <translation>Dvostrano renderiranje</translation>
     </message>
     <message>
       <location/>
       <source>Backface color</source>
-      <translation>Backface color</translation>
+      <translation>Boja stražnje površine</translation>
     </message>
     <message>
       <location/>
       <source>Smoothing</source>
-      <translation>Smoothing</translation>
+      <translation>Izglađivanje</translation>
     </message>
     <message>
       <location/>
       <source>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;This is the smallest angle between two faces where normals get calculated to do flat shading.&lt;/p&gt;&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;If the angle between the normals of two neighbouring faces is less than the crease angle, the faces will be smoothshaded around their common edge.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;This is the smallest angle between two faces where normals get calculated to do flat shading.&lt;/p&gt;&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;If the angle between the normals of two neighbouring faces is less than the crease angle, the faces will be smoothshaded around their common edge.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt; To je najmanji kut između dva lica gdje se normale izračunavaju za napraviti ravno sjenčanje. &lt;/p&gt;&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt; Ako je kut između normale na dvije susjedne lica je manji od pregib kut, lica će biti smoothshaded oko njihove zajedničke ruba. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
       <location/>
       <source>Crease angle</source>
-      <translation>Crease angle</translation>
+      <translation>Nabor kuta</translation>
     </message>
     <message>
       <location/>
       <source>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600;"&gt;Flat shading/Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;Defines the appearance of surfaces.&lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;With flat shading the surface normals are not defined per vertex that leads to a unreal appearance for curved surfaces while using Phong shading leads to a smoother appearance. &lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;If this option is set Phong shading is used, if it is unset flat shading is used.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600;"&gt;Flat shading/Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;Defines the appearance of surfaces.&lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;With flat shading the surface normals are not defined per vertex that leads to a unreal appearance for curved surfaces while using Phong shading leads to a smoother appearance. &lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;If this option is set Phong shading is used, if it is unset flat shading is used.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600;"&gt;Flat shading/Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;Defines the appearance of surfaces.&lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;Sa ravnim sjenčanjem normale površina nisu definiane po točkama što vodi do neprirodnog izgleda zakrivljenih površina, dok upotreba Phong sjenčanja vodi do boljeg izgleda. &lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;If this option is set Phong shading is used, if it is unset flat shading is used.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
       <location/>
       <source>Define normal per vertex</source>
-      <translation>Define normal per vertex</translation>
+      <translation>Definiraj normalu po vrhu</translation>
     </message>
     <message>
       <location/>
@@ -1073,37 +1073,37 @@ Please run the command to repair folds first</translation>
     <message>
       <location/>
       <source>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600;"&gt;Hint&lt;/span&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;Defining the normals per vertex is also called &lt;span style=" font-style:italic;"&gt;Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;"&gt;&lt;span style=" font-style:normal;"&gt;while defining the normals per face is called &lt;/span&gt;Flat shading&lt;span style=" font-style:normal;"&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600;"&gt;Hint&lt;/span&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;Defining the normals per vertex is also called &lt;span style=" font-style:italic;"&gt;Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;"&gt;&lt;span style=" font-style:normal;"&gt;while defining the normals per face is called &lt;/span&gt;Flat shading&lt;span style=" font-style:normal;"&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt; &lt;span style=" font-weight:600;"&gt;Savjet&lt;/span&gt; &lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt; Definiranje normale na vrh je također pozvao &lt;span style=" font-style:italic;"&gt;Phong sjenčanje&lt;/span&gt; &lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;"&gt; &lt;span style=" font-style:normal;"&gt;pri definiranju normale po licu se zove&lt;/span&gt; Stan &lt;span style=" font-style:normal;"&gt;sjenčanje.&lt;/span&gt; &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
       <location/>
       <source>Default appearance for new meshes</source>
-      <translation>Default appearance for new meshes</translation>
+      <translation>Inicijalni izgled za nove MESH-eve</translation>
     </message>
     <message>
       <location/>
       <source>Default line color</source>
-      <translation>Default line color</translation>
+      <translation>Zadana boja linije</translation>
     </message>
     <message>
       <location/>
       <source>Mesh transparency</source>
-      <translation>Mesh transparency</translation>
+      <translation>Transparentnost MESH-a</translation>
     </message>
     <message>
       <location/>
       <source>Default mesh color</source>
-      <translation>Default mesh color</translation>
+      <translation>Zadana boja MESH-a</translation>
     </message>
     <message>
       <location/>
       <source>Show bounding-box for highlighted or selected meshes</source>
-      <translation>Show bounding-box for highlighted or selected meshes</translation>
+      <translation>Pokaži graničnu kutiju za istaknute ili odabrane mreže</translation>
     </message>
     <message>
       <location/>
       <source>Line transparency</source>
-      <translation>Line transparency</translation>
+      <translation>Transparentnost linije</translation>
     </message>
   </context>
   <context>
@@ -1111,12 +1111,12 @@ Please run the command to repair folds first</translation>
     <message>
       <location/>
       <source>Smoothing</source>
-      <translation>Smoothing</translation>
+      <translation>Izglađivanje</translation>
     </message>
     <message>
       <location/>
       <source>Method</source>
-      <translation>Method</translation>
+      <translation>Metoda</translation>
     </message>
     <message>
       <location/>
@@ -1131,12 +1131,12 @@ Please run the command to repair folds first</translation>
     <message>
       <location/>
       <source>Parameter</source>
-      <translation>Parameter</translation>
+      <translation>Parametar</translation>
     </message>
     <message>
       <location/>
       <source>Iterations:</source>
-      <translation>Iterations:</translation>
+      <translation>Iteracije:</translation>
     </message>
     <message>
       <location/>
@@ -1154,7 +1154,7 @@ Please run the command to repair folds first</translation>
     <message>
       <location/>
       <source>Evaluate &amp; Repair Mesh</source>
-      <translation>Procijeni &amp; Popravi mrežu</translation>
+      <translation>Procijeni &amp; Popravi MESH</translation>
     </message>
   </context>
   <context>
@@ -1167,12 +1167,12 @@ Please run the command to repair folds first</translation>
     <message>
       <location/>
       <source>Flip normal</source>
-      <translation>Flip normal</translation>
+      <translation>Okreni normalu</translation>
     </message>
     <message>
       <location/>
       <source>Clear</source>
-      <translation>Clear</translation>
+      <translation>Brisanje</translation>
     </message>
     <message>
       <location/>
@@ -1195,27 +1195,27 @@ Please run the command to repair folds first</translation>
     <message>
       <location/>
       <source>Select whole component</source>
-      <translation>Select whole component</translation>
+      <translation>Odznači cijelu komponentu</translation>
     </message>
     <message>
       <location/>
       <source>Pick triangle</source>
-      <translation>Pick triangle</translation>
+      <translation>Odaberite trokut</translation>
     </message>
     <message>
       <location/>
       <source>&lt; faces than</source>
-      <translation>&lt; faces than</translation>
+      <translation>&lt; lica od</translation>
     </message>
     <message>
       <location/>
       <source>Region</source>
-      <translation>Region</translation>
+      <translation>Regija</translation>
     </message>
     <message>
       <location/>
       <source>Components</source>
-      <translation>Components</translation>
+      <translation>Komponente</translation>
     </message>
     <message>
       <location/>
@@ -1235,27 +1235,27 @@ Please run the command to repair folds first</translation>
     <message>
       <location/>
       <source>&gt; faces than</source>
-      <translation>&gt; faces than</translation>
+      <translation>&gt; lica od</translation>
     </message>
     <message>
       <location/>
       <source>Region options</source>
-      <translation>Region options</translation>
+      <translation>Opcije regija</translation>
     </message>
     <message>
       <location/>
       <source>Respect only front triangles</source>
-      <translation>Respect only front triangles</translation>
+      <translation>Poštovanje samo prednjih trokuta</translation>
     </message>
     <message>
       <location/>
       <source>Respect only triangles with normals facing screen</source>
-      <translation>Respect only triangles with normals facing screen</translation>
+      <translation>Poštovanje samo trokuta s normalama prema zaslonu</translation>
     </message>
     <message>
       <location/>
       <source>Respect only visible triangles</source>
-      <translation>Respect only visible triangles</translation>
+      <translation>Poštovanje jedino vidljivih trokuta</translation>
     </message>
   </context>
   <context>
@@ -1263,12 +1263,12 @@ Please run the command to repair folds first</translation>
     <message>
       <location/>
       <source>Delete</source>
-      <translation>Delete</translation>
+      <translation>Izbriši</translation>
     </message>
     <message>
       <location/>
       <source>Invert</source>
-      <translation>Invert</translation>
+      <translation>Invertiraj</translation>
     </message>
   </context>
   <context>
@@ -1286,17 +1286,17 @@ Please run the command to repair folds first</translation>
     <message>
       <location/>
       <source>&amp;Meshes</source>
-      <translation>&amp;Meshes</translation>
+      <translation>&amp;MESH-evi</translation>
     </message>
     <message>
       <location/>
       <source>Mesh tools</source>
-      <translation>Mesh tools</translation>
+      <translation>Alati mreže</translation>
     </message>
     <message>
       <location/>
       <source>Mesh test suite</source>
-      <translation> soba za test mreže</translation>
+      <translation>soba za test MESH-a</translation>
     </message>
   </context>
   <context>
@@ -1319,7 +1319,7 @@ Please run the command to repair folds first</translation>
     <message>
       <location/>
       <source>Boundings</source>
-      <translation>Boundings</translation>
+      <translation>Granice</translation>
     </message>
     <message>
       <location/>
@@ -1339,7 +1339,7 @@ Please run the command to repair folds first</translation>
     <message>
       <location/>
       <source>Removes components up to a maximum number of triangles:</source>
-      <translation>Removes components up to a maximum number of triangles:</translation>
+      <translation>Uklanja komponente s većim brojem trokuta:</translation>
     </message>
     <message>
       <location/>
@@ -1349,37 +1349,37 @@ Please run the command to repair folds first</translation>
     <message>
       <location/>
       <source>Binary STL (*.stl)</source>
-      <translation>Binary STL (*.stl)</translation>
+      <translation>Binarni STL (*.STL)</translation>
     </message>
     <message>
       <location/>
       <source>ASCII STL (*.ast)</source>
-      <translation>ASCII STL (*.ast)</translation>
+      <translation>ASCII STL (*.AST)</translation>
     </message>
     <message>
       <location/>
       <source>Binary Mesh (*.bms)</source>
-      <translation>Binary Mesh (*.bms)</translation>
+      <translation>Binarni MESH (*.BMS)</translation>
     </message>
     <message>
       <location/>
       <source>Alias Mesh (*.obj)</source>
-      <translation>Alias Mesh (*.obj)</translation>
+      <translation>Alias MESH (*.obj)</translation>
     </message>
     <message>
       <location/>
       <source>Inventor V2.1 ascii (*.iv)</source>
-      <translation>Inventor V2.1 ascii (*.iv)</translation>
+      <translation>Izumitelj V2.1 ASCII (*.iv)</translation>
     </message>
     <message>
       <location/>
       <source>All Files (*.*)</source>
-      <translation>All Files (*.*)</translation>
+      <translation>Sve datoteke (*.*)</translation>
     </message>
     <message>
       <location/>
       <source>ASCII STL (*.stl)</source>
-      <translation>ASCII STL (*.stl)</translation>
+      <translation>ASCII STL (*.STL)</translation>
     </message>
     <message>
       <location/>
@@ -1394,32 +1394,32 @@ Please run the command to repair folds first</translation>
     <message>
       <location/>
       <source>Nastran (*.nas *.bdf)</source>
-      <translation>Nastran (*.nas *.bdf)</translation>
+      <translation>Nastran (*.NAS *.BDF)</translation>
     </message>
     <message>
       <location/>
       <source>Python module def (*.py)</source>
-      <translation>Python module def (*.py)</translation>
+      <translation>Python modul (*.py)</translation>
     </message>
     <message>
       <location/>
       <source>Meshing Tolerance</source>
-      <translation>Meshing Tolerance</translation>
+      <translation>Tolerancija MESH-a</translation>
     </message>
     <message>
       <location/>
       <source>Enter tolerance for meshing geometry:</source>
-      <translation>Enter tolerance for meshing geometry:</translation>
+      <translation>Unesite toleranciju geometrije MESH-a:</translation>
     </message>
     <message>
       <location/>
       <source>The mesh '%1' is a solid.</source>
-      <translation>The mesh '%1' is a solid.</translation>
+      <translation>MESH '%1' je tijelo.</translation>
     </message>
     <message>
       <location/>
       <source>The mesh '%1' is not a solid.</source>
-      <translation>The mesh '%1' is not a solid.</translation>
+      <translation>MESH '%1' nije tijelo.</translation>
     </message>
     <message>
       <location/>
@@ -1433,12 +1433,12 @@ Max=&lt;%4,%5,%6&gt;</translation>
     <message>
       <location/>
       <source>[Points: %1, Edges: %2 Faces: %3]</source>
-      <translation>[Points: %1, Edges: %2 Faces: %3]</translation>
+      <translation>[Vrhovi: %1, Rubovi: %2 Površine: %3]</translation>
     </message>
     <message>
       <location/>
       <source>Leave info mode</source>
-      <translation>Leave info mode</translation>
+      <translation>Zatvori info način rada</translation>
     </message>
     <message>
       <location/>
@@ -1448,12 +1448,12 @@ Max=&lt;%4,%5,%6&gt;</translation>
     <message>
       <location/>
       <source>Leave hole-filling mode</source>
-      <translation>Leave hole-filling mode</translation>
+      <translation>Zatvori način rada za popunjavanje otvora</translation>
     </message>
     <message>
       <location/>
       <source>Leave removal mode</source>
-      <translation>Leave removal mode</translation>
+      <translation>Zatvori način rada za uklanjanje</translation>
     </message>
     <message>
       <location/>
@@ -1463,7 +1463,7 @@ Max=&lt;%4,%5,%6&gt;</translation>
     <message>
       <location/>
       <source>Stanford Polygon (*.ply)</source>
-      <translation>Stanford Polygon (*.ply)</translation>
+      <translation>Stanford Poligon (*.ply)</translation>
     </message>
     <message>
       <location/>
@@ -1473,22 +1473,22 @@ Max=&lt;%4,%5,%6&gt;</translation>
     <message>
       <location/>
       <source>Standford Polygon (*.ply)</source>
-      <translation>Standford Polygon (*.ply)</translation>
+      <translation>Standford Poligon (*. ply)</translation>
     </message>
     <message>
       <location/>
       <source>Delete selected faces</source>
-      <translation>Delete selected faces</translation>
+      <translation>Izbriši odabrane površine</translation>
     </message>
     <message>
       <location/>
       <source>Clear selected faces</source>
-      <translation>Clear selected faces</translation>
+      <translation>Izbriši odabrane površine</translation>
     </message>
     <message>
       <location/>
       <source>Annotation</source>
-      <translation>Annotation</translation>
+      <translation>Anotacija</translation>
     </message>
   </context>
   <context>
@@ -1506,17 +1506,17 @@ Max=&lt;%4,%5,%6&gt;</translation>
     <message>
       <location/>
       <source>&amp;Meshes</source>
-      <translation>&amp;Meshes</translation>
+      <translation>&amp;MESH-evi</translation>
     </message>
     <message>
       <location/>
       <source>Mesh tools</source>
-      <translation>Mesh tools</translation>
+      <translation>Alati mreže</translation>
     </message>
     <message>
       <location/>
       <source>Mesh test suite</source>
-      <translation> soba za test mreže</translation>
+      <translation>soba za test MESH-a</translation>
     </message>
   </context>
 </TS>

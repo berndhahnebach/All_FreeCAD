@@ -6,7 +6,7 @@
     <message>
       <location filename="userprefs-base.ui" line="26"/>
       <source>General Draft Settings</source>
-      <translation>绘图总体设置</translation>
+      <translation>绘图常规设置</translation>
     </message>
     <message>
       <location filename="userprefs-base.ui" line="34"/>
@@ -41,17 +41,17 @@
     <message>
       <location filename="userprefs-base.ui" line="88"/>
       <source>Construction color</source>
-      <translation>建模颜色</translation>
+      <translation>构造颜色</translation>
     </message>
     <message>
       <location filename="userprefs-base.ui" line="95"/>
       <source>This is the default color for objects being drawn while in construction mode.</source>
-      <translation>这是建模模式下,绘制对象的默认颜色.</translation>
+      <translation>这是构造模式下绘制对象的默认颜色.</translation>
     </message>
     <message>
       <location filename="userprefs-base.ui" line="179"/>
       <source>This is the default group name for construction geometry</source>
-      <translation>这是几何造型的默认组名</translation>
+      <translation>这是构造几何元素的默认组名</translation>
     </message>
     <message>
       <location filename="userprefs-base.ui" line="182"/>
@@ -61,7 +61,7 @@
     <message>
       <location filename="userprefs-base.ui" line="199"/>
       <source>check this if you want to use the color/linewidth from the toolbar as default</source>
-      <translation>请在此选择工具栏默认颜色/线宽</translation>
+      <translation>选中则工具栏颜色/线宽被设为默认</translation>
     </message>
     <message>
       <location filename="userprefs-base.ui" line="202"/>
@@ -71,7 +71,7 @@
     <message>
       <location filename="userprefs-base.ui" line="219"/>
       <source>If this is checked, copy mode will be kept across command, otherwise commands will always start in no-copy mode</source>
-      <translation>如果这个被选中,启用所有命令的复制模式,否则所有命令从无复制模式启用</translation>
+      <translation>选中则命令间启用复制模式,否则为非复制模式</translation>
     </message>
     <message>
       <location filename="userprefs-base.ui" line="222"/>
@@ -81,7 +81,7 @@
     <message>
       <location filename="userprefs-base.ui" line="239"/>
       <source>If this is checked, you will always snap to existing objects while drawing. If not, you will be snapping only when pressing CTRL.</source>
-      <translation>如果这个被选中,你在绘图时将总是捕捉到已存在对象.否则,你需要按住Ctrl键来捕捉.</translation>
+      <translation>选中则绘图时总捕捉到已存在对象.否则需按住Ctrl键捕捉.</translation>
     </message>
     <message>
       <location filename="userprefs-base.ui" line="242"/>
@@ -91,7 +91,7 @@
     <message>
       <location filename="userprefs-base.ui" line="259"/>
       <source>If this is checked, objects will appear as filled as default. Otherwise, they will appear as wireframe</source>
-      <translation>如果这个被选中,对象将显示为默认填充.否则,它们将显示为线框</translation>
+      <translation>选中则对象默认显示为填充.否则显示为线框</translation>
     </message>
     <message>
       <location filename="userprefs-base.ui" line="262"/>
@@ -111,12 +111,12 @@
     <message>
       <location filename="userprefs-base.ui" line="298"/>
       <source>XY (Top)</source>
-      <translation>XY (Top)</translation>
+      <translation>XY(顶面)</translation>
     </message>
     <message>
       <location filename="userprefs-base.ui" line="303"/>
       <source>XZ (Front)</source>
-      <translation>XZ (前)</translation>
+      <translation>XZ(前面)</translation>
     </message>
     <message>
       <location filename="userprefs-base.ui" line="308"/>
@@ -141,12 +141,12 @@
     <message>
       <location filename="userprefs-base.ui" line="406"/>
       <source>Default height for texts and dimensions</source>
-      <translation>文本及标注的默认高度</translation>
+      <translation>文本及尺寸标注的默认高度</translation>
     </message>
     <message>
       <location filename="userprefs-base.ui" line="426"/>
       <source>Default text font</source>
-      <translation>文本默认字体</translation>
+      <translation>默认文本字体</translation>
     </message>
     <message>
       <location filename="userprefs-base.ui" line="446"/>
@@ -154,7 +154,7 @@
 It can be a font name such as "Arial", a default style such as "sans", "serif"
 or "mono", or a family such as "Arial,Helvetica,sans" or a name with a style
 such as "Arial:Bold"</source>
-      <translation>这是所有绘图文字及标注的默认字体名称,字体名称如:"Arial",默认样式"sans","serif"或"mono",或者组合"Arial,Helvetica,sans"或包含名称和样式"Arial:Bold"</translation>
+      <translation>这是所有绘图文字及尺寸标注的默认字体名称,字体名称如:"Arial",默认样式"sans","serif"或"mono",或者组合"Arial,Helvetica,sans"或包含名称和样式"Arial:Bold"</translation>
     </message>
     <message>
       <location filename="userprefs-base.ui" line="452"/>
@@ -164,17 +164,17 @@ such as "Arial:Bold"</source>
     <message>
       <location filename="userprefs-base.ui" line="596"/>
       <source>Alternate SVG Patterns file</source>
-      <translation>替换SVG备份文件</translation>
+      <translation>替换SVG样式文件</translation>
     </message>
     <message>
       <location filename="userprefs-base.ui" line="622"/>
       <source>This is the location of a SVG file containing &lt;pattern&gt; definitions that can be added to the standard Draft hatch patterns</source>
-      <translation>这是一个SVG的包含文件的位置&lt;pattern&gt;可添加到标准填充图案</translation>
+      <translation>含&lt;样式&gt;定义的SVG文件位置,样式定义可添加到标准填充样式</translation>
     </message>
     <message>
       <location filename="userprefs-base.ui" line="472"/>
       <source>Default template sheet</source>
-      <translation>默认模板</translation>
+      <translation>默认图纸模板</translation>
     </message>
     <message>
       <location filename="userprefs-base.ui" line="498"/>
@@ -191,18 +191,18 @@ such as "Arial:Bold"</source>
       <source>This is the method choosed for importing or translating DXF object color into FreeCAD. 
 If color mapping is choosed, you must choose a color mapping file containing a translation table that will convert colors into linewidths.
 </source>
-      <translation>这是导入或者转化DXF对象颜色到FreeCAD的选择方法.如果颜色映射已选择,你必须选择一个包含转化颜色到线宽的转化表格的映射文件。
+      <translation>这是导入或者转化DXF对象颜色到FreeCAD的首选方法.如果颜色映射已选择,则必须选择一个包含转化颜色到线宽的转化表格的映射文件。
 </translation>
     </message>
     <message>
       <location filename="userprefs-import.ui" line="292"/>
       <source>None (fastest)</source>
-      <translation>无（最快）</translation>
+      <translation>无(最快)</translation>
     </message>
     <message>
       <location filename="userprefs-import.ui" line="297"/>
       <source>Use default color and linewidth</source>
-      <translation>使用默认的颜色和线宽</translation>
+      <translation>使用默认颜色和线宽</translation>
     </message>
     <message>
       <location filename="userprefs-import.ui" line="302"/>
@@ -217,7 +217,7 @@ If color mapping is choosed, you must choose a color mapping file containing a t
     <message>
       <location filename="userprefs-import.ui" line="178"/>
       <source>if this is checked, paper space objects will be imported too</source>
-      <translation>如果被选中,图纸空间的对象也将被导入</translation>
+      <translation>选中则图纸空间的对象也将被导入</translation>
     </message>
     <message>
       <location filename="userprefs-import.ui" line="181"/>
@@ -227,7 +227,7 @@ If color mapping is choosed, you must choose a color mapping file containing a t
     <message>
       <location filename="userprefs-import.ui" line="158"/>
       <source>if this is unchecked, texts/mtexts won't be imported</source>
-      <translation>如果不选中,文本/多文本 将不会被导入</translation>
+      <translation>选中则文本/多行文本将会被导入</translation>
     </message>
     <message>
       <location filename="userprefs-import.ui" line="128"/>
@@ -252,12 +252,12 @@ If color mapping is choosed, you must choose a color mapping file containing a t
     <message>
       <location filename="userprefs-import.ui" line="279"/>
       <source>This is the method choosed for importing SVG object color into FreeCAD.</source>
-      <translation>这是用于选择SVG对象颜色导入到FreeCAD的方法.</translation>
+      <translation>含&lt;样式&gt;定义的SVG文件位置,样式定义可添加到标准填充样式</translation>
     </message>
     <message>
       <location filename="userprefs-import.ui" line="335"/>
       <source>Check this if you want the areas (3D faces) to be imported too.</source>
-      <translation>如果你想面域(3D面)也被导入,选中它.</translation>
+      <translation>选中则面域(3D面)也被导入.</translation>
     </message>
     <message>
       <location filename="userprefs-import.ui" line="338"/>
@@ -272,7 +272,7 @@ If color mapping is choosed, you must choose a color mapping file containing a t
     <message>
       <location filename="userprefs-base.ui" line="159"/>
       <source>Construction group name</source>
-      <translation>建模组名称</translation>
+      <translation>构造组名</translation>
     </message>
     <message>
       <location filename="userprefs-base.ui" line="353"/>
@@ -288,22 +288,22 @@ Values with differences below this value will be treated as same.</source>
     <message>
       <location filename="userprefs-base.ui" line="515"/>
       <source>Dimensions &amp; Leader arrow style</source>
-      <translation>尺寸(&amp;L)运行引导样式</translation>
+      <translation>尺寸线箭头样式</translation>
     </message>
     <message>
       <location filename="userprefs-base.ui" line="529"/>
       <source>Dot 5</source>
-      <translation>5 点</translation>
+      <translation>点 5</translation>
     </message>
     <message>
       <location filename="userprefs-base.ui" line="534"/>
       <source>Dot 7</source>
-      <translation>7点</translation>
+      <translation>点 7</translation>
     </message>
     <message>
       <location filename="userprefs-base.ui" line="539"/>
       <source>Dot 9</source>
-      <translation>9 点</translation>
+      <translation>点 9</translation>
     </message>
     <message>
       <location filename="userprefs-base.ui" line="544"/>
@@ -323,32 +323,32 @@ Values with differences below this value will be treated as same.</source>
     <message>
       <location filename="userprefs-base.ui" line="559"/>
       <source>Slash 5</source>
-      <translation>削减 5</translation>
+      <translation>斜杠 5</translation>
     </message>
     <message>
       <location filename="userprefs-base.ui" line="564"/>
       <source>Slash 7</source>
-      <translation>削减 7</translation>
+      <translation>斜杠 7</translation>
     </message>
     <message>
       <location filename="userprefs-base.ui" line="569"/>
       <source>Slash 9</source>
-      <translation>削减 9</translation>
+      <translation>斜杠 9</translation>
     </message>
     <message>
       <location filename="userprefs-base.ui" line="574"/>
       <source>Backslash 5</source>
-      <translation>反斜杠5</translation>
+      <translation>反斜杠 5</translation>
     </message>
     <message>
       <location filename="userprefs-base.ui" line="579"/>
       <source>Backslash 7</source>
-      <translation>反斜杠7</translation>
+      <translation>反斜杠 7</translation>
     </message>
     <message>
       <location filename="userprefs-base.ui" line="584"/>
       <source>Backslash 9</source>
-      <translation>反斜杠9</translation>
+      <translation>反斜杠 9</translation>
     </message>
     <message>
       <location filename="userprefs-import.ui" line="14"/>
@@ -368,22 +368,22 @@ Values with differences below this value will be treated as same.</source>
     <message>
       <location filename="userprefs-import.ui" line="198"/>
       <source>Check this if you want the non-named blocks (beginning with a *) to be imported too</source>
-      <translation>如果你想把未命名的块(从“*”开始的)也导入,选中它</translation>
+      <translation>选中则匿名块(以"*"起头)也导入</translation>
     </message>
     <message>
       <location filename="userprefs-import.ui" line="201"/>
       <source>Import *blocks</source>
-      <translation>导入 *块</translation>
+      <translation>导入匿名块</translation>
     </message>
     <message>
       <location filename="userprefs-import.ui" line="218"/>
       <source>If checked, freecad will try to joint coincident objects into wires. Beware, this can take a while...</source>
-      <translation>如果选中,FreeCAD将尝试把一致的对象联合成线宽.注意,这个过程会耗费一段时间...</translation>
+      <translation>选中则FreeCAD将尝试把重合对象联合成线框.注意,此过程会耗费一段时间...</translation>
     </message>
     <message>
       <location filename="userprefs-import.ui" line="221"/>
       <source>Join geometry</source>
-      <translation>加入几何图形</translation>
+      <translation>连接几何图形</translation>
     </message>
     <message>
       <location filename="userprefs-import.ui" line="239"/>
@@ -456,12 +456,12 @@ Values with differences below this value will be treated as same.</source>
     <message>
       <location filename="draftGui.py" line="377"/>
       <source>Coordinates relative to last point or absolute (SPACE)</source>
-      <translation>坐标相对于最后一个点或绝对(空间)</translation>
+      <translation>相对于最后一点坐标或绝对(空间)</translation>
     </message>
     <message>
       <location filename="draftGui.py" line="381"/>
       <source>Finishes the current line without closing (F)</source>
-      <translation>完成当前线条而不关闭(F)</translation>
+      <translation>完成当前线段而不闭合(F)</translation>
     </message>
     <message>
       <location filename="draftGui.py" line="383"/>
@@ -471,7 +471,7 @@ Values with differences below this value will be treated as same.</source>
     <message>
       <location filename="draftGui.py" line="385"/>
       <source>Finishes and closes the current line (C)</source>
-      <translation>完成并关闭当前线条(C)</translation>
+      <translation>完成并闭合当前线段(C)</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2414"/>
@@ -516,17 +516,17 @@ Values with differences below this value will be treated as same.</source>
     <message>
       <location filename="draftGui.py" line="395"/>
       <source>Select plane perpendicular to the current view</source>
-      <translation>选择平面垂直于当前视图</translation>
+      <translation>选择垂直于当前视图的平面</translation>
     </message>
     <message>
       <location filename="draftGui.py" line="397"/>
       <source>Do not project points to a drawing plane</source>
-      <translation>不在图纸平面上放点</translation>
+      <translation>不在绘图平面上投影点</translation>
     </message>
     <message>
       <location filename="draftGui.py" line="399"/>
       <source>If checked, objects will be copied instead of moved (C)</source>
-      <translation>如果选中,对象将被复制而不移动(C)</translation>
+      <translation>选中则对象被复制而非移动(C)</translation>
     </message>
     <message>
       <location filename="draftGui.py" line="400"/>
@@ -536,7 +536,7 @@ Values with differences below this value will be treated as same.</source>
     <message>
       <location filename="draftGui.py" line="403"/>
       <source>Face Color</source>
-      <translation>面颜色</translation>
+      <translation>表面颜色</translation>
     </message>
     <message>
       <location filename="draftGui.py" line="404"/>
@@ -556,7 +556,7 @@ Values with differences below this value will be treated as same.</source>
     <message>
       <location filename="draftGui.py" line="407"/>
       <source>Toggles Construction Mode</source>
-      <translation>切换建模模式</translation>
+      <translation>切换构造模式</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="3092"/>
@@ -627,25 +627,25 @@ Values with differences below this value will be treated as same.</source>
     <message>
       <location filename="draftTools.py" line="939"/>
       <source>Creates a 2-point line. CTRL to snap, SHIFT to constrain</source>
-      <translation>用2点创建线段，Ctrl键捕捉，Shift键约束</translation>
+      <translation>用两点创建线段，Ctrl键捕捉，Shift键约束</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="1865"/>
       <source>Pick first point:
 </source>
-      <translation>选择第一个点 </translation>
+      <translation>选择第一个点: </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="1133"/>
       <source>Pick next point:
 </source>
-      <translation>选择下一个点 </translation>
+      <translation>选择下一个点: </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="1138"/>
       <source>Pick next point, or (F)inish or (C)lose:
 </source>
-      <translation>选择下一个点,或(F)完成|(C)关闭 </translation>
+      <translation>选择下一个点,或完成(F)|闭合(C):</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="1068"/>
@@ -655,7 +655,7 @@ Values with differences below this value will be treated as same.</source>
     <message>
       <location filename="draftTools.py" line="1069"/>
       <source>Creates a multiple-point wire. CTRL to snap, SHIFT to constrain</source>
-      <translation>创建一个多点线.CTRL键捕捉,Shift约束</translation>
+      <translation>多点创建线框.CTRL键捕捉,Shift键约束</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="1162"/>
@@ -665,17 +665,17 @@ Values with differences below this value will be treated as same.</source>
     <message>
       <location filename="draftTools.py" line="1163"/>
       <source>Finishes a line without closing it</source>
-      <translation>完成线段而不关闭</translation>
+      <translation>完成线段而不闭合</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="1178"/>
       <source>Close Line</source>
-      <translation>关闭线</translation>
+      <translation>闭合线</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="1179"/>
       <source>Closes the line being drawn</source>
-      <translation>关闭当前绘制线段</translation>
+      <translation>闭合当前绘制线段</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="1195"/>
@@ -695,53 +695,53 @@ Values with differences below this value will be treated as same.</source>
     <message>
       <location filename="draftTools.py" line="1209"/>
       <source>Creates a 2-point rectangle. CTRL to snap</source>
-      <translation>用2点创建矩形,Ctrl键捕捉</translation>
+      <translation>用两点创建矩形.Ctrl键捕捉</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="1273"/>
       <source>Pick opposite point:
 </source>
-      <translation>选择相反点 </translation>
+      <translation>选择对角点: </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="1290"/>
       <source>Creates an arc. CTRL to snap, SHIFT to constrain</source>
-      <translation>创建一个弧线,CTRL键捕捉,Shift约束</translation>
+      <translation>创建圆弧,CTRL键捕捉,Shift键约束</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="1614"/>
       <source>Pick center point:
 </source>
-      <translation>选择中心点 </translation>
+      <translation>选择中心点: </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="1755"/>
       <source>Pick radius:
 </source>
-      <translation>选择半径 </translation>
+      <translation>选择半径: </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="1558"/>
       <source>Pick start angle:
 </source>
-      <translation>选择起始角度 </translation>
+      <translation>选择起始角度: </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="1500"/>
       <source>Pick aperture:
 </source>
-      <translation>选择光圈 </translation>
+      <translation>选择孔: </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="1569"/>
       <source>Aperture angle:
 </source>
-      <translation>光驱角度 </translation>
+      <translation>孔径角: </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="1587"/>
       <source>Creates a circle. CTRL to snap, ALT to select tangent objects</source>
-      <translation>创建一个圆,Ctrl键捕捉,Alt键选择相切对象</translation>
+      <translation>创建圆.Ctrl键捕捉,Alt键选择相切对象</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="1781"/>
@@ -751,23 +751,23 @@ Values with differences below this value will be treated as same.</source>
     <message>
       <location filename="draftTools.py" line="1782"/>
       <source>Creates an annotation. CTRL to snap</source>
-      <translation>创建一个注释.Ctrl捕捉</translation>
+      <translation>创建注释.Ctrl捕捉</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="1795"/>
       <source>Pick location point:
 </source>
-      <translation>选择定位点 </translation>
+      <translation>选择定位点: </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="1843"/>
       <source>Dimension</source>
-      <translation>尺寸</translation>
+      <translation>尺寸标注</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="1844"/>
       <source>Creates a dimension. CTRL to snap, SHIFT to constrain, ALT to select a segment</source>
-      <translation>创建一个尺寸.Ctrl键捕捉,Shift键约束，Alt键选择方向</translation>
+      <translation>创建尺寸标注.Ctrl键捕捉,Shift键约束，Alt键选择方向</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2082"/>
@@ -777,7 +777,7 @@ Values with differences below this value will be treated as same.</source>
     <message>
       <location filename="draftTools.py" line="2083"/>
       <source>Moves the selected objects between 2 points. CTRL to snap, SHIFT to constrain, ALT to copy</source>
-      <translation>在2点间移动选中对象,Ctrl捕捉,Shift约束,Alt复制</translation>
+      <translation>在两点间移动选中对象,Ctrl键捕捉,Shift键约束,Alt键复制</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2094"/>
@@ -789,18 +789,18 @@ Values with differences below this value will be treated as same.</source>
       <location filename="draftTools.py" line="2111"/>
       <source>Pick start point:
 </source>
-      <translation>选择起始点 </translation>
+      <translation>选择起始点: </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2181"/>
       <source>Pick end point:
 </source>
-      <translation>选择终点 </translation>
+      <translation>选择终点: </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2197"/>
       <source>Applies current line width and color to selected objects</source>
-      <translation>将当前线宽及颜色应用到选中对象</translation>
+      <translation>将当前线宽及颜色应用于所选对象</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2227"/>
@@ -810,7 +810,7 @@ Values with differences below this value will be treated as same.</source>
     <message>
       <location filename="draftTools.py" line="2228"/>
       <source>Rotates the selected objects. CTRL to snap, SHIFT to constrain, ALT creates a copy</source>
-      <translation>旋转所选的对象.CTRL键捕捉,Shift约束,Alt复制</translation>
+      <translation>旋转所选对象.CTRL键捕捉,Shift键约束,Alt键复制</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2240"/>
@@ -822,24 +822,24 @@ Values with differences below this value will be treated as same.</source>
       <location filename="draftTools.py" line="2259"/>
       <source>Pick rotation center:
 </source>
-      <translation>设置旋转中心 </translation>
+      <translation>选择旋转中心: </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2391"/>
       <source>Pick base angle:
 </source>
-      <translation>选择基本角度 </translation>
+      <translation>选择基准角度:</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2403"/>
       <source>Pick rotation angle:
 </source>
-      <translation>选择旋转角度 </translation>
+      <translation>选择旋转角度: </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2415"/>
       <source>Offsets the active object. CTRL to snap, SHIFT to constrain, ALT to copy</source>
-      <translation>偏移当前对象.Ctrl捕捉,Shift约束,Alt复制</translation>
+      <translation>偏移当前对象.Ctrl键捕捉,Shift键约束,Alt键复制</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2428"/>
@@ -857,7 +857,7 @@ Values with differences below this value will be treated as same.</source>
       <location filename="draftTools.py" line="2886"/>
       <source>Pick distance:
 </source>
-      <translation>选择距离 </translation>
+      <translation>选择距离: </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2549"/>
@@ -867,7 +867,7 @@ Values with differences below this value will be treated as same.</source>
     <message>
       <location filename="draftTools.py" line="2550"/>
       <source>Joins the selected objects into one, or converts closed wires to filled faces, or unite faces</source>
-      <translation>将选中对象连接成一个,或者转化为闭合填充面,或者合并面</translation>
+      <translation>将选中对象连接成一个,或者将闭合线框转化为填充面,或者合并面</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2740"/>
@@ -883,7 +883,7 @@ Values with differences below this value will be treated as same.</source>
     <message>
       <location filename="draftTools.py" line="2733"/>
       <source>Explodes the selected objects into simpler objects, or subtract faces</source>
-      <translation>炸开选择的对象为简单对象,或者减去网格面</translation>
+      <translation>炸开所选对象为简单对象,或去除填充面</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2822"/>
@@ -893,7 +893,7 @@ Values with differences below this value will be treated as same.</source>
     <message>
       <location filename="draftTools.py" line="2823"/>
       <source>Trims or Extends the selected object, or extrudes single faces. CTRL snaps, SHIFT constrains to current segment or to normal, ALT inverts</source>
-      <translation>修剪或延长选定的对象，或挤压单一面.Ctrl捕捉,Shift约束到当前部分或者普通,Alt反转</translation>
+      <translation>修剪或延长选定的对象，或拉伸单一面.Ctrl键捕捉,Shift键约束到当前部分或者垂直,Alt键反转</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2834"/>
@@ -905,12 +905,12 @@ Values with differences below this value will be treated as same.</source>
       <location filename="draftTools.py" line="2863"/>
       <source>The selected object cannot be extended
 </source>
-      <translation>选定的对象不能延长 </translation>
+      <translation>所选对象无法延长 </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="3093"/>
       <source>Scales the selected objects from a base point. CTRL to snap, SHIFT to constrain, ALT to copy</source>
-      <translation>从基点缩放选中对象.Ctrl捕捉,Shift约束,Alt复制</translation>
+      <translation>自基点缩放所选对象.Ctrl键捕捉,Shift键约束,Alt键复制</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="3104"/>
@@ -922,28 +922,28 @@ Values with differences below this value will be treated as same.</source>
       <location filename="draftTools.py" line="3121"/>
       <source>Pick base point:
 </source>
-      <translation>选取基准点 </translation>
+      <translation>选取基准点: </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="3193"/>
       <source>Pick scale factor:
 </source>
-      <translation>选择缩放比例 </translation>
+      <translation>选择缩放比例: </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="3206"/>
       <source>Toggle construcion Mode</source>
-      <translation>切换建模模式</translation>
+      <translation>切换构造模式</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="3207"/>
       <source>Toggles the Construction Mode for next objects.</source>
-      <translation>切换下一对象构建的模式.</translation>
+      <translation>切换下一对象为构造模式.</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="3286"/>
       <source>Swaps display mode of selected objects between wireframe and flatlines</source>
-      <translation>开关选中对象的显示为"线框"或"粗线"</translation>
+      <translation>切换选中对象的显示模式为"带边框"或"边框消隐"</translation>
     </message>
     <message>
       <location filename="draftGui.py" line="386"/>
@@ -958,12 +958,12 @@ Values with differences below this value will be treated as same.</source>
     <message>
       <location filename="draftTools.py" line="1596"/>
       <source>Creates a regular polygon. CTRL to snap, SHIFT to constrain</source>
-      <translation>创建一个正多边形.CTRL键捕捉,Shift约束</translation>
+      <translation>创建正多边形.CTRL键捕捉,Shift键约束</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="3218"/>
       <source>Puts the selected objects on a Drawing sheet.</source>
-      <translation>将所选对象放置到图纸空间.</translation>
+      <translation>将所选对象放置于图纸空间.</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="3285"/>
@@ -973,7 +973,7 @@ Values with differences below this value will be treated as same.</source>
     <message>
       <location filename="draftGui.py" line="376"/>
       <source>&amp;Relative</source>
-      <translation>镜像(&amp;R)</translation>
+      <translation>相对(&amp;R)</translation>
     </message>
     <message>
       <location filename="draftGui.py" line="378"/>
@@ -983,7 +983,7 @@ Values with differences below this value will be treated as same.</source>
     <message>
       <location filename="draftGui.py" line="379"/>
       <source>Check this if the object should appear as filled, otherwise it will appear as wireframe (F)</source>
-      <translation>如果对象显示为填充选择它,否则显示为线框(F)</translation>
+      <translation>选中则对象显示为填充,否则显示为线框(F)</translation>
     </message>
     <message>
       <location filename="draftGui.py" line="380"/>
@@ -1008,7 +1008,7 @@ Values with differences below this value will be treated as same.</source>
     <message>
       <location filename="draftGui.py" line="401"/>
       <source>If checked, command will not finish until you press the command button again</source>
-      <translation>如果选中，命令将无法完成，直到您再次按下命令按钮</translation>
+      <translation>选中则需通过再次按下命令按钮完成命令</translation>
     </message>
     <message>
       <location filename="draftGui.py" line="402"/>
@@ -1019,7 +1019,7 @@ Values with differences below this value will be treated as same.</source>
       <location filename="draftTools.py" line="1003"/>
       <source>Wire has been closed
 </source>
-      <translation>线框已被关闭 </translation>
+      <translation>线框已闭合 </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="1127"/>
@@ -1030,24 +1030,24 @@ Values with differences below this value will be treated as same.</source>
     <message>
       <location filename="draftTools.py" line="1078"/>
       <source>B-Spline</source>
-      <translation>B样条线</translation>
+      <translation>B样条曲线</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="1079"/>
       <source>Creates a multiple-point b-spline. CTRL to snap, SHIFT to constrain</source>
-      <translation>创建一个多点的粗样条线.Ctrl捕捉,Shift约束</translation>
+      <translation>多点创建B样条曲线.Ctrl键捕捉,Shift键约束</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="1117"/>
       <source>Spline has been closed
 </source>
-      <translation>样条线被关闭 </translation>
+      <translation>样条曲线已闭合</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="1991"/>
       <source>Edges don't intersect!
 </source>
-      <translation>边不相交！ </translation>
+      <translation>边不相交! </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2196"/>
@@ -1058,7 +1058,7 @@ Values with differences below this value will be treated as same.</source>
       <location filename="draftTools.py" line="2439"/>
       <source>Cannot offset this object type
 </source>
-      <translation>不能偏移的对象类型 </translation>
+      <translation>无法偏移此类对象 </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2604"/>
@@ -1070,97 +1070,97 @@ Values with differences below this value will be treated as same.</source>
       <location filename="draftTools.py" line="2641"/>
       <source>Found 2 objects: fusing them
 </source>
-      <translation>发现2个对象:合并 </translation>
+      <translation>发现两个对象:融合 </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2630"/>
       <source>Found 2 objects or faces: making a parametric face
 </source>
-      <translation>发现2个对象或面:创建一个参数面 </translation>
+      <translation>发现两个对象或面:创建一个参数面 </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2635"/>
       <source>Found 2 objects containing curves: fusing them
 </source>
-      <translation>发现2个包含曲线的对象:合并 </translation>
+      <translation>发现两个包含曲线的对象:合并 </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2649"/>
       <source>Found 1 non-parametric objects: draftifying it
 </source>
-      <translation>发现有一个无参数对象:绘制？？ </translation>
+      <translation>发现一个非参数化对象:草绘修正 </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2654"/>
       <source>Found 1 closed sketch object: making a face from it
 </source>
-      <translation>发现一个关闭的草绘对象:从其创建一个面 </translation>
+      <translation>发现一个闭合的草绘对象:从其创建一个面 </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2668"/>
       <source>Found closed wires: making faces
 </source>
-      <translation>发现关闭的线框:转化为面 </translation>
+      <translation>发现闭合线框:转化为面 </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2679"/>
       <source>Found 1 open wire: closing it
 </source>
-      <translation>发现一个线框:关闭它 </translation>
+      <translation>发现一个开放线框:闭合 </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2695"/>
       <source>Found several edges: wiring them
 </source>
-      <translation>发现几个边:组成线框 </translation>
+      <translation>发现若干边:组成线框 </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2704"/>
       <source>Found several non-connected edges: making compound
 </source>
-      <translation>发现几个未连接边:混合 </translation>
+      <translation>发现若干未连接边:混合 </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2708"/>
       <source>Found several non-treatable objects: making compound
 </source>
-      <translation>发现几个未修复的对象:混合 </translation>
+      <translation>发现若干未处理对象:混合 </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2762"/>
       <source>Found 1 parametric object: breaking its dependencies
 </source>
-      <translation>发现1个参数对象:打破其依赖 </translation>
+      <translation>发现一个参数化对象:去除依赖 </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2769"/>
       <source>Found 2 objects: subtracting them
 </source>
-      <translation>找到2个对象:相减 </translation>
+      <translation>找到两个对象:相减 </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2775"/>
       <source>Found several faces: splitting them
 </source>
-      <translation>发现多个面:炸开它们 </translation>
+      <translation>发现若干面:炸开它们 </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2782"/>
       <source>Found several objects: subtracting them from the first one
 </source>
-      <translation>发现对个对象:从第一个中减去 </translation>
+      <translation>发现若干对象:从第一个中减去 </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2793"/>
       <source>Found 1 face: extracting its wires
 </source>
-      <translation>找到1个面:提取线框 </translation>
+      <translation>发现一个面:提取线框 </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="2802"/>
       <source>Found only wires: extracting their edges
 </source>
-      <translation>仅找到线框:提取边 </translation>
+      <translation>仅发现线框:提取边 </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="3217"/>
@@ -1176,12 +1176,12 @@ Values with differences below this value will be treated as same.</source>
     <message>
       <location filename="draftTools.py" line="3518"/>
       <source>Add to group</source>
-      <translation>添加到组</translation>
+      <translation>添加至组</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="3519"/>
       <source>Adds the selected object(s) to an existing group</source>
-      <translation>添加选定的对象到现有组</translation>
+      <translation>添加选定对象至现有组</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="3564"/>
@@ -1191,7 +1191,7 @@ Values with differences below this value will be treated as same.</source>
     <message>
       <location filename="draftTools.py" line="3565"/>
       <source>Adds a point to an existing wire/bspline</source>
-      <translation>在已有线框/粗样条线上增加一个点</translation>
+      <translation>添加点至现有线框/B样条曲线</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="3683"/>
@@ -1201,23 +1201,23 @@ Values with differences below this value will be treated as same.</source>
     <message>
       <location filename="draftTools.py" line="3684"/>
       <source>Removes a point from an existing wire or bspline</source>
-      <translation>从已有线框或者加粗样条线上移除一个点</translation>
+      <translation>自现有线框或B样条曲线上移除点</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="3747"/>
       <source>Active object must have more than two points/nodes
 </source>
-      <translation>当前对象必有有2个以上的点/节点 </translation>
+      <translation>当前对象必须包含2个以上的点/节点 </translation>
     </message>
     <message>
       <location filename="draftTools.py" line="3772"/>
       <source>Wire to BSpline</source>
-      <translation>线框到加粗样条线</translation>
+      <translation>线框至B样条曲线</translation>
     </message>
     <message>
       <location filename="draftTools.py" line="3773"/>
       <source>Converts between Wire and BSpline</source>
-      <translation>在线框和加粗样条线之间切换</translation>
+      <translation>在线框和B样条曲线之间切换</translation>
     </message>
   </context>
 </TS>

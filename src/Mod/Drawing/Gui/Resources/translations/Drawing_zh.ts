@@ -11,7 +11,7 @@
     <message>
       <location/>
       <source>&amp;Export page...</source>
-      <translation>&amp;E 导出页...</translation>
+      <translation>导出页(&amp;E)...</translation>
     </message>
     <message>
       <location/>
@@ -42,7 +42,7 @@
     <message>
       <location/>
       <source>Insert a new View in the active drawing</source>
-      <translation>在当前图纸插入视图</translation>
+      <translation>在当前图纸插入新视图</translation>
     </message>
     <message>
       <location/>
@@ -78,32 +78,32 @@
     <message>
       <location/>
       <source>&amp;Background</source>
-      <translation>&amp;B 背景</translation>
+      <translation>背景(&amp;B)</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Outline</source>
-      <translation>&amp;O 轮廓</translation>
+      <translation>轮廓(&amp;O)</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Native</source>
-      <translation>&amp;N 原生</translation>
+      <translation>本地(&amp;N) </translation>
     </message>
     <message>
       <location/>
       <source>&amp;OpenGL</source>
-      <translation>&amp;O OpenGL</translation>
+      <translation>&amp;OpenGL</translation>
     </message>
     <message>
       <location/>
       <source>&amp;Image</source>
-      <translation>&amp;I 图片</translation>
+      <translation>图片(&amp;I)</translation>
     </message>
     <message>
       <location/>
       <source>&amp;High Quality Antialiasing</source>
-      <translation>&amp;H 高品质反锯齿</translation>
+      <translation>高品质抗锯齿(&amp;H)</translation>
     </message>
     <message>
       <location/>
@@ -118,7 +118,7 @@
     <message>
       <location/>
       <source>&amp;Renderer</source>
-      <translation>&amp;R 渲染器</translation>
+      <translation>渲染器(&amp;R)</translation>
     </message>
     <message>
       <location/>
@@ -128,7 +128,7 @@
     <message>
       <location/>
       <source>PDF file (*.pdf)</source>
-      <translation>PDF格式文件（*. PDF格式）</translation>
+      <translation>PDF格式文件(*.pdf)</translation>
     </message>
   </context>
   <context>
@@ -169,7 +169,7 @@
     <message>
       <location/>
       <source>Scalable Vector Graphics (*.svg *.svgz)</source>
-      <translation>可缩放矢量图形（*.svg *.svgz）</translation>
+      <translation>可缩放矢量图形(*.svg *.svgz)</translation>
     </message>
     <message>
       <location/>

@@ -16,7 +16,7 @@
     <message>
       <location/>
       <source>Add triangle manually to a mesh</source>
-      <translation>给网格添加三角形</translation>
+      <translation>手动给网格添加三角形</translation>
     </message>
   </context>
   <context>
@@ -60,7 +60,7 @@
     <message>
       <location/>
       <source>Interactive demolding direction</source>
-      <translation>互动脱模方向</translation>
+      <translation>交互式脱模方向</translation>
     </message>
     <message>
       <location/>
@@ -91,12 +91,12 @@
     <message>
       <location/>
       <source>Face info</source>
-      <translation>面信息</translation>
+      <translation>表面信息</translation>
     </message>
     <message>
       <location/>
       <source>Information about face</source>
-      <translation>面信息</translation>
+      <translation>表面信息</translation>
     </message>
   </context>
   <context>
@@ -127,7 +127,7 @@
     <message>
       <location/>
       <source>Evaluate mesh...</source>
-      <translation>检测网格...</translation>
+      <translation>评估网格...</translation>
     </message>
     <message>
       <location/>
@@ -163,7 +163,7 @@
     <message>
       <location/>
       <source>Make a Tool</source>
-      <translation>工具</translation>
+      <translation>创建工具</translation>
     </message>
   </context>
   <context>
@@ -212,7 +212,7 @@
     <message>
       <location/>
       <source>Close holes interactively</source>
-      <translation>关闭孔交互</translation>
+      <translation>交互式关闭孔</translation>
     </message>
   </context>
   <context>
@@ -598,7 +598,7 @@
     <message>
       <location/>
       <source>Information about curvature</source>
-      <translation>有关曲率</translation>
+      <translation>曲率信息</translation>
     </message>
   </context>
   <context>
@@ -644,7 +644,7 @@
     <message>
       <location/>
       <source>No information</source>
-      <translation>没有信息</translation>
+      <translation>无信息</translation>
     </message>
     <message>
       <location/>
@@ -684,17 +684,17 @@
     <message>
       <location/>
       <source>Face indices</source>
-      <translation>面指数</translation>
+      <translation>表面指数</translation>
     </message>
     <message>
       <location/>
       <source>Number of faces:</source>
-      <translation>面的数量:</translation>
+      <translation>面数:</translation>
     </message>
     <message>
       <location/>
       <source>Duplicated faces</source>
-      <translation>重的面</translation>
+      <translation>重复面</translation>
     </message>
     <message>
       <location/>
@@ -709,7 +709,7 @@
     <message>
       <location/>
       <source>Self-intersections</source>
-      <translation>Self-交集</translation>
+      <translation>自干涉</translation>
     </message>
     <message>
       <location/>
@@ -729,7 +729,7 @@
     <message>
       <location/>
       <source>Folds on surface</source>
-      <translation>面折叠</translation>
+      <translation>表面折叠</translation>
     </message>
   </context>
   <context>
@@ -737,7 +737,7 @@
     <message>
       <location/>
       <source>No information</source>
-      <translation>没有信息</translation>
+      <translation>无信息</translation>
     </message>
     <message>
       <location/>
@@ -777,7 +777,7 @@
     <message>
       <location/>
       <source>No flipped normals</source>
-      <translation>没有翻转法线</translation>
+      <translation>无翻转法线</translation>
     </message>
     <message>
       <location/>
@@ -787,7 +787,7 @@
     <message>
       <location/>
       <source>No non-manifolds</source>
-      <translation>没有非流形</translation>
+      <translation>无非流形</translation>
     </message>
     <message>
       <location/>
@@ -812,7 +812,7 @@
     <message>
       <location/>
       <source>No duplicated faces</source>
-      <translation>没有重复面</translation>
+      <translation>无重复面</translation>
     </message>
     <message>
       <location/>
@@ -822,7 +822,7 @@
     <message>
       <location/>
       <source>No duplicated points</source>
-      <translation>没有重复点</translation>
+      <translation>无重复点</translation>
     </message>
     <message>
       <location/>
@@ -847,17 +847,17 @@
     <message>
       <location/>
       <source>Duplicated faces</source>
-      <translation>重的面</translation>
+      <translation>重复面</translation>
     </message>
     <message>
       <location/>
       <source>No self-intersections</source>
-      <translation>无Self截面</translation>
+      <translation>无自干涉</translation>
     </message>
     <message>
       <location/>
       <source>Self-intersections</source>
-      <translation>Self-交集</translation>
+      <translation>自干涉</translation>
     </message>
     <message>
       <location/>
@@ -873,7 +873,7 @@
       <location/>
       <source>Check failed due to folds on the surface.
 Please run the command to repair folds first</source>
-      <translation>尝试在面上折叠测试失败.
+      <translation>由于表面折叠测试失败.
 请先运行命令修复折叠</translation>
     </message>
     <message>
@@ -1010,7 +1010,7 @@ Please run the command to repair folds first</source>
     <message>
       <location/>
       <source>No active document</source>
-      <translation>没有活动文档</translation>
+      <translation>无活动文档</translation>
     </message>
   </context>
   <context>
@@ -1098,7 +1098,7 @@ Please run the command to repair folds first</source>
     <message>
       <location/>
       <source>Show bounding-box for highlighted or selected meshes</source>
-      <translation>亮显选中网格或者边界框</translation>
+      <translation>显示高亮或选中网格的边界框</translation>
     </message>
     <message>
       <location/>
@@ -1167,7 +1167,7 @@ Please run the command to repair folds first</source>
     <message>
       <location/>
       <source>Flip normal</source>
-      <translation>正常翻转</translation>
+      <translation>翻转法线</translation>
     </message>
     <message>
       <location/>
@@ -1250,7 +1250,7 @@ Please run the command to repair folds first</source>
     <message>
       <location/>
       <source>Respect only triangles with normals facing screen</source>
-      <translation>仅考虑屏幕常规法线</translation>
+      <translation>仅考虑屏幕常规法线三角形</translation>
     </message>
     <message>
       <location/>
@@ -1286,7 +1286,7 @@ Please run the command to repair folds first</source>
     <message>
       <location/>
       <source>&amp;Meshes</source>
-      <translation>&amp;M 网格</translation>
+      <translation>网格(&amp;M)</translation>
     </message>
     <message>
       <location/>
@@ -1344,7 +1344,7 @@ Please run the command to repair folds first</source>
     <message>
       <location/>
       <source>All Mesh Files (*.stl *.ast *.bms *.obj)</source>
-      <translation>所有的网格文件 (*.stl *.ast *.bms *.obj)</translation>
+      <translation>所有网格文件 (*.stl *.ast *.bms *.obj)</translation>
     </message>
     <message>
       <location/>
@@ -1364,7 +1364,7 @@ Please run the command to repair folds first</source>
     <message>
       <location/>
       <source>Alias Mesh (*.obj)</source>
-      <translation>别名网格 (*.obj)</translation>
+      <translation>Alias网格 (*.obj)</translation>
     </message>
     <message>
       <location/>
@@ -1414,12 +1414,12 @@ Please run the command to repair folds first</source>
     <message>
       <location/>
       <source>The mesh '%1' is a solid.</source>
-      <translation>网格'%1'是固体.</translation>
+      <translation>网格'%1'是实体.</translation>
     </message>
     <message>
       <location/>
       <source>The mesh '%1' is not a solid.</source>
-      <translation>网格 '%1' 不是固体.</translation>
+      <translation>网格 '%1' 不是实体.</translation>
     </message>
     <message>
       <location/>
@@ -1458,7 +1458,7 @@ Max=&lt;%4,%5,%6&gt;</translation>
     <message>
       <location/>
       <source>All Mesh Files (*.stl *.ast *.bms *.obj *.ply)</source>
-      <translation>所有的网格文件 (*.stl *.ast *.bms *.obj *.ply)</translation>
+      <translation>所有网格文件 (*.stl *.ast *.bms *.obj *.ply)</translation>
     </message>
     <message>
       <location/>
@@ -1506,7 +1506,7 @@ Max=&lt;%4,%5,%6&gt;</translation>
     <message>
       <location/>
       <source>&amp;Meshes</source>
-      <translation>&amp;M 网格</translation>
+      <translation>网格(&amp;M)</translation>
     </message>
     <message>
       <location/>

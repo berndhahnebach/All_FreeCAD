@@ -29,7 +29,7 @@
     <message>
       <location/>
       <source>&amp;FEM</source>
-      <translation>&amp;有限元</translation>
+      <translation>有限元(&amp;F)</translation>
     </message>
   </context>
 </TS>
