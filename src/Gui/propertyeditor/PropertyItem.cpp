@@ -990,8 +990,11 @@ namespace Gui { namespace PropertyEditor {
 class PlacementEditor : public Gui::LabelButton
 {
 public:
-    PlacementEditor(QWidget * parent = 0) : LabelButton(parent), _task(0)
+    PlacementEditor(const QString& name, QWidget * parent = 0)
+        : LabelButton(parent), _task(0)
     {
+        propertyname = name;
+        propertyname.replace(QLatin1String(" "), QLatin1String(""));
     }
     ~PlacementEditor()
     {
@@ -1012,10 +1015,11 @@ protected:
         }
         if (!_task) {
             _task = task;
-            connect(task, SIGNAL(placementChanged(const QVariant &)),
+            connect(task, SIGNAL(placementChanged(const QVariant &, bool, bool)),
                     this, SLOT(setValue(const QVariant&)));
         }
         task->setPlacement(value().value<Base::Placement>());
+        task->setPropertyName(propertyname);
         Gui::Control().showDialog(task);
     }
     void showValue(const QVariant& d)
@@ -1037,6 +1041,7 @@ protected:
     }
 
     Gui::Dialog::TaskPlacement* _task;
+    QString propertyname;
 };
 }
 }
@@ -1210,7 +1215,7 @@ void PropertyPlacementItem::setValue(const QVariant& value)
 
 QWidget* PropertyPlacementItem::createEditor(QWidget* parent, const QObject* receiver, const char* method) const
 {
-    PlacementEditor *pe = new PlacementEditor(parent);
+    PlacementEditor *pe = new PlacementEditor(this->propertyName(), parent);
     QObject::connect(pe, SIGNAL(valueChanged(const QVariant &)), receiver, method);
     return pe;
 }

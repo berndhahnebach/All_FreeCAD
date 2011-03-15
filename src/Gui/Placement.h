@@ -74,6 +74,7 @@ private:
     Ui_PlacementComp* ui;
     QSignalMapper* signalMapper;
     Base::Placement ref;
+    std::string propertyName; // the name of the placement property
 
     friend class TaskPlacement;
 };
@@ -99,6 +100,7 @@ public:
     ~TaskPlacement();
 
 public:
+    void setPropertyName(const QString&);
     void setPlacement(const Base::Placement&);
     bool accept();
     bool reject();

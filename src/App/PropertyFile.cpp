@@ -145,6 +145,20 @@ void PropertyFileIncluded::setValue(const char* sFile, const char* sName)
         }
         // otherwise copy from origin location 
         else {
+            // if file already exists in transient dir make a new unique name
+            Base::FileInfo fi(_cValue);
+            if (fi.exists()) {
+                Base::FileInfo fi2(Base::FileInfo::getTempFileName());
+                std::stringstream str;
+                str << fi.dirPath() << "/" << fi2.fileNamePure();
+                std::string ext = fi.extension(false);
+                if (!ext.empty())
+                    str << "." << ext;
+                Base::FileInfo fi3(str.str());
+                _cValue = fi3.filePath();
+                _BaseFileName = fi3.fileName();
+            }
+
             bool done = file.copyTo(_cValue.c_str());
             //assert(done); 
             if (!done) {

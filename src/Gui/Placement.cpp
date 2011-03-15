@@ -42,15 +42,20 @@ namespace Gui { namespace Dialog {
 class find_placement
 {
 public:
+    find_placement(const std::string& name) : propertyname(name)
+    {
+    }
     bool operator () (const std::pair<std::string, App::Property*>& elem) const
     {
-        if (elem.first == "Placement") {
+        if (elem.first == propertyname) {
             return elem.second->isDerivedFrom
                 (Base::Type::fromName("App::PropertyPlacement"));
         }
 
         return false;
     }
+
+    std::string propertyname;
 };
 
 }
@@ -61,6 +66,7 @@ public:
 Placement::Placement(QWidget* parent, Qt::WFlags fl)
   : Gui::LocationDialog(parent, fl)
 {
+    propertyName = "Placement"; // default name
     ui = new Ui_PlacementComp(this);
     ui->applyPlacementChange->hide();
 
@@ -112,7 +118,7 @@ void Placement::applyPlacement(const Base::Placement& p, bool incremental, bool 
                 (*it)->getPropertyMap(props);
                 // search for the placement property
                 std::map<std::string,App::Property*>::iterator jt;
-                jt = std::find_if(props.begin(), props.end(), find_placement());
+                jt = std::find_if(props.begin(), props.end(), find_placement(this->propertyName));
                 if (jt != props.end()) {
                     Base::Placement cur = static_cast<App::PropertyPlacement*>(jt->second)->getValue();
                     if (incremental)
@@ -149,7 +155,7 @@ void Placement::applyPlacement(const Base::Placement& p, bool incremental, bool 
                 (*it)->getPropertyMap(props);
                 // search for the placement property
                 std::map<std::string,App::Property*>::iterator jt;
-                jt = std::find_if(props.begin(), props.end(), find_placement());
+                jt = std::find_if(props.begin(), props.end(), find_placement(this->propertyName));
                 if (jt != props.end()) {
                     Base::Placement cur = static_cast<App::PropertyPlacement*>(jt->second)->getValue();
                     if (incremental)
@@ -412,6 +418,11 @@ TaskPlacement::TaskPlacement()
 TaskPlacement::~TaskPlacement()
 {
     // automatically deleted in the sub-class
+}
+
+void TaskPlacement::setPropertyName(const QString& name)
+{
+    widget->propertyName = (const char*)name.toLatin1();
 }
 
 QDialogButtonBox::StandardButtons TaskPlacement::getStandardButtons() const
