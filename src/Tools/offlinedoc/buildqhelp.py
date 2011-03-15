@@ -95,7 +95,7 @@ def createCollProjectFile():
         <title>FreeCAD User Manual</title>
         <applicationIcon>64px-FreeCAD05.svg.png</applicationIcon>
         <cacheDirectory>freecad/freecad</cacheDirectory>
-        <startPage>qthelp://org.freecad.usermanual_0.11/doc/Online_Help_Startpage.html</startPage>
+        <startPage>qthelp://org.freecad.usermanual/doc/Online_Help_Startpage.html</startPage>
         <aboutMenuText>
             <text>About FreeCAD</text>
         </aboutMenuText>
