@@ -327,6 +327,8 @@ def getBoundary(shape):
 	"getBoundary(shape) -- this function returns the boundary edges of a group of faces"
         # make a lookup-table where we get the number of occurrences
 	# to each edge in the fused face
+        if isinstance(shape,list):
+                shape = Part.makeCompound(shape)
 	lut={}
 	for f in shape.Faces:
 		for e in f.Edges:
@@ -757,6 +759,77 @@ def bind(wire1,wire2):
         return nw
 
 def cleanFaces(shape):
+        "removes inner edges from coplanar faces"
+        faceset = shape.Faces
+        def find(hc):
+                for f in faceset:
+                        if f.hashCode() == hc:
+                                return f
+        # build lookup table
+        lut = {}
+        for face in faceset:
+                for edge in face.Edges:
+                        if edge.hashCode() in lut:
+                                lut[edge.hashCode()].append(face.hashCode())
+                        else:
+                                lut[edge.hashCode()] = [face.hashCode()]
+        print "lut:",lut
+        # take edges shared by 2 faces
+        sharedhedges = []
+        for k,v in lut.iteritems():
+                if len(v) == 2:
+                        sharedhedges.append(k)
+        print "shared edges:",sharedhedges
+        # find those with same normals
+        targethedges = []
+        for hedge in sharedhedges:
+                faces = lut[hedge]
+                n1 = find(faces[0]).normalAt(0.5,0.5)
+                n2 = find(faces[1]).normalAt(0.5,0.5)
+                if n1 == n2:
+                        targethedges.append(hedge)
+        print "target edges:",targethedges
+        # sort islands
+        islands = []
+        for hedge in targethedges:
+                hfaces = lut[hedge]
+                found = False
+                for isle in islands:
+                        if hfaces[0] in isle:
+                                isle.append(hfaces[1])
+                                found = True
+                                break
+                        elif hfaces[1] in isle:
+                                isle.append(hfaces[0])
+                                found = True
+                                break
+                if not found:
+                        islands.append(hfaces)
+        print "islands:",islands
+        # make new faces from islands
+        newfaces = []
+        treated = []
+        for isle in islands:
+                treated.extend(isle)
+                fset = []
+                for i in isle: fset.append(find(i))
+                bounds = getBoundary(fset)
+                shp = Part.Wire(sortEdges(bounds))
+                shp = Part.Face(shp)
+                newfaces.append(shp)
+        print "new faces:",newfaces
+        # add remaining faces
+        for f in faceset:
+                if not f.hashCode() in treated:
+                        newfaces.append(f)
+        print "final faces"
+        # finishing
+        fshape = Part.makeShell(newfaces)
+        if shape.isClosed():
+                fshape = Part.makeSolid(fshape)
+        return fshape
+        
+def cleanFacesOld(shape):
         '''removes inner edges from coplanar faces'''
         # grouping faces by same normal
         groups = []
