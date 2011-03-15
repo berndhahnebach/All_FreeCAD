@@ -170,34 +170,41 @@ FreeCADGui_setupWithoutGUI(PyObject * /*self*/, PyObject *args)
 static PyObject *
 FreeCADGui_embedToWindow(PyObject * /*self*/, PyObject *args)
 {
-#if defined(Q_OS_WIN)
     char* pointer;
     if (!PyArg_ParseTuple(args, "s", &pointer))
         return NULL;
 
+    QWidget* widget = Gui::getMainWindow();
+    if (!widget) {
+        PyErr_SetString(PyExc_Exception, "No main window");
+        return 0;
+    }
     std::string pointer_str = pointer;
     void* window = 0;
     std::stringstream str(pointer_str);
     str >> window;
+    WId winid = (WId)window;
 
-    HWND hwnd = (HWND)window;
-    QWidget* widget = Gui::getMainWindow();
-    LONG oldLong = GetWindowLong(hwnd, GWL_STYLE);
-    SetWindowLong(hwnd, GWL_STYLE,
+#if defined(Q_OS_WIN)
+    LONG oldLong = GetWindowLong(winid, GWL_STYLE);
+    SetWindowLong(winid, GWL_STYLE,
     oldLong | WS_CLIPCHILDREN | WS_CLIPSIBLINGS);
     //SetWindowLong(widget->winId(), GWL_STYLE,
     //    WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS);
-    SetParent(widget->winId(), hwnd);
+    SetParent(widget->winId(), winid);
+#elif defined(Q_WS_X11)
+    //XUnmapWindow(X11->display, winid);
+    //XReparentWindow(X11->display, winid, RootWindow(X11->display, xinfo.screen()), 0, 0);
+#else
+    PyErr_SetString(PyExc_NotImplementedError, "Not implemented for this platform");
+    return 0;
+#endif
 
     QEvent embeddingEvent(QEvent::EmbeddingControl);
     QApplication::sendEvent(widget, &embeddingEvent);
     
     Py_INCREF(Py_None);
     return Py_None;
-#else
-    PyErr_SetString(PyExc_NotImplementedError, "Not implemented for this platform");
-    return 0;
-#endif
 }
 
 struct PyMethodDef FreeCADGui_methods[] = { 
