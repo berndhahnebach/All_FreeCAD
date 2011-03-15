@@ -51,8 +51,9 @@ class CommandWall:
         
     def Activated(self):
         sel = FreeCADGui.Selection.getSelection()
-        if len(sel)==1:
-            makeWall(sel[0])
+        if sel:
+            for obj in sel:
+                makeWall(obj)
         else:
             FreeCAD.Console.PrintWarning("Not implemented! Select an object first")
        
