@@ -26,7 +26,7 @@
 
 #include <QListWidget>
 
-class QTextEdit;
+class QPlainTextEdit;
 
 namespace Py {
 class Object;
@@ -54,7 +54,7 @@ class CallTipsList : public QListWidget
 
 public:
     /// Construction
-    CallTipsList(QTextEdit* parent);
+    CallTipsList(QPlainTextEdit* parent);
     /// Destruction
     ~CallTipsList();
 
@@ -78,7 +78,7 @@ private:
     QString stripWhiteSpace(const QString&) const;
 
 private:
-    QTextEdit* textEdit;
+    QPlainTextEdit* textEdit;
     int cursorPos;
     bool validObject;
     QList<int> hideKeys;

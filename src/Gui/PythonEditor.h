@@ -60,6 +60,7 @@ public Q_SLOTS:
 protected:
     /** Pops up the context menu with some extensions */
     void contextMenuEvent ( QContextMenuEvent* e );
+    void drawMarker(int line, int x, int y, QPainter*);
 
 private:
     //PythonSyntaxHighlighter* pythonSyntax;

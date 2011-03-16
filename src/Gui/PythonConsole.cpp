@@ -597,7 +597,7 @@ void PythonConsole::appendOutput(const QString& output, int state)
     
     // delay rehighlighting
     cursor.beginEditBlock();
-    append(output);
+    appendPlainText(output);
 
     QTextBlock block = this->document()->findBlock(pos);
     while (block.isValid()) {
@@ -743,7 +743,7 @@ void PythonConsole::dropEvent (QDropEvent * e)
         e->accept();
     }
     else // this will call insertFromMimeData
-        QTextEdit::dropEvent(e);
+        QPlainTextEdit::dropEvent(e);
 }
 
 /** Dragging of action objects is allowed. */ 
@@ -753,7 +753,7 @@ void PythonConsole::dragMoveEvent( QDragMoveEvent *e )
     if (mimeData->hasFormat(QLatin1String("text/x-action-items")))
         e->accept();
     else // this will call canInsertFromMimeData
-        QTextEdit::dragMoveEvent(e);
+        QPlainTextEdit::dragMoveEvent(e);
 }
 
 /** Dragging of action objects is allowed. */ 
@@ -763,7 +763,7 @@ void PythonConsole::dragEnterEvent (QDragEnterEvent * e)
     if (mimeData->hasFormat(QLatin1String("text/x-action-items")))
         e->accept();
     else // this will call canInsertFromMimeData
-        QTextEdit::dragEnterEvent(e);
+        QPlainTextEdit::dragEnterEvent(e);
 }
 
 bool PythonConsole::canInsertFromMimeData (const QMimeData * source) const
@@ -984,7 +984,7 @@ void PythonConsole::contextMenuEvent ( QContextMenuEvent * e )
     QMenu menu(this);
     QAction *a;
 
-    a = menu.addAction(QTextEdit::tr("&Copy"), this, SLOT(copy()), Qt::CTRL+Qt::Key_C);
+    a = menu.addAction(tr("&Copy"), this, SLOT(copy()), Qt::CTRL+Qt::Key_C);
     a->setEnabled(textCursor().hasSelection());
 
     a = menu.addAction(tr("&Copy command"), this, SLOT(onCopyCommand()));
@@ -997,11 +997,11 @@ void PythonConsole::contextMenuEvent ( QContextMenuEvent * e )
     a->setEnabled(!d->history.isEmpty());
 
     menu.addSeparator();
-    a = menu.addAction(QTextEdit::tr("&Paste"), this, SLOT(paste()), Qt::CTRL+Qt::Key_V);
+    a = menu.addAction(tr("&Paste"), this, SLOT(paste()), Qt::CTRL+Qt::Key_V);
     const QMimeData *md = QApplication::clipboard()->mimeData();
     a->setEnabled(md && canInsertFromMimeData(md));
 
-    a = menu.addAction(QTextEdit::tr("Select All"), this, SLOT(selectAll()), Qt::CTRL+Qt::Key_A);
+    a = menu.addAction(tr("Select All"), this, SLOT(selectAll()), Qt::CTRL+Qt::Key_A);
     a->setEnabled(!document()->isEmpty());
 
     menu.addSeparator();

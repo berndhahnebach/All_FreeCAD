@@ -28,7 +28,7 @@
 # include <QKeyEvent>
 # include <QLabel>
 # include <QTextCursor>
-# include <QTextEdit>
+# include <QPlainTextEdit>
 # include <QToolTip>
 #endif
 
@@ -48,7 +48,7 @@
 
 using namespace Gui;
 
-CallTipsList::CallTipsList(QTextEdit* parent)
+CallTipsList::CallTipsList(QPlainTextEdit* parent)
   :  QListWidget(parent), textEdit(parent), cursorPos(0), validObject(true)
 {
     // make the user assume that the widget is active

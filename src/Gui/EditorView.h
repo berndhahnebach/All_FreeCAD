@@ -27,46 +27,27 @@
 #include "MDIView.h"
 #include "Window.h"
 
-class QTextEdit;
+class QPlainTextEdit;
 
 namespace Gui {
 
-class EditorView;
-class LineMarkerP;
-class LineMarker: public QWidget
-{
-    Q_OBJECT
-
-public:
-    LineMarker(EditorView* view, QWidget* parent=0);
-    virtual ~LineMarker();
-
-    void setTextEdit(QTextEdit *edit);
-
-protected:
-    void paintEvent ( QPaintEvent * );
-
-private:
-    EditorView* view;
-    QTextEdit *edit;
-};
+class EditorViewP;
 
 /**
  * A special view class which sends the messages from the application to
  * the editor and embeds it in a window.
  * @author Werner Mayer
  */
-class EditorViewP;
 class GuiExport EditorView : public MDIView, public WindowParameter
 {
     Q_OBJECT
 
 public:
-    EditorView(QTextEdit* editor, QWidget* parent);
+    EditorView(QPlainTextEdit* editor, QWidget* parent);
     ~EditorView();
 
-    QTextEdit* getEditor() const;
-    LineMarker* getMarker() const;
+    QPlainTextEdit* getEditor() const;
+    //todo: remove
     virtual void drawMarker(int line, int x, int y, QPainter*);
     void OnChange(Base::Subject<const char*> &rCaller,const char* rcReason);
 
@@ -118,13 +99,15 @@ class GuiExport PythonEditorView : public EditorView
     Q_OBJECT
 
 public:
-    PythonEditorView(QTextEdit* editor, QWidget* parent);
+    PythonEditorView(QPlainTextEdit* editor, QWidget* parent);
     ~PythonEditorView();
 
+    //todo: remove
     void drawMarker(int line, int x, int y, QPainter*);
     bool onMsg(const char* pMsg,const char** ppReturn);
     bool onHasMsg(const char* pMsg) const;
 
+    //todo: move to PythonEditor
 public Q_SLOTS:
     void executeScript();
     void startDebug();
@@ -132,6 +115,7 @@ public Q_SLOTS:
     void showDebugMarker(int line);
     void hideDebugMarker();
 
+    //todo: move to PythonEditor
 private:
     int m_debugLine;
     QRect debugRect;
