@@ -14,9 +14,10 @@ libFemGui_la_SOURCES=\
 
 # the library search path.
 libFemGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App \
-		$(QT_LIBS) $(GL_LIBS) $(all_libraries) \
-		$(sim_ac_coin_ldflags) $(sim_ac_coin_libs) $(sim_ac_soqt_ldflags) $(sim_ac_soqt_libs) \
 		-L$(top_builddir)/src/3rdParty/salomesmesh \
+		$(sim_ac_coin_ldflags) $(sim_ac_coin_libs) \
+		$(sim_ac_soqt_ldflags) $(sim_ac_soqt_libs) \
+		$(QT_LIBS) $(GL_LIBS) $(all_libraries) \
 		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libFemGui_la_CPPFLAGS = -DFemAppExport= -DFemGuiExport=
 

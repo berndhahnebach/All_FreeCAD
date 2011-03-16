@@ -25,7 +25,7 @@ libPartDesign_la_SOURCES=\
 
 # the library search path.
 libPartDesign_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Mod/Part/App \
-		$(all_libraries) -L$(OCC_LIB) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+		-L$(OCC_LIB) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libPartDesign_la_CPPFLAGS = -DPartDesignAppExport=
 
 libPartDesign_la_LIBADD   = \

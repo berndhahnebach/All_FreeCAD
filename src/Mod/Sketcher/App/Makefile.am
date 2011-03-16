@@ -37,7 +37,8 @@ libSketcher_la_SOURCES = \
 
 
 # the library search path.
-libSketcher_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Mod/Part/App $(all_libraries) -L$(OCC_LIB) \
+libSketcher_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Mod/Part/App \
+		-L$(OCC_LIB) $(all_libraries) \
 		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libSketcher_la_CPPFLAGS = -DSketcherAppExport=
 

@@ -185,8 +185,8 @@ libRobot_la_SOURCES=\
 
 # the library search path.
 libRobot_la_LDFLAGS = -L../../../Base -L../../../App -L../../Part/App \
-	$(all_libraries) $(QT4_CORE_LIBS) \
-	-L$(OCC_LIB) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+	-L$(OCC_LIB) $(QT4_CORE_LIBS) $(all_libraries) \
+	-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libRobot_la_CPPFLAGS = -DRobotAppExport=
 #libkdl_la_CPPFLAGS = -Wno-sign-compare -Wno-reorder
 

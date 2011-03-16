@@ -20,9 +20,9 @@ libRaytracingGui_la_SOURCES=\
 		Workbench.h
 
 # the library search path.
-libRaytracingGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../../Part/App -L../App \
+libRaytracingGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../../Part/App -L../App -L$(OCC_LIB) \
 		$(QT_LIBS) $(sim_ac_coin_ldflags) $(sim_ac_coin_libs) $(sim_ac_soqt_ldflags) $(sim_ac_soqt_libs) \
-		-L$(OCC_LIB) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+		$(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libRaytracingGui_la_CPPFLAGS = -DAppPartExport= -DAppRaytracingGuiExport= -DFeatureRayExportPov=
 
 libRaytracingGui_la_LIBADD   = \

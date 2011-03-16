@@ -24,9 +24,9 @@ includedir = @includedir@/Mod/Inspection/Gui
 libInspectionGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App \
 		-L$(top_builddir)/src/Mod/Mesh/App \
 		-L$(top_builddir)/src/Mod/Points/App \
-		$(QT_LIBS) $(all_libraries) \
 		$(sim_ac_coin_ldflags) $(sim_ac_coin_libs) \
 		$(sim_ac_soqt_ldflags) $(sim_ac_soqt_libs) \
+		$(QT_LIBS) $(all_libraries) \
 		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libInspectionGui_la_CPPFLAGS = -DInspectionAppExport= -DInspectionGuiExport=
