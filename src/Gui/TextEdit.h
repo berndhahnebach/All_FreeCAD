@@ -25,7 +25,7 @@
 #define GUI_TEXTEDIT_H
 
 #include <QListWidget>
-#include <QTextEdit>
+#include <QPlainTextEdit>
 #include "View.h"
 #include "Window.h"
 
@@ -51,7 +51,7 @@ class SyntaxHighlighter;
  * @author Werner Mayer
  */
 class CompletionList;
-class GuiExport TextEdit : public QTextEdit
+class GuiExport TextEdit : public QPlainTextEdit
 {
     Q_OBJECT
 
@@ -86,19 +86,44 @@ public:
 
     void OnChange(Base::Subject<const char*> &rCaller,const char* rcReason);
 
+    void lineNumberAreaPaintEvent(QPaintEvent* );
+    int lineNumberAreaWidth();
+
 private Q_SLOTS:
-    void onCursorPositionChanged();
+    void updateLineNumberAreaWidth(int newBlockCount);
+    void updateLineNumberArea(const QRect &, int);
+    void highlightCurrentLine();
 
 protected:
     void keyPressEvent (QKeyEvent * e);
     /** Draw a beam in the line where the cursor is. */
     void paintEvent (QPaintEvent * e);
+    void resizeEvent(QResizeEvent* e);
+    virtual void drawMarker(int line, int x, int y, QPainter*);
 
 private:
     SyntaxHighlighter* highlighter;
+    QWidget* lineNumberArea;
     struct TextEditorP* d;
 
     friend class SyntaxHighlighter;
+};
+
+class LineMarker : public QWidget
+{
+    Q_OBJECT
+
+public:
+    LineMarker(TextEditor* editor);
+    virtual ~LineMarker();
+
+    QSize sizeHint() const;
+
+protected:
+    void paintEvent (QPaintEvent *);
+
+private:
+    TextEditor *textEditor;
 };
 
 /**
@@ -112,7 +137,7 @@ class CompletionList : public QListWidget
 
 public:
     /// Construction
-    CompletionList(QTextEdit* parent);
+    CompletionList(QPlainTextEdit* parent);
     /// Destruction
     ~CompletionList();
 
@@ -125,7 +150,7 @@ private Q_SLOTS:
     void completionItem(QListWidgetItem *item);
 
 private:
-    QTextEdit* textEdit;
+    QPlainTextEdit* textEdit;
 };
 
 } // namespace Gui

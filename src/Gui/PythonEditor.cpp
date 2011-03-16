@@ -98,6 +98,20 @@ PythonEditor::~PythonEditor()
     delete d;
 }
 
+void PythonEditor::drawMarker(int line, int x, int y, QPainter* p)
+{
+#if 0
+    Breakpoint bp = _dbg->getBreakpoint(fileName());
+    if (bp.checkLine(line)) {
+        p->drawPixmap(x, y, breakpoint);
+    }
+    if (m_debugLine == line) {
+        p->drawPixmap(x, y+2, debugMarker);
+        debugRect = QRect(x, y+2, debugMarker.width(), debugMarker.height());
+    }
+#endif
+}
+
 void PythonEditor::contextMenuEvent ( QContextMenuEvent * e )
 {
     QMenu* menu = createStandardContextMenu();

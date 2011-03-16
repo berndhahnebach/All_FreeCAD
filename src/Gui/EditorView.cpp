@@ -33,7 +33,7 @@
 # include <QPrinter>
 # include <QPrintDialog>
 # include <QScrollBar>
-# include <QTextEdit>
+# include <QPlainTextEdit>
 # include <QTextBlock>
 # include <QTextCodec>
 # include <QTextStream>
@@ -54,8 +54,7 @@ using namespace Gui;
 namespace Gui {
 class EditorViewP {
 public:
-    LineMarker* lineMarker;
-    QTextEdit* textEdit;
+    QPlainTextEdit* textEdit;
     QString fileName;
     QTimer*  activityTimer;
     uint timeStamp;
@@ -63,53 +62,6 @@ public:
     QStringList undos;
     QStringList redos;
 };
-}
-
-LineMarker::LineMarker(EditorView* ev, QWidget* parent)
-    : QWidget(parent), view(ev)
-{
-    setFixedWidth(fontMetrics().width(QLatin1String("0000"))+10);
-}
-
-LineMarker::~LineMarker()
-{
-}
-
-void LineMarker::setTextEdit(QTextEdit *edit)
-{
-    this->edit = edit;
-    connect(edit->document()->documentLayout(), SIGNAL(update(const QRectF &)),
-            this, SLOT(update()));
-    connect(edit->verticalScrollBar(), SIGNAL(valueChanged(int)),
-            this, SLOT(update()));
-}
-
-void LineMarker::paintEvent(QPaintEvent*)
-{
-    QAbstractTextDocumentLayout *layout = edit->document()->documentLayout();
-    int contentsY = edit->verticalScrollBar()->value();
-    qreal pageBottom = contentsY + edit->viewport()->height();
-    const QFontMetrics fm = fontMetrics();
-    const int ascent = fontMetrics().ascent() + 1; // height = ascent + descent + 1
-    int lineCount = 1;
-
-    QPainter p(this);
-
-    for (QTextBlock block = edit->document()->begin();
-        block.isValid(); block = block.next(), ++lineCount) {
-
-        const QRectF boundingRect = layout->blockBoundingRect(block);
-
-        QPointF position = boundingRect.topLeft();
-        if (position.y() + boundingRect.height() < contentsY)
-            continue;
-        if (position.y() > pageBottom)
-            break;
-
-        const QString txt = QString::number(lineCount);
-        p.drawText(width() - fm.width(txt), qRound(position.y()) - contentsY + ascent, txt);
-        view->drawMarker(lineCount, 1, qRound(position.y()) - contentsY, &p);
-    }
 }
 
 // -------------------------------------------------------
@@ -120,7 +72,7 @@ void LineMarker::paintEvent(QPaintEvent*)
  *  Constructs a EditorView which is a child of 'parent', with the
  *  name 'name'.
  */
-EditorView::EditorView(QTextEdit* editor, QWidget* parent)
+EditorView::EditorView(QPlainTextEdit* editor, QWidget* parent)
     : MDIView(0,parent,0), WindowParameter( "Editor" )
 {
     d = new EditorViewP;
@@ -128,16 +80,13 @@ EditorView::EditorView(QTextEdit* editor, QWidget* parent)
 
     // create the editor first
     d->textEdit = editor;
-    d->textEdit->setLineWrapMode(QTextEdit::NoWrap);
-    d->lineMarker = new LineMarker(this);
-    d->lineMarker->setTextEdit(d->textEdit);
+    d->textEdit->setLineWrapMode(QPlainTextEdit::NoWrap);
 
     // Create the layout containing the workspace and a tab bar
     QFrame* hbox = new QFrame(this);
     hbox->setFrameStyle(QFrame::StyledPanel | QFrame::Sunken);
     QHBoxLayout* layout = new QHBoxLayout();
     layout->setMargin(1);
-    layout->addWidget(d->lineMarker);
     layout->addWidget(d->textEdit);
     d->textEdit->setParent(hbox);
     hbox->setLayout(layout);
@@ -178,14 +127,9 @@ void EditorView::drawMarker(int line, int x, int y, QPainter*)
 {
 }
 
-QTextEdit* EditorView::getEditor() const
+QPlainTextEdit* EditorView::getEditor() const
 {
     return d->textEdit;
-}
-
-LineMarker* EditorView::getMarker() const
-{
-    return d->lineMarker;
 }
 
 void EditorView::OnChange(Base::Subject<const char*> &rCaller,const char* rcReason)
@@ -193,10 +137,6 @@ void EditorView::OnChange(Base::Subject<const char*> &rCaller,const char* rcReas
     ParameterGrp::handle hPrefGrp = getWindowParameter();
     if (strcmp(rcReason, "EnableLineNumber") == 0) {
         bool show = hPrefGrp->GetBool( "EnableLineNumber", true );
-        if ( show )
-            d->lineMarker->show();
-        else
-            d->lineMarker->hide();
     }
 }
 
@@ -532,7 +472,7 @@ void EditorView::focusInEvent (QFocusEvent * e)
 
 // ---------------------------------------------------------
 
-PythonEditorView::PythonEditorView(QTextEdit* editor, QWidget* parent)
+PythonEditorView::PythonEditorView(QPlainTextEdit* editor, QWidget* parent)
   : EditorView(editor, parent), m_debugLine(-1),
     breakpoint(QLatin1String(":/icons/breakpoint.png")),
     debugMarker(QLatin1String(":/icons/debug-marker.png"))
@@ -609,13 +549,13 @@ void PythonEditorView::toggleBreakpoint()
     QTextCursor cursor = getEditor()->textCursor();
     int line = cursor.blockNumber() + 1;
     _dbg->toogleBreakpoint(line, fileName());
-    getMarker()->update();
+//    getMarker()->update();
 }
 
 void PythonEditorView::showDebugMarker(int line)
 {
     m_debugLine = line;
-    getMarker()->update();
+//    getMarker()->update();
     QTextCursor cursor = getEditor()->textCursor();
     cursor.movePosition(QTextCursor::StartOfBlock);
     int cur = cursor.blockNumber() + 1;
@@ -633,7 +573,7 @@ void PythonEditorView::showDebugMarker(int line)
 void PythonEditorView::hideDebugMarker()
 {
     m_debugLine = -1;
-    getMarker()->update();
+//    getMarker()->update();
 }
 
 #include "moc_EditorView.cpp"

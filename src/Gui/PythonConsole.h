@@ -28,7 +28,7 @@
 
 #include <Base/PyObjectBase.h>
 
-class QTextEdit;
+class QPlainTextEdit;
 class QPushButton;
 
 namespace Gui {
@@ -179,7 +179,7 @@ Q_SIGNALS:
 private:
     QPushButton* okButton;
     QPushButton* clearButton;
-    QTextEdit* editField;
+    QPlainTextEdit* editField;
 };
 
 } // namespace Gui

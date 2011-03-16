@@ -39,7 +39,7 @@ using namespace Gui;
  *  Constructs a TextEdit which is a child of 'parent'.
  */
 TextEdit::TextEdit(QWidget* parent)
-    : QTextEdit(parent), listBox(0)
+    : QPlainTextEdit(parent), listBox(0)
 {
     //Note: Set the correct context to this shortcut as we may use several instances of this
     //class at a time
@@ -59,7 +59,7 @@ TextEdit::~TextEdit()
  */
 void TextEdit::keyPressEvent(QKeyEvent* e)
 {
-    QTextEdit::keyPressEvent(e);
+    QPlainTextEdit::keyPressEvent(e);
     // This can't be done in CompletionList::eventFilter() because we must first perform
     // the event and afterwards update the list widget
     if (listBox && listBox->isVisible()) {
@@ -205,6 +205,7 @@ TextEditor::TextEditor(QWidget* parent)
   : TextEdit(parent), WindowParameter("Editor"), highlighter(0)
 {
     d = new TextEditorP();
+    lineNumberArea = new LineMarker(this);
 
     QFont serifFont(QLatin1String("Courier"), 10, QFont::Normal);
     setFont(serifFont);
@@ -216,8 +217,16 @@ TextEditor::TextEditor(QWidget* parent)
 
     // set colors and font
     hPrefGrp->NotifyAll();
-    connect(this, SIGNAL(cursorPositionChanged()), 
-            this, SLOT(onCursorPositionChanged()));
+
+    connect(this, SIGNAL(cursorPositionChanged()),
+            this, SLOT(highlightCurrentLine()));
+    connect(this, SIGNAL(blockCountChanged(int)),
+            this, SLOT(updateLineNumberAreaWidth(int)));
+    connect(this, SIGNAL(updateRequest(const QRect &, int)),
+            this, SLOT(updateLineNumberArea(const QRect &, int)));
+
+    updateLineNumberAreaWidth(0);
+    highlightCurrentLine();
 }
 
 /** Destroys the object and frees any allocated resources */
@@ -226,6 +235,83 @@ TextEditor::~TextEditor()
     getWindowParameter()->Detach(this);
     delete highlighter;
     delete d;
+}
+
+int TextEditor::lineNumberAreaWidth()
+{
+    return fontMetrics().width(QLatin1String("0000"))+10;
+}
+
+void TextEditor::updateLineNumberAreaWidth(int /* newBlockCount */)
+{
+    setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
+}
+
+void TextEditor::updateLineNumberArea(const QRect &rect, int dy)
+{
+    if (dy)
+        lineNumberArea->scroll(0, dy);
+    else
+        lineNumberArea->update(0, rect.y(), lineNumberArea->width(), rect.height());
+
+    if (rect.contains(viewport()->rect()))
+        updateLineNumberAreaWidth(0);
+}
+
+void TextEditor::resizeEvent(QResizeEvent *e)
+{
+    QPlainTextEdit::resizeEvent(e);
+
+    QRect cr = contentsRect();
+    lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
+}
+
+void TextEditor::highlightCurrentLine()
+{
+    QList<QTextEdit::ExtraSelection> extraSelections;
+
+    if (!isReadOnly()) {
+        QTextEdit::ExtraSelection selection;
+        QColor lineColor = d->colormap[QLatin1String("Line")];
+
+        selection.format.setBackground(lineColor);
+        selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+        selection.cursor = textCursor();
+        selection.cursor.clearSelection();
+        extraSelections.append(selection);
+    }
+
+    setExtraSelections(extraSelections);
+}
+
+void TextEditor::drawMarker(int line, int x, int y, QPainter* p)
+{
+}
+
+void TextEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
+{
+    QPainter painter(lineNumberArea);
+    //painter.fillRect(event->rect(), Qt::lightGray);
+
+    QTextBlock block = firstVisibleBlock();
+    int blockNumber = block.blockNumber();
+    int top = (int) blockBoundingGeometry(block).translated(contentOffset()).top();
+    int bottom = top + (int) blockBoundingRect(block).height();
+
+    while (block.isValid() && top <= event->rect().bottom()) {
+        if (block.isVisible() && bottom >= event->rect().top()) {
+            QString number = QString::number(blockNumber + 1);
+            painter.setPen(Qt::black);
+            painter.drawText(0, top, lineNumberArea->width(), fontMetrics().height(),
+                             Qt::AlignRight, number);
+            drawMarker(blockNumber + 1, 1, top, &painter);
+        }
+
+        block = block.next();
+        top = bottom;
+        bottom = top + (int) blockBoundingRect(block).height();
+        ++blockNumber;
+    }
 }
 
 void TextEditor::setSyntaxHighlighter(SyntaxHighlighter* sh)
@@ -272,7 +358,8 @@ void TextEditor::keyPressEvent (QKeyEvent * e)
         }
 
         return;
-    } else if (e->key() == Qt::Key_Backtab) {
+    }
+    else if (e->key() == Qt::Key_Backtab) {
         QTextCursor cursor = textCursor();
         if (!cursor.hasSelection())
             return; // Shift+Tab should not do anything
@@ -298,7 +385,8 @@ void TextEditor::keyPressEvent (QKeyEvent * e)
                     cursor.setPosition(block.position());
                     cursor.deleteChar();
                     selEnd--;
-                } else {
+                }
+                else {
                     cursor.setPosition(block.position());
                     for (int i=0; i<indent; i++) {
                         if (!text.startsWith(QLatin1String(" ")))
@@ -352,32 +440,35 @@ void TextEditor::OnChange(Base::Subject<const char*> &rCaller,const char* sReaso
     }
 }
 
-void TextEditor::onCursorPositionChanged()
-{
-    const QColor& color = d->colormap[QLatin1String("Line")];
-    if ( color.isValid() )
-        viewport()->update();
-}
-
 void TextEditor::paintEvent (QPaintEvent * e)
 {
-    const QColor& color = d->colormap[QLatin1String("Line")];
-    if ( color.isValid() )
-    {
-        QPainter painter( viewport() );
-        QRect r = cursorRect();
-        r.setX( 0 );
-        r.setWidth( viewport()->width() );
-        painter.fillRect( r, QBrush( color ) );
-        painter.end();
-    }
-
     TextEdit::paintEvent( e );
 }
 
 // ------------------------------------------------------------------------------
 
-CompletionList::CompletionList(QTextEdit* parent)
+LineMarker::LineMarker(TextEditor* editor)
+    : QWidget(editor), textEditor(editor)
+{
+}
+
+LineMarker::~LineMarker()
+{
+}
+
+QSize LineMarker::sizeHint() const
+{
+    return QSize(textEditor->lineNumberAreaWidth(), 0);
+}
+
+void LineMarker::paintEvent(QPaintEvent* e)
+{
+    textEditor->lineNumberAreaPaintEvent(e);
+}
+
+// ------------------------------------------------------------------------------
+
+CompletionList::CompletionList(QPlainTextEdit* parent)
   :  QListWidget(parent), textEdit(parent)
 {
     // make the user assume that the widget is active
