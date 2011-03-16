@@ -145,7 +145,12 @@ float PlaneFit::Fit()
     // Covariance matrix
     Wm4::Matrix3<float> akMat(sxx,sxy,sxz,sxy,syy,syz,sxz,syz,szz);
     Wm4::Matrix3<float> rkRot, rkDiag;
-    akMat.EigenDecomposition(rkRot, rkDiag);
+    try {
+        akMat.EigenDecomposition(rkRot, rkDiag);
+    }
+    catch (const std::exception&) {
+        return FLOAT_MAX;
+    }
 
     Wm4::Vector3<float> U = rkRot.GetColumn(1);
     Wm4::Vector3<float> V = rkRot.GetColumn(2);
@@ -651,9 +656,14 @@ float PolynomialFit::Fit()
         z.push_back(it->z);
     }
 
-    float* coeff = Wm4::PolyFit3<float>(_vPoints.size(), &(x[0]), &(y[0]), &(z[0]), 2 , 2);
-    for (int i=0; i<9; i++)
-        _fCoeff[i] = coeff[i];
+    try {
+        float* coeff = Wm4::PolyFit3<float>(_vPoints.size(), &(x[0]), &(y[0]), &(z[0]), 2 , 2);
+        for (int i=0; i<9; i++)
+            _fCoeff[i] = coeff[i];
+    }
+    catch (const std::exception&) {
+        return FLOAT_MAX;
+    }
 
     return 0.0f;
 }
