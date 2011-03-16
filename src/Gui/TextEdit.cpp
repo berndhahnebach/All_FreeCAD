@@ -228,6 +228,12 @@ TextEditor::~TextEditor()
     delete d;
 }
 
+void TextEditor::setSyntaxHighlighter(SyntaxHighlighter* sh)
+{
+    sh->setDocument(this->document());
+    this->highlighter = sh;
+}
+
 void TextEditor::keyPressEvent (QKeyEvent * e)
 {
     if ( e->key() == Qt::Key_Tab ) {

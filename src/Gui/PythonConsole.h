@@ -150,7 +150,7 @@ private:
 class GuiExport PythonConsoleHighlighter : public PythonSyntaxHighlighter
 {
 public:
-    PythonConsoleHighlighter(QTextEdit *);
+    PythonConsoleHighlighter(QObject* parent);
     ~PythonConsoleHighlighter();
 
     void highlightBlock (const QString & text);

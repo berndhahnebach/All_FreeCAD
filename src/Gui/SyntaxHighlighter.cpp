@@ -50,12 +50,10 @@ public:
 /**
  * Constructs a syntax highlighter.
  */
-SyntaxHighlighter::SyntaxHighlighter(QTextEdit* edit)
-    : QSyntaxHighlighter(edit)
+SyntaxHighlighter::SyntaxHighlighter(QObject* parent)
+    : QSyntaxHighlighter(parent)
 {
     d = new SyntaxHighlighterP;
-    TextEditor* editor = qobject_cast<TextEditor*>(edit);
-    if (editor) editor->highlighter = this;
 }
 
 /** Destroys this object. */
