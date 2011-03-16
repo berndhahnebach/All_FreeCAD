@@ -762,9 +762,22 @@ def cleanFaces(shape):
         "removes inner edges from coplanar faces"
         faceset = shape.Faces
         def find(hc):
+                "finds a face with the given hashcode"
                 for f in faceset:
                         if f.hashCode() == hc:
                                 return f
+
+        def findNeighbour(hface,hfacelist):
+                "finds the first neighbour of a face in a list, and returns its index"
+                eset = []
+                for e in find(face).Edges:
+                        ei.append(e.hashCode())
+                for i in range(len(facelist)):
+                        for ee in find(faceslist[i]).Edges:
+                                if ee.hashCode() in eset:
+                                        return i
+                return None
+        
         # build lookup table
         lut = {}
         for face in faceset:
@@ -779,7 +792,7 @@ def cleanFaces(shape):
         for k,v in lut.iteritems():
                 if len(v) == 2:
                         sharedhedges.append(k)
-        print "shared edges:",sharedhedges
+        print len(sharedhedges)," shared edges:",sharedhedges
         # find those with same normals
         targethedges = []
         for hedge in sharedhedges:
@@ -788,24 +801,48 @@ def cleanFaces(shape):
                 n2 = find(faces[1]).normalAt(0.5,0.5)
                 if n1 == n2:
                         targethedges.append(hedge)
-        print "target edges:",targethedges
+        print len(targethedges)," target edges:",targethedges
+        # get target faces
+        hfaces = []
+        for hedge in targethedges:
+                for f in lut[hedge]:
+                        if not f in hfaces:
+                                hfaces.append(f)
+
+        print len(hfaces)," target faces:",hfaces
         # sort islands
-        islands = []
+        islands = [[hfaces.pop(0)]]
+        while hfaces:
+                curr = islands[-1]
+                f = curr[-1]
+                found = True
+                appended = False
+                while found:
+                        nb = findNeighbour(f,hfaces)
+                        if nb != None:
+                                curr.append(hfaces.pop(nb))
+                                appended = True
+                        else:
+                                found = False
+                if not appended:
+                        pass
+        
+        # sort islands
+        islands = []       
         for hedge in targethedges:
                 hfaces = lut[hedge]
                 found = False
                 for isle in islands:
-                        if hfaces[0] in isle:
-                                isle.append(hfaces[1])
-                                found = True
-                                break
-                        elif hfaces[1] in isle:
-                                isle.append(hfaces[0])
-                                found = True
-                                break
+                        if not found:
+                                if hfaces[0] in isle:
+                                        isle.append(hfaces[1])
+                                        found = True
+                                elif hfaces[1] in isle:
+                                        isle.append(hfaces[0])
+                                        found = True
                 if not found:
                         islands.append(hfaces)
-        print "islands:",islands
+        print len(islands)," islands:",islands
         # make new faces from islands
         newfaces = []
         treated = []

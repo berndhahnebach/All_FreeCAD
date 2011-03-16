@@ -221,6 +221,9 @@
           <property name="text">
            <string>Global copy mode</string>
           </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
           <property name="prefEntry" stdset="0">
            <cstring>copymode</cstring>
           </property>
@@ -240,6 +243,9 @@
           </property>
           <property name="text">
            <string>Always snap to objects (disable CTRL-snapping)</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
           </property>
           <property name="prefEntry" stdset="0">
            <cstring>alwaysSnap</cstring>
