@@ -88,6 +88,7 @@ Real* PolyFit3 (int iSamples, const Real* afX, const Real* afY,
 
     // solve for the polynomial coefficients
     bool bHasSolution = LinearSystem<Real>().Solve(kA,afB,afCoeff);
+    if (!bHasSolution) throw std::exception("PolyFit3 failed");
     assert(bHasSolution);
     (void)bHasSolution;  // avoid compiler warning in release build
     WM4_DELETE[] afB;

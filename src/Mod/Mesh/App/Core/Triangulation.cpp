@@ -89,7 +89,8 @@ Base::Matrix4D AbstractPolygonTriangulator::GetTransformToFitPlane() const
     for (std::vector<Base::Vector3f>::const_iterator it = _points.begin(); it!=_points.end(); ++it)
         planeFit.AddPoint(*it);
 
-    planeFit.Fit();
+    if (planeFit.Fit() == FLOAT_MAX)
+        return Base::Matrix4D(); // unity matrix
 
     Base::Vector3f bs = planeFit.GetBase();
     Base::Vector3f ex = planeFit.GetDirU();
@@ -135,9 +136,7 @@ void AbstractPolygonTriangulator::ProjectOntoSurface(const std::vector<Base::Vec
         polyFit.AddPoint(pt);
     }
 
-    polyFit.Fit();
-
-    if (polyFit.CountPoints() >= uMinPts) {
+    if (polyFit.CountPoints() >= uMinPts && polyFit.Fit() < FLOAT_MAX) {
         for (std::vector<Base::Vector3f>::iterator pt = _newpoints.begin(); pt != _newpoints.end(); ++pt)
             pt->z = (float)polyFit.Value(pt->x, pt->y);
     }
