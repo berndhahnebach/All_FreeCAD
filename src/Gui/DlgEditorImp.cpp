@@ -124,6 +124,7 @@ DlgSettingsEditorImp::DlgSettingsEditorImp( QWidget* parent )
         item->setText(0, tr((*it).first.toAscii()));
     }
     pythonSyntax = new PythonSyntaxHighlighter(textEdit1);
+    pythonSyntax->setDocument(textEdit1->document());
 }
 
 /** Destroys the object and frees any allocated resources */

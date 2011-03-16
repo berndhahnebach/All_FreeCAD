@@ -347,6 +347,7 @@ PythonConsole::PythonConsole(QWidget *parent)
 
     // use the console highlighter
     pythonSyntax = new PythonConsoleHighlighter(this);
+    pythonSyntax->setDocument(this->document());
 
     // create the window for call tips
     d->callTipsList = new CallTipsList(this);
@@ -1072,8 +1073,8 @@ void PythonConsole::onCopyCommand()
 
 // ---------------------------------------------------------------------
 
-PythonConsoleHighlighter::PythonConsoleHighlighter(QTextEdit* edit)
-  : PythonSyntaxHighlighter(edit)
+PythonConsoleHighlighter::PythonConsoleHighlighter(QObject* parent)
+  : PythonSyntaxHighlighter(parent)
 {
 }
 

@@ -58,8 +58,8 @@ public:
 /**
  * Constructs a syntax highlighter.
  */
-PovrayHighlighter::PovrayHighlighter(QTextEdit* edit)
-    : SyntaxHighlighter(edit)
+PovrayHighlighter::PovrayHighlighter(QObject* parent)
+    : SyntaxHighlighter(parent)
 {
     d = new PovrayHighlighterP;
 }

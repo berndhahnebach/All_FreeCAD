@@ -73,7 +73,7 @@ private:
 class GuiExport PythonSyntaxHighlighter : public SyntaxHighlighter
 {
 public:
-    PythonSyntaxHighlighter(QTextEdit* );
+    PythonSyntaxHighlighter(QObject* parent);
     virtual ~PythonSyntaxHighlighter();
 
     void highlightBlock (const QString & text);

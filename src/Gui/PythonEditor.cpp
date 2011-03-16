@@ -76,7 +76,7 @@ PythonEditor::PythonEditor(QWidget* parent)
   : TextEditor(parent)
 {
     d = new PythonEditorP();
-    (void)new PythonSyntaxHighlighter(this);
+    this->setSyntaxHighlighter(new PythonSyntaxHighlighter(this));
 
     // set acelerators
     QShortcut* comment = new QShortcut(this);
@@ -190,8 +190,8 @@ public:
 /**
  * Constructs a Python syntax highlighter.
  */
-PythonSyntaxHighlighter::PythonSyntaxHighlighter(QTextEdit* edit)
-    : SyntaxHighlighter(edit)
+PythonSyntaxHighlighter::PythonSyntaxHighlighter(QObject* parent)
+    : SyntaxHighlighter(parent)
 {
     d = new PythonSyntaxHighlighterP;
 }

@@ -36,7 +36,7 @@ class PovrayHighlighterP;
 class PovrayHighlighter : public Gui::SyntaxHighlighter
 {
 public:
-    PovrayHighlighter(QTextEdit* );
+    PovrayHighlighter(QObject* parent);
     virtual ~PovrayHighlighter();
 
 protected:

@@ -37,7 +37,7 @@ class TextEditor;
 class GuiExport SyntaxHighlighter : public QSyntaxHighlighter
 {
 public:
-    SyntaxHighlighter(QTextEdit* );
+    SyntaxHighlighter(QObject* parent);
     virtual ~SyntaxHighlighter();
 
     int maximumUserState() const;

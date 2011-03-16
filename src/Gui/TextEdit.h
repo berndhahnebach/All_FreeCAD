@@ -31,6 +31,7 @@
 
 namespace Gui {
 class CompletionBox;
+class SyntaxHighlighter;
 
 /**
  * Completion is a means by which an editor automatically completes words that the user is typing. 
@@ -81,6 +82,7 @@ class GuiExport TextEditor : public TextEdit, public WindowParameter
 public:
     TextEditor(QWidget *parent = 0);
     ~TextEditor();
+    void setSyntaxHighlighter(SyntaxHighlighter*);
 
     void OnChange(Base::Subject<const char*> &rCaller,const char* rcReason);
 
