@@ -36,6 +36,7 @@
 
 // STL headers
 #include <algorithm>
+#include <exception>
 #include <list>
 #include <map>
 #include <queue>
