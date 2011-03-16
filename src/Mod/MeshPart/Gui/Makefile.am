@@ -21,7 +21,8 @@ libMeshPartGui_la_SOURCES=\
 
 # the library search path.
 libMeshPartGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App \
-		-L../../Mesh/App -L../../Part/App $(QT_LIBS) $(GL_LIBS) $(all_libraries) \
+		-L../../Mesh/App -L../../Part/App \
+		-L$(OCC_LIB) $(QT_LIBS) $(GL_LIBS) $(all_libraries) \
 		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libMeshPartGui_la_CPPFLAGS = -DMeshPartAppExport= -DMeshPartGuiExport=

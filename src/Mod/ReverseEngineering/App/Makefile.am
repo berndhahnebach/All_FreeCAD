@@ -13,7 +13,7 @@ include_HEADERS=\
 
 # the library search path.
 libReverseEngineering_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Mod/Part/App \
-		-L../../../Mod/Mesh/App $(all_libraries) -L$(OCC_LIB) \
+		-L../../../Mod/Mesh/App -L$(OCC_LIB) $(all_libraries) \
 		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 		
 libReverseEngineering_la_CPPFLAGS = -DReenExport=

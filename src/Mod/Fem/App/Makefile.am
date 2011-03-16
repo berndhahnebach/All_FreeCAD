@@ -25,9 +25,9 @@ libFem_la_SOURCES = \
 	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $<
 
 # the library search path.
-libFem_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -L$(OCC_LIB) \
-		-L$(top_builddir)/src/3rdParty/salomesmesh \
+libFem_la_LDFLAGS = -L../../../Base -L../../../App -L$(OCC_LIB) \
 		-L$(top_builddir)/src/Mod/Mesh/App -L$(top_builddir)/src/Mod/Part/App \
+		-L$(top_builddir)/src/3rdParty/salomesmesh $(all_libraries) \
 		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libFem_la_CPPFLAGS = -DFemAppExport=
 

@@ -18,7 +18,8 @@ libDrawing_la_SOURCES=\
 
 
 # the library search path.
-libDrawing_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Mod/Part/App $(all_libraries) -L$(OCC_LIB) \
+libDrawing_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Mod/Part/App \
+		-L$(OCC_LIB) $(all_libraries) \
 		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libDrawing_la_CPPFLAGS = -DDrawingAppExport=
 

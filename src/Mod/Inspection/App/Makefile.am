@@ -15,7 +15,7 @@ libInspection_la_LDFLAGS = -L$(top_builddir)/src/Base -L$(top_builddir)/src/App 
 		-L$(top_builddir)/src/Mod/Mesh/App \
 		-L$(top_builddir)/src/Mod/Points/App \
 		-L$(top_builddir)/src/Mod/Part/App \
-		$(QT4_CORE_LIBS) $(all_libraries) \
+		-L$(OCC_LIB) $(QT4_CORE_LIBS) $(all_libraries) \
 		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libInspection_la_CPPFLAGS = -DInspectionAppExport=
 
