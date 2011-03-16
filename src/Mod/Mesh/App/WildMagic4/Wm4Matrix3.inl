@@ -971,7 +971,7 @@ void Matrix3<Real>::EigenDecomposition (Matrix3& rkRot, Matrix3& rkDiag) const
     rkRot = *this;
     bool bReflection = rkRot.Tridiagonalize(afDiag,afSubd);
     bool bConverged = rkRot.QLAlgorithm(afDiag,afSubd);
-    if (!bConverged) throw std::exception("EigenDecomposition failed");
+    if (!bConverged) throw std::exception();
     assert(bConverged);
 
     // (insertion) sort eigenvalues in increasing order, d0 <= d1 <= d2
