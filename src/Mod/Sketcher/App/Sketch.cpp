@@ -188,15 +188,15 @@ int Sketch::addPoint(Base::Vector3d newPoint)
     def.construction = false;
 
     // set the parameter for the solver
-    def.parameterStartIndex = Parameters.size();
+    def.paramStartIndex = Parameters.size();
     Parameters.push_back(new double(newPoint.x));
     Parameters.push_back(new double(newPoint.y));
  
     // set the points for later constraints
     point p1;
-    p1.x = Parameters[def.parameterStartIndex+0];
-    p1.y = Parameters[def.parameterStartIndex+1];
-    def.pointStartIndex = Points.size();
+    p1.x = Parameters[def.paramStartIndex+0];
+    p1.y = Parameters[def.paramStartIndex+1];
+    def.startPointId = Points.size();
     Points.push_back(p1);
 
     // store complete set
@@ -229,16 +229,16 @@ int Sketch::addLineSegment(const Part::GeomLineSegment &lineSegment)
 
     // the points for later constraints
     point p1, p2;
-    def.parameterStartIndex = Parameters.size();
+    def.paramStartIndex = Parameters.size();
 
     // check if for the start point is already a constraint point present
-    if (PoPMap[Geoms.size()].StartPointIndex != -1) {
+    if (PoPMap[Geoms.size()].startParamId != -1) {
         // if yes, use the coincident point
-        p1.x = Parameters[PoPMap[Geoms.size()].StartPointIndex+0];
-        p1.y = Parameters[PoPMap[Geoms.size()].StartPointIndex+1];
+        p1.x = Parameters[PoPMap[Geoms.size()].startParamId+0];
+        p1.y = Parameters[PoPMap[Geoms.size()].startParamId+1];
         // set the values
-        *(Parameters[PoPMap[Geoms.size()].StartPointIndex+0]) = start.x;
-        *(Parameters[PoPMap[Geoms.size()].StartPointIndex+1]) = start.y;
+        *(Parameters[PoPMap[Geoms.size()].startParamId+0]) = start.x;
+        *(Parameters[PoPMap[Geoms.size()].startParamId+1]) = start.y;
     } else {
         // otherwise set the parameter for the solver
         Parameters.push_back(new double(start.x));
@@ -249,13 +249,13 @@ int Sketch::addLineSegment(const Part::GeomLineSegment &lineSegment)
     }
 
     // check if for the end point is already a constraint point present
-    if (PoPMap[Geoms.size()].EndPointIndex != -1) {
+    if (PoPMap[Geoms.size()].endParamId != -1) {
         // if yes, use the coincident point
-        p2.x = Parameters[PoPMap[Geoms.size()].EndPointIndex+0];
-        p2.y = Parameters[PoPMap[Geoms.size()].EndPointIndex+1];
+        p2.x = Parameters[PoPMap[Geoms.size()].endParamId+0];
+        p2.y = Parameters[PoPMap[Geoms.size()].endParamId+1];
         // set the values
-        *(Parameters[PoPMap[Geoms.size()].EndPointIndex+0]) = end.x;
-        *(Parameters[PoPMap[Geoms.size()].EndPointIndex+1]) = end.y;
+        *(Parameters[PoPMap[Geoms.size()].endParamId+0]) = end.x;
+        *(Parameters[PoPMap[Geoms.size()].endParamId+1]) = end.y;
     } else {
         Parameters.push_back(new double(end.x));
         Parameters.push_back(new double(end.y));
@@ -265,7 +265,8 @@ int Sketch::addLineSegment(const Part::GeomLineSegment &lineSegment)
     }
 
     // add the points
-    def.pointStartIndex = Points.size();
+    def.startPointId = Points.size();
+    def.endPointId = Points.size()+1;
     Points.push_back(p1);
     Points.push_back(p2);
 
@@ -273,7 +274,7 @@ int Sketch::addLineSegment(const Part::GeomLineSegment &lineSegment)
     line l;
     l.p1 = p1;
     l.p2 = p2;
-    def.lineStartIndex = Lines.size();
+    def.index = Lines.size();
     Lines.push_back(l);
 
     // store complete set
@@ -304,27 +305,39 @@ int Sketch::addCircle(const GeomCircle &cir)
     Base::Vector3d center = circ->getCenter();
     double radius         = circ->getRadius();
  
-    // set the parameter for the solver
-    def.parameterStartIndex = Parameters.size();
-    Parameters.push_back(new double(center.x));
-    Parameters.push_back(new double(center.y));
+    point p1;
+    def.paramStartIndex = Parameters.size();
+
+    // check if for the center point is already a constraint point present
+    if (PoPMap[Geoms.size()].midParamId != -1) {
+        // if yes, use the coincident point
+        p1.x = Parameters[PoPMap[Geoms.size()].midParamId+0];
+        p1.y = Parameters[PoPMap[Geoms.size()].midParamId+1];
+        // set the values
+        *(Parameters[PoPMap[Geoms.size()].midParamId+0]) = center.x;
+        *(Parameters[PoPMap[Geoms.size()].midParamId+1]) = center.y;
+    } else {
+        // otherwise set the parameter for the solver
+        Parameters.push_back(new double(center.x));
+        Parameters.push_back(new double(center.y));
+        // set the points for later constraints
+        p1.x = Parameters[Parameters.size()-2];
+        p1.y = Parameters[Parameters.size()-1];
+    }
+
     Parameters.push_back(new double(radius));
 
-    // set the points for later constraints
-    point p1;
-    p1.x = Parameters[def.parameterStartIndex+0];
-    p1.y = Parameters[def.parameterStartIndex+1];
-    def.pointStartIndex = Points.size();
+    def.midPointId = Points.size();
     Points.push_back(p1);
 
     // add the radius parameter
-    double *r = Parameters[def.parameterStartIndex+2];
+    double *r = Parameters[def.paramStartIndex+2];
 
     // set the circel for later constraints
     circle c;
     c.center = p1;
     c.rad    = r;
-    def.circleStartIndex = Circles.size();
+    def.index = Circles.size();
     Circles.push_back(c);
 
     // store complete set
@@ -369,7 +382,7 @@ Py::Tuple Sketch::getPyGeometry(void) const
             GeomLineSegment *lineSeg = dynamic_cast<GeomLineSegment*>(it->geo);
             tuple[i] = Py::Object(new LinePy(lineSeg));
         } else if (it->type == Point) {
-            Base::Vector3d temp(*(Points[Geoms[i].pointStartIndex].x),*(Points[Geoms[i].pointStartIndex].y),0);
+            Base::Vector3d temp(*(Points[Geoms[i].startPointId].x),*(Points[Geoms[i].startPointId].y),0);
             tuple[i] = Py::Object(new VectorPy(temp));
         } else {
             assert(0); // not implemented type in the sketch!
@@ -450,7 +463,7 @@ int Sketch::addHorizontalConstraint(int geoIndex)
 
     constraint constr;
     constr.type = horizontal;
-    constr.line1 = Lines[Geoms[geoIndex].lineStartIndex];
+    constr.line1 = Lines[Geoms[geoIndex].index];
 
     Const.push_back(constr);
 
@@ -467,7 +480,7 @@ int Sketch::addVerticalConstraint(int geoIndex)
     // create the constraint and fill it up
     constraint constr;
     constr.type = vertical;
-    constr.line1 = Lines[Geoms[geoIndex].lineStartIndex];
+    constr.line1 = Lines[Geoms[geoIndex].index];
 
     Const.push_back(constr);
 
@@ -482,45 +495,45 @@ int Sketch::addPointCoincidentConstraint(int geoIndex1, PointPos Pos1, int geoIn
     int Index1=-1, Index2=-1;
     // check if for the first point is already a constraint point present
     switch(Pos1) {
-        case start: Index1 = PoPMap[geoIndex1].StartPointIndex; break;
-        case end  : Index1 = PoPMap[geoIndex1].EndPointIndex; break;
-        case mid  : Index1 = PoPMap[geoIndex1].MidPointIndex; break;
+        case start: Index1 = PoPMap[geoIndex1].startParamId; break;
+        case end  : Index1 = PoPMap[geoIndex1].endParamId; break;
+        case mid  : Index1 = PoPMap[geoIndex1].midParamId; break;
         case none : break;
     }
     // check if for the second point is already a constraint point present
     switch(Pos2) {
-        case start: Index2 = PoPMap[geoIndex2].StartPointIndex; break;
-        case end  : Index2 = PoPMap[geoIndex2].EndPointIndex; break;
-        case mid  : Index2 = PoPMap[geoIndex2].MidPointIndex; break;
+        case start: Index2 = PoPMap[geoIndex2].startParamId; break;
+        case end  : Index2 = PoPMap[geoIndex2].endParamId; break;
+        case mid  : Index2 = PoPMap[geoIndex2].midParamId; break;
         case none : break;
     }
 
-    int parameterStartIndex;
+    int paramStartIndex;
     if (Index1 != -1 && Index2 != -1) {
         Base::Console().Error("Cannot add coincident constraint between two points with already applied coincident constraints\n");
         return -1;
     } else if (Index1 != -1) {
-        parameterStartIndex = Index1;
+        paramStartIndex = Index1;
     } else if (Index2 != -1) {
-        parameterStartIndex = Index2;
+        paramStartIndex = Index2;
     } else {
         // create one point for the constraint
-        parameterStartIndex = Parameters.size();
+        paramStartIndex = Parameters.size();
         Parameters.push_back(new double(0));
         Parameters.push_back(new double(0));
     }
 
     // save the index belonging to the geo id for later usage in build up geo
     switch(Pos1) {
-        case start: PoPMap[geoIndex1].StartPointIndex = parameterStartIndex; break;
-        case end  : PoPMap[geoIndex1].EndPointIndex = parameterStartIndex; break;
-        case mid  : PoPMap[geoIndex1].MidPointIndex = parameterStartIndex; break;
+        case start: PoPMap[geoIndex1].startParamId = paramStartIndex; break;
+        case end  : PoPMap[geoIndex1].endParamId = paramStartIndex; break;
+        case mid  : PoPMap[geoIndex1].midParamId = paramStartIndex; break;
         case none : break;
     }
     switch(Pos2) {
-        case start: PoPMap[geoIndex2].StartPointIndex = parameterStartIndex; break;
-        case end  : PoPMap[geoIndex2].EndPointIndex = parameterStartIndex; break;
-        case mid  : PoPMap[geoIndex2].MidPointIndex = parameterStartIndex; break;
+        case start: PoPMap[geoIndex2].startParamId = paramStartIndex; break;
+        case end  : PoPMap[geoIndex2].endParamId = paramStartIndex; break;
+        case mid  : PoPMap[geoIndex2].midParamId = paramStartIndex; break;
         case none : break;
     }
 
@@ -539,8 +552,8 @@ int Sketch::addParallelConstraint(int geoIndex1, int geoIndex2)
     // creat the constraint and fill it up
     constraint constr;
     constr.type = parallel;
-    constr.line1 = Lines[Geoms[geoIndex1].lineStartIndex];
-    constr.line2 = Lines[Geoms[geoIndex2].lineStartIndex];
+    constr.line1 = Lines[Geoms[geoIndex1].index];
+    constr.line2 = Lines[Geoms[geoIndex2].index];
 
     Const.push_back(constr);
 
@@ -557,8 +570,8 @@ int Sketch::addDistanceConstraint(int geoIndex1, double Value)
     // creat the constraint and fill it up
     constraint constr;
     constr.type = P2PDistance;
-    constr.point1 = Points[Geoms[geoIndex1].pointStartIndex];
-    constr.point2 = Points[Geoms[geoIndex1].pointStartIndex+1];
+    constr.point1 = Points[Geoms[geoIndex1].startPointId];
+    constr.point2 = Points[Geoms[geoIndex1].endPointId];
 
     // add the parameter for the length
     FixParameters.push_back(new double(Value));
@@ -581,8 +594,8 @@ int Sketch::addDistanceConstraint(int geoIndex1, int geoIndex2, double Value)
     // creat the constraint and fill it up
     constraint constr;
     constr.type = P2LDistance;
-    constr.line1 = Lines[Geoms[geoIndex1].lineStartIndex];
-    constr.point1 = Points[Geoms[geoIndex2].pointStartIndex];
+    constr.line1 = Lines[Geoms[geoIndex1].index];
+    constr.point1 = Points[Geoms[geoIndex2].startPointId];
 
     // add the parameter for the length
     Parameters.push_back(new double(Value));
@@ -648,13 +661,18 @@ int Sketch::solve(double * fixed[2]) {
             try {
                 if (it->type == Line) {
                     GeomLineSegment *lineSeg = dynamic_cast<GeomLineSegment*>(it->geo);
-                    lineSeg->setPoints(
-                             Vector3d(*Points[it->pointStartIndex+0].x,
-                                      *Points[it->pointStartIndex+0].y,
-                                      0.0),
-                             Vector3d(*Points[it->pointStartIndex+1].x,
-                                      *Points[it->pointStartIndex+1].y,
-                                      0.0)
+                    lineSeg->setPoints(Vector3d(*Points[it->startPointId].x,
+                                                *Points[it->startPointId].y,
+                                                0.0),
+                                       Vector3d(*Points[it->endPointId].x,
+                                                *Points[it->endPointId].y,
+                                                0.0)
+                                      );
+                } else if (it->type == Circle) {
+                    GeomCircle *circle = dynamic_cast<GeomCircle*>(it->geo);
+                    circle->setCenter(Vector3d(*Points[it->midPointId].x,
+                                               *Points[it->midPointId].y,
+                                               0.0)
                                       );
                 }
             } catch (Base::Exception e) {
@@ -684,15 +702,20 @@ int Sketch::movePoint(int geoIndex1, PointPos Pos1, Base::Vector3d toPoint)
     double * fixed[2]={0,0};
 
     if (Pos1 == start) {
-        *(Points[Geoms[geoIndex1].pointStartIndex].x) = toPoint.x;
-        *(Points[Geoms[geoIndex1].pointStartIndex].y) = toPoint.y;
-        fixed [0] = Points[Geoms[geoIndex1].pointStartIndex].x;
-        fixed [1] = Points[Geoms[geoIndex1].pointStartIndex].y;
-    } else {
-        *(Points[Geoms[geoIndex1].pointStartIndex+1].x) = toPoint.x;
-        *(Points[Geoms[geoIndex1].pointStartIndex+1].y) = toPoint.y;
-        fixed [0] = Points[Geoms[geoIndex1].pointStartIndex+1].x;
-        fixed [1] = Points[Geoms[geoIndex1].pointStartIndex+1].y;
+        *(Points[Geoms[geoIndex1].startPointId].x) = toPoint.x;
+        *(Points[Geoms[geoIndex1].startPointId].y) = toPoint.y;
+        fixed [0] = Points[Geoms[geoIndex1].startPointId].x;
+        fixed [1] = Points[Geoms[geoIndex1].startPointId].y;
+    } else if (Pos1 == end) {
+        *(Points[Geoms[geoIndex1].endPointId].x) = toPoint.x;
+        *(Points[Geoms[geoIndex1].endPointId].y) = toPoint.y;
+        fixed [0] = Points[Geoms[geoIndex1].endPointId].x;
+        fixed [1] = Points[Geoms[geoIndex1].endPointId].y;
+    } else if (Pos1 == mid) {
+        *(Points[Geoms[geoIndex1].midPointId].x) = toPoint.x;
+        *(Points[Geoms[geoIndex1].midPointId].y) = toPoint.y;
+        fixed [0] = Points[Geoms[geoIndex1].midPointId].x;
+        fixed [1] = Points[Geoms[geoIndex1].midPointId].y;
     }
 
     return solve(fixed);
@@ -781,17 +804,11 @@ TopoShape Sketch::toShape(void) const
     // create a compound with the closed structures and let the 
     // features decide what to do with it...
     if (edge_list.size() > 0)
-        Base::Console().Warning("Left offer edges in Sketch. Only closed structures will be propagated at the moment!");
+        Base::Console().Warning("Left over edges in Sketch. Only closed structures will be propagated at the moment!");
 
 #endif
 
     return result;
-}
-
-void Sketch::getGeoVertexIndex(int VertexId,int &GeoId,int &PointPos)
-{
-    PointPos = VertexId%2 + 1;
-    GeoId = (int)VertexId/2;
 }
 
 // Persistance implementer -------------------------------------------------

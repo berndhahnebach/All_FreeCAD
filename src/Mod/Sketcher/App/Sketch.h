@@ -125,15 +125,12 @@ public:
     int addParallelConstraint(int geoIndex1, int geoIndex2);
     //@}
 
-    /** retrives for a Vertex number the corosponding GeoId and PointPosition
-    */
-    void getGeoVertexIndex(int VertexId,int &GeoId,int &PointPos);
-
     enum GeoType {
-        Point   = 1,
-        Line    = 2,
+        None    = 0,
+        Point   = 1, // 1 Point(start), 2 Parameters(x,y)
+        Line    = 2, // 2 Points(start,end), 4 Parameters(x1,y1,x2,y2)
         Arc     = 3,
-        Circle  = 4,
+        Circle  = 4, // 1 Point(mid), 3 Parameters(x,y,r)
         Ellipse = 5
     };
 
@@ -142,19 +139,16 @@ public:
 protected:
     /// container element to store and work with the geometric elements of this sketch
     struct GeoDef {
-        Part::Geometry  * geo;                 // pointer to the geometry
-        GeoType           type;                // type of the geometry
-        bool              construction;        // defines if this element is a construction element
-        int               parameterStartIndex; // start index for the points of this geometry
-        int               pointStartIndex;     // start index for the points of this geometry
-        int               lineStartIndex;      // start index of the lines of this geometry
-        int               circleStartIndex;    // start index of the circle of this geometry
-    };
-
-    /// container element to store and work with the constraint elements of this sketch
-    struct ConstrainDef {
-        constraint  constrain; 
-        std::string name;   
+        GeoDef() : geo(0),type(None),construction(false),index(-1),
+                   startPointId(-1),midPointId(-1),endPointId(-1),paramStartIndex(-1){}
+        Part::Geometry  * geo;             // pointer to the geometry
+        GeoType           type;            // type of the geometry
+        bool              construction;    // defines if this element is a construction element
+        int               index;           // index in the corresponding storage vector (Lines, Circles, ...) 
+        int               startPointId;    // index in Points of the start point of this geometry
+        int               midPointId;      // index in Points of the start point of this geometry
+        int               endPointId;      // index in Points of the end point of this geometry
+        int               paramStartIndex; // start index for the parameters of this geometry
     };
 
     std::vector<GeoDef> Geoms;
@@ -169,10 +163,10 @@ protected:
 
     // helper for the PointOnPoint constraint optimization
     struct PoPConst {
-        PoPConst():StartPointIndex(-1),EndPointIndex(-1),MidPointIndex(-1){}
-        int StartPointIndex;
-        int EndPointIndex;
-        int MidPointIndex;
+        PoPConst():startParamId(-1),endParamId(-1),midParamId(-1){}
+        int startParamId;
+        int endParamId;
+        int midParamId;
     };
 
     std::map<int,PoPConst> PoPMap;
