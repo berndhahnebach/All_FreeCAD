@@ -42,7 +42,7 @@ enum ConstraintType {
 };
 
 /// define if you whant to use the end or start point
-enum PointPos {none,start,end,mid };
+enum PointPos { none, start, end, mid };
 
 class Constraint :public Base::Persistence
 {

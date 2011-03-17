@@ -264,7 +264,7 @@ bool ViewProviderCurveNet::handleEvent(const SoEvent * const ev, Gui::View3DInve
     return false;
 }
 
-Standard_Boolean ViewProviderCurveNet::computeEdges   (SoSeparator* root, const TopoDS_Shape &myShape)
+Standard_Boolean ViewProviderCurveNet::computeEdges(SoSeparator* root, const TopoDS_Shape &myShape)
 {
     unsigned long ulNbOfPoints = 50;
 
