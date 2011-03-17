@@ -465,8 +465,7 @@ Standard_Boolean ViewProviderPart::computeEdges(SoGroup* EdgeRoot, const TopoDS_
 
     //int i=1;
     //for (ex.Init(myShape, TopAbs_EDGE); ex.More(); ex.Next(),i++) {
-    for (int i=0; i<M.Extent(); i++) {
-
+    for (int i=0; i < M.Extent(); i++) {
         //if(i>12)continue;
         // get the shape and mesh it
         //const TopoDS_Edge& aEdge = TopoDS::Edge(ex.Current());
