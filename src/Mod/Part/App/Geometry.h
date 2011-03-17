@@ -141,6 +141,7 @@ public:
 
     Base::Vector3d getCenter(void) const;
     double getRadius(void) const;
+    void setCenter(const Base::Vector3d& Center);
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize(void) const;
