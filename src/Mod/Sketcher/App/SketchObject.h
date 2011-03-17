@@ -77,7 +77,9 @@ public:
 
     /** retrieves for a Vertex number the corosponding GeoId and PointPosition
     */
-    void getGeoVertexIndex(int VertexId, int &GeoId, int &PointPos);
+    void getGeoVertexIndex(int VertexId, int &GeoId, PointPos &PosId);
+    int getHighestVertexIndex(void) { return VertexId2GeoId.size() - 1; }
+    int getHighestCurveIndex(void) { return Geometry.getSize() - 1; }
 
     // from base class
     virtual PyObject *getPyObject(void);
@@ -85,6 +87,10 @@ public:
     virtual void Save(Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
 
+private:
+    std::vector<int> VertexId2GeoId;
+    std::vector<PointPos> VertexId2PosId;
+    void rebuildVertexIndex(void);
 };
 
 typedef App::FeaturePythonT<SketchObject> SketchObjectPython;

@@ -290,7 +290,8 @@ void CmdSketcherConstrainCoincident::activated(int iMsg)
             QObject::tr("Select exactly two vertexes from the sketch."));
         return;
     }
-    int GeoId1,GeoId2,Pt1,Pt2;
+    int GeoId1,GeoId2;
+    Sketcher::PointPos Pt1,Pt2;
     Obj->getGeoVertexIndex(index1,GeoId1,Pt1);
     Obj->getGeoVertexIndex(index2,GeoId2,Pt2);
 
