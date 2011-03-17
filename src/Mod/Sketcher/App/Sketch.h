@@ -20,8 +20,6 @@
  *                                                                         *
  ***************************************************************************/
 
-
-
 #ifndef SKETCHER_SKETCH_H
 #define SKETCHER_SKETCH_H
 
@@ -62,7 +60,6 @@ public:
     virtual void Save(Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
 
-
     /** solve the actual set up sketch
       * If the two fixes pointers are non null it leafs out 
       * this two parameters from the solving. Its like a fixes
@@ -89,7 +86,7 @@ public:
     bool getConstruction(int geoIndex) const;
 
     /// move this point to a new location and solve
-    int movePoint(int geoIndex1,PointPos Pos1,Base::Vector3d toPoint);
+    int movePoint(int geoIndex1, PointPos Pos1, Base::Vector3d toPoint);
 
     /// add dedicated geometry
     //@{
@@ -115,17 +112,17 @@ public:
     /// add one constraint to the sketch
     int addConstraint(const Constraint *constraint);
     /// add a horizontal constraint to a geometry
-    int addHorizontalConstraint(int geoIndex, const char* name=0);
+    int addHorizontalConstraint(int geoIndex);
     /// add a vertical constraint to a geometry
-    int addVerticalConstraint(int geoIndex, const char* name=0);
+    int addVerticalConstraint(int geoIndex);
     /// add a coincident constraint to two points of two geometries
-    int addPointCoincidentConstraint(int geoIndex1, PointPos Pos1, int geoIndex2, PointPos Pos2, const char* name=0);
+    int addPointCoincidentConstraint(int geoIndex1, PointPos Pos1, int geoIndex2, PointPos Pos2);
     /// add a length constraint to a line
-    int addDistanceConstraint(int geoIndex1, double Value, const char* name);
+    int addDistanceConstraint(int geoIndex1, double Value);
     /// add a distance between two lines (basically a point to line distance)
-    int addDistanceConstraint(int geoIndex1, int geoIndex2, double Value, const char* name);
+    int addDistanceConstraint(int geoIndex1, int geoIndex2, double Value);
     /// add a parallel constraints between two lines
-    int addParallelConstraint(int geoIndex1, int geoIndex2, const char* name);
+    int addParallelConstraint(int geoIndex1, int geoIndex2);
     //@}
 
     /** retrives for a Vertex number the corosponding GeoId and PointPosition
@@ -161,7 +158,7 @@ protected:
     };
 
     std::vector<GeoDef> Geoms;
-    std::vector<ConstrainDef> Const;
+    std::vector<constraint> Const;
 
     // solving parameters
     std::vector<double*> Parameters;

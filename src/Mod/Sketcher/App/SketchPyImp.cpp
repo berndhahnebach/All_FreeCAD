@@ -121,11 +121,10 @@ PyObject* SketchPy::addConstraint(PyObject *args)
 PyObject* SketchPy::clear(PyObject *args)
 {
     int index;
-    char* name=0;
-    if (!PyArg_ParseTuple(args, "i|s", &index,&name))
+    if (!PyArg_ParseTuple(args, "i", &index))
         return 0;
 
-    return Py::new_reference_to(Py::Int(getSketchPtr()->addVerticalConstraint(index,name)));
+    return Py::new_reference_to(Py::Int(getSketchPtr()->addVerticalConstraint(index)));
 
 }
 
