@@ -106,8 +106,8 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
 
     PyErr_Clear();
 
-    if (PyArg_ParseTuple(args, "siiii", &ConstraintType, &FirstIndex,&FirstPos, &SecondIndex,&SecondPos)) {
-        if(strcmp("Coincident",ConstraintType) == 0 ){
+    if (PyArg_ParseTuple(args, "siiii", &ConstraintType, &FirstIndex, &FirstPos, &SecondIndex, &SecondPos)) {
+        if (strcmp("Coincident", ConstraintType) == 0 ) {
             this->getConstraintPtr()->Type = Coincident ;
             this->getConstraintPtr()->First     = FirstIndex;
             this->getConstraintPtr()->FirstPos  = (Sketcher::PointPos) FirstPos;

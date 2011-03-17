@@ -448,7 +448,7 @@ void ViewProviderPart::updateData(const App::Property* prop)
     }
 }
 
-Standard_Boolean ViewProviderPart::computeEdges (SoGroup* EdgeRoot, const TopoDS_Shape &myShape)
+Standard_Boolean ViewProviderPart::computeEdges(SoGroup* EdgeRoot, const TopoDS_Shape &myShape)
 {
     //TopExp_Explorer ex;
 
@@ -465,8 +465,7 @@ Standard_Boolean ViewProviderPart::computeEdges (SoGroup* EdgeRoot, const TopoDS
 
     //int i=1;
     //for (ex.Init(myShape, TopAbs_EDGE); ex.More(); ex.Next(),i++) {
-    for (int i=0; i<M.Extent(); i++)
-    {
+    for (int i=0; i<M.Extent(); i++) {
 
         //if(i>12)continue;
         // get the shape and mesh it
