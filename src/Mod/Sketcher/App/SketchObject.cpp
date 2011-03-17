@@ -128,6 +128,7 @@ int SketchObject::addGeometry(const Part::Geometry *geo)
     newVals.push_back(geoNew);
     Geometry.setValues(newVals);
     delete geoNew;
+    rebuildVertexIndex();
     return Geometry.getSize()-1;
 }
 
@@ -154,6 +155,7 @@ int SketchObject::delGeometry(int GeoNbr)
     }
     this->Constraints.setValues(newConstraints);
     this->Geometry.setValues(newVals);
+    rebuildVertexIndex();
     return 0;
 }
 
@@ -188,23 +190,43 @@ int SketchObject::delConstraint(int ConstrNbr)
 
 int SketchObject::delConstraintOnPoint(int PointNbr)
 {
-    int GeoId, PointPos;
-    getGeoVertexIndex(PointNbr, GeoId, PointPos);
+    int GeoId;
+    PointPos PosId;
+    getGeoVertexIndex(PointNbr, GeoId, PosId);
 
     const std::vector< Constraint * > &vals = this->Constraints.getValues();
-    const std::vector< Part::Geometry * > &geometry = this->Geometry.getValues();
 
     std::vector< Constraint * > newVals(0);
     for (std::vector<Constraint *>::const_iterator it = vals.begin(); it != vals.end(); ++it) {
         if ((*it)->Type == Sketcher::Coincident)
-            if (((*it)->First == GeoId && (*it)->FirstPos == PointPos)
-               || ((*it)->Second == GeoId && (*it)->SecondPos == PointPos))
+            if (((*it)->First == GeoId && (*it)->FirstPos == PosId)
+               || ((*it)->Second == GeoId && (*it)->SecondPos == PosId))
                continue;
         newVals.push_back(*it);
     }
     if (newVals.size() < vals.size())
         this->Constraints.setValues(newVals);
     return 0;
+}
+
+void SketchObject::rebuildVertexIndex(void)
+{
+    VertexId2GeoId.resize(0);
+    VertexId2PosId.resize(0);
+    int i=0;
+    const std::vector< Part::Geometry * > &geometry = this->Geometry.getValues();
+    for (std::vector< Part::Geometry * >::const_iterator it = geometry.begin();
+         it != geometry.end(); ++it,i++) {
+        if ((*it)->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
+            VertexId2GeoId.push_back(i);
+            VertexId2PosId.push_back(start);
+            VertexId2GeoId.push_back(i);
+            VertexId2PosId.push_back(end);
+        } else if ((*it)->getTypeId() == Part::GeomCircle::getClassTypeId()) {
+            VertexId2GeoId.push_back(i);
+            VertexId2PosId.push_back(mid);
+        }
+    }
 }
 
 PyObject *SketchObject::getPyObject(void)
@@ -233,10 +255,15 @@ void SketchObject::Restore(XMLReader &reader)
     Part::Part2DObject::Restore(reader);
 }
 
-void SketchObject::getGeoVertexIndex(int VertexId,int &GeoId,int &PointPos)
+void SketchObject::getGeoVertexIndex(int VertexId, int &GeoId, PointPos &PosId)
 {
-    PointPos = VertexId%2 + 1;
-    GeoId = (int)VertexId/2;
+    if (VertexId >= (int)VertexId2GeoId.size()) {
+        GeoId = -1;
+        PosId = none;
+        return;
+    }
+    GeoId = VertexId2GeoId[VertexId];
+    PosId = VertexId2PosId[VertexId];
 }
 
 // Python Sketcher feature ---------------------------------------------------------

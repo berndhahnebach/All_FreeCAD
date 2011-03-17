@@ -128,7 +128,7 @@ PyObject* SketchObjectPy::setDatum(PyObject *args)
 PyObject* SketchObjectPy::movePoint(PyObject *args)
 {
     PyObject *pcObj;
-    int GeoId,PointType;
+    int GeoId, PointType;
 
     if (!PyArg_ParseTuple(args, "iiO!", &GeoId, &PointType, &(Base::VectorPy::Type), &pcObj))
         return 0;
@@ -138,14 +138,14 @@ PyObject* SketchObjectPy::movePoint(PyObject *args)
     const std::vector< Part::Geometry * > &vals = this->getSketchObjectPtr()->Geometry.getValues();
     const Part::Geometry * actGeom = vals[GeoId];
     if (actGeom->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
-        const Part::GeomLineSegment * Line = static_cast<const Part::GeomLineSegment*>(actGeom);
+        const Part::GeomLineSegment *line = static_cast<const Part::GeomLineSegment*>(actGeom);
         // create a single new line segment
         Part::GeomLineSegment *newLine = new Part::GeomLineSegment();
         // set the right point, leave the other old
-        if (PointType == 1)
-            newLine->setPoints(v1,Line->getEndPoint());
+        if (PointType == start)
+            newLine->setPoints(v1, line->getEndPoint());
         else
-            newLine->setPoints(Line->getStartPoint(),v1);
+            newLine->setPoints(line->getStartPoint(), v1);
         //copy the vector and exchange the changed line segment
         std::vector< Part::Geometry * > newVals(vals);
         newVals[GeoId] = newLine;
@@ -156,7 +156,22 @@ PyObject* SketchObjectPy::movePoint(PyObject *args)
         // set free the new line
         delete newLine;
 
-    }else
+    } else if (actGeom->getTypeId() == Part::GeomCircle::getClassTypeId()) {
+        Part::GeomCircle *newCircle = static_cast<const Part::GeomCircle*>(actGeom->clone());
+        // set the right point, leave the other old
+        if (PointType == mid)
+            newCircle->setCenter(v1);
+        //copy the vector and exchange the changed line segment
+        std::vector< Part::Geometry * > newVals(vals);
+        newVals[GeoId] = newCircle;
+
+        // set the new set to the property (which clone the objects)
+        this->getSketchObjectPtr()->Geometry.setValues(newVals);
+
+        // set free the new line
+        delete newCircle;
+
+    } else
         Py_Error(PyExc_AttributeError,"wrong Geometry");
 
 
