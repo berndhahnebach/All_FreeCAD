@@ -345,6 +345,19 @@ double GeomCircle::getRadius(void) const
     return circle->Radius();
 }
 
+void GeomCircle::setCenter(const Base::Vector3d& Center)
+{
+    gp_Pnt p1(Center.x,Center.y,Center.z);
+    Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(handle());
+
+    try {
+        circle->SetLocation(p1);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        throw Base::Exception(e->GetMessageString());
+    }
+}
 
 // Persistence implementer 
 unsigned int GeomCircle::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}

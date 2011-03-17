@@ -186,15 +186,12 @@ void  CirclePy::setCenter(Py::Object arg)
     PyObject* p = arg.ptr();
     if (PyObject_TypeCheck(p, &(Base::VectorPy::Type))) {
         Base::Vector3d loc = static_cast<Base::VectorPy*>(p)->value();
-        Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(getGeomCirclePtr()->handle());
-        circle->SetLocation(gp_Pnt(loc.x, loc.y, loc.z));
+        getGeomCirclePtr()->setCenter(loc);
     }
     else if (PyObject_TypeCheck(p, &PyTuple_Type)) {
         Base::Vector3d loc = Base::getVectorFromTuple<double>(p);
-        Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(getGeomCirclePtr()->handle());
-        circle->SetLocation(gp_Pnt(loc.x, loc.y, loc.z));
-    }
-    else {
+        getGeomCirclePtr()->setCenter(loc);
+    } else {
         std::string error = std::string("type must be 'Vector', not ");
         error += p->ob_type->tp_name;
         throw Py::TypeError(error);
