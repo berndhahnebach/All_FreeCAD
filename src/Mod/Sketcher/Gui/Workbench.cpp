@@ -62,7 +62,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     geom->setCommand("Sketcher geoms");
     *geom /*<< "Sketcher_CreatePoint"*/
           /*<< "Sketcher_CreateArc"*/
-          /*<< "Sketcher_CreateCircle"*/
+          << "Sketcher_CreateCircle"
           << "Sketcher_CreateLine"
           << "Sketcher_CreatePolyline"
           << "Sketcher_CreateRectangle"
@@ -99,22 +99,22 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     part = new Gui::ToolBarItem(root);
     part->setCommand("Sketcher geoms");
     *part /*<< "Sketcher_CreatePoint" */
-		  << "Sketcher_CreateArc"
-		  << "Sketcher_CreateCircle"
-		  << "Sketcher_CreateLine"
-		  << "Sketcher_CreatePolyline"
-		  << "Sketcher_CreateRectangle"
-		  /*<< "Sketcher_CreateText"*/
-		  /*<< "Sketcher_CreateDraftLine"*/;
+          << "Sketcher_CreateArc"
+          << "Sketcher_CreateCircle"
+          << "Sketcher_CreateLine"
+          << "Sketcher_CreatePolyline"
+          << "Sketcher_CreateRectangle"
+          /*<< "Sketcher_CreateText"*/
+          /*<< "Sketcher_CreateDraftLine"*/;
 
     part = new Gui::ToolBarItem(root);
     part->setCommand("Sketcher constraints");
     *part << "Sketcher_ConstrainLock"
-		  << "Sketcher_ConstrainCoincident"
-		  << "Sketcher_ConstrainVertical"
-		  << "Sketcher_ConstrainHorizontal"
-		  << "Sketcher_ConstrainDistance"
-		  << "Sketcher_ConstrainParallel";
+          << "Sketcher_ConstrainCoincident"
+          << "Sketcher_ConstrainVertical"
+          << "Sketcher_ConstrainHorizontal"
+          << "Sketcher_ConstrainDistance"
+          << "Sketcher_ConstrainParallel";
      return root;
 }
 

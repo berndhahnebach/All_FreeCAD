@@ -86,12 +86,12 @@ Sketcher::SketchObject* DrawSketchHandler::getObject(void)
 
 int DrawSketchHandler::getHighestVertexIndex(void)
 {
-    return getObject()->Geometry.getSize()*2 - 1;
+    return getObject()->getHighestVertexIndex();
 }
 
 int DrawSketchHandler::getHighestCurveIndex(void)
 {
-    return getObject()->Geometry.getSize() - 1;
+    return getObject()->getHighestCurveIndex();
 }
 
 void DrawSketchHandler::setCursor(const QPixmap &p,int x,int y)
