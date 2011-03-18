@@ -25,6 +25,11 @@
 
 #ifndef _PreComp_
 # include <Standard_math.hxx>
+# include <Poly_Polygon3D.hxx>
+# include <BRepMesh.hxx>
+# include <BRep_Tool.hxx>
+# include <BRepTools.hxx>
+# include <TopoDS.hxx>
 # include <Inventor/SoPath.h>
 # include <Inventor/SoPickedPoint.h>
 # include <Inventor/details/SoLineDetail.h>
@@ -65,11 +70,9 @@
 #include <Mod/Sketcher/App/SketchObject.h>
 #include <Mod/Sketcher/App/Sketch.h>
 
-
 #include "ViewProviderSketch.h"
 #include "DrawSketchHandler.h"
 #include "TaskDlgEditSketch.h"
-
 
 using namespace SketcherGui;
 using namespace Sketcher;
@@ -96,12 +99,9 @@ struct EditData {
     EditRoot(0),
     PointsMaterials(0),
     CurvesMaterials(0),
-    LinesMaterials(0),
     PointsCoordinate(0),
     CurvesCoordinate(0),
-    LinesCoordinate(0),
     CurveSet(0),
-    LineSet(0),
     PointSet(0)
     {}
 
@@ -130,13 +130,10 @@ struct EditData {
     SoMaterial    *PointsMaterials;
     SoMaterial    *CurvesMaterials;
     SoMaterial    *EditCurvesMaterials;
-    SoMaterial    *LinesMaterials;
     SoCoordinate3 *PointsCoordinate;
     SoCoordinate3 *CurvesCoordinate;
     SoCoordinate3 *EditCurvesCoordinate;
-    SoCoordinate3 *LinesCoordinate;
     SoLineSet     *CurveSet;
-    SoLineSet     *LineSet;
     SoLineSet     *EditCurveSet;
     SoMarkerSet   *PointSet;
 
@@ -320,9 +317,12 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                     return true;}
                 case STATUS_SKETCH_DragPoint:
                     if (edit->DragPoint != -1 && pp) {
+                        int GeoId;
+                        Sketcher::PointPos PosId;
+                        getSketchObject()->getGeoVertexIndex(edit->DragPoint, GeoId, PosId);
                         Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.movePoint(%i,%i,App.Vector(%f,%f,0)) "
                                                ,getObject()->getNameInDocument()
-                                               ,edit->DragPoint/2, edit->DragPoint%2+1
+                                               ,GeoId, PosId
                                                ,pp->getPoint()[0], pp->getPoint()[1]
                                                );
                         edit->PreselectPoint = edit->DragPoint;
@@ -399,15 +399,14 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
         case STATUS_SKETCH_DragPoint:
             if (edit->DragPoint != -1) {
                 //Base::Console().Log("Drag Point:%d\n",edit->DragPoint);
-                int ret;
-                if ((ret=edit->ActSketch.movePoint(edit->DragPoint/2,
-                                                   edit->DragPoint%2 == 0 ? start : end,
-                                                   Base::Vector3d(x,y,0))) == 0) {
+                int ret, GeoId;
+                Sketcher::PointPos PosId;
+                getSketchObject()->getGeoVertexIndex(edit->DragPoint, GeoId, PosId);
+                if ((ret=edit->ActSketch.movePoint(GeoId, PosId, Base::Vector3d(x,y,0))) == 0) {
                     setPositionText(Base::Vector2D(x,y));
                     draw(true);
                     signalSolved(0,edit->ActSketch.SolveTime);
-                }
-                else{
+                } else {
                     signalSolved(1,edit->ActSketch.SolveTime);
                     //Base::Console().Log("Error solving:%d\n",ret);
                 }
@@ -541,18 +540,16 @@ bool ViewProviderSketch::detectPreselection(const SoPickedPoint* Point, int &PtI
                         }
             }
         }
-        
-    
+
         if (ConstrIndex >= 0) { // if a constraint is hit
             std::stringstream ss;
             ss << "Constraint" << ConstrIndex;
             Gui::Selection().setPreselect(getSketchObject()->getDocument()->getName()
-                                          ,getSketchObject()->getNameInDocument()
-                                          ,ss.str().c_str()
-                                          ,Point->getPoint()[0]
-                                          ,Point->getPoint()[1]
-                                          ,Point->getPoint()[2]);
-                                                 
+                                         ,getSketchObject()->getNameInDocument()
+                                         ,ss.str().c_str()
+                                         ,Point->getPoint()[0]
+                                         ,Point->getPoint()[1]
+                                         ,Point->getPoint()[2]);
             if (ConstrIndex != edit->PreselectConstraint) {
                 edit->PreselectConstraint = ConstrIndex;
                 edit->PreselectPoint = -1;
@@ -705,6 +702,46 @@ void ViewProviderSketch::draw(bool temp)
             Color.push_back(0);
             PtColor.push_back(0);
             PtColor.push_back(0);
+        }
+        else if ((*it)->getTypeId()== Part::GeomCircle::getClassTypeId()) { // add a circle
+            const Part::GeomCircle *circle = dynamic_cast<const Part::GeomCircle*>(*it);
+            TopoDS_Shape shape = (*it)->toShape();
+            if (shape.ShapeType() == TopAbs_EDGE) { // this should be an assert condition
+                // triangulate the edge
+                BRepTools::Clean(shape);
+                BRepMesh::Mesh(shape, 1e-2);
+
+                const TopoDS_Edge& aEdge = TopoDS::Edge(shape);
+
+                // try to extract the edge triangulation
+                TopLoc_Location aLoc;
+                Handle(Poly_Polygon3D) aPoly = BRep_Tool::Polygon3D(aEdge, aLoc);
+
+                Standard_Integer nbNodesInFace;
+
+                // triangulation succeeded?
+                if (!aPoly.IsNull()) {
+                    nbNodesInFace = aPoly->NbNodes();
+
+                    gp_Trsf myTransf;
+                    if (!aLoc.IsIdentity())
+                        myTransf = aLoc.Transformation();
+
+                    const TColgp_Array1OfPnt& Nodes = aPoly->Nodes();
+
+                    gp_Pnt V;
+                    for (Standard_Integer i=0; i < nbNodesInFace; i++) {
+                        V = Nodes(i+1);
+                        V.Transform(myTransf);
+                        Base::Vector3d pos((double)(V.X()),(double)(V.Y()),(double)(V.Z()));
+                        Coords.push_back(pos);
+                    }
+                    Index.push_back(nbNodesInFace);
+                    Color.push_back(0);
+                    Points.push_back(circle->getCenter());
+                    PtColor.push_back(0);
+                }
+            }
         } else {
             ; 
         }
@@ -750,7 +787,6 @@ void ViewProviderSketch::draw(bool temp)
     edit->CurvesMaterials->diffuseColor.finishEditing();
     edit->PointsCoordinate->point.finishEditing();
     edit->PointsMaterials->diffuseColor.finishEditing();
-
 
     // Render Constraints ===================================================
     const std::vector<Sketcher::Constraint*> &ConStr = getSketchObject()->Constraints.getValues();
@@ -1074,7 +1110,7 @@ void ViewProviderSketch::createEditInventorNodes(void)
     edit->EditRoot = new SoSeparator;
     pcRoot->addChild(edit->EditRoot);
     edit->EditRoot->renderCaching = SoSeparator::OFF ;
-    
+
     // stuff for the points ++++++++++++++++++++++++++++++++++++++
     edit->PointsMaterials = new SoMaterial;
     edit->EditRoot->addChild(edit->PointsMaterials);
@@ -1088,30 +1124,10 @@ void ViewProviderSketch::createEditInventorNodes(void)
 
     SoDrawStyle *DrawStyle = new SoDrawStyle;
     DrawStyle->pointSize = 8;
-    edit->EditRoot->addChild( DrawStyle );
+    edit->EditRoot->addChild(DrawStyle);
     edit->PointSet = new SoMarkerSet;
     edit->PointSet->markerIndex = SoMarkerSet::CIRCLE_FILLED_7_7;
-    edit->EditRoot->addChild( edit->PointSet );
-
-    // stuff for the lines +++++++++++++++++++++++++++++++++++++++
-    edit->LinesMaterials = new SoMaterial;
-    edit->EditRoot->addChild(edit->LinesMaterials);
-
-    MtlBind = new SoMaterialBinding;
-    MtlBind->value = SoMaterialBinding::PER_PART;
-    edit->EditRoot->addChild(MtlBind);
-
-    edit->LinesCoordinate = new SoCoordinate3;
-    edit->EditRoot->addChild(edit->LinesCoordinate);
-
-    DrawStyle = new SoDrawStyle;
-    DrawStyle->lineWidth = 3;
-    DrawStyle->linePattern = 0x0fff;
-    edit->EditRoot->addChild(DrawStyle);
-
-    edit->LineSet = new SoLineSet;
-
-    edit->EditRoot->addChild(edit->LineSet);
+    edit->EditRoot->addChild(edit->PointSet);
 
     // stuff for the Curves +++++++++++++++++++++++++++++++++++++++
     edit->CurvesMaterials = new SoMaterial;
@@ -1126,11 +1142,11 @@ void ViewProviderSketch::createEditInventorNodes(void)
 
     DrawStyle = new SoDrawStyle;
     DrawStyle->lineWidth = 3;
-    edit->EditRoot->addChild( DrawStyle );
+    edit->EditRoot->addChild(DrawStyle);
 
     edit->CurveSet = new SoLineSet;
 
-    edit->EditRoot->addChild( edit->CurveSet );
+    edit->EditRoot->addChild(edit->CurveSet);
 
     // stuff for the EditCurves +++++++++++++++++++++++++++++++++++++++
     edit->EditCurvesMaterials = new SoMaterial;
@@ -1141,21 +1157,21 @@ void ViewProviderSketch::createEditInventorNodes(void)
 
     DrawStyle = new SoDrawStyle;
     DrawStyle->lineWidth = 3;
-    edit->EditRoot->addChild( DrawStyle );
+    edit->EditRoot->addChild(DrawStyle);
 
     edit->EditCurveSet = new SoLineSet;
-    edit->EditRoot->addChild( edit->EditCurveSet );
+    edit->EditRoot->addChild(edit->EditCurveSet);
 
     // stuff for the edit coordinates ++++++++++++++++++++++++++++++++++++++
     SoMaterial *EditMaterials = new SoMaterial;
     EditMaterials->diffuseColor = SbColor(0,0,1);
     edit->EditRoot->addChild(EditMaterials);
 
-    SoSeparator * Coordsep = new SoSeparator();
+    SoSeparator *Coordsep = new SoSeparator();
     // no caching for fluctuand data structures
     Coordsep->renderCaching = SoSeparator::OFF;
 
-    SoFont * font = new SoFont();
+    SoFont *font = new SoFont();
     font->size = 15.0;
     Coordsep->addChild(font);
 
@@ -1181,7 +1197,7 @@ void ViewProviderSketch::createEditInventorNodes(void)
     // use small line with for the Constraints
     DrawStyle = new SoDrawStyle;
     DrawStyle->lineWidth = 1;
-    edit->EditRoot->addChild( DrawStyle );
+    edit->EditRoot->addChild(DrawStyle);
 
     // add the group where all the constraints has its SoSeparator
     edit->constrGroup = new SoGroup();

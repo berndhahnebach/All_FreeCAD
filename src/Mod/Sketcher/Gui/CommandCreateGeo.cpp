@@ -837,11 +837,7 @@ void CmdSketcherCreateCircle::activated(int iMsg)
 
 bool CmdSketcherCreateCircle::isActive(void)
 {
-#ifdef FC_DEBUG
     return isCreateGeoActive(getActiveGuiDocument());
-#else
-    return false;
-#endif
 }
 
 // ======================================================================================
