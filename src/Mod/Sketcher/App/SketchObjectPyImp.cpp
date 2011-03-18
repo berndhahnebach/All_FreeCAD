@@ -156,8 +156,9 @@ PyObject* SketchObjectPy::movePoint(PyObject *args)
         // set free the new line
         delete newLine;
 
-    } else if (actGeom->getTypeId() == Part::GeomCircle::getClassTypeId()) {
-        Part::GeomCircle *newCircle = static_cast<const Part::GeomCircle*>(actGeom->clone());
+    }
+    else if (actGeom->getTypeId() == Part::GeomCircle::getClassTypeId()) {
+        Part::GeomCircle *newCircle = static_cast<Part::GeomCircle*>(actGeom->clone());
         // set the right point, leave the other old
         if (PointType == mid)
             newCircle->setCenter(v1);
@@ -171,14 +172,12 @@ PyObject* SketchObjectPy::movePoint(PyObject *args)
         // set free the new line
         delete newCircle;
 
-    } else
+    }
+    else
         Py_Error(PyExc_AttributeError,"wrong Geometry");
-
-
 
     Py_Return; 
 }
-
 
 Py::Int SketchObjectPy::getConstraintCount(void) const
 {

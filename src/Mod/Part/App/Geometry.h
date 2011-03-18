@@ -114,7 +114,7 @@ public:
     GeomBSplineCurve();
     GeomBSplineCurve(const Handle_Geom_BSplineCurve&);
     virtual ~GeomBSplineCurve();
-    virtual Geometry *clone(void)const;
+    virtual Geometry *clone(void) const;
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize(void) const;
@@ -137,7 +137,7 @@ public:
     GeomCircle();
     GeomCircle(const Handle_Geom_Circle&);
     virtual ~GeomCircle();
-    virtual Geometry *clone(void)const;
+    virtual Geometry *clone(void) const;
 
     Base::Vector3d getCenter(void) const;
     double getRadius(void) const;
