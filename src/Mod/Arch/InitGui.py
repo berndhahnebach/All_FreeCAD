@@ -36,7 +36,7 @@ class ArchWorkbench(Workbench):
 	def Initialize(self):
                 import Wall,Cell
                 Gui.addCommand('Arch_Wall',Wall.CommandWall())
-                Gui.addCommand('Arch_Cell',Floor.CommandFloor())
+                Gui.addCommand('Arch_Cell',Cell.CommandCell())
                 tools = ["Arch_Wall","Arch_Cell"]
                 self.appendToolbar("Arch tools",tools)
                 self.appendMenu("Architecture",tools)
