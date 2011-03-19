@@ -607,50 +607,45 @@ int Sketch::addDistanceConstraint(int geoIndex1, int geoIndex2, double Value)
 
 // solving ==========================================================
 
-void _redirectPoint(point &c, double &fixedValue1, double &fixedValue2, double * fixed[2])
+void _redirectPoint(point &c, double fixedValues[], double ** fixed, int n)
 {
-    if (fixed[0] && c.x == fixed[0]) {
-        // copy the fixes values
-        //fixedValue1 = *(c.x);
-        //fixedValue2 = *(c.y);
-        // point the constraint to the fixed values
-        c.x = &(fixedValue1);
-        c.y = &(fixedValue2);
+
+    for (int i=0; i < n; i++) {
+        if (c.x == fixed[i]) c.x = &(fixedValues[i]);
+        if (c.y == fixed[i]) c.y = &(fixedValues[i]);
     }
 }
 
-int Sketch::solve(double * fixed[2]) {
+int Sketch::solve(double ** fixed, int n) {
 
     Base::TimeInfo start_time;
     //Base::Console().Log("solv: Start solving (C:%d;G%d) ",Const.size(),Geoms.size());
     Solver s;
-    double fixedValue1=0,fixedValue2=0;
+    double fixedValues[n];
 
-    if (fixed[0]) {
-        fixedValue1 = *(fixed[0]);
-        fixedValue2 = *(fixed[1]);
-    }
+    if (n > 0 && fixed[0])
+        for (int i=0; i < n; i++)
+            fixedValues[i] = *(fixed[i]);
 
     // copy the constraints and handling the fixed constraint ################
-    if (fixed[0])
+    if (n > 0 && fixed[0])
         for (std::vector<constraint>::iterator it=Const.begin(); it != Const.end(); ++it) {
             // exchange the fixed points in the constraints
-            _redirectPoint(it->point1,fixedValue1,fixedValue2,fixed);
-            _redirectPoint(it->point1,fixedValue1,fixedValue2,fixed);
-            _redirectPoint(it->line1.p1,fixedValue1,fixedValue2,fixed);
-            _redirectPoint(it->line1.p2,fixedValue1,fixedValue2,fixed);
-            _redirectPoint(it->line2.p1,fixedValue1,fixedValue2,fixed);
-            _redirectPoint(it->line2.p2,fixedValue1,fixedValue2,fixed);
+            _redirectPoint(it->point1, fixedValues, fixed, n);
+            _redirectPoint(it->point1, fixedValues, fixed, n);
+            _redirectPoint(it->line1.p1, fixedValues, fixed, n);
+            _redirectPoint(it->line1.p2, fixedValues, fixed, n);
+            _redirectPoint(it->line2.p1, fixedValues, fixed, n);
+            _redirectPoint(it->line2.p2, fixedValues, fixed, n);
         }
 
     // solving with solvesketch ############################################
     int ret = s.solve(&Parameters[0],Parameters.size(),&Const[0],Const.size(),0);
 
     // set back the fixed parameters no matter what the solver did with it
-    if (fixed[0]) {
-        *(fixed[0]) = fixedValue1;
-        *(fixed[1]) = fixedValue2;
-    }
+    if (n > 0 && fixed[0])
+        for (int i=0; i < n; i++)
+            *(fixed[i]) = fixedValues[i];
 
     // if successfully solve write the parameter back
     if (ret == 0) {
@@ -671,7 +666,7 @@ int Sketch::solve(double * fixed[2]) {
                     circle->setCenter(Vector3d(*Points[it->midPointId].x,
                                                *Points[it->midPointId].y,
                                                0.0)
-                                      );
+                                     );
                 }
             } catch (Base::Exception e) {
                 Base::Console().Error("Solv: Error build geometry(%d): %s\n",i,e.what());
@@ -690,13 +685,14 @@ int Sketch::solve(double * fixed[2]) {
 
 int Sketch::solve(void) 
 {
-    double * fixed[2]={0,0};
-    return solve(fixed);
+    double ** fixed=0;
+    return solve(fixed, 0);
 }
 
 int Sketch::movePoint(int geoIndex1, PointPos Pos1, Base::Vector3d toPoint)
 {
-    // list of the two fixed parameters (point)
+    // list of fixed parameters
+    int fixed_size=0;
     double * fixed[2]={0,0};
 
     if (Pos1 == start) {
@@ -704,19 +700,22 @@ int Sketch::movePoint(int geoIndex1, PointPos Pos1, Base::Vector3d toPoint)
         *(Points[Geoms[geoIndex1].startPointId].y) = toPoint.y;
         fixed [0] = Points[Geoms[geoIndex1].startPointId].x;
         fixed [1] = Points[Geoms[geoIndex1].startPointId].y;
+        fixed_size = 2;
     } else if (Pos1 == end) {
         *(Points[Geoms[geoIndex1].endPointId].x) = toPoint.x;
         *(Points[Geoms[geoIndex1].endPointId].y) = toPoint.y;
         fixed [0] = Points[Geoms[geoIndex1].endPointId].x;
         fixed [1] = Points[Geoms[geoIndex1].endPointId].y;
+        fixed_size = 2;
     } else if (Pos1 == mid) {
         *(Points[Geoms[geoIndex1].midPointId].x) = toPoint.x;
         *(Points[Geoms[geoIndex1].midPointId].y) = toPoint.y;
         fixed [0] = Points[Geoms[geoIndex1].midPointId].x;
         fixed [1] = Points[Geoms[geoIndex1].midPointId].y;
+        fixed_size = 2;
     }
 
-    return solve(fixed);
+    return solve(fixed, fixed_size);
 }
 
 TopoShape Sketch::toShape(void) const
