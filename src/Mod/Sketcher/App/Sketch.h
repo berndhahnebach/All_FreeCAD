@@ -140,7 +140,7 @@ protected:
     /// container element to store and work with the geometric elements of this sketch
     struct GeoDef {
         GeoDef() : geo(0),type(None),construction(false),index(-1),
-                   startPointId(-1),midPointId(-1),endPointId(-1),paramStartIndex(-1){}
+                   startPointId(-1),midPointId(-1),endPointId(-1) {}
         Part::Geometry  * geo;             // pointer to the geometry
         GeoType           type;            // type of the geometry
         bool              construction;    // defines if this element is a construction element
@@ -148,7 +148,6 @@ protected:
         int               startPointId;    // index in Points of the start point of this geometry
         int               midPointId;      // index in Points of the start point of this geometry
         int               endPointId;      // index in Points of the end point of this geometry
-        int               paramStartIndex; // start index for the parameters of this geometry
     };
 
     std::vector<GeoDef> Geoms;
