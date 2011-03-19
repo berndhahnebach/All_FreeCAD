@@ -62,8 +62,7 @@ int SketchPy::PyInit(PyObject* /*args*/, PyObject* /*kwd*/)
 
 PyObject* SketchPy::solve(PyObject *args)
 {
-    double * fixed[2]={0,0};
-    return Py::new_reference_to(Py::Int(getSketchPtr()->solve(fixed)));
+    return Py::new_reference_to(Py::Int(getSketchPtr()->solve()));
 }
 
 PyObject* SketchPy::addGeometry(PyObject *args)

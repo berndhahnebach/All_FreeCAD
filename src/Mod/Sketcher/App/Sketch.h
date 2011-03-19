@@ -61,11 +61,11 @@ public:
     virtual void Restore(Base::XMLReader &/*reader*/);
 
     /** solve the actual set up sketch
-      * If the two fixes pointers are non null it leafs out 
-      * this two parameters from the solving. Its like a fixes
-      * constraint on a point
+      * If the n fixed pointers are non null the corresponding 
+      * parameters are left out from the solving. It's like a fixed
+      * constraint on a point for example
       */
-    int solve(double * fixed[2]);
+    int solve(double ** fixed, int n);
     int solve(void);
     /// delete all geometry and constraints, leave an empty sketch
     void clear(void);

@@ -82,8 +82,7 @@ App::DocumentObjectExecReturn *SketchObject::execute(void)
     sketch.setUpSketch(Geometry.getValues(), Constraints.getValues());
  
     // solve the sketch with no fixed points
-    double * fixed[2]={0,0};
-    if (sketch.solve(fixed) != 0)
+    if (sketch.solve() != 0)
         return new App::DocumentObjectExecReturn("Solving the sketch failed!",this);
 
     std::vector<Part::Geometry *> geomlist = sketch.getGeometry();
