@@ -741,14 +741,12 @@ static const char *cursor_createcircle[]={
 class DrawSketchHandlerCircle : public DrawSketchHandler
 {
 public:
-    DrawSketchHandlerCircle()
-      : Mode(STATUS_SEEK_First),EditCurve(2){}
+    DrawSketchHandlerCircle() : Mode(STATUS_SEEK_First),EditCurve(34){}
     virtual ~DrawSketchHandlerCircle(){}
     /// mode table
     enum LineMode {
         STATUS_SEEK_First,      /**< enum value ----. */
         STATUS_SEEK_Second,     /**< enum value ----. */
-        STATUS_SEEK_Third,      /**< enum value ----. */
         STATUS_Close
     };
 
@@ -761,11 +759,16 @@ public:
     {
         setPositionText(onSketchPos);
         if (Mode==STATUS_SEEK_Second) {
-            EditCurve[1] = onSketchPos; 
-            sketchgui->drawEdit(EditCurve);
-        }
-        else if (Mode==STATUS_SEEK_Third) {
-            EditCurve[2] = onSketchPos; 
+            for (int i=0; i < 16; i++) {
+                float angle = i*M_PI/16.0;
+                float dx_ = onSketchPos.fX - EditCurve[0].fX;
+                float dy_ = onSketchPos.fY - EditCurve[0].fY;
+                float dx = dx_ * cos(angle) + dy_ * sin(angle);
+                float dy = -dx_ * sin(angle) + dy_ * cos(angle);
+                EditCurve[1+i] = Base::Vector2D(EditCurve[0].fX + dx ,EditCurve[0].fY + dy);
+                EditCurve[17+i] = Base::Vector2D(EditCurve[0].fX - dx ,EditCurve[0].fY - dy);
+            }
+            EditCurve[33] = EditCurve[1];
             sketchgui->drawEdit(EditCurve);
         }
     }
@@ -775,18 +778,8 @@ public:
         if (Mode==STATUS_SEEK_First){
             EditCurve[0] = onSketchPos;
             Mode = STATUS_SEEK_Second;
-        }
-        else if (Mode==STATUS_SEEK_Second){
-            EditCurve[1] = onSketchPos;
-            EditCurve.push_back(Base::Vector2D()); // add a new point
-            Mode = STATUS_SEEK_Third;
-        }
-        else {
-            EditCurve[2] = onSketchPos;
-            sketchgui->drawEdit(EditCurve);
-            applyCursor();
+        } else
             Mode = STATUS_Close;
-        }
 
         return true;
     }
@@ -794,16 +787,17 @@ public:
     virtual bool releaseButton(Base::Vector2D onSketchPos)
     {
         if (Mode==STATUS_Close) {
+            float dx = onSketchPos.fX - EditCurve[0].fX;
+            float dy = onSketchPos.fY - EditCurve[0].fY;
             unsetCursor();
             resetPositionText();
             Gui::Command::openCommand("Add sketch circle");
             Gui::Command::doCommand(Gui::Command::Doc,
                 "App.ActiveDocument.%s.addGeometry(Part.Circle"
-                "(App.Vector(%f,%f,0),App.Vector(%f,%f,0),App.Vector(%f,%f,0)))",
+                "(App.Vector(%f,%f,0),App.Vector(0,0,1),%f))",
                       sketchgui->getObject()->getNameInDocument(),
                       EditCurve[0].fX,EditCurve[0].fY,
-                      EditCurve[1].fX,EditCurve[1].fY,
-                      EditCurve[2].fX,EditCurve[2].fY);
+                      sqrt(dx*dx + dy*dy));
             EditCurve.clear();
             sketchgui->drawEdit(EditCurve);
             sketchgui->purgeHandler(); // no code after this arc, Handler get deleted in ViewProvider
