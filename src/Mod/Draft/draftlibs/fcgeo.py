@@ -770,10 +770,10 @@ def cleanFaces(shape):
         def findNeighbour(hface,hfacelist):
                 "finds the first neighbour of a face in a list, and returns its index"
                 eset = []
-                for e in find(face).Edges:
-                        ei.append(e.hashCode())
-                for i in range(len(facelist)):
-                        for ee in find(faceslist[i]).Edges:
+                for e in find(hface).Edges:
+                        eset.append(e.hashCode())
+                for i in range(len(hfacelist)):
+                        for ee in find(hfacelist[i]).Edges:
                                 if ee.hashCode() in eset:
                                         return i
                 return None
@@ -812,36 +812,25 @@ def cleanFaces(shape):
         print len(hfaces)," target faces:",hfaces
         # sort islands
         islands = [[hfaces.pop(0)]]
+        currentisle = 0
+        currentface = 0
+        found = True
         while hfaces:
-                curr = islands[-1]
-                f = curr[-1]
-                found = True
-                appended = False
-                while found:
-                        nb = findNeighbour(f,hfaces)
-                        if nb != None:
-                                curr.append(hfaces.pop(nb))
-                                appended = True
+                if not found:
+                        if len(islands[currentisle]) > (currentface + 1):
+                                currentface += 1
+                                found = True
+                        else:
+                                islands.append([hfaces.pop(0)])
+                                currentisle += 1
+                                currentface = 0
+                                found = True
+                else:
+                        f = findNeighbour(islands[currentisle][currentface],hfaces)
+                        if f != None:
+                                islands[currentisle].append(hfaces.pop(f))
                         else:
                                 found = False
-                if not appended:
-                        pass
-        
-        # sort islands
-        islands = []       
-        for hedge in targethedges:
-                hfaces = lut[hedge]
-                found = False
-                for isle in islands:
-                        if not found:
-                                if hfaces[0] in isle:
-                                        isle.append(hfaces[1])
-                                        found = True
-                                elif hfaces[1] in isle:
-                                        isle.append(hfaces[0])
-                                        found = True
-                if not found:
-                        islands.append(hfaces)
         print len(islands)," islands:",islands
         # make new faces from islands
         newfaces = []
@@ -853,6 +842,8 @@ def cleanFaces(shape):
                 bounds = getBoundary(fset)
                 shp = Part.Wire(sortEdges(bounds))
                 shp = Part.Face(shp)
+                if shp.normalAt(0.5,0.5) != find(isle[0]).normalAt(0.5,0.5):
+                        shp.reverse()
                 newfaces.append(shp)
         print "new faces:",newfaces
         # add remaining faces
@@ -862,63 +853,6 @@ def cleanFaces(shape):
         print "final faces"
         # finishing
         fshape = Part.makeShell(newfaces)
-        if shape.isClosed():
-                fshape = Part.makeSolid(fshape)
-        return fshape
-        
-def cleanFacesOld(shape):
-        '''removes inner edges from coplanar faces'''
-        # grouping faces by same normal
-        groups = []
-        for face in shape.Faces:
-                norm = face.normalAt(0.5,0.5)
-                found = False
-                for g in groups:
-                        if g[0] == norm:
-                                g.append(face)
-                                found = True
-                                break
-                if not found:
-                        groups.append([norm,face])
-        
-        # separating groups with more than 1 faces
-        treatedfaces = []
-        facestotreat = []
-        for g in groups:
-                if len(g) > 2:
-                        facestotreat.append(g)
-                else:
-                        treatedfaces.append(g[1])
-
-        # find border edges in each group
-        for g in facestotreat:
-                sh = Part.makeCompound(g[1:])
-                lut={}
-                for f in sh.Faces:
-                        for e in f.Edges:
-                                hc = e.hashCode()
-                                if lut.has_key(hc): lut[hc]=lut[hc]+1
-                                else: lut[hc] = 1
-                                
-                # filter out the edges shared by more than one face
-                bound=[]
-                inneredges = False
-                for e in sh.Edges:
-                        if lut[e.hashCode()] == 1:
-                                bound.append(e)
-                        else:
-                                inneredges = True
-
-                # adding new faces
-                if inneredges:
-                        w = Part.Wire(sortEdges(bound))
-                        w = Part.Face(w)
-                        treatedfaces.append(w)
-                else:
-                        treatedfaces.extend(sh.Faces)
-
-        # joining it all
-        fshape = Part.makeShell(treatedfaces)
         if shape.isClosed():
                 fshape = Part.makeSolid(fshape)
         return fshape
