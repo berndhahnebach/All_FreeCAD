@@ -69,6 +69,7 @@
 # include <gp_Lin.hxx>
 # include <Geom_Line.hxx>
 # include <Geom_TrimmedCurve.hxx>
+# include <GC_MakeCircle.hxx>
 # include <GC_MakeLine.hxx>
 # include <GC_MakeSegment.hxx>
 # include <Precision.hxx>
@@ -352,6 +353,20 @@ void GeomCircle::setCenter(const Base::Vector3d& Center)
 
     try {
         circle->SetLocation(p1);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        throw Base::Exception(e->GetMessageString());
+    }
+}
+
+void GeomCircle::setRadius(double Radius)
+{
+    Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(handle());
+
+    try {
+        GC_MakeCircle mc(circle->Circ(), Radius - getRadius());
+        circle->SetCirc(mc.Value()->Circ());
     }
     catch (Standard_Failure) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
