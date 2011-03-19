@@ -127,7 +127,7 @@ void Sketch::setUpSketch(const std::vector<Part::Geometry *> &geo, const std::ve
             addCircle(*circle);
         }
         else {
-            Base::Exception("Sketch::addGeometry(): Unknown or unsoported type added to a sketch");
+            Base::Exception("Sketch::setUpSketch(): Unknown or unsoported type added to a sketch");
         }
     }
 
@@ -188,14 +188,14 @@ int Sketch::addPoint(Base::Vector3d newPoint)
     def.construction = false;
 
     // set the parameter for the solver
-    def.paramStartIndex = Parameters.size();
+    int paramStartIndex = Parameters.size();
     Parameters.push_back(new double(newPoint.x));
     Parameters.push_back(new double(newPoint.y));
  
     // set the points for later constraints
     point p1;
-    p1.x = Parameters[def.paramStartIndex+0];
-    p1.y = Parameters[def.paramStartIndex+1];
+    p1.x = Parameters[paramStartIndex+0];
+    p1.y = Parameters[paramStartIndex+1];
     def.startPointId = Points.size();
     Points.push_back(p1);
 
@@ -229,7 +229,6 @@ int Sketch::addLineSegment(const Part::GeomLineSegment &lineSegment)
 
     // the points for later constraints
     point p1, p2;
-    def.paramStartIndex = Parameters.size();
 
     // check if for the start point is already a constraint point present
     if (PoPMap[Geoms.size()].startParamId != -1) {
@@ -306,7 +305,6 @@ int Sketch::addCircle(const GeomCircle &cir)
     double radius         = circ->getRadius();
  
     point p1;
-    def.paramStartIndex = Parameters.size();
 
     // check if for the center point is already a constraint point present
     if (PoPMap[Geoms.size()].midParamId != -1) {
@@ -331,7 +329,7 @@ int Sketch::addCircle(const GeomCircle &cir)
     Points.push_back(p1);
 
     // add the radius parameter
-    double *r = Parameters[def.paramStartIndex+2];
+    double *r = Parameters[Parameters.size()-1];
 
     // set the circel for later constraints
     circle c;
