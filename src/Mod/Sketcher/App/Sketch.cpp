@@ -675,6 +675,7 @@ int Sketch::solve(double ** fixed, int n) {
                                                *Points[it->midPointId].y,
                                                0.0)
                                      );
+                    circle->setRadius(*Circles[it->index].rad);
                 }
             } catch (Base::Exception e) {
                 Base::Console().Error("Solve: Error build geometry(%d): %s\n",i,e.what());
@@ -721,6 +722,17 @@ int Sketch::movePoint(int geoIndex1, PointPos Pos1, Base::Vector3d toPoint)
         fixed [0] = Points[Geoms[geoIndex1].midPointId].x;
         fixed [1] = Points[Geoms[geoIndex1].midPointId].y;
         fixed_size = 2;
+    } else if (Pos1 == none) {
+        if (Geoms[geoIndex1].type == Circle) {
+          point center = Points[Geoms[geoIndex1].midPointId];
+          double dx = toPoint.x - (*(center.x));
+          double dy = toPoint.y - (*(center.y));
+          *(Circles[Geoms[geoIndex1].index].rad) = sqrt(dx*dx + dy*dy);
+          // FIXME: solve doesn't redirect circle radius pointers
+          //        not really sure if a fix condition here is necessary at all
+          fixed [0] = Circles[Geoms[geoIndex1].index].rad;
+          fixed_size = 1;
+        }
     }
 
     return solve(fixed, fixed_size);

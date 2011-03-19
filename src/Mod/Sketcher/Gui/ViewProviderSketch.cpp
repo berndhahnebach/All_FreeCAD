@@ -93,8 +93,9 @@ struct EditData {
     EditData():
     sketchHandler(0),
     DragPoint(-1),
-    PreselectCurve(-1),
+    DragCurve(-1),
     PreselectPoint(-1),
+    PreselectCurve(-1),
     //ActSketch(0),
     EditRoot(0),
     PointsMaterials(0),
@@ -110,10 +111,12 @@ struct EditData {
 
     // dragged point
     int DragPoint;
+    // dragged curve
+    int DragCurve;
 
-    int PreselectCurve;
     SbColor PreselectOldColor;
     int PreselectPoint;
+    int PreselectCurve;
     int PreselectConstraint;
     // pointer to the Solver
     Sketcher::Sketch ActSketch;
@@ -278,6 +281,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                                                      ,pp->getPoint()[1]
                                                      ,pp->getPoint()[2]);
                         this->edit->DragPoint = -1;
+                        this->edit->DragCurve = -1;
                     }
 
                     Mode = STATUS_NONE;
@@ -295,6 +299,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                                                      ,pp->getPoint()[1]
                                                      ,pp->getPoint()[2]);
                         this->edit->DragPoint = -1;
+                        this->edit->DragCurve = -1;
                     }
 
                     Mode = STATUS_NONE;
@@ -311,6 +316,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                                                      ,pp->getPoint()[1]
                                                      ,pp->getPoint()[2]);
                         this->edit->DragPoint = -1;
+                        this->edit->DragCurve = -1;
                     }
 
                     Mode = STATUS_NONE;
@@ -320,13 +326,32 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                         int GeoId;
                         Sketcher::PointPos PosId;
                         getSketchObject()->getGeoVertexIndex(edit->DragPoint, GeoId, PosId);
-                        Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.movePoint(%i,%i,App.Vector(%f,%f,0)) "
+                        Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.movePoint(%i,%i,App.Vector(%f,%f,0))"
                                                ,getObject()->getNameInDocument()
                                                ,GeoId, PosId
                                                ,pp->getPoint()[0], pp->getPoint()[1]
                                                );
                         edit->PreselectPoint = edit->DragPoint;
                         edit->DragPoint = -1;
+                        //updateColor();
+                    }
+                    resetPositionText();
+                    Mode = STATUS_NONE;
+                    return true;
+                case STATUS_SKETCH_DragCurve:
+                    if (edit->DragCurve != -1 && pp) {
+                        const std::vector<Part::Geometry *> *geomlist;
+                        geomlist = &getSketchObject()->Geometry.getValues();
+                        Part::Geometry *geo = (*geomlist)[edit->DragCurve];
+                        if (geo->getTypeId()== Part::GeomCircle::getClassTypeId()) {
+                            Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.movePoint(%i,%i,App.Vector(%f,%f,0))"
+                                                   ,getObject()->getNameInDocument()
+                                                   ,edit->DragCurve, none
+                                                   ,pp->getPoint()[0], pp->getPoint()[1]
+                                                   );
+                        }
+                        edit->PreselectCurve = edit->DragCurve;
+                        edit->DragCurve = -1;
                         //updateColor();
                     }
                     resetPositionText();
@@ -354,6 +379,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                 case STATUS_SELECT_Edge:
                 case STATUS_SELECT_Constraint:
                 case STATUS_SKETCH_DragPoint:
+                case STATUS_SKETCH_DragCurve:
                     break;
             }
         }
@@ -388,8 +414,14 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
 
             return true;
         case STATUS_SELECT_Edge:
+            Mode = STATUS_SKETCH_DragCurve;
+            edit->DragCurve = edit->PreselectCurve;
+            edit->PreselectCurve = -1;
+            edit->PreselectPoint = -1;
+            edit->PreselectConstraint = -1;
+
+            return true;
         case STATUS_SELECT_Constraint:
-            // drag a edge not implemented yet!
             Mode = STATUS_NONE;
             edit->PreselectCurve = -1;
             edit->PreselectPoint = -1;
@@ -405,10 +437,22 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
                 if ((ret=edit->ActSketch.movePoint(GeoId, PosId, Base::Vector3d(x,y,0))) == 0) {
                     setPositionText(Base::Vector2D(x,y));
                     draw(true);
-                    signalSolved(0,edit->ActSketch.SolveTime);
+                    signalSolved(0, edit->ActSketch.SolveTime);
                 } else {
-                    signalSolved(1,edit->ActSketch.SolveTime);
+                    signalSolved(1, edit->ActSketch.SolveTime);
                     //Base::Console().Log("Error solving:%d\n",ret);
+                }
+            }
+            return true;
+        case STATUS_SKETCH_DragCurve:
+            if (edit->DragCurve != -1) {
+                int ret;
+                if ((ret=edit->ActSketch.movePoint(edit->DragCurve, none, Base::Vector3d(x,y,0))) == 0) {
+                    setPositionText(Base::Vector2D(x,y));
+                    draw(true);
+                    signalSolved(0, edit->ActSketch.SolveTime);
+                } else {
+                    signalSolved(1, edit->ActSketch.SolveTime);
                 }
             }
             return true;

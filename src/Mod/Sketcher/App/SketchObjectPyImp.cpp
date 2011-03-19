@@ -162,6 +162,11 @@ PyObject* SketchObjectPy::movePoint(PyObject *args)
         // set the right point, leave the other old
         if (PointType == mid)
             newCircle->setCenter(v1);
+        else if (PointType == none) {
+            Base::Vector3d radius = v1 - newCircle->getCenter();
+            newCircle->setRadius(radius.Length());
+        }
+
         //copy the vector and exchange the changed line segment
         std::vector< Part::Geometry * > newVals(vals);
         newVals[GeoId] = newCircle;
