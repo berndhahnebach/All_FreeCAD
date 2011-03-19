@@ -128,7 +128,7 @@ void Sketch::setUpSketch(const std::vector<Part::Geometry *> &geo, const std::ve
             addCircle(*circle);
         }
         else {
-            Base::Exception("Sketch::setUpSketch(): Unknown or unsoported type added to a sketch");
+            Base::Exception("Sketch::setUpSketch(): Unknown or unsupported type added to a sketch");
         }
     }
 
@@ -629,7 +629,8 @@ int Sketch::solve(double ** fixed, int n) {
     Base::TimeInfo start_time;
     //Base::Console().Log("solv: Start solving (C:%d;G%d) ",Const.size(),Geoms.size());
     Solver s;
-    double fixedValues[n];
+    std::vector<double> fixedValues;
+    fixedValues.resize(n);
 
     if (n > 0 && fixed[0])
         for (int i=0; i < n; i++)
@@ -639,12 +640,12 @@ int Sketch::solve(double ** fixed, int n) {
     if (n > 0 && fixed[0])
         for (std::vector<constraint>::iterator it=Const.begin(); it != Const.end(); ++it) {
             // exchange the fixed points in the constraints
-            _redirectPoint(it->point1, fixedValues, fixed, n);
-            _redirectPoint(it->point1, fixedValues, fixed, n);
-            _redirectPoint(it->line1.p1, fixedValues, fixed, n);
-            _redirectPoint(it->line1.p2, fixedValues, fixed, n);
-            _redirectPoint(it->line2.p1, fixedValues, fixed, n);
-            _redirectPoint(it->line2.p2, fixedValues, fixed, n);
+            _redirectPoint(it->point1, &(fixedValues[0]), fixed, n);
+            _redirectPoint(it->point1, &(fixedValues[0]), fixed, n);
+            _redirectPoint(it->line1.p1, &(fixedValues[0]), fixed, n);
+            _redirectPoint(it->line1.p2, &(fixedValues[0]), fixed, n);
+            _redirectPoint(it->line2.p1, &(fixedValues[0]), fixed, n);
+            _redirectPoint(it->line2.p2, &(fixedValues[0]), fixed, n);
         }
 
     // solving with solvesketch ############################################
