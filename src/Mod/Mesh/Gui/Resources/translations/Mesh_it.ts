@@ -189,7 +189,7 @@
     <message>
       <location/>
       <source>Export mesh...</source>
-      <translation>Esporta la mesh...</translation>
+      <translation>Esporta mesh...</translation>
     </message>
     <message>
       <location/>
@@ -1017,7 +1017,7 @@ Please run the command to repair folds first</source>
     <message>
       <location/>
       <source>Mesh view</source>
-      <translation>Vista mesh</translation>
+      <translation>Visualizzazione Mesh</translation>
     </message>
     <message>
       <location/>
@@ -1280,7 +1280,7 @@ Please run the command to repair folds first</source>
     <message>
       <location/>
       <source>Boolean</source>
-      <translation>Booleano</translation>
+      <translation>Operazione booleana</translation>
     </message>
     <message>
       <location/>
@@ -1403,7 +1403,7 @@ Please run the command to repair folds first</source>
     <message>
       <location/>
       <source>Meshing Tolerance</source>
-      <translation>Tolleranza mesh</translation>
+      <translation>Tolleranza Mesh</translation>
     </message>
     <message>
       <location/>
@@ -1500,7 +1500,7 @@ Max=&lt;%4,%5,%6&gt;</translation>
     <message>
       <location/>
       <source>Boolean</source>
-      <translation>Booleano</translation>
+      <translation>Operazione booleana</translation>
     </message>
     <message>
       <location/>

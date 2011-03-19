@@ -223,7 +223,7 @@
     <message>
       <location/>
       <source>Write u,v coordinates</source>
-      <translation>写U，V坐标</translation>
+      <translation>写入U，V坐标</translation>
     </message>
   </context>
   <context>

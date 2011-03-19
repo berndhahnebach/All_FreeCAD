@@ -129,7 +129,7 @@
     <message>
       <location/>
       <source>Boolean...</source>
-      <translation>Booleano...</translation>
+      <translation>Operazione booleana...</translation>
     </message>
     <message>
       <location/>
@@ -1505,7 +1505,7 @@ Seleziona prima una forma valida dal menu a tendina.</translation>
     </message>
     <message>
       <location/>
-      <source>View smoothing</source>
+      <source>View smooting</source>
       <translation>Vista lisciata</translation>
     </message>
     <message>
@@ -1526,7 +1526,7 @@ Seleziona prima una forma valida dal menu a tendina.</translation>
     <message>
       <location/>
       <source>Shape view</source>
-      <translation>Visualizzazione della forma</translation>
+      <translation>Visualizzazione della figura</translation>
     </message>
     <message>
       <location/>
@@ -1556,7 +1556,7 @@ Seleziona prima una forma valida dal menu a tendina.</translation>
     <message>
       <location/>
       <source>Maximum deviation of tessellated shapes</source>
-      <translation>Massima deviatione della figura tasselata</translation>
+      <translation>Massima deviazione della figura tasselata</translation>
     </message>
     <message>
       <location/>
@@ -1571,7 +1571,7 @@ Seleziona prima una forma valida dal menu a tendina.</translation>
     <message>
       <location/>
       <source>Maximum deviation depending on the model bounding box</source>
-      <translation>Massima deviazione a seconda riquadro di delimitazione del modello</translation>
+      <translation>Massima deviazione dipendente dal riquadro di delimitazione del modello</translation>
     </message>
     <message>
       <location/>
@@ -1695,7 +1695,7 @@ Seleziona prima una forma valida dal menu a tendina.</translation>
     <message>
       <location/>
       <source>Boolean</source>
-      <translation>Booleano</translation>
+      <translation>Operazione booleana</translation>
     </message>
   </context>
   <context>
@@ -1816,7 +1816,7 @@ Seleziona prima una forma valida dal menu a tendina.</translation>
     <message>
       <location/>
       <source>Boolean</source>
-      <translation>Booleano</translation>
+      <translation>Operazione booleana</translation>
     </message>
   </context>
 </TS>

@@ -104,7 +104,7 @@
     <message>
       <location/>
       <source>Write the selected Part (object) as a povray file</source>
-      <translation>Scriver la parte selezionata (oggetto) come un file povray</translation>
+      <translation>Scrive la parte selezionata (oggetto) come un file povray</translation>
     </message>
   </context>
   <context>
@@ -188,7 +188,7 @@
     <message>
       <location/>
       <source>Camera file name:</source>
-      <translation>Nome del file della camera:</translation>
+      <translation>Nome del file della telecamera:</translation>
     </message>
     <message>
       <location/>
