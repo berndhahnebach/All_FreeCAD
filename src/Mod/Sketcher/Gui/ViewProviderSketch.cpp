@@ -328,8 +328,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                         getSketchObject()->getGeoVertexIndex(edit->DragPoint, GeoId, PosId);
                         Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.movePoint(%i,%i,App.Vector(%f,%f,0))"
                                                ,getObject()->getNameInDocument()
-                                               ,GeoId, PosId
-                                               ,pp->getPoint()[0], pp->getPoint()[1]
+                                               ,GeoId, PosId ,x , y
                                                );
                         edit->PreselectPoint = edit->DragPoint;
                         edit->DragPoint = -1;
@@ -346,8 +345,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                         if (geo->getTypeId()== Part::GeomCircle::getClassTypeId()) {
                             Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.movePoint(%i,%i,App.Vector(%f,%f,0))"
                                                    ,getObject()->getNameInDocument()
-                                                   ,edit->DragCurve, none
-                                                   ,pp->getPoint()[0], pp->getPoint()[1]
+                                                   ,edit->DragCurve, none, x, y
                                                    );
                         }
                         edit->PreselectCurve = edit->DragCurve;
