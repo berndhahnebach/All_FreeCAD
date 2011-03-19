@@ -615,41 +615,32 @@ int Sketch::addDistanceConstraint(int geoIndex1, int geoIndex2, double Value)
 
 // solving ==========================================================
 
-void _redirectPoint(point &c, double fixedValues[], double ** fixed, int n)
-{
-
-    for (int i=0; i < n; i++) {
-        if (c.x == fixed[i]) c.x = &(fixedValues[i]);
-        if (c.y == fixed[i]) c.y = &(fixedValues[i]);
-    }
-}
-
 int Sketch::solve(double ** fixed, int n) {
 
     Base::TimeInfo start_time;
     //Base::Console().Log("solv: Start solving (C:%d;G%d) ",Const.size(),Geoms.size());
     Solver s;
-    std::vector<double> fixedValues;
-    fixedValues.resize(n);
+    std::vector<double> fixedValues(n);
 
     if (n > 0 && fixed[0])
         for (int i=0; i < n; i++)
             fixedValues[i] = *(fixed[i]);
 
-    // copy the constraints and handling the fixed constraint ################
-    if (n > 0 && fixed[0])
-        for (std::vector<constraint>::iterator it=Const.begin(); it != Const.end(); ++it) {
-            // exchange the fixed points in the constraints
-            _redirectPoint(it->point1, &(fixedValues[0]), fixed, n);
-            _redirectPoint(it->point1, &(fixedValues[0]), fixed, n);
-            _redirectPoint(it->line1.p1, &(fixedValues[0]), fixed, n);
-            _redirectPoint(it->line1.p2, &(fixedValues[0]), fixed, n);
-            _redirectPoint(it->line2.p1, &(fixedValues[0]), fixed, n);
-            _redirectPoint(it->line2.p2, &(fixedValues[0]), fixed, n);
-        }
+    // exclude fixed parameters
+    std::vector<double*> params;
+    for (std::vector<double*>::iterator it=Parameters.begin(); it != Parameters.end(); ++it) {
+        bool is_fixed=false;
+        for (int i=0; i < n; i++)
+            if (fixed[i] == *it) {
+                is_fixed = true;
+                break;
+            }
+        if (!is_fixed)
+            params.push_back(*it);
+    }
 
     // solving with solvesketch ############################################
-    int ret = s.solve(&Parameters[0],Parameters.size(),&Const[0],Const.size(),0);
+    int ret = s.solve(&params[0],params.size(),&Const[0],Const.size(),0);
 
     // set back the fixed parameters no matter what the solver did with it
     if (n > 0 && fixed[0])
