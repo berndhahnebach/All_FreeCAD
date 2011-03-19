@@ -37,6 +37,7 @@
 
 #include <Mod/Part/App/Geometry.h>
 #include <Mod/Part/App/GeometryCurvePy.h>
+#include <Mod/Part/App/CirclePy.h>
 #include <Mod/Part/App/LinePy.h>
 
 #include <TopoDS.hxx>
@@ -167,6 +168,10 @@ int Sketch::addGeometry(const Part::Geometry *geo)
         const GeomLineSegment *lineSeg = dynamic_cast<const GeomLineSegment*>(geo);
         // create the definition struct for that geom
         return addLineSegment(*lineSeg);
+    } else if (geo->getTypeId()== GeomCircle::getClassTypeId()) { // add a circle
+        const GeomCircle *circle = dynamic_cast<const GeomCircle*>(geo);
+        // create the definition struct for that geom
+        return addCircle(*circle);
     } else {
         Base::Exception("Sketch::addGeometry(): Unknown or unsupported type added to a sketch");
         return 0; 
@@ -379,6 +384,9 @@ Py::Tuple Sketch::getPyGeometry(void) const
         if (it->type == Line) {
             GeomLineSegment *lineSeg = dynamic_cast<GeomLineSegment*>(it->geo);
             tuple[i] = Py::Object(new LinePy(lineSeg));
+        } else if (it->type == Circle) {
+            GeomCircle *circle = dynamic_cast<GeomCircle*>(it->geo);
+            tuple[i] = Py::Object(new CirclePy(circle));
         } else if (it->type == Point) {
             Base::Vector3d temp(*(Points[Geoms[i].startPointId].x),*(Points[Geoms[i].startPointId].y),0);
             tuple[i] = Py::Object(new VectorPy(temp));
@@ -669,7 +677,7 @@ int Sketch::solve(double ** fixed, int n) {
                                      );
                 }
             } catch (Base::Exception e) {
-                Base::Console().Error("Solv: Error build geometry(%d): %s\n",i,e.what());
+                Base::Console().Error("Solve: Error build geometry(%d): %s\n",i,e.what());
                 return -1;
             }
 
