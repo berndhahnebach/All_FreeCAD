@@ -867,3 +867,4 @@ class toolBar:
                         print "Language changed!"
                         self.ui.retranslateUi(self)
 
+FreeCADGui.draftToolBar = toolBar()

@@ -4125,3 +4125,6 @@ FreeCADGui.addCommand('Draft_ApplyStyle',ApplyStyle())
 FreeCADGui.addCommand('Draft_ToggleDisplayMode',ToggleDisplayMode())
 FreeCADGui.addCommand('Draft_AddToGroup',AddToGroup())
 FreeCADGui.addCommand('Draft_SelectGroup',SelectGroup())
+
+# a global place to look for active draft Command
+FreeCAD.activeDraftCommand = None 

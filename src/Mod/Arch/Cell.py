@@ -31,7 +31,7 @@ __url__ = "http://free-cad.sourceforge.net"
 
 def makeCell(objectslist):
     '''makeCell(objectslist): creates a cell including the
-    objects from the givne list'''
+    objects from the given list'''
     obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Cell")
     Cell(obj)
     ViewProviderCell(obj.ViewObject)
@@ -60,7 +60,11 @@ class Cell:
                         "The height of the section plane when making a plan view of this cell")
         obj.addProperty("App::PropertyBool","DebugMode","Base",
                         "if debug mode, no face cleaning!")
+        obj.addProperty("App::PropertyEnumeration","CellType","Base",
+                        "This cell can define a Cell, a Floor or a Building")
         obj.PlanHeight = 1.8
+        obj.CellType = ["Cell","Floor","Building"]
+        obj.CellType = "Cell"
         obj.Proxy = self
         self.Type = "Cell"
         
@@ -77,10 +81,12 @@ class Cell:
             components = obj.Components[:]
             f = components.pop(0)
             baseShape = f.Shape
-            for comp in obj.Components:
+            for comp in components:
                 if Draft.getType(comp) in ["Wall","Cell","Shape"]:
                     baseShape = baseShape.fuse(comp.Shape)
-            if not obj.DebugMode: baseShape = fcgeo.cleanFaces(baseShape)
+            if components:
+                if not obj.DebugMode:
+                    baseShape = fcgeo.cleanFaces(baseShape)
             obj.Shape = baseShape
             obj.Placement = pl
 
@@ -90,10 +96,42 @@ class ViewProviderCell:
         vobj.Proxy = self
         self.Object = vobj.Object
 
-    def getIcon(self):          
-        return """
+    def getIcon(self):
+        if self.Object.CellType == "Cell":
+            return """
                 /* XPM */
                 static char * Arch_Cell_xpm[] = {
+                "16 16 9 1",
+                " 	c None",
+                ".	c #0C0A04",
+                "+	c #413F37",
+                "@	c #636057",
+                "#	c #7E7D75",
+                "$	c #9C9B95",
+                "%	c #B7B8B3",
+                "&	c #D2D4D1",
+                "*	c #FCFEFB",
+                "        +++     ",
+                "    ++#++@$+    ",
+                " +@$%**@%#@++++ ",
+                " #&**%*@%%%$@+##",
+                " #&%@@*@%$@+@&*%",
+                " #&% @*@$@@%***%",
+                " #&% @*@+@#****%",
+                " #&%.@*@+@#****%",
+                " #&%$&*@+@#****%",
+                ".@&****@+@#****%",
+                " @&***&@+@#****%",
+                " @&**$  .@#****%",
+                " @&%#    @#****#",
+                " +@      @#**&  ",
+                "         @#*$   ",
+                "         @@#    "};
+                """
+        elif self.Object.CellType == "Floor":
+            return """
+                /* XPM */
+                static char * Arch_Floor_xpm[] = {
                 "16 16 9 1",
                 " 	c None",
                 ".	c #171817",
@@ -120,6 +158,37 @@ class ViewProviderCell:
                 " ..........     ",
                 "                ",
                 "                "};
+                """
+        else:
+            return """
+                /* XPM */
+                static char * Arch_Building_xpm[] = {
+                "16 16 9 1",
+                " 	c None",
+                ".	c #160E0A",
+                "+	c #C10007",
+                "@	c #FF0006",
+                "#	c #8F3F00",
+                "$	c #5E5F5D",
+                "%	c #7F817E",
+                "&	c #A0A29F",
+                "*	c #F4F6F3",
+                "                ",
+                "     ........   ",
+                "    ..#@@@@@.   ",
+                "   .&&.+@@@@@.  ",
+                "  .&**%.@@@@@+. ",
+                " .&****..@@@+...",
+                ".%******.##..$$.",
+                ".&******&.$&**%.",
+                ".%*...$**.****% ",
+                ".%*..#.**.****% ",
+                " %*..#.**.****$ ",
+                " $*..#.**.***$. ",
+                " $*..#$**.**..  ",
+                " .$...$**.&.    ",
+                "   .  .$%..     ",
+                "        ..      "};
                 """
         
     def updateData(self,obj,prop):

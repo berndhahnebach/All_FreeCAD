@@ -34,11 +34,12 @@ class ArchWorkbench(Workbench):
 	ToolTip = "Architecture workbench"
 	
 	def Initialize(self):
-                import Wall,Cell
+                import Wall,Cell,draftTools,draftGui
                 Gui.addCommand('Arch_Wall',Wall.CommandWall())
                 Gui.addCommand('Arch_Cell',Cell.CommandCell())
                 tools = ["Arch_Wall","Arch_Cell"]
                 self.appendToolbar("Arch tools",tools)
+                self.appendToolbar("Draft tools",["Draft_Line","Draft_Wire","Draft_Arc"])
                 self.appendMenu("Architecture",tools)
 		Log ('Loading Arch module... done\n')
 	def Activated(self):

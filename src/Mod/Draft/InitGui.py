@@ -186,7 +186,6 @@ class DraftWorkbench (Workbench):
                                         self.appendMenu(["&Macro","Installed Macros"],macros.macrosList)
                 except:
                     pass
-                self.draftToolBar=draftGui.toolBar()
                 self.cmdList = ["Draft_Line","Draft_Wire","Draft_Circle","Draft_Arc",
                                 "Draft_Polygon","Draft_Rectangle", "Draft_Text",
                                 "Draft_Dimension", "Draft_BSpline"]
@@ -200,17 +199,15 @@ class DraftWorkbench (Workbench):
                 self.appendMenu("Draft",self.cmdList+self.modList)
                 self.appendMenu(["Draft","Context tools"],self.treecmdList)
                 self.appendMenu(["Draft","Wire tools"],self.lineList)
-                FreeCAD.activeDraftCommand = None # a global place to look for active draft Command
-                FreeCADGui.draftToolBar = self.draftToolBar
-                        
+                                        
 	def Activated(self):
-                self.draftToolBar.draftWidget.setVisible(True)
-                self.draftToolBar.draftWidget.toggleViewAction().setVisible(True)
+                FreeCADGui.draftToolBar.draftWidget.setVisible(True)
+                FreeCADGui.draftToolBar.draftWidget.toggleViewAction().setVisible(True)
 
 	def Deactivated(self):
                 if (FreeCAD.activeDraftCommand != None): FreeCAD.activeDraftCommand.finish()
-                self.draftToolBar.draftWidget.setVisible(False)
-                self.draftToolBar.draftWidget.toggleViewAction().setVisible(False)
+                FreeCADGui.draftToolBar.draftWidget.setVisible(False)
+                FreeCADGui.draftToolBar.draftWidget.toggleViewAction().setVisible(False)
 
 	def ContextMenu(self, recipient):
                 if (recipient == "View"):
