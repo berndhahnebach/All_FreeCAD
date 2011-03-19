@@ -96,12 +96,13 @@ public:
     //@{
     /// mode table
     enum SketchMode{
-        STATUS_NONE,              /**< enum value View provider is in neutral. */  
-        STATUS_SELECT_Point,      /**< enum value a point was selected. */  
-        STATUS_SELECT_Edge,       /**< enum value a edge was selected. */  
-        STATUS_SELECT_Constraint, /**< enum value a constraint was selected. */  
-        STATUS_SKETCH_DragPoint,  /**< enum value while dragging a point. */  
-        STATUS_SKETCH_UseHandler, /**< enum value A DrawSketchHandler is in control. */  
+        STATUS_NONE,              /**< enum value View provider is in neutral. */
+        STATUS_SELECT_Point,      /**< enum value a point was selected. */
+        STATUS_SELECT_Edge,       /**< enum value a edge was selected. */
+        STATUS_SELECT_Constraint, /**< enum value a constraint was selected. */
+        STATUS_SKETCH_DragPoint,  /**< enum value while dragging a point. */
+        STATUS_SKETCH_DragCurve,  /**< enum value while dragging a curve. */
+        STATUS_SKETCH_UseHandler, /**< enum value A DrawSketchHandler is in control. */
     };
     /// is called by GuiCommands to set the drawing mode
     void setSketchMode(SketchMode mode) {Mode = mode;}
