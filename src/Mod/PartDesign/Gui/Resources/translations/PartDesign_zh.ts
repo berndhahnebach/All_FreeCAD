@@ -11,7 +11,7 @@
     <message>
       <location/>
       <source>Chamfer...</source>
-      <translation>倒直角...</translation>
+      <translation>倒角...</translation>
     </message>
     <message>
       <location/>
@@ -34,7 +34,7 @@
     <message>
       <location/>
       <source>Make a fillet on an edge, face or body</source>
-      <translation>给边、面或者实体倒圆角</translation>
+      <translation>给边、面或实体倒圆角</translation>
     </message>
   </context>
   <context>

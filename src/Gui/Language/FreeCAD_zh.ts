@@ -2365,7 +2365,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Placement</source>
-      <translation>放置</translation>
+      <translation>定位</translation>
     </message>
   </context>
   <context>
@@ -2575,7 +2575,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Placement</source>
-      <translation>放置</translation>
+      <translation>定位</translation>
     </message>
     <message>
       <location/>
@@ -2864,7 +2864,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Property View</source>
-      <translation>属性浏览</translation>
+      <translation>属性浏览器</translation>
     </message>
   </context>
   <context>
@@ -2933,7 +2933,7 @@ Specify another directory, please.</source>
     <message>
       <location/>
       <source>Property View</source>
-      <translation>属性浏览</translation>
+      <translation>属性浏览器</translation>
     </message>
   </context>
   <context>
@@ -3888,7 +3888,7 @@ Do you want to specify another directory?</source>
     <message>
       <location/>
       <source>Selection view</source>
-      <translation>选择查看器</translation>
+      <translation>选择浏览器</translation>
     </message>
     <message>
       <location/>
@@ -3903,7 +3903,7 @@ Do you want to specify another directory?</source>
     <message>
       <location/>
       <source>Combo View</source>
-      <translation>组合视图</translation>
+      <translation>组合浏览器</translation>
     </message>
     <message>
       <location/>
@@ -4415,12 +4415,12 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>About &amp;Qt</source>
-      <translation>关于 Qt(&amp;Q)</translation>
+      <translation>关于Qt(&amp;Q)</translation>
     </message>
     <message>
       <location/>
       <source>About Qt</source>
-      <translation>关于 Qt</translation>
+      <translation>关于Qt</translation>
     </message>
   </context>
   <context>
@@ -4505,7 +4505,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Cl&amp;ose</source>
-      <translation>关闭(&amp;o)</translation>
+      <translation>关闭</translation>
     </message>
     <message>
       <location/>
@@ -4595,7 +4595,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Duplicate selection</source>
-      <translation>重复的选择</translation>
+      <translation>复制选择</translation>
     </message>
     <message>
       <location/>
@@ -5155,7 +5155,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Placement...</source>
-      <translation>放置...</translation>
+      <translation>定位...</translation>
     </message>
     <message>
       <location/>
@@ -5721,7 +5721,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Axometric</source>
-      <translation>Axometric</translation>
+      <translation>轴侧</translation>
     </message>
     <message>
       <location/>
@@ -5739,7 +5739,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Bottom</source>
-      <translation>底部</translation>
+      <translation>底视</translation>
     </message>
     <message>
       <location/>
@@ -6009,7 +6009,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Rear</source>
-      <translation>背面</translation>
+      <translation>后视</translation>
     </message>
     <message>
       <location/>
@@ -6130,7 +6130,7 @@ Be aware the point where you click matters.</source>
     <message>
       <location/>
       <source>Orthographic view</source>
-      <translation>正投影视图</translation>
+      <translation>平行视图</translation>
     </message>
     <message>
       <location/>

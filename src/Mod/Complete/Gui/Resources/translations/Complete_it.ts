@@ -144,7 +144,7 @@
     <message>
       <location/>
       <source>Sketch based</source>
-      <translation>Basato sullo sketch</translation>
+      <translation>Sketch</translation>
     </message>
     <message>
       <location/>
@@ -272,7 +272,7 @@
     <message>
       <location/>
       <source>Sketch based</source>
-      <translation>Basato sullo sketch</translation>
+      <translation>Sketch</translation>
     </message>
     <message>
       <location/>

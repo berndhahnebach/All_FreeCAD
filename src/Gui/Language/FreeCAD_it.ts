@@ -177,7 +177,7 @@
     <message>
       <location/>
       <source>View Turntable</source>
-      <translation>Vedi Giradischi</translation>
+      <translation>Vista piattaforma girevole</translation>
     </message>
     <message>
       <location/>
@@ -753,7 +753,7 @@ Definire un'altra scorciatoia.</translation>
     <message>
       <location/>
       <source>Display</source>
-      <translation>Visualizza</translation>
+      <translation>Visualizzazione</translation>
     </message>
     <message>
       <location/>
@@ -788,7 +788,7 @@ Definire un'altra scorciatoia.</translation>
     <message>
       <location/>
       <source>Viewing mode</source>
-      <translation>Modo di visualizzazione</translation>
+      <translation>Modalità di visualizzazione</translation>
     </message>
     <message>
       <location/>
@@ -871,12 +871,12 @@ Definire un'altra scorciatoia.</translation>
     <message>
       <location/>
       <source>Display Items</source>
-      <translation>Visualizza gli elementi</translation>
+      <translation>Visualizzazione elementi</translation>
     </message>
     <message>
       <location/>
       <source>Family:</source>
-      <translation>Famiglia:</translation>
+      <translation>Tipo di carattere:</translation>
     </message>
     <message>
       <location/>
@@ -1245,7 +1245,7 @@ Specificare un'altra cartella.</translation>
     <message>
       <location/>
       <source>Parameter Editor</source>
-      <translation>Parametri Editor</translation>
+      <translation>Editor parametri</translation>
     </message>
     <message>
       <location/>
@@ -1632,7 +1632,7 @@ Specificare un'altra cartella.</translation>
     <message>
       <location/>
       <source>%1 navigation</source>
-      <translation>%1 navigazione</translation>
+      <translation>Navigazione %1</translation>
     </message>
   </context>
   <context>
@@ -1843,7 +1843,7 @@ Specificare un'altra cartella.</translation>
     <message>
       <location/>
       <source>Allow duplicate object labels in one document</source>
-      <translation>Consentira etichette di oggetti duplicate in uno stesso documento</translation>
+      <translation>Consente la duplicazione delle etichette deglii oggetti in uno stesso documento</translation>
     </message>
   </context>
   <context>
@@ -2278,7 +2278,7 @@ Specificare un'altra cartella.</translation>
     <message>
       <location/>
       <source>Enable preselection highlighting</source>
-      <translation>Attiva l'evidenziazione di preselezione</translation>
+      <translation>Attiva l'evidenziamento di preselezione</translation>
     </message>
     <message>
       <location/>
@@ -3934,7 +3934,7 @@ Vuoi specificare un'altra cartella?</translation>
     <message>
       <location/>
       <source>Display</source>
-      <translation>Visualizza</translation>
+      <translation>Visualizzazione</translation>
     </message>
     <message>
       <location/>
@@ -4368,7 +4368,7 @@ Prestare attenzione al punto dove si fa clic.</translation>
     <message>
       <location/>
       <source>%1 navigation</source>
-      <translation>%1 navigazione</translation>
+      <translation>Navigazione %1</translation>
     </message>
     <message>
       <location/>
@@ -4576,7 +4576,7 @@ Prestare attenzione al punto dove si fa clic.</translation>
     <message>
       <location/>
       <source>Copy operation</source>
-      <translation>Copia operazione</translation>
+      <translation>Copia</translation>
     </message>
   </context>
   <context>
@@ -4643,12 +4643,12 @@ Prestare attenzione al punto dove si fa clic.</translation>
     <message>
       <location/>
       <source>View turntable...</source>
-      <translation>Rotazione vista...</translation>
+      <translation>Vista piattaforma girevole...</translation>
     </message>
     <message>
       <location/>
       <source>View turntable</source>
-      <translation>Rotazione vista</translation>
+      <translation>Vista piattaforma girevole</translation>
     </message>
   </context>
   <context>
@@ -5154,7 +5154,7 @@ Prestare attenzione al punto dove si fa clic.</translation>
     <message>
       <location/>
       <source>Paste operation</source>
-      <translation>Incolla operazione</translation>
+      <translation>Incolla</translation>
     </message>
   </context>
   <context>
@@ -5311,7 +5311,7 @@ Prestare attenzione al punto dove si fa clic.</translation>
     <message>
       <location/>
       <source>Redoes a previously undone action</source>
-      <translation>Ripete una precedente operazione annullata</translation>
+      <translation>Ripete un'operazione precedentemente annullata</translation>
     </message>
   </context>
   <context>
@@ -5553,7 +5553,7 @@ Prestare attenzione al punto dove si fa clic.</translation>
     <message>
       <location/>
       <source>Clipping plane</source>
-      <translation>Piano di taglio</translation>
+      <translation>Piano di sezione</translation>
     </message>
     <message>
       <location/>

@@ -24,7 +24,7 @@
     <message>
       <location/>
       <source>Drawing</source>
-      <translation>绘图</translation>
+      <translation>图纸</translation>
     </message>
     <message>
       <location/>
@@ -37,7 +37,7 @@
     <message>
       <location/>
       <source>Drawing</source>
-      <translation>绘图</translation>
+      <translation>图纸</translation>
     </message>
     <message>
       <location/>
@@ -60,7 +60,7 @@
     <message>
       <location/>
       <source>Drawing</source>
-      <translation>绘图</translation>
+      <translation>图纸</translation>
     </message>
     <message>
       <location/>
@@ -136,7 +136,7 @@
     <message>
       <location/>
       <source>Drawing</source>
-      <translation>绘图</translation>
+      <translation>图纸</translation>
     </message>
     <message>
       <location/>
@@ -164,7 +164,7 @@
     <message>
       <location/>
       <source>Drawing viewer</source>
-      <translation>图纸查看器</translation>
+      <translation>图纸浏览器</translation>
     </message>
     <message>
       <location/>
@@ -217,7 +217,7 @@
     <message>
       <location/>
       <source>Drawing</source>
-      <translation>绘图</translation>
+      <translation>图纸</translation>
     </message>
     <message>
       <location/>
