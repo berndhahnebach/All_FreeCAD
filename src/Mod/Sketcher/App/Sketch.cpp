@@ -620,11 +620,6 @@ int Sketch::solve(double ** fixed, int n) {
     Base::TimeInfo start_time;
     //Base::Console().Log("solv: Start solving (C:%d;G%d) ",Const.size(),Geoms.size());
     Solver s;
-    std::vector<double> fixedValues(n);
-
-    if (n > 0 && fixed[0])
-        for (int i=0; i < n; i++)
-            fixedValues[i] = *(fixed[i]);
 
     // exclude fixed parameters
     std::vector<double*> params;
@@ -641,11 +636,6 @@ int Sketch::solve(double ** fixed, int n) {
 
     // solving with solvesketch ############################################
     int ret = s.solve(&params[0],params.size(),&Const[0],Const.size(),0);
-
-    // set back the fixed parameters no matter what the solver did with it
-    if (n > 0 && fixed[0])
-        for (int i=0; i < n; i++)
-            *(fixed[i]) = fixedValues[i];
 
     // if successfully solve write the parameter back
     if (ret == 0) {
@@ -673,7 +663,6 @@ int Sketch::solve(double ** fixed, int n) {
                 Base::Console().Error("Solve: Error build geometry(%d): %s\n",i,e.what());
                 return -1;
             }
-
         }
     } else {
         //Base::Console().Log("NotSolved ");
