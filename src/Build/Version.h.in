@@ -1,8 +1,8 @@
 
 /// Version Number
 #define FCVersionMajor "0"
-#define FCVersionMinor "11"
-#define FCVersionName  "Dagoba"
+#define FCVersionMinor "12"
+#define FCVersionName  "Vulcan"
 
 #define FCRevision      "$WCREV$"      //Highest committed revision number
 #define FCRevisionDate  "$WCDATE$"     //Date of highest committed revision
