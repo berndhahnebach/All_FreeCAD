@@ -61,6 +61,7 @@ libSketcherGui_la_LIBADD   = \
 		-lTKG2d \
 		-lTKG3d \
 		-lTKMath \
+		-lTKMesh \
 		-lTKSTEP \
 		-lTKIGES \
 		-lTKSTL \
