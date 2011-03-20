@@ -623,6 +623,8 @@ int Sketch::solve(double ** fixed, int n) {
 
     // exclude fixed parameters
     std::vector<double*> params;
+    params.reserve(Parameters.size()); // reserve some memory to avoid reallocs in push_back()
+
     for (std::vector<double*>::iterator it=Parameters.begin(); it != Parameters.end(); ++it) {
         bool is_fixed=false;
         for (int i=0; i < n; i++)
