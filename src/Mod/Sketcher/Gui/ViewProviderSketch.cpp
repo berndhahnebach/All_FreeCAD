@@ -747,6 +747,23 @@ void ViewProviderSketch::draw(bool temp)
         }
         else if ((*it)->getTypeId()== Part::GeomCircle::getClassTypeId()) { // add a circle
             const Part::GeomCircle *circle = dynamic_cast<const Part::GeomCircle*>(*it);
+#if 1       // efficient way to sample circle
+            int countSegments = 50;
+            double radius = circle->getRadius();
+            Base::Vector3d center = circle->getCenter();
+            double segment = (2 * M_PI) / countSegments;
+            for (int i=0; i < countSegments; i++) {
+                Base::Vector3d pos = center;
+                pos.x += radius * cos(i*segment);
+                pos.y += radius * sin(i*segment);
+                Coords.push_back(pos);
+            }
+            Coords.push_back(Coords.front());
+            Index.push_back(Coords.size());
+            Color.push_back(0);
+            Points.push_back(center);
+            PtColor.push_back(0);
+#else
             TopoDS_Shape shape = (*it)->toShape();
             if (shape.ShapeType() == TopAbs_EDGE) { // this should be an assert condition
                 // triangulate the edge
@@ -784,6 +801,7 @@ void ViewProviderSketch::draw(bool temp)
                     PtColor.push_back(0);
                 }
             }
+#endif
         } else {
             ; 
         }
