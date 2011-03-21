@@ -19,8 +19,8 @@
 REV_FILE=./revision.m4
 TMP_PATH=/tmp
 MAJ=0
-MIN=11
-ALIAS="Dagoba"
+MIN=12
+ALIAS="Vulcan"
 
 # go to root directory
 CUR_DIR=$PWD
