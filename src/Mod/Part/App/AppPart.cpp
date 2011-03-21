@@ -169,6 +169,7 @@ void AppPartExport initPart()
     Part::GeomBezierCurve         ::init();
     Part::GeomBSplineCurve        ::init();
     Part::GeomCircle              ::init();
+    Part::GeomArcOfCircle         ::init();
     Part::GeomEllipse             ::init();
     Part::GeomHyperbola           ::init();
     Part::GeomParabola            ::init();

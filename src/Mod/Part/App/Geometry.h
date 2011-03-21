@@ -157,6 +157,35 @@ private:
     Handle_Geom_Circle myCurve;
 };
 
+class PartExport GeomArcOfCircle : public GeomCurve
+{
+    TYPESYSTEM_HEADER();
+public:
+    GeomArcOfCircle();
+    GeomArcOfCircle(const Handle_Geom_Circle&);
+    virtual ~GeomArcOfCircle();
+    virtual Geometry *clone(void) const;
+
+    Base::Vector3d getCenter(void) const;
+    double getRadius(void) const;
+    void setCenter(const Base::Vector3d& Center);
+    void setRadius(double Radius);
+    void getRange(double& u, double& v) const;
+    void setRange(double u, double v);
+
+    // Persistence implementer ---------------------
+    virtual unsigned int getMemSize(void) const;
+    virtual void Save(Base::Writer &/*writer*/) const;
+    virtual void Restore(Base::XMLReader &/*reader*/);
+    // Base implementer ----------------------------
+    virtual PyObject *getPyObject(void);
+
+    const Handle_Geom_Geometry& handle() const;
+
+private:
+    Handle_Geom_TrimmedCurve myCurve;
+};
+
 class PartExport GeomEllipse : public GeomCurve
 {
     TYPESYSTEM_HEADER();

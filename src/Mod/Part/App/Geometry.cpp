@@ -365,8 +365,9 @@ void GeomCircle::setRadius(double Radius)
     Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(handle());
 
     try {
-        GC_MakeCircle mc(circle->Circ(), Radius - getRadius());
-        circle->SetCirc(mc.Value()->Circ());
+        gp_Circ c = circle->Circ();
+        c.SetRadius(Radius);
+        circle->SetCirc(c);
     }
     catch (Standard_Failure) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
@@ -382,6 +383,104 @@ void         GeomCircle::Restore    (Base::XMLReader &/*reader*/)    {assert(0);
 PyObject *GeomCircle::getPyObject(void)
 {
     return new CirclePy((GeomCircle*)this->clone());
+}
+
+// -------------------------------------------------
+
+TYPESYSTEM_SOURCE(Part::GeomArcOfCircle,Part::GeomCurve);
+
+GeomArcOfCircle::GeomArcOfCircle()
+{
+    Handle_Geom_Circle c = new Geom_Circle(gp_Circ());
+    this->myCurve = new Geom_TrimmedCurve(c, c->FirstParameter(),c->LastParameter());
+}
+
+GeomArcOfCircle::GeomArcOfCircle(const Handle_Geom_Circle& c)
+{
+    this->myCurve = new Geom_TrimmedCurve(c, c->FirstParameter(),c->LastParameter());
+}
+
+GeomArcOfCircle::~GeomArcOfCircle()
+{
+}
+
+const Handle_Geom_Geometry& GeomArcOfCircle::handle() const
+{
+    return myCurve;
+}
+
+Geometry *GeomArcOfCircle::clone(void) const
+{
+    GeomArcOfCircle* copy = new GeomArcOfCircle(Handle_Geom_Circle::DownCast
+        (myCurve->BasisCurve()->Copy()));
+    copy->myCurve->SetTrim(this->myCurve->FirstParameter(), this->myCurve->LastParameter());
+    return copy;
+}
+
+Base::Vector3d GeomArcOfCircle::getCenter(void) const
+{
+    Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(myCurve->BasisCurve());
+    gp_Ax1 axis = circle->Axis();
+    const gp_Pnt& loc = axis.Location();
+    return Base::Vector3d(loc.X(),loc.Y(),loc.Z());
+}
+
+double GeomArcOfCircle::getRadius(void) const
+{
+    Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(myCurve->BasisCurve());
+    return circle->Radius();
+}
+
+void GeomArcOfCircle::setCenter(const Base::Vector3d& Center)
+{
+    gp_Pnt p1(Center.x,Center.y,Center.z);
+    Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(myCurve->BasisCurve());
+
+    try {
+        circle->SetLocation(p1);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        throw Base::Exception(e->GetMessageString());
+    }
+}
+
+void GeomArcOfCircle::setRadius(double Radius)
+{
+    Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(myCurve->BasisCurve());
+
+    try {
+        gp_Circ c = circle->Circ();
+        c.SetRadius(Radius);
+        circle->SetCirc(c);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        throw Base::Exception(e->GetMessageString());
+    }
+}
+
+void GeomArcOfCircle::getRange(double& u, double& v) const
+{
+    u = myCurve->FirstParameter();
+    v = myCurve->LastParameter();
+}
+
+void GeomArcOfCircle::setRange(double u, double v)
+{
+    myCurve->SetTrim(u, v);
+}
+
+// Persistence implementer 
+unsigned int GeomArcOfCircle::getMemSize (void) const {assert(0); return 0; /* not implemented yet */}
+void         GeomArcOfCircle::Save       (Base::Writer &) const  {assert(0);/* not implemented yet */}
+void         GeomArcOfCircle::Restore    (Base::XMLReader &)     {assert(0);/* not implemented yet */}
+
+PyObject *GeomArcOfCircle::getPyObject(void)
+{
+    GeomTrimmedCurve* trim = new GeomTrimmedCurve();
+    trim->setHandle(Handle_Geom_TrimmedCurve::DownCast(myCurve->Copy()));
+    return new ArcPy(trim);
 }
 
 // -------------------------------------------------
