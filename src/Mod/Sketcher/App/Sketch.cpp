@@ -241,8 +241,8 @@ int Sketch::addLineSegment(const Part::GeomLineSegment &lineSegment)
         p1.x = Parameters[PoPMap[Geoms.size()].startParamId+0];
         p1.y = Parameters[PoPMap[Geoms.size()].startParamId+1];
         // set the values
-        *(Parameters[PoPMap[Geoms.size()].startParamId+0]) = start.x;
-        *(Parameters[PoPMap[Geoms.size()].startParamId+1]) = start.y;
+        *(p1.x) = start.x;
+        *(p1.y) = start.y;
     } else {
         // otherwise set the parameter for the solver
         Parameters.push_back(new double(start.x));
@@ -258,8 +258,8 @@ int Sketch::addLineSegment(const Part::GeomLineSegment &lineSegment)
         p2.x = Parameters[PoPMap[Geoms.size()].endParamId+0];
         p2.y = Parameters[PoPMap[Geoms.size()].endParamId+1];
         // set the values
-        *(Parameters[PoPMap[Geoms.size()].endParamId+0]) = end.x;
-        *(Parameters[PoPMap[Geoms.size()].endParamId+1]) = end.y;
+        *(p2.x) = end.x;
+        *(p2.y) = end.y;
     } else {
         Parameters.push_back(new double(end.x));
         Parameters.push_back(new double(end.y));
@@ -305,7 +305,6 @@ int Sketch::addCircle(const GeomCircle &cir)
     def.type = Circle;
     def.construction = false;
 
-    // get the point from the line
     Base::Vector3d center = circ->getCenter();
     double radius         = circ->getRadius();
  
@@ -317,8 +316,8 @@ int Sketch::addCircle(const GeomCircle &cir)
         p1.x = Parameters[PoPMap[Geoms.size()].midParamId+0];
         p1.y = Parameters[PoPMap[Geoms.size()].midParamId+1];
         // set the values
-        *(Parameters[PoPMap[Geoms.size()].midParamId+0]) = center.x;
-        *(Parameters[PoPMap[Geoms.size()].midParamId+1]) = center.y;
+        *(p1.x) = center.x;
+        *(p1.y) = center.y;
     } else {
         // otherwise set the parameter for the solver
         Parameters.push_back(new double(center.x));
@@ -654,12 +653,12 @@ int Sketch::solve(double ** fixed, int n) {
                                                 0.0)
                                       );
                 } else if (it->type == Circle) {
-                    GeomCircle *circle = dynamic_cast<GeomCircle*>(it->geo);
-                    circle->setCenter(Vector3d(*Points[it->midPointId].x,
-                                               *Points[it->midPointId].y,
-                                               0.0)
-                                     );
-                    circle->setRadius(*Circles[it->index].rad);
+                    GeomCircle *circ = dynamic_cast<GeomCircle*>(it->geo);
+                    circ->setCenter(Vector3d(*Points[it->midPointId].x,
+                                             *Points[it->midPointId].y,
+                                             0.0)
+                                   );
+                    circ->setRadius(*Circles[it->index].rad);
                 }
             } catch (Base::Exception e) {
                 Base::Console().Error("Solve: Error build geometry(%d): %s\n",i,e.what());
@@ -711,8 +710,6 @@ int Sketch::movePoint(int geoIndex1, PointPos Pos1, Base::Vector3d toPoint)
           double dx = toPoint.x - (*(center.x));
           double dy = toPoint.y - (*(center.y));
           *(Circles[Geoms[geoIndex1].index].rad) = sqrt(dx*dx + dy*dy);
-          // FIXME: solve doesn't redirect circle radius pointers
-          //        not really sure if a fix condition here is necessary at all
           fixed [0] = Circles[Geoms[geoIndex1].index].rad;
           fixed_size = 1;
         }
