@@ -45,7 +45,7 @@ It describes the common behavior of these objects when:
     </Methode>
     <Attribute Name="Construction" ReadOnly="false">
       <Documentation>
-        <UserDocu>Defines this geomtry as a construction one which
+        <UserDocu>Defines this geometry as a construction one which
 means that it is not part of a later built shape.</UserDocu>
       </Documentation>
       <Parameter Name="Construction" Type="Boolean"/>

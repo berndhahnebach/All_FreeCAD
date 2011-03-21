@@ -37,7 +37,7 @@ namespace Part
 /** 2D Shape 
   * This is a specialiced Version of the PartShape for use with 
   * Flat (2D) geometry. The Z direction have always to be 0.
-  * The position and orientation of the Plane this 2D geomtry is
+  * The position and orientation of the Plane this 2D geometry is
   * referenced in is defined by the Placement property. It allso
   * has a link to a supporting Face which defines the position 
   * in space where its located. If the support is changed the

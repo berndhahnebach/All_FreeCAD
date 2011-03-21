@@ -288,7 +288,7 @@ public:
     void setPoints(const Base::Vector3d& p1, 
                    const Base::Vector3d& p2);
 
-     // Persistence implementer ---------------------
+    // Persistence implementer ---------------------
     virtual unsigned int getMemSize(void) const;
     virtual void Save(Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
