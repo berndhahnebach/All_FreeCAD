@@ -28,6 +28,7 @@
 # include <BRep_Builder.hxx>
 # include <BRepBndLib.hxx>
 # include <BRepPrimAPI_MakePrism.hxx>
+# include <BRepBuilderAPI_Copy.hxx>
 # include <BRepBuilderAPI_MakeFace.hxx>
 # include <Geom_Plane.hxx>
 # include <Handle_Geom_Surface.hxx>
@@ -89,6 +90,17 @@ App::DocumentObjectExecReturn *Pad::execute(void)
     TopoDS_Shape shape = static_cast<Part::Part2DObject*>(link)->Shape.getShape()._Shape;
     if (shape.IsNull())
         return new App::DocumentObjectExecReturn("Linked shape object is empty");
+
+    // this is a workaround for an obscure OCC bug which leads to empty tessellations
+    // for some faces. Making an explicit copy of the linked shape seems to fix it.
+    // The error only happens when re-computing the shape.
+    if (!this->Shape.getValue().IsNull()) {
+        BRepBuilderAPI_Copy copy(shape);
+        shape = copy.Shape();
+        if (shape.IsNull())
+            return new App::DocumentObjectExecReturn("Linked shape object is empty");
+    }
+
     TopExp_Explorer ex;
     std::vector<TopoDS_Wire> wires;
     for (ex.Init(shape, TopAbs_WIRE, TopAbs_FACE); ex.More(); ex.Next()) {
