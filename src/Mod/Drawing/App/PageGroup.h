@@ -32,13 +32,6 @@
 #include <App/PropertyLinks.h>
 
 
-class PyObjectBase;
-class FeaturePy;
-
-namespace Base{
-  class PyObjectBase;
-}
-
 namespace Drawing
 {
 

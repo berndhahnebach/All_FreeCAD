@@ -24,6 +24,7 @@
 # include <QSlider>
 # include <QStatusBar>
 # include <QToolBar>
+# include <cmath>
 #endif
 
 #include "ImageView.h"

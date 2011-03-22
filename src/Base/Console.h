@@ -29,7 +29,7 @@
 #define BASE_CONSOLE_H
 
 // Std. configurations
-#include "PyExport.h"
+#include <Base/PyExport.h>
 #include <Base/Stream.h>
 
 //#pragma warning(disable: 4786)  // specifier longer then 255 chars

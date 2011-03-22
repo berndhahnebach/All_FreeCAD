@@ -22,6 +22,7 @@
 
 
 #include "PreCompiled.h"
+#include "PyExport.h"
 #include "Exception.h"
 namespace Swig_1_3_25 {
 #include "swigpyrun_1.3.25.h"

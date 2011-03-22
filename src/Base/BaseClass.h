@@ -26,6 +26,9 @@
 
 #include "Type.h"
 
+// Python stuff
+typedef struct _object PyObject;
+
 
 /// define for subclassing Base::BaseClass
 #define TYPESYSTEM_HEADER() \
@@ -73,9 +76,6 @@ void _class_::init(void){\
 
 namespace Base
 {
-  //typedef struct _object PyObject;
-
-
 /// BaseClass class and root of the type system
 class BaseExport BaseClass
 {

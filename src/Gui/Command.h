@@ -33,6 +33,7 @@
 #include <Base/Type.h>
 
 class QWidget;
+typedef struct _object PyObject;
 
 namespace App
 {

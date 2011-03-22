@@ -32,13 +32,6 @@
 #include <App/PropertyGeo.h>
 
 
-class PyObjectBase;
-class FeaturePy;
-
-namespace Base{
-  class PyObjectBase;
-}
-
 namespace Raytracing
 {
 

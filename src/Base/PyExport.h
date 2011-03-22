@@ -31,10 +31,6 @@
 #ifndef BASE_PYEXPORT_H
 #define BASE_PYEXPORT_H
 
-// Std. configurations
-
-// needed header
-
 // (re-)defined in pyconfig.h
 #if defined (_POSIX_C_SOURCE)
 #   undef    _POSIX_C_SOURCE
@@ -43,16 +39,7 @@
 #   undef    _XOPEN_SOURCE
 #endif
 
-#undef slots
 #include <Python.h>
-#define slots
-//#include <iostream>
-//#include <typeinfo>
-
-// forward
-//class FCInterpreter;
-typedef struct _object PyObject;
-
 
 namespace Base
 {
