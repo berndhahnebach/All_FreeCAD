@@ -57,6 +57,7 @@
 #include "CirclePy.h"
 #include "EllipsePy.h"
 #include "ArcPy.h"
+#include "ArcOfCirclePy.h"
 #include "BezierCurvePy.h"
 #include "BSplineCurvePy.h"
 #include "HyperbolaPy.h"
@@ -104,6 +105,7 @@ void AppPartExport initPart()
     Base::Interpreter().addType(&Part::HyperbolaPy          ::Type,partModule,"Hyperbola");
     Base::Interpreter().addType(&Part::ParabolaPy           ::Type,partModule,"Parabola");
     Base::Interpreter().addType(&Part::ArcPy                ::Type,partModule,"Arc");
+    Base::Interpreter().addType(&Part::ArcOfCirclePy        ::Type,partModule,"ArcOfCircle");
     Base::Interpreter().addType(&Part::BezierCurvePy        ::Type,partModule,"BezierCurve");
     Base::Interpreter().addType(&Part::BSplineCurvePy       ::Type,partModule,"BSplineCurve");
     Base::Interpreter().addType(&Part::OffsetCurvePy        ::Type,partModule,"OffsetCurve");
