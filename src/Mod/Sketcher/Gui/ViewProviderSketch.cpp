@@ -29,6 +29,7 @@
 # include <BRepMesh.hxx>
 # include <BRep_Tool.hxx>
 # include <BRepTools.hxx>
+# include <Geom_TrimmedCurve.hxx>
 # include <TopoDS.hxx>
 # include <Inventor/SoPath.h>
 # include <Inventor/SoPickedPoint.h>
@@ -802,8 +803,47 @@ void ViewProviderSketch::draw(bool temp)
                 }
             }
 #endif
-        } else {
-            ; 
+        }
+        else if ((*it)->getTypeId()== Part::GeomArcOfCircle::getClassTypeId()) { // add an arc
+            const Part::GeomArcOfCircle *arc = dynamic_cast<const Part::GeomArcOfCircle*>(*it);
+            Handle_Geom_TrimmedCurve curve = Handle_Geom_TrimmedCurve::DownCast(arc->handle());
+
+            double radius = arc->getRadius();
+            double startangle, endangle;
+            arc->getRange(startangle, endangle);
+            if (startangle > endangle) // if arc is reversed
+                std::swap(startangle, endangle);
+
+            double range = endangle-startangle;
+            double factor = range / (2 * M_PI);
+            int countSegments = (int)(50.0 * factor);
+            double segment = range / countSegments;
+
+            Base::Vector3d center = arc->getCenter();
+            Base::Vector3d start  = arc->getStartPoint();
+            Base::Vector3d end    = arc->getEndPoint();
+
+            for (int i=0; i < countSegments; i++) {
+                gp_Pnt pnt = curve->Value(startangle);
+                Coords.push_back(Base::Vector3d(pnt.X(), pnt.Y(), 0));
+                startangle += segment;
+            }
+
+            // end point
+            gp_Pnt pnt = curve->Value(endangle);
+            Coords.push_back(Base::Vector3d(pnt.X(), pnt.Y(), 0));
+
+            Index.push_back(Coords.size());
+            Color.push_back(0);
+            Points.push_back(center);
+            Points.push_back(start);
+            Points.push_back(end);
+            PtColor.push_back(0);
+            PtColor.push_back(0);
+            PtColor.push_back(0);
+        }
+        else {
+            ;
         }
     }
 

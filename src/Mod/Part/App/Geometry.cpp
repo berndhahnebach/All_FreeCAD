@@ -427,6 +427,18 @@ Geometry *GeomArcOfCircle::clone(void) const
     return copy;
 }
 
+Base::Vector3d GeomArcOfCircle::getStartPoint() const
+{
+    gp_Pnt pnt = this->myCurve->StartPoint();
+    return Base::Vector3d(pnt.X(), pnt.Y(), pnt.Z());
+}
+
+Base::Vector3d GeomArcOfCircle::getEndPoint() const
+{
+    gp_Pnt pnt = this->myCurve->EndPoint();
+    return Base::Vector3d(pnt.X(), pnt.Y(), pnt.Z());
+}
+
 Base::Vector3d GeomArcOfCircle::getCenter(void) const
 {
     Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(myCurve->BasisCurve());
@@ -662,6 +674,14 @@ GeomLineSegment::GeomLineSegment()
 
 GeomLineSegment::~GeomLineSegment()
 {
+}
+
+void GeomLineSegment::setHandle(const Handle_Geom_TrimmedCurve& c)
+{
+    Handle_Geom_Line basis = Handle_Geom_Line::DownCast(c->BasisCurve());
+    if (basis.IsNull())
+        Standard_Failure::Raise("Basis curve is not a line");
+    this->myCurve = Handle_Geom_TrimmedCurve::DownCast(c->Copy());
 }
 
 const Handle_Geom_Geometry& GeomLineSegment::handle() const

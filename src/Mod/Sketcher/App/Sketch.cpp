@@ -37,6 +37,7 @@
 
 #include <Mod/Part/App/Geometry.h>
 #include <Mod/Part/App/GeometryCurvePy.h>
+#include <Mod/Part/App/ArcOfCirclePy.h>
 #include <Mod/Part/App/CirclePy.h>
 #include <Mod/Part/App/LinePy.h>
 
@@ -127,6 +128,10 @@ void Sketch::setUpSketch(const std::vector<Part::Geometry *> &geo, const std::ve
             const GeomCircle *circle = dynamic_cast<const GeomCircle*>((*it));
             addCircle(*circle);
         }
+        else if ((*it)->getTypeId()== GeomArcOfCircle::getClassTypeId()) {
+            const GeomArcOfCircle *arc = dynamic_cast<const GeomArcOfCircle*>((*it));
+            addArc(*arc);
+        }
         else {
             Base::Exception("Sketch::setUpSketch(): Unknown or unsupported type added to a sketch");
         }
@@ -172,6 +177,10 @@ int Sketch::addGeometry(const Part::Geometry *geo)
         const GeomCircle *circle = dynamic_cast<const GeomCircle*>(geo);
         // create the definition struct for that geom
         return addCircle(*circle);
+    } else if (geo->getTypeId()== GeomArcOfCircle::getClassTypeId()) { // add an arc
+        const GeomArcOfCircle *arc = dynamic_cast<const GeomArcOfCircle*>(geo);
+        // create the definition struct for that geom
+        return addArc(*arc);
     } else {
         Base::Exception("Sketch::addGeometry(): Unknown or unsupported type added to a sketch");
         return 0; 
@@ -221,7 +230,7 @@ int Sketch::addLine(const Part::GeomLineSegment &line)
 int Sketch::addLineSegment(const Part::GeomLineSegment &lineSegment)
 {
     // create our own copy
-    GeomLineSegment *lineSeg = new GeomLineSegment(lineSegment);
+    GeomLineSegment *lineSeg = static_cast<GeomLineSegment*>(lineSegment.clone());
     // create the definition struct for that geom
     GeoDef def;
     def.geo  = lineSeg;
@@ -288,9 +297,88 @@ int Sketch::addLineSegment(const Part::GeomLineSegment &lineSegment)
     return Geoms.size()-1;
 }
 
-int Sketch::addArc(const Part::GeomTrimmedCurve &circleSegment)
+int Sketch::addArc(const Part::GeomArcOfCircle &circleSegment)
 {
+    // create our own copy
+    GeomArcOfCircle *aoc = static_cast<GeomArcOfCircle*>(circleSegment.clone());
+    // create the definition struct for that geom
+    GeoDef def;
+    def.geo  = aoc;
+    def.type = Arc;
+    def.construction = false;
 
+    Base::Vector3d center = aoc->getCenter();
+    Base::Vector3d start  = aoc->getStartPoint();
+    Base::Vector3d end    = aoc->getEndPoint();
+    double radius         = aoc->getRadius();
+    double startAngle, endAngle;
+    aoc->getRange(startAngle, endAngle);
+ 
+    point p1, p2, p3;
+
+    // check if for the center point is already a constraint point present
+    if (PoPMap[Geoms.size()].midParamId != -1) {
+        // if yes, use the coincident point
+        p1.x = Parameters[PoPMap[Geoms.size()].midParamId+0];
+        p1.y = Parameters[PoPMap[Geoms.size()].midParamId+1];
+        p2.x = Parameters[PoPMap[Geoms.size()].midParamId+2];
+        p2.y = Parameters[PoPMap[Geoms.size()].midParamId+3];
+        p3.x = Parameters[PoPMap[Geoms.size()].midParamId+4];
+        p3.y = Parameters[PoPMap[Geoms.size()].midParamId+5];
+        // set the values
+        *(p1.x) = center.x;
+        *(p1.y) = center.y;
+        *(p2.x) = start.x;
+        *(p2.y) = start.y;
+        *(p3.x) = end.x;
+        *(p3.y) = end.y;
+    } else {
+        // otherwise set the parameter for the solver
+        unsigned int index = Parameters.size();
+        Parameters.push_back(new double(center.x));
+        Parameters.push_back(new double(center.y));
+        Parameters.push_back(new double(start.x));
+        Parameters.push_back(new double(start.y));
+        Parameters.push_back(new double(end.x));
+        Parameters.push_back(new double(end.y));
+        // set the points for later constraints
+        p1.x = Parameters[index+0];
+        p1.y = Parameters[index+1];
+        p2.x = Parameters[index+2];
+        p2.y = Parameters[index+3];
+        p3.x = Parameters[index+4];
+        p3.y = Parameters[index+5];
+    }
+
+    unsigned int index = Parameters.size();
+    Parameters.push_back(new double(radius));
+    Parameters.push_back(new double(startAngle));
+    Parameters.push_back(new double(endAngle));
+
+    def.midPointId = Points.size();
+    Points.push_back(p1);
+    Points.push_back(p2);
+    Points.push_back(p3);
+
+    // add the radius parameter
+    double *r = Parameters[index];
+    double *s = Parameters[index+1];
+    double *e = Parameters[index+2];
+
+    // set the arc for later constraints
+    arc a;
+    a.center     = p1;
+    a.start      = p2;
+    a.end        = p3;
+    a.rad        = r;
+    a.startAngle = s;
+    a.endAngle   = e;
+    def.index = Arcs.size();
+    Arcs.push_back(a);
+
+    // store complete set
+    Geoms.push_back(def);
+    
     // return the position of the newly added geometry
     return Geoms.size()-1;
 }
@@ -298,7 +386,7 @@ int Sketch::addArc(const Part::GeomTrimmedCurve &circleSegment)
 int Sketch::addCircle(const GeomCircle &cir)
 {
     // create our own copy
-    GeomCircle *circ = new GeomCircle(cir);
+    GeomCircle *circ = static_cast<GeomCircle*>(cir.clone());
     // create the definition struct for that geom
     GeoDef def;
     def.geo  = circ;
@@ -335,7 +423,7 @@ int Sketch::addCircle(const GeomCircle &cir)
     // add the radius parameter
     double *r = Parameters[Parameters.size()-1];
 
-    // set the circel for later constraints
+    // set the circle for later constraints
     circle c;
     c.center = p1;
     c.rad    = r;
@@ -386,6 +474,9 @@ Py::Tuple Sketch::getPyGeometry(void) const
         } else if (it->type == Circle) {
             GeomCircle *circle = dynamic_cast<GeomCircle*>(it->geo);
             tuple[i] = Py::Object(new CirclePy(circle));
+        } else if (it->type == Arc) {
+            GeomArcOfCircle *arc = dynamic_cast<GeomArcOfCircle*>(it->geo);
+            tuple[i] = Py::Object(new ArcOfCirclePy(arc));
         } else if (it->type == Point) {
             Base::Vector3d temp(*(Points[Geoms[i].startPointId].x),*(Points[Geoms[i].startPointId].y),0);
             tuple[i] = Py::Object(new VectorPy(temp));
@@ -659,6 +750,13 @@ int Sketch::solve(double ** fixed, int n) {
                                              0.0)
                                    );
                     circ->setRadius(*Circles[it->index].rad);
+                } else if (it->type == Arc) {
+                    GeomArcOfCircle *arc = dynamic_cast<GeomArcOfCircle*>(it->geo);
+                    arc->setCenter(Vector3d(*Points[it->midPointId].x,
+                                            *Points[it->midPointId].y,
+                                            0.0)
+                                   );
+                    arc->setRadius(*Arcs[it->index].rad);
                 }
             } catch (Base::Exception e) {
                 Base::Console().Error("Solve: Error build geometry(%d): %s\n",i,e.what());

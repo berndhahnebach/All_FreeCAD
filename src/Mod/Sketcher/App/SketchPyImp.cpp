@@ -72,8 +72,8 @@ PyObject* SketchPy::addGeometry(PyObject *args)
         return 0;
 
     if (PyObject_TypeCheck(pcObj, &(LinePy::Type))) {
-        GeomLineSegment *line = new GeomLineSegment(*static_cast<LinePy*>(pcObj)->getGeomLineSegmentPtr());
-        return Py::new_reference_to(Py::Int(this->getSketchPtr()->addGeometry(line)));
+        GeomLineSegment *line = static_cast<LinePy*>(pcObj)->getGeomLineSegmentPtr();
+        return Py::new_reference_to(Py::Int(this->getSketchPtr()->addGeometry(line->clone())));
     }
     Py_Return; 
 }
@@ -124,7 +124,6 @@ PyObject* SketchPy::clear(PyObject *args)
         return 0;
 
     return Py::new_reference_to(Py::Int(getSketchPtr()->addVerticalConstraint(index)));
-
 }
 
 PyObject* SketchPy::movePoint(PyObject *args)

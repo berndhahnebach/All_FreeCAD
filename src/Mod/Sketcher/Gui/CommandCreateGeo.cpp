@@ -691,11 +691,7 @@ void CmdSketcherCreateArc::activated(int iMsg)
 
 bool CmdSketcherCreateArc::isActive(void)
 {
-#ifdef FC_DEBUG
     return isCreateGeoActive(getActiveGuiDocument());
-#else
-    return false;
-#endif
 }
 
 // ======================================================================================

@@ -97,7 +97,7 @@ public:
     /// add a line segment 
     int addLineSegment(const Part::GeomLineSegment &lineSegment);
     /// add a arc (circle segment)
-    int addArc(const Part::GeomTrimmedCurve &circleSegment);
+    int addArc(const Part::GeomArcOfCircle &circleSegment);
     /// add a circle
     int addCircle(const Part::GeomCircle &circle);
     /// add a ellipse
@@ -159,6 +159,7 @@ protected:
     std::vector<point>  Points;
     std::vector<line>   Lines;
     std::vector<circle> Circles;
+    std::vector<arc>    Arcs;
 
     // helper for the PointOnPoint constraint optimization
     struct PoPConst {

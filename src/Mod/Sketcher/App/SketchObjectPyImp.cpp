@@ -178,6 +178,9 @@ PyObject* SketchObjectPy::movePoint(PyObject *args)
         delete newCircle;
 
     }
+    else if (actGeom->getTypeId() == Part::GeomArcOfCircle::getClassTypeId()) {
+        Py_Error(PyExc_NotImplementedError,"Not implemented");
+    }
     else
         Py_Error(PyExc_AttributeError,"wrong Geometry");
 
