@@ -3,6 +3,7 @@ lib_LTLIBRARIES=libPart.la Part.la
 
 BUILT_SOURCES=\
 		ArcPy.cpp \
+		ArcOfCirclePy.cpp \
 		CirclePy.cpp \
 		EllipsePy.cpp \
 		HyperbolaPy.cpp \
@@ -40,6 +41,7 @@ BUILT_SOURCES=\
 
 libPart_la_BUILT=\
 		ArcPy.h \
+		ArcOfCirclePy.h \
 		CirclePy.h \
 		EllipsePy.h \
 		HyperbolaPy.h \
@@ -78,6 +80,7 @@ libPart_la_BUILT=\
 libPart_la_SOURCES=\
 		AppPartPy.cpp \
 		ArcPyImp.cpp \
+		ArcOfCirclePyImp.cpp \
 		CirclePyImp.cpp \
 		CrossSection.cpp \
 		EllipsePyImp.cpp \
@@ -251,6 +254,7 @@ CLEANFILES = $(BUILT_SOURCES) $(libPart_la_BUILT)
 EXTRA_DIST = \
 		OpenCascadeAll.h \
 		ArcPy.xml \
+		ArcOfCirclePy.xml \
 		CirclePy.xml \
 		EllipsePy.xml \
 		HyperbolaPy.xml \

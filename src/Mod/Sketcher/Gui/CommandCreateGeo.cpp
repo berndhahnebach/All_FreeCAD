@@ -652,7 +652,7 @@ public:
             resetPositionText();
             Gui::Command::openCommand("Add sketch arc");
             Gui::Command::doCommand(Gui::Command::Doc,
-                "App.ActiveDocument.%s.addGeometry(Part.Arc"
+                "App.ActiveDocument.%s.addGeometry(Part.ArcOfCircle"
                 "(App.Vector(%f,%f,0),App.Vector(%f,%f,0),App.Vector(%f,%f,0)))",
                       sketchgui->getObject()->getNameInDocument(),
                       EditCurve[0].fX,EditCurve[0].fY,

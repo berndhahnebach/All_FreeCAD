@@ -24,6 +24,7 @@ set(Part_LIBS
 )
 
 generate_from_xml(ArcPy)
+generate_from_xml(ArcOfCirclePy)
 generate_from_xml(CirclePy)
 generate_from_xml(EllipsePy)
 generate_from_xml(HyperbolaPy)
@@ -131,6 +132,8 @@ SOURCE_GROUP("Properties" FILES ${Properties_SRCS})
 SET(Python_SRCS
     ArcPy.xml
     ArcPyImp.cpp
+    ArcOfCirclePy.xml
+    ArcOfCirclePyImp.cpp
     CirclePy.xml
     CirclePyImp.cpp
     EllipsePy.xml

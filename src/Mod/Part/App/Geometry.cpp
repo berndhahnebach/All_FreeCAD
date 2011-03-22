@@ -80,6 +80,7 @@
 #include "CirclePy.h"
 #include "EllipsePy.h"
 #include "ArcPy.h"
+#include "ArcOfCirclePy.h"
 #include "BezierCurvePy.h"
 #include "BSplineCurvePy.h"
 #include "HyperbolaPy.h"
@@ -144,10 +145,11 @@ const char* gce_ErrorStatusText(gce_ErrorType et)
 }
 
 // ---------------------------------------------------------------
+
 TYPESYSTEM_SOURCE_ABSTRACT(Part::Geometry,Base::Persistence);
 
 Geometry::Geometry()
-:Construction(false)
+  : Construction(false)
 {
 }
 
@@ -176,6 +178,7 @@ void         Geometry::Restore    (Base::XMLReader &reader)
 }
 
 // -------------------------------------------------
+
 TYPESYSTEM_SOURCE_ABSTRACT(Part::GeomCurve,Part::Geometry);
 
 GeomCurve::GeomCurve()
@@ -221,7 +224,7 @@ GeomBezierCurve::GeomBezierCurve()
 
 GeomBezierCurve::GeomBezierCurve(const Handle_Geom_BezierCurve& b)
 {
-    this->myCurve = b;
+    this->myCurve = Handle_Geom_BezierCurve::DownCast(b->Copy());
 }
 
 GeomBezierCurve::~GeomBezierCurve()
@@ -233,9 +236,9 @@ const Handle_Geom_Geometry& GeomBezierCurve::handle() const
     return myCurve;
 }
 
-Geometry *GeomBezierCurve::clone(void)const
+Geometry *GeomBezierCurve::clone(void) const
 {
-    return new GeomBezierCurve(Handle_Geom_BezierCurve::DownCast(myCurve->Copy()));
+    return new GeomBezierCurve(myCurve);
 }
 
 // Persistence implementer 
@@ -271,7 +274,7 @@ GeomBSplineCurve::GeomBSplineCurve()
 
 GeomBSplineCurve::GeomBSplineCurve(const Handle_Geom_BSplineCurve& b)
 {
-    this->myCurve = b;
+    this->myCurve = Handle_Geom_BSplineCurve::DownCast(b->Copy());
 }
 
 GeomBSplineCurve::~GeomBSplineCurve()
@@ -280,7 +283,7 @@ GeomBSplineCurve::~GeomBSplineCurve()
 
 void GeomBSplineCurve::setHandle(const Handle_Geom_BSplineCurve& c)
 {
-    myCurve = c;
+    myCurve = Handle_Geom_BSplineCurve::DownCast(c->Copy());
 }
 
 const Handle_Geom_Geometry& GeomBSplineCurve::handle() const
@@ -288,9 +291,9 @@ const Handle_Geom_Geometry& GeomBSplineCurve::handle() const
     return myCurve;
 }
 
-Geometry *GeomBSplineCurve::clone(void)const
+Geometry *GeomBSplineCurve::clone(void) const
 {
-    return new GeomBSplineCurve(Handle_Geom_BSplineCurve::DownCast(myCurve->Copy()));
+    return new GeomBSplineCurve(myCurve);
 }
 
 // Persistence implementer 
@@ -315,7 +318,7 @@ GeomCircle::GeomCircle()
 
 GeomCircle::GeomCircle(const Handle_Geom_Circle& c)
 {
-    this->myCurve = c;
+    this->myCurve = Handle_Geom_Circle::DownCast(c->Copy());
 }
 
 GeomCircle::~GeomCircle()
@@ -327,9 +330,9 @@ const Handle_Geom_Geometry& GeomCircle::handle() const
     return myCurve;
 }
 
-Geometry *GeomCircle::clone(void)const
+Geometry *GeomCircle::clone(void) const
 {
-    return new GeomCircle(Handle_Geom_Circle::DownCast(myCurve->Copy()));
+    return new GeomCircle(myCurve);
 }
 
 Base::Vector3d GeomCircle::getCenter(void) const
@@ -404,6 +407,14 @@ GeomArcOfCircle::~GeomArcOfCircle()
 {
 }
 
+void GeomArcOfCircle::setHandle(const Handle_Geom_TrimmedCurve& c)
+{
+    Handle_Geom_Circle basis = Handle_Geom_Circle::DownCast(c->BasisCurve());
+    if (basis.IsNull())
+        Standard_Failure::Raise("Basis curve is not a circle");
+    this->myCurve = Handle_Geom_TrimmedCurve::DownCast(c->Copy());
+}
+
 const Handle_Geom_Geometry& GeomArcOfCircle::handle() const
 {
     return myCurve;
@@ -411,9 +422,8 @@ const Handle_Geom_Geometry& GeomArcOfCircle::handle() const
 
 Geometry *GeomArcOfCircle::clone(void) const
 {
-    GeomArcOfCircle* copy = new GeomArcOfCircle(Handle_Geom_Circle::DownCast
-        (myCurve->BasisCurve()->Copy()));
-    copy->myCurve->SetTrim(this->myCurve->FirstParameter(), this->myCurve->LastParameter());
+    GeomArcOfCircle* copy = new GeomArcOfCircle();
+    copy->setHandle(this->myCurve);
     return copy;
 }
 
@@ -478,9 +488,7 @@ void         GeomArcOfCircle::Restore    (Base::XMLReader &)     {assert(0);/* n
 
 PyObject *GeomArcOfCircle::getPyObject(void)
 {
-    GeomTrimmedCurve* trim = new GeomTrimmedCurve();
-    trim->setHandle(Handle_Geom_TrimmedCurve::DownCast(myCurve->Copy()));
-    return new ArcPy(trim);
+    return new ArcOfCirclePy(static_cast<GeomArcOfCircle*>(this->clone()));
 }
 
 // -------------------------------------------------
@@ -495,7 +503,7 @@ GeomEllipse::GeomEllipse()
 
 GeomEllipse::GeomEllipse(const Handle_Geom_Ellipse& e)
 {
-    this->myCurve = e;
+    this->myCurve = Handle_Geom_Ellipse::DownCast(e->Copy());
 }
 
 GeomEllipse::~GeomEllipse()
@@ -507,9 +515,9 @@ const Handle_Geom_Geometry& GeomEllipse::handle() const
     return myCurve;
 }
 
-Geometry *GeomEllipse::clone(void)const
+Geometry *GeomEllipse::clone(void) const
 {
-    return new GeomEllipse(Handle_Geom_Ellipse::DownCast(myCurve->Copy()));
+    return new GeomEllipse(myCurve);
 }
 
 // Persistence implementer 
@@ -534,7 +542,7 @@ GeomHyperbola::GeomHyperbola()
 
 GeomHyperbola::GeomHyperbola(const Handle_Geom_Hyperbola& h)
 {
-    this->myCurve = h;
+    this->myCurve = Handle_Geom_Hyperbola::DownCast(h->Copy());
 }
 
 GeomHyperbola::~GeomHyperbola()
@@ -546,9 +554,9 @@ const Handle_Geom_Geometry& GeomHyperbola::handle() const
     return myCurve;
 }
 
-Geometry *GeomHyperbola::clone(void)const
+Geometry *GeomHyperbola::clone(void) const
 {
-    return new GeomHyperbola(Handle_Geom_Hyperbola::DownCast(myCurve->Copy()));
+    return new GeomHyperbola(myCurve);
 }
 
 // Persistence implementer 
@@ -573,7 +581,7 @@ GeomParabola::GeomParabola()
 
 GeomParabola::GeomParabola(const Handle_Geom_Parabola& p)
 {
-    this->myCurve = p;
+    this->myCurve = Handle_Geom_Parabola::DownCast(p->Copy());
 }
 
 GeomParabola::~GeomParabola()
@@ -585,9 +593,9 @@ const Handle_Geom_Geometry& GeomParabola::handle() const
     return myCurve;
 }
 
-Geometry *GeomParabola::clone(void)const
+Geometry *GeomParabola::clone(void) const
 {
-    return new GeomParabola(Handle_Geom_Parabola::DownCast(myCurve->Copy()));
+    return new GeomParabola(myCurve);
 }
 
 // Persistence implementer 
@@ -612,7 +620,7 @@ GeomLine::GeomLine()
 
 GeomLine::GeomLine(const Handle_Geom_Line& c)
 {
-    this->myCurve = c;
+    this->myCurve = Handle_Geom_Line::DownCast(c->Copy());
 }
 
 GeomLine::~GeomLine()
@@ -624,9 +632,9 @@ const Handle_Geom_Geometry& GeomLine::handle() const
     return myCurve;
 }
 
-Geometry *GeomLine::clone(void)const
+Geometry *GeomLine::clone(void) const
 {
-    return new GeomLine(Handle_Geom_Line::DownCast(myCurve->Copy()));
+    return new GeomLine(myCurve);
 }
 
 // Persistence implementer 
@@ -771,21 +779,21 @@ GeomOffsetCurve::GeomOffsetCurve(const Handle_Geom_Curve& c, double offset, cons
 
 GeomOffsetCurve::GeomOffsetCurve(const Handle_Geom_OffsetCurve& c)
 {
-    this->myCurve = c;
+    this->myCurve = Handle_Geom_OffsetCurve::DownCast(c->Copy());
 }
 
 GeomOffsetCurve::~GeomOffsetCurve()
 {
 }
 
-Geometry *GeomOffsetCurve::clone(void)const
+Geometry *GeomOffsetCurve::clone(void) const
 {
-    return new GeomOffsetCurve(Handle_Geom_OffsetCurve::DownCast(myCurve->Copy()));
+    return new GeomOffsetCurve(myCurve);
 }
 
 void GeomOffsetCurve::setHandle(const Handle_Geom_OffsetCurve& c)
 {
-    this->myCurve = c;
+    this->myCurve = Handle_Geom_OffsetCurve::DownCast(c->Copy());
 }
 
 const Handle_Geom_Geometry& GeomOffsetCurve::handle() const
@@ -813,7 +821,7 @@ GeomTrimmedCurve::GeomTrimmedCurve()
 
 GeomTrimmedCurve::GeomTrimmedCurve(const Handle_Geom_TrimmedCurve& c)
 {
-    this->myCurve = c;
+    this->myCurve = Handle_Geom_TrimmedCurve::DownCast(c->Copy());
 }
 
 GeomTrimmedCurve::~GeomTrimmedCurve()
@@ -822,7 +830,7 @@ GeomTrimmedCurve::~GeomTrimmedCurve()
 
 void GeomTrimmedCurve::setHandle(const Handle_Geom_TrimmedCurve& c)
 {
-    this->myCurve = c;
+    this->myCurve = Handle_Geom_TrimmedCurve::DownCast(c->Copy());
 }
 
 const Handle_Geom_Geometry& GeomTrimmedCurve::handle() const
@@ -830,9 +838,9 @@ const Handle_Geom_Geometry& GeomTrimmedCurve::handle() const
     return myCurve;
 }
 
-Geometry *GeomTrimmedCurve::clone(void)const
+Geometry *GeomTrimmedCurve::clone(void) const
 {
-    return new GeomTrimmedCurve(Handle_Geom_TrimmedCurve::DownCast(myCurve->Copy()));;
+    return new GeomTrimmedCurve(myCurve);
 }
 
 // Persistence implementer 
@@ -906,7 +914,7 @@ GeomBezierSurface::GeomBezierSurface()
 
 GeomBezierSurface::GeomBezierSurface(const Handle_Geom_BezierSurface& b)
 {
-    this->mySurface = b;
+    this->mySurface = Handle_Geom_BezierSurface::DownCast(b->Copy());
 }
 
 GeomBezierSurface::~GeomBezierSurface()
@@ -918,9 +926,9 @@ const Handle_Geom_Geometry& GeomBezierSurface::handle() const
     return mySurface;
 }
 
-Geometry *GeomBezierSurface::clone(void)const
+Geometry *GeomBezierSurface::clone(void) const
 {
-    return new GeomBezierSurface(Handle_Geom_BezierSurface::DownCast(mySurface->Copy()));
+    return new GeomBezierSurface(mySurface);
 }
 
 // Persistence implementer 
@@ -958,7 +966,7 @@ GeomBSplineSurface::GeomBSplineSurface()
 
 GeomBSplineSurface::GeomBSplineSurface(const Handle_Geom_BSplineSurface& b)
 {
-    this->mySurface = b;
+    this->mySurface = Handle_Geom_BSplineSurface::DownCast(b->Copy());
 }
 
 GeomBSplineSurface::~GeomBSplineSurface()
@@ -970,9 +978,9 @@ const Handle_Geom_Geometry& GeomBSplineSurface::handle() const
     return mySurface;
 }
 
-Geometry *GeomBSplineSurface::clone(void)const
+Geometry *GeomBSplineSurface::clone(void) const
 {
-    return new GeomBSplineSurface(Handle_Geom_BSplineSurface::DownCast(mySurface->Copy()));
+    return new GeomBSplineSurface(mySurface);
 }
 
 // Persistence implementer 
@@ -1004,7 +1012,7 @@ const Handle_Geom_Geometry& GeomCylinder::handle() const
     return mySurface;
 }
 
-Geometry *GeomCylinder::clone(void)const
+Geometry *GeomCylinder::clone(void) const
 {
     GeomCylinder *tempCurve = new GeomCylinder();
     tempCurve->mySurface = Handle_Geom_CylindricalSurface::DownCast(mySurface->Copy());
@@ -1040,7 +1048,7 @@ const Handle_Geom_Geometry& GeomCone::handle() const
     return mySurface;
 }
 
-Geometry *GeomCone::clone(void)const
+Geometry *GeomCone::clone(void) const
 {
     GeomCone *tempCurve = new GeomCone();
     tempCurve->mySurface = Handle_Geom_ConicalSurface::DownCast(mySurface->Copy());
@@ -1076,7 +1084,7 @@ const Handle_Geom_Geometry& GeomToroid::handle() const
     return mySurface;
 }
 
-Geometry *GeomToroid::clone(void)const
+Geometry *GeomToroid::clone(void) const
 {
     GeomToroid *tempCurve = new GeomToroid();
     tempCurve->mySurface = Handle_Geom_ToroidalSurface::DownCast(mySurface->Copy());
@@ -1112,7 +1120,7 @@ const Handle_Geom_Geometry& GeomSphere::handle() const
     return mySurface;
 }
 
-Geometry *GeomSphere::clone(void)const
+Geometry *GeomSphere::clone(void) const
 {
     GeomSphere *tempCurve = new GeomSphere();
     tempCurve->mySurface = Handle_Geom_SphericalSurface::DownCast(mySurface->Copy());
@@ -1148,7 +1156,7 @@ const Handle_Geom_Geometry& GeomPlane::handle() const
     return mySurface;
 }
 
-Geometry *GeomPlane::clone(void)const
+Geometry *GeomPlane::clone(void) const
 {
     GeomPlane *tempCurve = new GeomPlane();
     tempCurve->mySurface = Handle_Geom_Plane::DownCast(mySurface->Copy());
@@ -1179,7 +1187,7 @@ GeomOffsetSurface::GeomOffsetSurface(const Handle_Geom_Surface& s, double offset
 
 GeomOffsetSurface::GeomOffsetSurface(const Handle_Geom_OffsetSurface& s)
 {
-    this->mySurface = s;
+    this->mySurface = Handle_Geom_OffsetSurface::DownCast(s->Copy());
 }
 
 GeomOffsetSurface::~GeomOffsetSurface()
@@ -1188,7 +1196,7 @@ GeomOffsetSurface::~GeomOffsetSurface()
 
 void GeomOffsetSurface::setHandle(const Handle_Geom_OffsetSurface& s)
 {
-    mySurface = s;
+    mySurface = Handle_Geom_OffsetSurface::DownCast(s->Copy());
 }
 
 const Handle_Geom_Geometry& GeomOffsetSurface::handle() const
@@ -1196,9 +1204,9 @@ const Handle_Geom_Geometry& GeomOffsetSurface::handle() const
     return mySurface;
 }
 
-Geometry *GeomOffsetSurface::clone(void)const
+Geometry *GeomOffsetSurface::clone(void) const
 {
-    return new GeomOffsetSurface(Handle_Geom_OffsetSurface::DownCast(mySurface->Copy()));
+    return new GeomOffsetSurface(mySurface);
 }
 
 // Persistence implementer 
@@ -1221,7 +1229,7 @@ GeomTrimmedSurface::GeomTrimmedSurface()
 
 GeomTrimmedSurface::GeomTrimmedSurface(const Handle_Geom_RectangularTrimmedSurface& s)
 {
-    this->mySurface = s;
+    this->mySurface = Handle_Geom_RectangularTrimmedSurface::DownCast(s->Copy());
 }
 
 GeomTrimmedSurface::~GeomTrimmedSurface()
@@ -1230,7 +1238,7 @@ GeomTrimmedSurface::~GeomTrimmedSurface()
 
 void GeomTrimmedSurface::setHandle(const Handle_Geom_RectangularTrimmedSurface& s)
 {
-    mySurface = s;
+    mySurface = Handle_Geom_RectangularTrimmedSurface::DownCast(s->Copy());
 }
 
 const Handle_Geom_Geometry& GeomTrimmedSurface::handle() const
@@ -1238,9 +1246,9 @@ const Handle_Geom_Geometry& GeomTrimmedSurface::handle() const
     return mySurface;
 }
 
-Geometry *GeomTrimmedSurface::clone(void)const
+Geometry *GeomTrimmedSurface::clone(void) const
 {
-    return new GeomTrimmedSurface(Handle_Geom_RectangularTrimmedSurface::DownCast(mySurface->Copy()));
+    return new GeomTrimmedSurface(mySurface);
 }
 
 // Persistence implementer 
@@ -1268,7 +1276,7 @@ GeomSurfaceOfRevolution::GeomSurfaceOfRevolution(const Handle_Geom_Curve& c, con
 
 GeomSurfaceOfRevolution::GeomSurfaceOfRevolution(const Handle_Geom_SurfaceOfRevolution& s)
 {
-    this->mySurface = s;
+    this->mySurface = Handle_Geom_SurfaceOfRevolution::DownCast(s->Copy());
 }
 
 GeomSurfaceOfRevolution::~GeomSurfaceOfRevolution()
@@ -1277,7 +1285,7 @@ GeomSurfaceOfRevolution::~GeomSurfaceOfRevolution()
 
 void GeomSurfaceOfRevolution::setHandle(const Handle_Geom_SurfaceOfRevolution& c)
 {
-    mySurface = c;
+    mySurface = Handle_Geom_SurfaceOfRevolution::DownCast(c->Copy());
 }
 
 const Handle_Geom_Geometry& GeomSurfaceOfRevolution::handle() const
@@ -1285,9 +1293,9 @@ const Handle_Geom_Geometry& GeomSurfaceOfRevolution::handle() const
     return mySurface;
 }
 
-Geometry *GeomSurfaceOfRevolution::clone(void)const
+Geometry *GeomSurfaceOfRevolution::clone(void) const
 {
-    return new GeomSurfaceOfRevolution(Handle_Geom_SurfaceOfRevolution::DownCast(mySurface->Copy()));
+    return new GeomSurfaceOfRevolution(mySurface);
 }
 
 // Persistence implementer 
@@ -1315,7 +1323,7 @@ GeomSurfaceOfExtrusion::GeomSurfaceOfExtrusion(const Handle_Geom_Curve& c, const
 
 GeomSurfaceOfExtrusion::GeomSurfaceOfExtrusion(const Handle_Geom_SurfaceOfLinearExtrusion& s)
 {
-    this->mySurface = s;
+    this->mySurface = Handle_Geom_SurfaceOfLinearExtrusion::DownCast(s->Copy());
 }
 
 GeomSurfaceOfExtrusion::~GeomSurfaceOfExtrusion()
@@ -1324,7 +1332,7 @@ GeomSurfaceOfExtrusion::~GeomSurfaceOfExtrusion()
 
 void GeomSurfaceOfExtrusion::setHandle(const Handle_Geom_SurfaceOfLinearExtrusion& c)
 {
-    mySurface = c;
+    mySurface = Handle_Geom_SurfaceOfLinearExtrusion::DownCast(c->Copy());
 }
 
 const Handle_Geom_Geometry& GeomSurfaceOfExtrusion::handle() const
@@ -1332,9 +1340,9 @@ const Handle_Geom_Geometry& GeomSurfaceOfExtrusion::handle() const
     return mySurface;
 }
 
-Geometry *GeomSurfaceOfExtrusion::clone(void)const
+Geometry *GeomSurfaceOfExtrusion::clone(void) const
 {
-    return new GeomSurfaceOfExtrusion(Handle_Geom_SurfaceOfLinearExtrusion::DownCast(mySurface->Copy()));
+    return new GeomSurfaceOfExtrusion(mySurface);
 }
 
 // Persistence implementer 
