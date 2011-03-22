@@ -32,7 +32,6 @@
 #include "MeshProperties.h"
 
 namespace Base{
-  class PyObjectBase;
   class XMLReader;
   class Writer;
 }

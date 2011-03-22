@@ -16,7 +16,10 @@
  ***************************************************************************/
 
 #include "PreCompiled.h"
-#include <math.h>
+#ifndef _PreComp_
+# include <cmath>
+# include <cstring>
+#endif
 
 #include "ImageBase.h"
 #include <Base/Exception.h>

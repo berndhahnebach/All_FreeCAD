@@ -30,12 +30,6 @@
 #include <App/PropertyFile.h>
 
 
-class PyObjectBase;
-
-namespace Base{
-    class PyObjectBase;
-}
-
 namespace Drawing
 {
 

@@ -22,6 +22,7 @@
 
 
 #include "PreCompiled.h"
+#include "PyExport.h"
 #include "Exception.h"
 namespace Swig_1_3_40 {
 #define SWIG_PYTHON_NO_BUILD_NONE

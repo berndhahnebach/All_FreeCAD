@@ -30,11 +30,6 @@
 # include <stdint.h>
 #endif
 
-namespace Base
-{
-    class PyObjectBase;
-}
-
 namespace App
 {
 
@@ -196,8 +191,6 @@ public:
    */
   MaterialType getType() const
   { return _matType; }
-
-  //Base::PyObjectBase* GetPyObject(void);
 
   /** @name Properties */
   //@{

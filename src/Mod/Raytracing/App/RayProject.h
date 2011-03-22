@@ -30,9 +30,6 @@
 #include <App/PropertyStandard.h>
 #include <App/PropertyFile.h>
 
-class PyObjectBase;
-class FeaturePy;
-
 namespace Raytracing
 {
 

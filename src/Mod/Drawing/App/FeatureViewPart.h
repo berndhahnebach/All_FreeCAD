@@ -33,12 +33,6 @@
 #include <App/FeaturePython.h>
 
 
-class PyObjectBase;
-
-namespace Base{
-  class PyObjectBase;
-}
-
 namespace Drawing
 {
 

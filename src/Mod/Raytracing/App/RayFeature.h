@@ -33,9 +33,6 @@
 #include "RaySegment.h"
 
 
-class PyObjectBase;
-class FeaturePy;
-
 namespace Raytracing
 {
 
