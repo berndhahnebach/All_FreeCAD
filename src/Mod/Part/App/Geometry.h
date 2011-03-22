@@ -72,6 +72,10 @@ public:
 
 protected:
     Geometry();
+
+private:
+    Geometry(const Geometry&);
+    Geometry& operator = (const Geometry&);
 };
 
 class PartExport GeomCurve : public Geometry
@@ -165,6 +169,9 @@ public:
     GeomArcOfCircle(const Handle_Geom_Circle&);
     virtual ~GeomArcOfCircle();
     virtual Geometry *clone(void) const;
+
+    Base::Vector3d getStartPoint() const;
+    Base::Vector3d getEndPoint() const;
 
     Base::Vector3d getCenter(void) const;
     double getRadius(void) const;
@@ -296,6 +303,7 @@ public:
     // Base implementer ----------------------------
     virtual PyObject *getPyObject(void);
 
+    void setHandle(const Handle_Geom_TrimmedCurve&);
     const Handle_Geom_Geometry& handle() const;
 
 private:
