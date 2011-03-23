@@ -54,6 +54,18 @@
 			</Documentation>
 			<Parameter Name="Q" Type="Tuple" />
 		</Attribute>
+		<Attribute Name="Axis" ReadOnly="true">
+			<Documentation>
+				<UserDocu>The rotation axis of the quaternion</UserDocu>
+			</Documentation>
+			<Parameter Name="Axis" Type="Object" />
+		</Attribute>
+		<Attribute Name="Angle" ReadOnly="true">
+			<Documentation>
+				<UserDocu>The rotation angle of the quaternion</UserDocu>
+			</Documentation>
+			<Parameter Name="Angle" Type="Float" />
+		</Attribute>
 		<ClassDeclarations>
 			public:
 			RotationPy(const Rotation &amp; mat, PyTypeObject *T = &amp;Type)
