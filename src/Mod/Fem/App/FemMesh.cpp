@@ -671,7 +671,7 @@ void FemMesh::transformGeometry(const Base::Matrix4D& rclTrf)
 	for (;aNodeIter->more();) {
 		const SMDS_MeshNode* aNode = aNodeIter->next();
 		current_node.Set(aNode->X(),aNode->Y(),aNode->Z());
-		current_node = current_node * clMatrix;
+		current_node = clMatrix * current_node;
 		myMesh->GetMeshDS()->MoveNode(aNode,current_node.x,current_node.y,current_node.z);
 	}
 }

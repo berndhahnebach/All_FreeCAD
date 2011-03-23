@@ -36,11 +36,12 @@ class BRepExtrema_DistShapeShape;
 
 namespace MeshCore {
 class MeshKernel;
-class MeshFacetGrid;
+class MeshGrid;
 }
 
+namespace Mesh   { class MeshObject; }
 namespace Points { class PointsGrid; }
-namespace Part { class TopoShape; }
+namespace Part   { class TopoShape;  }
 
 namespace Inspection
 {
@@ -59,7 +60,7 @@ public:
 class InspectionAppExport InspectActualMesh : public InspectActualGeometry
 {
 public:
-    InspectActualMesh( const MeshCore::MeshKernel& rMesh );
+    InspectActualMesh(const Mesh::MeshObject& rMesh);
     ~InspectActualMesh();
     virtual unsigned long countPoints() const;
     virtual Base::Vector3f getPoint(unsigned long);
@@ -104,26 +105,26 @@ public:
 class InspectionAppExport InspectNominalMesh : public InspectNominalGeometry
 {
 public:
-    InspectNominalMesh(const MeshCore::MeshKernel& rMesh, float offset);
+    InspectNominalMesh(const Mesh::MeshObject& rMesh, float offset);
     ~InspectNominalMesh();
     virtual float getDistance(const Base::Vector3f&);
 
 private:
     MeshCore::MeshFacetIterator _iter;
-    MeshCore::MeshFacetGrid* _pGrid;
+    MeshCore::MeshGrid* _pGrid;
     Base::BoundBox3f _box;
 };
 
 class InspectionAppExport InspectNominalFastMesh : public InspectNominalGeometry
 {
 public:
-    InspectNominalFastMesh(const MeshCore::MeshKernel& rMesh, float offset);
+    InspectNominalFastMesh(const Mesh::MeshObject& rMesh, float offset);
     ~InspectNominalFastMesh();
     virtual float getDistance(const Base::Vector3f&);
 
 protected:
     MeshCore::MeshFacetIterator _iter;
-    MeshCore::MeshFacetGrid* _pGrid;
+    MeshCore::MeshGrid* _pGrid;
     Base::BoundBox3f _box;
     unsigned long max_level;
 };
