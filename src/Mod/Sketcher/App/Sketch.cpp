@@ -321,33 +321,50 @@ int Sketch::addArc(const Part::GeomArcOfCircle &circleSegment)
         // if yes, use the coincident point
         p1.x = Parameters[PoPMap[Geoms.size()].midParamId+0];
         p1.y = Parameters[PoPMap[Geoms.size()].midParamId+1];
-        p2.x = Parameters[PoPMap[Geoms.size()].midParamId+2];
-        p2.y = Parameters[PoPMap[Geoms.size()].midParamId+3];
-        p3.x = Parameters[PoPMap[Geoms.size()].midParamId+4];
-        p3.y = Parameters[PoPMap[Geoms.size()].midParamId+5];
         // set the values
         *(p1.x) = center.x;
         *(p1.y) = center.y;
+    } else {
+        // otherwise set the parameter for the solver
+        Parameters.push_back(new double(center.x));
+        Parameters.push_back(new double(center.y));
+        // set the points for later constraints
+        p1.x = Parameters[Parameters.size()-2];
+        p1.y = Parameters[Parameters.size()-1];
+    }
+
+    // check if for the start point is already a constraint point present
+    if (PoPMap[Geoms.size()].startParamId != -1) {
+        // if yes, use the coincident point
+        p2.x = Parameters[PoPMap[Geoms.size()].startParamId+0];
+        p2.y = Parameters[PoPMap[Geoms.size()].startParamId+1];
+        // set the values
         *(p2.x) = start.x;
         *(p2.y) = start.y;
+    } else {
+        // otherwise set the parameter for the solver
+        Parameters.push_back(new double(start.x));
+        Parameters.push_back(new double(start.y));
+        // set the points for later constraints
+        p2.x = Parameters[Parameters.size()-2];
+        p2.y = Parameters[Parameters.size()-1];
+    }
+
+    // check if for the end point is already a constraint point present
+    if (PoPMap[Geoms.size()].endParamId != -1) {
+        // if yes, use the coincident point
+        p3.x = Parameters[PoPMap[Geoms.size()].endParamId+0];
+        p3.y = Parameters[PoPMap[Geoms.size()].endParamId+1];
+        // set the values
         *(p3.x) = end.x;
         *(p3.y) = end.y;
     } else {
         // otherwise set the parameter for the solver
-        unsigned int index = Parameters.size();
-        Parameters.push_back(new double(center.x));
-        Parameters.push_back(new double(center.y));
-        Parameters.push_back(new double(start.x));
-        Parameters.push_back(new double(start.y));
         Parameters.push_back(new double(end.x));
         Parameters.push_back(new double(end.y));
         // set the points for later constraints
-        p1.x = Parameters[index+0];
-        p1.y = Parameters[index+1];
-        p2.x = Parameters[index+2];
-        p2.y = Parameters[index+3];
-        p3.x = Parameters[index+4];
-        p3.y = Parameters[index+5];
+        p3.x = Parameters[Parameters.size()-2];
+        p3.y = Parameters[Parameters.size()-1];
     }
 
     unsigned int index = Parameters.size();
