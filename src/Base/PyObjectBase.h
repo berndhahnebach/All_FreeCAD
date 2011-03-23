@@ -211,7 +211,7 @@ public:
 
     /** GetAttribute implementation
      *  This method implements the retriavel of object attributes.
-     *  If you whant to implement attributes in your class, reimplement
+     *  If you want to implement attributes in your class, reimplement
      *  this method.
      *  You have to call the method of the base class.
      *  Note: if you reimplement _gettattr() in a inheriting class you
@@ -224,7 +224,7 @@ public:
 
     /** SetAttribute implementation
      *  This method implements the seting of object attributes.
-     *  If you whant to implement attributes in your class, reimplement
+     *  If you want to implement attributes in your class, reimplement
      *  this method.
      *  You have to call the method of the base class.
      */
