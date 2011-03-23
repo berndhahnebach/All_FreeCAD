@@ -56,9 +56,10 @@
 
 using namespace Inspection;
 
-InspectActualMesh::InspectActualMesh(const MeshCore::MeshKernel& rMesh) : _iter(rMesh)
+InspectActualMesh::InspectActualMesh(const Mesh::MeshObject& rMesh) : _iter(rMesh.getKernel())
 {
-    this->_count = rMesh.CountPoints();
+    this->_count = rMesh.countPoints();
+    this->_iter.Transform(rMesh.getTransform());
 }
 
 InspectActualMesh::~InspectActualMesh()
@@ -120,15 +121,146 @@ Base::Vector3f InspectActualShape::getPoint(unsigned long index)
 
 // ----------------------------------------------------------------
 
-InspectNominalMesh::InspectNominalMesh(const MeshCore::MeshKernel& rMesh, float offset) : _iter(rMesh)
+namespace Inspection {
+    class MeshInspectGrid : public MeshCore::MeshGrid
+    {
+    public:
+        MeshInspectGrid (const MeshCore::MeshKernel &mesh, float fGridLen, const Base::Matrix4D& m)
+            : MeshCore::MeshGrid(mesh), _transform(m)
+        {
+            Base::BoundBox3f clBBMesh = _pclMesh->GetBoundBox().Transformed(m);
+            Rebuild(std::max<unsigned long>((unsigned long)(clBBMesh.LengthX() / fGridLen), 1),
+                    std::max<unsigned long>((unsigned long)(clBBMesh.LengthY() / fGridLen), 1),
+                    std::max<unsigned long>((unsigned long)(clBBMesh.LengthZ() / fGridLen), 1));
+        }
+
+        void Validate (const MeshCore::MeshKernel&)
+        {
+            // do nothing
+        }
+
+        void Validate (void)
+        {
+            // do nothing
+        }
+
+        bool Verify() const
+        {
+            // do nothing
+            return true;
+        }
+
+    protected:
+        void CalculateGridLength (unsigned long ulCtGrid, unsigned long ulMaxGrids)
+        {
+            // do nothing
+        }
+
+        void CalculateGridLength (int iCtGridPerAxis)
+        {
+            // do nothing
+        }
+
+        unsigned long HasElements (void) const
+        {
+            return _pclMesh->CountFacets();
+        }
+
+        void Pos (const Base::Vector3f &rclPoint, unsigned long &rulX, unsigned long &rulY, unsigned long &rulZ) const
+        {
+            rulX = (unsigned long)((rclPoint.x - _fMinX) / _fGridLenX);
+            rulY = (unsigned long)((rclPoint.y - _fMinY) / _fGridLenY);
+            rulZ = (unsigned long)((rclPoint.z - _fMinZ) / _fGridLenZ);
+
+            assert((rulX < _ulCtGridsX) && (rulY < _ulCtGridsY) && (rulZ < _ulCtGridsZ));
+        }
+
+        void AddFacet (const MeshCore::MeshGeomFacet &rclFacet, unsigned long ulFacetIndex)
+        {
+            unsigned long ulX, ulY, ulZ;
+            unsigned long ulX1, ulY1, ulZ1, ulX2, ulY2, ulZ2;
+
+            Base::BoundBox3f clBB;
+            clBB &= rclFacet._aclPoints[0];
+            clBB &= rclFacet._aclPoints[1];
+            clBB &= rclFacet._aclPoints[2];
+
+            Pos(Base::Vector3f(clBB.MinX,clBB.MinY,clBB.MinZ), ulX1, ulY1, ulZ1);
+            Pos(Base::Vector3f(clBB.MaxX,clBB.MaxY,clBB.MaxZ), ulX2, ulY2, ulZ2);
+  
+
+            if ((ulX1 < ulX2) || (ulY1 < ulY2) || (ulZ1 < ulZ2)) {
+                for (ulX = ulX1; ulX <= ulX2; ulX++) {
+                    for (ulY = ulY1; ulY <= ulY2; ulY++) {
+                        for (ulZ = ulZ1; ulZ <= ulZ2; ulZ++) {
+                            if (rclFacet.IntersectBoundingBox(GetBoundBox(ulX, ulY, ulZ)))
+                                _aulGrid[ulX][ulY][ulZ].insert(ulFacetIndex);
+                        }
+                    }
+                }
+            }
+            else
+                _aulGrid[ulX1][ulY1][ulZ1].insert(ulFacetIndex);
+        }
+
+        void InitGrid (void)
+        {
+            unsigned long i, j;
+
+            Base::BoundBox3f clBBMesh = _pclMesh->GetBoundBox().Transformed(_transform);
+
+            float fLengthX = clBBMesh.LengthX(); 
+            float fLengthY = clBBMesh.LengthY();
+            float fLengthZ = clBBMesh.LengthZ();
+
+            _fGridLenX = (1.0f + fLengthX) / float(_ulCtGridsX);
+            _fMinX = clBBMesh.MinX - 0.5f;
+
+            _fGridLenY = (1.0f + fLengthY) / float(_ulCtGridsY);
+            _fMinY = clBBMesh.MinY - 0.5f;
+
+            _fGridLenZ = (1.0f + fLengthZ) / float(_ulCtGridsZ);
+            _fMinZ = clBBMesh.MinZ - 0.5f;
+
+            _aulGrid.clear();
+            _aulGrid.resize(_ulCtGridsX);
+            for (i = 0; i < _ulCtGridsX; i++) {
+                _aulGrid[i].resize(_ulCtGridsY);
+                for (j = 0; j < _ulCtGridsY; j++)
+                    _aulGrid[i][j].resize(_ulCtGridsZ);
+            }
+        }
+
+        void RebuildGrid (void)
+        {
+            _ulCtElements = _pclMesh->CountFacets();
+            InitGrid();
+ 
+            unsigned long i = 0;
+            MeshCore::MeshFacetIterator clFIter(*_pclMesh);
+            clFIter.Transform(_transform);
+            for (clFIter.Init(); clFIter.More(); clFIter.Next()) {
+                AddFacet(*clFIter, i++);
+            }
+        }
+
+    private:
+        Base::Matrix4D _transform;
+    };
+}
+
+InspectNominalMesh::InspectNominalMesh(const Mesh::MeshObject& rMesh, float offset) : _iter(rMesh.getKernel())
 {
+    const MeshCore::MeshKernel& kernel = rMesh.getKernel();
+    _iter.Transform(rMesh.getTransform());
+
     // Max. limit of grid elements
     float fMaxGridElements=8000000.0f;
-    Base::BoundBox3f box = rMesh.GetBoundBox();
+    Base::BoundBox3f box = kernel.GetBoundBox().Transformed(rMesh.getTransform());
 
     // estimate the minimum allowed grid length
     float fMinGridLen = (float)pow((box.LengthX()*box.LengthY()*box.LengthZ()/fMaxGridElements), 0.3333f);
-    float fGridLen = 5.0f * MeshCore::MeshAlgorithm(rMesh).GetAverageEdgeLength();
+    float fGridLen = 5.0f * MeshCore::MeshAlgorithm(kernel).GetAverageEdgeLength();
 
     // We want to avoid to get too small grid elements otherwise building up the grid structure would take
     // too much time and memory. 
@@ -137,7 +269,7 @@ InspectNominalMesh::InspectNominalMesh(const MeshCore::MeshKernel& rMesh, float 
     fGridLen = std::max<float>(fMinGridLen, fGridLen);
 
     // build up grid structure to speed up algorithms
-    _pGrid = new MeshCore::MeshFacetGrid(rMesh, fGridLen);
+    _pGrid = new MeshInspectGrid(kernel, fGridLen, rMesh.getTransform());
     _box = box;
     _box.Enlarge(offset);
 }
@@ -178,15 +310,18 @@ float InspectNominalMesh::getDistance(const Base::Vector3f& point)
 
 // ----------------------------------------------------------------
 
-InspectNominalFastMesh::InspectNominalFastMesh(const MeshCore::MeshKernel& rMesh, float offset) : _iter(rMesh)
+InspectNominalFastMesh::InspectNominalFastMesh(const Mesh::MeshObject& rMesh, float offset) : _iter(rMesh.getKernel())
 {
+    const MeshCore::MeshKernel& kernel = rMesh.getKernel();
+    _iter.Transform(rMesh.getTransform());
+
     // Max. limit of grid elements
     float fMaxGridElements=8000000.0f;
-    Base::BoundBox3f box = rMesh.GetBoundBox();
+    Base::BoundBox3f box = kernel.GetBoundBox().Transformed(rMesh.getTransform());
 
     // estimate the minimum allowed grid length
     float fMinGridLen = (float)pow((box.LengthX()*box.LengthY()*box.LengthZ()/fMaxGridElements), 0.3333f);
-    float fGridLen = 5.0f * MeshCore::MeshAlgorithm(rMesh).GetAverageEdgeLength();
+    float fGridLen = 5.0f * MeshCore::MeshAlgorithm(kernel).GetAverageEdgeLength();
 
     // We want to avoid to get too small grid elements otherwise building up the grid structure would take
     // too much time and memory. 
@@ -195,7 +330,7 @@ InspectNominalFastMesh::InspectNominalFastMesh(const MeshCore::MeshKernel& rMesh
     fGridLen = std::max<float>(fMinGridLen, fGridLen);
 
     // build up grid structure to speed up algorithms
-    _pGrid = new MeshCore::MeshFacetGrid(rMesh, fGridLen);
+    _pGrid = new MeshInspectGrid(kernel, fGridLen, rMesh.getTransform());
     _box = box;
     _box.Enlarge(offset);
     max_level = (unsigned long)(offset/fGridLen);
@@ -376,7 +511,7 @@ App::DocumentObjectExecReturn* Feature::execute(void)
     InspectActualGeometry* actual = 0;
     if (pcActual->getTypeId().isDerivedFrom(Mesh::Feature::getClassTypeId())) {
         Mesh::Feature* mesh = static_cast<Mesh::Feature*>(pcActual);
-        actual = new InspectActualMesh(mesh->Mesh.getValue().getKernel());
+        actual = new InspectActualMesh(mesh->Mesh.getValue());
     }
     else if (pcActual->getTypeId().isDerivedFrom(Points::Feature::getClassTypeId())) {
         Points::Feature* pts = static_cast<Points::Feature*>(pcActual);
@@ -397,7 +532,7 @@ App::DocumentObjectExecReturn* Feature::execute(void)
         InspectNominalGeometry* nominal = 0;
         if ((*it)->getTypeId().isDerivedFrom(Mesh::Feature::getClassTypeId())) {
             Mesh::Feature* mesh = static_cast<Mesh::Feature*>(*it);
-            nominal = new InspectNominalMesh(mesh->Mesh.getValue().getKernel(), this->SearchRadius.getValue());
+            nominal = new InspectNominalMesh(mesh->Mesh.getValue(), this->SearchRadius.getValue());
         }
         else if ((*it)->getTypeId().isDerivedFrom(Points::Feature::getClassTypeId())) {
             Points::Feature* pts = static_cast<Points::Feature*>(*it);

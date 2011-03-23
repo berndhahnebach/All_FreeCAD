@@ -61,9 +61,11 @@ protected:
   MeshGrid (const MeshKernel &rclM);
   /// Construction
   MeshGrid (void);
+  //@}
+
+public:
   /// Destruction
   virtual ~MeshGrid (void) { }
-  //@}
 
 public:
   /** Attaches the mesh kernel to this grid, an already attached mesh gets detached. The grid gets rebuilt 

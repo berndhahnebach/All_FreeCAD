@@ -155,6 +155,7 @@ public:
   Vector3<_Precision> NearestPoint (const Vector3<_Precision> &rclPt) const;
   /** Projects the box onto a plane and returns a 2D box. */
   BoundBox2D ProjectBox(const ViewProjMethod *rclP) const;
+  BoundBox3<_Precision> Transformed(const Matrix4D& mat) const;
 
   /** Returns the center.of the box. */
   inline Vector3<_Precision> CalcCenter (void) const;
@@ -727,6 +728,15 @@ inline BoundBox2D BoundBox3<_Precision>::ProjectBox(const ViewProjMethod *pclP) 
   }
 
   return clBB2D;
+}
+
+template <class _Precision>
+inline BoundBox3<_Precision> BoundBox3<_Precision>::Transformed(const Matrix4D& mat) const
+{
+  BoundBox3<_Precision> bbox;
+  for (int i=0; i<8; i++)
+      bbox.Add(mat * CalcPoint(i));
+  return bbox;
 }
 
 template <class _Precision>
