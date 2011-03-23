@@ -124,8 +124,8 @@ void wxWidgetsFrame::OnQuit(wxCommandEvent &event)
 
 void wxWidgetsFrame::OnLoad(wxCommandEvent &event)
 {
-    std::string path = getenv("HOME");
-    path += "/FreeCAD/lib";
+    const wxString& dir = wxDirSelector("FreeCAD module path");
+    std::string path = dir.ToAscii();
     if (!path.empty()) {
         for (std::string::iterator it = path.begin(); it != path.end(); ++it) {
             if (*it == '\\')
