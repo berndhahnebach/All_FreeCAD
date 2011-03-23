@@ -129,7 +129,7 @@ public:
         None    = 0,
         Point   = 1, // 1 Point(start), 2 Parameters(x,y)
         Line    = 2, // 2 Points(start,end), 4 Parameters(x1,y1,x2,y2)
-        Arc     = 3,
+        Arc     = 3, // 3 Points(start,end,mid), 9 Parameters(x1,y1,x2,y2,x,y,r,a1,a2)
         Circle  = 4, // 1 Point(mid), 3 Parameters(x,y,r)
         Ellipse = 5
     };
@@ -144,7 +144,7 @@ protected:
         Part::Geometry  * geo;             // pointer to the geometry
         GeoType           type;            // type of the geometry
         bool              construction;    // defines if this element is a construction element
-        int               index;           // index in the corresponding storage vector (Lines, Circles, ...) 
+        int               index;           // index in the corresponding storage vector (Lines, Arcs, Circles, ...) 
         int               startPointId;    // index in Points of the start point of this geometry
         int               midPointId;      // index in Points of the start point of this geometry
         int               endPointId;      // index in Points of the end point of this geometry
@@ -158,8 +158,8 @@ protected:
     std::vector<double*> FixParameters;
     std::vector<point>  Points;
     std::vector<line>   Lines;
-    std::vector<circle> Circles;
     std::vector<arc>    Arcs;
+    std::vector<circle> Circles;
 
     // helper for the PointOnPoint constraint optimization
     struct PoPConst {
