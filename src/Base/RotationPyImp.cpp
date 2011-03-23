@@ -23,7 +23,8 @@
 
 #include "PreCompiled.h"
 
-#include "Base/Rotation.h"
+#include <Base/Rotation.h>
+#include <Base/GeometryPyCXX.h>
 
 // inclusion of the generated files (generated out of RotationPy.xml)
 #include "VectorPy.h"
@@ -152,6 +153,20 @@ void RotationPy::setQ(Py::Tuple arg)
     double q2 = (double)Py::Float(arg.getItem(2));
     double q3 = (double)Py::Float(arg.getItem(3));
     this->getRotationPtr()->setValue(q0,q1,q2,q3);
+}
+
+Py::Object RotationPy::getAxis(void) const
+{
+    Base::Vector3d axis; double angle;
+    this->getRotationPtr()->getValue(axis, angle);
+    return Py::Vector(axis);
+}
+
+Py::Float RotationPy::getAngle(void) const
+{
+    Base::Vector3d axis; double angle;
+    this->getRotationPtr()->getValue(axis, angle);
+    return Py::Float(angle);
 }
 
 PyObject *RotationPy::getCustomAttributes(const char* /*attr*/) const
