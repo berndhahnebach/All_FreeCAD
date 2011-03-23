@@ -117,7 +117,7 @@ protected:
 
     /// cached factor to translate
     static double   UserPrefFactor [50] ;
-    /// name of the unit the user whants to use as quantities
+    /// name of the unit the user wants to use as quantities
     static QString  UserPrefUnit   [50] ;
 
     // do the real work

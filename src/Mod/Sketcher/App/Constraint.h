@@ -41,7 +41,7 @@ enum ConstraintType {
     Angle
 };
 
-/// define if you whant to use the end or start point
+/// define if you want to use the end or start point
 enum PointPos { none, start, end, mid };
 
 class Constraint :public Base::Persistence
