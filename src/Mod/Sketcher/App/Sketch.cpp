@@ -45,7 +45,6 @@
 #include <TopoDS_Edge.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 
-
 #include "Sketch.h"
 #include "Constraint.h"
 #include <math.h>
@@ -88,6 +87,7 @@ void Sketch::clear(void)
     Const.clear();
     Points.clear();
     Lines.clear();
+    Arcs.clear();
     Circles.clear();
 
     // deleting the doubles allocated with new
@@ -123,16 +123,13 @@ void Sketch::setUpSketch(const std::vector<Part::Geometry *> &geo, const std::ve
             const GeomLineSegment *lineSeg = dynamic_cast<const GeomLineSegment*>((*it));
             // create the definition struct for that geom
             addLineSegment(*lineSeg);
-        }
-        else if ((*it)->getTypeId()== GeomCircle::getClassTypeId()) {
+        } else if ((*it)->getTypeId()== GeomCircle::getClassTypeId()) {
             const GeomCircle *circle = dynamic_cast<const GeomCircle*>((*it));
             addCircle(*circle);
-        }
-        else if ((*it)->getTypeId()== GeomArcOfCircle::getClassTypeId()) {
-            const GeomArcOfCircle *arc = dynamic_cast<const GeomArcOfCircle*>((*it));
-            addArc(*arc);
-        }
-        else {
+        } else if ((*it)->getTypeId()== GeomArcOfCircle::getClassTypeId()) {
+            const GeomArcOfCircle *aoc = dynamic_cast<const GeomArcOfCircle*>((*it));
+            addArc(*aoc);
+        } else {
             Base::Exception("Sketch::setUpSketch(): Unknown or unsupported type added to a sketch");
         }
     }
@@ -178,9 +175,9 @@ int Sketch::addGeometry(const Part::Geometry *geo)
         // create the definition struct for that geom
         return addCircle(*circle);
     } else if (geo->getTypeId()== GeomArcOfCircle::getClassTypeId()) { // add an arc
-        const GeomArcOfCircle *arc = dynamic_cast<const GeomArcOfCircle*>(geo);
+        const GeomArcOfCircle *aoc = dynamic_cast<const GeomArcOfCircle*>(geo);
         // create the definition struct for that geom
-        return addArc(*arc);
+        return addArc(*aoc);
     } else {
         Base::Exception("Sketch::addGeometry(): Unknown or unsupported type added to a sketch");
         return 0; 
@@ -488,12 +485,12 @@ Py::Tuple Sketch::getPyGeometry(void) const
         if (it->type == Line) {
             GeomLineSegment *lineSeg = dynamic_cast<GeomLineSegment*>(it->geo);
             tuple[i] = Py::Object(new LinePy(lineSeg));
+        } else if (it->type == Arc) {
+            GeomArcOfCircle *aoc = dynamic_cast<GeomArcOfCircle*>(it->geo);
+            tuple[i] = Py::Object(new ArcOfCirclePy(aoc));
         } else if (it->type == Circle) {
             GeomCircle *circle = dynamic_cast<GeomCircle*>(it->geo);
             tuple[i] = Py::Object(new CirclePy(circle));
-        } else if (it->type == Arc) {
-            GeomArcOfCircle *arc = dynamic_cast<GeomArcOfCircle*>(it->geo);
-            tuple[i] = Py::Object(new ArcOfCirclePy(arc));
         } else if (it->type == Point) {
             Base::Vector3d temp(*(Points[Geoms[i].startPointId].x),*(Points[Geoms[i].startPointId].y),0);
             tuple[i] = Py::Object(new VectorPy(temp));
@@ -760,6 +757,13 @@ int Sketch::solve(double ** fixed, int n) {
                                                 *Points[it->endPointId].y,
                                                 0.0)
                                       );
+                } else if (it->type == Arc) {
+                    GeomArcOfCircle *aoc = dynamic_cast<GeomArcOfCircle*>(it->geo);
+                    aoc->setCenter(Vector3d(*Points[it->midPointId].x,
+                                            *Points[it->midPointId].y,
+                                            0.0)
+                                   );
+                    aoc->setRadius(*Arcs[it->index].rad);
                 } else if (it->type == Circle) {
                     GeomCircle *circ = dynamic_cast<GeomCircle*>(it->geo);
                     circ->setCenter(Vector3d(*Points[it->midPointId].x,
@@ -767,13 +771,6 @@ int Sketch::solve(double ** fixed, int n) {
                                              0.0)
                                    );
                     circ->setRadius(*Circles[it->index].rad);
-                } else if (it->type == Arc) {
-                    GeomArcOfCircle *arc = dynamic_cast<GeomArcOfCircle*>(it->geo);
-                    arc->setCenter(Vector3d(*Points[it->midPointId].x,
-                                            *Points[it->midPointId].y,
-                                            0.0)
-                                   );
-                    arc->setRadius(*Arcs[it->index].rad);
                 }
             } catch (Base::Exception e) {
                 Base::Console().Error("Solve: Error build geometry(%d): %s\n",i,e.what());
