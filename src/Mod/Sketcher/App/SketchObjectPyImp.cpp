@@ -159,7 +159,6 @@ PyObject* SketchObjectPy::movePoint(PyObject *args)
     }
     else if (actGeom->getTypeId() == Part::GeomCircle::getClassTypeId()) {
         Part::GeomCircle *newCircle = static_cast<Part::GeomCircle*>(actGeom->clone());
-        // set the right point, leave the other old
         if (PointType == mid)
             newCircle->setCenter(v1);
         else if (PointType == none) {
