@@ -29,6 +29,7 @@
 # include <BRepMesh.hxx>
 # include <BRep_Tool.hxx>
 # include <BRepTools.hxx>
+# include <Geom_Circle.hxx>
 # include <Geom_TrimmedCurve.hxx>
 # include <TopoDS.hxx>
 # include <Inventor/SoPath.h>
@@ -748,19 +749,22 @@ void ViewProviderSketch::draw(bool temp)
         }
         else if ((*it)->getTypeId()== Part::GeomCircle::getClassTypeId()) { // add a circle
             const Part::GeomCircle *circle = dynamic_cast<const Part::GeomCircle*>(*it);
+            Handle_Geom_Circle curve = Handle_Geom_Circle::DownCast(circle->handle());
+
 #if 1       // efficient way to sample circle
             int countSegments = 50;
             double radius = circle->getRadius();
             Base::Vector3d center = circle->getCenter();
             double segment = (2 * M_PI) / countSegments;
             for (int i=0; i < countSegments; i++) {
-                Base::Vector3d pos = center;
-                pos.x += radius * cos(i*segment);
-                pos.y += radius * sin(i*segment);
-                Coords.push_back(pos);
+                gp_Pnt pnt = curve->Value(i*segment);
+                Coords.push_back(Base::Vector3d(pnt.X(), pnt.Y(), pnt.Z()));
             }
-            Coords.push_back(Coords.front());
-            Index.push_back(Coords.size());
+
+            gp_Pnt pnt = curve->Value(0);
+            Coords.push_back(Base::Vector3d(pnt.X(), pnt.Y(), pnt.Z()));
+
+            Index.push_back(countSegments+1);
             Color.push_back(0);
             Points.push_back(center);
             PtColor.push_back(0);
@@ -825,15 +829,15 @@ void ViewProviderSketch::draw(bool temp)
 
             for (int i=0; i < countSegments; i++) {
                 gp_Pnt pnt = curve->Value(startangle);
-                Coords.push_back(Base::Vector3d(pnt.X(), pnt.Y(), 0));
+                Coords.push_back(Base::Vector3d(pnt.X(), pnt.Y(), pnt.Z()));
                 startangle += segment;
             }
 
             // end point
             gp_Pnt pnt = curve->Value(endangle);
-            Coords.push_back(Base::Vector3d(pnt.X(), pnt.Y(), 0));
+            Coords.push_back(Base::Vector3d(pnt.X(), pnt.Y(), pnt.Z()));
 
-            Index.push_back(Coords.size());
+            Index.push_back(countSegments+1);
             Color.push_back(0);
             Points.push_back(center);
             Points.push_back(start);
