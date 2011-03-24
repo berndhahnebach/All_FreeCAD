@@ -304,89 +304,76 @@ int Sketch::addArc(const Part::GeomArcOfCircle &circleSegment)
     def.type = Arc;
     def.construction = false;
 
-    Base::Vector3d center = aoc->getCenter();
-    Base::Vector3d start  = aoc->getStartPoint();
-    Base::Vector3d end    = aoc->getEndPoint();
-    double radius         = aoc->getRadius();
+    Base::Vector3d center   = aoc->getCenter();
+    Base::Vector3d startPnt = aoc->getStartPoint();
+    Base::Vector3d endPnt   = aoc->getEndPoint();
+    double radius           = aoc->getRadius();
     double startAngle, endAngle;
     aoc->getRange(startAngle, endAngle);
  
     point p1, p2, p3;
 
-    // check if for the center point is already a constraint point present
-    if (PoPMap[Geoms.size()].midParamId != -1) {
-        // if yes, use the coincident point
-        p1.x = Parameters[PoPMap[Geoms.size()].midParamId+0];
-        p1.y = Parameters[PoPMap[Geoms.size()].midParamId+1];
-        // set the values
-        *(p1.x) = center.x;
-        *(p1.y) = center.y;
+    // check if for the start point is already a constraint point present
+    if (PoPMap[Geoms.size()].startParamId != -1) {
+        p1.x = Parameters[PoPMap[Geoms.size()].startParamId+0];
+        p1.y = Parameters[PoPMap[Geoms.size()].startParamId+1];
+        *(p1.x) = startPnt.x;
+        *(p1.y) = startPnt.y;
     } else {
-        // otherwise set the parameter for the solver
-        Parameters.push_back(new double(center.x));
-        Parameters.push_back(new double(center.y));
-        // set the points for later constraints
+        Parameters.push_back(new double(startPnt.x));
+        Parameters.push_back(new double(startPnt.y));
         p1.x = Parameters[Parameters.size()-2];
         p1.y = Parameters[Parameters.size()-1];
     }
 
-    // check if for the start point is already a constraint point present
+    // check if for the end point is already a constraint point present
     if (PoPMap[Geoms.size()].startParamId != -1) {
-        // if yes, use the coincident point
-        p2.x = Parameters[PoPMap[Geoms.size()].startParamId+0];
-        p2.y = Parameters[PoPMap[Geoms.size()].startParamId+1];
-        // set the values
-        *(p2.x) = start.x;
-        *(p2.y) = start.y;
+        p2.x = Parameters[PoPMap[Geoms.size()].endParamId+0];
+        p2.y = Parameters[PoPMap[Geoms.size()].endParamId+1];
+        *(p2.x) = endPnt.x;
+        *(p2.y) = endPnt.y;
     } else {
-        // otherwise set the parameter for the solver
-        Parameters.push_back(new double(start.x));
-        Parameters.push_back(new double(start.y));
-        // set the points for later constraints
+        Parameters.push_back(new double(endPnt.x));
+        Parameters.push_back(new double(endPnt.y));
         p2.x = Parameters[Parameters.size()-2];
         p2.y = Parameters[Parameters.size()-1];
     }
 
-    // check if for the end point is already a constraint point present
-    if (PoPMap[Geoms.size()].endParamId != -1) {
-        // if yes, use the coincident point
-        p3.x = Parameters[PoPMap[Geoms.size()].endParamId+0];
-        p3.y = Parameters[PoPMap[Geoms.size()].endParamId+1];
-        // set the values
-        *(p3.x) = end.x;
-        *(p3.y) = end.y;
+    // check if for the center point is already a constraint point present
+    if (PoPMap[Geoms.size()].midParamId != -1) {
+        p3.x = Parameters[PoPMap[Geoms.size()].midParamId+0];
+        p3.y = Parameters[PoPMap[Geoms.size()].midParamId+1];
+        *(p3.x) = center.x;
+        *(p3.y) = center.y;
     } else {
-        // otherwise set the parameter for the solver
-        Parameters.push_back(new double(end.x));
-        Parameters.push_back(new double(end.y));
-        // set the points for later constraints
+        Parameters.push_back(new double(center.x));
+        Parameters.push_back(new double(center.y));
         p3.x = Parameters[Parameters.size()-2];
         p3.y = Parameters[Parameters.size()-1];
     }
 
-    unsigned int index = Parameters.size();
-    Parameters.push_back(new double(radius));
-    Parameters.push_back(new double(startAngle));
-    Parameters.push_back(new double(endAngle));
-
-    def.midPointId = Points.size();
+    def.startPointId = Points.size();
     Points.push_back(p1);
+    def.endPointId = Points.size();
     Points.push_back(p2);
+    def.midPointId = Points.size();
     Points.push_back(p3);
 
-    // add the radius parameter
-    double *r = Parameters[index];
-    double *s = Parameters[index+1];
-    double *e = Parameters[index+2];
+    Parameters.push_back(new double(radius));
+    double *r = Parameters[Parameters.size()-1];
+    Parameters.push_back(new double(startAngle));
+    double *a1 = Parameters[Parameters.size()-1];
+    Parameters.push_back(new double(endAngle));
+    double *a2 = Parameters[Parameters.size()-1];
 
     // set the arc for later constraints
     arc a;
-    a.center     = p1;
-    a.start      = p2;
-    a.end        = p3;
+    a.start      = p1;
+    a.end        = p2;
+    a.center     = p3;
     a.rad        = r;
-    a.startAngle = s;
-    a.endAngle   = e;
+    a.startAngle = a1;
+    a.endAngle   = a2;
     def.index = Arcs.size();
     Arcs.push_back(a);
 
@@ -509,7 +496,7 @@ void Sketch::setConstruction(int geoIndex,bool isConstruction)
     Geoms[geoIndex].construction = isConstruction;
 }
 
-bool  Sketch::getConstruction(int geoIndex) const
+bool Sketch::getConstruction(int geoIndex) const
 {
     // index out of bounds?
     assert(geoIndex < (int)Geoms.size());
@@ -819,10 +806,17 @@ int Sketch::movePoint(int geoIndex1, PointPos Pos1, Base::Vector3d toPoint)
     } else if (Pos1 == none) {
         if (Geoms[geoIndex1].type == Circle) {
           point center = Points[Geoms[geoIndex1].midPointId];
-          double dx = toPoint.x - (*(center.x));
-          double dy = toPoint.y - (*(center.y));
-          *(Circles[Geoms[geoIndex1].index].rad) = sqrt(dx*dx + dy*dy);
+          double rx = toPoint.x - (*(center.x));
+          double ry = toPoint.y - (*(center.y));
+          *(Circles[Geoms[geoIndex1].index].rad) = sqrt(rx*rx + ry*ry);
           fixed [0] = Circles[Geoms[geoIndex1].index].rad;
+          fixed_size = 1;
+        } else if (Geoms[geoIndex1].type == Arc) {
+          point center = Points[Geoms[geoIndex1].midPointId];
+          double rx = toPoint.x - (*(center.x));
+          double ry = toPoint.y - (*(center.y));
+          *(Arcs[Geoms[geoIndex1].index].rad) = sqrt(rx*rx + ry*ry);
+          fixed [0] = Arcs[Geoms[geoIndex1].index].rad;
           fixed_size = 1;
         }
     }
