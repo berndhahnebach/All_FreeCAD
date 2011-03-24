@@ -30,7 +30,10 @@
 #include <Base/Matrix.h>
 #include <Base/BoundBox.h>
 #include <Base/Rotation.h>
-#include <stdint.h>
+
+#ifdef __GNUC__
+# include <stdint.h>
+#endif
 
 
 namespace Data
