@@ -30,6 +30,7 @@
 #include <Base/Matrix.h>
 #include <Base/BoundBox.h>
 #include <Base/Rotation.h>
+#include <stdint.h>
 
 
 namespace Data
