@@ -31,9 +31,6 @@
 #include <Gui/MainWindow.h>
 #include <Gui/DlgEditFileIncludeProptertyExternal.h>
 
-#include <Mod/Sketcher/App/SketchObjectSF.h>
-
-#include "ViewProviderSketchSF.h"
 #include "ViewProviderSketch.h"
 #include "DrawSketchHandler.h"
 
@@ -615,7 +612,16 @@ public:
     {
         setPositionText(onSketchPos);
         if (Mode==STATUS_SEEK_Second) {
-            EditCurve[1] = onSketchPos; 
+            float dx_ = onSketchPos.fX - EditCurve[0].fX;
+            float dy_ = onSketchPos.fY - EditCurve[0].fY;
+            for (int i=0; i < 16; i++) {
+                float angle = i*M_PI/16.0;
+                float dx = dx_ * cos(angle) + dy_ * sin(angle);
+                float dy = -dx_ * sin(angle) + dy_ * cos(angle);
+                EditCurve[1+i] = Base::Vector2D(EditCurve[0].fX + dx, EditCurve[0].fY + dy);
+                EditCurve[17+i] = Base::Vector2D(EditCurve[0].fX - dx, EditCurve[0].fY - dy);
+            }
+            EditCurve[33] = EditCurve[1];
             sketchgui->drawEdit(EditCurve);
         }
         else if (Mode==STATUS_SEEK_Third) {
@@ -625,8 +631,8 @@ public:
             arcAngle = abs(angle1-arcAngle) < abs(angle2-arcAngle) ? angle1 : angle2;
             for (int i=1; i <= 29; i++) {
                 float angle = i*arcAngle/29.0;
-                float dx = startRx * cos(angle) - startRy * sin(angle);
-                float dy = startRx * sin(angle) + startRy * cos(angle);
+                float dx = rx * cos(angle) - ry * sin(angle);
+                float dy = rx * sin(angle) + ry * cos(angle);
                 EditCurve[i] = Base::Vector2D(CenterPoint.fX + dx, CenterPoint.fY + dy);
             }
             sketchgui->drawEdit(EditCurve);
@@ -638,20 +644,33 @@ public:
     {
         if (Mode==STATUS_SEEK_First){
             CenterPoint = onSketchPos;
+            EditCurve.resize(34);
             EditCurve[0] = onSketchPos;
             Mode = STATUS_SEEK_Second;
         }
         else if (Mode==STATUS_SEEK_Second){
-            EditCurve.resize(30);
+            EditCurve.resize(31);
             EditCurve[0] = onSketchPos;
-            startRx = EditCurve[0].fX - CenterPoint.fX;
-            startRy = EditCurve[0].fY - CenterPoint.fY;
-            startAngle = atan2(startRy, startRx);
+            EditCurve[30] = CenterPoint;
+            rx = EditCurve[0].fX - CenterPoint.fX;
+            ry = EditCurve[0].fY - CenterPoint.fY;
+            startAngle = atan2(ry, rx);
             arcAngle = 0.;
             Mode = STATUS_SEEK_Third;
         }
         else {
-            EditCurve[2] = onSketchPos;
+            EditCurve.resize(30);
+            float angle1 = atan2(onSketchPos.fY - CenterPoint.fY,
+                                 onSketchPos.fX - CenterPoint.fX) - startAngle;
+            float angle2 = angle1 + (angle1 < 0. ? 2 : -2) * M_PI ;
+            arcAngle = abs(angle1-arcAngle) < abs(angle2-arcAngle) ? angle1 : angle2;
+            if (arcAngle > 0)
+                endAngle = startAngle + arcAngle;
+            else {
+                endAngle = startAngle;
+                startAngle += arcAngle;
+            }
+
             sketchgui->drawEdit(EditCurve);
             applyCursor();
             Mode = STATUS_End;
@@ -668,14 +687,14 @@ public:
             Gui::Command::openCommand("Add sketch arc");
             Gui::Command::doCommand(Gui::Command::Doc,
                 "App.ActiveDocument.%s.addGeometry(Part.ArcOfCircle"
-                "(App.Vector(%f,%f,0),App.Vector(%f,%f,0),App.Vector(%f,%f,0)))",
+                "(Part.Circle(App.Vector(%f,%f,0),App.Vector(0,0,1),%f),"
+                "%f,%f))",
                       sketchgui->getObject()->getNameInDocument(),
-                      EditCurve[0].fX,EditCurve[0].fY,
-                      EditCurve[1].fX,EditCurve[1].fY,
-                      EditCurve[2].fX,EditCurve[2].fY);
+                      CenterPoint.fX, CenterPoint.fY, sqrt(rx*rx + ry*ry),
+                      startAngle, endAngle); //arcAngle > 0 ? 0 : 1);
             EditCurve.clear();
             sketchgui->drawEdit(EditCurve);
-            sketchgui->purgeHandler(); // no code after this arc, Handler get deleted in ViewProvider
+            sketchgui->purgeHandler(); // no code after this line, Handler get deleted in ViewProvider
         }
         return true;
     }
@@ -683,7 +702,7 @@ protected:
     LineMode Mode;
     std::vector<Base::Vector2D> EditCurve;
     Base::Vector2D CenterPoint;
-    float startRx, startRy, startAngle, arcAngle;
+    float rx, ry, startAngle, endAngle, arcAngle;
 };
 
 DEF_STD_CMD_A(CmdSketcherCreateArc);
@@ -772,14 +791,14 @@ public:
     {
         setPositionText(onSketchPos);
         if (Mode==STATUS_SEEK_Second) {
-            float dx_ = onSketchPos.fX - EditCurve[0].fX;
-            float dy_ = onSketchPos.fY - EditCurve[0].fY;
+            float rx0 = onSketchPos.fX - EditCurve[0].fX;
+            float ry0 = onSketchPos.fY - EditCurve[0].fY;
             for (int i=0; i < 16; i++) {
                 float angle = i*M_PI/16.0;
-                float dx = dx_ * cos(angle) + dy_ * sin(angle);
-                float dy = -dx_ * sin(angle) + dy_ * cos(angle);
-                EditCurve[1+i] = Base::Vector2D(EditCurve[0].fX + dx, EditCurve[0].fY + dy);
-                EditCurve[17+i] = Base::Vector2D(EditCurve[0].fX - dx, EditCurve[0].fY - dy);
+                float rx = rx0 * cos(angle) + ry0 * sin(angle);
+                float ry = -rx0 * sin(angle) + ry0 * cos(angle);
+                EditCurve[1+i] = Base::Vector2D(EditCurve[0].fX + rx, EditCurve[0].fY + ry);
+                EditCurve[17+i] = Base::Vector2D(EditCurve[0].fX - rx, EditCurve[0].fY - ry);
             }
             EditCurve[33] = EditCurve[1];
             sketchgui->drawEdit(EditCurve);
@@ -791,17 +810,18 @@ public:
         if (Mode==STATUS_SEEK_First){
             EditCurve[0] = onSketchPos;
             Mode = STATUS_SEEK_Second;
-        } else
+        } else {
+            EditCurve[1] = onSketchPos;
             Mode = STATUS_Close;
-
+        }
         return true;
     }
 
     virtual bool releaseButton(Base::Vector2D onSketchPos)
     {
         if (Mode==STATUS_Close) {
-            float dx = onSketchPos.fX - EditCurve[0].fX;
-            float dy = onSketchPos.fY - EditCurve[0].fY;
+            float rx = EditCurve[1].fX - EditCurve[0].fX;
+            float ry = EditCurve[1].fY - EditCurve[0].fY;
             unsetCursor();
             resetPositionText();
             Gui::Command::openCommand("Add sketch circle");
@@ -809,11 +829,11 @@ public:
                 "App.ActiveDocument.%s.addGeometry(Part.Circle"
                 "(App.Vector(%f,%f,0),App.Vector(0,0,1),%f))",
                       sketchgui->getObject()->getNameInDocument(),
-                      EditCurve[0].fX,EditCurve[0].fY,
-                      sqrt(dx*dx + dy*dy));
+                      EditCurve[0].fX, EditCurve[0].fY,
+                      sqrt(rx*rx + ry*ry));
             EditCurve.clear();
             sketchgui->drawEdit(EditCurve);
-            sketchgui->purgeHandler(); // no code after this arc, Handler get deleted in ViewProvider
+            sketchgui->purgeHandler(); // no code after this line, Handler get deleted in ViewProvider
         }
         return true;
     }
