@@ -110,8 +110,6 @@ void CompleteGuiExport initCompleteGui()
 
         // Get the CompleteWorkbench handler
         args.setItem(0,Py::String("CompleteWorkbench"));
-        Py::Object handler2(method.apply(args));
-        handler2.setAttr("draftToolBar", handler.getAttr("draftToolBar"));
 #       endif
     }
     catch(const Base::Exception& e) {
