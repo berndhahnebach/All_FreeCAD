@@ -26,12 +26,8 @@
 #ifndef _PreComp_
 # include <Standard_math.hxx>
 # include <Poly_Polygon3D.hxx>
-# include <BRepMesh.hxx>
-# include <BRep_Tool.hxx>
-# include <BRepTools.hxx>
 # include <Geom_Circle.hxx>
 # include <Geom_TrimmedCurve.hxx>
-# include <TopoDS.hxx>
 # include <Inventor/SoPath.h>
 # include <Inventor/SoPickedPoint.h>
 # include <Inventor/details/SoLineDetail.h>
@@ -751,9 +747,7 @@ void ViewProviderSketch::draw(bool temp)
             const Part::GeomCircle *circle = dynamic_cast<const Part::GeomCircle*>(*it);
             Handle_Geom_Circle curve = Handle_Geom_Circle::DownCast(circle->handle());
 
-#if 1       // efficient way to sample circle
             int countSegments = 50;
-            double radius = circle->getRadius();
             Base::Vector3d center = circle->getCenter();
             double segment = (2 * M_PI) / countSegments;
             for (int i=0; i < countSegments; i++) {
@@ -768,51 +762,11 @@ void ViewProviderSketch::draw(bool temp)
             Color.push_back(0);
             Points.push_back(center);
             PtColor.push_back(0);
-#else
-            TopoDS_Shape shape = (*it)->toShape();
-            if (shape.ShapeType() == TopAbs_EDGE) { // this should be an assert condition
-                // triangulate the edge
-                BRepTools::Clean(shape);
-                BRepMesh::Mesh(shape, 1e-2);
-
-                const TopoDS_Edge& aEdge = TopoDS::Edge(shape);
-
-                // try to extract the edge triangulation
-                TopLoc_Location aLoc;
-                Handle(Poly_Polygon3D) aPoly = BRep_Tool::Polygon3D(aEdge, aLoc);
-
-                Standard_Integer nbNodesInFace;
-
-                // triangulation succeeded?
-                if (!aPoly.IsNull()) {
-                    nbNodesInFace = aPoly->NbNodes();
-
-                    gp_Trsf myTransf;
-                    if (!aLoc.IsIdentity())
-                        myTransf = aLoc.Transformation();
-
-                    const TColgp_Array1OfPnt& Nodes = aPoly->Nodes();
-
-                    gp_Pnt V;
-                    for (Standard_Integer i=0; i < nbNodesInFace; i++) {
-                        V = Nodes(i+1);
-                        V.Transform(myTransf);
-                        Base::Vector3d pos((double)(V.X()),(double)(V.Y()),(double)(V.Z()));
-                        Coords.push_back(pos);
-                    }
-                    Index.push_back(nbNodesInFace);
-                    Color.push_back(0);
-                    Points.push_back(circle->getCenter());
-                    PtColor.push_back(0);
-                }
-            }
-#endif
         }
         else if ((*it)->getTypeId()== Part::GeomArcOfCircle::getClassTypeId()) { // add an arc
             const Part::GeomArcOfCircle *arc = dynamic_cast<const Part::GeomArcOfCircle*>(*it);
             Handle_Geom_TrimmedCurve curve = Handle_Geom_TrimmedCurve::DownCast(arc->handle());
 
-            double radius = arc->getRadius();
             double startangle, endangle;
             arc->getRange(startangle, endangle);
             if (startangle > endangle) // if arc is reversed
