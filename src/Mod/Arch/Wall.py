@@ -21,7 +21,7 @@
 #*                                                                         *
 #***************************************************************************
 
-import FreeCAD,FreeCADGui,Part,Draft
+import FreeCAD,FreeCADGui,Part,Draft,Component
 from draftlibs import fcgeo,fcvec
 from FreeCAD import Vector
 
@@ -57,11 +57,10 @@ class CommandWall:
         else:
             FreeCAD.Console.PrintWarning("Not implemented! Select an object first")
        
-class Wall:
+class Wall(Component):
     "The Wall object"
     def __init__(self,obj):
-        obj.addProperty("App::PropertyLink","Base","Base",
-                        "The base object this wall is built upon")
+        Component.__init__(obj)
         obj.addProperty("App::PropertyLength","Width","Base",
                         "The width of this wall")
         obj.addProperty("App::PropertyLength","Height","Base",
@@ -75,7 +74,6 @@ class Wall:
         obj.addProperty("App::PropertyLinkList","Holes","Base",
                         "Other shapes that are subtracted from this wall")
         obj.Align = ['Left','Right','Center']
-        obj.Proxy = self
         self.Type = "Wall"
         obj.Width = 0.1
         obj.Height = 1
@@ -129,9 +127,6 @@ class Wall:
 
 class ViewProviderWall:
     "A View Provider for the Wall object"
-    def __init__(self,vobj):
-        vobj.Proxy = self
-        self.Object = vobj.Object
 
     def getIcon(self):          
         return """
@@ -165,28 +160,5 @@ class ViewProviderWall:
                 "                "};
 		"""
         
-    def updateData(self,obj,prop):
-        return
-
-    def onChanged(self,vobj,prop):
-        return
-
     def claimChildren(self):
         return [self.Object.Base]+self.Object.Appendices+self.Object.Holes
-
-    def attach(self,obj):
-        return
-
-    def getDisplayModes(self,obj):
-        modes=[]
-        return modes
-
-    def setDisplayMode(self,mode):
-        return mode
-
-    def __getstate__(self):
-        return None
-
-    def __setstate__(self,state):
-        return None
-
