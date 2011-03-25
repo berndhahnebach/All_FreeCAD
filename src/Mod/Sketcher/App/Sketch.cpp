@@ -327,7 +327,7 @@ int Sketch::addArc(const Part::GeomArcOfCircle &circleSegment)
     }
 
     // check if for the end point is already a constraint point present
-    if (PoPMap[Geoms.size()].startParamId != -1) {
+    if (PoPMap[Geoms.size()].endParamId != -1) {
         p2.x = Parameters[PoPMap[Geoms.size()].endParamId+0];
         p2.y = Parameters[PoPMap[Geoms.size()].endParamId+1];
         *(p2.x) = endPnt.x;
