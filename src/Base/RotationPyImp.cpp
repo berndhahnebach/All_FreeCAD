@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #include <Base/Rotation.h>
+#include <Base/Tools.h>
 #include <Base/GeometryPyCXX.h>
 
 // inclusion of the generated files (generated out of RotationPy.xml)
@@ -70,7 +71,7 @@ int RotationPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     double angle;
     if (PyArg_ParseTuple(args, "O!d", &(Base::VectorPy::Type), &o, &angle)) {
         // NOTE: The last parameter defines the rotation angle in degree.
-        getRotationPtr()->setValue(static_cast<Base::VectorPy*>(o)->value(), angle/180.0*D_PI);
+        getRotationPtr()->setValue(static_cast<Base::VectorPy*>(o)->value(), Base::radians<double>(angle));
         return 0;
     }
 
@@ -85,6 +86,16 @@ int RotationPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     double y, p, r;
     if (PyArg_ParseTuple(args, "ddd", &y, &p, &r)) {
         getRotationPtr()->setYawPitchRoll(y, p, r);
+        return 0;
+    }
+
+    PyErr_Clear();
+    PyObject *v1, *v2;
+    if (PyArg_ParseTuple(args, "O!O!", &(Base::VectorPy::Type), &v1,
+                                       &(Base::VectorPy::Type), &v2)) {
+        Py::Vector from(v1, false);
+        Py::Vector to(v2, false);
+        getRotationPtr()->setValue(from.toVector(), to.toVector());
         return 0;
     }
 
