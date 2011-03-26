@@ -57,10 +57,10 @@ class CommandWall:
         else:
             FreeCAD.Console.PrintWarning("Not implemented! Select an object first")
        
-class Wall(Component):
+class Wall(Component.Component):
     "The Wall object"
     def __init__(self,obj):
-        Component.__init__(obj)
+        Component.Component.__init__(self,obj)
         obj.addProperty("App::PropertyLength","Width","Base",
                         "The width of this wall")
         obj.addProperty("App::PropertyLength","Height","Base",
@@ -125,8 +125,11 @@ class Wall(Component):
                 obj.Shape = base
                 obj.Placement = pl
 
-class ViewProviderWall:
+class ViewProviderWall(Component.ViewProviderComponent):
     "A View Provider for the Wall object"
+
+    def __init__(self,vobj):
+        Component.ViewProviderComponent.__init__(self,vobj)
 
     def getIcon(self):          
         return """
