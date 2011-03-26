@@ -220,10 +220,10 @@ void InterpreterSingleton::runFile(const char*pxFileName)
 #endif
     if (fp) {
         PyGILStateLocker locker;
-        std::string encoding = PyUnicode_GetDefaultEncoding();
-        PyUnicode_SetDefaultEncoding("utf-8");
+        //std::string encoding = PyUnicode_GetDefaultEncoding();
+        //PyUnicode_SetDefaultEncoding("utf-8");
         int ret = PyRun_SimpleFile(fp, pxFileName);
-        PyUnicode_SetDefaultEncoding(encoding.c_str());
+        //PyUnicode_SetDefaultEncoding(encoding.c_str());
         fclose(fp);
         if (ret != 0)
             throw PyException();

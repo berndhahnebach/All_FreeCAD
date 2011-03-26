@@ -363,6 +363,7 @@ Application::Application(bool GUIenabled)
     PythonDebugModule   ::init_module();
     PythonStdout        ::init_type();
     PythonStderr        ::init_type();
+    OutputStdout        ::init_type();
     OutputStderr        ::init_type();
     PythonStdin         ::init_type();
     View3DInventorPy    ::init_type();

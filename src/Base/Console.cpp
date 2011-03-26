@@ -374,19 +374,22 @@ PyObject *ConsoleSingleton::sPyMessage(PyObject * /*self*/, PyObject *args, PyOb
     const char* string=0;
     PyObject* unicode=0;
     if (PyUnicode_Check(output)) {
-        unicode = PyUnicode_AsEncodedObject(output, "latin1", "strict");
-        string = PyString_AsString(unicode);
+        unicode = PyUnicode_AsEncodedObject(output, "utf-8", "strict");
+        if (unicode)
+            string = PyString_AsString(unicode);
     }
     else if (PyString_Check(output)) {
         string = PyString_AsString(output);
     }
     else {
         unicode = PyObject_Str(output);
-        string = PyString_AsString(unicode);
+        if (unicode)
+            string = PyString_AsString(unicode);
     }
 
     PY_TRY {
-        Instance().Message("%s",string);            // process message
+        if (string)
+            Instance().Message("%s",string);            // process message
     } PY_CATCH;
 
     Py_XDECREF(unicode);
@@ -404,19 +407,22 @@ PyObject *ConsoleSingleton::sPyWarning(PyObject * /*self*/, PyObject *args, PyOb
     const char* string=0;
     PyObject* unicode=0;
     if (PyUnicode_Check(output)) {
-        unicode = PyUnicode_AsEncodedObject(output, "latin1", "strict");
-        string = PyString_AsString(unicode);
+        unicode = PyUnicode_AsEncodedObject(output, "utf-8", "strict");
+        if (unicode)
+            string = PyString_AsString(unicode);
     }
     else if (PyString_Check(output)) {
         string = PyString_AsString(output);
     }
     else {
         unicode = PyObject_Str(output);
-        string = PyString_AsString(unicode);
+        if (unicode)
+            string = PyString_AsString(unicode);
     }
 
     PY_TRY {
-        Instance().Warning("%s",string);            // process message
+        if (string)
+            Instance().Warning("%s",string);            // process message
     } PY_CATCH;
 
     Py_XDECREF(unicode);
@@ -434,19 +440,22 @@ PyObject *ConsoleSingleton::sPyError(PyObject * /*self*/, PyObject *args, PyObje
     const char* string=0;
     PyObject* unicode=0;
     if (PyUnicode_Check(output)) {
-        unicode = PyUnicode_AsEncodedObject(output, "latin1", "strict");
-        string = PyString_AsString(unicode);
+        unicode = PyUnicode_AsEncodedObject(output, "utf-8", "strict");
+        if (unicode)
+            string = PyString_AsString(unicode);
     }
     else if (PyString_Check(output)) {
         string = PyString_AsString(output);
     }
     else {
         unicode = PyObject_Str(output);
-        string = PyString_AsString(unicode);
+        if (unicode)
+            string = PyString_AsString(unicode);
     }
 
     PY_TRY {
-        Instance().Error("%s",string);            // process message
+        if (string)
+            Instance().Error("%s",string);            // process message
     } PY_CATCH;
 
     Py_XDECREF(unicode);
@@ -464,19 +473,22 @@ PyObject *ConsoleSingleton::sPyLog(PyObject * /*self*/, PyObject *args, PyObject
     const char* string=0;
     PyObject* unicode=0;
     if (PyUnicode_Check(output)) {
-        unicode = PyUnicode_AsEncodedObject(output, "latin1", "strict");
-        string = PyString_AsString(unicode);
+        unicode = PyUnicode_AsEncodedObject(output, "utf-8", "strict");
+        if (unicode)
+            string = PyString_AsString(unicode);
     }
     else if (PyString_Check(output)) {
         string = PyString_AsString(output);
     }
     else {
         unicode = PyObject_Str(output);
-        string = PyString_AsString(unicode);
+        if (unicode)
+            string = PyString_AsString(unicode);
     }
 
     PY_TRY {
-        Instance().Log("%s",string);            // process message
+        if (string)
+            Instance().Log("%s",string);            // process message
     } PY_CATCH;
 
     Py_XDECREF(unicode);

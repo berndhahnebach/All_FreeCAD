@@ -69,11 +69,13 @@ Py::Object PythonStdout::write(const Py::Tuple& args)
     try {
         Py::Object output(args[0]);
         if (PyUnicode_Check(output.ptr())) {
-            PyObject* unicode = PyUnicode_AsEncodedObject(output.ptr(), "latin1", "strict");
-            const char* string = PyString_AsString(unicode);
-            int maxlen = qstrlen(string) > 10000 ? 10000 : -1;
-            pyConsole->insertPythonOutput(QString::fromUtf8(string, maxlen));
-            Py_DECREF(unicode);
+            PyObject* unicode = PyUnicode_AsEncodedObject(output.ptr(), "utf-8", "strict");
+            if (unicode) {
+                const char* string = PyString_AsString(unicode);
+                int maxlen = qstrlen(string) > 10000 ? 10000 : -1;
+                pyConsole->insertPythonOutput(QString::fromUtf8(string, maxlen));
+                Py_DECREF(unicode);
+            }
         }
         else {
             Py::String text(args[0]);
@@ -129,11 +131,13 @@ Py::Object PythonStderr::write(const Py::Tuple& args)
     try {
         Py::Object output(args[0]);
         if (PyUnicode_Check(output.ptr())) {
-            PyObject* unicode = PyUnicode_AsEncodedObject(output.ptr(), "latin1", "strict");
-            const char* string = PyString_AsString(unicode);
-            int maxlen = qstrlen(string) > 10000 ? 10000 : -1;
-            pyConsole->insertPythonError(QString::fromUtf8(string, maxlen));
-            Py_DECREF(unicode);
+            PyObject* unicode = PyUnicode_AsEncodedObject(output.ptr(), "utf-8", "strict");
+            if (unicode) {
+                const char* string = PyString_AsString(unicode);
+                int maxlen = qstrlen(string) > 10000 ? 10000 : -1;
+                pyConsole->insertPythonError(QString::fromUtf8(string, maxlen));
+                Py_DECREF(unicode);
+            }
         }
         else {
             Py::String text(args[0]);
@@ -151,6 +155,65 @@ Py::Object PythonStderr::write(const Py::Tuple& args)
 }
 
 Py::Object PythonStderr::flush(const Py::Tuple&)
+{
+    return Py::None();
+}
+
+// -------------------------------------------------------------------------
+
+void OutputStdout::init_type()
+{
+    behaviors().name("OutputStdout");
+    behaviors().doc("Redirection of stdout to FreeCAD's output window");
+    // you must have overwritten the virtual functions
+    behaviors().supportRepr();
+    add_varargs_method("write",&OutputStdout::write,"write()");
+    add_varargs_method("flush",&OutputStdout::flush,"flush()");
+}
+
+OutputStdout::OutputStdout()
+{
+}
+
+OutputStdout::~OutputStdout()
+{
+}
+
+Py::Object OutputStdout::repr()
+{
+    std::string s;
+    std::ostringstream s_out;
+    s_out << "OutputStdout";
+    return Py::String(s_out.str());
+}
+
+Py::Object OutputStdout::write(const Py::Tuple& args)
+{
+    try {
+        Py::Object output(args[0]);
+        if (PyUnicode_Check(output.ptr())) {
+            PyObject* unicode = PyUnicode_AsEncodedObject(output.ptr(), "utf-8", "strict");
+            if (unicode) {
+                const char* string = PyString_AsString(unicode);
+                Base::Console().Message("%s",string);
+                Py_DECREF(unicode);
+            }
+        }
+        else {
+            Py::String text(args[0]);
+            std::string string = (std::string)text;
+            Base::Console().Message("%s",string.c_str());
+        }
+    }
+    catch (Py::Exception& e) {
+        // Do not provoke error messages
+        e.clear();
+    }
+
+    return Py::None();
+}
+
+Py::Object OutputStdout::flush(const Py::Tuple&)
 {
     return Py::None();
 }
@@ -188,10 +251,12 @@ Py::Object OutputStderr::write(const Py::Tuple& args)
     try {
         Py::Object output(args[0]);
         if (PyUnicode_Check(output.ptr())) {
-            PyObject* unicode = PyUnicode_AsEncodedObject(output.ptr(), "latin1", "strict");
-            const char* string = PyString_AsString(unicode);
-            Base::Console().Error("%s",string);
-            Py_DECREF(unicode);
+            PyObject* unicode = PyUnicode_AsEncodedObject(output.ptr(), "utf-8", "strict");
+            if (unicode) {
+                const char* string = PyString_AsString(unicode);
+                Base::Console().Error("%s",string);
+                Py_DECREF(unicode);
+            }
         }
         else {
             Py::String text(args[0]);
