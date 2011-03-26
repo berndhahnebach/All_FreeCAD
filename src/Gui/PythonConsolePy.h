@@ -79,6 +79,27 @@ public:
 };
 
 /**
+ * Python class for redirection of stdout to FreeCAD's output
+ * console window. This allows to report all Python output to
+ * the output window which simplifies debugging scripts.
+ * @see PythonStdout
+ * @see PythonStderr
+ * @author Werner Mayer
+ */
+class OutputStdout : public Py::PythonExtension<OutputStdout>
+{
+public:
+    static void init_type(void);    // announce properties and methods
+
+    OutputStdout();
+    ~OutputStdout();
+
+    Py::Object repr();
+    Py::Object write(const Py::Tuple&);
+    Py::Object flush(const Py::Tuple&);
+};
+
+/**
  * Python class for redirection of stderr to FreeCAD's output
  * console window. This allows to report all Python errors to 
  * the output window which simplifies error tracking.

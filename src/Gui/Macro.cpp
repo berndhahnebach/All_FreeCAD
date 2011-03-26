@@ -40,6 +40,7 @@
 
 #include "MainWindow.h"
 #include "PythonConsole.h"
+#include "PythonConsolePy.h"
 #include "PythonDebugger.h"
 
 using namespace Gui;
@@ -190,10 +191,33 @@ void MacroManager::setModule(const char* sModule)
     }
 }
 
+namespace Gui {
+    class PythonRedirector
+    {
+    public:
+        PythonRedirector(const char* type, PyObject* obj) : out(obj), std_out(type)
+        {
+            old = PySys_GetObject(const_cast<char*>(std_out));
+            PySys_SetObject(const_cast<char*>(std_out), obj);
+        }
+        ~PythonRedirector()
+        {
+            PySys_SetObject(const_cast<char*>(std_out), old);
+            Py_XDECREF(out);
+        }
+    private:
+        const char* std_out;
+        PyObject* out;
+        PyObject* old;
+    };
+}
+
 void MacroManager::run(MacroType eType,const char *sName)
 {
     try
     {
+        PythonRedirector std_out("stdout",new OutputStdout);
+        PythonRedirector std_err("stderr",new OutputStderr);
         //The given path name is expected to be Utf-8
         Base::Interpreter().runFile(sName);
     }
