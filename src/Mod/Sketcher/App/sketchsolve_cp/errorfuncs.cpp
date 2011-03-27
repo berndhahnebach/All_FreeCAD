@@ -265,8 +265,8 @@ double EqualScalarError(std::vector<double> &parms)
 
 double PointOnArcAngleError(std::vector<double> &parms)
 {
-	double a1x = sin(parms[5]) * parms[4] + parms[2];
-	double a1y = cos(parms[5]) * parms[4] + parms[3];
+	double a1x = cos(parms[5]) * parms[4] + parms[2];
+	double a1y = sin(parms[5]) * parms[4] + parms[3];
 	double dx = parms[0] - a1x;
 	double dy = parms[1] - a1y;
     return dx*dx + dy*dy;
@@ -274,11 +274,11 @@ double PointOnArcAngleError(std::vector<double> &parms)
 
 double ArcAngleOnArcAngleError(std::vector<double> &parms)
 {
-	double a1x = sin(parms[3]) * parms[2] + parms[0];
-	double a1y = cos(parms[3]) * parms[2] + parms[1];
+	double a1x = cos(parms[3]) * parms[2] + parms[0];
+	double a1y = sin(parms[3]) * parms[2] + parms[1];
 
-	double a2x = sin(parms[7]) * parms[6] + parms[4];
-	double a2y = cos(parms[7]) * parms[6] + parms[5];
+	double a2x = cos(parms[7]) * parms[6] + parms[4];
+	double a2y = sin(parms[7]) * parms[6] + parms[5];
 
 	double dx = a2x - a1x;
 	double dy = a2y - a1y;
