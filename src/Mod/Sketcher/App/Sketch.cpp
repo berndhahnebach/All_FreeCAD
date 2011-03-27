@@ -379,6 +379,18 @@ int Sketch::addArc(const Part::GeomArcOfCircle &circleSegment)
 
     // store complete set
     Geoms.push_back(def);
+    
+    // arcs require some default constraints for the end points
+    constraint constr_start, constr_end;
+    constr_start.type = pointOnArcStart;
+    constr_end.type = pointOnArcEnd;
+    constr_start.point1 = a.start;
+    constr_end.point1 = a.end;
+    constr_start.arc1 = a;
+    constr_end.arc1 = a;
+
+    Const.push_back(constr_start);
+    Const.push_back(constr_end);
 
     // return the position of the newly added geometry
     return Geoms.size()-1;
