@@ -758,6 +758,7 @@ int Sketch::solve(double ** fixed, int n) {
                                       );
                 } else if (it->type == Arc) {
                     arc &myArc = Arcs[it->index];
+                    // the following 4 lines are redundant since these equations are already included in the arc constraints
                     *myArc.start.x = *myArc.center.x + *myArc.rad * cos(*myArc.startAngle);
                     *myArc.start.y = *myArc.center.y + *myArc.rad * sin(*myArc.startAngle);
                     *myArc.end.x = *myArc.center.x + *myArc.rad * cos(*myArc.endAngle);
