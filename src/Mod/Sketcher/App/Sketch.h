@@ -129,7 +129,7 @@ public:
         None    = 0,
         Point   = 1, // 1 Point(start), 2 Parameters(x,y)
         Line    = 2, // 2 Points(start,end), 4 Parameters(x1,y1,x2,y2)
-        Arc     = 3, // 3 Points(start,end,mid), 9 Parameters(x1,y1,x2,y2,x,y,r,a1,a2)
+        Arc     = 3, // 3 Points(start,end,mid), (4)+5 Parameters((x1,y1,x2,y2),x,y,r,a1,a2)
         Circle  = 4, // 1 Point(mid), 3 Parameters(x,y,r)
         Ellipse = 5
     };

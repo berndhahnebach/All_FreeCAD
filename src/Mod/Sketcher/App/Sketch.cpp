@@ -379,7 +379,7 @@ int Sketch::addArc(const Part::GeomArcOfCircle &circleSegment)
 
     // store complete set
     Geoms.push_back(def);
-    
+
     // return the position of the newly added geometry
     return Geoms.size()-1;
 }
@@ -716,7 +716,7 @@ int Sketch::solve(double ** fixed, int n) {
     std::vector<double*> params;
     params.reserve(Parameters.size()); // reserve some memory to avoid reallocs in push_back()
 
-    for (std::vector<double*>::iterator it=Parameters.begin(); it != Parameters.end(); ++it) {
+    for (std::vector<double*>::const_iterator it=Parameters.begin(); it != Parameters.end(); ++it) {
         bool is_fixed=false;
         for (int i=0; i < n; i++)
             if (fixed[i] == *it) {
@@ -745,12 +745,18 @@ int Sketch::solve(double ** fixed, int n) {
                                                 0.0)
                                       );
                 } else if (it->type == Arc) {
+                    arc &myArc = Arcs[it->index];
+                    *myArc.start.x = *myArc.center.x + *myArc.rad * cos(*myArc.startAngle);
+                    *myArc.start.y = *myArc.center.y + *myArc.rad * sin(*myArc.startAngle);
+                    *myArc.end.x = *myArc.center.x + *myArc.rad * cos(*myArc.endAngle);
+                    *myArc.end.y = *myArc.center.y + *myArc.rad * sin(*myArc.endAngle);
                     GeomArcOfCircle *aoc = dynamic_cast<GeomArcOfCircle*>(it->geo);
                     aoc->setCenter(Vector3d(*Points[it->midPointId].x,
                                             *Points[it->midPointId].y,
                                             0.0)
                                    );
-                    aoc->setRadius(*Arcs[it->index].rad);
+                    aoc->setRadius(*myArc.rad);
+                    aoc->setRange(*myArc.startAngle, *myArc.endAngle);
                 } else if (it->type == Circle) {
                     GeomCircle *circ = dynamic_cast<GeomCircle*>(it->geo);
                     circ->setCenter(Vector3d(*Points[it->midPointId].x,
@@ -783,7 +789,7 @@ int Sketch::movePoint(int geoIndex1, PointPos Pos1, Base::Vector3d toPoint)
 {
     // list of fixed parameters
     int fixed_size=0;
-    double * fixed[2]={0,0};
+    double * fixed[4]={0,0,0,0};
 
     if (Pos1 == start) {
         *(Points[Geoms[geoIndex1].startPointId].x) = toPoint.x;
@@ -791,12 +797,30 @@ int Sketch::movePoint(int geoIndex1, PointPos Pos1, Base::Vector3d toPoint)
         fixed [0] = Points[Geoms[geoIndex1].startPointId].x;
         fixed [1] = Points[Geoms[geoIndex1].startPointId].y;
         fixed_size = 2;
+        if (Geoms[geoIndex1].type == Arc) {
+          double rx = toPoint.x - *(Points[Geoms[geoIndex1].midPointId].x);
+          double ry = toPoint.y - *(Points[Geoms[geoIndex1].midPointId].y);
+          *(Arcs[Geoms[geoIndex1].index].startAngle) = atan2(ry,rx);
+          fixed [2] = Arcs[Geoms[geoIndex1].index].startAngle;
+          *(Arcs[Geoms[geoIndex1].index].rad) = sqrt(rx*rx + ry*ry);
+          fixed [3] = Arcs[Geoms[geoIndex1].index].rad;
+          fixed_size = 4;
+        }
     } else if (Pos1 == end) {
         *(Points[Geoms[geoIndex1].endPointId].x) = toPoint.x;
         *(Points[Geoms[geoIndex1].endPointId].y) = toPoint.y;
         fixed [0] = Points[Geoms[geoIndex1].endPointId].x;
         fixed [1] = Points[Geoms[geoIndex1].endPointId].y;
         fixed_size = 2;
+        if (Geoms[geoIndex1].type == Arc) {
+          double rx = toPoint.x - *(Points[Geoms[geoIndex1].midPointId].x);
+          double ry = toPoint.y - *(Points[Geoms[geoIndex1].midPointId].y);
+          *(Arcs[Geoms[geoIndex1].index].endAngle) = atan2(ry,rx);
+          fixed [2] = Arcs[Geoms[geoIndex1].index].endAngle;
+          *(Arcs[Geoms[geoIndex1].index].rad) = sqrt(rx*rx + ry*ry);
+          fixed [3] = Arcs[Geoms[geoIndex1].index].rad;
+          fixed_size = 4;
+        }
     } else if (Pos1 == mid) {
         *(Points[Geoms[geoIndex1].midPointId].x) = toPoint.x;
         *(Points[Geoms[geoIndex1].midPointId].y) = toPoint.y;

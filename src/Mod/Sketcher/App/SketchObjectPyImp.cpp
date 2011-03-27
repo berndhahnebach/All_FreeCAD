@@ -156,8 +156,40 @@ PyObject* SketchObjectPy::movePoint(PyObject *args)
         // set free the new line
         delete newLine;
 
-    }
-    else if (actGeom->getTypeId() == Part::GeomCircle::getClassTypeId()) {
+    } else if (actGeom->getTypeId() == Part::GeomArcOfCircle::getClassTypeId()) {
+        Part::GeomArcOfCircle *newArc = static_cast<Part::GeomArcOfCircle*>(actGeom->clone());
+        if (PointType == start) {
+            Base::Vector3d radius = v1 - newArc->getCenter();
+            double startAngle, endAngle;
+            newArc->getRange(startAngle, endAngle);
+            startAngle = atan2(radius.y, radius.x);
+            newArc->setRange(startAngle, endAngle);
+            newArc->setRadius(radius.Length());
+        } else if (PointType == end) {
+            Base::Vector3d radius = v1 - newArc->getCenter();
+            double startAngle, endAngle;
+            newArc->getRange(startAngle, endAngle);
+            endAngle = atan2(radius.y, radius.x);
+            newArc->setRange(startAngle, endAngle);
+            newArc->setRadius(radius.Length());
+        } else if (PointType == mid)
+            newArc->setCenter(v1);
+        else if (PointType == none) {
+            Base::Vector3d radius = v1 - newArc->getCenter();
+            newArc->setRadius(radius.Length());
+        }
+
+        //copy the vector and exchange the changed arc segment
+        std::vector< Part::Geometry * > newVals(vals);
+        newVals[GeoId] = newArc;
+
+        // set the new set to the property (which clone the objects)
+        this->getSketchObjectPtr()->Geometry.setValues(newVals);
+
+        // set free the new line
+        delete newArc;
+
+    } else if (actGeom->getTypeId() == Part::GeomCircle::getClassTypeId()) {
         Part::GeomCircle *newCircle = static_cast<Part::GeomCircle*>(actGeom->clone());
         if (PointType == mid)
             newCircle->setCenter(v1);
@@ -176,11 +208,7 @@ PyObject* SketchObjectPy::movePoint(PyObject *args)
         // set free the new line
         delete newCircle;
 
-    }
-    else if (actGeom->getTypeId() == Part::GeomArcOfCircle::getClassTypeId()) {
-        Py_Error(PyExc_NotImplementedError,"Not implemented");
-    }
-    else
+    } else
         Py_Error(PyExc_AttributeError,"wrong Geometry");
 
     Py_Return; 
