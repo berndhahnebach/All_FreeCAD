@@ -27,6 +27,8 @@
 #include <App/PropertyStandard.h>
 #include <Mod/Part/App/PartFeature.h>
 
+class TopoDS_Wire;
+
 namespace PartDesign
 {
 
@@ -39,9 +41,11 @@ public:
 
     App::PropertyLink   Sketch;
 
- };
+protected:
+    TopoDS_Shape makeFace(const std::vector<TopoDS_Wire>&) const;
+};
 
 } //namespace PartDesign
 
 
-#endif // PART_SketchBased_H
+#endif // PARTDESIGN_SketchBased_H
