@@ -47,25 +47,6 @@
 
 using namespace PartDesign;
 
-namespace PartDesign {
-
-
-// sort bounding boxes according to diagonal length
-struct Wire_Compare {
-    bool operator() (const TopoDS_Wire& w1, const TopoDS_Wire& w2)
-    {
-        Bnd_Box box1, box2;
-        BRepBndLib::Add(w1, box1);
-        box1.SetGap(0.0);
-
-        BRepBndLib::Add(w2, box2);
-        box2.SetGap(0.0);
-        
-        return box1.SquareExtent() < box2.SquareExtent();
-    }
-};
-}
-
 const char* Pocket::TypeEnums[]= {"Length","UpToLast","UpToFirst",NULL};
 
 PROPERTY_SOURCE(PartDesign::Pocket, PartDesign::SketchBased)
@@ -132,15 +113,7 @@ App::DocumentObjectExecReturn *Pocket::execute(void)
     Handle(Geom_Surface) aSurf = new Geom_Plane (gp_Pln(gp_Pnt(0,0,0),gp_Dir(0,0,1)));
     //anti-clockwise circles if too look from surface normal
 
-    //FIXME: Need a safe method to sort wire that the outermost one comes last
-    // Currently it's done with the diagonal lengths of the bounding boxes
-    std::sort(wires.begin(), wires.end(), Wire_Compare());
-    BRepBuilderAPI_MakeFace mkFace(wires.back());
-    for (std::vector<TopoDS_Wire>::reverse_iterator it = wires.rbegin()+1; it != wires.rend(); ++it) {
-        //it->Reverse(); // Shouldn't inner wires be reversed?
-        mkFace.Add(*it);
-    }
-    TopoDS_Face aFace = mkFace.Face();
+    TopoDS_Shape aFace = makeFace(wires);
     if (aFace.IsNull())
         return new App::DocumentObjectExecReturn("Creating a face from sketch failed");
 
