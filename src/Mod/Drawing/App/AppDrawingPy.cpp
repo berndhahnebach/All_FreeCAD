@@ -41,24 +41,22 @@ project(PyObject *self, PyObject *args)
     PyObject *pcObjShape;
     PyObject *pcObjDir=0;
 
-	if (!PyArg_ParseTuple(args, "O!|O!", &(TopoShapePy::Type), &pcObjShape,&(Base::VectorPy::Type), &pcObjDir))     // convert args: Python->C
+    if (!PyArg_ParseTuple(args, "O!|O!", &(TopoShapePy::Type), &pcObjShape,&(Base::VectorPy::Type), &pcObjDir))     // convert args: Python->C
         return NULL;                             // NULL triggers exception
 
     PY_TRY {
         TopoShapePy* pShape = static_cast<TopoShapePy*>(pcObjShape);
-		
-		Base::Vector3d Vector(0,0,1);
-		if(pcObjDir)
-			Vector = *static_cast<Base::VectorPy*>(pcObjDir)->getVectorPtr();
+        Base::Vector3d Vector(0,0,1);
+        if (pcObjDir)
+            Vector = *static_cast<Base::VectorPy*>(pcObjDir)->getVectorPtr();
 
-		ProjectionAlgos Alg(pShape->getTopoShapePtr()->_Shape,Base::Vector3f((float)Vector.x,(float)Vector.y,(float)Vector.z));
-
+        ProjectionAlgos Alg(pShape->getTopoShapePtr()->_Shape,Base::Vector3f((float)Vector.x,(float)Vector.y,(float)Vector.z));
 
         Py::List list;
-        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.V))));
-        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.V1))));
-        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.H))));
-        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.H1))));
+        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.V)) , true));
+        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.V1)), true));
+        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.H)) , true));
+        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.H1)), true));
 
         return Py::new_reference_to(list);
 
@@ -72,35 +70,32 @@ projectEx(PyObject *self, PyObject *args)
     PyObject *pcObjShape;
     PyObject *pcObjDir=0;
 
-	if (!PyArg_ParseTuple(args, "O!|O!", &(TopoShapePy::Type), &pcObjShape,&(Base::VectorPy::Type), &pcObjDir))     // convert args: Python->C
+    if (!PyArg_ParseTuple(args, "O!|O!", &(TopoShapePy::Type), &pcObjShape,&(Base::VectorPy::Type), &pcObjDir))     // convert args: Python->C
         return NULL;                             // NULL triggers exception
 
     PY_TRY {
         TopoShapePy* pShape = static_cast<TopoShapePy*>(pcObjShape);
-		
-		Base::Vector3d Vector(0,0,1);
-		if(pcObjDir)
-			Vector = *static_cast<Base::VectorPy*>(pcObjDir)->getVectorPtr();
+        Base::Vector3d Vector(0,0,1);
+        if (pcObjDir)
+            Vector = *static_cast<Base::VectorPy*>(pcObjDir)->getVectorPtr();
 
-		ProjectionAlgos Alg(pShape->getTopoShapePtr()->_Shape,Base::Vector3f((float)Vector.x,(float)Vector.y,(float)Vector.z));
-
+        ProjectionAlgos Alg(pShape->getTopoShapePtr()->_Shape,Base::Vector3f((float)Vector.x,(float)Vector.y,(float)Vector.z));
 
         Py::List list;
-        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.V))));
-        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.V1))));
-        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.VN))));
-        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.VO))));
-        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.VI))));
-        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.H))));
-        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.H1))));
-        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.HN))));
-        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.HO))));
-        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.HI))));
+        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.V)) , true));
+        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.V1)), true));
+        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.VN)), true));
+        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.VO)), true));
+        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.VI)), true));
+        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.H)) , true));
+        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.H1)), true));
+        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.HN)), true));
+        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.HO)), true));
+        list.append(Py::Object(new TopoShapePy(new TopoShape(Alg.HI)), true));
 
         return Py::new_reference_to(list);
 
     } PY_CATCH;
-
 }
 
 static PyObject * 

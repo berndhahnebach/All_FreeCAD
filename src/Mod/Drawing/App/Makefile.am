@@ -5,6 +5,8 @@ libDrawing_la_SOURCES=\
 		AppDrawingPy.cpp \
 		FeaturePage.cpp \
 		FeaturePage.h \
+		FeatureProjection.cpp \
+		FeatureProjection.h \
 		FeatureView.cpp \
 		FeatureView.h \
 		FeatureViewPart.cpp \

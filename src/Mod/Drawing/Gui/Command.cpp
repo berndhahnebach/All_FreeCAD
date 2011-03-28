@@ -18,6 +18,7 @@
 
 #include <Gui/Application.h>
 #include <Gui/Command.h>
+#include <Gui/Control.h>
 #include <Gui/Selection.h>
 #include <Gui/MainWindow.h>
 #include <Gui/FileDialog.h>
@@ -27,6 +28,7 @@
 
 
 #include "DrawingView.h"
+#include "TaskDialog.h"
 
 using namespace DrawingGui;
 using namespace std;
@@ -39,7 +41,7 @@ using namespace std;
 DEF_STD_CMD(CmdDrawingOpen);
 
 CmdDrawingOpen::CmdDrawingOpen()
-	:Command("Drawing_Open")
+  : Command("Drawing_Open")
 {
     sAppModule      = "Drawing";
     sGroup          = QT_TR_NOOP("Drawing");
@@ -108,7 +110,7 @@ bool CmdDrawingNewA3Landscape::isActive(void)
 DEF_STD_CMD(CmdDrawingNewView);
 
 CmdDrawingNewView::CmdDrawingNewView()
-	:Command("Drawing_NewView")
+  : Command("Drawing_NewView")
 {
     sAppModule      = "Drawing";
     sGroup          = QT_TR_NOOP("Drawing");
@@ -173,7 +175,7 @@ CmdDrawingExportPage::CmdDrawingExportPage()
 
 void CmdDrawingExportPage::activated(int iMsg)
 {
-	unsigned int n = getSelection().countObjectsOfType(Drawing::FeaturePage::getClassTypeId());
+    unsigned int n = getSelection().countObjectsOfType(Drawing::FeaturePage::getClassTypeId());
     if (n != 1) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
             QObject::tr("Select one Page object."));
@@ -186,14 +188,14 @@ void CmdDrawingExportPage::activated(int iMsg)
 
     QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), QObject::tr("Export page"), QString(), filter.join(QLatin1String(";;")));
     if (!fn.isEmpty()) {
-  	   std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
+        std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
         openCommand("Drawing export page");
 
-		doCommand(Doc,"PageFile = open(App.activeDocument().%s.PageResult,'r')",Sel[0].FeatName);
-		std::string fname = (const char*)fn.toAscii();
-		doCommand(Doc,"OutFile = open('%s','w')",fname.c_str());
-		doCommand(Doc,"OutFile.write(PageFile.read())");
-		doCommand(Doc,"del OutFile,PageFile");
+        doCommand(Doc,"PageFile = open(App.activeDocument().%s.PageResult,'r')",Sel[0].FeatName);
+        std::string fname = (const char*)fn.toAscii();
+        doCommand(Doc,"OutFile = open('%s','w')",fname.c_str());
+        doCommand(Doc,"OutFile.write(PageFile.read())");
+        doCommand(Doc,"del OutFile,PageFile");
 
         commitCommand();
     }
@@ -202,6 +204,40 @@ void CmdDrawingExportPage::activated(int iMsg)
 bool CmdDrawingExportPage::isActive(void)
 {
     return (getActiveGuiDocument() ? true : false);
+}
+
+//===========================================================================
+// Drawing_ProjectShape
+//===========================================================================
+
+DEF_STD_CMD_A(CmdDrawingProjectShape);
+
+CmdDrawingProjectShape::CmdDrawingProjectShape()
+  : Command("Drawing_ProjectShape")
+{
+    // seting the
+    sGroup        = QT_TR_NOOP("Drawing");
+    sMenuText     = QT_TR_NOOP("Project shape...");
+    sToolTipText  = QT_TR_NOOP("Project shape onto a user-defined plane");
+    sStatusTip    = QT_TR_NOOP("Project shape onto a user-defined plane");
+    sWhatsThis    = "Drawing_ProjectShape";
+    iAccel        = 0;
+}
+
+void CmdDrawingProjectShape::activated(int iMsg)
+{
+    Gui::TaskView::TaskDialog* dlg = Gui::Control().activeDialog();
+    if (!dlg) {
+        dlg = new DrawingGui::TaskProjection();
+        dlg->setButtonPosition(Gui::TaskView::TaskDialog::South);
+    }
+    Gui::Control().showDialog(dlg);
+}
+
+bool CmdDrawingProjectShape::isActive(void)
+{
+    int ct = Gui::Selection().countObjectsOfType(Part::Feature::getClassTypeId());
+    return (ct > 0 && !Gui::Control().activeDialog());
 }
 
 
@@ -214,4 +250,5 @@ void CreateDrawingCommands(void)
     rcCmdMgr.addCommand(new CmdDrawingNewA3Landscape());
     rcCmdMgr.addCommand(new CmdDrawingNewView());
     rcCmdMgr.addCommand(new CmdDrawingExportPage());
+    rcCmdMgr.addCommand(new CmdDrawingProjectShape());
 }

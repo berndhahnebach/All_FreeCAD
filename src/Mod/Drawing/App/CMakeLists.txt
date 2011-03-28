@@ -21,6 +21,8 @@ set(Drawing_LIBS
 SET(Features_SRCS
     FeaturePage.cpp
     FeaturePage.h
+    FeatureProjection.cpp
+    FeatureProjection.h
     FeatureView.cpp
     FeatureView.h
     FeatureViewPart.cpp
