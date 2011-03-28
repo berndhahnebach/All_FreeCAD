@@ -39,6 +39,8 @@ SET(DrawingGui_SRCS
     Resources/Drawing.qrc
     PreCompiled.cpp
     PreCompiled.h
+    TaskDialog.cpp
+    TaskDialog.h
     Workbench.cpp
     Workbench.h
 )

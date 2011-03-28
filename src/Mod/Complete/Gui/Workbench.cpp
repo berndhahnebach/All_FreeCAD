@@ -292,6 +292,8 @@ Gui::MenuItem* Workbench::setupMenuBar() const
         << "Drawing_NewA3Landscape"  
         << "Drawing_NewView" 
         << "Drawing_ExportPage"
+        << "Separator"
+        << "Drawing_ProjectShape"
     ;
 
     // Raytracing ****************************************************************************************************
