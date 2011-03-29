@@ -85,7 +85,17 @@ public:
     void setConstruction(int geoIndex,bool isConstruction=true);
     bool getConstruction(int geoIndex) const;
 
-    /// move this point to a new location and solve
+    /** set the datum of a distance or angle constraint to a certain value and solve
+      * This can cause
+      * the solving to fail!
+      */
+    int setDatum(int constraintIndex, double value);
+
+    /** move this point to a new location and solve
+      * this will introduce a fix constraint on the moved point
+      * to ensure its stay on the right position. But this can cause
+      * the solving to fail!
+      */
     int movePoint(int geoIndex1, PointPos Pos1, Base::Vector3d toPoint);
 
     /// add dedicated geometry
