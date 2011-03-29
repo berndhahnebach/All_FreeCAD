@@ -40,7 +40,7 @@ lines, polylines, lwpolylines, circles, arcs,
 texts, colors,layers (from groups)
 '''
 
-import FreeCAD, os, Part, math, re, string
+import FreeCAD, os, Part, math, re, string, Mesh
 from draftlibs import fcvec, dxfColorMap, dxfLibrary, fcgeo
 from draftlibs.dxfReader import readDXF
 from Draft import Dimension, ViewProviderDimension
@@ -273,8 +273,10 @@ def drawLine(line):
 		v1=FreeCAD.Vector(line.points[0][0],line.points[0][1],line.points[0][2])
 		v2=FreeCAD.Vector(line.points[1][0],line.points[1][1],line.points[1][2])
 		if not fcvec.equals(v1,v2):
-			try: return Part.Line(v1,v2).toShape()
-			except: warn(line)
+			try:
+                                return Part.Line(v1,v2).toShape()
+			except:
+                                warn(line)
 	return None
 
 def drawPolyline(polyline):
@@ -307,8 +309,10 @@ def drawPolyline(polyline):
 				try: edges.append(Part.Line(v1,v2).toShape())
 				except: warn(polyline)
 		if edges:
-			try: return Part.Wire(edges)
-			except: warn(polyline)
+			try:
+                                return Part.Wire(edges)
+			except:
+                                warn(polyline)
 	return None
 
 def drawArc(arc):
@@ -320,7 +324,8 @@ def drawArc(arc):
 	circle.Center=v
 	circle.Radius=arc.radius
 	try: return circle.toShape(firstangle,lastangle)
-	except: warn(arc)
+	except:
+                warn(arc)
 	return None
 
 def drawCircle(circle):
@@ -329,9 +334,63 @@ def drawCircle(circle):
 	curve = Part.Circle()
 	curve.Radius = circle.radius
 	curve.Center = v
-	try: return curve.toShape()
-	except: warn(circle)
+	try:
+                return curve.toShape()
+	except:
+                warn(circle)
 	return None
+
+def drawFace(face):
+        "returns a Part face from a list of points"
+        pl = []
+        for p in face.points:
+                pl.append(FreeCAD.Vector(p[0],p[1],p[2]))
+        p1 = face.points[0]
+        pl.append(FreeCAD.Vector(p1[0],p1[1],p1[2]))
+        try:
+                pol = Part.makePolygon(pl)
+                return Part.Face(pol)
+        except:
+                warn(face)
+        return None
+
+def drawMesh(mesh):
+        "returns a Mesh from a dxf mesh"
+        md = []
+        if mesh.flags == 16:
+                pts = mesh.points
+                udim = rawValue(mesh,71)
+                vdim = rawValue(mesh,72)
+                for u in range(udim-1):
+                        for v in range(vdim-1):
+                                b = u+v*udim
+                                p1 = pts[b]
+                                p2 = pts[b+1]
+                                p3 = pts[b+udim]
+                                p4 = pts[b+udim+1]
+                                md.append([p1,p2,p4])
+                                md.append([p1,p4,p3])
+        elif mesh.flags == 64:
+                pts = []
+                fcs = []
+                for p in mesh.points:
+                        if p.flags == 192:
+                                pts.append(p)
+                        elif p.flags == 128:
+                                fcs.append(p)
+                for f in fcs:
+                        p1 = pts[rawValue(f,71)-1]
+                        p2 = pts[rawValue(f,72)-1]
+                        p3 = pts[rawValue(f,73)-1]
+                        md.append([p1,p2,p3])
+                        if rawValue(f,74) != None:
+                                p4 = pts[rawValue(f,74)-1]
+                                md.append([p1,p3,p4])                                
+        try:
+                return Mesh.Mesh(md)
+        except:
+                warn(mesh)
+        return None     
 
 def drawSolid(solid):
         "returns a Part shape from a dxf solid"
@@ -518,8 +577,18 @@ def processdxf(document,filename):
 						
 	# drawing polylines
 
-	polylines = drawing.entities.get_type("lwpolyline")
-	polylines.extend(drawing.entities.get_type("polyline"))
+	pls = drawing.entities.get_type("lwpolyline")
+	pls.extend(drawing.entities.get_type("polyline"))
+        polylines = []
+        meshes = []
+        for p in pls:
+                if hasattr(p,"flags"):
+                        if p.flags in [16,64]:
+                                meshes.append(p)
+                        else:
+                                polylines.append(p)
+                else:
+                        polylines.append(p)
 	if polylines: FreeCAD.Console.PrintMessage("drawing "+str(len(polylines))+" polylines...\n")
 	for polyline in polylines:
                 if fmt.dxflayout or (not rawValue(polyline,67)):
@@ -589,6 +658,25 @@ def processdxf(document,filename):
                                 addText(text)
 					
 	else: FreeCAD.Console.PrintMessage("skipping texts...\n")
+
+        # drawing 3D objects
+
+        faces3d = drawing.entities.get_type("3dface")
+        if faces3d: FreeCAD.Console.PrintMessage("drawing "+str(len(faces3d))+" 3dfaces...\n")
+        for face3d in faces3d:
+                shape = drawFace(face3d)
+                if shape:
+                        newob = addObject(shape,"Face",face3d.layer)
+                        if gui: fmt.formatObject(newob,face3d)
+        if meshes: FreeCAD.Console.PrintMessage("drawing "+str(len(meshes))+" 3dmeshes...\n")
+        for mesh in meshes:
+                me = drawMesh(mesh)
+                if me:
+                        newob = doc.addObject("Mesh::Feature","Mesh")
+                        lay = locateLayer(rawValue(mesh,8))
+                        lay.addObject(newob)
+                        newob.Mesh = me
+                        if gui: fmt.formatObject(newob,mesh)
 
 	# drawing dims
 
@@ -811,7 +899,21 @@ def writeShape(ob,dxfobject):
 								ang1, ang2, color=getACI(ob),
 								layer=getGroup(ob,exportList)))
 
-		
+def writeMesh(ob,dxfobject):
+        "export a shape as a polyface mesh"
+        meshdata = ob.Shape.tessellate(0.5)
+        print meshdata
+        points = []
+        faces = []
+        for p in meshdata[0]:
+                points.append([p.x,p.y,p.z])
+        for f in meshdata[1]:
+                faces.append([f[0]+1,f[1]+1,f[2]+1])
+        print len(points),len(faces)
+        dxfobject.append(dxfLibrary.PolyLine([points,faces], [0.0,0.0,0.0],
+                                             64, color=getACI(ob),
+                                             layer=getGroup(ob,exportList)))
+                                
 		
 def export(objectslist,filename):
 	"called when freecad exports a file"
@@ -825,23 +927,26 @@ def export(objectslist,filename):
 		print "processing ",ob.Name
 		if ob.isDerivedFrom("Part::Feature"):
                         if not ob.Shape.isNull():
-                                if ob.Shape.ShapeType == 'Compound':
-                                        if (len(ob.Shape.Wires) == 1):
-                                                # only one wire in this compound, no lone edge -> polyline
-                                                if (len(ob.Shape.Wires[0].Edges) == len(ob.Shape.Edges)):
-                                                        writeShape(ob,dxf)
+                                if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetBool("dxfmesh"):
+                                        writeMesh(ob,dxf)
+                                else:
+                                        if ob.Shape.ShapeType == 'Compound':
+                                                if (len(ob.Shape.Wires) == 1):
+                                                        # only one wire in this compound, no lone edge -> polyline
+                                                        if (len(ob.Shape.Wires[0].Edges) == len(ob.Shape.Edges)):
+                                                                writeShape(ob,dxf)
+                                                        else:
+                                                                # 1 wire + lone edges -> block
+                                                                block = getBlock(ob)
+                                                                dxf.blocks.append(block)
+                                                                dxf.append(dxfLibrary.Insert(name=ob.Name.upper()))
                                                 else:
-                                                        # 1 wire + lone edges -> block
+                                                        # all other cases: block
                                                         block = getBlock(ob)
                                                         dxf.blocks.append(block)
                                                         dxf.append(dxfLibrary.Insert(name=ob.Name.upper()))
                                         else:
-                                                # all other cases: block
-                                                block = getBlock(ob)
-                                                dxf.blocks.append(block)
-                                                dxf.append(dxfLibrary.Insert(name=ob.Name.upper()))
-                                else:
-                                        writeShape(ob,dxf)
+                                                writeShape(ob,dxf)
 				
 		elif (ob.Type == "App::Annotation"):
 
