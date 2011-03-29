@@ -1048,36 +1048,6 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
     }
 }
 
-
-
-
-/*
-std::vector< std::pair<int, int> > ViewProviderSketch::getCoincidentIndices(int geoIndex, int Pos) const
-{
-    std::vector< std::pair<int, int> > inds;
-    const std::vector<Constraint *>& constr = getSketchObject()->Constraints.getValues();
-    for (std::vector<Constraint *>::const_iterator it = constr.begin(); it != constr.end(); ++it) {
-        switch ((*it)->Type) {
-           case Coincident:
-               {
-                   if ((*it)->First == geoIndex && (*it)->FirstPos == Pos) {
-                       inds.push_back(std::make_pair((*it)->First, (*it)->FirstPos));
-                       inds.push_back(std::make_pair((*it)->Second, (*it)->SecondPos));
-                   }
-                   else if ((*it)->Second == geoIndex && (*it)->SecondPos == Pos) {
-                       inds.push_back(std::make_pair((*it)->First, (*it)->FirstPos));
-                       inds.push_back(std::make_pair((*it)->Second, (*it)->SecondPos));
-                   }
-               }
-               break;
-           default:
-               break;
-        }
-    }
-
-    return inds;
-}
-*/
 void ViewProviderSketch::drawEdit(const std::vector<Base::Vector2D> &EditCurve)
 {
     assert(edit);

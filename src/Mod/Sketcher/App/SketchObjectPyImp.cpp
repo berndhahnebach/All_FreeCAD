@@ -21,7 +21,6 @@
  ***************************************************************************/
 
 #include "PreCompiled.h"
-#include <boost/shared_ptr.hpp>
 
 #include "Mod/Sketcher/App/SketchObject.h"
 #include <Mod/Part/App/LinePy.h>

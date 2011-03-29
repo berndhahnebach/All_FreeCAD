@@ -171,7 +171,6 @@ protected:
     EditData *edit;
     /// build up the visual of the constraints
     void rebuildConstraintsVisual(void);
-    //std::vector< std::pair<int, int> > getCoincidentIndices(int geoIndex, int Pos) const;
 
     void setPositionText(const Base::Vector2D &Pos);
     void resetPositionText(void);
