@@ -69,6 +69,7 @@
 # include <gp_Lin.hxx>
 # include <Geom_Line.hxx>
 # include <Geom_TrimmedCurve.hxx>
+# include <GC_MakeArcOfCircle.hxx>
 # include <GC_MakeCircle.hxx>
 # include <GC_MakeLine.hxx>
 # include <GC_MakeSegment.hxx>
@@ -495,8 +496,74 @@ void GeomArcOfCircle::setRange(double u, double v)
 
 // Persistence implementer 
 unsigned int GeomArcOfCircle::getMemSize (void) const {assert(0); return 0; /* not implemented yet */}
-void         GeomArcOfCircle::Save       (Base::Writer &) const  {assert(0);/* not implemented yet */}
-void         GeomArcOfCircle::Restore    (Base::XMLReader &)     {assert(0);/* not implemented yet */}
+
+void GeomArcOfCircle::Save(Base::Writer &writer) const 
+{
+    // save the attributes of the father class
+    Geometry::Save(writer);
+
+    Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(this->myCurve->BasisCurve());
+
+    gp_Pnt center = circle->Axis().Location();
+    gp_Dir norm = circle->Axis().Direction();
+
+    writer.Stream()
+         << writer.ind()
+             << "<ArcOfCircle "
+                << "CenterX=\"" <<  center.X() <<
+                "\" CenterY=\"" <<  center.Y() <<
+                "\" CenterZ=\"" <<  center.Z() <<
+                "\" NormalX=\"" <<  norm.X() <<
+                "\" NormalY=\"" <<  norm.Y() <<
+                "\" NormalZ=\"" <<  norm.Z() <<
+                "\" Radius=\"" <<  circle->Radius() <<
+                "\" StartAngle=\"" <<  this->myCurve->FirstParameter() <<
+                "\" EndAngle=\"" <<  this->myCurve->LastParameter() <<
+             "\"/>" << endl;
+}
+
+void GeomArcOfCircle::Restore(Base::XMLReader &reader)    
+{
+    // read the attributes of the father class
+    Geometry::Restore(reader);
+
+    float CenterX,CenterY,CenterZ,NormalX,NormalY,NormalZ,Radius,StartAngle,EndAngle;
+    // read my Element
+    reader.readElement("ArcOfCircle");
+    // get the value of my Attribute
+    CenterX = (float)reader.getAttributeAsFloat("CenterX");
+    CenterY = (float)reader.getAttributeAsFloat("CenterY");
+    CenterZ = (float)reader.getAttributeAsFloat("CenterZ");
+    NormalX = (float)reader.getAttributeAsFloat("NormalX");
+    NormalY = (float)reader.getAttributeAsFloat("NormalY");
+    NormalZ = (float)reader.getAttributeAsFloat("NormalZ");
+    Radius = (float)reader.getAttributeAsFloat("Radius");
+    StartAngle = (float)reader.getAttributeAsFloat("StartAngle");
+    EndAngle = (float)reader.getAttributeAsFloat("EndAngle");
+
+    // set the read geometry
+    gp_Pnt p1(CenterX,CenterY,CenterZ);
+    gp_Dir norm(NormalX,NormalY,NormalZ);
+    try {
+        GC_MakeCircle mc(p1, norm, Radius);
+        if (!mc.IsDone())
+            throw Base::Exception(gce_ErrorStatusText(mc.Status()));
+        GC_MakeArcOfCircle ma(mc.Value()->Circ(), StartAngle, EndAngle, 1);
+        if (!ma.IsDone())
+            throw Base::Exception(gce_ErrorStatusText(ma.Status()));
+
+        Handle_Geom_TrimmedCurve tmpcurve = ma.Value();
+        Handle_Geom_Circle tmpcircle = Handle_Geom_Circle::DownCast(tmpcurve->BasisCurve());
+        Handle_Geom_Circle circle = Handle_Geom_Circle::DownCast(this->myCurve->BasisCurve());
+ 
+        circle->SetCirc(tmpcircle->Circ());
+        this->myCurve->SetTrim(tmpcurve->FirstParameter(), tmpcurve->LastParameter());
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        throw Base::Exception(e->GetMessageString());
+    }
+}
 
 PyObject *GeomArcOfCircle::getPyObject(void)
 {
