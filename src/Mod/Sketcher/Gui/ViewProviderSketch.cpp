@@ -324,10 +324,24 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                         int GeoId;
                         Sketcher::PointPos PosId;
                         getSketchObject()->getGeoVertexIndex(edit->DragPoint, GeoId, PosId);
-                        Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.movePoint(%i,%i,App.Vector(%f,%f,0))"
-                                               ,getObject()->getNameInDocument()
-                                               ,GeoId, PosId ,x , y
-                                               );
+                        std::vector< std::pair<int, int> > ids = getCoincidentIndices(GeoId, PosId);
+                        if (ids.empty()) ids.push_back(std::make_pair(GeoId, PosId));
+                        std::stringstream str;
+                        str << "__set__={}\n";
+                        for (std::vector< std::pair<int, int> >::iterator it = ids.begin(); it != ids.end(); ++it) {
+                            str << "__set__[" << it->first << "] = " << it->second << "\n";
+                        }
+
+                        str << "FreeCAD.ActiveDocument."
+                            << getObject()->getNameInDocument()
+                            << ".movePoint(__set__,App.Vector("
+                            << x << "," << y << ",0))\n"
+                            << "del __set__\n";
+                        Gui::Command::doCommand(Gui::Command::Doc,str.str().c_str());
+                        //Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.movePoint(%i,%i,App.Vector(%f,%f,0))"
+                        //                       ,getObject()->getNameInDocument()
+                        //                       ,GeoId, PosId ,x , y
+                        //                       );
                         edit->PreselectPoint = edit->DragPoint;
                         edit->DragPoint = -1;
                         //updateColor();
@@ -1045,6 +1059,32 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
 
         edit->constrGroup->addChild(sep);
     }
+}
+
+std::vector< std::pair<int, int> > ViewProviderSketch::getCoincidentIndices(int geoIndex, int Pos) const
+{
+    std::vector< std::pair<int, int> > inds;
+    const std::vector<Constraint *>& constr = getSketchObject()->Constraints.getValues();
+    for (std::vector<Constraint *>::const_iterator it = constr.begin(); it != constr.end(); ++it) {
+        switch ((*it)->Type) {
+           case Coincident:
+               {
+                   if ((*it)->First == geoIndex && (*it)->FirstPos == Pos) {
+                       inds.push_back(std::make_pair((*it)->First, (*it)->FirstPos));
+                       inds.push_back(std::make_pair((*it)->Second, (*it)->SecondPos));
+                   }
+                   else if ((*it)->Second == geoIndex && (*it)->SecondPos == Pos) {
+                       inds.push_back(std::make_pair((*it)->First, (*it)->FirstPos));
+                       inds.push_back(std::make_pair((*it)->Second, (*it)->SecondPos));
+                   }
+               }
+               break;
+           default:
+               break;
+        }
+    }
+
+    return inds;
 }
 
 void ViewProviderSketch::drawEdit(const std::vector<Base::Vector2D> &EditCurve)

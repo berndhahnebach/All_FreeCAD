@@ -393,7 +393,8 @@ PyObject * @self.export.Name@::staticCallback_@i.Name@ (PyObject *self, PyObject
         PyObject* ret = ((@self.export.Name@*)self)->@i.Name@(args);
 -
 +   if (not i.Const):
-        ((@self.export.Name@*)self)->startNotify();
+        if (ret != 0)
+            ((@self.export.Name@*)self)->startNotify();
 -
         return ret;
     }
