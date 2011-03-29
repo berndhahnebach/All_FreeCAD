@@ -230,6 +230,26 @@ If color mapping is choosed, you must choose a color mapping file containing a t
         </item>
        </layout>
       </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <item>
+         <widget class="Gui::PrefCheckBox" name="gui::prefcheckbox">
+          <property name="toolTip">
+           <string>If this is checked, all objects containing faces will be exported as 3d polyfaces</string>
+          </property>
+          <property name="text">
+           <string>Export 3D objects as polyface meshes</string>
+          </property>
+          <property name="prefEntry" stdset="0">
+           <cstring>dxfmesh</cstring>
+          </property>
+          <property name="prefPath" stdset="0">
+           <cstring>Mod/Draft</cstring>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
      </layout>
     </widget>
    </item>
