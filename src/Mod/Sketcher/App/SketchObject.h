@@ -74,6 +74,8 @@ public:
 
     /// set the datum of a Distance or Angle constraint
     void setDatum(double Datum, int ConstrNbr);
+    /// move this point to a new location and solve
+    int movePoint(int geoIndex1, PointPos Pos1, Base::Vector3d toPoint);
 
     /** retrieves for a Vertex number the corosponding GeoId and PointPosition
     */

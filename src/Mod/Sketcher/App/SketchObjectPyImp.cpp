@@ -126,118 +126,20 @@ PyObject* SketchObjectPy::setDatum(PyObject *args)
     Py_Return; 
 }
 
-namespace Sketcher {
-Part::Geometry * updateGeometry(const Part::Geometry * actGeom, int PointType, const Base::Vector3d& v1)
-{
-    if (actGeom->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
-        const Part::GeomLineSegment *line = static_cast<const Part::GeomLineSegment*>(actGeom);
-        // create a single new line segment
-        Part::GeomLineSegment *newLine = new Part::GeomLineSegment();
-        // set the right point, leave the other old
-        if (PointType == start)
-            newLine->setPoints(v1, line->getEndPoint());
-        else
-            newLine->setPoints(line->getStartPoint(), v1);
-
-        return newLine;
-
-    }
-    else if (actGeom->getTypeId() == Part::GeomArcOfCircle::getClassTypeId()) {
-        Part::GeomArcOfCircle *newArc = static_cast<Part::GeomArcOfCircle*>(actGeom->clone());
-        if (PointType == start) {
-            Base::Vector3d radius = v1 - newArc->getCenter();
-            double startAngle, endAngle;
-            newArc->getRange(startAngle, endAngle);
-            startAngle = atan2(radius.y, radius.x);
-            newArc->setRange(startAngle, endAngle);
-            newArc->setRadius(radius.Length());
-        }
-        else if (PointType == end) {
-            Base::Vector3d radius = v1 - newArc->getCenter();
-            double startAngle, endAngle;
-            newArc->getRange(startAngle, endAngle);
-            endAngle = atan2(radius.y, radius.x);
-            newArc->setRange(startAngle, endAngle);
-            newArc->setRadius(radius.Length());
-        }
-        else if (PointType == mid)
-            newArc->setCenter(v1);
-        else if (PointType == none) {
-            Base::Vector3d radius = v1 - newArc->getCenter();
-            newArc->setRadius(radius.Length());
-        }
-
-        return newArc;
-
-    }
-    else if (actGeom->getTypeId() == Part::GeomCircle::getClassTypeId()) {
-        Part::GeomCircle *newCircle = static_cast<Part::GeomCircle*>(actGeom->clone());
-        if (PointType == mid)
-            newCircle->setCenter(v1);
-        else if (PointType == none) {
-            Base::Vector3d radius = v1 - newCircle->getCenter();
-            newCircle->setRadius(radius.Length());
-        }
-
-        return newCircle;
-
-    }
-    else
-        return 0;
-}
-}
-
 PyObject* SketchObjectPy::movePoint(PyObject *args)
 {
     PyObject *pcObj;
     int GeoId, PointType;
 
-    if (PyArg_ParseTuple(args, "iiO!", &GeoId, &PointType, &(Base::VectorPy::Type), &pcObj)) {
-        Base::Vector3d v1 = static_cast<Base::VectorPy*>(pcObj)->value();
+    if (!PyArg_ParseTuple(args, "iiO!", &GeoId, &PointType, &(Base::VectorPy::Type), &pcObj))
+        return 0;
 
-        const std::vector< Part::Geometry * > &vals = this->getSketchObjectPtr()->Geometry.getValues();
-        std::vector< Part::Geometry * > newVals(vals);
-        const Part::Geometry * actGeom = vals[GeoId];
+    Base::Vector3d v1 = static_cast<Base::VectorPy*>(pcObj)->value();
 
-        Part::Geometry* newGeom = updateGeometry(actGeom, PointType, v1);
-        if (!newGeom) Py_Error(PyExc_AttributeError,"wrong Geometry");
+    this->getSketchObjectPtr()->movePoint(GeoId,(Sketcher::PointPos)PointType,v1);
 
-        newVals[GeoId] = newGeom;
-        this->getSketchObjectPtr()->Geometry.setValues(newVals);
-        delete newGeom;
-        Py_Return;
-    }
-    
-    PyErr_Clear();
-    PyObject* sequence;
-    if (PyArg_ParseTuple(args, "O!O!", &PyDict_Type, &sequence, &(Base::VectorPy::Type), &pcObj)) {
-        Py::Dict dict(sequence);
-        Base::Vector3d v1 = static_cast<Base::VectorPy*>(pcObj)->value();
+    Py_Return; 
 
-        const std::vector< Part::Geometry * > &vals = this->getSketchObjectPtr()->Geometry.getValues();
-        std::vector< Part::Geometry * > newVals(vals);
-        
-        typedef boost::shared_ptr<Part::Geometry> GeometryPtr;
-        std::vector<GeometryPtr> smart_copies;
-
-        for (Py::Dict::iterator it = dict.begin(); it != dict.end(); ++it) {
-            Py::Int GeoId((*it).first);
-            Py::Int PosId((*it).second);
-            const Part::Geometry * actGeom = vals[(int)GeoId];
-            Part::Geometry* newGeom = updateGeometry(actGeom, (int)PosId, v1);
-            if (!newGeom) Py_Error(PyExc_AttributeError,"wrong Geometry");
-
-            newVals[(int)GeoId] = newGeom;
-            GeometryPtr ptr(newGeom);
-            smart_copies.push_back(ptr);
-        }
-
-        this->getSketchObjectPtr()->Geometry.setValues(newVals);
-        smart_copies.clear();
-        Py_Return;
-    }
-
-    return 0; 
 }
 
 Py::Int SketchObjectPy::getConstraintCount(void) const

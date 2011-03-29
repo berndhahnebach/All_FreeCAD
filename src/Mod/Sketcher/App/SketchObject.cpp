@@ -113,6 +113,27 @@ void SketchObject::setDatum(double Datum, int ConstrNbr)
     delete constNew;
 }
 
+int SketchObject::movePoint(int geoIndex1, PointPos Pos1, Base::Vector3d toPoint)
+{
+    // set up a extra sketch
+    Sketch sketch;
+    // set the geometry and constraints
+    sketch.setUpSketch(Geometry.getValues(), Constraints.getValues());
+ 
+    int ret = sketch.movePoint(geoIndex1, Pos1, toPoint);
+
+    if(ret)
+        return ret;
+
+    std::vector<Part::Geometry *> geomlist = sketch.getGeometry();
+    Geometry.setValues(geomlist);
+    for (std::vector<Part::Geometry *>::iterator it = geomlist.begin(); it != geomlist.end(); ++it)
+        if (*it) delete *it;
+
+
+}
+
+
 int SketchObject::addGeometry(const std::vector<Part::Geometry *> &geoList)
 {
     return -1;
