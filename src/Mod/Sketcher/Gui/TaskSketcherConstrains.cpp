@@ -163,7 +163,7 @@ void TaskSketcherConstrains::on_listWidgetConstraints_itemActivated(QListWidgetI
                       sketchView->getObject()->getNameInDocument(),
                       newDatum,it->ConstraintNbr);
             // use recompute() instead of execute() to properly handle placement
-            sketchView->getSketchObject()->recompute();
+            //sketchView->getSketchObject()->recompute();
         }
     }
 }

@@ -800,6 +800,9 @@ int Sketch::solve(void)
 
 int Sketch::movePoint(int geoIndex1, PointPos Pos1, Base::Vector3d toPoint)
 {
+    // index out of bounds?
+    assert(geoIndex1 < (int)Geoms.size());
+
     // list of fixed parameters
     int fixed_size=0;
     double * fixed[4]={0,0,0,0};
@@ -860,6 +863,23 @@ int Sketch::movePoint(int geoIndex1, PointPos Pos1, Base::Vector3d toPoint)
 
     return solve(fixed, fixed_size);
 }
+
+int Sketch::setDatum(int constraintIndex, double value)
+{
+        // index out of bounds?
+    assert(constraintIndex < (int)Const.size());
+
+    // list of fixed parameters
+    int fixed_size=0;
+    double * fixed[4]={0,0,0,0};
+
+    *(Const[constraintIndex].parameter) = value;
+
+    return solve(fixed, fixed_size);
+
+}
+
+
 
 TopoShape Sketch::toShape(void) const
 {

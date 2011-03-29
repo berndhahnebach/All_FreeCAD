@@ -72,8 +72,8 @@ public:
     int delConstraint(int ConstrNbr);
     int delConstraintOnPoint(int PointNbr);
 
-    /// set the datum of a Distance or Angle constraint
-    void setDatum(double Datum, int ConstrNbr);
+    /// set the datum of a Distance or Angle constraint and solve 
+    int setDatum(double Datum, int ConstrNbr);
     /// move this point to a new location and solve
     int movePoint(int geoIndex1, PointPos Pos1, const Base::Vector3d& toPoint);
 

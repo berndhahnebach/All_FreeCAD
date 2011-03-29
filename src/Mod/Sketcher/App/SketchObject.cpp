@@ -95,10 +95,12 @@ App::DocumentObjectExecReturn *SketchObject::execute(void)
     return App::DocumentObject::StdReturn;
 }
 
-void SketchObject::setDatum(double Datum, int ConstrNbr)
+int SketchObject::setDatum(double Datum, int ConstrNbr)
 {
-    assert(ConstrNbr >= 0); 
 
+
+    // set the changed value for the constraint
+    assert(ConstrNbr >= 0); 
     const std::vector< Constraint * > &vals = this->Constraints.getValues();
     assert(ConstrNbr < (int)vals.size());
     assert(vals[ConstrNbr]->Type == Distance);
@@ -111,6 +113,25 @@ void SketchObject::setDatum(double Datum, int ConstrNbr)
     newVals[ConstrNbr] = constNew;
     this->Constraints.setValues(newVals);
     delete constNew;
+
+    // set up a extra sketch
+    Sketch sketch;
+    // set the geometry and constraints
+    sketch.setUpSketch(Geometry.getValues(), Constraints.getValues());
+ 
+    int ret = sketch.solve();
+
+    if(ret)
+        return ret;
+
+    // set the newly solved geometry
+    std::vector<Part::Geometry *> geomlist = sketch.getGeometry();
+    Geometry.setValues(geomlist);
+    for (std::vector<Part::Geometry *>::iterator it = geomlist.begin(); it != geomlist.end(); ++it)
+        if (*it) delete *it;
+
+    return 0;
+    
 }
 
 int SketchObject::movePoint(int geoIndex1, PointPos Pos1, const Base::Vector3d& toPoint)
