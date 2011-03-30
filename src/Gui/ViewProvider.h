@@ -188,7 +188,7 @@ public:
     //@}
 
     /// is called when the provider is in edit and a key event occurs. Only ESC ends edit.
-    virtual bool keyPressed(int key) { return false; }
+    virtual bool keyPressed(bool pressed, int key) { return false; }
     /// is called by the tree if the user double click on the object
     virtual bool doubleClicked(void) { return false; }
     /// is called when the provider is in edit and the mouse is moved
