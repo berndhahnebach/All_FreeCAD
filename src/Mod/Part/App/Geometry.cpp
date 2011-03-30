@@ -380,9 +380,64 @@ void GeomCircle::setRadius(double Radius)
 }
 
 // Persistence implementer 
-unsigned int GeomCircle::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
-void         GeomCircle::Save       (Base::Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
-void         GeomCircle::Restore    (Base::XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
+unsigned int GeomCircle::getMemSize (void) const
+{
+    return sizeof(Geom_Circle);
+}
+
+void GeomCircle::Save(Base::Writer& writer) const
+{
+    // save the attributes of the father class
+    GeomCurve::Save(writer);
+
+    gp_Pnt center = this->myCurve->Axis().Location();
+    gp_Dir norm = this->myCurve->Axis().Direction();
+
+    writer.Stream()
+         << writer.ind()
+             << "<Circle "
+                << "CenterX=\"" <<  center.X() <<
+                "\" CenterY=\"" <<  center.Y() <<
+                "\" CenterZ=\"" <<  center.Z() <<
+                "\" NormalX=\"" <<  norm.X() <<
+                "\" NormalY=\"" <<  norm.Y() <<
+                "\" NormalZ=\"" <<  norm.Z() <<
+                "\" Radius=\"" <<  this->myCurve->Radius() <<
+             "\"/>" << endl;
+}
+
+void GeomCircle::Restore(Base::XMLReader& reader)
+{
+    // read the attributes of the father class
+    GeomCurve::Restore(reader);
+
+    double CenterX,CenterY,CenterZ,NormalX,NormalY,NormalZ,Radius;
+    // read my Element
+    reader.readElement("Circle");
+    // get the value of my Attribute
+    CenterX = reader.getAttributeAsFloat("CenterX");
+    CenterY = reader.getAttributeAsFloat("CenterY");
+    CenterZ = reader.getAttributeAsFloat("CenterZ");
+    NormalX = reader.getAttributeAsFloat("NormalX");
+    NormalY = reader.getAttributeAsFloat("NormalY");
+    NormalZ = reader.getAttributeAsFloat("NormalZ");
+    Radius = reader.getAttributeAsFloat("Radius");
+
+    // set the read geometry
+    gp_Pnt p1(CenterX,CenterY,CenterZ);
+    gp_Dir norm(NormalX,NormalY,NormalZ);
+    try {
+        GC_MakeCircle mc(p1, norm, Radius);
+        if (!mc.IsDone())
+            throw Base::Exception(gce_ErrorStatusText(mc.Status()));
+
+        this->myCurve = mc.Value();
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        throw Base::Exception(e->GetMessageString());
+    }
+}
 
 PyObject *GeomCircle::getPyObject(void)
 {
@@ -495,7 +550,10 @@ void GeomArcOfCircle::setRange(double u, double v)
 }
 
 // Persistence implementer 
-unsigned int GeomArcOfCircle::getMemSize (void) const {assert(0); return 0; /* not implemented yet */}
+unsigned int GeomArcOfCircle::getMemSize (void) const
+{
+    return sizeof(Geom_Circle) + 2 *sizeof(double);
+}
 
 void GeomArcOfCircle::Save(Base::Writer &writer) const 
 {
