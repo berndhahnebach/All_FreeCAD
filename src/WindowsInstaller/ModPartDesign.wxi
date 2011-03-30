@@ -36,6 +36,7 @@
               <File Id="DistanceBoltpy" Name="DistanceBolt.py"  />
               <File Id="Gearpy" Name="Gear.py"  />
               <File Id="RadialCopypy" Name="RadialCopy.py"  />
+              <File Id="Parallelepipedpy" Name="Parallelepiped.py"  />
           </Component>
         </Directory>
     </Directory>
