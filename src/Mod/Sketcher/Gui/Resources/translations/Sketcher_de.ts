@@ -16,12 +16,12 @@
     <message>
       <location/>
       <source>Constrain coincident</source>
-      <translation>Constrain coincident</translation>
+      <translation>Koinzidenz erzwingen</translation>
     </message>
     <message>
       <location/>
       <source>Create a coincident constraint on the selected item</source>
-      <translation>Create a coincident constraint on the selected item</translation>
+      <translation>Eine Koinzidenzbeschränkung für das gewählte Element setzen</translation>
     </message>
   </context>
   <context>
@@ -39,7 +39,7 @@
     <message>
       <location/>
       <source>Fix a length of a line or the distance between a line and a vertex</source>
-      <translation>Horizontal einschränken</translation>
+        <translation>Die Länge einer Linie oder den Abstand einer Linie und eines Vertex festlegen</translation>
     </message>
   </context>
   <context>
@@ -67,7 +67,7 @@
     <message>
       <location/>
       <source>Create a horizontal constraint on the selected item</source>
-      <translation>Create a horizontal constraint on the selected item</translation>
+        <translation>Eine horizontale Beschränkung für das gewählte Element setzen</translation>
     </message>
   </context>
   <context>
@@ -90,12 +90,12 @@
     <message>
       <location/>
       <source>Create a lock constrain on the selected item</source>
-      <translation>Create a lock constrain on the selected item</translation>
+      <translation>Eine Sperrung für das gewählte Element setzen</translation>
     </message>
     <message>
       <location/>
       <source>Constrain lock</source>
-      <translation>Constrain lock</translation>
+      <translation>Sperren</translation>
     </message>
   </context>
   <context>
@@ -108,12 +108,12 @@
     <message>
       <location/>
       <source>Constrain parallel</source>
-      <translation>Constrain parallel</translation>
+      <translation>Parallelität erzwingen</translation>
     </message>
     <message>
       <location/>
       <source>Create a parallel constraint between two lines</source>
-      <translation>Create a parallel constraint between two lines</translation>
+      <translation>Parallelität zwischen zwei Geraden erzwingen</translation>
     </message>
   </context>
   <context>
@@ -136,12 +136,12 @@
     <message>
       <location/>
       <source>Constrain vertically</source>
-      <translation>Constrain vertically</translation>
+      <translation>Vertikal einschränken</translation>
     </message>
     <message>
       <location/>
       <source>Create a vertical constraint on the selected item</source>
-      <translation>Create a vertical constraint on the selected item</translation>
+      <translation>Eine vertikale Beschränkung für das gewählte Element setzen</translation>
     </message>
   </context>
   <context>
@@ -172,12 +172,12 @@
     <message>
       <location/>
       <source>Create box</source>
-      <translation>Create box</translation>
+      <translation>Rechteck erstellen</translation>
     </message>
     <message>
       <location/>
       <source>Create a box in the sketch</source>
-      <translation>Create a box in the sketch</translation>
+      <translation>Rechteck in der Skizze erstellen</translation>
     </message>
   </context>
   <context>
@@ -388,47 +388,47 @@
     <message>
       <location/>
       <source>Double constraint</source>
-      <translation>Double constraint</translation>
+      <translation>Doppelbedingung</translation>
     </message>
     <message>
       <location/>
       <source>The selected edge has already a horizontal constraint!</source>
-      <translation>The selected edge has already a horizontal constraint!</translation>
+      <translation>Die gewählte Kante hat bereits eine Horizontal-Beschränkung!</translation>
     </message>
     <message>
       <location/>
       <source>Impossible constraint</source>
-      <translation>Impossible constraint</translation>
+      <translation>Nicht erfüllbare Bedingung</translation>
     </message>
     <message>
       <location/>
       <source>The selected edge has already a vertical constraint!</source>
-      <translation>The selected edge has already a vertical constraint!</translation>
+      <translation>Die gewählte Kante hat bereits eine Vertikal-Beschränkung!</translation>
     </message>
     <message>
       <location/>
       <source>Select vertexes from the sketch.</source>
-      <translation>Select vertexes from the sketch.</translation>
+      <translation>Wählen Sie Vertexe aus der Skizze aus.</translation>
     </message>
     <message>
       <location/>
       <source>Select exactly two vertexes from the sketch.</source>
-      <translation>Select exactly two vertexes from the sketch.</translation>
+      <translation>Wählen Sie genau zwei Vertexe aus der Skizze aus.</translation>
     </message>
     <message>
       <location/>
       <source>Select exactly one line from the sketch.</source>
-      <translation>Select exactly one line from the sketch.</translation>
+      <translation>Wählen Sie genau einen Vertex aus der Skizze aus.</translation>
     </message>
     <message>
       <location/>
       <source>Select two lines from the sketch.</source>
-      <translation>Select two lines from the sketch.</translation>
+      <translation>Wählen Sie zwei Linien aus der Skizze aus.</translation>
     </message>
     <message>
       <location/>
       <source>Select exactly two lines from the sketch.</source>
-      <translation>Select exactly two lines from the sketch.</translation>
+      <translation>Wählen Sie genau zwei Linien aus der Skizze aus.</translation>
     </message>
     <message>
       <location/>
@@ -438,7 +438,7 @@
     <message>
       <location/>
       <source>A dialog is already open in the task panel</source>
-      <translation>A dialog is already open in the task panel</translation>
+      <translation>Ein Dialog im Arbeitspanel ist bereits geöffnet</translation>
     </message>
     <message>
       <location/>
@@ -448,32 +448,32 @@
     <message>
       <location/>
       <source>Several sub-elements selected</source>
-      <translation>Several sub-elements selected</translation>
+      <translation>Mehrere Unter-Elemente selektiert</translation>
     </message>
     <message>
       <location/>
       <source>You have to select a single face as support for a sketch!</source>
-      <translation>You have to select a single face as support for a sketch!</translation>
+      <translation>Sie müssen eine einzelne Fläche als Auflage für eine Skizze auswählen!</translation>
     </message>
     <message>
       <location/>
       <source>No support face selected</source>
-      <translation>No support face selected</translation>
+      <translation>Keine Fläche als Auflage selektiert</translation>
     </message>
     <message>
       <location/>
       <source>You have to select a face as support for a sketch!</source>
-      <translation>You have to select a face as support for a sketch!</translation>
+      <translation>Sie müssen eine Fläche als Auflage für eine Skizze auswählen!</translation>
     </message>
     <message>
       <location/>
       <source>No planar support</source>
-      <translation>No planar support</translation>
+      <translation>Keine ebene Auflage</translation>
     </message>
     <message>
       <location/>
       <source>You need a planar face as support for a sketch!</source>
-      <translation>You need a planar face as support for a sketch!</translation>
+      <translation>Sie benötigen eine ebene Fläche als Auflage für eine Skizze!</translation>
     </message>
   </context>
   <context>
@@ -607,7 +607,7 @@
     <message>
       <location/>
       <source>1 m</source>
-      <translation>false</translation>
+      <translation>1 m</translation>
     </message>
     <message>
       <location/>
@@ -668,7 +668,7 @@
     <message>
       <location/>
       <source>Sketcher constraints</source>
-      <translation>Sketcher constraints</translation>
+      <translation>Skizzen-Beschränkungen</translation>
     </message>
   </context>
 </TS>
