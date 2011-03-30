@@ -34,7 +34,7 @@
     <message>
       <location/>
       <source>Constrain distance</source>
-      <translation>Distanz einschraänken</translation>
+      <translation>Distanz einschränken</translation>
     </message>
     <message>
       <location/>
