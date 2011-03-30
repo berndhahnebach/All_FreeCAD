@@ -341,7 +341,8 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                         const std::vector<Part::Geometry *> *geomlist;
                         geomlist = &getSketchObject()->Geometry.getValues();
                         Part::Geometry *geo = (*geomlist)[edit->DragCurve];
-                        if (geo->getTypeId()== Part::GeomCircle::getClassTypeId()) {
+                        if (geo->getTypeId()== Part::GeomCircle::getClassTypeId() ||
+                            geo->getTypeId()== Part::GeomArcOfCircle::getClassTypeId()) {
                             Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.movePoint(%i,%i,App.Vector(%f,%f,0))"
                                                    ,getObject()->getNameInDocument()
                                                    ,edit->DragCurve, none, x, y
