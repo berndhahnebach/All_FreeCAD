@@ -141,7 +141,7 @@ public:
     /// is called when the Provider is in edit and the mouse is moved
     virtual bool mouseMove(const SbVec3f &pNear, const SbVec3f &pFar, const SoPickedPoint* pp);
     /// is called when the Provider is in edit and a key event ocours. Only ESC ends edit.
-    virtual bool keyPressed(int key);
+    virtual bool keyPressed(bool pressed, int key);
     /// is called when the Provider is in edit and the mouse is clicked 
     virtual bool mouseButtonPressed(int Button, bool pressed, const SbVec3f &point,
         const SbVec3f &normal, const SoPickedPoint* pp);

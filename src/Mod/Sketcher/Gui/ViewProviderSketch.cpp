@@ -188,9 +188,19 @@ void ViewProviderSketch::purgeHandler(void)
 
 // **********************************************************************************
 
-bool ViewProviderSketch::keyPressed(int key)
+bool ViewProviderSketch::keyPressed(bool pressed, int key)
 {
-    return true;
+    if (key == SoKeyboardEvent::ESCAPE) {
+        // make the handler quit but not the edit mode
+        if (edit && edit->sketchHandler) {
+            if (!pressed)
+                edit->sketchHandler->quit();
+            return true;
+        }
+        return false;
+    }
+
+    return true; // handle all other key events
 }
 
 void ViewProviderSketch::getCoordsOnSketchPlane(double &u, double &v,const SbVec3f &point, const SbVec3f &normal)

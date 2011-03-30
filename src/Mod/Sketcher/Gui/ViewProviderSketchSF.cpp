@@ -108,7 +108,7 @@ bool ViewProviderSketchSF::setConstrainOnSelected(int Constrain)
 	return false;
 }
 
-bool ViewProviderSketchSF::keyPressed(int key)
+bool ViewProviderSketchSF::keyPressed(bool pressed, int key)
 {
 	return true;
 }
