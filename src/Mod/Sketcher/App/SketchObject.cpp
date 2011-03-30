@@ -51,7 +51,6 @@ SketchObject::SketchObject()
     ADD_PROPERTY_TYPE(ExternalConstraints,(0,0),"Sketch",(App::PropertyType)(App::Prop_None),"Sketch external constraints");
 }
 
-
 App::DocumentObjectExecReturn *SketchObject::execute(void)
 {
     // recalculate support:
@@ -97,8 +96,6 @@ App::DocumentObjectExecReturn *SketchObject::execute(void)
 
 int SketchObject::setDatum(double Datum, int ConstrNbr)
 {
-
-
     // set the changed value for the constraint
     assert(ConstrNbr >= 0); 
     const std::vector< Constraint * > &vals = this->Constraints.getValues();
@@ -131,7 +128,6 @@ int SketchObject::setDatum(double Datum, int ConstrNbr)
         if (*it) delete *it;
 
     return 0;
-    
 }
 
 int SketchObject::movePoint(int geoIndex1, PointPos Pos1, const Base::Vector3d& toPoint)
@@ -153,7 +149,6 @@ int SketchObject::movePoint(int geoIndex1, PointPos Pos1, const Base::Vector3d& 
 
     return ret;
 }
-
 
 int SketchObject::addGeometry(const std::vector<Part::Geometry *> &geoList)
 {
@@ -194,6 +189,7 @@ int SketchObject::delGeometry(int GeoNbr)
             newConstraints.push_back(*it);
         }
     }
+
     this->Constraints.setValues(newConstraints);
     this->Geometry.setValues(newVals);
     rebuildVertexIndex();
@@ -301,6 +297,7 @@ void SketchObject::Restore(XMLReader &reader)
 {
     // read the father classes
     Part::Part2DObject::Restore(reader);
+    rebuildVertexIndex();
 }
 
 void SketchObject::getGeoVertexIndex(int VertexId, int &GeoId, PointPos &PosId)
