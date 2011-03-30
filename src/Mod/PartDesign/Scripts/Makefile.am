@@ -4,7 +4,8 @@ data_DATA = \
 		__init__.py \
 		Gear.py \
 		DistanceBolt.py \
-		RadialCopy.py
+		RadialCopy.py \
+		Parallelepiped.py
 
 EXTRA_DIST = \
 		$(data_DATA)

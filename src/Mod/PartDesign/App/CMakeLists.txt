@@ -63,6 +63,7 @@ SET(PartDesign_Scripts
     Scripts/Gear.py
     Scripts/DistanceBolt.py
     Scripts/RadialCopy.py
+    Scripts/Parallelepiped.py
 )
 
 add_library(PartDesign SHARED ${PartDesign_SRCS})
