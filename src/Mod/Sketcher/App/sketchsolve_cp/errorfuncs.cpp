@@ -284,6 +284,19 @@ double ArcAngleOnArcAngleError(std::vector<double> &parms)
     return dx*dx + dy*dy;
 }
 
+double ArcRulesError(std::vector<double> &parms)
+{
+    double a1x = cos(parms[2]) * parms[4] + parms[0];
+    double a1y = sin(parms[2]) * parms[4] + parms[1];
+    double a2x = cos(parms[3]) * parms[4] + parms[0];
+    double a2y = sin(parms[3]) * parms[4] + parms[1];
+    double dx1 = parms[5] - a1x;
+    double dy1 = parms[6] - a1y;
+    double dx2 = parms[7] - a2x;
+    double dy2 = parms[8] - a2y;
+    return dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2;
+}
+
 double ColinearError(std::vector<double>& parms)
 {
     double dx = parms[2] - parms[0];

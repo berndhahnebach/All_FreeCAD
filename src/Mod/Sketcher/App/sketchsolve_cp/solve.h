@@ -15,12 +15,6 @@
     #define _hypot hypot
 #endif
 
-//This define selects between the old arc define by start point end point and center point
-// and the new arc defined by a centerpoint, radius, start angle, and end angle
-#define NEWARC
-// Eventually after everything is changed we will get rid of the old arc type.
-
-
 #ifndef SOLVE_H_
 #define SOLVE_H_
 
@@ -338,6 +332,7 @@ double EqualScalarError(std::vector<double> &parms);
 double PointOnArcAngleError(std::vector<double> &parms);
 double PerpendicularError(std::vector<double> &parms);
 double ArcAngleOnArcAngleError(std::vector<double> &parms);
+double ArcRulesError(std::vector<double> &parms);
 double ColinearError(std::vector<double>& parms);
 double LinePerpToAngleError(std::vector<double>& parms);
 double EllipseTangentError(std::vector<double>& parms);
