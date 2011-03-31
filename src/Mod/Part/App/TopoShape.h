@@ -152,6 +152,7 @@ public:
     TopoDS_Shape removeShape(const std::vector<TopoDS_Shape>& s) const;
     void sewShape();
     bool fix();
+    bool removeInternalWires(double);
     //@}
 
     /** @name Getting basic geometric entities */

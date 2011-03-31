@@ -103,6 +103,7 @@
 # include <ShapeFix_Shell.hxx>
 # include <ShapeFix_Solid.hxx>
 # include <ShapeUpgrade_ShellSewing.hxx>
+# include <ShapeUpgrade_RemoveInternalWires.hxx>
 #endif
 # include <Poly_Polygon3D.hxx>
 # include <Poly_PolygonOnTriangulation.hxx>
@@ -1119,6 +1120,15 @@ bool TopoShape::fix()
     }
 
     return ret;
+}
+
+bool TopoShape::removeInternalWires(double minArea)
+{
+    ShapeUpgrade_RemoveInternalWires fix(this->_Shape);
+    fix.MinArea() = minArea;
+    bool ok = fix.Perform() ? true : false;
+    this->_Shape = fix.GetResult();
+    return ok;
 }
 
 namespace Part {
