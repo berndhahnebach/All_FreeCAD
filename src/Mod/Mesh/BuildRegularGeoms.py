@@ -181,6 +181,78 @@ def Cube (lenX, lenY, lenZ):
     
     return facets
 
+def FineCube (lenX, lenY, lenZ, edgelen):
+    hx = lenX / 2.0
+    hy = lenY / 2.0
+    hz = lenZ / 2.0
+    cx = int(max(lenX / edgelen,1))
+    dx = lenX / cx
+    cy = int(max(lenY / edgelen,1))
+    dy = lenY / cy
+    cz = int(max(lenZ / edgelen,1))
+    dz = lenZ / cz
+    
+    facets = []
+
+    # z
+    for i in range(0,cx):
+        for j in range(0,cy):
+            facets.append([-hx+(i+0)*dx, -hy+(j+0)*dy, -hz])
+            facets.append([-hx+(i+0)*dx, -hy+(j+1)*dy, -hz])
+            facets.append([-hx+(i+1)*dx, -hy+(j+1)*dy, -hz])
+
+            facets.append([-hx+(i+0)*dx, -hy+(j+0)*dy, -hz])
+            facets.append([-hx+(i+1)*dx, -hy+(j+1)*dy, -hz])
+            facets.append([-hx+(i+1)*dx, -hy+(j+0)*dy, -hz])
+
+            facets.append([-hx+(i+0)*dx, -hy+(j+0)*dy, hz])
+            facets.append([-hx+(i+1)*dx, -hy+(j+1)*dy, hz])
+            facets.append([-hx+(i+0)*dx, -hy+(j+1)*dy, hz])
+
+            facets.append([-hx+(i+0)*dx, -hy+(j+0)*dy, hz])
+            facets.append([-hx+(i+1)*dx, -hy+(j+0)*dy, hz])
+            facets.append([-hx+(i+1)*dx, -hy+(j+1)*dy, hz])
+
+    # y
+    for i in range(0,cx):
+        for j in range(0,cz):
+            facets.append([-hx+(i+0)*dx, -hy, -hz+(j+0)*dz])
+            facets.append([-hx+(i+1)*dx, -hy, -hz+(j+1)*dz])
+            facets.append([-hx+(i+0)*dx, -hy, -hz+(j+1)*dz])
+
+            facets.append([-hx+(i+0)*dx, -hy, -hz+(j+0)*dz])
+            facets.append([-hx+(i+1)*dx, -hy, -hz+(j+0)*dz])
+            facets.append([-hx+(i+1)*dx, -hy, -hz+(j+1)*dz])
+
+            facets.append([-hx+(i+0)*dx, hy, -hz+(j+0)*dz])
+            facets.append([-hx+(i+0)*dx, hy, -hz+(j+1)*dz])
+            facets.append([-hx+(i+1)*dx, hy, -hz+(j+1)*dz])
+
+            facets.append([-hx+(i+0)*dx, hy, -hz+(j+0)*dz])
+            facets.append([-hx+(i+1)*dx, hy, -hz+(j+1)*dz])
+            facets.append([-hx+(i+1)*dx, hy, -hz+(j+0)*dz])
+
+    # x
+    for i in range(0,cy):
+        for j in range(0,cz):
+            facets.append([-hx, -hy+(i+0)*dy, -hz+(j+0)*dz])
+            facets.append([-hx, -hy+(i+0)*dy, -hz+(j+1)*dz])
+            facets.append([-hx, -hy+(i+1)*dy, -hz+(j+1)*dz])
+
+            facets.append([-hx, -hy+(i+0)*dy, -hz+(j+0)*dz])
+            facets.append([-hx, -hy+(i+1)*dy, -hz+(j+1)*dz])
+            facets.append([-hx, -hy+(i+1)*dy, -hz+(j+0)*dz])
+
+            facets.append([hx, -hy+(i+0)*dy, -hz+(j+0)*dz])
+            facets.append([hx, -hy+(i+1)*dy, -hz+(j+1)*dz])
+            facets.append([hx, -hy+(i+0)*dy, -hz+(j+1)*dz])
+
+            facets.append([hx, -hy+(i+0)*dy, -hz+(j+0)*dz])
+            facets.append([hx, -hy+(i+1)*dy, -hz+(j+0)*dz])
+            facets.append([hx, -hy+(i+1)*dy, -hz+(j+1)*dz])
+
+    return facets
+
 def main ():
     Cylinder (10.0, 20.0, 1, 10, 10)
     
