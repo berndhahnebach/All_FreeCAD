@@ -1284,6 +1284,29 @@ MeshObject* MeshObject::createCube(float length, float width, float height)
     return 0;
 }
 
+MeshObject* MeshObject::createCube(float length, float width, float height, float edgelen)
+{
+    // load the 'BuildRegularGeoms' module
+    Base::PyGILStateLocker lock;
+    try {
+        Py::Module module(PyImport_ImportModule("BuildRegularGeoms"),true);
+        Py::Dict dict = module.getDict();
+        Py::Callable call(dict.getItem("FineCube"));
+        Py::Tuple args(4);
+        args.setItem(0, Py::Float(length));
+        args.setItem(1, Py::Float(width));
+        args.setItem(2, Py::Float(height));
+        args.setItem(3, Py::Float(edgelen));
+        Py::List list(call.apply(args));
+        return createMeshFromList(list);
+    }
+    catch (Py::Exception& e) {
+        e.clear();
+    }
+
+    return 0;
+}
+
 void MeshObject::addSegment(const Segment& s)
 {
     addSegment(s.getIndices());

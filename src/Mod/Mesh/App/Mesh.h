@@ -262,6 +262,7 @@ public:
     static MeshObject* createCone(float, float, float, int, float, int);
     static MeshObject* createTorus(float, float, int);
     static MeshObject* createCube(float, float, float);
+    static MeshObject* createCube(float, float, float, float);
     //@}
 
 public:

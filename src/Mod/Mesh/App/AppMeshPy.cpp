@@ -349,11 +349,17 @@ createBox(PyObject *self, PyObject *args)
     float length = 10.0f;
     float width = 10.0f;
     float height = 10.0f;
-    if (!PyArg_ParseTuple(args, "|fff",&length,&width,&height))     // convert args: Python->C 
+    float edgelen = -1.0f;
+    if (!PyArg_ParseTuple(args, "|ffff",&length,&width,&height,&edgelen))     // convert args: Python->C 
         return NULL;                                   // NULL triggers exception 
 
     PY_TRY {
-        MeshObject* mesh = MeshObject::createCube(length, width, height);
+        MeshObject* mesh;
+        if (edgelen < 0.0f)
+            mesh = MeshObject::createCube(length, width, height);
+        else
+            mesh = MeshObject::createCube(length, width, height, edgelen);
+
         if (!mesh) {
             PyErr_SetString(PyExc_Exception, "Creation of box failed");
             return NULL;
