@@ -28,6 +28,7 @@
             <File Id="FemInitGuiPy" Name="InitGui.py" DiskId="1" />
             <File Id="Fempyd" Name="Fem.pyd" DiskId="1" />
             <File Id="FemGuipyd" Name="FemGui.pyd" DiskId="1" />
+            <File Id="TetGen" Name="convert2TetGen.py" DiskId="1" />
         </Component>
     </Directory>
 </Include>
