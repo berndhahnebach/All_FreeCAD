@@ -101,6 +101,11 @@ This is a more detailed check as done in isValid().</UserDocu>
         <UserDocu>Sew the shape if there is a gap.</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="removeInternalWires">
+      <Documentation>
+        <UserDocu>Removes internal wires (also holes) from the shape.</UserDocu>
+      </Documentation>
+    </Methode>
     <Methode Name="mirror">
       <Documentation>
         <UserDocu>Mirror this shape on a given plane.
