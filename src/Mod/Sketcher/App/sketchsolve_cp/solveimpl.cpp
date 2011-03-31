@@ -56,10 +56,12 @@ void SolveImpl::LoadLine(std::vector<std::pair<varLocation,void*> > &mylist, lin
 
 void SolveImpl::LoadArc(std::vector<std::pair<varLocation,void*> > &mylist, arc a, int c)
 {
-    LoadPoint(mylist,a.center,c);
-    LoadDouble(mylist,a.startAngle,c);
-    LoadDouble(mylist,a.endAngle,c);
-    LoadDouble(mylist,a.rad,c);
+    LoadPoint(mylist,a.center,c);      // 0,1
+    LoadDouble(mylist,a.startAngle,c); // 2
+    LoadDouble(mylist,a.endAngle,c);   // 3
+    LoadDouble(mylist,a.rad,c);        // 4
+    LoadPoint(mylist,a.start,c);       // 5,6
+    LoadPoint(mylist,a.end,c);         // 7,8
 }
 
 void SolveImpl::LoadCircle(std::vector<std::pair<varLocation,void*> > &mylist, circle c, int con)
@@ -244,6 +246,9 @@ SolveImpl::SolveImpl()
     registerdependency(arcStartToArcStart,arc2_rad);
     registerdependency(arcStartToArcStart,arc2_startAngle);
     registerconstraint(arcStartToArcStart,ArcAngleOnArcAngleError);
+
+    registerdependency(arcRules,arc1);
+    registerconstraint(arcRules,ArcRulesError);
 
     registerdependency(colinear,line1);
     registerdependency(colinear,line2);
