@@ -1752,6 +1752,7 @@ class Polygon(Creator):
 			self.tangents = []
 			self.tanpoints = []
 			self.ui.pointUi()
+                        self.ui.numFaces.show()
 			self.altdown = False
 			self.ui.sourceCmd = self
 			self.snap = snapTracker()
@@ -1872,7 +1873,6 @@ class Polygon(Creator):
 							self.linetrack.p2(self.view.getPoint(arg["Position"][0],arg["Position"][1]))
 						self.arctrack.on()
 						self.ui.radiusUi()
-                                                self.ui.numFaces.show()
 						self.step = 1
 						self.linetrack.on()
 						msg(translate("draft", "Pick radius:\n"))
