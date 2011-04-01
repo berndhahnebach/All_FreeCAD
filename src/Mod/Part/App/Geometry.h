@@ -120,6 +120,10 @@ public:
     virtual ~GeomBSplineCurve();
     virtual Geometry *clone(void) const;
 
+    int countPoles() const;
+    void setPole(int index, const Base::Vector3d&, double weight=-1);
+    std::vector<Base::Vector3d> getPoles() const;
+
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize(void) const;
     virtual void Save(Base::Writer &/*writer*/) const;

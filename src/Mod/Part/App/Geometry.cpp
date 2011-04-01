@@ -297,6 +297,40 @@ Geometry *GeomBSplineCurve::clone(void) const
     return new GeomBSplineCurve(myCurve);
 }
 
+int GeomBSplineCurve::countPoles() const
+{
+    return myCurve->NbPoles();
+}
+
+void GeomBSplineCurve::setPole(int index, const Base::Vector3d& pole, double weight)
+{
+    try {
+        gp_Pnt pnt(pole.x,pole.y,pole.z);
+        if (weight < 0.0)
+            myCurve->SetPole(index+1,pnt);
+        else
+            myCurve->SetPole(index+1,pnt,weight);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        std::cout << e->GetMessageString() << std::endl;
+    }
+}
+
+std::vector<Base::Vector3d> GeomBSplineCurve::getPoles() const
+{
+    std::vector<Base::Vector3d> poles;
+    poles.reserve(myCurve->NbPoles());
+    TColgp_Array1OfPnt p(1,myCurve->NbPoles());
+    myCurve->Poles(p);
+
+    for (Standard_Integer i=p.Lower(); i<=p.Upper(); i++) {
+        const gp_Pnt& pnt = p(i);
+        poles.push_back(Base::Vector3d(pnt.X(), pnt.Y(), pnt.Z()));
+    }
+    return poles;
+}
+
 // Persistence implementer 
 unsigned int GeomBSplineCurve::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
 void         GeomBSplineCurve::Save       (Base::Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
