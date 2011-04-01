@@ -664,6 +664,97 @@ int Sketch::addParallelConstraint(int geoIndex1, int geoIndex2)
     return Const.size()-1;
 }
 
+int Sketch::addTangentConstraint(int geoIndex1, int geoIndex2)
+{   
+    // index out of bounds?
+    assert(geoIndex1 < (int)Geoms.size());
+    assert(geoIndex2 < (int)Geoms.size());
+
+    constraint constr;
+
+    if (Geoms[geoIndex2].type == Line)
+        if (Geoms[geoIndex1].type == Line)
+           return addParallelConstraint(geoIndex1, geoIndex2);
+        else
+           std::swap(geoIndex1, geoIndex2);
+
+    if (Geoms[geoIndex1].type == Line) {
+        if (Geoms[geoIndex2].type == Arc) {
+           constr.type = tangentToArc;
+        } else if (Geoms[geoIndex2].type == Circle) {
+           constr.type = tangentToCircle;
+        }
+    } else if (Geoms[geoIndex1].type == Circle) {
+        if (Geoms[geoIndex2].type == Arc) {
+           constr.type = circleTangentToArc;
+        } else if (Geoms[geoIndex2].type == Circle) {
+           constr.type = circleTangentToCircle;
+        }
+    } else if (Geoms[geoIndex1].type == Arc) {
+        if (Geoms[geoIndex2].type == Arc) {
+           constr.type = arcTangentToArc;
+        } else if (Geoms[geoIndex2].type == Circle) {
+           std::swap(geoIndex1, geoIndex2);
+           constr.type = circleTangentToArc;
+        }
+    }
+
+    // Find common points
+    PointPos PosId1=none, PosId2=none;
+    if (PoPMap[geoIndex1].startParamId != -1) {
+        if (PoPMap[geoIndex1].startParamId == PoPMap[geoIndex2].startParamId) {
+            PosId1 = start;
+            PosId2 = start;
+        } else if (PoPMap[geoIndex1].startParamId == PoPMap[geoIndex2].endParamId) {
+            PosId1 = start;
+            PosId2 = end;
+        }
+    } else if (PoPMap[geoIndex1].endParamId != -1) {
+        // FIXME: what happens if the two geometries are connected in both start and end?
+        if (PoPMap[geoIndex1].startParamId == PoPMap[geoIndex2].startParamId) {
+            PosId1 = end;
+            PosId2 = start;
+        } else if (PoPMap[geoIndex1].startParamId == PoPMap[geoIndex2].endParamId) {
+            PosId1 = end;
+            PosId2 = end;
+        }
+    }
+
+    if (PosId1 != none && PosId2 != none)
+        if (constr.type == tangentToArc) {
+            if (PosId2 == start)
+                constr.type == tangentToArcStart;
+            else if (PosId2 == end)
+                constr.type == tangentToArcEnd;
+        }
+
+    if (constr.type == tangentToArc
+     || constr.type == tangentToArcStart
+     || constr.type == tangentToArcEnd) {
+        constr.line1 = Lines[Geoms[geoIndex1].index];
+        constr.arc1 = Arcs[Geoms[geoIndex2].index];
+    } else if (constr.type == tangentToCircle) {
+        constr.line1 = Lines[Geoms[geoIndex1].index];
+        constr.circle1 = Circles[Geoms[geoIndex2].index];
+    } else if (constr.type == circleTangentToArc) {
+        // This case is not implemented in sketchsolve, hence it will lead to a crash
+        constr.circle1 = Circles[Geoms[geoIndex1].index];
+        constr.arc1 = Arcs[Geoms[geoIndex2].index];
+    } else if (constr.type == circleTangentToCircle) {
+        // This case is not implemented in sketchsolve, hence it will lead to a crash
+        constr.circle1 = Circles[Geoms[geoIndex1].index];
+        constr.circle2 = Circles[Geoms[geoIndex2].index];
+    } else if (constr.type == arcTangentToArc) {
+        // This case is not implemented in sketchsolve, hence it will lead to a crash
+        constr.arc1 = Arcs[Geoms[geoIndex1].index];
+        constr.arc2 = Arcs[Geoms[geoIndex2].index];
+    }
+
+    Const.push_back(constr);
+
+    return Const.size()-1;
+}
+
 int Sketch::addDistanceConstraint(int geoIndex1, double Value)
 {   
     // index out of bounds?
@@ -809,13 +900,13 @@ int Sketch::movePoint(int geoIndex1, PointPos Pos1, Base::Vector3d toPoint)
         fixed [1] = Points[Geoms[geoIndex1].startPointId].y;
         fixed_size = 2;
         if (Geoms[geoIndex1].type == Arc) {
-          double rx = toPoint.x - *(Points[Geoms[geoIndex1].midPointId].x);
-          double ry = toPoint.y - *(Points[Geoms[geoIndex1].midPointId].y);
-          *(Arcs[Geoms[geoIndex1].index].startAngle) = atan2(ry,rx);
-          fixed [2] = Arcs[Geoms[geoIndex1].index].startAngle;
-          *(Arcs[Geoms[geoIndex1].index].rad) = sqrt(rx*rx + ry*ry);
-          fixed [3] = Arcs[Geoms[geoIndex1].index].rad;
-          fixed_size = 4;
+            double rx = toPoint.x - *(Points[Geoms[geoIndex1].midPointId].x);
+            double ry = toPoint.y - *(Points[Geoms[geoIndex1].midPointId].y);
+            *(Arcs[Geoms[geoIndex1].index].startAngle) = atan2(ry,rx);
+            fixed [2] = Arcs[Geoms[geoIndex1].index].startAngle;
+            *(Arcs[Geoms[geoIndex1].index].rad) = sqrt(rx*rx + ry*ry);
+            fixed [3] = Arcs[Geoms[geoIndex1].index].rad;
+            fixed_size = 4;
         }
     } else if (Pos1 == end) {
         *(Points[Geoms[geoIndex1].endPointId].x) = toPoint.x;
@@ -824,13 +915,13 @@ int Sketch::movePoint(int geoIndex1, PointPos Pos1, Base::Vector3d toPoint)
         fixed [1] = Points[Geoms[geoIndex1].endPointId].y;
         fixed_size = 2;
         if (Geoms[geoIndex1].type == Arc) {
-          double rx = toPoint.x - *(Points[Geoms[geoIndex1].midPointId].x);
-          double ry = toPoint.y - *(Points[Geoms[geoIndex1].midPointId].y);
-          *(Arcs[Geoms[geoIndex1].index].endAngle) = atan2(ry,rx);
-          fixed [2] = Arcs[Geoms[geoIndex1].index].endAngle;
-          *(Arcs[Geoms[geoIndex1].index].rad) = sqrt(rx*rx + ry*ry);
-          fixed [3] = Arcs[Geoms[geoIndex1].index].rad;
-          fixed_size = 4;
+            double rx = toPoint.x - *(Points[Geoms[geoIndex1].midPointId].x);
+            double ry = toPoint.y - *(Points[Geoms[geoIndex1].midPointId].y);
+            *(Arcs[Geoms[geoIndex1].index].endAngle) = atan2(ry,rx);
+            fixed [2] = Arcs[Geoms[geoIndex1].index].endAngle;
+            *(Arcs[Geoms[geoIndex1].index].rad) = sqrt(rx*rx + ry*ry);
+            fixed [3] = Arcs[Geoms[geoIndex1].index].rad;
+            fixed_size = 4;
         }
     } else if (Pos1 == mid) {
         *(Points[Geoms[geoIndex1].midPointId].x) = toPoint.x;
@@ -840,19 +931,19 @@ int Sketch::movePoint(int geoIndex1, PointPos Pos1, Base::Vector3d toPoint)
         fixed_size = 2;
     } else if (Pos1 == none) {
         if (Geoms[geoIndex1].type == Circle) {
-          point center = Points[Geoms[geoIndex1].midPointId];
-          double rx = toPoint.x - (*(center.x));
-          double ry = toPoint.y - (*(center.y));
-          *(Circles[Geoms[geoIndex1].index].rad) = sqrt(rx*rx + ry*ry);
-          fixed [0] = Circles[Geoms[geoIndex1].index].rad;
-          fixed_size = 1;
+            point center = Points[Geoms[geoIndex1].midPointId];
+            double rx = toPoint.x - (*(center.x));
+            double ry = toPoint.y - (*(center.y));
+            *(Circles[Geoms[geoIndex1].index].rad) = sqrt(rx*rx + ry*ry);
+            fixed [0] = Circles[Geoms[geoIndex1].index].rad;
+            fixed_size = 1;
         } else if (Geoms[geoIndex1].type == Arc) {
-          point center = Points[Geoms[geoIndex1].midPointId];
-          double rx = toPoint.x - (*(center.x));
-          double ry = toPoint.y - (*(center.y));
-          *(Arcs[Geoms[geoIndex1].index].rad) = sqrt(rx*rx + ry*ry);
-          fixed [0] = Arcs[Geoms[geoIndex1].index].rad;
-          fixed_size = 1;
+            point center = Points[Geoms[geoIndex1].midPointId];
+            double rx = toPoint.x - (*(center.x));
+            double ry = toPoint.y - (*(center.y));
+            *(Arcs[Geoms[geoIndex1].index].rad) = sqrt(rx*rx + ry*ry);
+            fixed [0] = Arcs[Geoms[geoIndex1].index].rad;
+            fixed_size = 1;
         }
     }
 
