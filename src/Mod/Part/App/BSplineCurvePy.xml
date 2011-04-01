@@ -271,5 +271,12 @@ from the knots table of this B-Spline curve.</UserDocu>
 				</UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="toBezier">
+			<Documentation>
+				<UserDocu>
+					Build a list of Bezier splines.
+				</UserDocu>
+			</Documentation>
+		</Methode>
 	</PythonExport>
 </GenerateModel>

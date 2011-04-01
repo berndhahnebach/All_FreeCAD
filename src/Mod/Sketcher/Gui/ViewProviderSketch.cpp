@@ -26,6 +26,7 @@
 #ifndef _PreComp_
 # include <Standard_math.hxx>
 # include <Poly_Polygon3D.hxx>
+# include <Geom_BSplineCurve.hxx>
 # include <Geom_Circle.hxx>
 # include <Geom_TrimmedCurve.hxx>
 # include <Inventor/SoPath.h>
@@ -811,6 +812,38 @@ void ViewProviderSketch::draw(bool temp)
             PtColor.push_back(0);
             PtColor.push_back(0);
             PtColor.push_back(0);
+        }
+        else if ((*it)->getTypeId()== Part::GeomBSplineCurve::getClassTypeId()) { // add a circle
+            const Part::GeomBSplineCurve *spline = dynamic_cast<const Part::GeomBSplineCurve*>(*it);
+            Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast(spline->handle());
+
+            double first = curve->FirstParameter();
+            double last = curve->LastParameter();
+            if (first > last) // if arc is reversed
+                std::swap(first, last);
+
+            double range = last-first;
+            int countSegments = 50.0;
+            double segment = range / countSegments;
+
+            for (int i=0; i < countSegments; i++) {
+                gp_Pnt pnt = curve->Value(first);
+                Coords.push_back(Base::Vector3d(pnt.X(), pnt.Y(), pnt.Z()));
+                first += segment;
+            }
+
+            // end point
+            gp_Pnt end = curve->Value(last);
+            Coords.push_back(Base::Vector3d(end.X(), end.Y(), end.Z()));
+
+            std::vector<Base::Vector3d> poles = spline->getPoles();
+            for (std::vector<Base::Vector3d>::iterator it = poles.begin(); it != poles.end(); ++it) {
+                Points.push_back(*it);
+                PtColor.push_back(0);
+            }
+
+            Index.push_back(countSegments+1);
+            Color.push_back(0);
         }
         else {
             ;

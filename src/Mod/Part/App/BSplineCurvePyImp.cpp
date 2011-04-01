@@ -26,6 +26,7 @@
 # include <Geom_BSplineCurve.hxx>
 # include <GeomAPI_PointsToBSpline.hxx>
 # include <GeomAPI_Interpolate.hxx>
+# include <GeomConvert_BSplineCurveToBezierCurve.hxx>
 # include <gp_Pnt.hxx>
 # include <TColStd_Array1OfReal.hxx>
 # include <TColgp_Array1OfPnt.hxx>
@@ -40,6 +41,7 @@
 #include "Geometry.h"
 #include "BSplineCurvePy.h"
 #include "BSplineCurvePy.cpp"
+#include "BezierCurvePy.h"
 
 using namespace Part;
 
@@ -817,6 +819,25 @@ PyObject* BSplineCurvePy::buildFromPoles(PyObject *args)
         PyErr_SetString(PyExc_Exception, e->GetMessageString());
         return 0;
     }
+}
+
+PyObject* BSplineCurvePy::toBezier(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+
+    Handle_Geom_BSplineCurve spline = Handle_Geom_BSplineCurve::DownCast
+        (this->getGeomBSplineCurvePtr()->handle());
+    GeomConvert_BSplineCurveToBezierCurve crt(spline);
+
+    Py::List list;
+    Standard_Integer arcs = crt.NbArcs();
+    for (Standard_Integer i=1; i<=arcs; i++) {
+        Handle_Geom_BezierCurve bezier = crt.Arc(i);
+        list.append(Py::asObject(new BezierCurvePy(new GeomBezierCurve(bezier))));
+    }
+
+    return Py::new_reference_to(list);
 }
 
 PyObject* BSplineCurvePy::getCustomAttributes(const char* /*attr*/) const
