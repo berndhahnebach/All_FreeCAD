@@ -24,6 +24,8 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <boost/version.hpp>
+# include <boost/filesystem/path.hpp>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
@@ -166,9 +168,13 @@ void PropertyPath::setValue(const boost::filesystem::path &Path)
 void PropertyPath::setValue(const char * Path)
 {
     aboutToSetValue();
+#if (BOOST_VERSION < 104600) || (BOOST_FILESYSTEM_VERSION == 2)
     _cValue = boost::filesystem::path(Path,boost::filesystem::no_check );
     //_cValue = boost::filesystem::path(Path,boost::filesystem::native );
     //_cValue = boost::filesystem::path(Path,boost::filesystem::windows_name );
+#else
+    _cValue = boost::filesystem::path(Path);
+#endif
     hasSetValue();
 }
 
@@ -179,17 +185,14 @@ boost::filesystem::path PropertyPath::getValue(void) const
 
 PyObject *PropertyPath::getPyObject(void)
 {
-    const std::string s = _cValue.string() ;
-    std::string s2 = _cValue.native_file_string();
-    std::string s3 = _cValue.native_directory_string();
-
-    // decomposition functions:
-    std::string  r = _cValue.root_name();
-    std::string  d = _cValue.root_directory() ;
-    std::string  l = _cValue.leaf();
+#if (BOOST_VERSION < 104600) || (BOOST_FILESYSTEM_VERSION == 2)
+    std::string str = _cValue.native_file_string();
+#else
+    std::string str = _cValue.string();
+#endif
 
     // Returns a new reference, don't increment it!
-    PyObject *p = PyUnicode_DecodeUTF8(_cValue.native_file_string().c_str(),_cValue.native_file_string().size(),0);
+    PyObject *p = PyUnicode_DecodeUTF8(str.c_str(),str.size(),0);
     if (!p) throw Base::Exception("UTF8 conversion failure at PropertyPath::getPyObject()");
     return p;
 }
