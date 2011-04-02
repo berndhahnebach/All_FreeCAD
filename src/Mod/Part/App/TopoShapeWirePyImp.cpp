@@ -69,6 +69,10 @@ int TopoShapeWirePy::PyInit(PyObject* args, PyObject* /*kwd*/)
     if (PyArg_ParseTuple(args, "O!", &(Part::TopoShapePy::Type), &pcObj)) {
         BRepBuilderAPI_MakeWire mkWire;
         const TopoDS_Shape& sh = static_cast<Part::TopoShapePy*>(pcObj)->getTopoShapePtr()->_Shape;
+        if (sh.IsNull()) {
+            PyErr_SetString(PyExc_TypeError, "given shape is invalid");
+            return -1;
+        }
         if (sh.ShapeType() == TopAbs_EDGE)
             mkWire.Add(TopoDS::Edge(sh));
         else if (sh.ShapeType() == TopAbs_WIRE)
@@ -97,6 +101,10 @@ int TopoShapeWirePy::PyInit(PyObject* args, PyObject* /*kwd*/)
             PyObject* item = (*it).ptr();
             if (PyObject_TypeCheck(item, &(Part::TopoShapePy::Type))) {
                 const TopoDS_Shape& sh = static_cast<Part::TopoShapePy*>(item)->getTopoShapePtr()->_Shape;
+                if (sh.IsNull()) {
+                    PyErr_SetString(PyExc_TypeError, "given shape is invalid");
+                    return -1;
+                }
                 if (sh.ShapeType() == TopAbs_EDGE)
                     mkWire.Add(TopoDS::Edge(sh));
                 else if (sh.ShapeType() == TopAbs_WIRE)
