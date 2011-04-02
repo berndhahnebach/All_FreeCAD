@@ -17,8 +17,9 @@ else
 lib_LTLIBRARIES = libDriver.la libSMDS.la libDriverSTL.la libDriverDAT.la libDriverUNV.la libSMESHDS.la libSMESH.la libStdMeshers.la
 endif
 
-# set global linker flags
-AM_LDFLAGS = -version-info 1:0:0 -Wl,--no-undefined -L$(OCC_LIB) \
+# set global linker flags (remove '-Wl,--no-undefined' since this doesn't seem to work on MacOSX)
+#AM_LDFLAGS = -version-info 1:0:0 -Wl,--no-undefined -L$(OCC_LIB)
+AM_LDFLAGS = -version-info 1:0:0 -L$(OCC_LIB) \
 		-lTKernel -lTKService -lTKMath -lTKBRep -lTKTopAlgo -lTKGeomAlgo \
 		-lTKGeomBase -lTKG3d -lTKG2d -lTKMeshVS -lTKShHealing -lTKPrim -lTKAdvTools
 
