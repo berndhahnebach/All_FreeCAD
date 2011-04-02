@@ -25,6 +25,7 @@
 
 #include <Gui/TaskView/TaskDialog.h>
 #include <Gui/TaskView/TaskView.h>
+#include <string>
 
 class TopoDS_Shape;
 
@@ -39,6 +40,7 @@ public:
     DlgExtrusion(QWidget* parent = 0, Qt::WFlags fl = 0);
     ~DlgExtrusion();
     void accept();
+    void apply();
 
 protected:
     void findShapes();
@@ -50,6 +52,7 @@ private Q_SLOTS:
 
 private:
     Ui_DlgExtrusion* ui;
+    std::string document, label;
 };
 
 class TaskExtrusion : public Gui::TaskView::TaskDialog
@@ -62,9 +65,10 @@ public:
 
 public:
     bool accept();
+    void clicked(int);
 
     virtual QDialogButtonBox::StandardButtons getStandardButtons() const
-    { return QDialogButtonBox::Ok | QDialogButtonBox::Cancel; }
+    { return QDialogButtonBox::Apply | QDialogButtonBox::Cancel; }
 
 private:
     DlgExtrusion* widget;
