@@ -96,7 +96,7 @@ public:
       * to ensure its stay on the right position. But this can cause
       * the solving to fail!
       */
-    int movePoint(int geoIndex1, PointPos Pos1, Base::Vector3d toPoint);
+    int movePoint(int geoIndex1, PointPos pos1, Base::Vector3d toPoint);
 
     /// add dedicated geometry
     //@{
@@ -126,7 +126,7 @@ public:
     /// add a vertical constraint to a geometry
     int addVerticalConstraint(int geoIndex);
     /// add a coincident constraint to two points of two geometries
-    int addPointCoincidentConstraint(int geoIndex1, PointPos Pos1, int geoIndex2, PointPos Pos2);
+    int addPointCoincidentConstraint(int geoIndex1, PointPos pos1, int geoIndex2, PointPos pos2);
     /// add a length constraint to a line
     int addDistanceConstraint(int geoIndex1, double Value);
     /// add a distance between two lines (basically a point to line distance)
