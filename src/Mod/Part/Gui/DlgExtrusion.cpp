@@ -23,6 +23,12 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <BRepAdaptor_Surface.hxx>
+# include <BRepLProp_SLProps.hxx>
+# include <BRepGProp_Face.hxx>
+# include <Precision.hxx>
+# include <TopoDS.hxx>
+# include <TopoDS_Face.hxx>
 # include <TopExp_Explorer.hxx>
 # include <QMessageBox>
 #endif
@@ -46,7 +52,8 @@ DlgExtrusion::DlgExtrusion(QWidget* parent, Qt::WFlags fl)
   : QDialog(parent, fl), ui(new Ui_DlgExtrusion)
 {
     ui->setupUi(this);
-    ui->checkNormal->hide(); // not supported at the moment
+    ui->labelNormal->hide();
+    ui->viewButton->hide();
     ui->dirLen->setMinimumWidth(55); // needed to show all digits
     findShapes();
 }
@@ -73,6 +80,8 @@ void DlgExtrusion::findShapes()
     App::Document* activeDoc = App::GetApplication().getActiveDocument();
     if (!activeDoc) return;
     Gui::Document* activeGui = Gui::Application::Instance->getDocument(activeDoc);
+    this->document = activeDoc->getName();
+    this->label = activeDoc->Label.getValue();
 
     std::vector<App::DocumentObject*> objs = activeDoc->getObjectsOfType
         (Part::Feature::getClassTypeId());
@@ -117,6 +126,12 @@ bool DlgExtrusion::canExtrude(const TopoDS_Shape& shape) const
 
 void DlgExtrusion::accept()
 {
+    apply();
+    QDialog::accept();
+}
+
+void DlgExtrusion::apply()
+{
     if (ui->treeWidget->selectedItems().isEmpty()) {
         QMessageBox::critical(this, windowTitle(), 
             tr("Select a shape for extrusion, first."));
@@ -124,7 +139,12 @@ void DlgExtrusion::accept()
     }
 
     Gui::WaitCursor wc;
-    App::Document* activeDoc = App::GetApplication().getActiveDocument();
+    App::Document* activeDoc = App::GetApplication().getDocument(this->document.c_str());
+    if (!activeDoc) {
+        QMessageBox::critical(this, windowTitle(), 
+            tr("The document '%1' doesn't exist.").arg(QString::fromUtf8(this->label.c_str())));
+        return;
+    }
     activeDoc->openTransaction("Extrude");
 
     QString shape, type, name;
@@ -134,30 +154,58 @@ void DlgExtrusion::accept()
         type = QString::fromAscii("Part::Extrusion");
         name = QString::fromAscii(activeDoc->getUniqueObjectName("Extrude").c_str());
         double len = ui->dirLen->value();
+        double dirX = ui->dirX->value();
+        double dirY = ui->dirY->value();
+        double dirZ = ui->dirZ->value();
+
+        // inspect geometry
+        App::DocumentObject* obj = activeDoc->getObject((const char*)shape.toAscii());
+        if (!obj || !obj->isDerivedFrom(Part::Feature::getClassTypeId())) continue;
+        Part::Feature* fea = static_cast<Part::Feature*>(obj);
+        const TopoDS_Shape& data = fea->Shape.getValue();
+        if (data.IsNull()) continue;
+
+        // check for planes
+        if (ui->checkNormal->isChecked() && data.ShapeType() == TopAbs_FACE) {
+            BRepAdaptor_Surface adapt(TopoDS::Face(data));
+            if (adapt.GetType() == GeomAbs_Plane) {
+                double u = 0.5*(adapt.FirstUParameter() + adapt.LastUParameter());
+                double v = 0.5*(adapt.FirstVParameter() + adapt.LastVParameter());
+                BRepLProp_SLProps prop(adapt,u,v,1,Precision::Confusion());
+                if (prop.IsNormalDefined()) {
+                    gp_Pnt pnt; gp_Vec vec;
+                    // handles the orientation state of the shape
+                    BRepGProp_Face(TopoDS::Face(data)).Normal(u,v,pnt,vec);
+                    dirX = vec.X();
+                    dirY = vec.Y();
+                    dirZ = vec.Z();
+                }
+            }
+        }
 
         QString code = QString::fromAscii(
-            "FreeCAD.ActiveDocument.addObject(\"%1\",\"%2\")\n"
-            "FreeCAD.ActiveDocument.%2.Base = FreeCAD.ActiveDocument.%3\n"
-            "FreeCAD.ActiveDocument.%2.Dir = (%4,%5,%6)\n"
-            "FreeCADGui.ActiveDocument.%3.Visibility = False\n")
+            "FreeCAD.getDocument(\"%1\").addObject(\"%2\",\"%3\")\n"
+            "FreeCAD.getDocument(\"%1\").%3.Base = FreeCAD.getDocument(\"%1\").%4\n"
+            "FreeCAD.getDocument(\"%1\").%3.Dir = (%5,%6,%7)\n"
+            "FreeCADGui.getDocument(\"%1\").%4.Visibility = False\n")
+            .arg(QString::fromAscii(this->document.c_str()))
             .arg(type).arg(name).arg(shape)
-            .arg(ui->dirX->value()*len)
-            .arg(ui->dirY->value()*len)
-            .arg(ui->dirZ->value()*len);
+            .arg(dirX*len)
+            .arg(dirY*len)
+            .arg(dirZ*len);
         Gui::Application::Instance->runPythonCode((const char*)code.toAscii());
     }
 
     activeDoc->commitTransaction();
     activeDoc->recompute();
-
-    QDialog::accept();
 }
 
 void DlgExtrusion::on_checkNormal_toggled(bool b)
 {
-    ui->dirX->setDisabled(b);
-    ui->dirY->setDisabled(b);
-    ui->dirZ->setDisabled(b);
+    //ui->dirX->setDisabled(b);
+    //ui->dirY->setDisabled(b);
+    //ui->dirZ->setDisabled(b);
+    ui->labelNormal->setVisible(b);
 }
 
 // ---------------------------------------
@@ -181,6 +229,13 @@ bool TaskExtrusion::accept()
 {
     widget->accept();
     return (widget->result() == QDialog::Accepted);
+}
+
+void TaskExtrusion::clicked(int id)
+{
+    if (id == QDialogButtonBox::Apply) {
+        widget->apply();
+    }
 }
 
 #include "moc_DlgExtrusion.cpp"
