@@ -49,7 +49,7 @@ bool isCreateConstraintActive(Gui::Document *doc)
             if (dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit())
                 ->getSketchMode() == ViewProviderSketch::STATUS_NONE)
                 if (Gui::Selection().countObjectsOfType(Sketcher::SketchObject::getClassTypeId()) > 0)
-            return true;
+                    return true;
     return false;
 }
 
@@ -220,7 +220,55 @@ CmdSketcherConstrainLock::CmdSketcherConstrainLock()
 
 void CmdSketcherConstrainLock::activated(int iMsg)
 {
-      
+    // get the selection 
+    std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
+
+    // only one sketch with its subelements are allowed to be selected
+    if (selection.size() != 1) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select entities from the sketch."));
+        return;
+    }
+
+    // get the needed lists and objects
+    const std::vector<std::string> &SubNames = selection[0].getSubNames();
+    Sketcher::SketchObject* Obj = dynamic_cast<Sketcher::SketchObject*>(selection[0].getObject());
+
+    if (SubNames.size() != 1) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select exactly one entity from the sketch."));
+        return;
+    }
+
+    int VtId, GeoId;
+    Sketcher::PointPos PosId=Sketcher::none;
+    if (SubNames[0].size() > 6 && SubNames[0].substr(0,6) == "Vertex") {
+        VtId = std::atoi(SubNames[0].substr(6,4000).c_str());
+        Obj->getGeoVertexIndex(VtId,GeoId,PosId);
+    }
+    else if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge")
+        GeoId = std::atoi(SubNames[0].substr(4,4000).c_str());
+    else {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select exactly one entity from the sketch."));
+        return;
+    }
+        
+    // undo command open
+    openCommand("add fixed constraint");
+    if (PosId == Sketcher::none)
+        Gui::Command::doCommand(Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Fixed',%i)) "
+                     ,selection[0].getFeatName(),GeoId);
+    else
+        Gui::Command::doCommand(Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Fixed',%i,%i)) "
+                     ,selection[0].getFeatName(),GeoId,PosId);
+
+    // finish the transaction and update
+    commitCommand();
+    updateActive();
+
+    // clear the selction (convenience)
+    getSelection().clearSelection();
 }
 
 bool CmdSketcherConstrainLock::isActive(void)

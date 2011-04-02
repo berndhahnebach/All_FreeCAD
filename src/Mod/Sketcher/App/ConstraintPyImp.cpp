@@ -99,6 +99,7 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
         else if (strcmp("Fixed",ConstraintType) == 0) {
             this->getConstraintPtr()->Type = Fixed;
             this->getConstraintPtr()->First = FirstIndex;
+            this->getConstraintPtr()->FirstPos = Sketcher::none;
             return 0;
         }
     }
