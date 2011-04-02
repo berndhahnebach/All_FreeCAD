@@ -131,8 +131,10 @@ public:
     int addDistanceConstraint(int geoIndex1, double Value);
     /// add a distance between two lines (basically a point to line distance)
     int addDistanceConstraint(int geoIndex1, int geoIndex2, double Value);
-    /// add a parallel constraints between two lines
+    /// add a parallel constraint between two lines
     int addParallelConstraint(int geoIndex1, int geoIndex2);
+    /// add a tangency constraint between two geometries
+    int addTangentConstraint(int geoIndex1, int geoIndex2);
     //@}
 
     enum GeoType {
