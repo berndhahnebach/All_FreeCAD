@@ -121,6 +121,10 @@ public:
     int addConstraints(const std::vector<Constraint *> &ConstraintList);
     /// add one constraint to the sketch
     int addConstraint(const Constraint *constraint);
+    /// add a fixed constraint to a geometry
+    int addFixedConstraint(int geoIndex);
+    /// add a fixed constraint to a point
+    int addFixedConstraint(int geoIndex, PointPos pos);
     /// add a horizontal constraint to a geometry
     int addHorizontalConstraint(int geoIndex);
     /// add a vertical constraint to a geometry
@@ -172,6 +176,9 @@ protected:
     std::vector<line>   Lines;
     std::vector<arc>    Arcs;
     std::vector<circle> Circles;
+
+    // parameters involved in a fixed constraint
+    std::set<double*> FixedParameters;
 
     // helper for the PointOnPoint constraint optimization
     struct PoPConst {

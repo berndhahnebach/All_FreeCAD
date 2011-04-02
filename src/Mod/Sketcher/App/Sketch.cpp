@@ -98,6 +98,8 @@ void Sketch::clear(void)
         if (*it) delete *it;
     FixParameters.clear();
 
+    FixedParameters.clear();
+
     // deleting the geometry copied into this sketch
     for (std::vector<GeoDef>::iterator it = Geoms.begin(); it != Geoms.end(); ++it)
         if (it->geo) delete it->geo;
@@ -143,6 +145,12 @@ void Sketch::setUpSketch(const std::vector<Part::Geometry *> &geo, const std::ve
         // constraints on nothing makes no sense 
         assert((int)Geoms.size() > 0);
         switch ((*it)->Type) {
+           case Fixed:
+               if ((*it)->FirstPos == none)
+                  addFixedConstraint((*it)->First);
+               else
+                  addFixedConstraint((*it)->First,(*it)->FirstPos);
+               break;
            case Horizontal: addHorizontalConstraint((*it)->First); break;
            case Vertical  : addVerticalConstraint((*it)->First);   break;
            case Parallel  : addParallelConstraint((*it)->First,(*it)->Second);  break;
@@ -520,6 +528,12 @@ int Sketch::addConstraint(const Constraint *constraint)
     assert((int)Geoms.size()>0);
     int rtn = -1;
     switch (constraint->Type) {
+        case Fixed:
+            if (constraint->FirstPos == none)
+                addFixedConstraint(constraint->First);
+            else
+                addFixedConstraint(constraint->First,constraint->FirstPos);
+            break;
         case Horizontal:
             rtn = addHorizontalConstraint(constraint->First);
             break;
@@ -560,6 +574,49 @@ int Sketch::addConstraints(const std::vector<Constraint *> &ConstraintList)
         rtn = addConstraint (*it);
 
     return rtn;
+}
+
+int Sketch::addFixedConstraint(int geoIndex)
+{
+    // index out of bounds?
+    assert(geoIndex < (int)Geoms.size());
+
+    if (Geoms[geoIndex].type == Line) {
+        line l = Lines[Geoms[geoIndex].index];
+        FixedParameters.insert(l.p1.x);
+        FixedParameters.insert(l.p1.y);
+        FixedParameters.insert(l.p2.x);
+        FixedParameters.insert(l.p2.y);
+    }
+
+    return Const.size()-1;
+}
+
+int Sketch::addFixedConstraint(int geoIndex, PointPos pos)
+{
+    // index out of bounds?
+    assert(geoIndex < (int)Geoms.size());
+
+    if (Geoms[geoIndex].type == Line) {
+        line l = Lines[Geoms[geoIndex].index];
+        if (pos == start) {
+            FixedParameters.insert(l.p1.x);
+            FixedParameters.insert(l.p1.y);
+        }
+        else if (pos == end) {
+            FixedParameters.insert(l.p2.x);
+            FixedParameters.insert(l.p2.y);
+        }
+    }
+    else if (Geoms[geoIndex].type == Circle) {
+        circle c = Circles[Geoms[geoIndex].index];
+        if (pos == mid) {
+            FixedParameters.insert(c.center.x);
+            FixedParameters.insert(c.center.y);
+        }
+    }
+
+    return Const.size()-1;
 }
 
 int Sketch::addHorizontalConstraint(int geoIndex)
@@ -821,11 +878,15 @@ int Sketch::solve(double ** fixed, int n) {
 
     for (std::vector<double*>::const_iterator it=Parameters.begin(); it != Parameters.end(); ++it) {
         bool is_fixed=false;
-        for (int i=0; i < n; i++)
-            if (fixed[i] == *it) {
-                is_fixed = true;
-                break;
-            }
+        if (FixedParameters.find(*it) != FixedParameters.end())
+            is_fixed = true;
+        else {
+            for (int i=0; i < n; i++)
+                if (fixed[i] == *it) {
+                    is_fixed = true;
+                    break;
+                }
+        }
         if (!is_fixed)
             params.push_back(*it);
     }
