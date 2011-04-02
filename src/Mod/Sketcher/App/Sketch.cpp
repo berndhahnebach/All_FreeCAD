@@ -146,6 +146,7 @@ void Sketch::setUpSketch(const std::vector<Part::Geometry *> &geo, const std::ve
            case Horizontal: addHorizontalConstraint((*it)->First); break;
            case Vertical  : addVerticalConstraint((*it)->First);   break;
            case Parallel  : addParallelConstraint((*it)->First,(*it)->Second);  break;
+           case Tangent  : addTangentConstraint((*it)->First,(*it)->Second);  break;
            case Distance  :
                if ((*it)->Second == -1)
                     rtn = addDistanceConstraint((*it)->First,(*it)->Value);
@@ -531,6 +532,9 @@ int Sketch::addConstraint(const Constraint *constraint)
        case Parallel:
            rtn = addParallelConstraint(constraint->First,constraint->Second);
            break;
+       case Tangent:
+           rtn = addTangentConstraint(constraint->First,constraint->Second);
+           break;
        case Distance:
            if (constraint->Second == -1)
                rtn = addDistanceConstraint(constraint->First,constraint->Value);
@@ -665,18 +669,19 @@ int Sketch::addParallelConstraint(int geoIndex1, int geoIndex2)
 }
 
 int Sketch::addTangentConstraint(int geoIndex1, int geoIndex2)
-{   
+{
     // index out of bounds?
     assert(geoIndex1 < (int)Geoms.size());
     assert(geoIndex2 < (int)Geoms.size());
 
     constraint constr;
 
-    if (Geoms[geoIndex2].type == Line)
+    if (Geoms[geoIndex2].type == Line) {
         if (Geoms[geoIndex1].type == Line)
            return addParallelConstraint(geoIndex1, geoIndex2);
         else
            std::swap(geoIndex1, geoIndex2);
+    }
 
     if (Geoms[geoIndex1].type == Line) {
         if (Geoms[geoIndex2].type == Arc) {

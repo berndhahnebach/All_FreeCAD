@@ -53,8 +53,8 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     double Dist      = 0;
 
     if (PyArg_ParseTuple(args, "dsi", &Dist, &ConstraintType , &FirstIndex)) {
-        if(strcmp("Distance",ConstraintType) == 0 ){
-            this->getConstraintPtr()->Type = Distance ;
+        if (strcmp("Distance",ConstraintType) == 0 ) {
+            this->getConstraintPtr()->Type = Distance;
             this->getConstraintPtr()->Value = Dist;
             this->getConstraintPtr()->First = FirstIndex; 
             return 0;
@@ -64,14 +64,15 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     PyErr_Clear();
 
     if (PyArg_ParseTuple(args, "dsii", &Dist, &ConstraintType , &FirstIndex, &SecondIndex)) {
-        if(strcmp("Distance",ConstraintType) == 0 ){
-            this->getConstraintPtr()->Type   = Distance ;
+        if (strcmp("Distance",ConstraintType) == 0) {
+            this->getConstraintPtr()->Type   = Distance;
             this->getConstraintPtr()->Value  = Dist;
             this->getConstraintPtr()->First  = FirstIndex; 
             this->getConstraintPtr()->Second = SecondIndex;
             return 0;
-        } else  if(strcmp("Angle",ConstraintType) == 0 ){
-            this->getConstraintPtr()->Type   = Angle ;
+        }
+        else if (strcmp("Angle",ConstraintType) == 0) {
+            this->getConstraintPtr()->Type   = Angle;
             this->getConstraintPtr()->Value  = Dist;
             this->getConstraintPtr()->First  = FirstIndex; 
             this->getConstraintPtr()->Second = SecondIndex;
@@ -82,12 +83,13 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     PyErr_Clear();
 
     if (PyArg_ParseTuple(args, "si", &ConstraintType, &FirstIndex)) {
-        if(strcmp("Horizontal",ConstraintType) == 0 ){
-            this->getConstraintPtr()->Type = Horizontal ;
+        if (strcmp("Horizontal",ConstraintType) == 0) {
+            this->getConstraintPtr()->Type = Horizontal;
             this->getConstraintPtr()->First = FirstIndex;
             return 0;
-        } else if(strcmp("Vertical",ConstraintType) == 0 ){
-            this->getConstraintPtr()->Type = Vertical ;
+        }
+        else if (strcmp("Vertical",ConstraintType) == 0) {
+            this->getConstraintPtr()->Type = Vertical;
             this->getConstraintPtr()->First = FirstIndex;
             return 0;
         }
@@ -96,8 +98,14 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     PyErr_Clear();
 
     if (PyArg_ParseTuple(args, "sii", &ConstraintType, &FirstIndex, &SecondIndex)) {
-        if(strcmp("Parallel",ConstraintType) == 0 ){
-            this->getConstraintPtr()->Type = Parallel ;
+        if (strcmp("Parallel",ConstraintType) == 0) {
+            this->getConstraintPtr()->Type = Parallel;
+            this->getConstraintPtr()->First = FirstIndex;
+            this->getConstraintPtr()->Second = SecondIndex;
+            return 0;
+        }
+        else if (strcmp("Tangent",ConstraintType) == 0) {
+            this->getConstraintPtr()->Type = Tangent;
             this->getConstraintPtr()->First = FirstIndex;
             this->getConstraintPtr()->Second = SecondIndex;
             return 0;
@@ -107,8 +115,8 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     PyErr_Clear();
 
     if (PyArg_ParseTuple(args, "siiii", &ConstraintType, &FirstIndex, &FirstPos, &SecondIndex, &SecondPos)) {
-        if (strcmp("Coincident", ConstraintType) == 0 ) {
-            this->getConstraintPtr()->Type = Coincident ;
+        if (strcmp("Coincident", ConstraintType) == 0) {
+            this->getConstraintPtr()->Type = Coincident;
             this->getConstraintPtr()->First     = FirstIndex;
             this->getConstraintPtr()->FirstPos  = (Sketcher::PointPos) FirstPos;
             this->getConstraintPtr()->Second    = SecondIndex;
@@ -131,17 +139,17 @@ std::string ConstraintPy::representation(void) const
     result << "<Constraint " ;
     switch(this->getConstraintPtr()->Type) {
         case None       : result << "'None'>";break;
-        case Vertical   : result << "'Vertical' (" << getConstraintPtr()->First << ")>";break;
-        case Horizontal : result << "'Horizontal' (" << getConstraintPtr()->First << ")>";break;
         case Coincident : result << "'Coincident'>";break;
+        case Horizontal : result << "'Horizontal' (" << getConstraintPtr()->First << ")>";break;
+        case Vertical   : result << "'Vertical' (" << getConstraintPtr()->First << ")>";break;
+        case Parallel   : result << "'Parallel'>";break;
+        case Tangent    : result << "'Tangent'>";break;
         case Distance   : result << "'Distance'>";break;
         case Angle      : result << "'Angle'>";break;
-        case Parallel   : result << "'Parallel'>";break;
         default         : result << "'?'>";break;
     }
     return result.str();
 }
-
 
 Py::Int ConstraintPy::getFirst(void) const
 {
@@ -163,7 +171,6 @@ void  ConstraintPy::setSecond(Py::Int arg)
     this->getConstraintPtr()->Second = arg;
 }
 
-
 PyObject *ConstraintPy::getCustomAttributes(const char* /*attr*/) const
 {
     return 0;
@@ -173,5 +180,3 @@ int ConstraintPy::setCustomAttributes(const char* /*attr*/, PyObject* /*obj*/)
 {
     return 0; 
 }
-
-
