@@ -393,7 +393,7 @@ int Sketch::addArc(const Part::GeomArcOfCircle &circleSegment)
     constraint constr;
     constr.type = arcRules;
     constr.arc1 = a;
- 
+
     Const.push_back(constr);
  
     // return the position of the newly added geometry
@@ -588,6 +588,20 @@ int Sketch::addFixedConstraint(int geoIndex)
         FixedParameters.insert(l.p2.x);
         FixedParameters.insert(l.p2.y);
     }
+    else if (Geoms[geoIndex].type == Circle) {
+        circle c = Circles[Geoms[geoIndex].index];
+        FixedParameters.insert(c.center.x);
+        FixedParameters.insert(c.center.y);
+    }
+    else if (Geoms[geoIndex].type == Arc) {
+        arc a = Arcs[Geoms[geoIndex].index];
+        FixedParameters.insert(a.start.x);
+        FixedParameters.insert(a.start.y);
+        FixedParameters.insert(a.end.x);
+        FixedParameters.insert(a.end.y);
+        FixedParameters.insert(a.center.x);
+        FixedParameters.insert(a.center.y);
+    }
 
     return Const.size()-1;
 }
@@ -613,6 +627,21 @@ int Sketch::addFixedConstraint(int geoIndex, PointPos pos)
         if (pos == mid) {
             FixedParameters.insert(c.center.x);
             FixedParameters.insert(c.center.y);
+        }
+    }
+    else if (Geoms[geoIndex].type == Arc) {
+        arc a = Arcs[Geoms[geoIndex].index];
+        if (pos == start) {
+            FixedParameters.insert(a.start.x);
+            FixedParameters.insert(a.start.y);
+        }
+        else if (pos == end) {
+            FixedParameters.insert(a.end.x);
+            FixedParameters.insert(a.end.y);
+        }
+        else if (pos == mid) {
+            FixedParameters.insert(a.center.x);
+            FixedParameters.insert(a.center.y);
         }
     }
 

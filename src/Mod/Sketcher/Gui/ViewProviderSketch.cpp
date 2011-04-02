@@ -989,6 +989,8 @@ Restart:
                     dynamic_cast<SoText2 *>(sep->getChild(4))->string = SbString().sprintf("%.2f",Constr->Value);
                 }
                 break;
+            case Fixed:
+            case Tangent:
             case Angle:
             case Coincident: // nothing to do for coincident
             case None:
@@ -1027,6 +1029,9 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
 
         // destiquish different constraint types to build up
         switch((*it)->Type) {
+            case Fixed: // no visual for fixed so far
+                edit->vConstrType.push_back(Fixed);
+                break;
             case Horizontal: // add a Text node with the "H" for that constraint
                 {
                     sep->addChild(new SoTranslation());
