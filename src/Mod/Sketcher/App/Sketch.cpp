@@ -728,9 +728,9 @@ int Sketch::addTangentConstraint(int geoIndex1, int geoIndex2)
     if (PosId1 != none && PosId2 != none)
         if (constr.type == tangentToArc) {
             if (PosId2 == start)
-                constr.type == tangentToArcStart;
+                constr.type = tangentToArcStart;
             else if (PosId2 == end)
-                constr.type == tangentToArcEnd;
+                constr.type = tangentToArcEnd;
         }
 
     if (constr.type == tangentToArc
