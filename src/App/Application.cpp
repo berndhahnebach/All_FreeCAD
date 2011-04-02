@@ -930,7 +930,9 @@ void Application::init(int argc, char ** argv)
 
         initTypes();
 
+#if (defined (BOOST_VERSION) && (BOOST_VERSION >= 104600))
         boost::filesystem::path::default_name_check(boost::filesystem::no_check);
+#endif
 
         initConfig(argc,argv);
         initApplication();
