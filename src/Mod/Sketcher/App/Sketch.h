@@ -61,7 +61,7 @@ public:
     virtual void Restore(Base::XMLReader &/*reader*/);
 
     /** solve the actual set up sketch
-      * If the n fixed pointers are non null the corresponding 
+      * If the n fixed pointers are non null the corresponding
       * parameters are left out from the solving. It's like a fixed
       * constraint on a point for example
       */
@@ -77,7 +77,7 @@ public:
     int addGeometry(const Part::Geometry *geo);
     /// add unspecified geometry
     void addGeometry(const std::vector<Part::Geometry *> &geo);
-    /// returns the actual geometry 
+    /// returns the actual geometry
     std::vector<Part::Geometry *> getGeometry(bool withConstrucionElements = false) const;
     /// get the geometry as python objects
     Py::Tuple getPyGeometry(void) const;
@@ -100,11 +100,11 @@ public:
 
     /// add dedicated geometry
     //@{
-    /// add a point 
+    /// add a point
     int addPoint(Base::Vector3d point);
-    /// add a infinit line 
+    /// add a infinit line
     int addLine(const Part::GeomLineSegment &line);
-    /// add a line segment 
+    /// add a line segment
     int addLineSegment(const Part::GeomLineSegment &lineSegment);
     /// add a arc (circle segment)
     int addArc(const Part::GeomArcOfCircle &circleSegment);
@@ -156,7 +156,7 @@ protected:
         Part::Geometry  * geo;             // pointer to the geometry
         GeoType           type;            // type of the geometry
         bool              construction;    // defines if this element is a construction element
-        int               index;           // index in the corresponding storage vector (Lines, Arcs, Circles, ...) 
+        int               index;           // index in the corresponding storage vector (Lines, Arcs, Circles, ...)
         int               startPointId;    // index in Points of the start point of this geometry
         int               midPointId;      // index in Points of the start point of this geometry
         int               endPointId;      // index in Points of the end point of this geometry
