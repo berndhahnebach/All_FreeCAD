@@ -181,6 +181,7 @@ void TaskSketcherConstrains::slotConstraintsChanged(void)
     QIcon lock ( Gui::BitmapFactory().pixmap("Sketcher_ConstrainLock") );
     QIcon coinc( Gui::BitmapFactory().pixmap("Constraint_PointOnPoint") );
     QIcon para ( Gui::BitmapFactory().pixmap("Constraint_Parallel") );
+    QIcon tang ( Gui::BitmapFactory().pixmap("Constraint_Tangent") );
     QIcon dist ( Gui::BitmapFactory().pixmap("Constraint_Length") );
 
     assert(sketchView);
@@ -215,6 +216,10 @@ void TaskSketcherConstrains::slotConstraintsChanged(void)
             case Sketcher::Parallel:
                 if(Filter<2 || (*it)->Name != "")
                     ui->listWidgetConstraints->addItem(new ConstraintItem(para,name,i-1,(*it)->Type));
+                break;
+            case Sketcher::Tangent:
+                if(Filter<2 || (*it)->Name != "")
+                    ui->listWidgetConstraints->addItem(new ConstraintItem(tang,name,i-1,(*it)->Type));
                 break;
             case Sketcher::Distance:
                 if(Filter<3 || (*it)->Name != ""){

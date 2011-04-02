@@ -925,7 +925,8 @@ Restart:
                     // calculate the half distance between the start and endpoint
                     Base::Vector3d pos = lineSeg->getStartPoint() + ((lineSeg->getEndPoint()-lineSeg->getStartPoint())/2);
                     dynamic_cast<SoTranslation *>(sep->getChild(1))->translation = SbVec3f(pos.x,pos.y,0.0f);
-                }   break;
+                }
+                break;
             case Vertical: // write the new position of the Vertical constraint
                 {
                     assert(Constr->First < (int)geomlist->size());
@@ -937,7 +938,8 @@ Restart:
                     // calculate the half distance between the start and endpoint
                     Base::Vector3d pos = lineSeg->getStartPoint() + ((lineSeg->getEndPoint()-lineSeg->getStartPoint())/2);
                     dynamic_cast<SoTranslation *>(sep->getChild(1))->translation = SbVec3f(pos.x,pos.y,0.0f);
-                }   break;
+                }
+                break;
             case Parallel:
                 {
                     assert(Constr->First < (int)geomlist->size());
@@ -957,7 +959,8 @@ Restart:
                     pos2 = pos2 - pos1;
                     dynamic_cast<SoTranslation *>(sep->getChild(1))->translation = SbVec3f(pos1.x,pos1.y,0.0f);
                     dynamic_cast<SoTranslation *>(sep->getChild(3))->translation = SbVec3f(pos2.x,pos2.y,0.0f);
-                }   break;
+                }
+                break;
             case Distance:
                 {
                     assert(Constr->First < (int)geomlist->size());
@@ -984,7 +987,8 @@ Restart:
                     // set position of datum
                     dynamic_cast<SoTranslation *>(sep->getChild(3))->translation = pos + dir*10;
                     dynamic_cast<SoText2 *>(sep->getChild(4))->string = SbString().sprintf("%.2f",Constr->Value);
-                }   break;
+                }
+                break;
             case Angle:
             case Coincident: // nothing to do for coincident
             case None:
@@ -1060,9 +1064,11 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
                     text->justification = SoText2::LEFT;
                     text->string = "P";
                     sep->addChild(text); 
-                    // remeber the type of this constraint node
+                    // remember the type of this constraint node
                     edit->vConstrType.push_back(Parallel);
-                }
+                }                break;
+            case Tangent: // no visual for tangent so far
+                edit->vConstrType.push_back(Tangent);
                 break;
             case Distance: 
                 {
@@ -1117,8 +1123,7 @@ void ViewProviderSketch::updateData(const App::Property* prop)
     if (edit && (prop == &(getSketchObject()->Geometry) || &(getSketchObject()->Constraints))) {
         edit->ActSketch.setUpSketch(getSketchObject()->Geometry.getValues()
                                    ,getSketchObject()->Constraints.getValues());
-        double * fixed[2]={0,0};
-        if (edit->ActSketch.solve(fixed,0) == 0)
+        if (edit->ActSketch.solve() == 0)
             signalSolved(0,edit->ActSketch.SolveTime);
         else
             signalSolved(1,edit->ActSketch.SolveTime);

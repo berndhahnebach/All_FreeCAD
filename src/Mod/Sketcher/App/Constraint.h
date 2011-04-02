@@ -21,7 +21,6 @@
  ***************************************************************************/
 
 
-
 #ifndef SKETCHER_CONSTRAINT_H
 #define SKETCHER_CONSTRAINT_H
 
@@ -37,6 +36,7 @@ enum ConstraintType {
     Horizontal,
     Vertical,
     Parallel,
+    Tangent,
     Distance,
     Angle
 };
