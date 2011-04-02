@@ -85,6 +85,9 @@ public:
     Py::Object getViewer(const Py::Tuple&);
     Py::Object addEventCallbackPivy(const Py::Tuple&);
     Py::Object removeEventCallbackPivy(const Py::Tuple&);
+    Py::Object listNavigationTypes(const Py::Tuple&);
+    Py::Object getNavigationType(const Py::Tuple&);
+    Py::Object setNavigationType(const Py::Tuple&);
 
 private:
     static void eventCallback(void * ud, SoEventCallback * n);
