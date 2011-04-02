@@ -71,7 +71,6 @@ CmdSketcherConstrainHorizontal::CmdSketcherConstrainHorizontal()
     eType           = ForEdit;
 }
 
-
 void CmdSketcherConstrainHorizontal::activated(int iMsg)
 {
     // get the selection 
@@ -130,6 +129,7 @@ bool CmdSketcherConstrainHorizontal::isActive(void)
     return isCreateConstraintActive( getActiveGuiDocument() );
 }
 
+
 DEF_STD_CMD_A(CmdSketcherConstrainVertical);
 
 CmdSketcherConstrainVertical::CmdSketcherConstrainVertical()
@@ -144,9 +144,7 @@ CmdSketcherConstrainVertical::CmdSketcherConstrainVertical()
     sPixmap         = "Constraint_Vertical";
     iAccel          = Qt::Key_V;
     eType           = ForEdit;
-
 }
-
 
 void CmdSketcherConstrainVertical::activated(int iMsg)
 {
@@ -213,13 +211,12 @@ CmdSketcherConstrainLock::CmdSketcherConstrainLock()
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
     sMenuText       = QT_TR_NOOP("Constrain lock");
-    sToolTipText    = QT_TR_NOOP("Create a lock constrain on the selected item");
+    sToolTipText    = QT_TR_NOOP("Create a lock constraint on the selected item");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_ConstrainLock";
     eType           = ForEdit;
 }
-
 
 void CmdSketcherConstrainLock::activated(int iMsg)
 {
@@ -230,6 +227,7 @@ bool CmdSketcherConstrainLock::isActive(void)
 {
     return isCreateConstraintActive( getActiveGuiDocument() );
 }
+
 
 DEF_STD_CMD_A(CmdSketcherConstrainCoincident);
 
@@ -245,9 +243,7 @@ CmdSketcherConstrainCoincident::CmdSketcherConstrainCoincident()
     sPixmap         = "Constraint_PointOnPoint";
     iAccel          = Qt::Key_C;
     eType           = ForEdit;
-
 }
-
 
 void CmdSketcherConstrainCoincident::activated(int iMsg)
 {
@@ -276,7 +272,7 @@ void CmdSketcherConstrainCoincident::activated(int iMsg)
     // get first vertex index
     if (SubNames[0].size() > 6 && SubNames[0].substr(0,6) == "Vertex") 
         index1 = std::atoi(SubNames[0].substr(6,4000).c_str());
-    else{
+    else {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
             QObject::tr("Select exactly two vertexes from the sketch."));
         return;
@@ -285,7 +281,7 @@ void CmdSketcherConstrainCoincident::activated(int iMsg)
     // get second vertex index
     if (SubNames[1].size() > 6 && SubNames[1].substr(0,6) == "Vertex") 
         index2 = std::atoi(SubNames[1].substr(6,4000).c_str());
-    else{
+    else {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
             QObject::tr("Select exactly two vertexes from the sketch."));
         return;
@@ -313,6 +309,7 @@ bool CmdSketcherConstrainCoincident::isActive(void)
     return isCreateConstraintActive( getActiveGuiDocument() );
 }
 
+
 DEF_STD_CMD_A(CmdSketcherConstrainDistance);
 
 CmdSketcherConstrainDistance::CmdSketcherConstrainDistance()
@@ -327,9 +324,7 @@ CmdSketcherConstrainDistance::CmdSketcherConstrainDistance()
     sPixmap         = "Constraint_Length";
     iAccel          = Qt::Key_D;
     eType           = ForEdit;
-
 }
-
 
 void CmdSketcherConstrainDistance::activated(int iMsg)
 {
@@ -359,7 +354,7 @@ void CmdSketcherConstrainDistance::activated(int iMsg)
     // get first line index
     if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge") 
         index1 = std::atoi(SubNames[0].substr(4,4000).c_str());
-    else{
+    else {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
             QObject::tr("Select exactly one line from the sketch."));
         return;
@@ -375,7 +370,6 @@ void CmdSketcherConstrainDistance::activated(int iMsg)
     
     const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geom);
     double ActLength = (lineSeg->getEndPoint()-lineSeg->getStartPoint()).Length();
-        
 
     // undo command open
     openCommand("add Length constraint");
@@ -410,9 +404,7 @@ CmdSketcherConstrainParallel::CmdSketcherConstrainParallel()
     sPixmap         = "Constraint_Parallel";
     iAccel          = Qt::Key_P;
     eType           = ForEdit;
-
 }
-
 
 void CmdSketcherConstrainParallel::activated(int iMsg)
 {
@@ -440,7 +432,7 @@ void CmdSketcherConstrainParallel::activated(int iMsg)
     // get first vertex index
     if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge") 
         GeoId1 = std::atoi(SubNames[0].substr(4,4000).c_str());
-    else{
+    else {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
             QObject::tr("Select exactly two lines from the sketch."));
         return;
@@ -449,7 +441,7 @@ void CmdSketcherConstrainParallel::activated(int iMsg)
     // get second vertex index
     if (SubNames[1].size() > 4 && SubNames[1].substr(0,4) == "Edge") 
         GeoId2 = std::atoi(SubNames[1].substr(4,4000).c_str());
-    else{
+    else {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
             QObject::tr("Select exactly two lines from the sketch."));
         return;
@@ -488,7 +480,6 @@ CmdSketcherConstrainTangent::CmdSketcherConstrainTangent()
     sPixmap         = "Constraint_Tangent";
     iAccel          = Qt::Key_P;
     eType           = ForEdit;
-
 }
 
 void CmdSketcherConstrainTangent::activated(int iMsg)
@@ -517,7 +508,7 @@ void CmdSketcherConstrainTangent::activated(int iMsg)
     // get first vertex index
     if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge") 
         GeoId1 = std::atoi(SubNames[0].substr(4,4000).c_str());
-    else{
+    else {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
             QObject::tr("Select exactly two entities from the sketch."));
         return;
@@ -526,7 +517,7 @@ void CmdSketcherConstrainTangent::activated(int iMsg)
     // get second vertex index
     if (SubNames[1].size() > 4 && SubNames[1].substr(0,4) == "Edge") 
         GeoId2 = std::atoi(SubNames[1].substr(4,4000).c_str());
-    else{
+    else {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
             QObject::tr("Select exactly two entities from the sketch."));
         return;
