@@ -146,10 +146,10 @@ void Sketch::setUpSketch(const std::vector<Part::Geometry *> &geo, const std::ve
            case Horizontal: addHorizontalConstraint((*it)->First); break;
            case Vertical  : addVerticalConstraint((*it)->First);   break;
            case Parallel  : addParallelConstraint((*it)->First,(*it)->Second);  break;
-           case Tangent  : addTangentConstraint((*it)->First,(*it)->Second);  break;
+           case Tangent   : addTangentConstraint((*it)->First,(*it)->Second);  break;
            case Distance  :
                if ((*it)->Second == -1)
-                    rtn = addDistanceConstraint((*it)->First,(*it)->Value);
+                   rtn = addDistanceConstraint((*it)->First,(*it)->Value);
                else
                    rtn = addDistanceConstraint((*it)->First,(*it)->Second,(*it)->Value);
                break;
@@ -520,31 +520,31 @@ int Sketch::addConstraint(const Constraint *constraint)
     assert((int)Geoms.size()>0);
     int rtn = -1;
     switch (constraint->Type) {
-       case Horizontal:
-           rtn = addHorizontalConstraint(constraint->First);
-           break;
-       case Vertical:
-           rtn = addVerticalConstraint(constraint->First);
-           break;
-       case Coincident:
-           rtn = addPointCoincidentConstraint(constraint->First,constraint->FirstPos,constraint->Second,constraint->SecondPos);
-           break;
-       case Parallel:
-           rtn = addParallelConstraint(constraint->First,constraint->Second);
-           break;
-       case Tangent:
-           rtn = addTangentConstraint(constraint->First,constraint->Second);
-           break;
-       case Distance:
-           if (constraint->Second == -1)
-               rtn = addDistanceConstraint(constraint->First,constraint->Value);
-           else
-               rtn = addDistanceConstraint(constraint->First,constraint->Second, constraint->Value);
-           break;
-       case Angle:
-           break;
-       case None:
-           break;
+        case Horizontal:
+            rtn = addHorizontalConstraint(constraint->First);
+            break;
+        case Vertical:
+            rtn = addVerticalConstraint(constraint->First);
+            break;
+        case Coincident:
+            rtn = addPointCoincidentConstraint(constraint->First,constraint->FirstPos,constraint->Second,constraint->SecondPos);
+            break;
+        case Parallel:
+            rtn = addParallelConstraint(constraint->First,constraint->Second);
+            break;
+        case Tangent:
+            rtn = addTangentConstraint(constraint->First,constraint->Second);
+            break;
+        case Distance:
+            if (constraint->Second == -1)
+                rtn = addDistanceConstraint(constraint->First,constraint->Value);
+            else
+                rtn = addDistanceConstraint(constraint->First,constraint->Second,constraint->Value);
+            break;
+        case Angle:
+            break;
+        case None:
+            break;
     }
 
     return rtn;
@@ -595,21 +595,21 @@ int Sketch::addVerticalConstraint(int geoIndex)
     return Const.size()-1;
 }
 
-int Sketch::addPointCoincidentConstraint(int geoIndex1, PointPos Pos1, int geoIndex2, PointPos Pos2)
+int Sketch::addPointCoincidentConstraint(int geoIndex1, PointPos pos1, int geoIndex2, PointPos pos2)
 {
     // this optimization alters point on point constraints for e.g Line segments
     // to one point. That means the Lines segments get altered to a polyline. 
 
     int Index1=-1, Index2=-1;
     // check if for the first point is already a constraint point present
-    switch(Pos1) {
+    switch(pos1) {
         case start: Index1 = PoPMap[geoIndex1].startParamId; break;
         case end  : Index1 = PoPMap[geoIndex1].endParamId; break;
         case mid  : Index1 = PoPMap[geoIndex1].midParamId; break;
         case none : break;
     }
     // check if for the second point is already a constraint point present
-    switch(Pos2) {
+    switch(pos2) {
         case start: Index2 = PoPMap[geoIndex2].startParamId; break;
         case end  : Index2 = PoPMap[geoIndex2].endParamId; break;
         case mid  : Index2 = PoPMap[geoIndex2].midParamId; break;
@@ -632,13 +632,13 @@ int Sketch::addPointCoincidentConstraint(int geoIndex1, PointPos Pos1, int geoIn
     }
 
     // save the index belonging to the geo id for later usage in build up geo
-    switch(Pos1) {
+    switch(pos1) {
         case start: PoPMap[geoIndex1].startParamId = paramStartIndex; break;
         case end  : PoPMap[geoIndex1].endParamId = paramStartIndex; break;
         case mid  : PoPMap[geoIndex1].midParamId = paramStartIndex; break;
         case none : break;
     }
-    switch(Pos2) {
+    switch(pos2) {
         case start: PoPMap[geoIndex2].startParamId = paramStartIndex; break;
         case end  : PoPMap[geoIndex2].endParamId = paramStartIndex; break;
         case mid  : PoPMap[geoIndex2].midParamId = paramStartIndex; break;
@@ -705,31 +705,31 @@ int Sketch::addTangentConstraint(int geoIndex1, int geoIndex2)
     }
 
     // Find common points
-    PointPos PosId1=none, PosId2=none;
+    PointPos pos1=none, pos2=none;
     if (PoPMap[geoIndex1].startParamId != -1) {
         if (PoPMap[geoIndex1].startParamId == PoPMap[geoIndex2].startParamId) {
-            PosId1 = start;
-            PosId2 = start;
+            pos1 = start;
+            pos2 = start;
         } else if (PoPMap[geoIndex1].startParamId == PoPMap[geoIndex2].endParamId) {
-            PosId1 = start;
-            PosId2 = end;
+            pos1 = start;
+            pos2 = end;
         }
     } else if (PoPMap[geoIndex1].endParamId != -1) {
         // FIXME: what happens if the two geometries are connected in both start and end?
         if (PoPMap[geoIndex1].startParamId == PoPMap[geoIndex2].startParamId) {
-            PosId1 = end;
-            PosId2 = start;
+            pos1 = end;
+            pos2 = start;
         } else if (PoPMap[geoIndex1].startParamId == PoPMap[geoIndex2].endParamId) {
-            PosId1 = end;
-            PosId2 = end;
+            pos1 = end;
+            pos2 = end;
         }
     }
 
-    if (PosId1 != none && PosId2 != none)
+    if (pos1 != none && pos2 != none)
         if (constr.type == tangentToArc) {
-            if (PosId2 == start)
+            if (pos2 == start)
                 constr.type = tangentToArcStart;
-            else if (PosId2 == end)
+            else if (pos2 == end)
                 constr.type = tangentToArcEnd;
         }
 
@@ -889,7 +889,7 @@ int Sketch::solve(void)
     return solve(fixed, 0);
 }
 
-int Sketch::movePoint(int geoIndex1, PointPos Pos1, Base::Vector3d toPoint)
+int Sketch::movePoint(int geoIndex1, PointPos pos1, Base::Vector3d toPoint)
 {
     // index out of bounds?
     assert(geoIndex1 < (int)Geoms.size());
@@ -898,7 +898,7 @@ int Sketch::movePoint(int geoIndex1, PointPos Pos1, Base::Vector3d toPoint)
     int fixed_size=0;
     double * fixed[4]={0,0,0,0};
 
-    if (Pos1 == start) {
+    if (pos1 == start) {
         *(Points[Geoms[geoIndex1].startPointId].x) = toPoint.x;
         *(Points[Geoms[geoIndex1].startPointId].y) = toPoint.y;
         fixed [0] = Points[Geoms[geoIndex1].startPointId].x;
@@ -913,7 +913,7 @@ int Sketch::movePoint(int geoIndex1, PointPos Pos1, Base::Vector3d toPoint)
             fixed [3] = Arcs[Geoms[geoIndex1].index].rad;
             fixed_size = 4;
         }
-    } else if (Pos1 == end) {
+    } else if (pos1 == end) {
         *(Points[Geoms[geoIndex1].endPointId].x) = toPoint.x;
         *(Points[Geoms[geoIndex1].endPointId].y) = toPoint.y;
         fixed [0] = Points[Geoms[geoIndex1].endPointId].x;
@@ -928,13 +928,13 @@ int Sketch::movePoint(int geoIndex1, PointPos Pos1, Base::Vector3d toPoint)
             fixed [3] = Arcs[Geoms[geoIndex1].index].rad;
             fixed_size = 4;
         }
-    } else if (Pos1 == mid) {
+    } else if (pos1 == mid) {
         *(Points[Geoms[geoIndex1].midPointId].x) = toPoint.x;
         *(Points[Geoms[geoIndex1].midPointId].y) = toPoint.y;
         fixed [0] = Points[Geoms[geoIndex1].midPointId].x;
         fixed [1] = Points[Geoms[geoIndex1].midPointId].y;
         fixed_size = 2;
-    } else if (Pos1 == none) {
+    } else if (pos1 == none) {
         if (Geoms[geoIndex1].type == Circle) {
             point center = Points[Geoms[geoIndex1].midPointId];
             double rx = toPoint.x - (*(center.x));

@@ -52,7 +52,8 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     int  SecondPos  =-1;
     double Dist      = 0;
 
-    if (PyArg_ParseTuple(args, "dsi", &Dist, &ConstraintType , &FirstIndex)) {
+    // Value, ConstraintType, GeoIndex
+    if (PyArg_ParseTuple(args, "dsi", &Dist, &ConstraintType, &FirstIndex)) {
         if (strcmp("Distance",ConstraintType) == 0 ) {
             this->getConstraintPtr()->Type = Distance;
             this->getConstraintPtr()->Value = Dist;
@@ -63,7 +64,8 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
 
     PyErr_Clear();
 
-    if (PyArg_ParseTuple(args, "dsii", &Dist, &ConstraintType , &FirstIndex, &SecondIndex)) {
+    // Value, ConstraintType, GeoIndex1, GeoIndex2
+    if (PyArg_ParseTuple(args, "dsii", &Dist, &ConstraintType, &FirstIndex, &SecondIndex)) {
         if (strcmp("Distance",ConstraintType) == 0) {
             this->getConstraintPtr()->Type   = Distance;
             this->getConstraintPtr()->Value  = Dist;
@@ -82,6 +84,7 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
 
     PyErr_Clear();
 
+    // ConstraintType, GeoIndex
     if (PyArg_ParseTuple(args, "si", &ConstraintType, &FirstIndex)) {
         if (strcmp("Horizontal",ConstraintType) == 0) {
             this->getConstraintPtr()->Type = Horizontal;
@@ -97,6 +100,7 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
 
     PyErr_Clear();
 
+    // ConstraintType, GeoIndex1, GeoIndex2
     if (PyArg_ParseTuple(args, "sii", &ConstraintType, &FirstIndex, &SecondIndex)) {
         if (strcmp("Parallel",ConstraintType) == 0) {
             this->getConstraintPtr()->Type = Parallel;
@@ -106,7 +110,7 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
         }
         else if (strcmp("Tangent",ConstraintType) == 0) {
             this->getConstraintPtr()->Type = Tangent;
-            this->getConstraintPtr()->First = FirstIndex;
+            this->getConstraintPtr()->First  = FirstIndex;
             this->getConstraintPtr()->Second = SecondIndex;
             return 0;
         }
@@ -114,6 +118,7 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
 
     PyErr_Clear();
 
+    // Value, ConstraintType, GeoIndex1, PosIndex1, GeoIndex2, PosIndex2
     if (PyArg_ParseTuple(args, "siiii", &ConstraintType, &FirstIndex, &FirstPos, &SecondIndex, &SecondPos)) {
         if (strcmp("Coincident", ConstraintType) == 0) {
             this->getConstraintPtr()->Type = Coincident;
