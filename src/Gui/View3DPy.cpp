@@ -33,6 +33,7 @@
 #include "ViewProviderExtern.h"
 #include "Application.h"
 #include "Document.h"
+#include "NavigationStyle.h"
 #include "SoFCSelection.h"
 #include "SoFCSelectionAction.h"
 #include "SoFCVectorizeSVGAction.h"
@@ -121,6 +122,9 @@ void View3DInventorPy::init_type()
         "Deprecated -- use addEventCallbackPivy()");
     add_varargs_method("removeEventCallbackSWIG",&View3DInventorPy::removeEventCallbackPivy,
         "Deprecated -- use removeEventCallbackPivy()");
+    add_varargs_method("listNavigationTypes",&View3DInventorPy::listNavigationTypes,"listNavigationTypes()");
+    add_varargs_method("getNavigationType",&View3DInventorPy::getNavigationType,"getNavigationType()");
+    add_varargs_method("setNavigationType",&View3DInventorPy::setNavigationType,"setNavigationType()");
 }
 
 View3DInventorPy::View3DInventorPy(View3DInventor *vi)
@@ -944,6 +948,33 @@ Py::Object View3DInventorPy::getPoint(const Py::Tuple& args)
     catch (const Py::Exception&) {
         throw;
     }
+}
+
+Py::Object View3DInventorPy::listNavigationTypes(const Py::Tuple&)
+{
+    std::vector<Base::Type> types;
+    Py::List styles;
+    Base::Type::getAllDerivedFrom(UserNavigationStyle::getClassTypeId(), types);
+    for (std::vector<Base::Type>::iterator it = types.begin()+1; it != types.end(); ++it) {
+        styles.append(Py::String(it->getName()));
+    }
+    return styles;
+}
+
+Py::Object View3DInventorPy::getNavigationType(const Py::Tuple&)
+{
+    std::string name = _view->getViewer()->navigationStyle()->getTypeId().getName();
+    return Py::String(name);
+}
+
+Py::Object View3DInventorPy::setNavigationType(const Py::Tuple& args)
+{
+    char* style;
+    if (!PyArg_ParseTuple(args.ptr(), "s", &style))
+        throw Py::Exception();
+    Base::Type type = Base::Type::fromName(style);
+    _view->getViewer()->setNavigationType(type);
+    return Py::None();
 }
 
 void View3DInventorPy::eventCallback(void * ud, SoEventCallback * n)
