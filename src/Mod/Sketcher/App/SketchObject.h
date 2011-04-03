@@ -76,6 +76,8 @@ public:
     int setDatum(double Datum, int ConstrNbr);
     /// move this point to a new location and solve
     int movePoint(int geoIndex1, PointPos Pos1, const Base::Vector3d& toPoint);
+    /// retrieves the coordinates of a point
+    Base::Vector3d getPoint(int geoIndex1, PointPos Pos1);
 
     /** retrieves for a Vertex number the corosponding GeoId and PointPosition
     */

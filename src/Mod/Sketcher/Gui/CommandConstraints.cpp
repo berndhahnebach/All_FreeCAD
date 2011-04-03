@@ -253,15 +253,15 @@ void CmdSketcherConstrainLock::activated(int iMsg)
             QObject::tr("Select exactly one entity from the sketch."));
         return;
     }
-        
+
+    Base::Vector3d pnt = Obj->getPoint(GeoId,PosId);
+
     // undo command open
     openCommand("add fixed constraint");
-    if (PosId == Sketcher::none)
-        Gui::Command::doCommand(Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Fixed',%i)) "
-                     ,selection[0].getFeatName(),GeoId);
-    else
-        Gui::Command::doCommand(Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Fixed',%i,%i)) "
-                     ,selection[0].getFeatName(),GeoId,PosId);
+    Gui::Command::doCommand(Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint(%f,'ConstrainX',%i,%i)) "
+                 ,selection[0].getFeatName(),pnt.x,GeoId,PosId);
+    Gui::Command::doCommand(Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint(%f,'ConstrainY',%i,%i)) "
+                 ,selection[0].getFeatName(),pnt.y,GeoId,PosId);
 
     // finish the transaction and update
     commitCommand();

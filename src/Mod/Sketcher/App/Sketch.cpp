@@ -145,11 +145,11 @@ void Sketch::setUpSketch(const std::vector<Part::Geometry *> &geo, const std::ve
         // constraints on nothing makes no sense 
         assert((int)Geoms.size() > 0);
         switch ((*it)->Type) {
-           case Fixed:
-               if ((*it)->FirstPos == none)
-                  addFixedConstraint((*it)->First);
-               else
-                  addFixedConstraint((*it)->First,(*it)->FirstPos);
+           case ConstrainX:
+               addCoordinateXConstraint((*it)->First,(*it)->FirstPos,(*it)->Value);
+               break;
+           case ConstrainY:
+               addCoordinateYConstraint((*it)->First,(*it)->FirstPos,(*it)->Value);
                break;
            case Horizontal: addHorizontalConstraint((*it)->First); break;
            case Vertical  : addVerticalConstraint((*it)->First);   break;
@@ -528,11 +528,11 @@ int Sketch::addConstraint(const Constraint *constraint)
     assert((int)Geoms.size()>0);
     int rtn = -1;
     switch (constraint->Type) {
-        case Fixed:
-            if (constraint->FirstPos == none)
-                addFixedConstraint(constraint->First);
-            else
-                addFixedConstraint(constraint->First,constraint->FirstPos);
+        case ConstrainX:
+            rtn = addCoordinateXConstraint(constraint->First,constraint->FirstPos,constraint->Value);
+            break;
+        case ConstrainY:
+            rtn = addCoordinateYConstraint(constraint->First,constraint->FirstPos,constraint->Value);
             break;
         case Horizontal:
             rtn = addHorizontalConstraint(constraint->First);
@@ -576,37 +576,7 @@ int Sketch::addConstraints(const std::vector<Constraint *> &ConstraintList)
     return rtn;
 }
 
-int Sketch::addFixedConstraint(int geoIndex)
-{
-    // index out of bounds?
-    assert(geoIndex < (int)Geoms.size());
-
-    if (Geoms[geoIndex].type == Line) {
-        line l = Lines[Geoms[geoIndex].index];
-        FixedParameters.insert(l.p1.x);
-        FixedParameters.insert(l.p1.y);
-        FixedParameters.insert(l.p2.x);
-        FixedParameters.insert(l.p2.y);
-    }
-    else if (Geoms[geoIndex].type == Circle) {
-        circle c = Circles[Geoms[geoIndex].index];
-        FixedParameters.insert(c.center.x);
-        FixedParameters.insert(c.center.y);
-    }
-    else if (Geoms[geoIndex].type == Arc) {
-        arc a = Arcs[Geoms[geoIndex].index];
-        FixedParameters.insert(a.start.x);
-        FixedParameters.insert(a.start.y);
-        FixedParameters.insert(a.end.x);
-        FixedParameters.insert(a.end.y);
-        FixedParameters.insert(a.center.x);
-        FixedParameters.insert(a.center.y);
-    }
-
-    return Const.size()-1;
-}
-
-int Sketch::addFixedConstraint(int geoIndex, PointPos pos)
+int Sketch::addCoordinateXConstraint(int geoIndex, PointPos pos, double value)
 {
     // index out of bounds?
     assert(geoIndex < (int)Geoms.size());
@@ -614,38 +584,80 @@ int Sketch::addFixedConstraint(int geoIndex, PointPos pos)
     if (Geoms[geoIndex].type == Line) {
         line l = Lines[Geoms[geoIndex].index];
         if (pos == start) {
+            *l.p1.x = value;
             FixedParameters.insert(l.p1.x);
+        }
+        else if (pos == end) {
+            *l.p2.x = value;
+            FixedParameters.insert(l.p2.x);
+        }
+    }
+    else if (Geoms[geoIndex].type == Circle) {
+        circle c = Circles[Geoms[geoIndex].index];
+        if (pos == mid) {
+            *c.center.x = value;
+            FixedParameters.insert(c.center.x);
+        }
+    }
+    else if (Geoms[geoIndex].type == Arc) {
+        arc a = Arcs[Geoms[geoIndex].index];
+        if (pos == start) {
+            *a.start.x = value;
+            FixedParameters.insert(a.start.x);
+        }
+        else if (pos == end) {
+            *a.end.x = value;
+            FixedParameters.insert(a.end.x);
+        }
+        else if (pos == mid) {
+            *a.center.x = value;
+            FixedParameters.insert(a.center.x);
+        }
+    }
+
+    return -1;
+}
+
+int Sketch::addCoordinateYConstraint(int geoIndex, PointPos pos, double value)
+{
+    // index out of bounds?
+    assert(geoIndex < (int)Geoms.size());
+
+    if (Geoms[geoIndex].type == Line) {
+        line l = Lines[Geoms[geoIndex].index];
+        if (pos == start) {
+            *l.p1.y = value;
             FixedParameters.insert(l.p1.y);
         }
         else if (pos == end) {
-            FixedParameters.insert(l.p2.x);
+            *l.p2.y = value;
             FixedParameters.insert(l.p2.y);
         }
     }
     else if (Geoms[geoIndex].type == Circle) {
         circle c = Circles[Geoms[geoIndex].index];
         if (pos == mid) {
-            FixedParameters.insert(c.center.x);
+            *c.center.y = value;
             FixedParameters.insert(c.center.y);
         }
     }
     else if (Geoms[geoIndex].type == Arc) {
         arc a = Arcs[Geoms[geoIndex].index];
         if (pos == start) {
-            FixedParameters.insert(a.start.x);
+            *a.start.y = value;
             FixedParameters.insert(a.start.y);
         }
         else if (pos == end) {
-            FixedParameters.insert(a.end.x);
+            *a.end.y = value;
             FixedParameters.insert(a.end.y);
         }
         else if (pos == mid) {
-            FixedParameters.insert(a.center.x);
+            *a.center.y = value;
             FixedParameters.insert(a.center.y);
         }
     }
 
-    return Const.size()-1;
+    return -1;
 }
 
 int Sketch::addHorizontalConstraint(int geoIndex)

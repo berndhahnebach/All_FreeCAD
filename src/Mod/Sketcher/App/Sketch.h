@@ -121,10 +121,9 @@ public:
     int addConstraints(const std::vector<Constraint *> &ConstraintList);
     /// add one constraint to the sketch
     int addConstraint(const Constraint *constraint);
-    /// add a fixed constraint to a geometry
-    int addFixedConstraint(int geoIndex);
-    /// add a fixed constraint to a point
-    int addFixedConstraint(int geoIndex, PointPos pos);
+    /// add a fixed coordinate constraint to a point
+    int addCoordinateXConstraint(int geoIndex, PointPos pos, double value);
+    int addCoordinateYConstraint(int geoIndex, PointPos pos, double value);
     /// add a horizontal constraint to a geometry
     int addHorizontalConstraint(int geoIndex);
     /// add a vertical constraint to a geometry
