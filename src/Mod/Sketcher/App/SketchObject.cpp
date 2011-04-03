@@ -31,6 +31,9 @@
 
 #include <Base/Writer.h>
 #include <Base/Reader.h>
+
+#include <Mod/Part/App/Geometry.h>
+
 #include <vector>
 
 #include "SketchObject.h"
@@ -130,14 +133,25 @@ int SketchObject::setDatum(double Datum, int ConstrNbr)
     return 0;
 }
 
-int SketchObject::movePoint(int geoIndex1, PointPos Pos1, const Base::Vector3d& toPoint)
+int SketchObject::movePoint(int geoIndex, PointPos pos, const Base::Vector3d& toPoint)
 {
-    // set up a extra sketch
+    // update any fixed constraints involved with the moved point
+    const std::vector<Constraint *> &constraints = this->Constraints.getValues();
+    for (std::vector<Constraint *>::const_iterator it = constraints.begin(); it != constraints.end(); ++it) {
+        if ((*it)->First == geoIndex && (*it)->FirstPos == pos) {
+            if ((*it)->Type == ConstrainX)
+                (*it)->Value = toPoint.x;
+            else if ((*it)->Type == ConstrainY)
+                (*it)->Value = toPoint.y;
+        }
+    }
+
+    // set up an extra sketch
     Sketch sketch;
     // set the geometry and constraints
     sketch.setUpSketch(Geometry.getValues(), Constraints.getValues());
  
-    int ret = sketch.movePoint(geoIndex1, Pos1, toPoint);
+    int ret = sketch.movePoint(geoIndex, pos, toPoint);
 
     if (ret == 0) {
         std::vector<Part::Geometry *> geomlist = sketch.getGeometry();
@@ -148,6 +162,34 @@ int SketchObject::movePoint(int geoIndex1, PointPos Pos1, const Base::Vector3d& 
     }
 
     return ret;
+}
+
+Base::Vector3d SketchObject::getPoint(int geoIndex, PointPos pos)
+{
+    const std::vector< Part::Geometry * > &geomlist = this->Geometry.getValues();
+    assert(geoIndex < (int)geomlist.size());
+    Part::Geometry *geo = geomlist[geoIndex];
+    if (geo->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
+        const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geo);
+        if (pos == start)
+            return lineSeg->getStartPoint();
+        else if (pos == end)
+            return lineSeg->getEndPoint();
+    } else if (geo->getTypeId() == Part::GeomCircle::getClassTypeId()) {
+        const Part::GeomCircle *circle = dynamic_cast<const Part::GeomCircle*>(geo);
+        if (pos == mid)
+            return circle->getCenter();
+    } else if (geo->getTypeId() == Part::GeomArcOfCircle::getClassTypeId()) {
+        const Part::GeomArcOfCircle *aoc = dynamic_cast<const Part::GeomArcOfCircle*>(geo);
+        if (pos == start)
+            return aoc->getStartPoint();
+        else if (pos == end)
+            return aoc->getEndPoint();
+        else if (pos == mid)
+            return aoc->getCenter();
+    }
+
+    return Base::Vector3d();
 }
 
 int SketchObject::addGeometry(const std::vector<Part::Geometry *> &geoList)

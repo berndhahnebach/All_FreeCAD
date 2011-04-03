@@ -65,6 +65,7 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     PyErr_Clear();
 
     // Value, ConstraintType, GeoIndex1, GeoIndex2
+    // Value, ConstraintType, GeoIndex, PosIndex
     if (PyArg_ParseTuple(args, "dsii", &Dist, &ConstraintType, &FirstIndex, &SecondIndex)) {
         if (strcmp("Distance",ConstraintType) == 0) {
             this->getConstraintPtr()->Type   = Distance;
@@ -78,6 +79,24 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
             this->getConstraintPtr()->Value  = Dist;
             this->getConstraintPtr()->First  = FirstIndex; 
             this->getConstraintPtr()->Second = SecondIndex;
+            return 0;
+        }
+        else if (strcmp("ConstrainX",ConstraintType) == 0) {
+            FirstPos = SecondIndex;
+            SecondIndex = -1;
+            this->getConstraintPtr()->Type = ConstrainX;
+            this->getConstraintPtr()->Value    = Dist;
+            this->getConstraintPtr()->First    = FirstIndex;
+            this->getConstraintPtr()->FirstPos = (Sketcher::PointPos) FirstPos;
+            return 0;
+        }
+        else if (strcmp("ConstrainY",ConstraintType) == 0) {
+            FirstPos = SecondIndex;
+            SecondIndex = -1;
+            this->getConstraintPtr()->Type = ConstrainY;
+            this->getConstraintPtr()->Value    = Dist;
+            this->getConstraintPtr()->First    = FirstIndex;
+            this->getConstraintPtr()->FirstPos = (Sketcher::PointPos) FirstPos;
             return 0;
         }
     }
@@ -96,18 +115,11 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
             this->getConstraintPtr()->First = FirstIndex;
             return 0;
         }
-        else if (strcmp("Fixed",ConstraintType) == 0) {
-            this->getConstraintPtr()->Type = Fixed;
-            this->getConstraintPtr()->First = FirstIndex;
-            this->getConstraintPtr()->FirstPos = Sketcher::none;
-            return 0;
-        }
     }
 
     PyErr_Clear();
 
     // ConstraintType, GeoIndex1, GeoIndex2
-    // ConstraintType, GeoIndex, PosIndex
     if (PyArg_ParseTuple(args, "sii", &ConstraintType, &FirstIndex, &SecondIndex)) {
         if (strcmp("Parallel",ConstraintType) == 0) {
             this->getConstraintPtr()->Type = Parallel;
@@ -119,14 +131,6 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
             this->getConstraintPtr()->Type = Tangent;
             this->getConstraintPtr()->First  = FirstIndex;
             this->getConstraintPtr()->Second = SecondIndex;
-            return 0;
-        }
-        else if (strcmp("Fixed",ConstraintType) == 0) {
-            FirstPos = SecondIndex;
-            SecondIndex = -1;
-            this->getConstraintPtr()->Type = Fixed;
-            this->getConstraintPtr()->First    = FirstIndex;
-            this->getConstraintPtr()->FirstPos = (Sketcher::PointPos) FirstPos;
             return 0;
         }
     }
@@ -159,7 +163,8 @@ std::string ConstraintPy::representation(void) const
     result << "<Constraint " ;
     switch(this->getConstraintPtr()->Type) {
         case None       : result << "'None'>";break;
-        case Fixed      : result << "'Fixed'>";break;
+        case ConstrainX : result << "'ConstrainX'>";break;
+        case ConstrainY : result << "'ConstrainY'>";break;
         case Coincident : result << "'Coincident'>";break;
         case Horizontal : result << "'Horizontal' (" << getConstraintPtr()->First << ")>";break;
         case Vertical   : result << "'Vertical' (" << getConstraintPtr()->First << ")>";break;
