@@ -19,6 +19,8 @@
         <file>icons/Constraint_TangentToEnd.svg</file>
         <file>icons/Constraint_TangentToStart.svg</file>
         <file>icons/Constraint_Vertical.svg</file>
+        <file>icons/Constraint_HorizontalDistance.svg</file>
+        <file>icons/Constraint_VerticalDistance.svg</file>
         <file>icons/Sketcher_ConstrainCoincident.svg</file>
         <file>icons/Sketcher_ConstrainDistance.svg</file>
         <file>icons/Sketcher_ConstrainHorizontal.svg</file>

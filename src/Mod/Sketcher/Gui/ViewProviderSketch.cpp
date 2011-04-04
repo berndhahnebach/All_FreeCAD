@@ -914,6 +914,68 @@ Restart:
         const Constraint *Constr = *it;
         // distinquish different constraint types to build up
         switch(Constr->Type) {
+            case ConstrainX:
+            case ConstrainY:
+                {
+                    assert(Constr->First < (int)geomlist->size());
+                    // get the geometry
+                    const Part::Geometry *geo = (*geomlist)[Constr->First];
+                    Base::Vector3d pnt;
+                    if (geo->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
+                        const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geo);
+                        if (Constr->FirstPos == start)
+                            pnt = lineSeg->getStartPoint();
+                        else if (Constr->FirstPos == end)
+                            pnt = lineSeg->getEndPoint();
+                    } else if (geo->getTypeId() == Part::GeomCircle::getClassTypeId()) {
+                        const Part::GeomCircle *circle = dynamic_cast<const Part::GeomCircle*>(geo);
+                        if (Constr->FirstPos == mid)
+                            pnt = circle->getCenter();
+                    } else if (geo->getTypeId() == Part::GeomArcOfCircle::getClassTypeId()) {
+                        const Part::GeomArcOfCircle *aoc = dynamic_cast<const Part::GeomArcOfCircle*>(geo);
+                        if (Constr->FirstPos == start)
+                            pnt = aoc->getStartPoint();
+                        else if (Constr->FirstPos == end)
+                            pnt = aoc->getEndPoint();
+                        else if (Constr->FirstPos == mid)
+                            pnt = aoc->getCenter();
+                    }
+
+                    SbVec3f pos;
+                    if (Constr->Type == ConstrainX) {
+                        SbVec3f p1(0,pnt.y,0);
+                        SbVec3f p2(pnt.x,pnt.y,0);
+                        SbVec3f yvec(0,1,0);
+                        if (pnt.y < 0)
+                            yvec *= -1;
+                        pos = (p1 + p2)/2 + 10*yvec;
+                        // set the line coordinates:
+                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(0,p1+yvec*8);
+                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(1,p1+yvec*12);
+                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(2,p2);
+                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(3,p2+yvec*12);
+                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(4,p1+yvec*10);
+                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(5,p2+yvec*10);
+                    } else if (Constr->Type == ConstrainY) {
+                        SbVec3f p1(pnt.x,0,0);
+                        SbVec3f p2(pnt.x,pnt.y,0);
+                        SbVec3f xvec(1,0,0);
+                        if (pnt.x < 0)
+                            xvec *= -1;
+                        pos = (p1 + p2)/2 + 10*xvec;
+                        // set the line coordinates:
+                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(0,p1+xvec*8);
+                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(1,p1+xvec*12);
+                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(2,p2);
+                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(3,p2+xvec*12);
+                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(4,p1+xvec*10);
+                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(5,p2+xvec*10);
+                    }
+                    // set position of datum
+                    dynamic_cast<SoTranslation *>(sep->getChild(3))->translation = pos;
+                    dynamic_cast<SoText2 *>(sep->getChild(4))->string = SbString().sprintf("%.2f",Constr->Value);
+                }
+                break;
             case Horizontal: // write the new position of the Horizontal constraint
                 {
                     assert(Constr->First < (int)geomlist->size());
@@ -989,64 +1051,6 @@ Restart:
                     dynamic_cast<SoText2 *>(sep->getChild(4))->string = SbString().sprintf("%.2f",Constr->Value);
                 }
                 break;
-            case ConstrainX:
-            case ConstrainY:
-                {
-                    assert(Constr->First < (int)geomlist->size());
-                    // get the geometry
-                    const Part::Geometry *geo = (*geomlist)[Constr->First];
-                    Base::Vector3d pnt;
-                    if (geo->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
-                        const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geo);
-                        if (Constr->FirstPos == start)
-                            pnt = lineSeg->getStartPoint();
-                        else if (Constr->FirstPos == end)
-                            pnt = lineSeg->getEndPoint();
-                    } else if (geo->getTypeId() == Part::GeomCircle::getClassTypeId()) {
-                        const Part::GeomCircle *circle = dynamic_cast<const Part::GeomCircle*>(geo);
-                        if (Constr->FirstPos == mid)
-                            pnt = circle->getCenter();
-                    } else if (geo->getTypeId() == Part::GeomArcOfCircle::getClassTypeId()) {
-                        const Part::GeomArcOfCircle *aoc = dynamic_cast<const Part::GeomArcOfCircle*>(geo);
-                        if (Constr->FirstPos == start)
-                            pnt = aoc->getStartPoint();
-                        else if (Constr->FirstPos == end)
-                            pnt = aoc->getEndPoint();
-                        else if (Constr->FirstPos == mid)
-                            pnt = aoc->getCenter();
-                    }
-
-                    if (Constr->Type == ConstrainX) {
-                        SbVec3f p1(0,pnt.y,0);
-                        SbVec3f p2(pnt.x,pnt.y,0);
-                        SbVec3f yvec(0,1,0);
-                        if (pnt.y < 0)
-                            yvec *= -1;
-                        SbVec3f pos = (p1 + p2)/2;
-                        // set the line coordinates:
-                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(0,p1+yvec*8);
-                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(1,p1+yvec*12);
-                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(2,p2);
-                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(3,p2+yvec*12);
-                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(4,p1+yvec*10);
-                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(5,p2+yvec*10);
-                    } else if (Constr->Type == ConstrainY) {
-                        SbVec3f p1(pnt.x,0,0);
-                        SbVec3f p2(pnt.x,pnt.y,0);
-                        SbVec3f xvec(1,0,0);
-                        if (pnt.x < 0)
-                            xvec *= -1;
-                        SbVec3f pos = (p1 + p2)/2;
-                        // set the line coordinates:
-                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(0,p1+xvec*8);
-                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(1,p1+xvec*12);
-                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(2,p2);
-                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(3,p2+xvec*12);
-                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(4,p1+xvec*10);
-                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(5,p2+xvec*10);
-                    }
-                }
-                break;
             case Tangent:
             case Angle:
             case Coincident: // nothing to do for coincident
@@ -1096,6 +1100,13 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
                     lineSet->numVertices.set1Value(1,2);
                     lineSet->numVertices.set1Value(2,2);
                     sep->addChild(lineSet);
+
+                    // text node for Coordinate Value
+                    sep->addChild(new SoTranslation());
+                    SoText2 *text = new SoText2();
+                    text->justification = SoText2::LEFT;
+                    text->string = "";
+                    sep->addChild(text); 
                     edit->vConstrType.push_back((*it)->Type);
                 }
                 break;

@@ -176,6 +176,8 @@ void TaskSketcherConstrains::on_listWidgetConstraints_itemActivated(QListWidgetI
 
 void TaskSketcherConstrains::slotConstraintsChanged(void)
 {
+    QIcon hdist( Gui::BitmapFactory().pixmap("Constraint_HorizontalDistance") );
+    QIcon vdist( Gui::BitmapFactory().pixmap("Constraint_VerticalDistance") );
     QIcon horiz( Gui::BitmapFactory().pixmap("Constraint_Horizontal") );
     QIcon vert ( Gui::BitmapFactory().pixmap("Constraint_Vertical") );
     QIcon lock ( Gui::BitmapFactory().pixmap("Sketcher_ConstrainLock") );
@@ -201,6 +203,14 @@ void TaskSketcherConstrains::slotConstraintsChanged(void)
             name = QString(QString::fromLatin1((*it)->Name.c_str()));
 
         switch((*it)->Type){
+            case Sketcher::ConstrainX:
+                if (Filter<2 || (*it)->Name != "")
+                    ui->listWidgetConstraints->addItem(new ConstraintItem(hdist,name,i-1,(*it)->Type));
+                break;
+            case Sketcher::ConstrainY:
+                if (Filter<2 || (*it)->Name != "")
+                    ui->listWidgetConstraints->addItem(new ConstraintItem(vdist,name,i-1,(*it)->Type));
+                break;
             case Sketcher::Horizontal:
                 if(Filter<2 || (*it)->Name != "")
                     ui->listWidgetConstraints->addItem(new ConstraintItem(horiz,name,i-1,(*it)->Type));
