@@ -45,6 +45,7 @@ class CommandCell:
     def GetResources(self):
         return {'Pixmap'  : 'Arch_Cell',
                 'MenuText': "Cell",
+                'Accel': "C, E",
                 'ToolTip': "Creates a cell object including selected objects"}
         
     def Activated(self):

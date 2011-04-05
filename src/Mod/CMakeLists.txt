@@ -25,6 +25,8 @@ add_subdirectory(Idf)
 add_subdirectory(Import)
 add_subdirectory(Inspection)
 
+add_subdirectory(Arch)
+
 if(FREECAD_BUILD_ASSEMBLY)
 	add_subdirectory(Assembly)
 endif(FREECAD_BUILD_ASSEMBLY)
