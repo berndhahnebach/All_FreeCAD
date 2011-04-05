@@ -902,14 +902,14 @@ def writeShape(ob,dxfobject):
 def writeMesh(ob,dxfobject):
         "export a shape as a polyface mesh"
         meshdata = ob.Shape.tessellate(0.5)
-        print meshdata
+        # print meshdata
         points = []
         faces = []
         for p in meshdata[0]:
                 points.append([p.x,p.y,p.z])
         for f in meshdata[1]:
                 faces.append([f[0]+1,f[1]+1,f[2]+1])
-        print len(points),len(faces)
+        # print len(points),len(faces)
         dxfobject.append(dxfLibrary.PolyLine([points,faces], [0.0,0.0,0.0],
                                              64, color=getACI(ob),
                                              layer=getGroup(ob,exportList)))
