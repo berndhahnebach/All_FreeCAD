@@ -47,6 +47,7 @@ class CommandWall:
     def GetResources(self):
         return {'Pixmap'  : 'Arch_Wall',
                 'MenuText': "Wall",
+                'Accel': "W, A",
                 'ToolTip': "Creates a wall object from scratch or from a selected object (wire, face or solid)"}
         
     def Activated(self):

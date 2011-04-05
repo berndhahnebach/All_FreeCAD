@@ -34,7 +34,7 @@ class ArchWorkbench(Workbench):
 	ToolTip = "Architecture workbench"
 	
 	def Initialize(self):
-                import Wall,Cell,draftTools,draftGui
+                import Arch_rc,Wall,Cell,draftTools,draftGui
                 Gui.addCommand('Arch_Wall',Wall.CommandWall())
                 Gui.addCommand('Arch_Cell',Cell.CommandCell())
                 tools = ["Arch_Wall","Arch_Cell"]
@@ -47,7 +47,7 @@ class ArchWorkbench(Workbench):
 	def Deactivated(self):
 		Msg("ArchWorkbench::Deactivated()\n")
 
-Gui.addIconPath("/home/yorik/Apps/FreeCAD/src/Mod/Arch/Resources/icons")
+Gui.addIconPath(":/icons")
 Gui.addWorkbench(ArchWorkbench)
 App.addImportType("Industry Foundation Classes (*.ifc)","importIFC") 
 

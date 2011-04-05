@@ -52,7 +52,7 @@ def decode(name):
     return decodedName
 
 def getSchema(schema):
-    return "/home/yorik/Arch/"+schema+".exp"
+    return os.path.join(FreeCAD.ConfigGet("AppHomePath"),"Mod","Arch",schema+".exp")
     
 def read(filename):
     "processes an ifc file and add its objects to the given document"
