@@ -542,7 +542,6 @@ def addText(text,attrib=False):
 
 def processdxf(document,filename):
 	"this does the translation of the dxf contents into FreeCAD Part objects"
-
 	global drawing # for debugging - so drawing is still accessible to python after the script
 	FreeCAD.Console.PrintMessage("opening "+filename+"...\n")
 	drawing = readDXF(filename)
@@ -766,7 +765,7 @@ def warn(dxfobject):
 	badobjects.append(dxfobject)
 
 def open(filename):
-	"called when freecad opens a file"
+	"called when freecad opens a file."
 	docname = os.path.splitext(os.path.basename(filename))[0]
 	doc = FreeCAD.newDocument(docname)
 	doc.Label = decodeName(docname)
@@ -812,7 +811,7 @@ def getSplineSegs(edge):
 		points.append(curve.value(1))
 	return points
 
-def getWire(wire):
+def getWire(wire,nospline=False):
 	"returns an array of dxf-ready points and bulges from a wire"
 	edges = fcgeo.sortEdges(wire.Edges)
 	points = []
@@ -826,7 +825,7 @@ def getWire(wire):
 				angle = -angle
 			bul = math.tan(angle/4)
 			points.append((v1.x,v1.y,v1.z,None,None,bul))
-		elif (isinstance(edge.Curve,Part.BSplineCurve)):
+		elif (isinstance(edge.Curve,Part.BSplineCurve)) and (not nospline):
 			bul = 0.0
 			spline = getSplineSegs(edge)
 			spline.pop()
@@ -838,7 +837,7 @@ def getWire(wire):
 	if not fcgeo.isReallyClosed(wire):
 		v = edges[-1].Vertexes[-1].Point
 		points.append(fcvec.tup(v))
-        print "wire verts: ",points
+        # print "wire verts: ",points
 	return points
 
 def getBlock(obj):
@@ -847,7 +846,7 @@ def getBlock(obj):
 	writeShape(obj,block)	
 	return block
 
-def writeShape(ob,dxfobject):
+def writeShape(ob,dxfobject,nospline=False):
 	"writes the object's shape contents in the given dxf object"
 	processededges = []
 	for wire in ob.Shape.Wires: # polylines
@@ -859,22 +858,16 @@ def writeShape(ob,dxfobject):
                                                            color=getACI(ob),
                                                            layer=getGroup(ob,exportList)))
                 else:
-                        dxfobject.append(dxfLibrary.PolyLine(getWire(wire), [0.0,0.0,0.0],
+                        dxfobject.append(dxfLibrary.PolyLine(getWire(wire,nospline), [0.0,0.0,0.0],
                                                              int(fcgeo.isReallyClosed(wire)), color=getACI(ob),
                                                              layer=getGroup(ob,exportList)))
 	if len(processededges) < len(ob.Shape.Edges): # lone edges
 		loneedges = []
 		for e in ob.Shape.Edges:
 			if not(e.hashCode() in processededges): loneedges.append(e)
-		print "lone edges ",loneedges
+		# print "lone edges ",loneedges
 		for edge in loneedges:
-			if (len(edge.Vertexes) == 2) and (isinstance (edge.Curve,Part.Line)): # lines
-				ve1=edge.Vertexes[0].Point
-				ve2=edge.Vertexes[1].Point
-				dxfobject.append(dxfLibrary.Line([fcvec.tup(ve1), fcvec.tup(ve2)],
-								 color=getACI(ob),
-								 layer=getGroup(ob,exportList)))
-			elif (isinstance(edge.Curve,Part.BSplineCurve)): # splines
+			if (isinstance(edge.Curve,Part.BSplineCurve)) and ((not nospline) or (len(edge.Vertexes) == 1)): # splines
 				points = []
 				spline = getSplineSegs(edge)
 				for p in spline:
@@ -898,6 +891,13 @@ def writeShape(ob,dxfobject):
 				dxfobject.append(dxfLibrary.Arc(fcvec.tup(ce), radius,
 								ang1, ang2, color=getACI(ob),
 								layer=getGroup(ob,exportList)))
+                        else: # anything else is treated as lines
+			# if (len(edge.Vertexes) == 2) and (isinstance (edge.Curve,Part.Line)): # lines
+				ve1=edge.Vertexes[0].Point
+				ve2=edge.Vertexes[1].Point
+				dxfobject.append(dxfLibrary.Line([fcvec.tup(ve1), fcvec.tup(ve2)],
+								 color=getACI(ob),
+								 layer=getGroup(ob,exportList)))
 
 def writeMesh(ob,dxfobject):
         "export a shape as a polyface mesh"
@@ -915,8 +915,8 @@ def writeMesh(ob,dxfobject):
                                              layer=getGroup(ob,exportList)))
                                 
 		
-def export(objectslist,filename):
-	"called when freecad exports a file"
+def export(objectslist,filename,nospline=False):
+	"called when freecad exports a file. If nospline=True, bsplines are exported as straight segs"
 	global exportList
 	exportList = objectslist
 	dxf = dxfLibrary.Drawing()
@@ -934,7 +934,7 @@ def export(objectslist,filename):
                                                 if (len(ob.Shape.Wires) == 1):
                                                         # only one wire in this compound, no lone edge -> polyline
                                                         if (len(ob.Shape.Wires[0].Edges) == len(ob.Shape.Edges)):
-                                                                writeShape(ob,dxf)
+                                                                writeShape(ob,dxf,nospline)
                                                         else:
                                                                 # 1 wire + lone edges -> block
                                                                 block = getBlock(ob)
@@ -946,7 +946,7 @@ def export(objectslist,filename):
                                                         dxf.blocks.append(block)
                                                         dxf.append(dxfLibrary.Insert(name=ob.Name.upper()))
                                         else:
-                                                writeShape(ob,dxf)
+                                                writeShape(ob,dxf,nospline)
 				
 		elif (ob.Type == "App::Annotation"):
 
@@ -985,38 +985,8 @@ def exportPage(page,filename):
         import importSVG
         tempdoc = importSVG.open(page.PageResult)
         tempobj = tempdoc.Objects
-        export(tempobj,filename)
+        export(tempobj,filename,nospline=True)
         FreeCAD.closeDocument(tempdoc.Name)
-        
-def exportPage2(page,filename):
-        "special export for pages, using inkscape"
-        print "Exporting page object..."
-        import tempfile
-        params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
-        inkscapepath = params.GetString("inkscapepath")
-        ps2dxfpath = params.GetString("ps2dxfpath")
-        if not inkscapepath:
-                if os.name == "posix":
-                        p= "/usr/bin/inkscape"
-                        if os.path.exists(p):
-                                inkscapepath = p
-                        else:
-                                print "Inkscape not found! aborting..."
-        if not ps2dxfpath:
-                if os.name == "posix":
-                        p= "/usr/share/inkscape/extensions/ps2dxf.sh"
-                        if os.path.exists(p):
-                                ps2dxfpath = p
-                        else:
-                                print "Ps2dxf script not found! aborting..."
-        if inkscapepath and ps2dxfpath:
-                pst = tempfile.NamedTemporaryFile(suffix=".ps")
-                os.system(inkscapepath+" "+page.PageResult+" --export-ps="+pst.name)
-                os.system(ps2dxfpath+" "+pst.name+" > "+filename)
-                FreeCAD.Console.PrintMessage("successfully exported "+filename+"\r\n")
-                pst.close()
-              
-        # inkscape test.svg --export-ps=test.ps | /usr/share/inkscape/extensips2dxf.sh test.ps > test.dxf
         
 
 
