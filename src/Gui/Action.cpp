@@ -126,7 +126,7 @@ void Action::setVisible(bool b)
     _action->setVisible(b);
 }
 
-void Action::setShortcut(const QKeySequence & key)
+void Action::setShortcut(const QString & key)
 {
     _action->setShortcut(key);
 }

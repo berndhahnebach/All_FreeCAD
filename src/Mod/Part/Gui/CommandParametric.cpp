@@ -48,7 +48,6 @@ CmdPartCylinder::CmdPartCylinder()
     sWhatsThis    = sToolTipText;
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Cylinder";
-    iAccel        = 0;
 }
 
 void CmdPartCylinder::activated(int iMsg)
@@ -83,7 +82,6 @@ CmdPartBox::CmdPartBox()
     sWhatsThis    = "Part_Box";
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Box";
-    iAccel        = 0;
 }
 
 void CmdPartBox::activated(int iMsg)
@@ -118,7 +116,6 @@ CmdPartSphere::CmdPartSphere()
     sWhatsThis    = "Part_Sphere";
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Sphere";
-    iAccel        = 0;
 }
 
 void CmdPartSphere::activated(int iMsg)
@@ -153,7 +150,6 @@ CmdPartCone::CmdPartCone()
     sWhatsThis    = "Part_Cone";
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Cone";
-    iAccel        = 0;
 }
 
 void CmdPartCone::activated(int iMsg)
@@ -188,7 +184,6 @@ CmdPartTorus::CmdPartTorus()
     sWhatsThis    = "Part_Torus";
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Torus";
-    iAccel        = 0;
 }
 
 void CmdPartTorus::activated(int iMsg)

@@ -77,7 +77,6 @@ CmdRaytracingWriteCamera::CmdRaytracingWriteCamera()
     sWhatsThis    = sToolTipText;
     sStatusTip    = sToolTipText;
     sPixmap       = "Raytrace_Camera";
-    iAccel        = 0;
 }
 
 void CmdRaytracingWriteCamera::activated(int iMsg)
@@ -164,7 +163,6 @@ CmdRaytracingWritePart::CmdRaytracingWritePart()
     sWhatsThis    = sToolTipText;
     sStatusTip    = sToolTipText;
     sPixmap       = "Raytrace_Part";
-    iAccel        = 0;
 }
 
 void CmdRaytracingWritePart::activated(int iMsg)
@@ -214,7 +212,6 @@ CmdRaytracingWriteView::CmdRaytracingWriteView()
     sWhatsThis    = sToolTipText;
     sStatusTip    = sToolTipText;
     sPixmap       = "Raytrace_Export";
-    iAccel        = 0;
 }
 
 void CmdRaytracingWriteView::activated(int iMsg)
@@ -278,7 +275,7 @@ bool CmdRaytracingWriteView::isActive(void)
 //    sWhatsThis    = sToolTipText;
 //    sStatusTip    = sToolTipText;
 //    sPixmap       = "Test1";
-//    iAccel        = 0;
+//    sAccel        = "Ctrl+P";
 //}
 //
 //void CmdRaytracingNewProject::activated(int iMsg)
@@ -324,7 +321,7 @@ bool CmdRaytracingWriteView::isActive(void)
 //    sWhatsThis    = sToolTipText;
 //    sStatusTip    = sToolTipText;
 //    sPixmap       = "Test1";
-//    iAccel        = 0;
+//    sAccel        = "Ctrl+P";
 //}
 //
 //void CmdRaytracingQuickRender::activated(int iMsg)
@@ -457,7 +454,6 @@ CmdRaytracingExportProject::CmdRaytracingExportProject()
     sWhatsThis    = "Raytracing_ExportProject";
     sStatusTip    = sToolTipText;
     sPixmap       = "Raytrace_Export";
-    iAccel        = 0;
 }
 
 void CmdRaytracingExportProject::activated(int iMsg)

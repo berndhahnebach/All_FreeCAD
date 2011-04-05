@@ -47,7 +47,7 @@ StdCmdDescription::StdCmdDescription()
   sToolTipText  = QT_TR_NOOP("Long description of commands");
   sWhatsThis    = QT_TR_NOOP("Long description of commands");
   sStatusTip    = QT_TR_NOOP("Long description of commands");
-  iAccel        = Qt::Key_F1;
+  sAccel        = "F1";
 }
 
 StdCmdDescription::~StdCmdDescription()

@@ -67,7 +67,7 @@ CmdSketcherConstrainHorizontal::CmdSketcherConstrainHorizontal()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Constraint_Horizontal";
-    iAccel          = Qt::Key_H;
+    sAccel          = "H";
     eType           = ForEdit;
 }
 
@@ -142,7 +142,7 @@ CmdSketcherConstrainVertical::CmdSketcherConstrainVertical()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Constraint_Vertical";
-    iAccel          = Qt::Key_V;
+    sAccel          = "V";
     eType           = ForEdit;
 }
 
@@ -289,7 +289,7 @@ CmdSketcherConstrainCoincident::CmdSketcherConstrainCoincident()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Constraint_PointOnPoint";
-    iAccel          = Qt::Key_C;
+    sAccel          = "C";
     eType           = ForEdit;
 }
 
@@ -370,7 +370,7 @@ CmdSketcherConstrainDistance::CmdSketcherConstrainDistance()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Constraint_Length";
-    iAccel          = Qt::Key_D;
+    sAccel          = "D";
     eType           = ForEdit;
 }
 
@@ -450,7 +450,7 @@ CmdSketcherConstrainParallel::CmdSketcherConstrainParallel()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Constraint_Parallel";
-    iAccel          = Qt::Key_P;
+    sAccel          = "P";
     eType           = ForEdit;
 }
 
@@ -526,7 +526,7 @@ CmdSketcherConstrainTangent::CmdSketcherConstrainTangent()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Constraint_Tangent";
-    iAccel          = Qt::Key_P;
+    sAccel          = "T";
     eType           = ForEdit;
 }
 

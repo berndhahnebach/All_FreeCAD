@@ -60,7 +60,6 @@ CmdPartSimpleCylinder::CmdPartSimpleCylinder()
     sWhatsThis    = sToolTipText;
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Cylinder";
-    iAccel        = 0;
 }
 
 void CmdPartSimpleCylinder::activated(int iMsg)
@@ -110,7 +109,6 @@ CmdPartShapeFromMesh::CmdPartShapeFromMesh()
     sToolTipText  = QT_TR_NOOP("Create shape from selected mesh object");
     sWhatsThis    = sToolTipText;
     sStatusTip    = sToolTipText;
-    iAccel        = 0;
 }
 
 void CmdPartShapeFromMesh::activated(int iMsg)

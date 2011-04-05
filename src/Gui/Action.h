@@ -55,7 +55,7 @@ public:
     void setChecked (bool);
     bool isChecked() const;
 
-    void setShortcut (const QKeySequence & key);
+    void setShortcut (const QString &);
     QKeySequence shortcut() const;
     void setIcon (const QIcon &);
     void setStatusTip (const QString &);

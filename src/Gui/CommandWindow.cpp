@@ -54,7 +54,6 @@ StdCmdArrangeIcons::StdCmdArrangeIcons()
     sToolTipText  = QT_TR_NOOP("Arrange Icons");
     sWhatsThis    = QT_TR_NOOP("Arrange Icons");
     sStatusTip    = QT_TR_NOOP("Arrange Icons");
-    iAccel        = 0;
     eType         = 0;
 }
 
@@ -82,7 +81,6 @@ StdCmdTileWindows::StdCmdTileWindows()
     sWhatsThis    = QT_TR_NOOP("Tile the windows");
     sStatusTip    = QT_TR_NOOP("Tile the windows");
     sPixmap       = "Std_WindowTileVer";
-    iAccel        = 0;
     eType         = 0;
 }
 
@@ -110,7 +108,6 @@ StdCmdCascadeWindows::StdCmdCascadeWindows()
     sWhatsThis    = QT_TR_NOOP("Tile pragmatic");
     sStatusTip    = QT_TR_NOOP("Tile pragmatic");
     sPixmap       = "Std_WindowCascade";
-    iAccel        = 0;
     eType         = 0;
 }
 
@@ -139,7 +136,7 @@ StdCmdCloseActiveWindow::StdCmdCloseActiveWindow()
     sStatusTip    = QT_TR_NOOP("Close active window");
     // CTRL+F4 is already set by an QMdiSubWindow and thus we must use the
     // alternative CTRL+W here to avoid an ambiguous shortcut overload
-	iAccel        = Qt::CTRL+Qt::Key_W;
+	sAccel        = "Ctrl+W";
     eType         = 0;
 }
 
@@ -166,7 +163,6 @@ StdCmdCloseAllWindows::StdCmdCloseAllWindows()
     sToolTipText  = QT_TR_NOOP("Close all windows");
     sWhatsThis    = QT_TR_NOOP("Close all windows");
     sStatusTip    = QT_TR_NOOP("Close all windows");
-    iAccel        = 0;
     eType         = 0;
 }
 
@@ -195,9 +191,9 @@ StdCmdActivateNextWindow::StdCmdActivateNextWindow()
     sStatusTip    = QT_TR_NOOP("Activate next window");
     sPixmap       = "Std_WindowNext";
 #ifndef NO_USE_QT_MDI_AREA
-    iAccel        = keySequenceToAccel(QKeySequence::NextChild);
+    sAccel        = keySequenceToAccel(QKeySequence::NextChild);
 #else
-    iAccel        = 0;
+    sAccel        = "";
 #endif
     eType         = 0;
 }
@@ -227,9 +223,9 @@ StdCmdActivatePrevWindow::StdCmdActivatePrevWindow()
     sStatusTip    = QT_TR_NOOP("Activate previous window");
     sPixmap       = "Std_WindowPrev";
 #ifndef NO_USE_QT_MDI_AREA
-    iAccel        = keySequenceToAccel(QKeySequence::PreviousChild);
+    sAccel        = keySequenceToAccel(QKeySequence::PreviousChild);
 #else
-    iAccel        = 0;
+    sAccel        = "";
 #endif
     eType         = 0;
 }
@@ -258,7 +254,6 @@ StdCmdWindows::StdCmdWindows()
     sWhatsThis    = QT_TR_NOOP("Windows list");
     sStatusTip    = QT_TR_NOOP("Windows list");
     //sPixmap     = "";
-    iAccel        = 0;
     eType         = 0;
 }
 
@@ -281,7 +276,6 @@ StdCmdUserInterface::StdCmdUserInterface()
     sToolTipText  = QT_TR_NOOP("Dock all top-level views");
     sWhatsThis    = QT_TR_NOOP("Dock all top-level views");
     sStatusTip    = QT_TR_NOOP("Dock all top-level views");
-    iAccel        = 0;
     eType         = 0;
 }
 
@@ -304,7 +298,6 @@ StdCmdDockViewMenu::StdCmdDockViewMenu()
     sToolTipText  = QT_TR_NOOP("Toggles this window");
     sWhatsThis    = QT_TR_NOOP("Toggles this window");
     sStatusTip    = QT_TR_NOOP("Toggles this window");
-    iAccel        = 0;
     eType         = 0;
 }
 
@@ -340,7 +333,6 @@ StdCmdToolBarMenu::StdCmdToolBarMenu()
     sToolTipText  = QT_TR_NOOP("Toggles this window");
     sWhatsThis    = QT_TR_NOOP("Toggles this window");
     sStatusTip    = QT_TR_NOOP("Toggles this window");
-    iAccel        = 0;
     eType         = 0;
 }
 
@@ -376,7 +368,6 @@ StdCmdStatusBar::StdCmdStatusBar()
     sToolTipText  = QT_TR_NOOP("Toggles the status bar");
     sWhatsThis    = QT_TR_NOOP("Toggles the status bar");
     sStatusTip    = QT_TR_NOOP("Toggles the status bar");
-    iAccel        = 0;
     eType         = 0;
 }
 
@@ -408,7 +399,6 @@ StdCmdWindowsMenu::StdCmdWindowsMenu()
     sToolTipText  = QT_TR_NOOP("Activates this window");
     sWhatsThis    = QT_TR_NOOP("Activates this window");
     sStatusTip    = QT_TR_NOOP("Activates this window");
-    iAccel        = 0;
     eType         = 0;
 }
 

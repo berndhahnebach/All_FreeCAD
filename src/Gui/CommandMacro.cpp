@@ -50,7 +50,6 @@ StdCmdDlgMacroRecord::StdCmdDlgMacroRecord()
     sWhatsThis    = "Std_DlgMacroRecord";
     sStatusTip    = QT_TR_NOOP("Opens a dialog to record a macro");
     sPixmap       = "macro-record";
-    iAccel        = 0;
     eType         = 0;
 }
 
@@ -79,7 +78,6 @@ StdCmdMacroStopRecord::StdCmdMacroStopRecord()
     sWhatsThis    = "Std_MacroStopRecord";
     sStatusTip    = QT_TR_NOOP("Stop the macro recording session");
     sPixmap       = "macro-stop";
-    iAccel        = 0;
     eType         = 0;
 }
 
@@ -107,7 +105,6 @@ StdCmdDlgMacroExecute::StdCmdDlgMacroExecute()
     sWhatsThis    = "Std_DlgMacroExecute";
     sStatusTip    = QT_TR_NOOP("Opens a dialog to let you execute a recorded macro");
     sPixmap       = "accessories-text-editor";
-    iAccel        = 0;
     eType         = 0;
 }
 
@@ -136,7 +133,7 @@ StdCmdDlgMacroExecuteDirect::StdCmdDlgMacroExecuteDirect()
     sWhatsThis    = "Std_DlgMacroExecuteDirect";
     sStatusTip    = QT_TR_NOOP("Execute the macro in the editor");
     sPixmap       = "macro-execute";
-    iAccel        = Qt::CTRL+Qt::Key_F6;
+    sAccel        = "Ctrl+F6";
     eType         = 0;
 }
 
@@ -161,7 +158,7 @@ StdCmdMacroStartDebug::StdCmdMacroStartDebug()
     sWhatsThis    = "Std_MacroStartDebug";
     sStatusTip    = QT_TR_NOOP("Start debugging of macro");
     sPixmap       = "debug-start";
-    iAccel        = Qt::Key_F6;
+    sAccel        = "F6";
     eType         = 0;
 }
 
@@ -188,7 +185,7 @@ StdCmdMacroStopDebug::StdCmdMacroStopDebug()
     sWhatsThis    = "Std_MacroStopDebug";
     sStatusTip    = QT_TR_NOOP("Stop debugging of macro");
     sPixmap       = "debug-stop";
-    iAccel        = Qt::SHIFT+Qt::Key_F6;
+    sAccel        = "Shift+F6";
     eType         = 0;
 }
 
@@ -214,7 +211,7 @@ StdCmdMacroStepOver::StdCmdMacroStepOver()
     sWhatsThis    = "Std_MacroStepOver";
     sStatusTip    = QT_TR_NOOP("Step over");
     sPixmap       = 0;
-    iAccel        = Qt::Key_F10;
+    sAccel        = "F10";
     eType         = 0;
 }
 
@@ -240,7 +237,7 @@ StdCmdToggleBreakpoint::StdCmdToggleBreakpoint()
     sWhatsThis    = "Std_ToggleBreakpoint";
     sStatusTip    = QT_TR_NOOP("Toggle breakpoint");
     sPixmap       = 0;
-    iAccel        = Qt::Key_F9;
+    sAccel        = "F9";
     eType         = 0;
 }
 

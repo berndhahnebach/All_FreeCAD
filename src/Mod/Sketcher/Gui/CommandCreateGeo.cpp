@@ -187,7 +187,7 @@ CmdSketcherCreateLine::CmdSketcherCreateLine()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_CreateLine";
-    iAccel          = Qt::Key_L;
+    sAccel          = "L";
     eType           = ForEdit;
 }
 
@@ -360,7 +360,7 @@ CmdSketcherCreateRectangle::CmdSketcherCreateRectangle()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_CreateRectangle";
-    iAccel          = Qt::Key_R;
+    sAccel          = "R";
     eType           = ForEdit;
 }
 

@@ -76,7 +76,6 @@ CmdPartPickCurveNet::CmdPartPickCurveNet()
     sWhatsThis    = sToolTipText;
     sStatusTip    = sToolTipText;
     sPixmap       = "Test1";
-    iAccel        = 0;
 }
 
 void CmdPartPickCurveNet::activated(int iMsg)
@@ -99,7 +98,6 @@ CmdPartNewDoc::CmdPartNewDoc()
     sWhatsThis    = sToolTipText;
     sStatusTip    = sToolTipText;
     sPixmap       = "New";
-    iAccel        = 0;
 }
 
 void CmdPartNewDoc::activated(int iMsg)
@@ -123,7 +121,6 @@ CmdPartBox2::CmdPartBox2()
     sWhatsThis    = "Part_Box2";
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Box";
-    iAccel        = 0;
 }
 
 
@@ -165,7 +162,6 @@ CmdPartBox3::CmdPartBox3()
     sWhatsThis    = "Part_Box3";
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Box";
-    iAccel        = 0;
 }
 
 void CmdPartBox3::activated(int iMsg)
@@ -206,7 +202,6 @@ CmdPartPrimitives::CmdPartPrimitives()
     sWhatsThis    = "Part_Primitives";
     sStatusTip    = sToolTipText;
     //sPixmap       = "Part_Box";
-    iAccel        = 0;
 }
 
 void CmdPartPrimitives::activated(int iMsg)
@@ -238,7 +233,6 @@ CmdPartCut::CmdPartCut()
     sWhatsThis    = "Part_Cut";
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Cut";
-    iAccel        = 0;
 }
 
 void CmdPartCut::activated(int iMsg)
@@ -286,7 +280,6 @@ CmdPartCommon::CmdPartCommon()
     sWhatsThis    = "Part_Common";
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Common";
-    iAccel        = 0;
 }
 
 void CmdPartCommon::activated(int iMsg)
@@ -338,7 +331,6 @@ CmdPartFuse::CmdPartFuse()
     sWhatsThis    = "Part_Fuse";
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Fuse";
-    iAccel        = 0;
 }
 
 void CmdPartFuse::activated(int iMsg)
@@ -390,7 +382,6 @@ CmdPartSection::CmdPartSection()
     sWhatsThis    = "Part_Section";
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Section";
-    iAccel        = 0;
 }
 
 
@@ -437,7 +428,6 @@ CmdPartImport::CmdPartImport()
     sWhatsThis    = "Part_Import";
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Import";
-    iAccel        = 0;
 }
 
 
@@ -484,7 +474,6 @@ CmdPartImportCurveNet::CmdPartImportCurveNet()
     sWhatsThis  = "Part_ImportCurveNet";
     sStatusTip  = sToolTipText;
     sPixmap     = "Part_Box";
-    iAccel      = 0;
 }
 
 void CmdPartImportCurveNet::activated(int iMsg)
@@ -529,7 +518,6 @@ CmdPartMakeSolid::CmdPartMakeSolid()
     sToolTipText  = QT_TR_NOOP("Create solid from a shell or compound");
     sWhatsThis    = "Part_MakeSolid";
     sStatusTip    = sToolTipText;
-    iAccel        = 0;
 }
 
 void CmdPartMakeSolid::activated(int iMsg)
@@ -607,7 +595,6 @@ CmdPartReverseShape::CmdPartReverseShape()
     sToolTipText  = QT_TR_NOOP("Reverse orientation of shapes");
     sWhatsThis    = "Part_ReverseShape";
     sStatusTip    = sToolTipText;
-    iAccel        = 0;
 }
 
 void CmdPartReverseShape::activated(int iMsg)
@@ -662,7 +649,6 @@ CmdPartBoolean::CmdPartBoolean()
     sWhatsThis    = "Part_Boolean";
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Booleans";
-    iAccel        = 0;
 }
 
 void CmdPartBoolean::activated(int iMsg)
@@ -693,7 +679,6 @@ CmdPartExtrude::CmdPartExtrude()
     sWhatsThis    = sToolTipText;
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Extrude";
-    iAccel        = 0;
 }
 
 void CmdPartExtrude::activated(int iMsg)
@@ -721,7 +706,6 @@ CmdPartRevolve::CmdPartRevolve()
     sWhatsThis    = sToolTipText;
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Revolve";
-    iAccel        = 0;
 }
 
 void CmdPartRevolve::activated(int iMsg)
@@ -749,7 +733,6 @@ CmdPartFillet::CmdPartFillet()
     sWhatsThis    = sToolTipText;
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_Fillet";
-    iAccel        = 0;
 }
 
 void CmdPartFillet::activated(int iMsg)
@@ -777,7 +760,6 @@ CmdPartMirror::CmdPartMirror()
     sWhatsThis    = sToolTipText;
     sStatusTip    = sToolTipText;
     sPixmap       = "Part_MirrorPNG";
-    iAccel        = 0;
 }
 
 void CmdPartMirror::activated(int iMsg)
@@ -805,7 +787,6 @@ CmdPartCrossSections::CmdPartCrossSections()
     sWhatsThis    = "Part_CrossSections";
     sStatusTip    = sToolTipText;
 //  sPixmap       = "Part_Booleans";
-    iAccel        = 0;
 }
 
 void CmdPartCrossSections::activated(int iMsg)

@@ -429,7 +429,7 @@ Action * StdCmdDownloadOnlineHelp::createAction(void)
         this->className(), sWhatsThis, 0,
         QCoreApplication::CodecForTr).arg(exe));
     pcAction->setIcon(Gui::BitmapFactory().pixmap(sPixmap));
-    pcAction->setShortcut(iAccel);
+    pcAction->setShortcut(QString::fromAscii(sAccel));
 
     return pcAction;
 }

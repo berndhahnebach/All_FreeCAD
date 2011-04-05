@@ -52,7 +52,7 @@ StdCmdFeatRecompute::StdCmdFeatRecompute()
     sWhatsThis    = QT_TR_NOOP("Recompute feature or document");
     sStatusTip    = QT_TR_NOOP("Recompute feature or document");
     sPixmap       = "view-refresh";
-    iAccel        = Qt::CTRL+Qt::Key_R;
+    sAccel        = "Ctrl+R";
 }
 
 void StdCmdFeatRecompute::activated(int iMsg)
