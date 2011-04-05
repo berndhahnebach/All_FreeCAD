@@ -45,6 +45,10 @@ class SoEventCallback;
 class SbVec3f;
 class SoSphere;
 class SoScale;
+class SoCoordinate3;
+class SoIndexedFaceSet;
+class SoNormal;
+class SoNormalBinding;
 
 namespace PartGui {
 
@@ -95,12 +99,6 @@ protected:
     /// get called by the container whenever a property has been changed
     virtual void onChanged(const App::Property* prop);
     bool loadParameter();
-    Standard_Boolean computeFaces   (SoGroup* root, const TopoDS_Shape &myShape, double defl);
-    Standard_Boolean computeEdges   (SoGroup* root, const TopoDS_Shape &myShape);
-    Standard_Boolean computeVertices(SoGroup* root, const TopoDS_Shape &myShape);
-
-    void transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals,
-         int32_t** cons,int &nbNodesInFace,int &nbTriInFace );
 
     // nodes for the data representation
     SoGroup  *EdgeRoot;
@@ -113,6 +111,10 @@ protected:
     //SoSwitch     *pcControlPoints;
     SoShapeHints *pShapeHints;
 
+    SoCoordinate3    * coords;
+    SoIndexedFaceSet * faceset;
+    SoNormal         * norm;
+    SoNormalBinding  * normb;
 private:
     // settings stuff
     float meshDeviation;
