@@ -133,6 +133,16 @@ ViewProviderPartExt::ViewProviderPartExt()
     FaceRoot->ref();
     VertexRoot = new SoSeparator();
     VertexRoot->ref();
+    coords = new SoCoordinate3();
+    coords->ref();
+    faceset = new SoIndexedFaceSet();
+    faceset->ref();
+    norm = new SoNormal;
+    norm->ref();
+    normb = new SoNormalBinding;
+    normb->value = SoNormalBinding::PER_VERTEX_INDEXED;
+    normb->ref();
+
     pcLineMaterial = new SoMaterial;
     pcLineMaterial->ref();
     LineMaterial.touch();
@@ -170,8 +180,11 @@ ViewProviderPartExt::~ViewProviderPartExt()
     pcLineStyle->unref();
     pcPointStyle->unref();
     pShapeHints->unref();
-}
+    coords->unref();
+    faceset->unref();
+    norm->unref();
 
+}
 void ViewProviderPartExt::onChanged(const App::Property* prop)
 {
     if (prop == &LineWidth) {
@@ -245,21 +258,25 @@ void ViewProviderPartExt::attach(App::DocumentObject *pcFeat)
 
     // normal viewing with edges and points
     pcNormalRoot->addChild(pShapeHints);
-    pcNormalRoot->addChild(EdgeRoot);
-    pcNormalRoot->addChild(offset);
-    pcNormalRoot->addChild(FaceRoot);
-    pcNormalRoot->addChild(VertexRoot);
+    pcNormalRoot->addChild(pcShapeMaterial);
+    pcNormalRoot->addChild(norm);
+    pcNormalRoot->addChild(normb);
+    pcNormalRoot->addChild(coords);
+    pcNormalRoot->addChild(faceset);
+    //pcNormalRoot->addChild(offset);
+    //pcNormalRoot->addChild(FaceRoot);
+    //pcNormalRoot->addChild(VertexRoot);
 
-    // just faces with no edges or points
-    pcFlatRoot->addChild(pShapeHints);
-    pcFlatRoot->addChild(FaceRoot);
+    //// just faces with no edges or points
+    //pcFlatRoot->addChild(pShapeHints);
+    //pcFlatRoot->addChild(FaceRoot);
 
-    // only edges
-    pcWireframeRoot->addChild(EdgeRoot);
-    pcWireframeRoot->addChild(VertexRoot);
+    //// only edges
+    //pcWireframeRoot->addChild(EdgeRoot);
+    //pcWireframeRoot->addChild(VertexRoot);
 
-    // normal viewing with edges and points
-    pcPointsRoot->addChild(VertexRoot);
+    //// normal viewing with edges and points
+    //pcPointsRoot->addChild(VertexRoot);
 
     // putting all together with the switch
     addDisplayMaskMode(pcNormalRoot, "Flat Lines");
@@ -381,23 +398,19 @@ void ViewProviderPartExt::updateData(const App::Property* prop)
 {
     Gui::ViewProviderGeometryObject::updateData(prop);
     if (prop->getTypeId() == Part::PropertyPartShape::getClassTypeId()) {
+        // get the shape to show
         TopoDS_Shape cShape = static_cast<const Part::PropertyPartShape*>(prop)->getValue();
 
-        Base::TimeInfo start_time;
-        //Base::Console().Log("solv: Start ViewProviderPartExt::updateData()  ");
-
-
-        // clear anchor nodes
-        vertexShapeMap.clear();
-        EdgeRoot->removeAllChildren();
-        FaceRoot->removeAllChildren();
-        VertexRoot->removeAllChildren();
         // do nothing if shape is empty
         if (cShape.IsNull())
             return;
 
+        // time measurement and book keeping
+        Base::TimeInfo start_time;
+        int nbrTriangles=0,nbrNodes=0,nbrFaces=0;
+
         try {
-            // creating the mesh on the data structure
+            // calculating the deflection value
             Bnd_Box bounds;
             BRepBndLib::Add(cShape, bounds);
             bounds.SetGap(0.0);
@@ -406,412 +419,125 @@ void ViewProviderPartExt::updateData(const App::Property* prop)
             Standard_Real deflection = ((xMax-xMin)+(yMax-yMin)+(zMax-zMin))/300.0 *
                 this->meshDeviation;
 
-            //BRepMesh::Mesh(cShape,deflection);
-            //BRepMesh_IncrementalMesh MESH(cShape,meshDeviation);
+            // create or use the mesh on the data structure
+            BRepMesh_IncrementalMesh MESH(cShape,deflection);
             // We must reset the location here because the transformation data
             // are set in the placement property
             TopLoc_Location aLoc;
             cShape.Location(aLoc);
-            computeFaces   (FaceRoot,cShape,deflection);
-            computeEdges   (EdgeRoot,cShape);
-            computeVertices(VertexRoot,cShape);
-            // NOTE: Cleaning the triangulation may cause problems on some algorithms like BOP
-            //BRepTools::Clean(cShape); // remove triangulation
+
+            // count triangles and nodes in the mesh
+            TopExp_Explorer Ex;
+            for(Ex.Init(cShape,TopAbs_FACE);Ex.More();Ex.Next()) {
+                   Handle (Poly_Triangulation) mesh = BRep_Tool::Triangulation(TopoDS::Face(Ex.Current()),TopLoc_Location());
+                   if (mesh.IsNull()) continue;
+                   nbrTriangles += mesh->NbTriangles();
+                   nbrNodes     += mesh->NbNodes();
+                   nbrFaces++;
+            }
+            
+
+            // create memory for the nodes and indexes
+            coords  ->point      .setNum(nbrNodes);
+            norm    ->vector     .setNum(nbrNodes);
+            faceset ->coordIndex .setNum(nbrTriangles*4);
+            // get the raw memory for fast fill up
+            SbVec3f* verts = coords  ->point       .startEditing();
+            SbVec3f* norms = norm    ->vector      .startEditing();
+            int32_t* index = faceset ->coordIndex  .startEditing();
+
+            int i = 1,FaceNodeOffset=0,FaceTriaOffset=0;
+            for (Ex.Init(cShape, TopAbs_FACE); Ex.More(); Ex.Next(),i++) {
+                // get the mesh of the shape
+                Handle (Poly_Triangulation) mesh = BRep_Tool::Triangulation(TopoDS::Face(Ex.Current()),TopLoc_Location());
+                if (mesh.IsNull()) continue;
+
+                // geting size of node and triangle aray of this Face
+                int nbNodesInFace = mesh->NbNodes();
+                int nbTriInFace   = mesh->NbTriangles();
+                // check orientation
+                TopAbs_Orientation orient = TopoDS::Face(Ex.Current()).Orientation();
+
+
+                // cycling through the poly mesh
+                const Poly_Array1OfTriangle& Triangles = mesh->Triangles();
+                const TColgp_Array1OfPnt& Nodes = mesh->Nodes();
+                for (i=1;i<=nbTriInFace;i++) {
+                    // Get the triangle
+                    Standard_Integer N1,N2,N3;
+                    Triangles(i).Get(N1,N2,N3);
+
+                    // change orientation of the triangle if the face is reversed
+                    if ( orient != TopAbs_FORWARD ) {
+                        Standard_Integer tmp = N1;
+                        N1 = N2;
+                        N2 = tmp;
+                    }
+
+                    // get the 3 points of this triangle
+                    gp_Pnt V1 = Nodes(N1);
+                    gp_Pnt V2 = Nodes(N2);
+                    gp_Pnt V3 = Nodes(N3);
+
+                    // transform the vertices to the place of the face
+                    //if (!identity) {
+                    //    V1.Transform(myTransf);
+                    //    V2.Transform(myTransf);
+                    //    V3.Transform(myTransf);
+                    //}
+                    
+                    // calculating per vertex normals
+                    //if (!this->noPerVertexNormals) {
+                        // Calculate triangle normal
+                        gp_Vec v1(V1.X(),V1.Y(),V1.Z()),v2(V2.X(),V2.Y(),V2.Z()),v3(V3.X(),V3.Y(),V3.Z());
+                        gp_Vec Normal = (v2-v1)^(v3-v1); 
+
+                        // add the triangle normal to the vertex normal for all points of this triangle
+                        norms[FaceNodeOffset+N1-1] += SbVec3f(Normal.X(),Normal.Y(),Normal.Z());
+                        norms[FaceNodeOffset+N2-1] += SbVec3f(Normal.X(),Normal.Y(),Normal.Z());
+                        norms[FaceNodeOffset+N3-1] += SbVec3f(Normal.X(),Normal.Y(),Normal.Z());
+                    //}
+
+                    verts[FaceNodeOffset+N1-1].setValue((float)(V1.X()),(float)(V1.Y()),(float)(V1.Z()));
+                    verts[FaceNodeOffset+N2-1].setValue((float)(V2.X()),(float)(V2.Y()),(float)(V2.Z()));
+                    verts[FaceNodeOffset+N3-1].setValue((float)(V3.X()),(float)(V3.Y()),(float)(V3.Z()));
+
+                    int j = i - 1;
+                    // downcount, cause OCC always start indexes on 1
+                    N1--; N2--; N3--;
+
+                    // set the index vector with the 3 point indexes and the end delimiter
+                    index[FaceTriaOffset*4+4*j]   = FaceNodeOffset+N1; 
+                    index[FaceTriaOffset*4+4*j+1] = FaceNodeOffset+N2; 
+                    index[FaceTriaOffset*4+4*j+2] = FaceNodeOffset+N3; 
+                    index[FaceTriaOffset*4+4*j+3] = SO_END_FACE_INDEX;
+                }
+                // counting up the per Face offsets
+                FaceNodeOffset += nbNodesInFace;
+                FaceTriaOffset += nbTriInFace;
+
+            }
+            // normalize all normals 
+            for(int i = 0; i< nbrNodes ;i++)
+                norms[i].normalize();
+
+            // end the editing of the nodes
+            coords  ->point       .finishEditing();
+            norm    ->vector      .finishEditing();
+            faceset ->coordIndex  .finishEditing();
 
         }
         catch (...){
-            Base::Console().Error("Cannot compute Inventor representation for the shape of %s.\n", 
-                                  pcObject->getNameInDocument());
-            // For many 64-bit Linux systems this error is due to a missing compiler switch
-            // Note: echo "" | g++ -E -dM -x c - | sort | less prints a list of gcc-internals.
-#if defined(__GNUC__) && defined(__LP64__) && !defined(_OCC64)
-            std::string exe = App::Application::Config()["ExeName"];
-            Base::Console().Error("IMPORTANT: Apparently, %s isn't built with the OpenCASCADE-internal "
-                                  "define '_OCC64'.\nReconfigure the build system with the missing define "
-                                  "(e.g. ./configure CXXFLAGS=\"-D_OCC64\") and run a complete rebuild.\n",
-                                  exe.c_str());
-#endif
+            Base::Console().Error("Cannot compute Inventor representation for the shape of %s.\n",pcObject->getNameInDocument());
         }
 
-        Base::TimeInfo end_time;
-        //Base::Console().Log("T:%s\n",Base::TimeInfo::diffTime(start_time,end_time).c_str());
-        float UpdateTime = Base::TimeInfo::diffTimeF(start_time,end_time);
-        Base::Console().Message("ViewProvider update time: %f s\n",UpdateTime);
+        // printing some informations
+        Base::Console().Message("ViewProvider update time: %f s\n",Base::TimeInfo::diffTimeF(start_time,Base::TimeInfo()));
+        Base::Console().Message("Shape tria info: Faces:%d Nodes:%d Triangles:%d\n",nbrFaces,nbrNodes,nbrTriangles);
 
     }
 }
 
-Standard_Boolean ViewProviderPartExt::computeEdges(SoGroup* EdgeRoot, const TopoDS_Shape &myShape)
-{
-    //TopExp_Explorer ex;
-
-    EdgeRoot->addChild(pcLineMaterial);  
-    EdgeRoot->addChild(pcLineStyle);
-
-    // get a indexed map of edges
-    TopTools_IndexedMapOfShape M;
-    TopExp::MapShapes(myShape, TopAbs_EDGE, M);
-
-    // build up map edge->face
-    TopTools_IndexedDataMapOfShapeListOfShape edge2Face;
-    TopExp::MapShapesAndAncestors(myShape, TopAbs_EDGE, TopAbs_FACE, edge2Face);
-
-    //int i=1;
-    //for (ex.Init(myShape, TopAbs_EDGE); ex.More(); ex.Next(),i++) {
-    for (int i=0; i < M.Extent(); i++) {
-        //if(i>12)continue;
-        // get the shape and mesh it
-        //const TopoDS_Edge& aEdge = TopoDS::Edge(ex.Current());
-        const TopoDS_Edge& aEdge = TopoDS::Edge(M(i+1));
-
-        // getting the transformation of the shape/face
-        gp_Trsf myTransf;
-        Standard_Boolean identity = true;
-        TopLoc_Location aLoc;
-
-        // try to triangulate the edge
-        Handle(Poly_Polygon3D) aPoly = BRep_Tool::Polygon3D(aEdge, aLoc);
-
-        SbVec3f* vertices;
-        Standard_Integer nbNodesInFace;
-
-        // triangulation succeeded?
-        if (!aPoly.IsNull()) {
-            if (!aLoc.IsIdentity()) {
-                identity = false;
-                myTransf = aLoc.Transformation();
-            }
-            // take the edge's triangulation
-            //
-            // getting size and create the array
-            nbNodesInFace = aPoly->NbNodes();
-            vertices = new SbVec3f[nbNodesInFace];
-
-            const TColgp_Array1OfPnt& Nodes = aPoly->Nodes();
-
-            gp_Pnt V;
-            for (Standard_Integer i=0;i < nbNodesInFace;i++) {
-                V = Nodes(i+1);
-                V.Transform(myTransf);
-                vertices[i].setValue((float)(V.X()),(float)(V.Y()),(float)(V.Z()));
-            }
-        }
-        else {
-            // the edge has not its own triangulation, but then a face the edge is attached to
-            // must provide this triangulation
-
-            // Look for one face in our map (it doesn't care which one we take)
-            const TopoDS_Face& aFace = TopoDS::Face(edge2Face.FindFromKey(aEdge).First());
-
-            // take the face's triangulation instead
-            Handle(Poly_Triangulation) aPolyTria = BRep_Tool::Triangulation(aFace,aLoc);
-            if (!aLoc.IsIdentity()) {
-                identity = false;
-                myTransf = aLoc.Transformation();
-            }
-
-            //if (aPolyTria.IsNull()) // actually this shouldn't happen at all
-            //    throw Base::Exception("Empty face trianglutaion\n");
-            if (aPolyTria.IsNull()) return false;
-
-            // this holds the indices of the edge's triangulation to the actual points
-            Handle(Poly_PolygonOnTriangulation) aPoly = BRep_Tool::PolygonOnTriangulation(aEdge, aPolyTria, aLoc);
-            if (aPoly.IsNull())
-                continue; // polygon does not exist
-
-            // getting size and create the array
-            nbNodesInFace = aPoly->NbNodes();
-            vertices = new SbVec3f[nbNodesInFace];
-
-            const TColStd_Array1OfInteger& indices = aPoly->Nodes();
-            const TColgp_Array1OfPnt& Nodes = aPolyTria->Nodes();
-
-            gp_Pnt V;
-            int pos = 0;
-            // go through the index array
-            for (Standard_Integer i=indices.Lower();i <= indices.Upper();i++) {
-                V = Nodes(indices(i));
-                V.Transform(myTransf);
-                vertices[pos++].setValue((float)(V.X()),(float)(V.Y()),(float)(V.Z()));
-            }
-        }
-
-        // define vertices
-        SoCoordinate3 * coords = new SoCoordinate3;
-        coords->point.setValues(0,nbNodesInFace, vertices);
-        delete [] vertices;
-        EdgeRoot->addChild(coords);
-
-        // define the indexed face set
-        Gui::SoFCSelection* sel = createFromSettings();
-        SbString name("Edge");
-        name += SbString(i+1);
-        sel->objectName = pcObject->getNameInDocument();
-        sel->documentName = pcObject->getDocument()->getName();
-        sel->subElementName = name;
-        sel->style = Gui::SoFCSelection::EMISSIVE_DIFFUSE;
-        //sel->highlightMode = Gui::SoFCSelection::AUTO;
-        //sel->selectionMode = Gui::SoFCSelection::SEL_ON;
-
-        SoLineSet * lineset = new SoLineSet;
-        sel->addChild(lineset);
-        EdgeRoot->addChild(sel);
-        vertexShapeMap[lineset] = aEdge;
-    }
-
-    return true;
-}
-
-Standard_Boolean ViewProviderPartExt::computeVertices(SoGroup* VertexRoot, const TopoDS_Shape &myShape)
-{
-
-    VertexRoot->addChild(pcPointMaterial);  
-    VertexRoot->addChild(pcPointStyle);
-
-
-    // get a indexed map of edges
-    TopTools_IndexedMapOfShape M;
-    TopExp::MapShapes(myShape, TopAbs_VERTEX, M);
-    
-
-    //int i=0;
-    //for (ex.Init(myShape, TopAbs_VERTEX); ex.More(); ex.Next()) {
-    for (int i=0; i<M.Extent(); i++)
-    {
-        const TopoDS_Vertex& aVertex = TopoDS::Vertex(M(i+1));
-
-        // each point has its own selection node
-        Gui::SoFCSelection* sel = createFromSettings();
-        SbString name("Point");
-        name += SbString(i+1);
-        sel->objectName = pcObject->getNameInDocument();
-        sel->documentName = pcObject->getDocument()->getName();
-        sel->subElementName = name;
-        sel->style = Gui::SoFCSelection::EMISSIVE_DIFFUSE;
-        //sel->highlightMode = Gui::SoFCSelection::AUTO;
-        //sel->selectionMode = Gui::SoFCSelection::SEL_ON;
-
-        // define the vertices
-        SoCoordinate3 * coords = new SoCoordinate3;
-        coords->point.setNum(1);
-        VertexRoot->addChild(coords);
-
-
-        // get the shape
-        //const TopoDS_Vertex& aVertex = TopoDS::Vertex(ex.Current());
-        gp_Pnt pnt = BRep_Tool::Pnt(aVertex);
-        coords->point.set1Value(0, (float)pnt.X(), (float)pnt.Y(), (float)pnt.Z());
-
-
-        SoPointSet * pointset = new SoPointSet;
-        sel->addChild(pointset);
-        VertexRoot->addChild(sel);
-        //i++;
-    }
-
-
-    return true;
-
-}
-
-Standard_Boolean ViewProviderPartExt::computeFaces(SoGroup* FaceRoot, const TopoDS_Shape &myShape, double defl)
-{
-    TopExp_Explorer ex;
-
-    FaceRoot->addChild(pcShapeMaterial);
-
-//  BRepMesh::Mesh(myShape,1.0);
-    BRepMesh_IncrementalMesh MESH(myShape,defl);
-
-    int i = 1;
-    for (ex.Init(myShape, TopAbs_FACE); ex.More(); ex.Next(),i++) {
-        // get the shape and mesh it
-        const TopoDS_Face& aFace = TopoDS::Face(ex.Current());
-
-
-        // this block mesh the face and transfers it in a C array of vertices and face indexes
-        Standard_Integer nbNodesInFace,nbTriInFace;
-        SbVec3f* vertices=0;
-        SbVec3f* vertexnormals=0;
-        int32_t* cons=0;
-
-        transferToArray(aFace,&vertices,&vertexnormals,&cons,nbNodesInFace,nbTriInFace);
-
-        if (!vertices)
-            continue;
-
-        if (!this->noPerVertexNormals) {
-            // define normals (this is optional)
-            SoNormal * norm = new SoNormal;
-            norm->vector.setValues(0, nbNodesInFace, vertexnormals);
-            FaceRoot->addChild(norm);
-
-            // bind one normal per face
-            SoNormalBinding * normb = new SoNormalBinding;
-            normb->value = SoNormalBinding::PER_VERTEX_INDEXED;
-            FaceRoot->addChild(normb);
-        }
-
-        // define vertices
-        SoCoordinate3 * coords = new SoCoordinate3;
-        coords->point.setValues(0,nbNodesInFace, vertices);
-        FaceRoot->addChild(coords);
-
-        // Turns on backface culling
-        //      SoShapeHints * hints = new SoShapeHints;
-        //      hints->vertexOrdering = SoShapeHints::CLOCKWISE ;
-        //      hints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE ;
-        //      hints->shapeType = SoShapeHints::SOLID;
-        //      hints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
-        //      root->addChild(hints);
-
-        //SoDrawStyle *Stype = new SoDrawStyle();
-        //Stype->pointSize.setValue(3.0);
-        //Stype->style.setValue( SoDrawStyle::POINTS );
-
-        //SoPointSet *PtSet = new SoPointSet;
-        //root->addChild(PtSet);
-
-        // define the indexed face set
-        Gui::SoFCSelection* sel = createFromSettings();
-        SbString name("Face");
-        name += SbString(i);
-        sel->objectName = pcObject->getNameInDocument();
-        sel->documentName = pcObject->getDocument()->getName();
-        sel->subElementName = name;
-        sel->style = Gui::SoFCSelection::EMISSIVE;
-        //sel->highlightMode = Gui::SoFCSelection::AUTO;
-        //sel->selectionMode = Gui::SoFCSelection::SEL_ON;
-
-        SoIndexedFaceSet * faceset = new SoIndexedFaceSet;
-        faceset->coordIndex.setValues(0,4*nbTriInFace,(const int32_t*) cons);
-        sel->addChild(faceset);
-        FaceRoot->addChild(sel);
-        vertexShapeMap[faceset] = aFace;
-
-
-        //    Base::Console().Log("Inventor tree:\n%s",buffer_writeaction(root).c_str());
-
-        delete [] vertexnormals;
-        delete [] vertices;
-        delete [] cons;
-    } // end of face loop
-
-    return true;
-}
-
-void ViewProviderPartExt::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals,
-                                       int32_t** cons,int &nbNodesInFace,int &nbTriInFace )
-{
-    TopLoc_Location aLoc;
-
-    // doing the meshing and checking the result
-    //BRepMesh_IncrementalMesh MESH(aFace,fDeflection);
-    Handle(Poly_Triangulation) aPoly = BRep_Tool::Triangulation(aFace,aLoc);
-    //if (aPoly.IsNull()) throw Base::Exception("Empty face trianglutaion\n");
-    if (aPoly.IsNull()) return;
-
-    // getting the transformation of the shape/face
-    gp_Trsf myTransf;
-    Standard_Boolean identity = true;
-    if (!aLoc.IsIdentity()) {
-        identity = false;
-        myTransf = aLoc.Transformation();
-    }
-
-    Standard_Integer i;
-    // geting size and create the array
-    nbNodesInFace = aPoly->NbNodes();
-    nbTriInFace = aPoly->NbTriangles();
-    *vertices = new SbVec3f[nbNodesInFace];
-    *vertexnormals = new SbVec3f[nbNodesInFace];
-    for(i=0;i < nbNodesInFace;i++) {
-        (*vertexnormals)[i]= SbVec3f(0.0,0.0,0.0);
-    }
-
-    *cons = new int32_t[4*(nbTriInFace)];
-
-    // check orientation
-    TopAbs_Orientation orient = aFace.Orientation();
-
-    // cycling through the poly mesh
-    const Poly_Array1OfTriangle& Triangles = aPoly->Triangles();
-    const TColgp_Array1OfPnt& Nodes = aPoly->Nodes();
-    for (i=1;i<=nbTriInFace;i++) {
-        // Get the triangle
-        Standard_Integer N1,N2,N3;
-        Triangles(i).Get(N1,N2,N3);
-
-        // change orientation of the triangles
-        if ( orient != TopAbs_FORWARD ) {
-            Standard_Integer tmp = N1;
-            N1 = N2;
-            N2 = tmp;
-        }
-
-        gp_Pnt V1 = Nodes(N1);
-        gp_Pnt V2 = Nodes(N2);
-        gp_Pnt V3 = Nodes(N3);
-
-        // transform the vertices to the place of the face
-        if (!identity) {
-            V1.Transform(myTransf);
-            V2.Transform(myTransf);
-            V3.Transform(myTransf);
-        }
-
-        if (!this->noPerVertexNormals) {
-            // Calculate triangle normal
-            gp_Vec v1(V1.X(),V1.Y(),V1.Z()),v2(V2.X(),V2.Y(),V2.Z()),v3(V3.X(),V3.Y(),V3.Z());
-            gp_Vec Normal = (v2-v1)^(v3-v1); 
-
-            //Standard_Real Area = 0.5 * Normal.Magnitude();
-
-            // add the triangle normal to the vertex normal for all points of this triangle
-            (*vertexnormals)[N1-1] += SbVec3f(Normal.X(),Normal.Y(),Normal.Z());
-            (*vertexnormals)[N2-1] += SbVec3f(Normal.X(),Normal.Y(),Normal.Z());
-            (*vertexnormals)[N3-1] += SbVec3f(Normal.X(),Normal.Y(),Normal.Z());
-        }
-
-        (*vertices)[N1-1].setValue((float)(V1.X()),(float)(V1.Y()),(float)(V1.Z()));
-        (*vertices)[N2-1].setValue((float)(V2.X()),(float)(V2.Y()),(float)(V2.Z()));
-        (*vertices)[N3-1].setValue((float)(V3.X()),(float)(V3.Y()),(float)(V3.Z()));
-
-        int j = i - 1;
-        N1--; N2--; N3--;
-        (*cons)[4*j] = N1; (*cons)[4*j+1] = N2; (*cons)[4*j+2] = N3; (*cons)[4*j+3] = SO_END_FACE_INDEX;
-    }
-
-    // normalize all vertex normals
-    for(i=0;i < nbNodesInFace;i++) {
-        if (this->qualityNormals) {
-            gp_Dir clNormal;
-
-            try {
-                Handle_Geom_Surface Surface = BRep_Tool::Surface(aFace);
-
-                gp_Pnt vertex((*vertices)[i][0], (*vertices)[i][1], (*vertices)[i][2]);
-                GeomAPI_ProjectPointOnSurf ProPntSrf(vertex, Surface);
-                Standard_Real fU, fV; ProPntSrf.Parameters(1, fU, fV);
-
-                GeomLProp_SLProps clPropOfFace(Surface, fU, fV, 2, gp::Resolution());
-
-                clNormal = clPropOfFace.Normal();
-                SbVec3f temp = SbVec3f(clNormal.X(),clNormal.Y(),clNormal.Z());
-                //Base::Console().Log("unterschied:%.2f",temp.dot((*vertexnormals)[i]));
-
-                if ( temp.dot((*vertexnormals)[i]) < 0 )
-                    temp = -temp;
-                (*vertexnormals)[i] = temp;
-
-            }
-            catch(...){}
-        }
-        else if ((*vertexnormals)[i].sqrLength() > 0.001){
-            (*vertexnormals)[i].normalize();
-        }
-    }
-}
 
 
 
