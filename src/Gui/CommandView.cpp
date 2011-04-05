@@ -86,7 +86,7 @@ StdOrthographicCamera::StdOrthographicCamera()
     sWhatsThis    = "Std_OrthographicCamera";
     sStatusTip    = QT_TR_NOOP("Switches to orthographic view mode");
     sPixmap       = "view-isometric";
-    iAccel        = Qt::Key_O;
+    sAccel        = "O";
     eType         = Alter3DView;
 }
 
@@ -132,7 +132,7 @@ StdPerspectiveCamera::StdPerspectiveCamera()
     sWhatsThis    = "Std_PerspectiveCamera";
     sStatusTip    = QT_TR_NOOP("Switches to perspective view mode");
     sPixmap       = "view-perspective";
-    iAccel        = Qt::Key_P;
+    sAccel        = "P";
     eType         = Alter3DView;
 }
 
@@ -207,7 +207,7 @@ StdCmdFreezeViews::StdCmdFreezeViews()
     sToolTipText  = QT_TR_NOOP("Freezes the current view position");
     sWhatsThis    = "Std_FreezeViews";
     sStatusTip    = QT_TR_NOOP("Freezes the current view position");
-    iAccel        = Qt::SHIFT+Qt::Key_F;
+    sAccel        = "Shift+F";
     eType         = Alter3DView;
 }
 
@@ -222,7 +222,7 @@ Action * StdCmdFreezeViews::createAction(void)
     pcAction->addAction(QObject::tr("Load views..."));
     pcAction->addAction(QString::fromAscii(""))->setSeparator(true);
     freezeView = pcAction->addAction(QObject::tr("Freeze view"));
-    freezeView->setShortcut(iAccel);
+    freezeView->setShortcut(QString::fromAscii(sAccel));
     clearView = pcAction->addAction(QObject::tr("Clear views"));
     separator = pcAction->addAction(QString::fromAscii(""));
     separator->setSeparator(true);
@@ -513,7 +513,7 @@ StdCmdToggleVisibility::StdCmdToggleVisibility()
     sToolTipText  = QT_TR_NOOP("Toggles visibility");
     sStatusTip    = QT_TR_NOOP("Toggles visibility");
     sWhatsThis    = "Std_ToggleVisibility";
-    iAccel        = Qt::Key_Space;
+    sAccel        = "Space";
     eType         = Alter3DView;
 }
 
@@ -805,7 +805,7 @@ StdCmdSetAppearance::StdCmdSetAppearance()
     sWhatsThis    = "Std_SetAppearance";
     sStatusTip    = QT_TR_NOOP("Sets the display properties of the selected object");
     sPixmap       = "Std_Tool1";
-    iAccel        = Qt::CTRL+Qt::Key_D;
+    sAccel        = "Ctrl+D";
     eType         = Alter3DView;
 }
 
@@ -838,7 +838,7 @@ StdCmdViewBottom::StdCmdViewBottom()
   sWhatsThis    = "Std_ViewXX";
   sStatusTip    = QT_TR_NOOP("Set to bottom view");
   sPixmap       = "view-bottom";
-  iAccel        = Qt::Key_5;
+  sAccel        = "5";
   eType         = Alter3DView;
 }
 
@@ -861,7 +861,7 @@ StdCmdViewFront::StdCmdViewFront()
   sWhatsThis    = "Std_ViewXX";
   sStatusTip    = QT_TR_NOOP("Set to front view");
   sPixmap       = "view-front";
-  iAccel        = Qt::Key_1;
+  sAccel        = "1";
   eType         = Alter3DView;
 }
 
@@ -884,7 +884,7 @@ StdCmdViewLeft::StdCmdViewLeft()
   sWhatsThis    = "Std_ViewXX";
   sStatusTip    = QT_TR_NOOP("Set to left view");
   sPixmap       = "view-left";
-  iAccel        = Qt::Key_6;
+  sAccel        = "6";
   eType         = Alter3DView;
 }
 
@@ -907,7 +907,7 @@ StdCmdViewRear::StdCmdViewRear()
   sWhatsThis    = "Std_ViewXX";
   sStatusTip    = QT_TR_NOOP("Set to rear view");
   sPixmap       = "view-rear";
-  iAccel        = Qt::Key_4;
+  sAccel        = "4";
   eType         = Alter3DView;
 }
 
@@ -930,7 +930,7 @@ StdCmdViewRight::StdCmdViewRight()
   sWhatsThis    = "Std_ViewXX";
   sStatusTip    = QT_TR_NOOP("Set to right view");
   sPixmap       = "view-right";
-  iAccel        = Qt::Key_3;
+  sAccel        = "3";
   eType         = Alter3DView;
 }
 
@@ -953,7 +953,7 @@ StdCmdViewTop::StdCmdViewTop()
   sWhatsThis    = "Std_ViewXX";
   sStatusTip    = QT_TR_NOOP("Set to top view");
   sPixmap       = "view-top";
-  iAccel        = Qt::Key_2;
+  sAccel        = "2";
   eType         = Alter3DView;
 }
 
@@ -976,7 +976,7 @@ StdCmdViewAxo::StdCmdViewAxo()
   sWhatsThis  = "Std_ViewXX";
   sStatusTip  = QT_TR_NOOP("Set to axometric view");
   sPixmap     = "view-axometric";
-  iAccel      = Qt::Key_0;
+  sAccel      = "0";
   eType         = Alter3DView;
 }
 
@@ -999,7 +999,6 @@ StdCmdViewFitAll::StdCmdViewFitAll()
   sWhatsThis    = "Std_ViewFitAll";
   sStatusTip    = QT_TR_NOOP("Fits the whole content on the screen");
   sPixmap       = "view-zoom-all";
-  iAccel        = 0;
   eType         = Alter3DView;
 }
 
@@ -1031,7 +1030,6 @@ StdCmdViewFitSelection::StdCmdViewFitSelection()
 #if QT_VERSION >= 0x040200
     sPixmap       = "view-zoom-selection";
 #endif
-    iAccel        = 0;
   eType         = Alter3DView;
 }
 
@@ -1166,7 +1164,6 @@ StdViewScreenShot::StdViewScreenShot()
     sToolTipText= QT_TR_NOOP("Creates a screenshot of the active view");
     sWhatsThis  = "Std_ViewScreenShot";
     sStatusTip  = QT_TR_NOOP("Creates a screenshot of the active view");
-    iAccel      = 0;
     sPixmap     = "camera-photo";
     eType         = Alter3DView;
 }
@@ -1276,7 +1273,6 @@ StdCmdViewCreate::StdCmdViewCreate()
     sWhatsThis  = "Std_ViewCreate";
     sStatusTip  = QT_TR_NOOP("Creates a new  view window for the active document");
     sPixmap     = "window-new";
-    iAccel      = 0;
     eType         = Alter3DView;
 }
 
@@ -1305,7 +1301,7 @@ StdCmdToggleNavigation::StdCmdToggleNavigation()
     sStatusTip    = QT_TR_NOOP("Toggle between navigation and edit mode");
     sWhatsThis    = "Std_ToggleNavigation";
   //iAccel        = Qt::SHIFT+Qt::Key_Space;
-    iAccel        = Qt::Key_Escape;
+    sAccel        = "Esc";
     eType         = Alter3DView;
 }
 
@@ -1343,7 +1339,6 @@ StdCmdViewExample1::StdCmdViewExample1()
   sWhatsThis    = "Std_ViewExamples";
   sStatusTip    = QT_TR_NOOP("Shows a 3D texture with manipulator");
   sPixmap       = "Std_Tool1";
-  iAccel        = 0;
   eType         = Alter3DView;
 }
 
@@ -1370,7 +1365,6 @@ StdCmdViewExample2::StdCmdViewExample2()
   sWhatsThis    = "Std_ViewExamples";
   sStatusTip    = QT_TR_NOOP("Shows spheres and drag-lights");
   sPixmap       = "Std_Tool2";
-  iAccel        = 0;
   eType         = Alter3DView;
 }
 
@@ -1398,7 +1392,6 @@ StdCmdViewExample3::StdCmdViewExample3()
   sWhatsThis    = "Std_ViewExamples";
   sStatusTip    = QT_TR_NOOP("Shows a animated texture");
   sPixmap       = "Std_Tool3";
-  iAccel        = 0;
   eType         = Alter3DView;
 }
 
@@ -1427,7 +1420,6 @@ StdCmdViewIvStereoOff::StdCmdViewIvStereoOff()
   sWhatsThis    = "Std_ViewIvStereo";
   sStatusTip    = QT_TR_NOOP("Switch stereo viewing off");
   sPixmap       = "Std_Tool6";
-  iAccel        = 0;
   eType         = Alter3DView;
 }
 
@@ -1456,7 +1448,6 @@ StdCmdViewIvStereoRedGreen::StdCmdViewIvStereoRedGreen()
   sWhatsThis    = "Std_ViewIvStereo";
   sStatusTip    = QT_TR_NOOP("Switch stereo viewing to red/green");
   sPixmap       = "Std_Tool7";
-  iAccel        = 0;
   eType         = Alter3DView;
 }
 
@@ -1484,7 +1475,6 @@ StdCmdViewIvStereoQuadBuff::StdCmdViewIvStereoQuadBuff()
   sWhatsThis    = "Std_ViewIvStereo";
   sStatusTip    = QT_TR_NOOP("Switch stereo viewing to quad buffer");
   sPixmap       = "Std_Tool7";
-  iAccel        = 0;
   eType         = Alter3DView;
 }
 
@@ -1512,7 +1502,6 @@ StdCmdViewIvStereoInterleavedRows::StdCmdViewIvStereoInterleavedRows()
   sWhatsThis    = "Std_ViewIvStereo";
   sStatusTip    = QT_TR_NOOP("Switch stereo viewing to Interleaved Rows");
   sPixmap       = "Std_Tool7";
-  iAccel        = 0;
   eType         = Alter3DView;
 }
 
@@ -1540,7 +1529,6 @@ StdCmdViewIvStereoInterleavedColumns::StdCmdViewIvStereoInterleavedColumns()
   sWhatsThis    = "Std_ViewIvStereo";
   sStatusTip    = QT_TR_NOOP("Switch stereo viewing to Interleaved Columns");
   sPixmap       = "Std_Tool7";
-  iAccel        = 0;
   eType         = Alter3DView;
 }
 
@@ -1569,7 +1557,6 @@ StdCmdViewIvIssueCamPos::StdCmdViewIvIssueCamPos()
   sWhatsThis    = "Std_ViewIvIssueCamPos";
   sStatusTip    = QT_TR_NOOP("Issue the camera position to the console and to a macro, to easily recall this position");
   sPixmap       = "Std_Tool8";
-  iAccel        = 0;
   eType         = Alter3DView;
 }
 
@@ -1621,7 +1608,7 @@ StdViewZoomIn::StdViewZoomIn()
 #if QT_VERSION >= 0x040200
     sPixmap       = "view-zoom-in";
 #endif
-    iAccel        = keySequenceToAccel(QKeySequence::ZoomIn);
+    sAccel        = keySequenceToAccel(QKeySequence::ZoomIn);
     eType         = Alter3DView;
 }
 
@@ -1661,7 +1648,7 @@ StdViewZoomOut::StdViewZoomOut()
 #if QT_VERSION >= 0x040200
     sPixmap       = "view-zoom-out";
 #endif
-    iAccel        = keySequenceToAccel(QKeySequence::ZoomOut);
+    sAccel        = keySequenceToAccel(QKeySequence::ZoomOut);
     eType         = Alter3DView;
 }
 
@@ -1700,7 +1687,7 @@ StdViewBoxZoom::StdViewBoxZoom()
 #if QT_VERSION >= 0x040200
     sPixmap       = "view-zoom-border";
 #endif
-    iAccel        = Qt::CTRL+Qt::Key_B;
+    sAccel        = "Ctrl+B";
     eType         = Alter3DView;
 }
 
@@ -1728,7 +1715,6 @@ StdCmdTreeSelection::StdCmdTreeSelection()
     sToolTipText  = QT_TR_NOOP("Scroll to first selected item");
     sWhatsThis    = "Std_TreeSelection";
     sStatusTip    = QT_TR_NOOP("Scroll to first selected item");
-    iAccel        = 0;
     eType         = Alter3DView;
 }
 
@@ -1755,7 +1741,6 @@ StdCmdMeasureDistance::StdCmdMeasureDistance()
     sToolTipText  = QT_TR_NOOP("Measure distance");
     sWhatsThis    = "Std_MeasureDistance";
     sStatusTip    = QT_TR_NOOP("Measure distance");
-    iAccel        = 0;
     sPixmap       = "view-measurement";
     eType         = Alter3DView;
 }

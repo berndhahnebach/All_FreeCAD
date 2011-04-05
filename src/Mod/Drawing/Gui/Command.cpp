@@ -170,7 +170,6 @@ CmdDrawingExportPage::CmdDrawingExportPage()
     sWhatsThis    = "Drawing_ExportPage";
     sStatusTip    = QT_TR_NOOP("Export a page to an SVG file");
     sPixmap       = "document-save";
-    iAccel        = 0;
 }
 
 void CmdDrawingExportPage::activated(int iMsg)
@@ -221,7 +220,6 @@ CmdDrawingProjectShape::CmdDrawingProjectShape()
     sToolTipText  = QT_TR_NOOP("Project shape onto a user-defined plane");
     sStatusTip    = QT_TR_NOOP("Project shape onto a user-defined plane");
     sWhatsThis    = "Drawing_ProjectShape";
-    iAccel        = 0;
 }
 
 void CmdDrawingProjectShape::activated(int iMsg)

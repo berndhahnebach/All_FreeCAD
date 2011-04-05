@@ -49,7 +49,6 @@ CmdMeshPartMesher::CmdMeshPartMesher()
     sWhatsThis    = sToolTipText;
     sStatusTip    = sToolTipText;
   //sPixmap       = "MeshPart_Mesher";
-    iAccel        = 0;
 }
 
 void CmdMeshPartMesher::activated(int iMsg)

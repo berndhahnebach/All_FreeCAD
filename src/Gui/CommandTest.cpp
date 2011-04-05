@@ -59,7 +59,7 @@ FCCmdTest1::FCCmdTest1()
     sWhatsThis    = sToolTipText;
     sStatusTip    = sToolTipText;
     sPixmap       = "Std_Tool1";
-    iAccel        = Qt::CTRL+Qt::Key_T;
+    sAccel        = "Ctrl+T";
 }
 
 void FCCmdTest1::activated(int iMsg)
@@ -87,7 +87,6 @@ FCCmdTest2::FCCmdTest2()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Std_Tool2";
-    iAccel          = 0;
 }
 
 
@@ -116,7 +115,6 @@ FCCmdTest3::FCCmdTest3()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Std_Tool3";
-    iAccel          = 0;
 }
 
 void FCCmdTest3::activated(int iMsg)
@@ -146,7 +144,6 @@ FCCmdTest4::FCCmdTest4()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Std_Tool4";
-    iAccel          = 0;
 }
 
 void FCCmdTest4::activated(int iMsg)
@@ -175,7 +172,6 @@ FCCmdTest5::FCCmdTest5()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Std_Tool5";
-    iAccel          = 0;
 }
 
 void FCCmdTest5::activated(int iMsg)
@@ -204,7 +200,6 @@ FCCmdTest6::FCCmdTest6()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Std_Tool6";
-    iAccel          = 0;
 }
 
 void FCCmdTest6::activated(int iMsg)
@@ -232,7 +227,6 @@ CmdTestProgress1::CmdTestProgress1()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Std_Tool7";
-    iAccel          = 0;
 }
 
 void CmdTestProgress1::activated(int iMsg)
@@ -276,7 +270,6 @@ CmdTestProgress2::CmdTestProgress2()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Std_Tool7";
-    iAccel          = 0;
 }
 
 void CmdTestProgress2::activated(int iMsg)
@@ -318,7 +311,6 @@ CmdTestProgress3::CmdTestProgress3()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Std_Tool8";
-    iAccel          = 0;
 }
 
 void CmdTestProgress3::activated(int iMsg)
@@ -387,7 +379,6 @@ CmdTestProgress4::CmdTestProgress4()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Std_Tool7";
-    iAccel          = 0;
 }
 
 void CmdTestProgress4::activated(int iMsg)
@@ -441,7 +432,6 @@ CmdTestProgress5::CmdTestProgress5()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Std_Tool7";
-    iAccel          = 0;
 }
 
 class BarThread : public QThread
@@ -520,7 +510,6 @@ CmdTestMDI1::CmdTestMDI1()
     sToolTipText    = "Remove MDI from main window";
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
-    iAccel          = 0;
 }
 
 void CmdTestMDI1::activated(int iMsg)
@@ -544,7 +533,6 @@ CmdTestMDI2::CmdTestMDI2()
     sToolTipText    = "Remove view from MDI area";
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
-    iAccel          = 0;
 }
 
 void CmdTestMDI2::activated(int iMsg)
@@ -572,7 +560,6 @@ CmdTestMDI3::CmdTestMDI3()
     sToolTipText    = "Unset parent and remove from main window";
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
-    iAccel          = 0;
 }
 
 void CmdTestMDI3::activated(int iMsg)

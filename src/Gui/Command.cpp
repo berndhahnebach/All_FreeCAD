@@ -99,7 +99,7 @@ using namespace Gui::DockWnd;
  *     sWhatsThis    = "Open a file";
  *     sStatusTip    = "Open a file";
  *     sPixmap       = "Open"; // name of a registered pixmap
- *     iAccel        = Qt::CTRL+Qt::Key_O;
+ *     sAccel        = "Shift+P"; // or "P" or "P, L" or "Ctrl+X, Ctrl+C" for a sequence
  *   }
  * protected:
  *   void activated(int)
@@ -119,9 +119,9 @@ using namespace Gui::DockWnd;
  */
 
 CommandBase::CommandBase( const char* sMenu, const char* sToolTip, const char* sWhat,
-                          const char* sStatus, const char* sPixmap, int iAcc)
+                          const char* sStatus, const char* sPixmap, const char* sAcc)
         : sMenuText(sMenu), sToolTipText(sToolTip), sWhatsThis(sWhat?sWhat:sToolTip),
-        sStatusTip(sStatus?sStatus:sToolTip), sPixmap(sPixmap), iAccel(iAcc), _pcAction(0)
+        sStatusTip(sStatus?sStatus:sToolTip), sPixmap(sPixmap), sAccel(sAcc), _pcAction(0)
 {
 }
 
@@ -188,9 +188,13 @@ void CommandBase::setPixmap(const char* s)
 #endif
 }
 
-void CommandBase::setAccel(int i)
+void CommandBase::setAccel(const char* s)
 {
-    iAccel = i;
+#if defined (_MSC_VER)
+    this->sWhatsThis = _strdup(s);
+#else
+    this->sWhatsThis = strdup(s);
+#endif
 }
 
 //===========================================================================
@@ -495,12 +499,17 @@ void Command::applyCommandData(Action* action)
             QCoreApplication::CodecForTr));
 }
 
-int Command::keySequenceToAccel(int sk) const
+const char* Command::keySequenceToAccel(int sk) const
 {
     QKeySequence::StandardKey type = (QKeySequence::StandardKey)sk;
     QKeySequence ks(type);
-    QVariant v = QVariant::fromValue<QKeySequence>(ks);
-    return v.toInt();
+    QString qs = ks.toString();
+    QByteArray data = qs.toAscii();
+#if defined (_MSC_VER)
+    return _strdup((const char*)data);
+#else
+    return strdup((const char*)data);
+#endif
 }
 
 void Command::adjustCameraPosition()
@@ -551,7 +560,7 @@ Action * Command::createAction(void)
     applyCommandData(pcAction);
     if (sPixmap)
         pcAction->setIcon(Gui::BitmapFactory().pixmap(sPixmap));
-    pcAction->setShortcut(iAccel);
+      pcAction->setShortcut(QString::fromAscii(sAccel));
 
     return pcAction;
 }
@@ -603,7 +612,7 @@ Action * MacroCommand::createAction(void)
     pcAction->setWhatsThis(QString::fromUtf8(sWhatsThis));
     if ( sPixmap )
         pcAction->setIcon(Gui::BitmapFactory().pixmap(sPixmap));
-    pcAction->setShortcut(iAccel);
+      pcAction->setShortcut(QString::fromAscii(sAccel));
     return pcAction;
 }
 
@@ -632,7 +641,7 @@ void MacroCommand::load()
             macro->setStatusTip   ( (*it)->GetASCII( "Statustip"  ).c_str() );
             if ((*it)->GetASCII("Pixmap", "nix") != "nix")
                 macro->setPixmap    ( (*it)->GetASCII( "Pixmap"     ).c_str() );
-            macro->setAccel       ( (*it)->GetInt  ( "Accel",0    )         );
+            macro->setAccel       ( (*it)->GetASCII( "Accel",0    ).c_str() );
             Application::Instance->commandManager().addCommand( macro );
         }
     }
@@ -654,7 +663,7 @@ void MacroCommand::save()
             hMacro->SetASCII( "WhatsThis", macro->getWhatsThis  () );
             hMacro->SetASCII( "Statustip", macro->getStatusTip  () );
             hMacro->SetASCII( "Pixmap",    macro->getPixmap     () );
-            hMacro->SetInt  ( "Accel",     macro->getAccel      () );
+            hMacro->SetASCII( "Accel",     macro->getAccel      () );
         }
     }
 }
@@ -773,7 +782,7 @@ Action * PythonCommand::createAction(void)
         pcAction->setStatusTip(qApp->translate(getName(), getToolTipText()));
     if (strcmp(getResource("Pixmap"),"") != 0)
         pcAction->setIcon(Gui::BitmapFactory().pixmap(getResource("Pixmap")));
-    pcAction->setShortcut     (getAccel());
+      pcAction->setShortcut     (QString::fromAscii(getAccel()));
 
     return pcAction;
 }
@@ -806,14 +815,9 @@ const char* PythonCommand::getPixmap() const
     return getResource("Pixmap");
 }
 
-int PythonCommand::getAccel() const
+const char* PythonCommand::getAccel() const
 {
-    const char* accel = getResource("Accel");
-    if (!accel || accel[0] == '\0')
-        return 0;
-    QKeySequence ks(QString::fromAscii(accel));
-    QVariant v = QVariant::fromValue<QKeySequence>(ks);
-    return v.toInt();
+    return getResource("Accel");
 }
 
 //===========================================================================

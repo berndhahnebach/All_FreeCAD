@@ -71,7 +71,7 @@ class GuiExport CommandBase
 {
 public:
     CommandBase(const char* sMenu, const char* sToolTip=0, const char* sWhat=0, 
-                const char* sStatus=0, const char* sPixmap=0, int accel=0);
+                const char* sStatus=0, const char* sPixmap=0, const char* sAccel=0);
     virtual ~CommandBase();
 
     /**
@@ -98,7 +98,7 @@ public:
     virtual const char* getStatusTip  () const { return sStatusTip;   }
     virtual const char* getWhatsThis  () const { return sWhatsThis;   }
     virtual const char* getPixmap     () const { return sPixmap;      }
-    virtual int         getAccel      () const { return iAccel;       }
+    virtual const char* getAccel      () const { return sAccel;       }
     //@}
 
     /** @name Methods to set the properties of the command */
@@ -108,7 +108,7 @@ public:
     void setToolTipText(const char*);
     void setStatusTip  (const char*);
     void setPixmap     (const char*);
-    void setAccel      (int        );
+    void setAccel      (const char*);
     //@}
 
 protected:
@@ -124,7 +124,7 @@ protected:
     const char* sWhatsThis;
     const char* sStatusTip;
     const char* sPixmap;
-    int         iAccel;
+    const char* sAccel;
     //@}
 protected:
     Action *_pcAction; /**< The Action item. */
@@ -161,7 +161,7 @@ protected:
     virtual Action * createAction(void);
     /// Applies the menu text, tool and status tip to the passed action object
     void applyCommandData(Action* );
-    int keySequenceToAccel(int) const;
+    const char* keySequenceToAccel(int) const;
     void adjustCameraPosition();
     //@}
 
@@ -331,7 +331,7 @@ public:
     const char* getToolTipText() const;
     const char* getStatusTip  () const;
     const char* getPixmap     () const;
-    int         getAccel      () const;
+    const char* getAccel      () const;
     //@}
 
 protected:

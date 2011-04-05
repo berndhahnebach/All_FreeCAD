@@ -85,7 +85,6 @@ CmdMeshTransform::CmdMeshTransform()
   sWhatsThis    = "Mesh_Transform";
   sStatusTip    = QT_TR_NOOP("Rotate or move a mesh");
   sPixmap       = "Std_Tool1";
-  iAccel        = 0;
 }
 
 void CmdMeshTransform::activated(int iMsg)
@@ -125,7 +124,6 @@ CmdMeshDemolding::CmdMeshDemolding()
   sWhatsThis    = "Mesh_Demolding";
   sStatusTip    = sMenuText;
   sPixmap       = "Std_Tool1";
-  iAccel        = 0;
 }
 
 void CmdMeshDemolding::activated(int iMsg)
@@ -165,7 +163,6 @@ CmdMeshExMakeMesh::CmdMeshExMakeMesh()
   sWhatsThis    = "Mesh_ExMakeMesh";
   sStatusTip    = sMenuText;
   sPixmap       = "Std_Tool1";
-  iAccel        = 0;
 }
 
 void CmdMeshExMakeMesh::activated(int iMsg)
@@ -217,7 +214,6 @@ CmdMeshExMakeTool::CmdMeshExMakeTool()
   sWhatsThis    = "Mesh_ExMakeTool";
   sStatusTip    = sMenuText;
   sPixmap       = "Std_Tool2";
-  iAccel        = 0;
 }
 
 void CmdMeshExMakeTool::activated(int iMsg)
@@ -267,7 +263,6 @@ CmdMeshExMakeUnion::CmdMeshExMakeUnion()
   sWhatsThis    = "Mesh_ExMakeUnion";
   sStatusTip    = sMenuText;
   sPixmap       = "Std_Tool3";
-  iAccel        = 0;
 }
 
 void CmdMeshExMakeUnion::activated(int iMsg)
@@ -308,7 +303,6 @@ CmdMeshUnion::CmdMeshUnion()
   sToolTipText  = sMenuText;
   sWhatsThis    = "Mesh_Union";
   sStatusTip    = sMenuText;
-  iAccel        = 0;
 }
 
 void CmdMeshUnion::activated(int iMsg)
@@ -349,7 +343,6 @@ CmdMeshDifference::CmdMeshDifference()
   sToolTipText  = sMenuText;
   sWhatsThis    = "Mesh_Difference";
   sStatusTip    = sMenuText;
-  iAccel        = 0;
 }
 
 void CmdMeshDifference::activated(int iMsg)
@@ -390,7 +383,6 @@ CmdMeshIntersection::CmdMeshIntersection()
   sToolTipText  = sMenuText;
   sWhatsThis    = "Mesh_Intersection";
   sStatusTip    = sMenuText;
-  iAccel        = 0;
 }
 
 void CmdMeshIntersection::activated(int iMsg)
@@ -432,7 +424,6 @@ CmdMeshImport::CmdMeshImport()
     sWhatsThis    = "Mesh_Import";
     sStatusTip    = QT_TR_NOOP("Imports a mesh from file");
     sPixmap       = "import_mesh";
-    iAccel        = 0;
 }
 
 void CmdMeshImport::activated(int iMsg)
@@ -484,7 +475,6 @@ CmdMeshExport::CmdMeshExport()
     sWhatsThis    = "Mesh_Export";
     sStatusTip    = QT_TR_NOOP("Exports a mesh to file");
     sPixmap       = "export_mesh";
-    iAccel        = 0;
 }
 
 void CmdMeshExport::activated(int iMsg)
@@ -555,7 +545,6 @@ CmdMeshFromGeometry::CmdMeshFromGeometry()
     sToolTipText  = QT_TR_NOOP("Create mesh from the selected geometry");
     sWhatsThis    = "Mesh_FromGeometry";
     sStatusTip    = QT_TR_NOOP("Create mesh from the selected geometry");
-    iAccel        = 0;
 }
 
 void CmdMeshFromGeometry::activated(int iMsg)

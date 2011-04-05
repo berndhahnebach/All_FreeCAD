@@ -79,7 +79,6 @@ StdCmdWorkbench::StdCmdWorkbench()
     sWhatsThis    = "Std_Workbench";
     sStatusTip    = QT_TR_NOOP("Switch between workbenches");
     sPixmap       = "freecad";
-    iAccel        = 0;
     eType         = 0;
 }
 
@@ -125,7 +124,7 @@ Action * StdCmdWorkbench::createAction(void)
     applyCommandData(pcAction);
     if (sPixmap)
         pcAction->setIcon(Gui::BitmapFactory().pixmap(sPixmap));
-    pcAction->setShortcut(iAccel);
+      pcAction->setShortcut(QString::fromAscii(sAccel));
 
     return pcAction;
 }
@@ -144,7 +143,6 @@ StdCmdRecentFiles::StdCmdRecentFiles()
     sToolTipText  = QT_TR_NOOP("Recent file list");
     sWhatsThis    = "Std_RecentFiles";
     sStatusTip    = QT_TR_NOOP("Recent file list");
-    iAccel        = 0;
     eType         = 0;
 }
 
@@ -205,7 +203,7 @@ Action * StdCmdAbout::createAction(void)
         QCoreApplication::CodecForTr).arg(exe));
     pcAction->setWhatsThis(QLatin1String(sWhatsThis));
     pcAction->setIcon(QApplication::windowIcon());
-    pcAction->setShortcut(iAccel);
+      pcAction->setShortcut(QString::fromAscii(sAccel));
 
     return pcAction;
 }
@@ -296,7 +294,7 @@ StdCmdWhatsThis::StdCmdWhatsThis()
     sToolTipText  = QT_TR_NOOP("What's This");
     sWhatsThis    = "Std_WhatsThis";
     sStatusTip    = QT_TR_NOOP("What's This");
-    iAccel        = keySequenceToAccel(QKeySequence::WhatsThis);
+    sAccel        = keySequenceToAccel(QKeySequence::WhatsThis);
     sPixmap       = "WhatsThis";
     eType         = 0;
 }
@@ -320,7 +318,6 @@ StdCmdDlgParameter::StdCmdDlgParameter()
   sWhatsThis    = "Std_DlgParameter";
   sStatusTip    = QT_TR_NOOP("Opens a Dialog to edit the parameters");
   //sPixmap     = "settings";
-  iAccel        = 0;
   eType         = 0;
 }
 
@@ -345,7 +342,6 @@ StdCmdDlgPreferences::StdCmdDlgPreferences()
     sWhatsThis    = "Std_DlgPreferences";
     sStatusTip    = QT_TR_NOOP("Opens a Dialog to edit the preferences");
     sPixmap     = "preferences-system";
-    iAccel        = 0;
     eType         = 0;
 }
 
@@ -369,7 +365,6 @@ StdCmdDlgCustomize::StdCmdDlgCustomize()
     sWhatsThis    = "Std_DlgCustomize";
     sStatusTip    = QT_TR_NOOP("Customize toolbars and command bars");
     sPixmap       = "applications-accessories";
-    iAccel        = 0;
     eType         = 0;
 }
 
@@ -396,7 +391,6 @@ StdCmdCommandLine::StdCmdCommandLine()
     sWhatsThis    = "Std_CommandLine";
     sStatusTip    = QT_TR_NOOP("Opens the command line in the console");
     sPixmap       = "utilities-terminal";
-    iAccel        = 0;
     eType         = 0;
 }
 
@@ -444,7 +438,7 @@ StdCmdOnlineHelp::StdCmdOnlineHelp()
     sWhatsThis    = "Std_OnlineHelp";
     sStatusTip    = QT_TR_NOOP("Help");
     sPixmap       = "help-browser";
-    iAccel        = keySequenceToAccel(QKeySequence::HelpContents);
+    sAccel        = keySequenceToAccel(QKeySequence::HelpContents);
     eType         = 0;
 }
 

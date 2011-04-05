@@ -52,7 +52,7 @@ CmdImageOpen::CmdImageOpen()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "image-import";
-    iAccel          = Qt::CTRL+Qt::Key_O;
+    sAccel          = "Ctrl+O";
 }
 
 void CmdImageOpen::activated(int iMsg)
@@ -86,7 +86,6 @@ CmdCreateImagePlane::CmdCreateImagePlane()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "image-import";
-    iAccel          = 0;
 }
 
 void CmdCreateImagePlane::activated(int iMsg)
@@ -127,7 +126,6 @@ CmdImageCapturerTest::CmdImageCapturerTest()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "camera-photo";
-    iAccel          = 0;
 }
 
 void CmdImageCapturerTest::activated(int iMsg)

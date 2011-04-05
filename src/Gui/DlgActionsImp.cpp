@@ -191,8 +191,7 @@ void DlgCustomActionsImp::on_actionListWidget_itemActivated(QTreeWidgetItem *ite
         actionMenu      -> setText(QString::fromUtf8(pScript->getMenuText()));
         actionToolTip   -> setText(QString::fromUtf8(pScript->getToolTipText()));
         actionStatus    -> setText(QString::fromUtf8(pScript->getStatusTip()));
-        QKeySequence shortcut(pScript->getAccel());
-        actionAccel     -> setText(shortcut.toString());
+        actionAccel     -> setText(QString::fromAscii(pScript->getAccel()));
         pixmapLabel->clear();
         m_sPixmap = QString::null;
         const char* name = pScript->getPixmap();
@@ -260,11 +259,12 @@ void DlgCustomActionsImp::on_buttonAddAction_clicked()
     m_sPixmap = QString::null;
 
     if (!actionAccel->text().isEmpty()) {
-        QKeySequence shortcut(actionAccel->text());
+      /*QKeySequence shortcut(actionAccel->text());
         int key=0;
         for (uint i=0; i<shortcut.count(); i++)
-            key += shortcut[i];
-        macro->setAccel(key);
+        key += shortcut[i];
+        macro->setAccel(key); */
+      macro->setAccel(actionAccel->text().toAscii());
     }
     actionAccel->clear();
 
@@ -319,11 +319,7 @@ void DlgCustomActionsImp::on_buttonReplaceAction_clicked()
     m_sPixmap = QString::null;
 
     if (!actionAccel->text().isEmpty()) {
-        QKeySequence shortcut(actionAccel->text());
-        int key=0;
-        for (uint i=0; i<shortcut.count(); i++)
-            key += shortcut[i];
-        macro->setAccel(key);
+        macro->setAccel(actionAccel->text().toAscii());
     }
     actionAccel->clear();
 
@@ -338,7 +334,7 @@ void DlgCustomActionsImp::on_buttonReplaceAction_clicked()
         action->setStatusTip(QString::fromUtf8(macro->getStatusTip()));
         if( macro->getPixmap() )
             action->setIcon(Gui::BitmapFactory().pixmap(macro->getPixmap()));
-        action->setShortcut(macro->getAccel());
+        action->setShortcut(QString::fromAscii(macro->getAccel()));
     }
 
     // emit signal to notify the container widget

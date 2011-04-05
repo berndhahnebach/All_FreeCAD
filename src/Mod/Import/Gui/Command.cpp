@@ -51,7 +51,6 @@ FCCmdImportReadBREP::FCCmdImportReadBREP()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Std_Tool1";
-    iAccel          = 0;
 }
 
 void FCCmdImportReadBREP::activated(int iMsg)
@@ -87,7 +86,6 @@ ImportStep::ImportStep()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Save";
-    iAccel          = 0;
 }
 
 
@@ -127,7 +125,6 @@ ImportIges::ImportIges()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Save";
-    iAccel          = 0;
 }
 
 void ImportIges::activated(int iMsg)

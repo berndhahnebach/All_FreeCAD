@@ -97,7 +97,7 @@ CmdRobotInsertWaypoint::CmdRobotInsertWaypoint()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Robot_InsertWaypoint";
-    iAccel          = Qt::Key_A;
+    sAccel          = "A";
 }
 
 
@@ -154,7 +154,7 @@ CmdRobotInsertWaypointPreselect::CmdRobotInsertWaypointPreselect()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Robot_InsertWaypointPre";
-    iAccel          = Qt::Key_W;
+    sAccel          = "W";
 
 }
 
@@ -218,7 +218,6 @@ CmdRobotSetDefaultOrientation::CmdRobotSetDefaultOrientation()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = 0;
-    iAccel          = 0;
 
 }
 
@@ -258,7 +257,6 @@ CmdRobotSetDefaultValues::CmdRobotSetDefaultValues()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = 0;
-    iAccel          = 0;
 
 }
 
@@ -325,7 +323,6 @@ CmdRobotEdge2Trac::CmdRobotEdge2Trac()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Robot_Edge2Trac";
-    iAccel          = 0;
 
 }
 
@@ -390,7 +387,6 @@ CmdRobotTrajectoryDressUp::CmdRobotTrajectoryDressUp()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Robot_TrajectoryDressUp";
-    iAccel          = 0;
 
 }
 
@@ -438,7 +434,6 @@ CmdRobotTrajectoryCompound::CmdRobotTrajectoryCompound()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Robot_TrajectoryCompound";
-    iAccel          = 0;
 
 }
 
