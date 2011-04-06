@@ -73,6 +73,7 @@
 # include <Inventor/nodes/SoGroup.h>
 # include <Inventor/nodes/SoSphere.h>
 # include <Inventor/nodes/SoScale.h>
+# include <Inventor/nodes/SoLightModel.h>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
@@ -269,6 +270,9 @@ void ViewProviderPartExt::attach(App::DocumentObject *pcFeat)
     pcNormalRoot->addChild(offset);
     pcNormalRoot->addChild(pcLineMaterial);  
     pcNormalRoot->addChild(pcLineStyle);
+    //SoLightModel        *lightModel = new SoLightModel();
+    //lightModel->model = SoLightModel::BASE_COLOR;
+    //pcNormalRoot->addChild(lightModel);
     pcNormalRoot->addChild(lineset);
 
     //pcNormalRoot->addChild(FaceRoot);
@@ -414,7 +418,7 @@ void ViewProviderPartExt::updateData(const App::Property* prop)
 
         // time measurement and book keeping
         Base::TimeInfo start_time;
-        int nbrTriangles=0,nbrNodes=0,nbrFaces=0;
+        int nbrTriangles=0,nbrNodes=0,nbrFaces=0,nbrEdges=0;
 
         try {
             // calculating the deflection value
@@ -442,6 +446,19 @@ void ViewProviderPartExt::updateData(const App::Property* prop)
                    nbrNodes     += mesh->NbNodes();
                    nbrFaces++;
             }
+
+            // get a indexed map of edges
+            TopTools_IndexedMapOfShape M;
+            TopExp::MapShapes(cShape, TopAbs_EDGE, M);
+
+            std::set<int>         edgeIdxSet;
+            std::vector<int32_t>  indxVector;
+            // count and index the edges
+            for (int i=1; i <= M.Extent(); i++) {
+                const TopoDS_Edge &actEdge = TopoDS::Edge(M(i));
+                edgeIdxSet.insert(i);
+                nbrEdges++;
+            }
             
 
             // create memory for the nodes and indexes
@@ -460,8 +477,9 @@ void ViewProviderPartExt::updateData(const App::Property* prop)
             int i = 1,FaceNodeOffset=0,FaceTriaOffset=0;
             for (Ex.Init(cShape, TopAbs_FACE); Ex.More(); Ex.Next(),i++) {
                 TopLoc_Location aLoc;
+                const TopoDS_Face &actFace = TopoDS::Face(Ex.Current());
                 // get the mesh of the shape
-                Handle (Poly_Triangulation) mesh = BRep_Tool::Triangulation(TopoDS::Face(Ex.Current()),aLoc);
+                Handle (Poly_Triangulation) mesh = BRep_Tool::Triangulation(actFace,aLoc);
                 if (mesh.IsNull()) continue;
 
                 // getting the transformation of the shape/face
@@ -476,16 +494,16 @@ void ViewProviderPartExt::updateData(const App::Property* prop)
                 int nbNodesInFace = mesh->NbNodes();
                 int nbTriInFace   = mesh->NbTriangles();
                 // check orientation
-                TopAbs_Orientation orient = TopoDS::Face(Ex.Current()).Orientation();
+                TopAbs_Orientation orient = actFace.Orientation();
 
 
                 // cycling through the poly mesh
                 const Poly_Array1OfTriangle& Triangles = mesh->Triangles();
                 const TColgp_Array1OfPnt& Nodes = mesh->Nodes();
-                for (i=1;i<=nbTriInFace;i++) {
+                for (int g=1;g<=nbTriInFace;g++) {
                     // Get the triangle
                     Standard_Integer N1,N2,N3;
-                    Triangles(i).Get(N1,N2,N3);
+                    Triangles(g).Get(N1,N2,N3);
 
                     // change orientation of the triangle if the face is reversed
                     if ( orient != TopAbs_FORWARD ) {
@@ -520,11 +538,48 @@ void ViewProviderPartExt::updateData(const App::Property* prop)
                     verts[FaceNodeOffset+N3-1].setValue((float)(V3.X()),(float)(V3.Y()),(float)(V3.Z()));
 
                     // set the index vector with the 3 point indexes and the end delimiter
-                    index[FaceTriaOffset*4+4*(i-1)]   = FaceNodeOffset+N1-1; 
-                    index[FaceTriaOffset*4+4*(i-1)+1] = FaceNodeOffset+N2-1; 
-                    index[FaceTriaOffset*4+4*(i-1)+2] = FaceNodeOffset+N3-1; 
-                    index[FaceTriaOffset*4+4*(i-1)+3] = SO_END_FACE_INDEX;
+                    index[FaceTriaOffset*4+4*(g-1)]   = FaceNodeOffset+N1-1; 
+                    index[FaceTriaOffset*4+4*(g-1)+1] = FaceNodeOffset+N2-1; 
+                    index[FaceTriaOffset*4+4*(g-1)+2] = FaceNodeOffset+N3-1; 
+                    index[FaceTriaOffset*4+4*(g-1)+3] = SO_END_FACE_INDEX;
                 }
+
+                // handling the edges lye on this face
+                
+                TopExp_Explorer Exp;
+                for(Exp.Init(actFace,TopAbs_EDGE);Exp.More();Exp.Next()) {
+                    const TopoDS_Edge &actEdge = TopoDS::Edge(Exp.Current());
+                    // get the overall index of this edge
+                    int idx = M.FindIndex(actEdge);
+                    // already processed this index ?
+                    if(edgeIdxSet.find(idx)!=edgeIdxSet.end()) {
+                        
+                        // this holds the indices of the edge's triangulation to the actual points
+                        Handle(Poly_PolygonOnTriangulation) aPoly = BRep_Tool::PolygonOnTriangulation(actEdge, mesh, aLoc);
+                        if (aPoly.IsNull())
+                            assert(0); // polygon does not exist
+
+                        // getting size and create the array
+                        //nbNodesInFace = aPoly->NbNodes();
+                        //vertices = new SbVec3f[nbNodesInFace];
+                        
+                        // geting the indexes of the edge polygon
+                        const TColStd_Array1OfInteger& indices = aPoly->Nodes();
+                        //const TColgp_Array1OfPnt& Nodes = aPolyTria->Nodes();
+                        // go through the index array
+                        for (Standard_Integer i=indices.Lower();i <= indices.Upper();i++) {
+                            int inx = indices(i);
+                            indxVector.push_back(FaceNodeOffset+inx-1);
+                        }
+                        indxVector.push_back(-1);
+
+
+                        // remove the handled edge index from the set
+                        edgeIdxSet.erase(idx);
+                    }
+                    
+                }
+                
                 // counting up the per Face offsets
                 FaceNodeOffset += nbNodesInFace;
                 FaceTriaOffset += nbTriInFace;
@@ -533,8 +588,30 @@ void ViewProviderPartExt::updateData(const App::Property* prop)
             // normalize all normals 
             for(int i = 0; i< nbrNodes ;i++)
                 norms[i].normalize();
+            
+            //lineset->coordIndex.set1Value(0,0);
+            //lineset->coordIndex.set1Value(1,1);
+            //lineset->coordIndex.set1Value(2,-1);
+            //lineset->coordIndex.set1Value(3,1);
+            //lineset->coordIndex.set1Value(4,2);
+            //lineset->coordIndex.set1Value(5,-1);
+
+            int endxVecSize =  indxVector.size();
+            lineset ->coordIndex  .setNum(endxVecSize);
+            //int32_t* edgIdx = faceset ->coordIndex  .startEditing();
+
+            int l=0;
+            //Base::Console().Message("idx: ");
+            for(std::vector<int32_t>::const_iterator it=indxVector.begin();it!=indxVector.end();++it,l++){
+                //edgIdx[l] = *it;
+
+              //  Base::Console().Message("(%d)%d,",l,*it);
+                lineset ->coordIndex.set1Value(l,*it);
+            }
+            //Base::Console().Message("\n");
 
             // end the editing of the nodes
+            //lineset ->coordIndex  .finishEditing();
             coords  ->point       .finishEditing();
             norm    ->vector      .finishEditing();
             faceset ->coordIndex  .finishEditing();
@@ -546,7 +623,7 @@ void ViewProviderPartExt::updateData(const App::Property* prop)
 
         // printing some informations
         Base::Console().Message("ViewProvider update time: %f s\n",Base::TimeInfo::diffTimeF(start_time,Base::TimeInfo()));
-        Base::Console().Message("Shape tria info: Faces:%d Nodes:%d Triangles:%d\n",nbrFaces,nbrNodes,nbrTriangles);
+        Base::Console().Message("Shape tria info: Faces:%d Edges:%d Nodes:%d Triangles:%d IdxVec:%d\n",nbrFaces,nbrEdges,nbrNodes,nbrTriangles,endxVecSize);
 
     }
 }
