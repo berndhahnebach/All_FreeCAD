@@ -100,6 +100,7 @@ protected:
     /// get called by the container whenever a property has been changed
     virtual void onChanged(const App::Property* prop);
     bool loadParameter();
+    void updateVisual(const TopoDS_Shape &);
 
     // nodes for the data representation
     SoGroup  *EdgeRoot;
@@ -117,6 +118,8 @@ protected:
     SoNormal         * norm;
     SoNormalBinding  * normb;
     SoIndexedLineSet * lineset;
+
+    bool VisualTouched;
 private:
     // settings stuff
     float meshDeviation;
