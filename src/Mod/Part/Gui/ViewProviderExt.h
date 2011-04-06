@@ -49,6 +49,7 @@ class SoCoordinate3;
 class SoIndexedFaceSet;
 class SoNormal;
 class SoNormalBinding;
+class SoIndexedLineSet;
 
 namespace PartGui {
 
@@ -115,6 +116,7 @@ protected:
     SoIndexedFaceSet * faceset;
     SoNormal         * norm;
     SoNormalBinding  * normb;
+    SoIndexedLineSet * lineset;
 private:
     // settings stuff
     float meshDeviation;
