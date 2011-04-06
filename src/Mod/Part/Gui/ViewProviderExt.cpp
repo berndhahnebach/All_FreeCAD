@@ -61,7 +61,7 @@
 # include <Inventor/nodes/SoCoordinate3.h>
 # include <Inventor/nodes/SoDrawStyle.h>
 # include <Inventor/nodes/SoIndexedFaceSet.h>
-# include <Inventor/nodes/SoLineSet.h>
+# include <Inventor/nodes/SoIndexedLineSet.h>
 # include <Inventor/nodes/SoLocateHighlight.h>
 # include <Inventor/nodes/SoMaterial.h>
 # include <Inventor/nodes/SoNormal.h>
@@ -142,6 +142,8 @@ ViewProviderPartExt::ViewProviderPartExt()
     normb = new SoNormalBinding;
     normb->value = SoNormalBinding::PER_VERTEX_INDEXED;
     normb->ref();
+    lineset = new SoIndexedLineSet();
+    lineset->ref();
 
     pcLineMaterial = new SoMaterial;
     pcLineMaterial->ref();
@@ -183,6 +185,7 @@ ViewProviderPartExt::~ViewProviderPartExt()
     coords->unref();
     faceset->unref();
     norm->unref();
+    lineset->unref();
 
 }
 void ViewProviderPartExt::onChanged(const App::Property* prop)
@@ -263,7 +266,11 @@ void ViewProviderPartExt::attach(App::DocumentObject *pcFeat)
     pcNormalRoot->addChild(normb);
     pcNormalRoot->addChild(coords);
     pcNormalRoot->addChild(faceset);
-    //pcNormalRoot->addChild(offset);
+    pcNormalRoot->addChild(offset);
+    pcNormalRoot->addChild(pcLineMaterial);  
+    pcNormalRoot->addChild(pcLineStyle);
+    pcNormalRoot->addChild(lineset);
+
     //pcNormalRoot->addChild(FaceRoot);
     //pcNormalRoot->addChild(VertexRoot);
 
@@ -446,11 +453,24 @@ void ViewProviderPartExt::updateData(const App::Property* prop)
             SbVec3f* norms = norm    ->vector      .startEditing();
             int32_t* index = faceset ->coordIndex  .startEditing();
 
+            // preset the normal vector with null vector
+            for(int i=0;i < nbrNodes;i++) 
+                norms[i]= SbVec3f(0.0,0.0,0.0);
+
             int i = 1,FaceNodeOffset=0,FaceTriaOffset=0;
             for (Ex.Init(cShape, TopAbs_FACE); Ex.More(); Ex.Next(),i++) {
+                TopLoc_Location aLoc;
                 // get the mesh of the shape
-                Handle (Poly_Triangulation) mesh = BRep_Tool::Triangulation(TopoDS::Face(Ex.Current()),TopLoc_Location());
+                Handle (Poly_Triangulation) mesh = BRep_Tool::Triangulation(TopoDS::Face(Ex.Current()),aLoc);
                 if (mesh.IsNull()) continue;
+
+                // getting the transformation of the shape/face
+                gp_Trsf myTransf;
+                Standard_Boolean identity = true;
+                if (!aLoc.IsIdentity()) {
+                    identity = false;
+                    myTransf = aLoc.Transformation();
+                }
 
                 // geting size of node and triangle aray of this Face
                 int nbNodesInFace = mesh->NbNodes();
@@ -475,42 +495,35 @@ void ViewProviderPartExt::updateData(const App::Property* prop)
                     }
 
                     // get the 3 points of this triangle
-                    gp_Pnt V1 = Nodes(N1);
-                    gp_Pnt V2 = Nodes(N2);
-                    gp_Pnt V3 = Nodes(N3);
+                    gp_Pnt V1(Nodes(N1)), V2(Nodes(N2)), V3(Nodes(N3));
 
                     // transform the vertices to the place of the face
-                    //if (!identity) {
-                    //    V1.Transform(myTransf);
-                    //    V2.Transform(myTransf);
-                    //    V3.Transform(myTransf);
-                    //}
+ /*                   if (!identity) {
+                        V1.Transform(myTransf);
+                        V2.Transform(myTransf);
+                        V3.Transform(myTransf);
+                    }*/
                     
-                    // calculating per vertex normals
-                    //if (!this->noPerVertexNormals) {
-                        // Calculate triangle normal
-                        gp_Vec v1(V1.X(),V1.Y(),V1.Z()),v2(V2.X(),V2.Y(),V2.Z()),v3(V3.X(),V3.Y(),V3.Z());
-                        gp_Vec Normal = (v2-v1)^(v3-v1); 
+                    // calculating per vertex normals                    
+                    // Calculate triangle normal
+                    gp_Vec v1(V1.X(),V1.Y(),V1.Z()),v2(V2.X(),V2.Y(),V2.Z()),v3(V3.X(),V3.Y(),V3.Z());
+                    gp_Vec Normal = (v2-v1)^(v3-v1); 
 
-                        // add the triangle normal to the vertex normal for all points of this triangle
-                        norms[FaceNodeOffset+N1-1] += SbVec3f(Normal.X(),Normal.Y(),Normal.Z());
-                        norms[FaceNodeOffset+N2-1] += SbVec3f(Normal.X(),Normal.Y(),Normal.Z());
-                        norms[FaceNodeOffset+N3-1] += SbVec3f(Normal.X(),Normal.Y(),Normal.Z());
-                    //}
+                    // add the triangle normal to the vertex normal for all points of this triangle
+                    norms[FaceNodeOffset+N1-1] += SbVec3f(Normal.X(),Normal.Y(),Normal.Z());
+                    norms[FaceNodeOffset+N2-1] += SbVec3f(Normal.X(),Normal.Y(),Normal.Z());
+                    norms[FaceNodeOffset+N3-1] += SbVec3f(Normal.X(),Normal.Y(),Normal.Z());                 
 
+                    // set the vertices
                     verts[FaceNodeOffset+N1-1].setValue((float)(V1.X()),(float)(V1.Y()),(float)(V1.Z()));
                     verts[FaceNodeOffset+N2-1].setValue((float)(V2.X()),(float)(V2.Y()),(float)(V2.Z()));
                     verts[FaceNodeOffset+N3-1].setValue((float)(V3.X()),(float)(V3.Y()),(float)(V3.Z()));
 
-                    int j = i - 1;
-                    // downcount, cause OCC always start indexes on 1
-                    N1--; N2--; N3--;
-
                     // set the index vector with the 3 point indexes and the end delimiter
-                    index[FaceTriaOffset*4+4*j]   = FaceNodeOffset+N1; 
-                    index[FaceTriaOffset*4+4*j+1] = FaceNodeOffset+N2; 
-                    index[FaceTriaOffset*4+4*j+2] = FaceNodeOffset+N3; 
-                    index[FaceTriaOffset*4+4*j+3] = SO_END_FACE_INDEX;
+                    index[FaceTriaOffset*4+4*(i-1)]   = FaceNodeOffset+N1-1; 
+                    index[FaceTriaOffset*4+4*(i-1)+1] = FaceNodeOffset+N2-1; 
+                    index[FaceTriaOffset*4+4*(i-1)+2] = FaceNodeOffset+N3-1; 
+                    index[FaceTriaOffset*4+4*(i-1)+3] = SO_END_FACE_INDEX;
                 }
                 // counting up the per Face offsets
                 FaceNodeOffset += nbNodesInFace;
