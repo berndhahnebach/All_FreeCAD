@@ -45,7 +45,6 @@ StdCamCutting::StdCamCutting()
     sToolTipText  = QT_TR_NOOP("Cutting");
     sWhatsThis    = QT_TR_NOOP("Cutting");
     sStatusTip    = QT_TR_NOOP("Cutting");
-    iAccel        = 0;
 }
 
 void StdCamCutting::activated(int iMsg)

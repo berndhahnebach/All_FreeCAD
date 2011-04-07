@@ -889,7 +889,6 @@ CmdTestGrabWidget::CmdTestGrabWidget()
     sToolTipText    = "Grab widget";
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
-    iAccel          = 0;
 }
 
 void CmdTestGrabWidget::activated(int iMsg)
@@ -1008,7 +1007,6 @@ CmdTestImageNode::CmdTestImageNode()
     sToolTipText    = "SoImage node";
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
-    iAccel          = 0;
 }
 
 void CmdTestImageNode::activated(int iMsg)
@@ -1094,7 +1092,6 @@ CmdTestGDIWidget::CmdTestGDIWidget()
     sToolTipText    = "GDI widget";
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
-    iAccel          = 0;
 }
 
 void CmdTestGDIWidget::activated(int iMsg)
@@ -1121,7 +1118,6 @@ CmdTestRedirectPaint::CmdTestRedirectPaint()
     sToolTipText    = "Redirect paint";
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
-    iAccel          = 0;
 }
 
 void CmdTestRedirectPaint::activated(int iMsg)
@@ -1148,7 +1144,6 @@ CmdTestCryptographicHash::CmdTestCryptographicHash()
     sToolTipText    = "Cryptographic Hash";
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
-    iAccel          = 0;
 }
 
 void CmdTestCryptographicHash::activated(int iMsg)
@@ -1171,7 +1166,6 @@ CmdTestWidgetShape::CmdTestWidgetShape()
     sToolTipText    = "Widget shape";
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
-    iAccel          = 0;
 }
 
 void CmdTestWidgetShape::activated(int iMsg)
