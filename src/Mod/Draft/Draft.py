@@ -319,8 +319,11 @@ def makeAngularDimension(center,angles,p3):
         AngularDimension(obj)
         ViewProviderAngularDimension(obj.ViewObject)
         obj.Center = center
-        obj.FirstAngle = angles[0]
-        obj.LastAngle = angles[1]
+        for a in range(len(angles)):
+                if angles[a] > 2*math.pi:
+                        angles[a] = angles[a]-(2*math.pi)
+        obj.FirstAngle = math.degrees(angles[1])
+        obj.LastAngle = math.degrees(angles[0])
         obj.Dimline = p3
         formatObject(obj)
         select(obj)
@@ -1263,11 +1266,8 @@ class ViewProviderAngularDimension:
                 obj.Override = ''
 
         def attach(self, vobj):
-                shape,tbase,trot = self.calcGeom(vobj.Object)
-                ivin = coin.SoInput()
-                ivin.setBuffer(shape.writeInventor())
-                ivob = coin.SoDB.readAll(ivin)
-                self.arc = ivob.getChildren()[1]
+                self.arc = None
+                c,tbase,trot,p2,p3 = self.calcGeom(vobj.Object)
 		self.color = coin.SoBaseColor()
 		self.color.rgb.setValue(vobj.LineColor[0],
                                         vobj.LineColor[1],
@@ -1280,8 +1280,7 @@ class ViewProviderAngularDimension:
 		self.text.string = self.text3d.string = ''
 		self.textpos = coin.SoTransform()
 		self.textpos.translation.setValue([tbase.x,tbase.y,tbase.z])
-                rm = coin.SbRotation()
-                # self.textpos.rotation = trot
+                self.textpos.rotation = coin.SbRotation()
 		label = coin.SoSeparator()
 		label.addChild(self.textpos)
 		label.addChild(self.color)
@@ -1292,6 +1291,16 @@ class ViewProviderAngularDimension:
 		label3d.addChild(self.color)
 		label3d.addChild(self.font3d)
 		label3d.addChild(self.text3d)
+		self.coord1 = coin.SoCoordinate3()
+		self.coord1.point.setValue((p2.x,p2.y,p2.z))
+		self.coord2 = coin.SoCoordinate3()
+		self.coord2.point.setValue((p3.x,p3.y,p3.z))
+		marks = coin.SoAnnotation()
+		marks.addChild(self.color)
+		marks.addChild(self.coord1)
+		marks.addChild(dimSymbol())
+		marks.addChild(self.coord2)
+		marks.addChild(dimSymbol())  
 		self.drawstyle = coin.SoDrawStyle()
 		self.drawstyle.lineWidth = 1       
 		self.coords = coin.SoCoordinate3()
@@ -1299,19 +1308,19 @@ class ViewProviderAngularDimension:
 		self.selnode.documentName.setValue(FreeCAD.ActiveDocument.Name)
 		self.selnode.objectName.setValue(vobj.Object.Name)
 		self.selnode.subElementName.setValue("Arc")
-                self.selnode.addChild(self.arc)
 		self.node = coin.SoGroup()
 		self.node.addChild(self.color)
 		self.node.addChild(self.drawstyle)
 		self.node.addChild(self.coords)
 		self.node.addChild(self.selnode)
+                self.node.addChild(marks)
 		self.node.addChild(label)
                 self.node3d = coin.SoGroup()
                 self.node3d.addChild(self.color)
                 self.node3d.addChild(self.drawstyle)
                 self.node3d.addChild(self.coords)
                 self.node3d.addChild(self.selnode)
-                # self.node3d.addChild(marks)
+                self.node3d.addChild(marks)
                 self.node3d.addChild(label3d)
 		vobj.addDisplayMode(self.node,"2D")
                 vobj.addDisplayMode(self.node3d,"3D")
@@ -1326,26 +1335,46 @@ class ViewProviderAngularDimension:
                 rv = fcvec.scaleTo(rv,rv.Length + obj.ViewObject.FontSize*.2)
                 tbase = obj.Center.add(rv)
                 trot = fcvec.angle(rv)-math.pi/2
-                return cir, tbase, trot
+                if (trot > math.pi/2) or (trot < -math.pi/2):
+                        trot = trot + math.pi
+                return cir, tbase, trot, cir.Vertexes[0].Point, cir.Vertexes[-1].Point
 
 	def updateData(self, obj, prop):
                 text = None
-                shape,tbase,trot = self.calcGeom(obj)
+                ivob = None
+                c,tbase,trot,p2,p3 = self.calcGeom(obj)
+                buf=c.writeInventor(2,0.01)
                 ivin = coin.SoInput()
-                ivin.setBuffer(shape.writeInventor())
+                ivin.setBuffer(buf)
                 ivob = coin.SoDB.readAll(ivin)
-                self.selnode.removeChild(self.arc)
-                self.arc = ivob.getChildren()[1]
+                arc = ivob.getChildren()[1]
+                # In case reading from buffer failed
+                if ivob and ivob.getNumChildren() > 1:
+                        arc = ivob.getChild(1).getChild(0)
+                        arc.removeChild(arc.getChild(0))
+                        arc.removeChild(arc.getChild(0))                
+                if self.arc:
+                        self.selnode.removeChild(self.arc)
+                self.arc = arc
                 self.selnode.addChild(self.arc)
                 if 'Override' in obj.ViewObject.PropertiesList:
                         text = str(obj.ViewObject.Override)
-                dtext = ("%.2f" % p3.sub(p2).Length)
+                if obj.LastAngle > obj.FirstAngle:
+                        dtext = ("%.2f" % (obj.LastAngle-obj.FirstAngle))+'\xb0'
+                else:
+                        dtext = ("%.2f" % ((360-obj.FirstAngle)+obj.LastAngle))+'\xb0'
                 if text:
                         text = text.replace("dim",dtext)
                 else:
                         text = dtext
 		self.text.string = self.text3d.string = text
                 self.textpos.translation.setValue([tbase.x,tbase.y,tbase.z])
+                m = FreeCAD.Matrix()
+                m.rotateZ(trot)
+                tm = FreeCAD.Placement(m).Rotation.Q
+                self.textpos.rotation = coin.SbRotation(tm[0],tm[1],tm[2],tm[3])
+		self.coord1.point.setValue((p2.x,p2.y,p2.z))
+		self.coord2.point.setValue((p3.x,p3.y,p3.z))
 
         def onChanged(self, vobj, prop):
 		if prop == "FontSize":
@@ -1361,7 +1390,7 @@ class ViewProviderAngularDimension:
                 elif prop == "DisplayMode":
                         pass
 		else:
-			self.updateData(vobj.Object, None)
+                        self.updateData(vobj.Object, None)
 
 	def getDisplayModes(self,obj):
 		modes=[]
