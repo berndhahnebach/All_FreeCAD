@@ -293,17 +293,11 @@ def makeDimension(p1,p2,p3=None,p4=None):
         - (p1,p2,p3): creates a standard dimension from p1 to p2
         - (object,i1,i2,p3): creates a linked dimension to the given object,
         measuring the distance between its vertices indexed i1 and i2
-        - ([obj1,obj2],[i1,i2],p3): creates a linked angular dimension between
-        the edges indexed i1 and i2 of the given 2 objects (i1 for obj1, i2 for obj2)
         '''
         obj = FreeCAD.ActiveDocument.addObject("App::FeaturePython","Dimension")
         Dimension(obj)
         ViewProviderDimension(obj.ViewObject)
-        if isinstance(p1,list) and isinstance(p2,list):
-                obj.Base = p1[0]
-                obj.Tool = p1[1]
-                obj.LinkedVertices = p2
-        elif isinstance(p1,Vector) and isinstance(p2,Vector):
+        if isinstance(p1,Vector) and isinstance(p2,Vector):
                 obj.Start = p1
                 obj.End = p2
         elif isinstance(p2,int) and isinstance(p3,int):
@@ -314,6 +308,19 @@ def makeDimension(p1,p2,p3=None,p4=None):
                 p3 = p2.sub(p1)
                 p3.multiply(0.5)
                 p3 = p1.add(p3)
+        obj.Dimline = p3
+        formatObject(obj)
+        select(obj)
+        FreeCAD.ActiveDocument.recompute()
+        return obj
+
+def makeAngularDimension(center,angles,p3):
+        obj = FreeCAD.ActiveDocument.addObject("App::FeaturePython","Dimension")
+        AngularDimension(obj)
+        ViewProviderAngularDimension(obj.ViewObject)
+        obj.Center = center
+        obj.FirstAngle = angles[0]
+        obj.LastAngle = angles[1]
         obj.Dimline = p3
         formatObject(obj)
         select(obj)
@@ -963,8 +970,6 @@ class Dimension:
                                 "Point through which the dimension line passes")
                 obj.addProperty("App::PropertyLink","Base","Base",
                                 "The base object this dimension is linked to")
-                obj.addProperty("App::PropertyLink","Tool","Base",
-                                "The tool object this dimension is linked to")
                 obj.addProperty("App::PropertyIntegerList","LinkedVertices","Base",
                                 "The indices of the vertices from the base object to measure")
                 obj.Start = FreeCAD.Vector(0,0,0)
@@ -1028,29 +1033,6 @@ class ViewProviderDimension:
 		if not proj: norm = Vector(0,0,1)
                 else: norm = fcvec.neg(p3.sub(p2).cross(proj))
 		return p1,p2,p3,p4,tbase,angle,norm
-
-        def calcArc(self,obj):
-                if obj.Base and obj.Tool:
-                        e1 = obj.Base.Shape.Edges[obj.LinkedVertices[0]]
-                        e2 = obj.Base.Tool.Edges[obj.LinkedVertices[1]]
-                        center = fcgeo.findIntersection(e1,e2,True,True)
-                        if center:
-                                r = obj.Dimline.sub(center)
-                                radius = r.Length
-                                ev1 = fcgeo.vec(e1)
-                                ev2 = fcgeo.vec(e2)
-                                norm = ev1.cross(ev2)
-                                v1 = e1.Vertexes[0].sub(center)
-                                v2 = e1.Vertexes[-1].sub(center)
-                                v3 = e2.Vertexes[0].sub(center)
-                                v4 = e2.Vertexes[-1].sub(center)
-                                a1 = 0
-                                a = fcvec.angle(r,v1,norm)
-                                a2 = fcvec.angle(v2,v1,norm)
-                                a3 = fcvec.angle(v3,v1,norm)
-                                a4 = fcvec.angle(v4,v1,norm)
-                                angles = fcgeo.getBoundaryAngles(a,[a1,a2,a3,a4])
-                                
 
 	def attach(self, obj):
 		p1,p2,p3,p4,tbase,angle,norm = self.calcGeom(obj.Object)
@@ -1238,6 +1220,183 @@ class ViewProviderDimension:
 
 	def __setstate__(self,state):
 		return None
+
+class AngularDimension:
+	"The AngularDimension object"
+	def __init__(self, obj):
+		obj.addProperty("App::PropertyAngle","FirstAngle","Base",
+                                "Start angle of the dimension")
+		obj.addProperty("App::PropertyAngle","LastAngle","Base",
+                                "End angle of the dimension")
+		obj.addProperty("App::PropertyVector","Dimline","Base",
+                                "Point through which the dimension line passes")
+                obj.addProperty("App::PropertyVector","Center","Base",
+                                "The center point of this dimension")
+                obj.FirstAngle = 0
+                obj.LastAngle = 90
+                obj.Dimline = FreeCAD.Vector(0,1,0)
+                obj.Center = FreeCAD.Vector(0,0,0)
+		obj.Proxy = self
+                self.Type = "AngularDimension"
+		
+	def onChanged(self, fp, prop):
+		pass
+
+	def execute(self, fp):
+                if fp.ViewObject:
+                        fp.ViewObject.update()
+
+class ViewProviderAngularDimension:
+	"A View Provider for the Angular Dimension object"
+	def __init__(self, obj):
+		prm = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
+		obj.addProperty("App::PropertyLength","FontSize","Base","Font size")
+		obj.addProperty("App::PropertyString","FontName","Base","Font name")
+		obj.addProperty("App::PropertyLength","LineWidth","Base","Line width")
+		obj.addProperty("App::PropertyColor","LineColor","Base","Line color")
+                obj.addProperty("App::PropertyVector","Position","Base","The position of the text. Leave (0,0,0) for automatic position")
+                obj.addProperty("App::PropertyString","Override","Base","Text override. Use 'dim' to insert the dimension length")
+		obj.Proxy = self
+		self.Object = obj.Object
+                obj.FontSize=prm.GetFloat("textheight")
+                obj.FontName=prm.GetString("textfont")
+                obj.Override = ''
+
+        def attach(self, vobj):
+                shape,tbase,trot = self.calcGeom(vobj.Object)
+                ivin = coin.SoInput()
+                ivin.setBuffer(shape.writeInventor())
+                ivob = coin.SoDB.readAll(ivin)
+                self.arc = ivob.getChildren()[1]
+		self.color = coin.SoBaseColor()
+		self.color.rgb.setValue(vobj.LineColor[0],
+                                        vobj.LineColor[1],
+                                        vobj.LineColor[2])
+		self.font = coin.SoFont()
+                self.font3d = coin.SoFont()
+		self.text = coin.SoAsciiText()
+                self.text3d = coin.SoText2()
+		self.text.justification = self.text3d.justification = coin.SoAsciiText.CENTER
+		self.text.string = self.text3d.string = ''
+		self.textpos = coin.SoTransform()
+		self.textpos.translation.setValue([tbase.x,tbase.y,tbase.z])
+                rm = coin.SbRotation()
+                # self.textpos.rotation = trot
+		label = coin.SoSeparator()
+		label.addChild(self.textpos)
+		label.addChild(self.color)
+		label.addChild(self.font)
+		label.addChild(self.text)
+                label3d = coin.SoSeparator()
+                label3d.addChild(self.textpos)
+		label3d.addChild(self.color)
+		label3d.addChild(self.font3d)
+		label3d.addChild(self.text3d)
+		self.drawstyle = coin.SoDrawStyle()
+		self.drawstyle.lineWidth = 1       
+		self.coords = coin.SoCoordinate3()
+		self.selnode=coin.SoType.fromName("SoFCSelection").createInstance()
+		self.selnode.documentName.setValue(FreeCAD.ActiveDocument.Name)
+		self.selnode.objectName.setValue(vobj.Object.Name)
+		self.selnode.subElementName.setValue("Arc")
+                self.selnode.addChild(self.arc)
+		self.node = coin.SoGroup()
+		self.node.addChild(self.color)
+		self.node.addChild(self.drawstyle)
+		self.node.addChild(self.coords)
+		self.node.addChild(self.selnode)
+		self.node.addChild(label)
+                self.node3d = coin.SoGroup()
+                self.node3d.addChild(self.color)
+                self.node3d.addChild(self.drawstyle)
+                self.node3d.addChild(self.coords)
+                self.node3d.addChild(self.selnode)
+                # self.node3d.addChild(marks)
+                self.node3d.addChild(label3d)
+		vobj.addDisplayMode(self.node,"2D")
+                vobj.addDisplayMode(self.node3d,"3D")
+		self.onChanged(vobj,"FontSize")
+		self.onChanged(vobj,"FontName")
+
+        def calcGeom(self,obj):
+                rad = (obj.Dimline.sub(obj.Center)).Length
+                cir = Part.makeCircle(rad,obj.Center,Vector(0,0,1),obj.FirstAngle,obj.LastAngle)
+                cp = fcgeo.findMidpoint(cir.Edges[0])
+                rv = cp.sub(obj.Center)
+                rv = fcvec.scaleTo(rv,rv.Length + obj.ViewObject.FontSize*.2)
+                tbase = obj.Center.add(rv)
+                trot = fcvec.angle(rv)-math.pi/2
+                return cir, tbase, trot
+
+	def updateData(self, obj, prop):
+                text = None
+                shape,tbase,trot = self.calcGeom(obj)
+                ivin = coin.SoInput()
+                ivin.setBuffer(shape.writeInventor())
+                ivob = coin.SoDB.readAll(ivin)
+                self.selnode.removeChild(self.arc)
+                self.arc = ivob.getChildren()[1]
+                self.selnode.addChild(self.arc)
+                if 'Override' in obj.ViewObject.PropertiesList:
+                        text = str(obj.ViewObject.Override)
+                dtext = ("%.2f" % p3.sub(p2).Length)
+                if text:
+                        text = text.replace("dim",dtext)
+                else:
+                        text = dtext
+		self.text.string = self.text3d.string = text
+                self.textpos.translation.setValue([tbase.x,tbase.y,tbase.z])
+
+        def onChanged(self, vobj, prop):
+		if prop == "FontSize":
+			self.font.size = vobj.FontSize
+                        self.font3d.size = vobj.FontSize*100
+		elif prop == "FontName":
+			self.font.name = self.font3d.name = str(vobj.FontName)
+		elif prop == "LineColor":
+			c = vobj.LineColor
+			self.color.rgb.setValue(c[0],c[1],c[2])
+		elif prop == "LineWidth":
+			self.drawstyle.lineWidth = vobj.LineWidth
+                elif prop == "DisplayMode":
+                        pass
+		else:
+			self.updateData(vobj.Object, None)
+
+	def getDisplayModes(self,obj):
+		modes=[]
+		modes.extend(["2D","3D"])
+		return modes
+
+	def getDefaultDisplayMode(self):
+		return "2D"
+
+	def getIcon(self):
+                return """
+                        /* XPM */
+                        static char * dim_xpm[] = {
+                        "16 16 4 1",
+                        " 	c None",
+                        ".	c #000000",
+                        "+	c #FFFF00",
+                        "@	c #FFFFFF",
+                        "                ",
+                        "                ",
+                        "     .    .     ",
+                        "    ..    ..    ",
+                        "   .+.    .+.   ",
+                        "  .++.    .++.  ",
+                        " .+++. .. .+++. ",
+                        ".++++. .. .++++.",
+                        " .+++. .. .+++. ",
+                        "  .++.    .++.  ",
+                        "   .+.    .+.   ",
+                        "    ..    ..    ",
+                        "     .    .     ",
+                        "                ",
+                        "                ",
+                        "                "};
+                        """
 
 class Rectangle:
         "The Rectangle object"
