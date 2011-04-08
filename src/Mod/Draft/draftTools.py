@@ -2029,7 +2029,7 @@ class Dimension(Creator):
 		"creates an object in the current doc"
 		self.doc.openTransaction("Create "+self.featureName)
                 if self.angledata:
-                        Draft.makeDimension(self.link,self.indices,self.node[-1])
+                        Draft.makeAngularDimension(self.center,self.angledata,self.node[-1])
                 elif self.link:
                         Draft.makeDimension(self.link[0],self.link[1],self.link[2],self.node[2])
                 else:
@@ -2072,6 +2072,7 @@ class Dimension(Creator):
                                 if self.node and (len(self.edges) < 2):
                                         self.dimtrack.on()
                                 if len(self.edges) == 2:
+                                        # angular dimension
                                         self.dimtrack.off()
                                         r = point.sub(self.center)
                                         self.arctrack.setRadius(r.Length)
@@ -2117,12 +2118,14 @@ class Dimension(Creator):
                                                         if (i1 != None) and (i2 != None):
                                                                 self.indices.append(num)
                                                                 if not self.edges:
+                                                                        # nothing snapped yet, we treat it as normal edge-snapped dimension
                                                                         self.node = [v1,v2]
                                                                         self.link = [ob,i1,i2]
                                                                         self.edges.append(ed)
                                                                 else:
+                                                                        # there is already a snapped edge, so we start angular dimension
                                                                         self.edges.append(ed)
-                                                                        self.node.extend([v1,v2])
+                                                                        self.node.extend([v1,v2]) # self.node now has the 4 endpoints
                                                                         c = fcgeo.findIntersection(self.node[0],
                                                                                                              self.node[1],
                                                                                                              self.node[2],
