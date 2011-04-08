@@ -11,9 +11,6 @@
 #include <map>
 #include <list>
 #include <vector>
-#ifndef WIN32
-    #define _hypot hypot
-#endif
 
 #ifndef SOLVE_H_
 #define SOLVE_H_
@@ -299,13 +296,14 @@ class Solver: public SolveImpl
     std::vector<std::vector<double> > NDotGammaDotDeltaXt;
 
     void allocate(int xLength);
-    int solveI(double **x, int xLength, constraint *cons, int consLength, int isFine);
+    int solveI(double **xin, int xLength, constraint *cons, int consLength, int isFine);
+    double linesearch(double fold, int &ftimes);
     void deallocate();
 public:
     Solver();
     ~Solver();
 
-    int solve(double **x, int xLength, constraint *cons, int consLength, int isFine);
+    int solve(double **xin, int xLength, constraint *cons, int consLength, int isFine);
     double GetElement(size_t i) {return x[i];}
     void SetElement(size_t i, double v) { x[i] = v;}
 };

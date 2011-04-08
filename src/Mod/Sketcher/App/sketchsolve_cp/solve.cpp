@@ -106,7 +106,6 @@ int Solver::solveI(double **xin, int xLength, constraint *cons, int consLength, 
     //Calculate the gradient
     //gradF=x;
     double norm; //The norm of the gradient vector
-    double f1,f2,f3,alpha1,alpha2,alpha3,alphaStar;
     norm = 0;
     pert = f0*pertMag;
     for (int j=0; j < xLength; j++)
@@ -140,105 +139,23 @@ int Solver::solveI(double **xin, int xLength, constraint *cons, int consLength, 
                 N[i][j]=0;
         }
     }
+
+    for (int i=0; i < xLength; i++)
+        xold[i]=x[i]; //Copy last values to xold
+
     double fnew;
-    fnew=f0+1;      //make fnew greater than fold
-    double alpha=1; //Initial search vector multiplier
-
-    double fold;
-    for (int i=0; i < xLength; i++)
-        xold[i]=x[i];//Copy last values to xold
 
     ///////////////////////////////////////////////////////
-    /// Start of line search
+    /// Line search
     ///////////////////////////////////////////////////////
+    fnew = linesearch(f0, ftimes);
 
-    //Make the initial position alpha1
-    alpha1=0;
-    f1 = f0;
-
-    //Take a step of alpha=1 as alpha2
-    alpha2=1;
-    for (int i=0; i < xLength; i++)
-        x[i]=xold[i]+alpha2*s[i]; //calculate the new x
-    f2 = GetError();
-    ftimes++;
-
-    //Take a step of alpha 3 that is 2*alpha2
-    alpha3 = alpha*2;
-    for (int i=0; i < xLength; i++)
-        x[i]=xold[i]+alpha3*s[i]; //calculate the new x
-    f3=GetError();
-    ftimes++;
-
-    //Now reduce or lengthen alpha2 and alpha3 until the minimum is
-    //Bracketed by the triplet f1>f2<f3
-    while (f2 > f1 || f2 > f3)
-    {
-        if (f2 > f1)
-        {
-            //If f2 is greater than f1 then we shorten alpha2 and alpha3 closer to f1
-            //Effectively both are shortened by a factor of two.
-            alpha3=alpha2;
-            f3=f2;
-            alpha2=alpha2/2;
-            for (int i=0; i < xLength; i++)
-                x[i]=xold[i]+alpha2*s[i]; //calculate the new x
-            f2=GetError();
-            ftimes++;
-        }
-        else if (f2 > f3)
-        {
-            //If f2 is greater than f3 then we length alpah2 and alpha3 closer to f1
-            //Effectively both are lengthened by a factor of two.
-            alpha2=alpha3;
-            f2=f3;
-            alpha3=alpha3*2;
-            for (int i=0; i < xLength; i++)
-                x[i]=xold[i]+alpha3*s[i]; //calculate the new x
-            f3=GetError();
-            ftimes++;
-        }
-    }
-    // get the alpha for the minimum f of the quadratic approximation
-    alphaStar = alpha2+((alpha2-alpha1)*(f1-f3))/(3*(f1-2*f2+f3));
-
-    //Guarantee that the new alphaStar is within the bracket
-    if (alphaStar > alpha3 || alphaStar < alpha1)
-        alphaStar=alpha2;
-
-    if(alphaStar != alphaStar)
-        alphaStar=.001; //Fix nan problem
-
-    /// Set the values to alphaStar
-    for (int i=0; i < xLength; i++)
-        x[i]=xold[i]+alphaStar*s[i]; //calculate the new x
-    fnew=GetError();
-    ftimes++;
-    fold=fnew;
-    /*
-    cout<<"F at alphaStar: "<<fnew<<endl;
-    cout<<"alphaStar: "<<alphaStar<<endl;
-    cout<<"F0: "<<f0<<endl;
-    cout<<"F1: "<<f1<<endl;
-    cout<<"F2: "<<f2<<endl;
-    cout<<"F3: "<<f3<<endl;
-    cout<<"Alpha1: "<<alpha1<<endl;
-    cout<<"Alpha2: "<<alpha2<<endl;
-    cout<<"Alpha3: "<<alpha3<<endl;
-    */
-
-    /////////////////////////////////////
-    ///end of line search
-    /////////////////////////////////////
-
-    double bottom=0;
     double deltaXtDotGamma;
     double gammatDotNDotGamma=0;
     double firstTerm=0;
     double deltaXnorm=1;
 
     int iterations=1;
-    int steps;
 
     ///Calculate deltaX
     for (int i=0; i < xLength; i++)
@@ -249,7 +166,6 @@ int Solver::solveI(double **xin, int xLength, constraint *cons, int consLength, 
         //////////////////////////////////////////////////////////////////////
         ///Start of main loop!!!!
         //////////////////////////////////////////////////////////////////////
-        bottom=0;
         deltaXtDotGamma = 0;
         pert = fnew*pertMag;
         if (pert < pertMin)
@@ -261,14 +177,12 @@ int Solver::solveI(double **xin, int xLength, constraint *cons, int consLength, 
             ftimes++;
             //Calculate the change in the gradient
             gamma[i]=gradnew[i]-grad[i];
-            bottom+=deltaX[i]*gamma[i];
-
             deltaXtDotGamma += deltaX[i]*gamma[i];
         }
 
-        //make sure that bottom is never 0
-        if (bottom == 0)
-            bottom=.0000000001;
+        //make sure that deltaXtDotGamma is never 0
+        if (deltaXtDotGamma == 0)
+            deltaXtDotGamma=.0000000001;
 
         //calculate all (1xn).(nxn)
         for (int i=0; i < xLength; i++)
@@ -287,13 +201,13 @@ int Solver::solveI(double **xin, int xLength, constraint *cons, int consLength, 
         //Calculate the first term
 
         firstTerm=0;
-        firstTerm=1+gammatDotNDotGamma/bottom;
+        firstTerm=1+gammatDotNDotGamma/deltaXtDotGamma;
 
         //Calculate all (nx1).(1xn) matrices
         for (int i=0; i < xLength; i++)
             for (int j=0; j < xLength; j++)
             {
-                FirstSecond[i][j]=((deltaX[j]*deltaX[i])/bottom)*firstTerm;
+                FirstSecond[i][j]=((deltaX[j]*deltaX[i])/deltaXtDotGamma)*firstTerm;
                 deltaXDotGammatDotN[i][j]=deltaX[i]*gammatDotN[j];
                 gammatDotDeltaXt[i][j]=gamma[i]*deltaX[j];
             }
@@ -313,7 +227,7 @@ int Solver::solveI(double **xin, int xLength, constraint *cons, int consLength, 
         {
             for (int j=0; j < xLength; j++)
             {
-                N[i][j]=N[i][j]+FirstSecond[i][j]-(deltaXDotGammatDotN[i][j]+NDotGammaDotDeltaXt[i][j])/bottom;
+                N[i][j]=N[i][j]+FirstSecond[i][j]-(deltaXDotGammatDotN[i][j]+NDotGammaDotDeltaXt[i][j])/deltaXtDotGamma;
                 //cout<<" "<<N[i][j]<<" ";
             }
             //cout<<endl;
@@ -327,122 +241,14 @@ int Solver::solveI(double **xin, int xLength, constraint *cons, int consLength, 
                 s[i]+=-N[i][j]*gradnew[j];
         }
 
-        alpha=1; //Initial search vector multiplier
-
         //copy newest values to the xold
         for (int i=0; i < xLength; i++)
-            xold[i]=x[i];//Copy last values to xold
-        steps=0;
+            xold[i]=x[i]; //Copy last values to xold
 
         ///////////////////////////////////////////////////////
-        /// Start of line search
+        /// Line search
         ///////////////////////////////////////////////////////
-
-        //Make the initial position alpha1
-        alpha1=0;
-        f1 = fnew;
-
-        //Take a step of alpha=1 as alpha2
-        alpha2=1;
-        for (int i=0; i < xLength; i++)
-            x[i]=xold[i]+alpha2*s[i]; //calculate the new x
-        f2 = GetError();
-        ftimes++;
-
-        //Take a step of alpha 3 that is 2*alpha2
-        alpha3 = alpha2*2;
-        for (int i=0; i < xLength; i++)
-            x[i]=xold[i]+alpha3*s[i]; //calculate the new x
-        f3=GetError();
-        ftimes++;
-
-        //Now reduce or lengthen alpha2 and alpha3 until the minimum is
-        //Bracketed by the triplet f1>f2<f3
-        steps=0;
-        while (f2 > f1 || f2 > f3)
-        {
-            if (f2 > f1)
-            {
-                //If f2 is greater than f1 then we shorten alpha2 and alpha3 closer to f1
-                //Effectively both are shortened by a factor of two.
-                alpha3=alpha2;
-                f3=f2;
-                alpha2=alpha2/2;
-                for (int i=0; i < xLength; i++)
-                    x[i]=xold[i]+alpha2*s[i]; //calculate the new x
-                f2=GetError();
-                ftimes++;
-            }
-            else if (f2 > f3)
-            {
-                //If f2 is greater than f3 then we length alpah2 and alpha3 closer to f1
-                //Effectively both are lengthened by a factor of two.
-                alpha2=alpha3;
-                f2=f3;
-                alpha3=alpha3*2;
-                for (int i=0; i < xLength; i++)
-                    x[i]=xold[i]+alpha3*s[i]; //calculate the new x
-                f3=GetError();
-                ftimes++;
-            }
-            /* this should be deleted soon!!!!
-            if (steps==-4)
-            {
-                alpha2=1;
-                alpha3=2;
-
-                for (int i=0; i < xLength; i++)
-                {
-                    for (int j=0; j < xLength; j++)
-                    {
-                        if (i==j)
-                        {
-                            N[i][j]=1;
-                            s[i]=-gradnew[i]; //Calculate the initial search vector
-                        } else
-                            N[i][j]=0;
-                    }
-                }
-            }
-            */
-            /*
-            if (steps>100)
-            {
-                continue;
-            }
-            */
-            steps=steps+1;
-        }
-
-        // get the alpha for the minimum f of the quadratic approximation
-        alphaStar = alpha2+((alpha2-alpha1)*(f1-f3))/(3*(f1-2*f2+f3));
-
-        //Guarantee that the new alphaStar is within the bracket
-        if (alphaStar >= alpha3 || alphaStar <= alpha1)
-            alphaStar=alpha2;
-        if (alphaStar!=alphaStar)
-            alphaStar=0;
-
-        /// Set the values to alphaStar
-        for (int i=0; i < xLength; i++)
-            x[i]=xold[i]+alphaStar*s[i]; //calculate the new x
-        fnew=GetError();
-        ftimes++;
-
-        /*
-        cout<<"F at alphaStar: "<<fnew<<endl;
-        cout<<"alphaStar: "<<alphaStar<<endl;
-        cout<<"F1: "<<f1<<endl;
-        cout<<"F2: "<<f2<<endl;
-        cout<<"F3: "<<f3<<endl;
-        cout<<"Alpha1: "<<alpha1<<endl;
-        cout<<"Alpha2: "<<alpha2<<endl;
-        cout<<"Alpha3: "<<alpha3<<endl;
-        */
-
-        /////////////////////////////////////
-        ///end of line search
-        ////////////////////////////////////
+        fnew = linesearch(fnew, ftimes);
 
         deltaXnorm=0;
         for (int i=0; i < xLength; i++)
@@ -474,11 +280,11 @@ int Solver::solveI(double **xin, int xLength, constraint *cons, int consLength, 
 
     ///End of function
     double validSolution;
-    if (isFine==1)
+    if (isFine == 1)
         validSolution=validSolutionFine;
     else
         validSolution=validSoltuionRough;
-    if (fnew<validSolution)
+    if (fnew < validSolution)
         return success;
     else
     {
@@ -490,3 +296,83 @@ int Solver::solveI(double **xin, int xLength, constraint *cons, int consLength, 
 
 }
 
+double Solver::linesearch(double fold, int &ftimes)
+{
+    double f1,f2,f3,fstar,alpha1,alpha2,alpha3,alphaStar;
+
+    //Make the initial position alpha1
+    alpha1=0;
+    f1 = fold;
+
+    //Take a step of alpha2=1
+    alpha2=1;
+    for (int i=0; i < xLength; i++)
+        x[i]=xold[i]+alpha2*s[i]; //calculate the new x
+    f2 = GetError();
+    ftimes++;
+
+    //Take a step of alpha3 that is 2*alpha2
+    alpha3 = alpha2*2;
+    for (int i=0; i < xLength; i++)
+        x[i]=xold[i]+alpha3*s[i]; //calculate the new x
+    f3=GetError();
+    ftimes++;
+
+    //Now reduce or lengthen alpha2 and alpha3 until the minimum is
+    //Bracketed by the triplet f1>f2<f3
+    while (f2 > f1 || f2 > f3)
+    {
+        if (f2 > f1)
+        {
+            //If f2 is greater than f1 then we shorten alpha2 and alpha3 closer to f1
+            //Effectively both are shortened by a factor of two.
+            alpha3=alpha2;
+            f3=f2;
+            alpha2=alpha2/2;
+            for (int i=0; i < xLength; i++)
+                x[i]=xold[i]+alpha2*s[i]; //calculate the new x
+            f2=GetError();
+            ftimes++;
+        }
+        else if (f2 > f3)
+        {
+            //If f2 is greater than f3 then we length alpha2 and alpha3 closer to f1
+            //Effectively both are lengthened by a factor of two.
+            alpha2=alpha3;
+            f2=f3;
+            alpha3=alpha3*2;
+            for (int i=0; i < xLength; i++)
+                x[i]=xold[i]+alpha3*s[i]; //calculate the new x
+            f3=GetError();
+            ftimes++;
+        }
+    }
+    // get the alpha for the minimum f of the quadratic approximation
+    alphaStar = alpha2+((alpha2-alpha1)*(f1-f3))/(3*(f1-2*f2+f3));
+
+    //Guarantee that the new alphaStar is within the bracket
+    if (alphaStar >= alpha3 || alphaStar <= alpha1)
+        alphaStar=alpha2;
+
+    if (alphaStar != alphaStar)
+        alphaStar=0;
+
+    /// Set the values to alphaStar
+    for (int i=0; i < xLength; i++)
+        x[i]=xold[i]+alphaStar*s[i]; //calculate the new x
+    fstar=GetError();
+    ftimes++;
+
+    /*
+    cout<<"F at alphaStar: "<<fnew<<endl;
+    cout<<"alphaStar: "<<alphaStar<<endl;
+    cout<<"F0: "<<f0<<endl;
+    cout<<"F1: "<<f1<<endl;
+    cout<<"F2: "<<f2<<endl;
+    cout<<"F3: "<<f3<<endl;
+    cout<<"Alpha1: "<<alpha1<<endl;
+    cout<<"Alpha2: "<<alpha2<<endl;
+    cout<<"Alpha3: "<<alpha3<<endl;
+    */
+    return fstar;
+}
