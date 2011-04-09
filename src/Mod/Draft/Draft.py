@@ -1027,6 +1027,12 @@ class ViewProviderDimension:
 			proj = ed.cross(Vector(0,0,1))
 		angle = -fcvec.angle(p3.sub(p2))
 		if (angle >= math.pi/2) or (angle < -math.pi/2): angle = math.pi+angle
+                s = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").\
+                    GetInt("dimorientation")
+                if s == 0:
+                        if (round(angle,precision()) == round(-math.pi/2,precision())) \
+                        or (round(angle,precision()) == round(1.5*math.pi,precision())):
+                                angle = math.pi/2
 		offset = fcvec.rotate(FreeCAD.Vector(obj.ViewObject.FontSize*.2,0,0),
                                       angle+math.pi/2)
                 if obj.ViewObject.Position == Vector(0,0,0):
@@ -1337,6 +1343,11 @@ class ViewProviderAngularDimension:
                 trot = fcvec.angle(rv)-math.pi/2
                 if (trot > math.pi/2) or (trot < -math.pi/2):
                         trot = trot + math.pi
+                s = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").\
+                    GetInt("dimorientation")
+                if s == 0:
+                        if round(trot,precision()) == round(-math.pi/2,precision()):
+                                trot = math.pi/2
                 return cir, tbase, trot, cir.Vertexes[0].Point, cir.Vertexes[-1].Point
 
 	def updateData(self, obj, prop):
