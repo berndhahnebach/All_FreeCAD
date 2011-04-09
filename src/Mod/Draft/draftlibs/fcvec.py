@@ -189,7 +189,6 @@ def reorient(u,ref):
         s = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").\
             GetInt("dimorientation")
         if ref == "x":
-                print u
                 if u.x < 0:
                         return neg(u)
                 elif u.x == 0:
