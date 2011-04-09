@@ -41,6 +41,7 @@
 # include <GeomAPI_ProjectPointOnSurf.hxx>
 # include <GeomLProp_SLProps.hxx>
 # include <gp_Trsf.hxx>
+# include <Handle_Poly_Triangulation.hxx>
 # include <Poly_Array1OfTriangle.hxx>
 # include <Poly_Triangulation.hxx>
 # include <TColgp_Array1OfPnt.hxx>
@@ -457,12 +458,12 @@ void ViewProviderPartExt::updateVisual(const TopoDS_Shape &inputShape)
 
         // count triangles and nodes in the mesh
         TopExp_Explorer Ex;
-        for(Ex.Init(cShape,TopAbs_FACE);Ex.More();Ex.Next()) {
-               Handle (Poly_Triangulation) mesh = BRep_Tool::Triangulation(TopoDS::Face(Ex.Current()),TopLoc_Location());
-               if (mesh.IsNull()) continue;
-               nbrTriangles += mesh->NbTriangles();
-               nbrNodes     += mesh->NbNodes();
-               nbrFaces++;
+        for (Ex.Init(cShape,TopAbs_FACE);Ex.More();Ex.Next()) {
+            Handle (Poly_Triangulation) mesh = BRep_Tool::Triangulation(TopoDS::Face(Ex.Current()), aLoc);
+            if (mesh.IsNull()) continue;
+            nbrTriangles += mesh->NbTriangles();
+            nbrNodes     += mesh->NbNodes();
+            nbrFaces++;
         }
 
         // get a indexed map of edges
@@ -473,7 +474,7 @@ void ViewProviderPartExt::updateVisual(const TopoDS_Shape &inputShape)
         std::vector<int32_t>  indxVector;
         // count and index the edges
         for (int i=1; i <= M.Extent(); i++) {
-            const TopoDS_Edge &actEdge = TopoDS::Edge(M(i));
+            //const TopoDS_Edge &actEdge = TopoDS::Edge(M(i));
             edgeIdxSet.insert(i);
             nbrEdges++;
         }
