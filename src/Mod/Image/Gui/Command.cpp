@@ -52,7 +52,6 @@ CmdImageOpen::CmdImageOpen()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "image-import";
-    sAccel          = "Ctrl+O";
 }
 
 void CmdImageOpen::activated(int iMsg)

@@ -191,9 +191,9 @@ void CommandBase::setPixmap(const char* s)
 void CommandBase::setAccel(const char* s)
 {
 #if defined (_MSC_VER)
-    this->sWhatsThis = _strdup(s);
+    this->sAccel = _strdup(s);
 #else
-    this->sWhatsThis = strdup(s);
+    this->sAccel = strdup(s);
 #endif
 }
 
