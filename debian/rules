@@ -82,6 +82,8 @@ install-stamp:
 	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Test/lib*.so.* usr/lib/freecad/Mod/Test
 	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Test/*.py usr/lib/freecad/Mod/Test
 	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Test/QtUnitGui.so usr/lib/freecad/Mod/Test
+	# special treating of Arch module
+	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Arch/*.py usr/lib/freecad/Mod/Arch
 
 	dh_install -pfreecad-dev debian/tmp/freecad/usr/include/* usr/include
 	dh_install -pfreecad-dev debian/tmp/freecad/usr/lib/freecad/lib/lib*.la usr/lib/freecad/lib

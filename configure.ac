@@ -935,6 +935,7 @@ src/Mod/Complete/App/Makefile
 src/Mod/Complete/Gui/Makefile
 src/Mod/Complete/Gui/Resources/Makefile
 src/Mod/Draft/Makefile
+src/Mod/Arch/Makefile
 src/Mod/Test/Makefile
 src/Mod/Test/Gui/Makefile
 src/Mod/Web/Makefile
