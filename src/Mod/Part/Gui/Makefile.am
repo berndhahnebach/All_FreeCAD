@@ -64,6 +64,7 @@ libPartGui_la_SOURCES=\
 		PreCompiled.h \
 		SoFCShapeObject.cpp \
 		ViewProvider.cpp \
+		ViewProviderExt.cpp \
 		ViewProviderReference.cpp \
 		ViewProviderBox.cpp \
 		ViewProviderCurveNet.cpp \
@@ -78,6 +79,7 @@ libPartGui_la_SOURCES=\
 include_HEADERS=\
 		SoFCShapeObject.h \
 		ViewProvider.h \
+		ViewProviderExt.h \
 		ViewProviderReference.h \
 		ViewProviderBox.h \
 		ViewProviderCurveNet.h \
