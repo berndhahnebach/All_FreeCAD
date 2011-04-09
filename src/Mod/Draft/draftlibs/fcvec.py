@@ -186,30 +186,55 @@ def getPlaneRotation(u,v,w=None):
 def reorient(u,ref):
         '''Checks the orientation of u and reorients on
         what we consider positive axis direction'''
+        s = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").\
+            GetInt("dimorientation")
         if ref == "x":
+                print u
                 if u.x < 0:
                         return neg(u)
                 elif u.x == 0:
-                        if u.y > 0:
+                        if not s:
+                                if u.y < 0:
+                                        return neg(u)
+                        elif u.y > 0:
                                 return neg(u)
                         elif u.y == 0:
-                                if u.z > 0: return neg(u)
+                                if not s:
+                                        if u.z < 0:
+                                                return neg(u)
+                                elif u.z > 0:
+                                        return neg(u)
+                                
         elif ref == "y":
                 if u.y < 0:
                         return neg(u)
                 elif u.y == 0:
-                        if u.x < 0:
+                        if not s:
+                                if u.x > 0:
+                                        return neg(u)
+                        elif u.x < 0:
                                 return neg(u)
                         elif u.x == 0:
-                                if u.z < 0: return neg(u)
+                                if not s:
+                                        if u.z > 0:
+                                                return neg(u)
+                                elif u.z < 0:
+                                        return neg(u)
         elif ref == "z":
                 if u.z < 0:
                         return neg(u)
                 elif u.z == 0:
-                        if u.y > 0:
+                        if not s:
+                                if u.y > 0:
+                                        return neg(u)
+                        elif u.y > 0:
                                 return neg(u)
                         elif u.y == 0:
-                                if u.x < 0: return neg(u)
+                                if not s:
+                                        if u.x > 0:
+                                                return neg(u)
+                                elif u.x < 0:
+                                        return neg(u)
         return u
 
 def removeDoubles(vlist):
