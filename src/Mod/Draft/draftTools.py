@@ -630,30 +630,38 @@ class dimTracker(Tracker):
 		self.coords = coin.SoCoordinate3() # this is the coordinate
 		self.coords.point.setValues(0,4,[[0,0,0],[0,0,0],[0,0,0],[0,0,0]])
 		Tracker.__init__(self,dotted,scolor,swidth,[self.coords,line])
+                self.p1 = self.p2 = self.p3 = None
 
-	def update(self,pts,p3=None):
-                if (len(pts) == 2) and p3:
-                        pts.append(p3)
-		if len(pts) == 2:
-			points = [fcvec.tup(pts[0],True),fcvec.tup(pts[0],True),\
-				fcvec.tup(pts[1],True),fcvec.tup(pts[1],True)]
-			self.coords.point.setValues(0,4,points)
-		elif len(pts) == 3:
-			p1 = pts[0]
-			p4 = pts[1]
-                        if fcvec.equals(p1,p4):
-                                proj = None
-                        else:
-                                base = Part.Line(p1,p4).toShape()
-                                proj = fcgeo.findDistance(pts[2],base)
-			if not proj:
-				p2 = p1
-				p3 = p4
-			else:
-				p2 = p1.add(fcvec.neg(proj))
-				p3 = p4.add(fcvec.neg(proj))
-			points = [fcvec.tup(p1),fcvec.tup(p2),fcvec.tup(p3),fcvec.tup(p4)]
-			self.coords.point.setValues(0,4,points)
+	def update(self,pts):
+                if len(pts) == 1:
+                        self.p3 = pts[0]
+                else:
+                        self.p1 = pts[0]
+                        self.p2 = pts[1]
+                        if len(pts) > 2:
+                                self.p3 = pts[2]
+                self.calc()
+        
+        def calc(self):
+                if (self.p1 != None) and (self.p2 != None):
+			points = [fcvec.tup(self.p1,True),fcvec.tup(self.p2,True),\
+				fcvec.tup(self.p1,True),fcvec.tup(self.p2,True)]
+                        if self.p3 != None:
+                                p1 = self.p1
+                                p4 = self.p2
+                                if fcvec.equals(p1,p4):
+                                        proj = None
+                                else:
+                                        base = Part.Line(p1,p4).toShape()
+                                        proj = fcgeo.findDistance(self.p3,base)
+                                if not proj:
+                                        p2 = p1
+                                        p3 = p4
+                                else:
+                                        p2 = p1.add(fcvec.neg(proj))
+                                        p3 = p4.add(fcvec.neg(proj))
+                                points = [fcvec.tup(p1),fcvec.tup(p2),fcvec.tup(p3),fcvec.tup(p4)]
+                        self.coords.point.setValues(0,4,points)
 
 class bsplineTracker(Tracker):
     "A bspline tracker"
@@ -2010,6 +2018,7 @@ class Dimension(Creator):
                                 self.angledata = None
                                 self.indices = []
                                 self.center = None
+                                self.arcmode = False
                                 self.constraintrack = lineTracker(dotted=True)
                                 msg(translate("draft", "Pick first point:\n"))
                                 FreeCADGui.draftToolBar.draftWidget.setVisible(True)
@@ -2030,7 +2039,7 @@ class Dimension(Creator):
 		self.doc.openTransaction("Create "+self.featureName)
                 if self.angledata:
                         Draft.makeAngularDimension(self.center,self.angledata,self.node[-1])
-                elif self.link:
+                elif self.link and (not self.arcmode):
                         Draft.makeDimension(self.link[0],self.link[1],self.link[2],self.node[2])
                 else:
                         Draft.makeDimension(self.node[0],self.node[1],self.node[2])
@@ -2050,6 +2059,10 @@ class Dimension(Creator):
 	def action(self,arg):
 		"scene event handler"
 		if (arg["Type"] == "SoLocation2Event"): #mouse movement detection
+                        shift = None
+                        if self.arcmode:
+                                shift = arg["ShiftDown"]
+                                arg["ShiftDown"] = False
 			point,ctrlPoint = getPoint(self,arg)
                         self.ui.cross(True)
 			if arg["AltDown"] and (len(self.node)<3):
@@ -2066,7 +2079,7 @@ class Dimension(Creator):
                                                 ed = ob.Shape.Edges[num]
                                                 v1 = ed.Vertexes[0].Point
                                                 v2 = ed.Vertexes[-1].Point
-                                                self.dimtrack.update([v1,v2],self.cont)
+                                                self.dimtrack.update([v1,v2,self.cont])
 			else:
                                 self.ui.cross(True)
                                 if self.node and (len(self.edges) < 2):
@@ -2090,7 +2103,19 @@ class Dimension(Creator):
                                 if self.dir:
                                         point = self.node[0].add(fcvec.project(point.sub(self.node[0]),self.dir))
 				if len(self.node) == 2:
-                                        self.dimtrack.update(self.node+[point],self.cont)
+                                        if self.arcmode and self.edges:
+                                                cen = self.edges[0].Curve.Center
+                                                rad = self.edges[0].Curve.Radius
+                                                baseray = point.sub(cen)
+                                                v2 = fcvec.scaleTo(baseray,rad)
+                                                v1 = fcvec.neg(v2)
+                                                if shift:
+                                                        self.node = [cen,cen.add(v2)]
+                                                else:
+                                                        self.node = [cen.add(v1),cen.add(v2)]
+                                                self.dimtrack.update(self.node)
+                                        else:
+                                                self.dimtrack.update(self.node+[point]+[self.cont])
 				# Draw constraint tracker line.
 				if (arg["ShiftDown"]):
 					self.constraintrack.p1(point)
@@ -2122,6 +2147,8 @@ class Dimension(Creator):
                                                                         self.node = [v1,v2]
                                                                         self.link = [ob,i1,i2]
                                                                         self.edges.append(ed)
+                                                                        if isinstance(ed.Curve,Part.Circle):
+                                                                                self.arcmode = True
                                                                 else:
                                                                         # there is already a snapped edge, so we start angular dimension
                                                                         self.edges.append(ed)
@@ -2157,6 +2184,11 @@ class Dimension(Creator):
                                         self.createObject()
                                         if not self.cont: self.finish()
 				elif (len(self.node) == 3):
+                                        if self.arcmode:
+                                                v = self.node[1].sub(self.node[0])
+                                                v = fcvec.scale(v,0.5)
+                                                cen = self.node[0].add(v)
+                                                self.node = [self.node[0],self.node[1],cen]
 					self.createObject()
 					if not self.cont: self.finish()
                                 elif self.angledata:

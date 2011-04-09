@@ -288,7 +288,7 @@ def makeDimension(p1,p2,p3=None,p4=None):
         '''makeDimension(p1,p2,[p3]) or makeDimension(object,i1,i2,p3)
         or makeDimension(objlist,indices,p3): Creates a Dimension object with
         the dimension line passign through p3.The current line width and color
-        will be used. There are 3 ways to create a dimension, depending on
+        will be used. There are 2 ways to create a dimension, depending on
         the arguments you pass to it:
         - (p1,p2,p3): creates a standard dimension from p1 to p2
         - (object,i1,i2,p3): creates a linked dimension to the given object,
@@ -315,6 +315,9 @@ def makeDimension(p1,p2,p3=None,p4=None):
         return obj
 
 def makeAngularDimension(center,angles,p3):
+        '''makeAngularDimension(center,[angle1,angle2],p3): creates an angular Dimension
+        from the given center, with the given list of angles, passing through p3.
+        '''
         obj = FreeCAD.ActiveDocument.addObject("App::FeaturePython","Dimension")
         AngularDimension(obj)
         ViewProviderAngularDimension(obj.ViewObject)
@@ -1041,6 +1044,7 @@ class ViewProviderDimension:
                         tbase = obj.ViewObject.Position
 		if not proj: norm = Vector(0,0,1)
                 else: norm = fcvec.neg(p3.sub(p2).cross(proj))
+                print p1,p2,p3,p4
 		return p1,p2,p3,p4,tbase,angle,norm
 
 	def attach(self, obj):
@@ -1129,8 +1133,8 @@ class ViewProviderDimension:
 		self.text.string = self.text3d.string = text
                 u = p3.sub(p2)
                 v = p2.sub(p1)
-                u.normalize()
-                v.normalize()
+                if not fcvec.isNull(u): u.normalize()
+                if not fcvec.isNull(v): v.normalize()
                 u = fcvec.reorient(u,"x")
                 v = fcvec.reorient(v,"y")
                 w = fcvec.reorient(u.cross(v),"z")
