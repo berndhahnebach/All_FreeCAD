@@ -181,7 +181,7 @@ public:
     App::PropertyFloatConstraint Pitch;
     App::PropertyFloatConstraint Height;
     App::PropertyFloatConstraint Radius;
-    App::PropertyFloatConstraint Apex;
+    App::PropertyFloatConstraint Angle;
 
     /** @name methods override feature */
     //@{

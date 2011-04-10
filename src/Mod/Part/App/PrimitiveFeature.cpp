@@ -420,8 +420,8 @@ Helix::Helix(void)
     Height.setConstraints(&floatRange);
     ADD_PROPERTY_TYPE(Radius,(1.0),"Helix",App::Prop_None,"The radius of the helix");
     Radius.setConstraints(&floatRange);
-    ADD_PROPERTY_TYPE(Apex,(0.0),"Helix",App::Prop_None,"If apex is > 0 a conical otherwise a cylindircal surface is used");
-    Apex.setConstraints(&apexRange);
+    ADD_PROPERTY_TYPE(Angle,(0.0),"Helix",App::Prop_None,"If angle is > 0 a conical otherwise a cylindircal surface is used");
+    Angle.setConstraints(&apexRange);
 }
 
 short Helix::mustExecute() const
@@ -432,7 +432,7 @@ short Helix::mustExecute() const
         return 1;
     if (Radius.isTouched())
         return 1;
-    if (Apex.isTouched())
+    if (Angle.isTouched())
         return 1;
     return Primitive::mustExecute();
 }
@@ -443,7 +443,7 @@ App::DocumentObjectExecReturn *Helix::execute(void)
         Standard_Real myPitch  = Pitch.getValue();
         Standard_Real myHeight = Height.getValue();
         Standard_Real myRadius = Radius.getValue();
-        Standard_Real myApex   = Apex.getValue();
+        Standard_Real myAngle  = Angle.getValue();
 
         if (myPitch < Precision::Confusion())
             return new App::DocumentObjectExecReturn("Pitch of helix too small");
@@ -456,12 +456,12 @@ App::DocumentObjectExecReturn *Helix::execute(void)
 
         gp_Ax2 cylAx2(gp_Pnt(0.0,0.0,0.0) , gp::DZ());
         Handle_Geom_Surface surf;
-        if (myApex < Precision::Confusion()) {
+        if (myAngle < Precision::Confusion()) {
             surf = new Geom_CylindricalSurface(cylAx2, myRadius);
         }
         else {
-            myApex = myApex*(M_PI/180);
-            surf = new Geom_ConicalSurface(gp_Ax3(cylAx2), myApex, myRadius);
+            myAngle = myAngle*(M_PI/180);
+            surf = new Geom_ConicalSurface(gp_Ax3(cylAx2), myAngle, myRadius);
         }
 
         gp_Pnt2d aPnt(0, 0);
