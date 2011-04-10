@@ -259,11 +259,6 @@ void DlgCustomActionsImp::on_buttonAddAction_clicked()
     m_sPixmap = QString::null;
 
     if (!actionAccel->text().isEmpty()) {
-      /*QKeySequence shortcut(actionAccel->text());
-        int key=0;
-        for (uint i=0; i<shortcut.count(); i++)
-        key += shortcut[i];
-        macro->setAccel(key); */
       macro->setAccel(actionAccel->text().toAscii());
     }
     actionAccel->clear();
