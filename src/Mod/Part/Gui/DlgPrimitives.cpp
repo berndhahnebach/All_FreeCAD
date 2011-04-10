@@ -52,6 +52,35 @@ DlgPrimitives::DlgPrimitives(QWidget* parent, Qt::WFlags fl)
 
     connect(ui.viewPositionButton, SIGNAL(clicked()),
             this, SLOT(on_viewPositionButton_clicked()));
+
+    // set limits
+    //
+    // plane
+    ui.planeLength->setMaximum(INT_MAX);
+    ui.planeWidth->setMaximum(INT_MAX);
+    // box
+    ui.boxLength->setMaximum(INT_MAX);
+    ui.boxWidth->setMaximum(INT_MAX);
+    ui.boxHeight->setMaximum(INT_MAX);
+    // cylinder
+    ui.cylinderRadius->setMaximum(INT_MAX);
+    ui.cylinderHeight->setMaximum(INT_MAX);
+    // cone
+    ui.coneRadius1->setMaximum(INT_MAX);
+    ui.coneRadius2->setMaximum(INT_MAX);
+    ui.coneHeight->setMaximum(INT_MAX);
+    // sphere
+    ui.sphereRadius->setMaximum(INT_MAX);
+    // ellipsoid
+    ui.ellipsoidRadius1->setMaximum(INT_MAX);
+    ui.ellipsoidRadius2->setMaximum(INT_MAX);
+    // torus
+    ui.torusRadius1->setMaximum(INT_MAX);
+    ui.torusRadius2->setMaximum(INT_MAX);
+    // helix
+    ui.helixPitch->setMaximum(INT_MAX);
+    ui.helixHeight->setMaximum(INT_MAX);
+    ui.helixRadius->setMaximum(INT_MAX);
 }
 
 /*  
