@@ -195,13 +195,15 @@ namespace Gui {
     class PythonRedirector
     {
     public:
-        PythonRedirector(const char* type, PyObject* obj) : out(obj), std_out(type)
+        PythonRedirector(const char* type, PyObject* obj) : std_out(type), out(obj)
         {
+            Base::PyGILStateLocker lock;
             old = PySys_GetObject(const_cast<char*>(std_out));
             PySys_SetObject(const_cast<char*>(std_out), obj);
         }
         ~PythonRedirector()
         {
+            Base::PyGILStateLocker lock;
             PySys_SetObject(const_cast<char*>(std_out), old);
             Py_XDECREF(out);
         }
