@@ -50,6 +50,7 @@
 
 
 #include "PrimitiveFeature.h"
+#include <Base/Tools.h>
 
 
 namespace Part {
@@ -460,7 +461,7 @@ App::DocumentObjectExecReturn *Helix::execute(void)
             surf = new Geom_CylindricalSurface(cylAx2, myRadius);
         }
         else {
-            myAngle = myAngle*(M_PI/180);
+            myAngle = Base::degrees(myAngle);
             surf = new Geom_ConicalSurface(gp_Ax3(cylAx2), myAngle, myRadius);
         }
 
