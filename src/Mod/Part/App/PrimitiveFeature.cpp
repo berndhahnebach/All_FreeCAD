@@ -54,7 +54,7 @@
 
 namespace Part {
     const App::PropertyFloatConstraint::Constraints floatRange  = {0.0f,1000.0f,0.1f};
-    const App::PropertyFloatConstraint::Constraints apexRange   = {0.0f,180.0f,0.1f};
+    const App::PropertyFloatConstraint::Constraints apexRange   = {0.0f,90.0f,0.1f};
     const App::PropertyFloatConstraint::Constraints angleRangeU = {0.0f,360.0f,1.0f};
     const App::PropertyFloatConstraint::Constraints angleRangeV = {-90.0f,90.0f,1.0f};
     const App::PropertyFloatConstraint::Constraints torusRangeV = {-180.0f,180.0f,1.0f};
