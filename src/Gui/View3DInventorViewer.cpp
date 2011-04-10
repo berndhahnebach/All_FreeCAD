@@ -104,6 +104,7 @@
 #include "MainWindow.h"
 #include "NavigationStyle.h"
 #include "ViewProvider.h"
+#include "SpaceballEvent.h"
 
 #include <Inventor/draggers/SoCenterballDragger.h>
 
@@ -1023,6 +1024,42 @@ void View3DInventorViewer::processEvent(QEvent * event)
     if (!Base::Sequencer().isRunning() ||
         !Base::Sequencer().isBlocking())
         inherited::processEvent(event);
+
+    if (event->type() == Spaceball::ButtonEvent::ButtonEventType){
+        Spaceball::ButtonEvent *buttonEvent = static_cast<Spaceball::ButtonEvent *>(event);
+        if (!buttonEvent){
+            Base::Console().Log("invalid spaceball button event\n");
+            return;
+        }
+    }
+
+    if (event->type() == Spaceball::MotionEvent::MotionEventType) {
+        Spaceball::MotionEvent *motionEvent = static_cast<Spaceball::MotionEvent *>(event);
+        if (!motionEvent){
+            Base::Console().Log("invalid spaceball motion event\n");
+            return;
+        }
+
+        static float translationConstant(-.001f);
+        float xTrans, yTrans, zTrans;
+        xTrans = static_cast<float>(motionEvent->translationX());
+        yTrans = static_cast<float>(motionEvent->translationY());
+        zTrans = static_cast<float>(motionEvent->translationZ());
+        SbVec3f translationVector(xTrans, yTrans, zTrans * -1.0);
+        translationVector *= translationConstant;
+
+        static float rotationConstant(.0001f);
+        SbRotation xRot, yRot, zRot;
+        xRot.setValue(SbVec3f(-1.0, 0.0, 0.0), static_cast<float>(motionEvent->rotationX()) * rotationConstant);
+        yRot.setValue(SbVec3f(0.0, -1.0, 0.0), static_cast<float>(motionEvent->rotationY()) * rotationConstant);
+        zRot.setValue(SbVec3f(0.0, 0.0, 1.0), static_cast<float>(motionEvent->rotationZ()) * rotationConstant);
+
+        SoMotion3Event motion3Event;
+        motion3Event.setTranslation(translationVector);
+        motion3Event.setRotation(xRot * yRot * zRot);
+
+        this->processSoEvent(&motion3Event);
+    }
 }
 
 SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
