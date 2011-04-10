@@ -1437,7 +1437,7 @@ struct PyMethodDef Part_methods[] = {
     {"makeHelix" ,makeHelix,METH_VARARGS,
      "makeHelix(pitch,height,radius,[angle]) -- Make a helix with a given pitch, height and radius\n"
      "By default a cylindrical surface is used to create the helix. If the fourth parameter is set\n"
-     "a conical surface is used instead"},
+     "(the apex given in degree) a conical surface is used instead"},
 
     {"makeRevolution" ,makeRevolution,METH_VARARGS,
      "makeRevolution(Curve,[vmin,vmax,angle,pnt,dir]) -- Make a revolved shape\n"
