@@ -35,6 +35,7 @@
 # include <gp_GTrsf.hxx>
 # include <GCE2d_MakeSegment.hxx>
 # include <Geom_Plane.hxx>
+# include <Geom_ConicalSurface.hxx>
 # include <Geom_CylindricalSurface.hxx>
 # include <Geom2d_Line.hxx>
 # include <Geom2d_TrimmedCurve.hxx>
@@ -52,7 +53,8 @@
 
 
 namespace Part {
-    const App::PropertyFloatConstraint::Constraints floatRange = {0.0f,1000.0f,0.1f};
+    const App::PropertyFloatConstraint::Constraints floatRange  = {0.0f,1000.0f,0.1f};
+    const App::PropertyFloatConstraint::Constraints apexRange   = {0.0f,180.0f,0.1f};
     const App::PropertyFloatConstraint::Constraints angleRangeU = {0.0f,360.0f,1.0f};
     const App::PropertyFloatConstraint::Constraints angleRangeV = {-90.0f,90.0f,1.0f};
     const App::PropertyFloatConstraint::Constraints torusRangeV = {-180.0f,180.0f,1.0f};
@@ -418,6 +420,8 @@ Helix::Helix(void)
     Height.setConstraints(&floatRange);
     ADD_PROPERTY_TYPE(Radius,(1.0),"Helix",App::Prop_None,"The radius of the helix");
     Radius.setConstraints(&floatRange);
+    ADD_PROPERTY_TYPE(Apex,(0.0),"Helix",App::Prop_None,"If apex is > 0 a conical otherwise a cylindircal surface is used");
+    Apex.setConstraints(&apexRange);
 }
 
 short Helix::mustExecute() const
@@ -428,6 +432,8 @@ short Helix::mustExecute() const
         return 1;
     if (Radius.isTouched())
         return 1;
+    if (Apex.isTouched())
+        return 1;
     return Primitive::mustExecute();
 }
 
@@ -437,6 +443,7 @@ App::DocumentObjectExecReturn *Helix::execute(void)
         Standard_Real myPitch  = Pitch.getValue();
         Standard_Real myHeight = Height.getValue();
         Standard_Real myRadius = Radius.getValue();
+        Standard_Real myApex   = Apex.getValue();
 
         if (myPitch < Precision::Confusion())
             return new App::DocumentObjectExecReturn("Pitch of helix too small");
@@ -448,7 +455,14 @@ App::DocumentObjectExecReturn *Helix::execute(void)
             return new App::DocumentObjectExecReturn("Radius of helix too small");
 
         gp_Ax2 cylAx2(gp_Pnt(0.0,0.0,0.0) , gp::DZ());
-        Handle(Geom_CylindricalSurface) cyl = new Geom_CylindricalSurface(cylAx2 , myRadius);
+        Handle_Geom_Surface surf;
+        if (myApex < Precision::Confusion()) {
+            surf = new Geom_CylindricalSurface(cylAx2, myRadius);
+        }
+        else {
+            myApex = myApex*(M_PI/180);
+            surf = new Geom_ConicalSurface(gp_Ax3(cylAx2), myApex, myRadius);
+        }
 
         gp_Pnt2d aPnt(0, 0);
         gp_Dir2d aDir(2. * PI, myPitch);
@@ -459,7 +473,7 @@ App::DocumentObjectExecReturn *Helix::execute(void)
         gp_Pnt2d end = line->Value(2.0*PI*(myHeight/myPitch));
         Handle(Geom2d_TrimmedCurve) segm = GCE2d_MakeSegment(beg , end);
 
-        TopoDS_Edge edgeOnSurf = BRepBuilderAPI_MakeEdge(segm , cyl);
+        TopoDS_Edge edgeOnSurf = BRepBuilderAPI_MakeEdge(segm , surf);
         TopoDS_Wire wire = BRepBuilderAPI_MakeWire(edgeOnSurf);
         BRepLib::BuildCurves3d(wire);
         this->Shape.setValue(wire);
