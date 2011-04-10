@@ -11,6 +11,7 @@ EXTRA_DIST = \
 		cMake/FindOpenCasCade.cmake \
 		cMake/FindOpenCV.cmake \
 		cMake/FindSoQt.cmake \
+		cMake/FindSpnav.cmake \
 		cMake/FindXercesC.cmake \
 		cMake/FreeCadMacros.cmake \
 		cMake/UseLibPack6x.cmake \

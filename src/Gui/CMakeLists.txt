@@ -19,6 +19,7 @@ include_directories(
     ${XERCESC_INCLUDE_DIR}
     ${QT_INCLUDE_DIR}
     ${ZLIB_INCLUDE_DIR}
+    ${SPNAV_INCLUDE_PATH}
 )
 
 if(MSVC)
@@ -42,6 +43,7 @@ else(MSVC)
         ${QT_LIBRARIES}
         ${Boost_LIBRARIES}
         ${OPENGL_gl_LIBRARY}
+        ${SPNAV_LIBRARY}
     )
 endif(MSVC)
 
@@ -107,6 +109,7 @@ set(Gui_MOC_HDRS
     EditorView.h
     FileDialog.h
     Flag.h
+    GuiApplicationNativeEventAware.h
     HelpView.h
     InputVector.h
     MainWindow.h
@@ -701,11 +704,13 @@ SET(FreeCADGui_CPP_SRCS
     Document.cpp
     DocumentModel.cpp
     DocumentPyImp.cpp
+    GuiApplicationNativeEventAware.cpp
     GuiConsole.cpp
     Macro.cpp
     MergeDocuments.cpp
     resource.cpp
     Control.cpp
+    SpaceballEvent.cpp
     Thumbnail.cpp
     Utilities.cpp
     WaitCursor.cpp
@@ -716,6 +721,7 @@ SET(FreeCADGui_SRCS
     Document.h
     DocumentModel.h
     FreeCADGuiInit.py
+    GuiApplicationNativeEventAware.h
     GuiConsole.h
     InventorAll.h
     Macro.h
@@ -724,6 +730,7 @@ SET(FreeCADGui_SRCS
     PreCompiled.h
     Qt4All.h
     Control.h
+    SpaceballEvent.h
     Thumbnail.h
     Utilities.h
     WaitCursor.h

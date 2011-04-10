@@ -256,6 +256,8 @@ libFreeCADGui_la_SOURCES=\
 		DocumentModel.cpp \
 		FileDialog.cpp \
 		Flag.cpp \
+		GuiApplicationNativeEventAware.cpp \
+		GuiApplicationNativeEventAware.h \
 		GuiConsole.cpp \
 		GuiConsole.h \
 		HelpView.cpp \
@@ -314,6 +316,8 @@ libFreeCADGui_la_SOURCES=\
 		SoFCVectorizeU3DAction.cpp \
 		SoNavigationDraggerLayout.h \
 		SoTextLabel.cpp \
+		SpaceballEvent.cpp \
+		SpaceballEvent.h \
 		SpinBox.cpp \
 		Splashscreen.cpp \
 		SplitView3DInventor.cpp \

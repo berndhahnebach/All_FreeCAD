@@ -54,6 +54,7 @@
 #include <App/DocumentObjectPy.h>
 
 #include "Application.h"
+#include "GuiApplicationNativeEventAware.h"
 #include "MainWindow.h"
 #include "Document.h"
 #include "View.h"
@@ -1405,11 +1406,11 @@ namespace Gui {
 /** Override QCoreApplication::notify() to fetch exceptions in Qt widgets
  * properly that are not handled in the event handler or slot.
  */
-class GUIApplication : public QApplication
+class GUIApplication : public GUIApplicationNativeEventAware
 {
 public:
     GUIApplication(int & argc, char ** argv)
-        : QApplication(argc, argv)
+        : GUIApplicationNativeEventAware(argc, argv)
     {
     }
 
@@ -1580,6 +1581,9 @@ void Application::runApplication(void)
     // show the main window
     Base::Console().Log("Init: Showing main window\n");
     mw.loadWindowSettings();
+
+    //initialize spaceball.
+    mainApp.initSpaceball(&mw);
 
 #ifdef FC_DEBUG // redirect Coin messages to FreeCAD
     SoDebugError::setHandlerCallback( messageHandlerCoin, 0 );
