@@ -31,6 +31,7 @@
 #endif
 
 #include "Thumbnail.h"
+#include "BitmapFactory.h"
 #include "View3DInventorViewer.h"
 #include <Base/Writer.h>
 #include <Base/Reader.h>
@@ -83,7 +84,10 @@ void Thumbnail::SaveDocFile (Base::Writer &writer) const
     if (!this->viewer)
         return;
     QImage img;
-    this->viewer->savePicture(this->size, this->size, View3DInventorViewer::White, img);
+    this->viewer->savePicture(this->size, this->size, View3DInventorViewer::Current, img);
+
+    QPixmap px = Gui::BitmapFactory().pixmap(App::Application::Config()["AppIcon"].c_str());
+    px = BitmapFactory().merge(QPixmap::fromImage(img),px,BitmapFactoryInst::BottomRight);
 
     // according to specification add some meta-information to the image
     uint mt = QDateTime::currentDateTime().toTime_t();
@@ -96,7 +100,7 @@ void Thumbnail::SaveDocFile (Base::Writer &writer) const
     QByteArray ba;
     QBuffer buffer(&ba);
     buffer.open(QIODevice::WriteOnly);
-    img.save(&buffer, "PNG");
+    px.save(&buffer, "PNG");
     writer.Stream().write(ba.constData(), ba.length());
 }
 
