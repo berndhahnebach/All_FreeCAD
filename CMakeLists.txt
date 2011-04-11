@@ -266,6 +266,17 @@ MARK_AS_ADVANCED(FORCE FREECAD_LIBPACK_CHECKFILE6X FREECAD_LIBPACK_CHECKFILE7X)
 		find_package(Coin3D REQUIRED)
 		find_package(SoQt REQUIRED)
 
+# ------------------------------ Spaceball -------------------------------
+
+                if (WIN32)
+                    #future
+                else(WIN32)
+                    find_package(Spnav)
+                endif(WIN32)
+
+# ------------------------------------------------------------------------
+
+
     endif(FREECAD_BUILD_GUI)
 
 
