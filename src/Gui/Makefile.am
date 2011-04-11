@@ -502,6 +502,11 @@ libFreeCADGui_la_LIBADD   =\
 		-lFreeCADBase \
 		-lFreeCADApp
 
+if HAVE_SPNAV_FOUND
+libFreeCADGui_la_LIBADD += -lspnav
+libFreeCADGui_la_CPPFLAGS = -DSPNAV_FOUND
+endif
+
 # rule for Qt MetaObject Compiler:
 moc_%.cpp: %.h
 	$(QT_MOC) $< -o $(@F)
