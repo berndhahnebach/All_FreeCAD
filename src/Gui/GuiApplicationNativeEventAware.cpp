@@ -35,7 +35,9 @@
 
 //linux dependency libspanav-dev
 #ifdef Q_WS_X11
+#ifdef SPNAV_FOUND
 #include <spnav.h>
+#endif
 #endif
 
 #ifdef Q_WS_WIN

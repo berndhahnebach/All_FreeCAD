@@ -584,6 +584,35 @@ AC_TRY_COMPILE( [],
  [enable_stdmeshers_64bit="no"] )
 AM_CONDITIONAL(STDMESHERS64BIT, test "$enable_stdmeshers_64bit" = "yes")
 
+
+dnl checking for spnav library (for 3d mouse support)
+dnl **************************************************************************
+AC_MSG_CHECKING([for spnav])
+AC_ARG_WITH(spnav-include,
+	AC_HELP_STRING([--with-spnav-include=DIR], [Path to the spnav header files]),
+	[fc_spnav_incs=$withval],
+	[fc_spnav_incs=/usr/include])
+
+fc_spnav_ac_save_cppflags=$CPPFLAGS
+CPPFLAGS="$CPPFLAGS -I$fc_spnav_incs"
+
+fc_cv_lib_spnav_avail=no
+AC_CHECK_HEADER(spnav.h,
+	fc_cv_lib_spnav_avail=yes,)
+
+CPPFLAGS=$fc_spnav_ac_save_cppflags
+
+if test x"$fc_cv_lib_spnav_avail" = xyes; then
+	AC_SUBST([SPNAV_INC], [$fc_spnav_incs])
+else
+	AC_MSG_WARN([
+	**** Cannot find spnav devel files.
+	No support for 3D SpaceNavigator. ****
+   ])
+fi
+
+AM_CONDITIONAL(HAVE_SPNAV_FOUND, test x"$fc_cv_lib_spnav_avail" = xyes)
+
 #---------------------------------------------------------------------
 #
 # Check if 64-bit platform
