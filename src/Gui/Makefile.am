@@ -41,6 +41,7 @@ BUILT_SOURCES=\
 		moc_DockWindowManager.cpp \
 		moc_FileDialog.cpp \
 		moc_Flag.cpp \
+		moc_GuiApplicationNativeEventAware.cpp \
 		moc_HelpView.cpp \
 		moc_InputVector.cpp \
 		moc_MainWindow.cpp \
