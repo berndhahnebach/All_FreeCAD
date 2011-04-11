@@ -33,7 +33,7 @@
 #include "GuiApplicationNativeEventAware.h"
 #include "SpaceballEvent.h"
 
-//linux dependency libspanav-dev
+//linux dependency libspnav-dev
 #ifdef Q_WS_X11
 #ifdef SPNAV_FOUND
 #include <spnav.h>

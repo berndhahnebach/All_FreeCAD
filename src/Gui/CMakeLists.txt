@@ -19,7 +19,7 @@ include_directories(
     ${XERCESC_INCLUDE_DIR}
     ${QT_INCLUDE_DIR}
     ${ZLIB_INCLUDE_DIR}
-    ${SPNAV_INCLUDE_PATH}
+    ${SPNAV_INCLUDE_DIR}
 )
 
 if(MSVC)
@@ -43,7 +43,7 @@ else(MSVC)
         ${QT_LIBRARIES}
         ${Boost_LIBRARIES}
         ${OPENGL_gl_LIBRARY}
-        ${SPNAV_LIBRARY}
+        ${SPNAV_LIBRARIES}
     )
 endif(MSVC)
 

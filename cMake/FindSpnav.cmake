@@ -6,12 +6,14 @@ IF(UNIX)
     )
 
     FIND_LIBRARY(SPNAV_LIBRARY
-        NAME
-        spnav
+        NAMES
+        spnav libspnav
     )
 
     if(SPNAV_INCLUDE_PATH AND SPNAV_LIBRARY)
         set(SPNAV_FOUND TRUE)
+        set(SPNAV_LIBRARIES ${SPNAV_LIBRARY})
+        set(SPNAV_INCLUDE_DIR ${SPNAV_INCLUDE_PATH})
     endif(SPNAV_INCLUDE_PATH AND SPNAV_LIBRARY)
 
 
