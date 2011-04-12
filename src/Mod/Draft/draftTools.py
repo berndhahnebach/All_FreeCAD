@@ -558,7 +558,6 @@ class Tracker:
 
 	def off(self):
 		self.switch.whichChild = -1
-
 				
 class snapTracker(Tracker):
 	"A Snap Mark tracker, used by tools that support snapping"
@@ -920,6 +919,91 @@ class wireTracker(Tracker):
                         t = len(wire.Vertexes)
                         p = wire.Vertexes[0].Point
                         self.coords.point.set1Value(t,[p.x,p.y,p.z])
+
+class gridTracker(Tracker):
+        "A grid tracker"
+        def __init__(self):
+                # self.space = 1
+                self.space = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetFloat("gridSpacing")
+                # self.mainlines = 10
+                self.mainlines = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("gridEvery")
+                self.numlines = 100
+                col = [0.2,0.2,0.3]
+
+                self.trans = coin.SoTransform()
+		self.trans.translation.setValue([0,0,0])
+                
+                bound = (self.numlines/2)*self.space
+                pts = []
+                mpts = []
+                for i in range(self.numlines+1):
+                        curr = -bound + i*self.space
+                        z = 0
+                        if i/float(self.mainlines) == i/self.mainlines:
+                                mpts.extend([[-bound,curr,z],[bound,curr,z]])
+                                mpts.extend([[curr,-bound,z],[curr,bound,z]])
+                        else:
+                                pts.extend([[-bound,curr,z],[bound,curr,z]])
+                                pts.extend([[curr,-bound,z],[curr,bound,z]])
+                idx = []
+                midx = []
+                for p in range(0,len(pts),2):
+                        idx.append(2)
+                for mp in range(0,len(mpts),2):
+                        midx.append(2)
+
+                mat1 = coin.SoMaterial()
+                mat1.transparency.setValue(0.7)
+                mat1.diffuseColor.setValue(col)
+                self.coords1 = coin.SoCoordinate3()
+                self.coords1.point.setValues(pts)
+                lines1 = coin.SoLineSet()
+                lines1.numVertices.setValues(idx)
+                mat2 = coin.SoMaterial()
+                mat2.transparency.setValue(0.3)
+                mat2.diffuseColor.setValue(col)
+                self.coords2 = coin.SoCoordinate3()
+                self.coords2.point.setValues(mpts)
+                lines2 = coin.SoLineSet()
+                lines2.numVertices.setValues(midx)
+                s = coin.SoSeparator()
+                s.addChild(self.trans)
+                s.addChild(mat1)
+                s.addChild(self.coords1)
+                s.addChild(lines1)
+                s.addChild(mat2)
+                s.addChild(self.coords2)
+                s.addChild(lines2)
+		Tracker.__init__(self,children=[s])
+
+        def update(self):
+                bound = (self.numlines/2)*self.space
+                pts = []
+                mpts = []
+                for i in range(self.numlines+1):
+                        curr = -bound + i*self.space
+                        z = 0
+                        if i/float(self.mainlines) == i/self.mainlines:
+                                mpts.extend([[-bound,curr,z],[bound,curr,z]])
+                                mpts.extend([[curr,-bound,z],[curr,bound,z]])
+                        else:
+                                pts.extend([[-bound,curr,z],[bound,curr,z]])
+                                pts.extend([[curr,-bound,z],[curr,bound,z]])
+                self.coords1.point.setValues(pts)
+                self.coords2.point.setValues(mpts)
+
+        def setSpacing(self,space):
+                self.space = space
+                self.update()
+
+        def setMainlines(self,ml):
+                self.mainlines = ml
+                self.update()
+
+        def set(self):
+                Q = plane.getRotation().Rotation.Q
+                self.trans.rotation.setValue([Q[0],Q[1],Q[2],Q[3]])
+                self.on()                
      
 #---------------------------------------------------------------------------
 # Helper tools
@@ -1057,6 +1141,12 @@ class Creator:
 			self.constrain = None
 			self.obj = None
                         self.planetrack = PlaneTracker()
+                        if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetBool("grid"):
+                                self.grid = gridTracker()
+                                self.grid.set()
+                        else:
+                                self.grid = None
+                        
 
         def IsActive(self):
                 if FreeCADGui.ActiveDocument:
@@ -1067,6 +1157,7 @@ class Creator:
 	def finish(self):
 		self.node=[]
                 self.planetrack.finalize()
+                if self.grid: self.grid.finalize()
 		FreeCAD.activeDraftCommand = None
 		if self.ui:
 			self.ui.offUi()
@@ -2240,6 +2331,11 @@ class Modifier:
                         self.ui.cmdlabel.setText(name)
 			self.featureName = name
                         self.planetrack = PlaneTracker()
+                        if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetBool("grid"):
+                                self.grid = gridTracker()
+                                self.grid.set()
+                        else:
+                                self.grid = None
 
         def IsActive(self):
                 if FreeCADGui.ActiveDocument:
@@ -2256,6 +2352,7 @@ class Modifier:
 			self.ui.cross(False)
                 msg("")
                 self.planetrack.finalize()
+                if self.grid: self.grid.finalize()
 		if self.call:
 			self.view.removeEventCallback("SoEvent",self.call)
                         self.call = None
@@ -4162,4 +4259,6 @@ FreeCADGui.addCommand('Draft_AddToGroup',AddToGroup())
 FreeCADGui.addCommand('Draft_SelectGroup',SelectGroup())
 
 # a global place to look for active draft Command
-FreeCAD.activeDraftCommand = None 
+FreeCAD.activeDraftCommand = None
+
+
