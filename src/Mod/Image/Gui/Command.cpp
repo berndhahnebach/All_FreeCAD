@@ -11,10 +11,10 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-#	include <qaction.h>
-# include <qfiledialog.h>
-# include <qimage.h>
-# include <qmessagebox.h>
+# include <QAction>
+# include <QFileDialog>
+# include <QImage>
+# include <QMessageBox>
 #endif
 
 #include <time.h>
@@ -43,7 +43,7 @@ using namespace ImageGui;
 DEF_STD_CMD(CmdImageOpen);
 
 CmdImageOpen::CmdImageOpen()
-    :Command("Image_Open")
+  : Command("Image_Open")
 {
     sAppModule      = "Image";
     sGroup          = QT_TR_NOOP("Image");
@@ -73,7 +73,7 @@ void CmdImageOpen::activated(int iMsg)
 }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-DEF_STD_CMD(CmdCreateImagePlane);
+DEF_STD_CMD_A(CmdCreateImagePlane);
 
 CmdCreateImagePlane::CmdCreateImagePlane()
     :Command("Image_CreateImagePlane")
@@ -95,11 +95,12 @@ void CmdCreateImagePlane::activated(int iMsg)
     if (!s.isEmpty()) {
 
         QImage impQ(s);
-        if(impQ.isNull()){
+        if (impQ.isNull()) {
             QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Error open image"),
                 QObject::tr("Could not load the choosen image"));
             return;
         }
+
         std::string FeatName = getUniqueObjectName("ImagePlane");
 
         openCommand("Create ImagePlane");
@@ -107,8 +108,12 @@ void CmdCreateImagePlane::activated(int iMsg)
         doCommand(Doc,"App.activeDocument().%s.ImageFile = '%s'",FeatName.c_str(),(const char*)s.toUtf8());
         doCommand(Doc,"App.activeDocument().%s.XSize = %d",FeatName.c_str(),impQ.width () );
         doCommand(Doc,"App.activeDocument().%s.YSize = %d",FeatName.c_str(),impQ.height() );
-
     }
+}
+
+bool CmdCreateImagePlane::isActive()
+{
+    return App::GetApplication().getActiveDocument();
 }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
