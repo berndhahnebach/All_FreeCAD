@@ -72,8 +72,6 @@ int Solver::solve(double **xin, int xLength, constraint *cons, int consLength, i
 
 int Solver::solveI(double **xin, int xLength, constraint *cons, int consLength, int isFine)
 {
-    xsave = xin;
-
     Load(cons,consLength,xin,xLength);
 
     xLength = GetVectorSize();
@@ -104,9 +102,6 @@ int Solver::solveI(double **xin, int xLength, constraint *cons, int consLength, 
     //Calculate the gradient at the starting point:
 
     //Calculate the gradient
-    //gradF=x;
-    double norm; //The norm of the gradient vector
-    norm = 0;
     pert = f0*pertMag;
     for (int j=0; j < xLength; j++)
     {
@@ -117,10 +112,7 @@ int Solver::solveI(double **xin, int xLength, constraint *cons, int consLength, 
         debugprint(cstr.str());
         cstr.clear();
 #endif
-        norm = norm+(grad[j]*grad[j]);
     }
-    norm = sqrt(norm);
-    //Estimate the norm of N
 
     //Initialize N and calculate s
     for (int i=0; i < xLength; i++)
@@ -129,8 +121,6 @@ int Solver::solveI(double **xin, int xLength, constraint *cons, int consLength, 
         {
             if (i==j)
             {
-                //N[i][j]=norm; //Calculate a scaled identity matrix as a Hessian inverse estimate
-                //N[i][j]=grad[i]/(norm+.001);
                 N[i][j]=1;
                 s[i]=-grad[i]; //Calculate the initial search vector
 

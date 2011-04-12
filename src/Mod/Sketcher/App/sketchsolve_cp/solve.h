@@ -280,7 +280,6 @@ class Solver: public SolveImpl
 {
     int xLength;
     std::vector<double> x;
-    double **xsave;
     std::vector<double> origSolution;
     std::vector<double> grad;
     std::vector<double> s;
