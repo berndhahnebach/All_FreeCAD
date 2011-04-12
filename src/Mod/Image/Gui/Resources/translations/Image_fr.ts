@@ -136,7 +136,7 @@
     <message>
       <location/>
       <source>Images (*.png *.xpm *.jpg *.bmp)</source>
-      <translation>Images (*. png *. xpm *. jpg *. bmp)</translation>
+      <translation>Images (*.png *.xpm *.jpg *.bmp)</translation>
     </message>
     <message>
       <location/>
