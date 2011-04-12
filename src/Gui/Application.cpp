@@ -1545,6 +1545,28 @@ void Application::runApplication(void)
     SoQt::init(&mw);
     SoFCDB::init();
 
+    const std::map<std::string,std::string>& cfg = App::Application::Config();
+    std::map<std::string,std::string>::const_iterator it;
+    it = cfg.find("WindowTitle");
+    if (it != cfg.end()) {
+        QString title = QString::fromUtf8(it->second.c_str());
+        mw.setWindowTitle(title);
+    }
+    it = cfg.find("WindowIcon");
+    if (it != cfg.end()) {
+        QString path = QString::fromUtf8(it->second.c_str());
+        QApplication::setWindowIcon(QIcon(path));
+    }
+    it = cfg.find("ProgramLogo");
+    if (it != cfg.end()) {
+        QString path = QString::fromUtf8(it->second.c_str());
+        QLabel* logo = new QLabel();
+        QPixmap px(path);
+        logo->setPixmap(px.scaledToHeight(32));
+        mw.statusBar()->addPermanentWidget(logo, 0);
+        logo->setFrameShape(QFrame::NoFrame);
+    }
+
     // show splasher while initializing the GUI
     mw.startSplasher();
 

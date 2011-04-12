@@ -25,6 +25,7 @@
 #ifndef _PreComp_
 # include <QApplication>
 # include <QMessageBox>
+# include <QSharedPointer>
 # include <QWhatsThis>
 #if QT_VERSION >= 0x040200
 # include <QDesktopServices>
@@ -218,8 +219,9 @@ bool StdCmdAbout::isActive()
  */
 void StdCmdAbout::activated(int iMsg)
 {
-    Gui::Dialog::AboutDialog dlg( getMainWindow() );
-    dlg.exec();
+    const Gui::Dialog::AboutDialogFactory* f = Gui::Dialog::AboutDialogFactory::defaultFactory();
+    QSharedPointer <QDialog> dlg(f->create(getMainWindow()));
+    dlg->exec();
 }
 
 void StdCmdAbout::languageChange()
