@@ -40,6 +40,13 @@
 #include <QMessageBox>
 #include <QLocale>
 
+#include <QDomDocument>
+#include <QXmlSimpleReader>
+#include <QXmlInputSource>
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
+
 // FreeCAD header
 #include <Base/Console.h>
 #include <Base/Interpreter.h>
@@ -61,6 +68,80 @@ const char sBanner[] = "\xc2\xa9 Juergen Riegel, Werner Mayer, Yorik van Havre 2
 "  #     #   #### ####  #    #     # #   # \n" \
 "  #     #   #    #     #    #     # #   #  ##  ##  ##\n" \
 "  #     #   #### ####   ### #     # ####   ##  ##  ##\n\n" ;
+
+class Branding
+{
+public:
+    struct UserDefines
+    {
+        std::string windowTitle;
+        std::string windowIcon;
+        std::string programLogo;
+        std::string splashScreen;
+    };
+
+    Branding()
+    {
+    }
+
+    bool readFile(const QString& fn)
+    {
+        QFile file(fn);
+        if (!file.open(QFile::ReadOnly))
+            return false;
+        if (!evaluateXML(&file, domDocument))
+            return false;
+        file.close();
+        return true;
+    }
+    UserDefines getUserDefines() const
+    {
+        UserDefines ud;
+        QDomElement root = domDocument.documentElement();
+        QDomElement child;
+        if (!root.isNull()) {
+            child = root.firstChildElement(QLatin1String("WindowTitle"));
+            if (!child.isNull())
+                ud.windowTitle = (const char*)child.text().toUtf8();
+            child = root.firstChildElement(QLatin1String("WindowIcon"));
+            if (!child.isNull())
+                ud.windowIcon = (const char*)child.text().toUtf8();
+            child = root.firstChildElement(QLatin1String("ProgramLogo"));
+            if (!child.isNull())
+                ud.programLogo = (const char*)child.text().toUtf8();
+            child = root.firstChildElement(QLatin1String("SplashScreen"));
+            if (!child.isNull())
+                ud.splashScreen = (const char*)child.text().toUtf8();
+        }
+        return ud;
+    }
+
+private:
+    bool evaluateXML(QIODevice *device, QDomDocument& xmlDocument)
+    {
+        QString errorStr;
+        int errorLine;
+        int errorColumn;
+
+        if (!xmlDocument.setContent(device, true, &errorStr, &errorLine,
+                                    &errorColumn)) {
+            return false;
+        }
+
+        QDomElement root = xmlDocument.documentElement();
+        if (root.tagName() != QLatin1String("Branding")) {
+            return false;
+        }
+        else if (root.hasAttribute(QLatin1String("version"))) {
+            QString attr = root.attribute(QLatin1String("version"));
+            if (attr != QLatin1String("1.0"))
+                return false;
+        }
+
+        return true;
+    }
+    QDomDocument domDocument;
+};
 
 class ProgramOptions
 {
@@ -211,6 +292,22 @@ int main( int argc, char ** argv )
                                   "Please contact the application's support team for more information.\n\n").arg(appName);
         QMessageBox::critical(0, QObject::tr("Initialization of %1 failed").arg(appName), msg);
         exit(101);
+    }
+
+    // Now it's time to read-in the file branding.xml if it exists
+    Branding brand;
+    QString path = QString::fromUtf8(App::GetApplication().GetHomePath());
+    QFileInfo fi(path, QString::fromAscii("branding.xml"));
+    if (brand.readFile(fi.absoluteFilePath())) {
+        Branding::UserDefines ud = brand.getUserDefines();
+        if (!ud.windowTitle.empty())
+            App::Application::Config()["WindowTitle"] = ud.windowTitle;
+        if (!ud.windowIcon.empty())
+            App::Application::Config()["WindowIcon"] = ud.windowIcon;
+        if (!ud.programLogo.empty())
+            App::Application::Config()["ProgramLogo"] = ud.programLogo;
+        if (!ud.splashScreen.empty())
+            App::Application::Config()["SplashPicture"] = ud.splashScreen;
     }
 
     // Run phase ===========================================================

@@ -26,8 +26,6 @@
 
 #include <QSplashScreen>
 
-#include "ui_AboutApplication.h"
-
 namespace Gui {
 
 class SplashObserver;
@@ -38,38 +36,57 @@ class SplashObserver;
  */
 class SplashScreen : public QSplashScreen
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  SplashScreen(  const QPixmap & pixmap = QPixmap ( ), Qt::WFlags f = 0 );
-  ~SplashScreen();
+    SplashScreen(  const QPixmap & pixmap = QPixmap ( ), Qt::WFlags f = 0 );
+    ~SplashScreen();
 
 protected:
-  void drawContents ( QPainter * painter );
+    void drawContents ( QPainter * painter );
 
 private:
-  SplashObserver* messages;
+    SplashObserver* messages;
 };
 
 namespace Dialog {
+class Ui_AboutApplication;
+
+class GuiExport AboutDialogFactory
+{
+public:
+    AboutDialogFactory() {}
+    virtual ~AboutDialogFactory();
+
+    virtual QDialog *create(QWidget *parent) const;
+
+    static const AboutDialogFactory *defaultFactory();
+    static void setDefaultFactory(AboutDialogFactory *factory);
+
+private:
+    static AboutDialogFactory* factory;
+};
 
 /** This widget provides the "About dialog" of an application. 
  * This shows the current version, the build number and date. 
  * \author Werner Mayer
  */
-class AboutDialog : public QDialog
+class GuiExport AboutDialog : public QDialog
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  AboutDialog( QWidget* parent = 0 );
-  ~AboutDialog();
+    AboutDialog(QWidget* parent = 0);
+    ~AboutDialog();
 
 protected:
-  void setupLabels();
+    void setupLabels();
+
+protected Q_SLOTS:
+    virtual void on_licenseButton_clicked();
 
 private:
-  Ui_AboutApplication ui;
+    Ui_AboutApplication* ui;
 };
 
 } // namespace Dialog

@@ -28,6 +28,7 @@
 #endif
 
 #include "Splashscreen.h"
+#include "ui_AboutApplication.h"
 #include <Base/Console.h>
 #include <App/Application.h>
 #include <Gui/MainWindow.h>
@@ -157,6 +158,34 @@ void SplashScreen::drawContents ( QPainter * painter )
 
 // ------------------------------------------------------------------------------
 
+AboutDialogFactory* AboutDialogFactory::factory = 0;
+
+AboutDialogFactory::~AboutDialogFactory()
+{
+}
+
+QDialog *AboutDialogFactory::create(QWidget *parent) const
+{
+    return new AboutDialog(parent);
+}
+
+const AboutDialogFactory *AboutDialogFactory::defaultFactory()
+{
+    static const AboutDialogFactory this_factory;
+    if (factory)
+        return factory;
+    return &this_factory;
+}
+
+void AboutDialogFactory::setDefaultFactory(AboutDialogFactory *f)
+{
+    if (factory != f)
+        delete factory;
+    factory = f;
+}
+
+// ------------------------------------------------------------------------------
+
 /* TRANSLATOR Gui::Dialog::AboutDialog */
 
 /**
@@ -166,11 +195,12 @@ void SplashScreen::drawContents ( QPainter * painter )
  *  The dialog will be modal.
  */
 AboutDialog::AboutDialog( QWidget* parent )
-  : QDialog(parent, Qt::FramelessWindowHint)
+  : QDialog(parent, Qt::FramelessWindowHint), ui(new Ui_AboutApplication)
 {
     setModal(true);
-    ui.setupUi(this);
-    ui.labelSplashPicture->setPixmap(getMainWindow()->splashImage());
+    ui->setupUi(this);
+    ui->labelSplashPicture->setPixmap(getMainWindow()->splashImage());
+    ui->licenseButton->hide();
     setupLabels();
 }
 
@@ -179,7 +209,8 @@ AboutDialog::AboutDialog( QWidget* parent )
  */
 AboutDialog::~AboutDialog()
 {
-  // no need to delete child widgets, Qt does it all for us
+    // no need to delete child widgets, Qt does it all for us
+    delete ui;
 }
 
 void AboutDialog::setupLabels()
@@ -193,32 +224,27 @@ void AboutDialog::setupLabels()
     QString disda  = QString::fromAscii(App::Application::Config()["BuildRevisionDate"].c_str());
     QString mturl  = QString::fromAscii(App::Application::Config()["MaintainerUrl"].c_str());
 
-    QString author = QString::fromAscii("<html><head><meta name=\"qrichtext\" content=\"1\" /></head>"
-        "<body style=\" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; "
-        "font-weight:400; font-style:normal; text-decoration:none;\"><p style=\" margin-top:0px; "
-        "margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
-        "<span style=\" font-size:8pt; font-weight:600; text-decoration: underline; color:#0000ff;\">"
-        "%1 %2</span></p></body></html>").arg(exeName).arg(banner);
-    QString version = QString::fromAscii("<html><head><meta name=\"qrichtext\" content=\"1\" /></head>"
-        "<body style=\" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; "
-        "font-weight:400; font-style:normal; text-decoration:none;\"><p style=\" margin-top:0px; "
-        "margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
-        "<span style=\" font-size:8pt; font-weight:600;\">%1.%2</span></p></body></html>").arg(major).arg(minor);
-    QString revision = QString::fromAscii("<html><head><meta name=\"qrichtext\" content=\"1\" /></head>"
-        "<body style=\" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; "
-        "font-weight:400; font-style:normal; text-decoration:none;\"><p style=\" margin-top:0px; "
-        "margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
-        "<span style=\" font-size:8pt; font-weight:600;\">%1</span></p></body></html>").arg(build);
-    QString date = QString::fromAscii("<html><head><meta name=\"qrichtext\" content=\"1\" /></head>"
-        "<body style=\" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; "
-        "font-weight:400; font-style:normal; text-decoration:none;\"><p style=\" margin-top:0px; "
-        "margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
-        "<span style=\" font-size:8pt; font-weight:600;\">%1</span></p></body></html>").arg(disda);
-    ui.labelAuthor->setText(author);
-    ui.labelAuthor->setUrl(mturl);
-    ui.labelBuildVersion->setText(version);
-    ui.labelBuildRevision->setText(revision);
-    ui.labelBuildDate->setText(date);
+    QString author = ui->labelAuthor->text();
+    author.replace(QString::fromAscii("Unknown Application"), exeName);
+    author.replace(QString::fromAscii("Unknown Author"), banner);
+    ui->labelAuthor->setText(author);
+    ui->labelAuthor->setUrl(mturl);
+
+    QString version = ui->labelBuildVersion->text();
+    version.replace(QString::fromAscii("Unknown"), QString::fromAscii("%1.%2").arg(major).arg(minor));
+    ui->labelBuildVersion->setText(version);
+
+    QString revision = ui->labelBuildRevision->text();
+    revision.replace(QString::fromAscii("Unknown"), build);
+    ui->labelBuildRevision->setText(revision);
+
+    QString date = ui->labelBuildDate->text();
+    date.replace(QString::fromAscii("Unknown"), disda);
+    ui->labelBuildDate->setText(date);
+}
+
+void AboutDialog::on_licenseButton_clicked()
+{
 }
 
 #include "moc_Splashscreen.cpp"
