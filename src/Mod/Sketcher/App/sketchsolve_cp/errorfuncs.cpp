@@ -23,16 +23,8 @@ double ParallelError(std::vector<double> &parms)
      double dx2 = parms[6] - parms[4];
      double dy2 = parms[7] - parms[5];
 
-     double hyp1=sqrt(dx*dx+dy*dy);
-     double hyp2=sqrt(dx2*dx2+dy2*dy2);
-
-     dx=dx/hyp1;
-     dy=dy/hyp1;
-     dx2=dx2/hyp2;
-     dy2=dy2/hyp2;
-
      double temp = dy*dx2-dx*dy2;
-     return (temp)*(temp)*1000;
+     return (temp)*(temp)*1000/((dx*dx+dy*dy)*(dx2*dx2+dy2*dy2));
 }
 
 double PerpendicularError(std::vector<double> &parms)
@@ -42,16 +34,8 @@ double PerpendicularError(std::vector<double> &parms)
      double dx2 = parms[6] - parms[4];
      double dy2 = parms[7] - parms[5];
 
-     double hyp1=sqrt(dx*dx+dy*dy);
-     double hyp2=sqrt(dx2*dx2+dy2*dy2);
-
-     dx=dx/hyp1;
-     dy=dy/hyp1;
-     dx2=dx2/hyp2;
-     dy2=dy2/hyp2;
-
      double temp = dx*dx2+dy*dy2;
-     return (temp)*(temp)*1000;
+     return (temp)*(temp)*1000/((dx*dx+dy*dy)*(dx2*dx2+dy2*dy2));
 }
 
 
@@ -335,15 +319,7 @@ double LinePerpToAngleError(std::vector<double>& parms)
     double dx2 = sin(parms[4]);
     double dy2 = cos(parms[4]);
 
-    double hyp1=sqrt(dx*dx+dy*dy);
-    double hyp2=sqrt(dx2*dx2+dy2*dy2);
-
-    dx=dx/hyp1;
-    dy=dy/hyp1;
-    dx2=dx2/hyp2;
-    dy2=dy2/hyp2;
-
     double temp = dx*dx2+dy*dy2;
-    return (temp)*(temp)*1000;
+    return (temp)*(temp)*1000/(dx*dx+dy*dy);
 }
 
