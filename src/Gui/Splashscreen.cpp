@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <QMutex>
+# include <QSysInfo>
 # include <QWaitCondition>
 #endif
 
@@ -214,6 +215,37 @@ AboutDialog::~AboutDialog()
     delete ui;
 }
 
+static QString getPlatform()
+{
+#if defined (Q_OS_WIN32)
+    switch(QSysInfo::windowsVersion())
+    {
+        case QSysInfo::WV_NT:
+            return QString::fromAscii("Windows NT");
+        case QSysInfo::WV_2000:
+            return QString::fromAscii("Windows 2000");
+        case QSysInfo::WV_XP:
+            return QString::fromAscii("Windows XP");
+        case QSysInfo::WV_2003:
+            return QString::fromAscii("Windows Server 2003");
+        case QSysInfo::WV_VISTA:
+            return QString::fromAscii("Windows Vista");
+        case QSysInfo::WV_WINDOWS7:
+            return QString::fromAscii("Windows 7");
+        default:
+            return QString::fromAscii("Windows");
+    }
+#elif defined (Q_OS_MAC)
+    return QString::fromAscii("Mac OS X");
+#elif defined (Q_OS_LINUX)
+    return QString::fromAscii("Linux");
+#elif defined (Q_OS_UNIX)
+    return QString::fromAscii("UNIX");
+#else
+    return QString();
+#endif
+}
+
 void AboutDialog::setupLabels()
 {
     QString exeName = QString::fromAscii(App::Application::Config()["ExeName"].c_str());
@@ -242,6 +274,11 @@ void AboutDialog::setupLabels()
     QString date = ui->labelBuildDate->text();
     date.replace(QString::fromAscii("Unknown"), disda);
     ui->labelBuildDate->setText(date);
+
+    QString platform = ui->labelBuildPlatform->text();
+    platform.replace(QString::fromAscii("Unknown"),
+        QString::fromAscii("%1 (%2-bit)").arg(getPlatform()).arg(QSysInfo::WordSize));
+    ui->labelBuildPlatform->setText(platform);
 }
 
 void AboutDialog::on_licenseButton_clicked()
