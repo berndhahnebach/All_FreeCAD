@@ -25,6 +25,7 @@
 #define GUI_SPLASHSCREEN_H
 
 #include <QSplashScreen>
+#include <QDialog>
 
 namespace Gui {
 
@@ -76,7 +77,7 @@ class GuiExport AboutDialog : public QDialog
     Q_OBJECT
 
 public:
-    AboutDialog(QWidget* parent = 0);
+    AboutDialog(bool showLic, QWidget* parent = 0);
     ~AboutDialog();
 
 protected:

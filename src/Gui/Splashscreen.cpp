@@ -166,7 +166,7 @@ AboutDialogFactory::~AboutDialogFactory()
 
 QDialog *AboutDialogFactory::create(QWidget *parent) const
 {
-    return new AboutDialog(parent);
+    return new AboutDialog(false, parent);
 }
 
 const AboutDialogFactory *AboutDialogFactory::defaultFactory()
@@ -194,13 +194,14 @@ void AboutDialogFactory::setDefaultFactory(AboutDialogFactory *f)
  *
  *  The dialog will be modal.
  */
-AboutDialog::AboutDialog( QWidget* parent )
+AboutDialog::AboutDialog(bool showLic, QWidget* parent)
   : QDialog(parent, Qt::FramelessWindowHint), ui(new Ui_AboutApplication)
 {
     setModal(true);
     ui->setupUi(this);
     ui->labelSplashPicture->setPixmap(getMainWindow()->splashImage());
-    ui->licenseButton->hide();
+    if (!showLic)
+        ui->licenseButton->hide();
     setupLabels();
 }
 
