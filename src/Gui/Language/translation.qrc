@@ -15,7 +15,15 @@
         <file>FreeCAD_uk.qm</file>
         <file>FreeCAD_zh.qm</file>
         <file>qt_de.qm</file>
+        <file>qt_es.qm</file>
         <file>qt_fr.qm</file>
         <file>qt_it.qm</file>
+        <file>qt_jp.qm</file>
+        <file>qt_pl.qm</file>
+        <file>qt_pt.qm</file>
+        <file>qt_ru.qm</file>
+        <file>qt_se.qm</file>
+        <file>qt_uk.qm</file>
+        <file>qt_zh.qm</file>
     </qresource>
 </RCC> 
