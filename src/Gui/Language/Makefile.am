@@ -43,8 +43,16 @@ EXTRA_DIST = \
 		FreeCAD_uk.ts \
 		FreeCAD_zh.ts \
 		qt_de.qm \
+		qt_es.qm \
 		qt_fr.qm \
-		qt_it.qm
+		qt_it.qm \
+		qt_jp.qm \
+		qt_pl.qm \
+		qt_pt.qm \
+		qt_ru.qm \
+		qt_se.qm \
+		qt_uk.qm \
+		qt_zh.qm
 
 
 # rule for Qt MetaObject Compiler:
