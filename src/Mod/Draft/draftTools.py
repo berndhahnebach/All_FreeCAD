@@ -140,14 +140,39 @@ def snapPoint(target,point,cursor,ctrl=False):
                 cur = Vector(info['x'],info['y'],info['z'])
                 return [cur,2,cur]
 
+        def getScreenDist(dist,cursor):
+                "returns a 3D distance from a screen pixels distance"
+                p1 = FreeCADGui.ActiveDocument.ActiveView.getPoint(cursor)
+                p2 = FreeCADGui.ActiveDocument.ActiveView.getPoint((cursor[0]+dist,cursor[1]))
+                return (p2.sub(p1)).Length
+
+        def getGridSnap(target,point):
+                "returns a grid snap point if available"
+                if not target.grid: return None
+                gp = target.grid.getNodes()
+                return gp[fcgeo.findClosest(point,gp)]
+
 	# checking if alwaySnap setting is on
 	if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").\
 		GetBool("alwaysSnap"): ctrl = True
+
+        # setting Radius
+        radius =  getScreenDist(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").\
+		GetInt("snapRange"),cursor)
 	
 	snapped=target.view.getObjectInfo((cursor[0],cursor[1]))
 
         # check if we snapped to something
 	if (snapped == None):
+                gpt = getGridSnap(target,point)
+                if gpt:
+                        if radius != 0:
+                                dv = point.sub(gpt)
+                                if dv.Length <= radius:
+                                        target.snap.coords.point.setValue((gpt.x,gpt.y,gpt.z))
+                                        target.snap.setMarker("point")
+                                        target.snap.switch.whichChild = 0  
+                                        return gpt
 		target.snap.switch.whichChild = -1
 		return point
 	else:
@@ -209,12 +234,16 @@ def snapPoint(target,point,cursor,ctrl=False):
 		shortest = 1000000000000000000
 		spt = Vector(snapped['x'],snapped['y'],snapped['z'])
                 newpoint = spt
-		for i in snapArray:
-			if i[0] == None: print "snapPoint: debug 'i[0]' is 'None'"
-                        di = i[0].sub(spt)
+		for pt in snapArray:
+			if pt[0] == None: print "snapPoint: debug 'i[0]' is 'None'"
+                        di = pt[0].sub(spt)
 			if di.Length < shortest:
 				shortest = di.Length
-				newpoint = i
+				newpoint = pt
+                if radius != 0:
+                        dv = point.sub(newpoint[2])
+                        if dv.Length > radius:
+                                newpoint = getPassivePoint(snapped)
 		target.snap.coords.point.setValue((newpoint[2].x,newpoint[2].y,newpoint[2].z))
 		if (newpoint[1] == 1):
 			target.snap.setMarker("square")
@@ -224,149 +253,7 @@ def snapPoint(target,point,cursor,ctrl=False):
 			target.snap.setMarker("square")
 		else:
 			target.snap.setMarker("circle")
-		target.snap.switch.whichChild = 0
-		return newpoint[2]
-
-                                        
-
-def snapPointOld (target,point,cursor,ctrl=False):
-	'''
-        OBSOLETE - TO BE REMOVED SOON...
-        
-	Snap function used by the Draft tools
-
-	Currently has two modes: passive and active. Pressing CTRL while 
-	clicking puts you in active mode:
-
-	- In passive mode (an open circle appears), your point is
-	  snapped to the nearest point on any underlying geometry.
-
-	- In active mode (ctrl pressed, a filled circle appears), your point
-	  can currently be snapped to the following points:
-	    - Nodes and midpoints of all Part shapes
-	    - Nodes and midpoints of lines/wires
-	    - Centers and quadrant points of circles
-	    - Endpoints of arcs
-	    - Intersection between line, wires segments, arcs and circles
-	    - When constrained (SHIFT pressed), Intersections between
-	      constraining axis and lines/wires
-	'''
-
-	# checking if alwaySnap setting is on
-	if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").\
-		GetBool("alwaysSnap"): ctrl = True
-	
-	snapped=target.view.getObjectInfo((cursor[0],cursor[1]))
-	if (snapped == None):
-		target.snap.switch.whichChild = -1
-		return point
-	else:
-		# building snap array
-		ob = target.doc.getObject(snapped['Object'])
-
-		# snapArray contains lists of 3 items: point that activates
-		# snap, type, point to snap to. Type is 0=vertex point (filled
-		# circle), 1=calculated point (filled square), 2=other (open
-		# circle), 3=open square (intersection)
-		snapArray=[] 
-
-		if (ctrl) and (ob.Type[:4] == "Part"):
-			for i in ob.Shape.Vertexes:
-				snapArray.append([i.Point,0,i.Point])
-			for j in ob.Shape.Edges:
-				if (isinstance (j.Curve,Part.Line)):
-					p1 = j.Vertexes[0].Point
-					p2 = j.Vertexes[1].Point
-					midpoint = fcgeo.findMidpoint(j)
-					snapArray.append([midpoint,1,midpoint])
-					if (len(target.node) > 0):
-						last = target.node[len(target.node)-1]
-						if (target.constrain == 0):
-							if ((last.y > p1.y) and (last.y < p2.y) or (last.y > p2.y) and (last.y < p1.y)):
-								pc = (last.y-p1.y)/(p2.y-p1.y)
-								constrainpoint = (Vector(p1.x+pc*(p2.x-p1.x),p1.y+pc*(p2.y-p1.y),p1.z+pc*(p2.z-p1.z)))
-								snapArray.append([constrainpoint,1,constrainpoint]) # constrainpoint
-						if (target.constrain == 1):
-							if ((last.x > p1.x) and (last.x < p2.x) or (last.x > p2.x) and (last.x < p1.x)):
-								pc = (last.x-p1.x)/(p2.x-p1.x)
-								constrainpoint = (Vector(p1.x+pc*(p2.x-p1.x),p1.y+pc*(p2.y-p1.y),p1.z+pc*(p2.z-p1.z)))
-								snapArray.append([constrainpoint,1,constrainpoint]) # constrainpoint
-
-				elif isinstance (j.Curve,Part.Circle):
-					rad = j.Curve.Radius
-					pos = j.Curve.Center
-					for i in [0,30,45,60,90,120,135,150,180,210,225,240,270,300,315,330]:
-						ang = math.radians(i)
-						cur = Vector(math.sin(ang)*rad+pos.x,math.cos(ang)*rad+pos.y,pos.z)
-						snapArray.append([cur,1,cur])
-					for i in [15,37.5,52.5,75,105,127.5,142.5,165,195,217.5,232.5,255,285,307.5,322.5,345]:
-						ang = math.radians(i)
-						cur = Vector(math.sin(ang)*rad+pos.x,math.cos(ang)*rad+pos.y,pos.z)
-						snapArray.append([cur,0,pos])
-
-				if lastObj[0]:
-                                        lastob = FreeCAD.ActiveDocument.getObject(lastObj[0])
-                                        if lastob:
-                                                if (lastob.Type[:4] == "Part"):
-                                                        for k in lastob.Shape.Edges:
-                                                                pt = fcgeo.findIntersection(j,k)
-                                                                if pt:
-                                                                        for p in pt:
-                                                                                snapArray.append([p,3,p])
-			if ob.Shape.ShapeType == 'Compound':
-				tempsnaps = []
-				for e1 in ob.Shape.Edges:
-					for e2 in ob.Shape.Edges:
-						pt = fcgeo.findIntersection(e1,e2)
-						if pt:
-							for p in pt:
-								tempsnaps.append(p)
-				for i in range(len(tempsnaps)):
-					p = tempsnaps.pop()
-					alone = True
-					for p2 in tempsnaps:
-						if fcvec.equals(p,p2): alone = False
-					if alone == True:
-						snapArray.append([p,3,p])
-                elif ctrl and ("Dimline" in ob.PropertiesList):
-                        base = Part.Line(ob.Start,ob.End).toShape()
-                        proj = fcgeo.findDistance(ob.Dimline,base)
-                        if not proj: proj = Vector(0,0,0)
-                        p2 = ob.Start.add(fcvec.neg(proj))
-                        dv = ob.End.sub(ob.Start)
-                        dv.multiply(0.5)
-                        p2 = p2.add(dv)
-                        snapArray.append([p2,0,p2])
-		else:
-			cur = Vector(snapped['x'],snapped['y'],snapped['z'])
-			snapArray = [[cur,2,cur]]
-
-		if not lastObj[0]:
-			lastObj[0] = ob.Name
-			lastObj[1] = ob.Name
-		if (lastObj[1] != ob.Name):
-			lastObj[0] = lastObj[1]
-			lastObj[1] = ob.Name
-
-		# calculating shortest distance
-		shortest = 1000000000000000000
-		newpoint = point
-		for i in snapArray:
-			if i[0] == None: print "snapPoint: debug 'i[0]' is 'None'"
-			sqdist = ((point.x-i[0].x)**2 + (point.y-i[0].y)**2 + (point.z-i[0].z)**2)
-			if sqdist < shortest:
-				shortest = sqdist
-				newpoint = i
-		target.snap.coords.point.setValue((newpoint[2].x,newpoint[2].y,newpoint[2].z))
-		if (newpoint[1] == 1):
-			target.snap.setMarker("square")
-		elif (newpoint[1] == 0):
-			target.snap.setMarker("point")
-		elif (newpoint[1] == 3):
-			target.snap.setMarker("square")
-		else:
-			target.snap.setMarker("circle")
-		target.snap.switch.whichChild = 0
+		target.snap.switch.whichChild = 0                                
 		return newpoint[2]
 
 def constrainPoint (target,point,mobile=False,sym=False):
@@ -532,6 +419,7 @@ class Tracker:
 		self.switch = coin.SoSwitch() # this is the on/off switch
 		self.switch.addChild(node)
 		self.switch.whichChild = -1
+                self.Visible = False
 		todo.delay(self._insertSwitch, self.switch)
 
 	def finalize(self):
@@ -555,9 +443,11 @@ class Tracker:
 
 	def on(self):
 		self.switch.whichChild = 0
+                self.Visible = True
 
 	def off(self):
 		self.switch.whichChild = -1
+                self.Visible = False
 				
 class snapTracker(Tracker):
 	"A Snap Mark tracker, used by tools that support snapping"
@@ -975,6 +865,7 @@ class gridTracker(Tracker):
                 s.addChild(self.coords2)
                 s.addChild(lines2)
 		Tracker.__init__(self,children=[s])
+                self.update()
 
         def update(self):
                 bound = (self.numlines/2)*self.space
@@ -982,15 +873,25 @@ class gridTracker(Tracker):
                 mpts = []
                 for i in range(self.numlines+1):
                         curr = -bound + i*self.space
-                        z = 0
                         if i/float(self.mainlines) == i/self.mainlines:
-                                mpts.extend([[-bound,curr,z],[bound,curr,z]])
-                                mpts.extend([[curr,-bound,z],[curr,bound,z]])
+                                mpts.extend([[-bound,curr,0],[bound,curr,0]])
+                                mpts.extend([[curr,-bound,0],[curr,bound,0]])
                         else:
-                                pts.extend([[-bound,curr,z],[bound,curr,z]])
-                                pts.extend([[curr,-bound,z],[curr,bound,z]])
+                                pts.extend([[-bound,curr,0],[bound,curr,0]])
+                                pts.extend([[curr,-bound,0],[curr,bound,0]])
                 self.coords1.point.setValues(pts)
                 self.coords2.point.setValues(mpts)
+
+                rot = FreeCAD.Rotation()
+                rot.Q = self.trans.rotation.getValue().getValue()
+                bound = (self.numlines/2)*self.space
+                self.nodes = []
+                for i in range(self.numlines+1):
+                        currx = -bound + i*self.space
+                        for j in range(self.numlines+1):
+                                curry = -bound + j*self.space
+                                p = Vector(currx,curry,0)
+                                self.nodes.append(rot.multVec(p))
 
         def setSpacing(self,space):
                 self.space = space
@@ -1003,8 +904,12 @@ class gridTracker(Tracker):
         def set(self):
                 Q = plane.getRotation().Rotation.Q
                 self.trans.rotation.setValue([Q[0],Q[1],Q[2],Q[3]])
-                self.on()                
-     
+                self.on()
+
+        def getNodes(self):
+                "returns a list of vectors from the grid nodes"
+                return self.nodes
+                
 #---------------------------------------------------------------------------
 # Helper tools
 #---------------------------------------------------------------------------

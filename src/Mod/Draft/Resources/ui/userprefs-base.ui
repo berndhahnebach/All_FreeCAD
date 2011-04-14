@@ -255,6 +255,42 @@
           </property>
          </widget>
         </item>
+        <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_17">
+          <property name="toolTip">
+           <string>The radius for snapping to special points. Set to 0 for no distance (infinite)</string>
+          </property>
+          <property name="text">
+           <string>Snap range</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Gui::PrefSpinBox" name="gui::prefspinbox_2">
+          <property name="suffix">
+           <string>px</string>
+          </property>
+          <property name="prefEntry" stdset="0">
+           <cstring>snapRange</cstring>
+          </property>
+          <property name="prefPath" stdset="0">
+           <cstring>Mod/Draft</cstring>
+          </property>
+         </widget>
+        </item>
        </layout>
       </item>
       <item>
@@ -795,5 +831,38 @@ such as &quot;Arial:Bold&quot;</string>
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>gui::prefcheckbox_2</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>gui::prefdoublespinbox_3</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>85</x>
+     <y>320</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>308</x>
+     <y>321</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gui::prefcheckbox_2</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>gui::prefspinbox_4</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>61</x>
+     <y>321</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>506</x>
+     <y>324</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
