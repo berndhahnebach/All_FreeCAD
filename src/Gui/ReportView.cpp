@@ -31,9 +31,11 @@
 # include <QTextStream>
 #endif
 
+#include <Base/Interpreter.h>
 #include "ReportView.h"
 #include "FileDialog.h"
 #include "PythonConsole.h"
+#include "PythonConsolePy.h"
 #include "BitmapFactory.h"
 
 using namespace Gui;
@@ -223,6 +225,25 @@ private:
 
 // ----------------------------------------------------------
 
+class ReportOutput::Data
+{
+public:
+    Data()
+    {
+        Base::PyGILStateLocker lock;
+        default_stdout = PySys_GetObject(const_cast<char*>("stdout"));
+        replace_stdout = new OutputStdout();
+        redirected_stdout = false;
+    }
+    ~Data()
+    {
+    }
+
+    bool redirected_stdout;
+    PyObject* default_stdout;
+    PyObject* replace_stdout;
+};
+
 /* TRANSLATOR Gui::DockWnd::ReportOutput */
 
 /**
@@ -230,7 +251,7 @@ private:
  *  name 'name' and widget flags set to 'f' 
  */
 ReportOutput::ReportOutput(QWidget* parent)
-  : QTextEdit(parent), WindowParameter("OutputWindow"), gotoEnd(false)
+  : QTextEdit(parent), WindowParameter("OutputWindow"), d(new Data), gotoEnd(false)
 {
     bLog = false;
     reportHl = new ReportHighlighter(this);
@@ -261,6 +282,7 @@ ReportOutput::~ReportOutput()
     _prefs->Detach(this);
     Base::Console().DetachObserver(this);
     delete reportHl;
+    delete d;
 }
 
 void ReportOutput::restoreFont()
@@ -338,6 +360,12 @@ void ReportOutput::contextMenuEvent ( QContextMenuEvent * e )
     errAct->setChecked(bErr);
 
     submenu->addSeparator();
+
+    QAction* outAct = submenu->addAction(tr("Python output"), this, SLOT(onToggleRedirectPythonStdout()));
+    outAct->setCheckable(true);
+    outAct->setChecked(d->redirected_stdout);
+
+    submenu->addSeparator();
     QAction* botAct = submenu->addAction(tr("Go to end"), this, SLOT(onToggleGoToEnd()));
     botAct->setCheckable(true);
     botAct->setChecked(gotoEnd);
@@ -401,6 +429,21 @@ void ReportOutput::onToggleLogging()
 {
     bLog = bLog ? false : true;
     getWindowParameter()->SetBool( "checkLogging", bLog );
+}
+
+void ReportOutput::onToggleRedirectPythonStdout()
+{
+    if (d->redirected_stdout) {
+        d->redirected_stdout = false;
+        Base::PyGILStateLocker lock;
+        PySys_SetObject(const_cast<char*>("stdout"), d->default_stdout);
+    }
+    else {
+        d->redirected_stdout = true;
+        Base::PyGILStateLocker lock;
+        PySys_SetObject(const_cast<char*>("stdout"), d->replace_stdout);
+
+    }
 }
 
 void ReportOutput::onToggleGoToEnd()
