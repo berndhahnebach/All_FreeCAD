@@ -139,7 +139,7 @@ namespace App {
 /// @cond DOXERR
   PROPERTY_SOURCE_TEMPLATE(Part::Part2DObjectPython, Part::Part2DObject)
   template<> const char* Part::Part2DObjectPython::getViewProviderName(void) const {
-    return "PartGui::ViewProvider2DObject";
+    return "PartGui::ViewProvider2DObjectPython";
 }
 /// @endcond
 
