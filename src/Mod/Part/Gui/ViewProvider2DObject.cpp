@@ -227,3 +227,13 @@ std::vector<std::string> ViewProvider2DObject::getDisplayModes(void) const
     return StrList;
 }
 
+// -----------------------------------------------------------------------
+
+namespace Gui {
+/// @cond DOXERR
+PROPERTY_SOURCE_TEMPLATE(PartGui::ViewProvider2DObjectPython, PartGui::ViewProvider2DObject)
+/// @endcond
+
+// explicit template instantiation
+template class AppPartGuiExport ViewProviderPythonFeatureT<PartGui::ViewProvider2DObject>;
+}

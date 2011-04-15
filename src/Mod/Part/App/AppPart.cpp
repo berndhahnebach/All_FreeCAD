@@ -163,6 +163,7 @@ void AppPartExport initPart()
     Part::Torus                 ::init();
     Part::Helix                 ::init();
     Part::Part2DObject          ::init();
+    Part::Part2DObjectPython    ::init();
     Part::RuledSurface          ::init();
 
     // Geometry types

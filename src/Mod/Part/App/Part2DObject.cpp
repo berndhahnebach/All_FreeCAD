@@ -132,3 +132,18 @@ Base::Placement Part2DObject::positionBySupport(const TopoDS_Face &face,const Ba
 
     return Base::Placement(mtrx);
 }
+
+// Python Drawing feature ---------------------------------------------------------
+
+namespace App {
+/// @cond DOXERR
+  PROPERTY_SOURCE_TEMPLATE(Part::Part2DObjectPython, Part::Part2DObject)
+  template<> const char* Part::Part2DObjectPython::getViewProviderName(void) const {
+    return "PartGui::ViewProvider2DObject";
+}
+/// @endcond
+
+// explicit template instantiation
+  template class AppPartExport FeaturePythonT<Part::Part2DObject>;
+}
+
