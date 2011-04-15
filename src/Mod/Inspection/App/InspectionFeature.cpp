@@ -35,6 +35,7 @@
 #include <boost/signals.hpp>
 #include <boost/bind.hpp>
 
+#include <Base/Console.h>
 #include <Base/Exception.h>
 #include <Base/FutureWatcherProgress.h>
 #include <Base/Parameter.h>
@@ -570,7 +571,9 @@ App::DocumentObjectExecReturn* Feature::execute(void)
     vals.insert(vals.end(), future.begin(), future.end());
 #else
     unsigned long count = actual->countPoints();
-    Base::SequencerLauncher seq("Inspecting...", count);
+    std::stringstream str;
+    str << "Inspecting " << this->Label.getValue() << "...";
+    Base::SequencerLauncher seq(str.str().c_str(), count);
 
     std::vector<float> vals(count);
     for (unsigned long index = 0; index < count; index++) {
@@ -593,6 +596,20 @@ App::DocumentObjectExecReturn* Feature::execute(void)
 #endif
 
     Distances.setValues(vals);
+
+    float fRMS = 0;
+    int countRMS = 0;
+    for (std::vector<float>::iterator it = vals.begin(); it != vals.end(); ++it) {
+        if (fabs(*it) < FLT_MAX) {
+            fRMS += (*it) * (*it);
+            countRMS++;
+        }
+    }
+
+    fRMS = fRMS / countRMS;
+    fRMS = sqrt(fRMS);
+    Base::Console().Message("RMS value for '%s' with search radius=%.4f is: %.4f\n",
+        this->Label.getValue(), this->SearchRadius.getValue(), fRMS);
 
     delete actual;
     for (std::vector<InspectNominalGeometry*>::iterator it = inspectNominal.begin(); it != inspectNominal.end(); ++it)
