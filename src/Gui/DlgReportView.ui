@@ -39,6 +39,19 @@
     </spacer>
    </item>
    <item row="3" column="0" >
+    <widget class="Gui::PrefCheckBox" name="pythonOutput" >
+     <property name="text" >
+      <string>Redirect internal Python output to report view</string>
+     </property>
+     <property name="prefEntry" stdset="0" >
+      <cstring>RedirectPythonOutput</cstring>
+     </property>
+     <property name="prefPath" stdset="0" >
+      <cstring>OutputWindow</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" >
     <widget class="Gui::PrefCheckBox" name="pythonError" >
      <property name="text" >
       <string>Redirect internal Python errors to report view</string>

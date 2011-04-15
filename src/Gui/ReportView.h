@@ -171,6 +171,8 @@ public Q_SLOTS:
     void onToggleLogging();
     /** Toggles the redirection of Python stdout. */
     void onToggleRedirectPythonStdout();
+    /** Toggles the redirection of Python stderr. */
+    void onToggleRedirectPythonStderr();
     /** Toggles the report to go to the end if new messages appear. */
     void onToggleGoToEnd();
 

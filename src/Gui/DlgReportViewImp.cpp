@@ -63,6 +63,7 @@ void DlgReportViewImp::saveSettings()
     colorLogging->onSave();
     colorWarning->onSave();
     colorError->onSave();
+    pythonOutput->onSave();
     pythonError->onSave();
 }
 
@@ -75,19 +76,12 @@ void DlgReportViewImp::loadSettings()
     colorLogging->onRestore();
     colorWarning->onRestore();
     colorError->onRestore();
+    pythonOutput->blockSignals(true);
+    pythonOutput->onRestore();
+    pythonOutput->blockSignals(false);
     pythonError->blockSignals(true);
     pythonError->onRestore();
     pythonError->blockSignals(false);
-}
-
-void DlgReportViewImp::on_pythonError_toggled(bool)
-{
-    static bool checked = false;
-    if (!checked) {
-        checked = true;
-        QMessageBox::warning(this, tr("Redirect Python errors"),
-            tr("In order to take effect this change you must restart the application."));
-    }
 }
 
 /**

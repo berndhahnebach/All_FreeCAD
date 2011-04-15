@@ -47,9 +47,6 @@ public:
 
 protected:
     void changeEvent(QEvent *e);
-
-protected Q_SLOTS:
-    void on_pythonError_toggled(bool);
 };
 
 } // namespace Dialog
