@@ -80,6 +80,8 @@ public:
 
 };
 
+typedef App::FeaturePythonT<Part2DObject> Part2DObjectPython;
+
 } //namespace Part
 
 

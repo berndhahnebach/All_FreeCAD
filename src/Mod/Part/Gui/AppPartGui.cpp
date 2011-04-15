@@ -93,6 +93,7 @@ void AppPartGuiExport initPartGui()
     PartGui::ViewProviderCurveNet       ::init();
     PartGui::ViewProviderExtrusion      ::init();
     PartGui::ViewProvider2DObject       ::init();
+    PartGui::ViewProvider2DObjectPython ::init();
     PartGui::ViewProviderMirror         ::init();
     PartGui::ViewProviderFillet         ::init();
     PartGui::ViewProviderChamfer        ::init();

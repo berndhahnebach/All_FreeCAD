@@ -25,7 +25,7 @@
 #define PARTGUI_IEWPROVIDER2DOBJECT_H
 
 #include "ViewProvider.h"
-
+#include <Gui/ViewProviderPythonFeature.h>
 
 class TopoDS_Shape;
 class TopoDS_Face;
@@ -75,6 +75,8 @@ protected:
   float MinY;
   float MaxY;
 };
+
+typedef Gui::ViewProviderPythonFeatureT<ViewProvider2DObject> ViewProvider2DObjectPython;
 
 } // namespace PartGui
 
