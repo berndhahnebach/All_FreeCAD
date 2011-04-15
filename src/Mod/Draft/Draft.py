@@ -251,7 +251,7 @@ def makeCircle(radius, placement=None, face=True, startangle=None, endangle=None
         wireframe, otherwise as a face. If startangle AND endangle are given
         (in degrees), they are used and the object appears as an arc.'''
         if placement: typecheck([(placement,FreeCAD.Placement)], "makeCircle")
-        obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Circle")
+        obj = FreeCAD.ActiveDocument.addObject("Part::Part2DObjectPython","Circle")
         Circle(obj)
         ViewProviderCircle(obj.ViewObject)
         obj.Radius = radius
@@ -272,7 +272,7 @@ def makeRectangle(length, height, placement=None, face=True):
         If a placement is given, it is used. If face is False, the
         rectangle is shown as a wireframe, otherwise as a face.'''
         if placement: typecheck([(placement,FreeCAD.Placement)], "makeRectangle")
-        obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Rectangle")
+        obj = FreeCAD.ActiveDocument.addObject("Part::Part2DObjectPython","Rectangle")
         Rectangle(obj)
         ViewProviderRectangle(obj.ViewObject)
         obj.Length = length
@@ -347,7 +347,7 @@ def makeWire(pointslist,closed=False,placement=None,face=True):
         if placement: typecheck([(placement,FreeCAD.Placement)], "makeWire")
         if len(pointslist) == 2: fname = "Line"
         else: fname = "Wire"
-        obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython",fname)
+        obj = FreeCAD.ActiveDocument.addObject("Part::Part2DObjectPython",fname)
         Wire(obj)
         ViewProviderWire(obj.ViewObject)
         obj.Points = pointslist
@@ -367,7 +367,7 @@ def makePolygon(nfaces,radius=1,inscribed=True,placement=None,face=True):
         the resulting shape is displayed as a face, otherwise as a wireframe.
         '''
         if nfaces < 3: return None
-        obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Polygon")
+        obj = FreeCAD.ActiveDocument.addObject("Part::Part2DObjectPython","Polygon")
         Polygon(obj)
         ViewProviderPolygon(obj.ViewObject)
         obj.FacesNumber = nfaces
@@ -402,7 +402,7 @@ def makeBSpline(pointslist,closed=False,placement=None,face=True):
         if placement: typecheck([(placement,FreeCAD.Placement)], "makeRectangle")
         if len(pointslist) == 2: fname = "Line"
         else: fname = "BSpline"
-        obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython",fname)
+        obj = FreeCAD.ActiveDocument.addObject("Part::Part2DObjectPython",fname)
         BSpline(obj)
         ViewProviderBSpline(obj.ViewObject)
         obj.Points = pointslist
@@ -456,7 +456,7 @@ def fuse(object1,object2):
         coplanar, a special Draft Wire is used, otherwise we use
         a standard Part fuse.'''
         if fcgeo.isCoplanar(object1.Shape.fuse(object2.Shape).Faces):
-                obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Fusion")
+                obj = FreeCAD.ActiveDocument.addObject("Part::Part2DObjectPython","Fusion")
                 Wire(obj)
                 ViewProviderWire(obj.ViewObject)
         else:

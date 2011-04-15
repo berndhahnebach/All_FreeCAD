@@ -148,9 +148,10 @@ def snapPoint(target,point,cursor,ctrl=False):
 
         def getGridSnap(target,point):
                 "returns a grid snap point if available"
-                if not target.grid: return None
-                gp = target.grid.getNodes()
-                return gp[fcgeo.findClosest(point,gp)]
+                return None
+                # if not target.grid: return None
+                # gp = target.grid.getNodes()
+                # return gp[fcgeo.findClosest(point,gp)]
 
 	# checking if alwaySnap setting is on
 	if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").\
