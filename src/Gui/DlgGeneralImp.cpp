@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <QApplication>
 # include <QLocale>
 # include <QStyleFactory>
 #endif
@@ -134,6 +135,11 @@ void DlgGeneralImp::saveSettings()
         hGrp->SetASCII("Language", current.constData());
         Translator::instance()->activateLanguage(current.constData());
     }
+
+    QVariant size = this->toolbarIconSize->itemData(this->toolbarIconSize->currentIndex());
+    int pixel = size.toInt();
+    hGrp->SetInt("ToolbarIconSize", pixel);
+    getMainWindow()->setIconSize(QSize(pixel,pixel));
 }
 
 void DlgGeneralImp::loadSettings()
@@ -175,6 +181,15 @@ void DlgGeneralImp::loadSettings()
             Languages->setCurrentIndex(index);
         }
     }
+
+    int size = QApplication::style()->pixelMetric(QStyle::PM_ToolBarIconSize);
+    int current = getMainWindow()->iconSize().width();
+    this->toolbarIconSize->addItem(tr("Default (%1 x %1)").arg(size), QVariant((int)size));
+    this->toolbarIconSize->addItem(tr("Small (%1 x %1)").arg(16), QVariant((int)16));
+    this->toolbarIconSize->addItem(tr("Large (%1 x %1)").arg(32), QVariant((int)32));
+    this->toolbarIconSize->addItem(tr("Extra large (%1 x %1)").arg(48), QVariant((int)48));
+    index = this->toolbarIconSize->findData(QVariant(current));
+    if (index > -1) this->toolbarIconSize->setCurrentIndex(index);
 }
 
 void DlgGeneralImp::changeEvent(QEvent *e)
