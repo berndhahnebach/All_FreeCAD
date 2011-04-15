@@ -108,8 +108,7 @@ struct ApplicationP
     ApplicationP() : 
     activeDocument(0L), 
     isClosing(false), 
-    startingUp(true), 
-    _stderr(0)
+    startingUp(true)
     {
         // create the macro manager
         macroMngr = new MacroManager();
@@ -131,7 +130,6 @@ struct ApplicationP
     bool startingUp;
     /// Handles all commands 
     CommandManager commandManager;
-    PyObject *_stderr;
 };
 
 /** Observer that watches relabeled objects and make sure that the labels inside
@@ -370,12 +368,6 @@ Application::Application(bool GUIenabled)
     View3DInventorPy    ::init_type();
 
     d = new ApplicationP;
-    bool redir = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/OutputWindow")->
-                              GetBool("RedirectPythonErrors", false);
-    if (redir) {
-        d->_stderr = new OutputStderr();
-        PySys_SetObject("stderr", d->_stderr);
-    }
 
     // global access 
     Instance = this;
@@ -416,7 +408,6 @@ Application::~Application()
     {
     Base::PyGILStateLocker lock;
     Py_DECREF(_pcWorkbenchDictionary);
-    Py_XDECREF(d->_stderr);
     }
 
     // save macros

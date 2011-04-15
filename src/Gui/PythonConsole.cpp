@@ -61,8 +61,7 @@ struct PythonConsoleP
     enum Output {Error = 20, Message = 21};
     enum CopyType {Normal, History, Command};
     CopyType type;
-    PyObject *_stdoutPy, *_stderrPy, *_stdinPy;
-    PyObject *_stdout, *_stderr, *_stdin;
+    PyObject *_stdoutPy, *_stderrPy, *_stdinPy, *_stdin;
     InteractiveInterpreter* interpreter;
     CallTipsList* callTipsList;
     ConsoleHistory history;
@@ -375,8 +374,6 @@ PythonConsole::PythonConsole(QWidget *parent)
     d->_stdoutPy = new PythonStdout(this);
     d->_stderrPy = new PythonStderr(this);
     d->_stdinPy  = new PythonStdin (this);
-    d->_stdout = PySys_GetObject("stdout");
-    d->_stderr = PySys_GetObject("stderr");
     d->_stdin  = PySys_GetObject("stdin");
     PySys_SetObject("stdin", d->_stdinPy);
 
@@ -614,6 +611,8 @@ void PythonConsole::runSource(const QString& line)
 {
     bool incomplete = false;
     Base::PyGILStateLocker lock;
+    PyObject* default_stdout = PySys_GetObject("stdout");
+    PyObject* default_stderr = PySys_GetObject("stderr");
     PySys_SetObject("stdout", d->_stdoutPy);
     PySys_SetObject("stderr", d->_stderrPy);
     d->interactive = true;
@@ -645,8 +644,8 @@ void PythonConsole::runSource(const QString& line)
         QMessageBox::critical(this, tr("Python console"), tr("Unhandled unknown C++ exception."));
     }
 
-    PySys_SetObject("stdout", d->_stdout);
-    PySys_SetObject("stderr", d->_stderr);
+    PySys_SetObject("stdout", default_stdout);
+    PySys_SetObject("stderr", default_stderr);
     printPrompt(incomplete);
     d->interactive = false;
     for (QStringList::Iterator it = d->statements.begin(); it != d->statements.end(); ++it)

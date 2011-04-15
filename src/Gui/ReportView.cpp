@@ -230,19 +230,50 @@ class ReportOutput::Data
 public:
     Data()
     {
-        Base::PyGILStateLocker lock;
-        default_stdout = PySys_GetObject(const_cast<char*>("stdout"));
-        replace_stdout = new OutputStdout();
-        redirected_stdout = false;
+        if (!default_stdout) {
+            Base::PyGILStateLocker lock;
+            default_stdout = PySys_GetObject(const_cast<char*>("stdout"));
+            replace_stdout = new OutputStdout();
+            redirected_stdout = false;
+        }
+
+        if (!default_stderr) {
+            Base::PyGILStateLocker lock;
+            default_stderr = PySys_GetObject(const_cast<char*>("stderr"));
+            replace_stderr = new OutputStderr();
+            redirected_stderr = false;
+        }
     }
     ~Data()
     {
+        if (replace_stdout) {
+            Py_DECREF(replace_stdout);
+            replace_stdout = 0;
+        }
+
+        if (replace_stderr) {
+            Py_DECREF(replace_stderr);
+            replace_stderr = 0;
+        }
     }
 
-    bool redirected_stdout;
-    PyObject* default_stdout;
-    PyObject* replace_stdout;
+    // make them static because redirection should done only once
+    static bool redirected_stdout;
+    static PyObject* default_stdout;
+    static PyObject* replace_stdout;
+
+    static bool redirected_stderr;
+    static PyObject* default_stderr;
+    static PyObject* replace_stderr;
 };
+
+bool ReportOutput::Data::redirected_stdout = false;
+PyObject* ReportOutput::Data::default_stdout = 0;
+PyObject* ReportOutput::Data::replace_stdout = 0;
+
+bool ReportOutput::Data::redirected_stderr = false;
+PyObject* ReportOutput::Data::default_stderr = 0;
+PyObject* ReportOutput::Data::replace_stderr = 0;
 
 /* TRANSLATOR Gui::DockWnd::ReportOutput */
 
@@ -361,9 +392,13 @@ void ReportOutput::contextMenuEvent ( QContextMenuEvent * e )
 
     submenu->addSeparator();
 
-    QAction* outAct = submenu->addAction(tr("Python output"), this, SLOT(onToggleRedirectPythonStdout()));
-    outAct->setCheckable(true);
-    outAct->setChecked(d->redirected_stdout);
+    QAction* stdoutAct = submenu->addAction(tr("Redirect Python output"), this, SLOT(onToggleRedirectPythonStdout()));
+    stdoutAct->setCheckable(true);
+    stdoutAct->setChecked(d->redirected_stdout);
+
+    QAction* stderrAct = submenu->addAction(tr("Redirect Python errors"), this, SLOT(onToggleRedirectPythonStderr()));
+    stderrAct->setCheckable(true);
+    stderrAct->setChecked(d->redirected_stderr);
 
     submenu->addSeparator();
     QAction* botAct = submenu->addAction(tr("Go to end"), this, SLOT(onToggleGoToEnd()));
@@ -442,8 +477,25 @@ void ReportOutput::onToggleRedirectPythonStdout()
         d->redirected_stdout = true;
         Base::PyGILStateLocker lock;
         PySys_SetObject(const_cast<char*>("stdout"), d->replace_stdout);
-
     }
+
+    getWindowParameter()->SetBool("RedirectPythonOutput", d->redirected_stdout);
+}
+
+void ReportOutput::onToggleRedirectPythonStderr()
+{
+    if (d->redirected_stderr) {
+        d->redirected_stderr = false;
+        Base::PyGILStateLocker lock;
+        PySys_SetObject(const_cast<char*>("stderr"), d->default_stderr);
+    }
+    else {
+        d->redirected_stderr = true;
+        Base::PyGILStateLocker lock;
+        PySys_SetObject(const_cast<char*>("stderr"), d->replace_stderr);
+    }
+
+    getWindowParameter()->SetBool("RedirectPythonErrors", d->redirected_stderr);
 }
 
 void ReportOutput::onToggleGoToEnd()
@@ -492,6 +544,16 @@ void ReportOutput::OnChange(Base::Subject<const char*> &rCaller, const char * sR
         QFontMetrics metric(font);
         int width = metric.width(QLatin1String("0000"));
         setTabStopWidth(width);
+    }
+    else if (strcmp(sReason, "RedirectPythonOutput") == 0) {
+        bool checked = rclGrp.GetBool(sReason);
+        if (checked != d->redirected_stdout)
+            onToggleRedirectPythonStdout();
+    }
+    else if (strcmp(sReason, "RedirectPythonErrors") == 0) {
+        bool checked = rclGrp.GetBool(sReason);
+        if (checked != d->redirected_stderr)
+            onToggleRedirectPythonStderr();
     }
 }
 

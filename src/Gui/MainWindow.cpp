@@ -383,7 +383,7 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
         (QString::fromAscii(QT_TRANSLATE_NOOP("QDockWidget","Report view")));
     pDockMgr->registerDockWindow("Std_ReportView", pcReport);
 #else
-    // Report view
+    // Report view (must be created before PythonConsole!)
     ReportOutput* pcReport = new ReportOutput(this);
     pcReport->setWindowIcon(BitmapFactory().pixmap("MacroEditor"));
     pcReport->setObjectName
