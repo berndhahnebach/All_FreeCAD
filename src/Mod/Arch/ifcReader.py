@@ -294,7 +294,6 @@ class IfcEntity:
     def getProperty(self,propName):
         "finds the value of the given property or quantity in this object, if exists"
         propsets = self.doc.find('IFCRELDEFINESBYPROPERTIES','RelatedObjects',self)
-        print "propsets",propsets
         if not propsets: return None
         propset = []
         for p in propsets:
@@ -302,12 +301,7 @@ class IfcEntity:
                 propset.extend(p.RelatingPropertyDefinition.HasProperties)
             elif hasattr(p.RelatingPropertyDefinition,"Quantities"):
                 propset.extend(p.RelatingPropertyDefinition.Quantities)
-        print "propset", propset
-        print "searching",propName, " in ",propset
         for prop in propset:
-            print "property"
-            print prop
-            print prop.Name
             if prop.Name == propName:
                 print "found valid",prop
                 if hasattr(prop,"LengthValue"):
@@ -423,14 +417,11 @@ class IfcDocument:
           property "property" has the given value
         '''
         if pat3:
-            print "searching for",pat3
             bobs = self.getEnt(pat1)
             obs = []
             for bob in bobs:
                 if hasattr(bob,pat2):
-                    print "found ",pat2," in ",bob," value ",bob.getAttribute(pat2)
                     if bob.getAttribute(pat2) == pat3:
-                        print "found matching value"
                         obs.append(bob)
             return obs
         elif pat1:

@@ -30,10 +30,10 @@ __title__="FreeCAD Wall"
 __author__ = "Yorik van Havre"
 __url__ = "http://free-cad.sourceforge.net"
 
-def makeWall(baseobj,width=None,height=None,align="Center"):
-    '''makeWall(obj,[width],[height]): creates a wall based on the
+def makeWall(baseobj,width=None,height=None,align="Center",name="Wall"):
+    '''makeWall(obj,[width],[height],[align],[name]): creates a wall based on the
     given object'''
-    obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Wall")
+    obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython",name)
     Wall(obj)
     ViewProviderWall(obj.ViewObject)
     obj.Base = baseobj
