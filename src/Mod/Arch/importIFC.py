@@ -21,7 +21,7 @@
 #*                                                                         *
 #***************************************************************************
 
-import ifcReader, FreeCAD, Wall, Draft, os, time
+import ifcReader, FreeCAD, Wall, Draft, os, time, Cell
 from draftlibs import fcvec
 
 __title__="FreeCAD IFC importer"
@@ -65,9 +65,45 @@ def read(filename):
     # getting walls
     for w in ifc.getEnt("IFCWALLSTANDARDCASE"):
         makeWall(w)
+    # getting floors
+    for f in ifc.getEnt("IFCBUILDINGSTOREY"):
+        makeCell(f,"Floor")
+    # getting buildings
+    for b in ifc.getEnt("IFCBUILDING"):
+        makeCell(b,"Building")
     FreeCAD.ActiveDocument.recompute()
     t3 = time.time()
     if DEBUG: print "done processing",ifc,"in %s s" % ((t3-t2))
+
+def makeCell(entity,type="Cell"):
+    "makes a cell in the freecad document"
+    try:
+        if DEBUG: print "=====> making cell",entity.id
+        placement = None
+        placement = getPlacement(entity.ObjectPlacement)
+        if DEBUG: print "got cell placement",entity.id,":",placement
+        subelements = ifc.find("IFCRELCONTAINEDINSPATIALSTRUCTURE","RelatingStructure",entity)
+        subelements.extend(ifc.find("IFCRELAGGREGATES","RelatingObject",entity))
+        fcelts = []
+        for s in subelements:
+            if hasattr(s,"RelatedElements"):
+                s = s.RelatedElements
+                if not isinstance(s,list): s = [s]
+                for r in s:
+                    if r.type == "IFCWALLSTANDARDCASE":
+                        o = FreeCAD.ActiveDocument.getObject("Wall"+str(r.id))
+                        if o: fcelts.append(o)
+            elif hasattr(s,"RelatedObjects"):
+                s = s.RelatedObjects
+                if not isinstance(s,list): s = [s]
+                for r in s:
+                    if r.type == "IFCBUILDINGSTOREY":
+                        o = FreeCAD.ActiveDocument.getObject("Floor"+str(r.id))
+                        if o: fcelts.append(o)
+        cell = Cell.makeCell(fcelts,join=False,name=type+str(entity.id))
+        cell.CellType = type
+    except:
+        if DEBUG: print "error: skipping cell",entity.id        
 
 def makeWall(entity):
     "makes a wall in the freecad document"
@@ -83,7 +119,7 @@ def makeWall(entity):
                 for r in entity.Representation.Representations:
                     if r.RepresentationIdentifier == "Axis":
                         wire = makeWire(r.Items,placement)
-                        wall = Wall.makeWall(wire,width,height,align="Center")
+                        wall = Wall.makeWall(wire,width,height,align="Center",name="Wall"+str(entity.id))
         else:
                 if DEBUG: print "no height or width properties found..."
                 for r in entity.Representation.Representations:
@@ -93,7 +129,7 @@ def makeWall(entity):
                                 norm = getVector(b.ExtrudedDirection)
                                 norm.normalize()
                                 wire = makeWire(b.SweptArea,placement)
-                                wall = Wall.makeWall(wire,width=0,height=b.Depth)
+                                wall = Wall.makeWall(wire,width=0,height=b.Depth,name="Wall"+str(entity.id))
                                 wall.Normal = norm
         if wall:
             if DEBUG: print "made wall object  ",entity.id,":",wall

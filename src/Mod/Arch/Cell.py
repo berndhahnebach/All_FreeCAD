@@ -30,15 +30,16 @@ __title__="FreeCAD Cell"
 __author__ = "Yorik van Havre"
 __url__ = "http://free-cad.sourceforge.net"
 
-def makeCell(objectslist):
+def makeCell(objectslist,join=True,name="Cell"):
     '''makeCell(objectslist): creates a cell including the
     objects from the given list'''
-    obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Cell")
+    obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython",name)
     Cell(obj)
     ViewProviderCell(obj.ViewObject)
     obj.Components = objectslist
     for comp in obj.Components:
         comp.ViewObject.hide()
+    obj.JoinMode = join
     return obj
 
 class CommandCell:
@@ -62,6 +63,8 @@ class Cell:
                         "The height of the section plane when making a plan view of this cell")
         obj.addProperty("App::PropertyBool","DebugMode","Base",
                         "if debug mode, no face cleaning!")
+        obj.addProperty("App::PropertyBool","JoinMode","Base",
+                        "If True, underlying geometry will be joined")
         obj.addProperty("App::PropertyEnumeration","CellType","Base",
                         "This cell can define a Cell, a Floor or a Building")
         obj.PlanHeight = 1.8
@@ -80,15 +83,21 @@ class Cell:
     def createGeometry(self,obj):
         pl = obj.Placement
         if obj.Components:
-            components = obj.Components[:]
-            f = components.pop(0)
-            baseShape = f.Shape
-            for comp in components:
-                if Draft.getType(comp) in ["Wall","Cell","Shape"]:
-                    baseShape = baseShape.fuse(comp.Shape)
-            if components:
-                if not obj.DebugMode:
-                    baseShape = fcgeo.cleanFaces(baseShape)
+            if obj.JoinMode:
+                components = obj.Components[:]
+                f = components.pop(0)
+                baseShape = f.Shape
+                for comp in components:
+                    if Draft.getType(comp) in ["Wall","Cell","Shape"]:
+                        baseShape = baseShape.fuse(comp.Shape)
+                if components:
+                    if not obj.DebugMode:
+                        baseShape = fcgeo.cleanFaces(baseShape)
+            else:
+                compshapes = []
+                for o in obj.Components:
+                    compshapes.append(o.Shape)
+                baseShape = Part.makeCompound(compshapes)
             obj.Shape = baseShape
             obj.Placement = pl
 
