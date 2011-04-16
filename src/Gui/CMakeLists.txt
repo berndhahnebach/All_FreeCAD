@@ -4,6 +4,10 @@ if(WIN32)
 add_definitions(-DFCGui -DQIIS_MAKEDLL)
 endif(WIN32)
 
+IF(SPNAV_FOUND)
+add_definitions(-DSPNAV_FOUND)
+ENDIF(SPNAV_FOUND)
+
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
