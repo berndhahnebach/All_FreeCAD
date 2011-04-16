@@ -3,7 +3,10 @@
 datadir = $(prefix)/Mod/Idf
 data_DATA = \
 		Idf.py \
-		Init.py \
+		Init.py
+
+if MAKE_NO_DFSG_PACKAGE
+data_DATA += \
 		ISOL.emn \
 		ISOL.emp
 
@@ -38,6 +41,7 @@ nobase_data_DATA = \
 		lib/TSM_104_01_L_DV_A.stp \
 		lib/TSS0P_8.stp \
 		lib/VC0603_SMD.stp
+endif
 
 EXTRA_DIST = \
 		$(data_DATA) $(nobase_data_DATA) \
