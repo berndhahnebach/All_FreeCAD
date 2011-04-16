@@ -24,6 +24,7 @@
 import FreeCAD,FreeCADGui,Part,Draft
 from draftlibs import fcgeo,fcvec
 from FreeCAD import Vector
+from PyQt4 import QtCore
 
 __title__="FreeCAD Cell"
 __author__ = "Yorik van Havre"
@@ -44,9 +45,9 @@ class CommandCell:
     "the Arch Cell command definition"
     def GetResources(self):
         return {'Pixmap'  : 'Arch_Cell',
-                'MenuText': "Cell",
+                'MenuText': QtCore.QT_TRANSLATE_NOOP("Arch_Cell","Cell"),
                 'Accel': "C, E",
-                'ToolTip': "Creates a cell object including selected objects"}
+                'ToolTip': QtCore.QT_TRANSLATE_NOOP("Arch_Cell","Creates a cell object including selected objects")}
         
     def Activated(self):
         sel = FreeCADGui.Selection.getSelection()

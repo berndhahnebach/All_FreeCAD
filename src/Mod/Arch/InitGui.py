@@ -38,9 +38,15 @@ class ArchWorkbench(Workbench):
                 Gui.addCommand('Arch_Wall',Wall.CommandWall())
                 Gui.addCommand('Arch_Cell',Cell.CommandCell())
                 tools = ["Arch_Wall","Arch_Cell"]
+                drafttools = ["Draft_Line","Draft_Wire","Draft_Arc",
+                              "Draft_Circle","Draft_Dimension",
+                              "Draft_Move","Draft_Rotate",
+                              "Draft_Offset","Draft_Upgrade",
+                              "Draft_Downgrade"]
                 self.appendToolbar("Arch tools",tools)
-                self.appendToolbar("Draft tools",["Draft_Line","Draft_Wire","Draft_Arc"])
+                self.appendToolbar("Draft tools",drafttools)
                 self.appendMenu("Architecture",tools)
+                self.appendMenu("Drafting",drafttools)
 		Log ('Loading Arch module... done\n')
 	def Activated(self):
 		Msg("ArchWorkbench::Activated()\n")
@@ -48,6 +54,7 @@ class ArchWorkbench(Workbench):
 		Msg("ArchWorkbench::Deactivated()\n")
 
 Gui.addIconPath(":/icons")
+Gui.addLanguagePath(":/translations")
 Gui.addWorkbench(ArchWorkbench)
 App.addImportType("Industry Foundation Classes (*.ifc)","importIFC") 
 
