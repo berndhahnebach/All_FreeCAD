@@ -98,6 +98,9 @@ class VersionControl:
 
 class UnknownControl(VersionControl):
     def extractInfo(self, srcdir):
+        # Do not overwrite existing file with almost useless information
+        if os.path.exists(srcdir+"/src/Build/Version.h"):
+            return False
         self.rev = "Unknown"
         self.date = "Unknown"
         self.range = "Unknown"
