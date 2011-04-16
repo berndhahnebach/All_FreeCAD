@@ -413,7 +413,7 @@ class Tracker:
 		if dotted:
 			drawstyle.style = coin.SoDrawStyle.LINES
 			drawstyle.lineWeight = 3
-			drawstyle.linePattern = 0xaa
+			drawstyle.linePattern = 0x0f0f #0xaa
 		node = coin.SoSeparator()
 		for c in [drawstyle, color] + children:
 			node.addChild(c)
