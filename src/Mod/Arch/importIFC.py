@@ -73,7 +73,7 @@ def read(filename):
         makeCell(b,"Building")
     FreeCAD.ActiveDocument.recompute()
     t3 = time.time()
-    if DEBUG: print "done processing",ifc,"in %s s" % ((t3-t2))
+    if DEBUG: print "done processing",ifc,"in %s s" % ((t3-t1))
 
 def makeCell(entity,type="Cell"):
     "makes a cell in the freecad document"

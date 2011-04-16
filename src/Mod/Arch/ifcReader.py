@@ -352,29 +352,39 @@ class IfcDocument:
         if DEBUG: print "Document successfully created"
 
     def __clean__(self,value):
-        "strips unuseful characters from an attribute value"
+        "turns an attribute value into something usable"
         try:
-            if "IFC" in value:
-                if DEBUG: print "cleaning type value",value
-                #TODO actually clean this!
             val = value.strip(" ()'")
-            if '#' in val:
-                if "," in val:
-                    val = val.split(",")
-                    l = []
-                    for subval in val:
-                        if '#' in subval:
-                            s = subval.strip(" #")
-                            if DEBUG: print "referencing ",s," : ",self.getEnt(int(s))
-                            l.append(self.getEnt(int(s)))
-                    val = l
-                else:
-                    val = val.strip()
-                    val = val.replace("#","")
-                    if DEBUG: print "referencing ",val," : ",self.getEnt(int(val))
-                    val =  self.getEnt(int(val))
-                    if not val:
-                        val = value
+            if val[:3].upper() == "IFC":
+                if "IFCTEXT" in val.upper():
+                    l = val.split("'")
+                    if len(l) == 3: val = l[1]
+                elif "IFCBOOLEAN" in value.upper():
+                    l = val.split(".")
+                    if len(l) == 3: val = l[1]
+                    if val.upper() == "F": val = False
+                    elif val.upper() == "T": val = True
+                elif "IFCREAL" in val.upper():
+                    l = val.split("(")
+                    if len(l) == 2: val = float(l[1].strip(")"))
+            else:
+                if '#' in val:
+                    if "," in val:
+                        val = val.split(",")
+                        l = []
+                        for subval in val:
+                            if '#' in subval:
+                                s = subval.strip(" #")
+                                if DEBUG: print "referencing ",s," : ",self.getEnt(int(s))
+                                l.append(self.getEnt(int(s)))
+                        val = l
+                    else:
+                        val = val.strip()
+                        val = val.replace("#","")
+                        if DEBUG: print "referencing ",val," : ",self.getEnt(int(val))
+                        val =  self.getEnt(int(val))
+                        if not val:
+                            val = value
         except:
             if DEBUG: print "error parsing attribute",value
             val = value
