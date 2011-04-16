@@ -291,24 +291,39 @@ class IfcEntity:
     def __repr__(self):
         return str(self.id) + ' : ' + self.type + ' ' + str(self.attributes)
 
-    def getProperty(self,prop):
-        "finds the next given property"
-        ents = self.doc.getEnt('IFCPROPERTYSINGLEVALUE')
-        ents.extend(self.doc.getEnt('IFCQUANTITYLENGTH'))
-        ents.extend(self.doc.getEnt('IFCQUANTITYAREA'))
-        ents.extend(self.doc.getEnt('IFCQUANTITYVOLUME'))
-        if not ents: return None
-        for e in ents:
-            if e.id > self.id:
-                if e.Name == prop:
-                    if hasattr(e,"LengthValue"):
-                        return e.LengthValue
-                    elif hasattr(e,"AreaValue"):
-                        return e.AreaValue
-                    elif hasattr(e,"VolumeValue"):
-                        return e.VolumeValue
-                    elif hasattr(e,"NominalValue"):
-                        return e.NominalValue
+    def getProperty(self,propName):
+        "finds the value of the given property or quantity in this object, if exists"
+        propsets = self.doc.find('IFCRELDEFINESBYPROPERTIES','RelatedObjects',self)
+        print "propsets",propsets
+        if not propsets: return None
+        propset = []
+        for p in propsets:
+            if hasattr(p.RelatingPropertyDefinition,"HasProperties"):
+                propset.extend(p.RelatingPropertyDefinition.HasProperties)
+            elif hasattr(p.RelatingPropertyDefinition,"Quantities"):
+                propset.extend(p.RelatingPropertyDefinition.Quantities)
+        print "propset", propset
+        print "searching",propName, " in ",propset
+        for prop in propset:
+            print "property"
+            print prop
+            print prop.Name
+            if prop.Name == propName:
+                print "found valid",prop
+                if hasattr(prop,"LengthValue"):
+                    return prop.LengthValue
+                elif hasattr(prop,"AreaValue"):
+                    return prop.AreaValue
+                elif hasattr(prop,"VolumeValue"):
+                    return prop.VolumeValue
+                elif hasattr(prop,"NominalValue"):
+                    return prop.NominalValue
+        return None
+
+    def getAttribute(self,attr):
+        "returns the value of the given attribute, if exists"
+        if hasattr(self,attr):
+            return self.__dict__[attr]
         return None
             
 class IfcDocument:
@@ -345,6 +360,9 @@ class IfcDocument:
     def __clean__(self,value):
         "strips unuseful characters from an attribute value"
         try:
+            if "IFC" in value:
+                if DEBUG: print "cleaning type value",value
+                #TODO actually clean this!
             val = value.strip(" ()'")
             if '#' in val:
                 if "," in val:
@@ -396,6 +414,32 @@ class IfcDocument:
                     if not ob.type in l:
                         l.append(ob.type)
         return l
+
+    def find(self,pat1,pat2=None,pat3=None):
+        '''finds objects in the current IFC document.
+        arguments can be of the following form:
+        - (pattern): returns object types matching the given pattern (same as search)
+        - (type,property,value): finds, in all objects of type "type", those whose
+          property "property" has the given value
+        '''
+        if pat3:
+            print "searching for",pat3
+            bobs = self.getEnt(pat1)
+            obs = []
+            for bob in bobs:
+                if hasattr(bob,pat2):
+                    print "found ",pat2," in ",bob," value ",bob.getAttribute(pat2)
+                    if bob.getAttribute(pat2) == pat3:
+                        print "found matching value"
+                        obs.append(bob)
+            return obs
+        elif pat1:
+            ll = self.search(pat1)
+            obs = []
+            for l in ll:
+                obs.extend(self.getEnt(l))
+            return obs
+        return None
                         
 if __name__ == "__main__":
     print __doc__

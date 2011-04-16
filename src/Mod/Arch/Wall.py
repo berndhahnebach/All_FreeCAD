@@ -24,6 +24,7 @@
 import FreeCAD,FreeCADGui,Part,Draft,Component
 from draftlibs import fcgeo,fcvec
 from FreeCAD import Vector
+from PyQt4 import QtCore
 
 __title__="FreeCAD Wall"
 __author__ = "Yorik van Havre"
@@ -46,9 +47,9 @@ class CommandWall:
     "the Arch Wall command definition"
     def GetResources(self):
         return {'Pixmap'  : 'Arch_Wall',
-                'MenuText': "Wall",
+                'MenuText': QtCore.QT_TRANSLATE_NOOP("Arch_Wall","Wall"),
                 'Accel': "W, A",
-                'ToolTip': "Creates a wall object from scratch or from a selected object (wire, face or solid)"}
+                'ToolTip': QtCore.QT_TRANSLATE_NOOP("Arch_Wall","Creates a wall object from scratch or from a selected object (wire, face or solid)")}
         
     def Activated(self):
         sel = FreeCADGui.Selection.getSelection()
@@ -56,7 +57,7 @@ class CommandWall:
             for obj in sel:
                 makeWall(obj)
         else:
-            FreeCAD.Console.PrintWarning("Not implemented! Select an object first")
+            FreeCADGui.runCommand("Draft_Wire")
        
 class Wall(Component.Component):
     "The Wall object"
