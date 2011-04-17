@@ -75,6 +75,8 @@ install-stamp:
 	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/$(MODULE)/$(MODULE)*.so usr/lib/freecad/Mod/$(MODULE); \
 	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/$(MODULE)/lib*.so.* usr/lib/freecad/Mod/$(MODULE); \
 	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/$(MODULE)/*.py usr/lib/freecad/Mod/$(MODULE);)
+	# special treating of PartDesign module
+	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/PartDesign/Scripts/*.py usr/lib/freecad/Mod/PartDesign/Scripts;)
 	# special treating of Draft module
 	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Draft/*.py usr/lib/freecad/Mod/Draft
 	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Draft/draftlibs/*.py usr/lib/freecad/Mod/Draft/draftlibs
