@@ -423,8 +423,8 @@ void ViewProviderPartExt::updateData(const App::Property* prop)
         if (cShape.IsNull())
             return;
 
-        // calculate the visual only if visibel
-        if(Visibility.getValue())
+        // calculate the visual only if visible
+        if (Visibility.getValue())
             updateVisual(cShape);
         else
             VisualTouched = true;
@@ -572,7 +572,7 @@ void ViewProviderPartExt::updateVisual(const TopoDS_Shape &inputShape)
                 // get the overall index of this edge
                 int idx = M.FindIndex(actEdge);
                 // already processed this index ?
-                if(edgeIdxSet.find(idx)!=edgeIdxSet.end()) {
+                if (edgeIdxSet.find(idx)!=edgeIdxSet.end()) {
                     
                     // this holds the indices of the edge's triangulation to the actual points
                     Handle(Poly_PolygonOnTriangulation) aPoly = BRep_Tool::PolygonOnTriangulation(actEdge, mesh, aLoc);
@@ -614,8 +614,10 @@ void ViewProviderPartExt::updateVisual(const TopoDS_Shape &inputShape)
         lineset ->coordIndex  .setNum(endxVecSize);
 
         int l=0;
-        for(std::vector<int32_t>::const_iterator it=indxVector.begin();it!=indxVector.end();++it,l++)
-            lineset ->coordIndex.set1Value(l,*it);
+        int32_t* p_index = lineset ->coordIndex  .startEditing();
+        for (std::vector<int32_t>::const_iterator it=indxVector.begin();it!=indxVector.end();++it,l++)
+            p_index[l] = *it;
+        lineset ->coordIndex  .finishEditing();
 
         // end the editing of the nodes
         coords  ->point       .finishEditing();
