@@ -144,7 +144,7 @@ void PropertyPointKernel::RestoreDocFile(Base::Reader &reader)
 App::Property *PropertyPointKernel::Copy(void) const 
 {
     PropertyPointKernel* prop = new PropertyPointKernel();
-    prop->_cPoints = this->_cPoints;
+    (*prop->_cPoints) = (*this->_cPoints);
     return prop;
 }
 
@@ -152,7 +152,7 @@ void PropertyPointKernel::Paste(const App::Property &from)
 {
     aboutToSetValue();
     const PropertyPointKernel& prop = dynamic_cast<const PropertyPointKernel&>(from);
-    this->_cPoints = prop._cPoints;
+    *(this->_cPoints) = *(prop._cPoints);
     hasSetValue();
 }
 
