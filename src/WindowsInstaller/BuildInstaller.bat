@@ -22,3 +22,6 @@ rem making of the bin zip file
 "c:\Program Files\7-Zip\7z.exe" a -t7z FreeCAD.7z -x!*.idb -x!*.pdb -x!*.ilk ..\..\bin ..\..\Mod ..\..\Doc
 
 call CopyRelease.bat
+
+del FreeCAD.7z
+del FreeCAD.msi
