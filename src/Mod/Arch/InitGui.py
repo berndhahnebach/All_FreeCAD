@@ -56,5 +56,11 @@ class ArchWorkbench(Workbench):
 Gui.addIconPath(":/icons")
 Gui.addLanguagePath(":/translations")
 Gui.addWorkbench(ArchWorkbench)
-App.addImportType("Industry Foundation Classes (*.ifc)","importIFC") 
+App.addImportType("Industry Foundation Classes (*.ifc)","importIFC")
+try:
+        import collada
+except:
+        print "pycollada not found, no collada support"
+else:
+        App.addImportType("Collada (*.dae)","importDAE")
 
