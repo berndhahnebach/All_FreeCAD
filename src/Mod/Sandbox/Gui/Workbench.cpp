@@ -82,6 +82,13 @@ Gui::MenuItem* Workbench::setupMenuBar() const
           << "Sandbox_WidgetShape"
           << "Sandbox_GDIWidget"
           << "Sandbox_RedirectPaint";
+
+    Gui::MenuItem* viewer = new Gui::MenuItem;
+    root->insertItem(item, viewer);
+    viewer->setCommand("Viewer");
+    *viewer << "Sandbox_PlaneViewer"
+            << "Sandbox_ExaminerViewer"
+            << "Sandbox_FlyViewer";
     return root;
 }
 
