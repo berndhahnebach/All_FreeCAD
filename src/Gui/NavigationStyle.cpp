@@ -35,6 +35,7 @@
 # include <QMetaObject>
 # include <QRegExp>
 #endif
+
 #include <Inventor/sensors/SoTimerSensor.h>
 
 #include <App/Application.h>
@@ -61,6 +62,64 @@ struct NavigationStyleP {
     static void viewAnimationCB(void * data, SoSensor * sensor);
 };
 }
+
+class FCSphereSheetProjector : public SbSphereSheetProjector {
+    typedef SbSphereSheetProjector inherited;
+
+public:
+    FCSphereSheetProjector(const SbSphere & sph, const SbBool orienttoeye = TRUE)
+        : SbSphereSheetProjector(sph, orienttoeye)
+    {
+    }
+
+    void setViewVolume (const SbViewVolume &vol)
+    {
+        inherited::setViewVolume(vol);
+    }
+
+    void setWorkingSpace (const SbMatrix &space)
+    {
+        inherited::setWorkingSpace(space);
+    }
+
+    SbVec3f project(const SbVec2f &point)
+    {
+        return inherited::project(point);
+    }
+
+    SbRotation getRotation(const SbVec3f &point1, const SbVec3f &point2)
+    {
+        SbRotation rot = inherited::getRotation(point1, point2);
+#if 0
+        // 0000333: Turntable camera rotation
+        SbVec3f tmp = point1;
+        tmp[1] = point2[1];
+        SbRotation rot1,rot2;
+        rot1.setValue(point1, tmp);
+        rot2.setValue(tmp, point2);
+
+        SbVec3f dummy;
+        float angle1, angle2;
+        rot1.getValue(dummy, angle1);
+        rot2.getValue(dummy, angle2);
+
+
+        SbVec3f zaxis(0,0,1);
+        this->worldToWorking.multDirMatrix(zaxis, zaxis);
+
+        rot1.setValue(SbVec3f(1,0,0), angle1);
+        rot2.setValue(zaxis, angle2);
+
+        rot = rot1 * rot2;
+
+        //SbVec3f dif = point1 - point2;
+        //if (dif[0] < 0)
+        //    radians = -radians;
+        //rot.setValue(zaxis, radians);
+#endif
+        return rot;
+    }
+};
 
 NavigationStyleEvent::NavigationStyleEvent(const Base::Type& s)
   : QEvent(QEvent::User), t(s)
@@ -122,7 +181,7 @@ void NavigationStyle::initialize()
     // FIXME: use a smaller sphere than the default one to have a larger
     // area close to the borders that gives us "z-axis rotation"?
     // 19990425 mortene.
-    this->spinprojector = new SbSphereSheetProjector(SbSphere(SbVec3f(0, 0, 0), 0.8f));
+    this->spinprojector = new FCSphereSheetProjector(SbSphere(SbVec3f(0, 0, 0), 0.8f));
     SbViewVolume volume;
     volume.ortho(-1, 1, -1, 1, -1, 1);
     this->spinprojector->setViewVolume(volume);
@@ -555,6 +614,10 @@ void NavigationStyle::spin(const SbVec2f & pointerpos)
     lastpos[0] = float(this->log.position[1][0]) / float(SoQtMax((int)(glsize[0]-1), 1));
     lastpos[1] = float(this->log.position[1][1]) / float(SoQtMax((int)(glsize[1]-1), 1));
 
+    // 0000333: Turntable camera rotation
+    //SbMatrix mat;
+    //viewer->getCamera()->orientation.getValue().getValue(mat);
+    //this->spinprojector->setWorkingSpace(mat);
     this->spinprojector->project(lastpos);
     SbRotation r;
     this->spinprojector->projectAndGetRotation(pointerpos, r);

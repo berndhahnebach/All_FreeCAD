@@ -113,6 +113,23 @@ inline T degrees(T r)
 
 // ----------------------------------------------------------------------------
 
+class BaseExport StopWatch
+{
+public:
+    StopWatch();
+    ~StopWatch();
+
+    void start();
+    int elapsed();
+    std::string toString(int ms) const;
+
+private:
+    struct Private;
+    Private* d;
+};
+
+// ----------------------------------------------------------------------------
+
 struct BaseExport Tools
 {
     static std::string getUniqueName(const std::string&, const std::vector<std::string>&,int d=0);
