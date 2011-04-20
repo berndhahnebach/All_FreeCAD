@@ -785,6 +785,8 @@ def getSVG(obj,modifier=100,textmodifier=100,plane=None):
 
         if getType(obj) == "Dimension":
 		p1,p2,p3,p4,tbase,angle,norm = obj.ViewObject.Proxy.calcGeom(obj)
+                dimText = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("dimPrecision")
+                dimText = "%."+str(dimText)+"f"
                 p1 = getProj(p1)
                 p2 = getProj(p2)
                 p3 = getProj(p3)
@@ -817,7 +819,7 @@ def getSVG(obj,modifier=100,textmodifier=100,plane=None):
 		svg += ','+ str(tbase.x) + ',' + str(tbase.y) + ') '
 		svg += 'translate(' + str(tbase.x) + ',' + str(tbase.y) + ') '
                 svg += 'scale('+str(tmod/2000)+',-'+str(tmod/2000)+')">'
-		svg += "%.2f" % p3.sub(p2).Length
+		svg += dimText % p3.sub(p2).Length
 		svg += '</text>\n</g>\n'
 
         elif getType(obj) == "Annotation":
@@ -1125,7 +1127,10 @@ class ViewProviderDimension:
 		p1,p2,p3,p4,tbase,angle,norm = self.calcGeom(obj)
                 if 'Override' in obj.ViewObject.PropertiesList:
                         text = str(obj.ViewObject.Override)
-                dtext = ("%.2f" % p3.sub(p2).Length)
+                dtext = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("dimPrecision")
+                dtext = "%."+str(dtext)+"f"
+                print dtext
+                dtext = (dtext % p3.sub(p2).Length)
                 if text:
                         text = text.replace("dim",dtext)
                 else:
