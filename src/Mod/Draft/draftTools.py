@@ -223,7 +223,9 @@ def snapPoint(target,point,cursor,ctrl=False):
                                                                 snapArray.append([p,3,p])
                                 else:
                                         snapArray = [getPassivePoint(snapped)]
-                                                                
+                        elif Draft.getType(obj) == "Dimension":
+                                for pt in [obj.Start,obj.End,obj.Dimline]:
+                                        snapArray.append([pt,0,pt])
                 if not lastObj[0]:
 			lastObj[0] = obj.Name
 			lastObj[1] = obj.Name
@@ -234,7 +236,7 @@ def snapPoint(target,point,cursor,ctrl=False):
 		# calculating shortest distance
 		shortest = 1000000000000000000
 		spt = Vector(snapped['x'],snapped['y'],snapped['z'])
-                newpoint = spt
+                newpoint = [Vector(0,0,0),0,Vector(0,0,0)]
 		for pt in snapArray:
 			if pt[0] == None: print "snapPoint: debug 'i[0]' is 'None'"
                         di = pt[0].sub(spt)
@@ -2111,8 +2113,8 @@ class Dimension(Creator):
                                                 else:
                                                         self.node = [cen.add(v1),cen.add(v2)]
                                                 self.dimtrack.update(self.node)
-                                        else:
-                                                self.dimtrack.update(self.node+[point]+[self.cont])
+                                if self.node and (not self.arcmode):
+                                        self.dimtrack.update(self.node+[point]+[self.cont])
 				# Draw constraint tracker line.
 				if (arg["ShiftDown"]):
 					self.constraintrack.p1(point)

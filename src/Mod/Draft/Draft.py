@@ -1129,7 +1129,6 @@ class ViewProviderDimension:
                         text = str(obj.ViewObject.Override)
                 dtext = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("dimPrecision")
                 dtext = "%."+str(dtext)+"f"
-                print dtext
                 dtext = (dtext % p3.sub(p2).Length)
                 if text:
                         text = text.replace("dim",dtext)
@@ -1379,10 +1378,12 @@ class ViewProviderAngularDimension:
                 self.selnode.addChild(self.arc)
                 if 'Override' in obj.ViewObject.PropertiesList:
                         text = str(obj.ViewObject.Override)
+                dtext = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("dimPrecision")
+                dtext = "%."+str(dtext)+"f"
                 if obj.LastAngle > obj.FirstAngle:
-                        dtext = ("%.2f" % (obj.LastAngle-obj.FirstAngle))+'\xb0'
+                        dtext = (dtext % (obj.LastAngle-obj.FirstAngle))+'\xb0'
                 else:
-                        dtext = ("%.2f" % ((360-obj.FirstAngle)+obj.LastAngle))+'\xb0'
+                        dtext = (dtext % ((360-obj.FirstAngle)+obj.LastAngle))+'\xb0'
                 if text:
                         text = text.replace("dim",dtext)
                 else:
