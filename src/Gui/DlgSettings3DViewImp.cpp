@@ -35,6 +35,7 @@
 #include <App/Application.h>
 #include <Base/Console.h>
 #include <Base/Parameter.h>
+#include <Base/Tools.h>
 
 using namespace Gui::Dialog;
 
@@ -68,6 +69,9 @@ void DlgSettings3DViewImp::saveSettings()
     QVariant data = comboNavigationStyle->itemData(comboNavigationStyle->currentIndex(), Qt::UserRole);
     hGrp->SetASCII("NavigationStyle", (const char*)data.toByteArray());
 
+    int index = comboOrbitStyle->currentIndex();
+    hGrp->SetInt("OrbitStyle", index);
+
     checkBoxInvertZoom->onSave();
     checkBoxAntiAliasing->onSave();
     CheckBox_CornerCoordSystem->onSave();
@@ -100,6 +104,11 @@ void DlgSettings3DViewImp::loadSettings()
     std::string model = hGrp->GetASCII("NavigationStyle",CADNavigationStyle::getClassTypeId().getName());
     int index = comboNavigationStyle->findData(QByteArray(model.c_str()));
     if (index > -1) comboNavigationStyle->setCurrentIndex(index);
+
+    index = comboOrbitStyle->currentIndex();
+    index = hGrp->GetInt("OrbitStyle", index);
+    index = Base::clamp(index, 0, comboOrbitStyle->count()-1);
+    comboOrbitStyle->setCurrentIndex(index);
 }
 
 void DlgSettings3DViewImp::on_mouseButton_clicked()
@@ -130,8 +139,12 @@ void DlgSettings3DViewImp::on_mouseButton_clicked()
 void DlgSettings3DViewImp::changeEvent(QEvent *e)
 {
     if (e->type() == QEvent::LanguageChange) {
+        int navigation = comboNavigationStyle->currentIndex();
+        int orbit = comboOrbitStyle->currentIndex();
         retranslateUi(this);
         retranslate();
+        comboNavigationStyle->setCurrentIndex(navigation);
+        comboOrbitStyle->setCurrentIndex(orbit);
     }
     else {
         QWidget::changeEvent(e);

@@ -67,8 +67,13 @@ class FCSphereSheetProjector : public SbSphereSheetProjector {
     typedef SbSphereSheetProjector inherited;
 
 public:
+    enum OrbitStyle {
+        Turntable,
+        Trackball
+    };
+
     FCSphereSheetProjector(const SbSphere & sph, const SbBool orienttoeye = TRUE)
-        : SbSphereSheetProjector(sph, orienttoeye)
+        : SbSphereSheetProjector(sph, orienttoeye), orbit(Trackball)
     {
     }
 
@@ -79,7 +84,8 @@ public:
 
     void setWorkingSpace (const SbMatrix &space)
     {
-        inherited::setWorkingSpace(space);
+        //inherited::setWorkingSpace(space);
+        this->worldToScreen = space.inverse();
     }
 
     SbVec3f project(const SbVec2f &point)
@@ -90,35 +96,44 @@ public:
     SbRotation getRotation(const SbVec3f &point1, const SbVec3f &point2)
     {
         SbRotation rot = inherited::getRotation(point1, point2);
-#if 0
+        if (orbit == Trackball)
+            return rot;
+
         // 0000333: Turntable camera rotation
-        SbVec3f tmp = point1;
-        tmp[1] = point2[1];
-        SbRotation rot1,rot2;
-        rot1.setValue(point1, tmp);
-        rot2.setValue(tmp, point2);
+        SbVec3f axis;
+        float angle;
+        rot.getValue(axis, angle);
+        SbVec3f dif = point1 - point2;
+        if (fabs(dif[1]) > fabs(dif[0])) {
+            SbVec3f xaxis(1,0,0);
+            if (dif[1] < 0)
+                angle = -angle;
+            rot.setValue(xaxis, angle);
+        }
+        else {
+            SbVec3f zaxis(0,0,1);
+            this->worldToScreen.multDirMatrix(zaxis, zaxis);
+            if (dif[0] > 0)
+                angle = -angle;
+            rot.setValue(zaxis, angle);
+        }
 
-        SbVec3f dummy;
-        float angle1, angle2;
-        rot1.getValue(dummy, angle1);
-        rot2.getValue(dummy, angle2);
-
-
-        SbVec3f zaxis(0,0,1);
-        this->worldToWorking.multDirMatrix(zaxis, zaxis);
-
-        rot1.setValue(SbVec3f(1,0,0), angle1);
-        rot2.setValue(zaxis, angle2);
-
-        rot = rot1 * rot2;
-
-        //SbVec3f dif = point1 - point2;
-        //if (dif[0] < 0)
-        //    radians = -radians;
-        //rot.setValue(zaxis, radians);
-#endif
         return rot;
     }
+
+    void setOrbitStyle(OrbitStyle style)
+    {
+        this->orbit = style;
+    }
+
+    OrbitStyle getOrbitStyle() const
+    {
+        return this->orbit;
+    }
+
+private:
+    SbMatrix worldToScreen;
+    OrbitStyle orbit;
 };
 
 NavigationStyleEvent::NavigationStyleEvent(const Base::Type& s)
@@ -222,6 +237,18 @@ void NavigationStyle::interactiveCountDec(void)
 int NavigationStyle::getInteractiveCount(void) const
 {
     return viewer->getInteractiveCount();
+}
+
+void NavigationStyle::setOrbitStyle(NavigationStyle::OrbitStyle style)
+{
+    FCSphereSheetProjector* projector = static_cast<FCSphereSheetProjector*>(this->spinprojector);
+    projector->setOrbitStyle(FCSphereSheetProjector::OrbitStyle(style));
+}
+
+NavigationStyle::OrbitStyle NavigationStyle::getOrbitStyle() const
+{
+    FCSphereSheetProjector* projector = static_cast<FCSphereSheetProjector*>(this->spinprojector);
+    return NavigationStyle::OrbitStyle(projector->getOrbitStyle());
 }
 
 SbBool NavigationStyle::isViewing(void) const
@@ -615,9 +642,10 @@ void NavigationStyle::spin(const SbVec2f & pointerpos)
     lastpos[1] = float(this->log.position[1][1]) / float(SoQtMax((int)(glsize[1]-1), 1));
 
     // 0000333: Turntable camera rotation
-    //SbMatrix mat;
-    //viewer->getCamera()->orientation.getValue().getValue(mat);
-    //this->spinprojector->setWorkingSpace(mat);
+    SbMatrix mat;
+    viewer->getCamera()->orientation.getValue().getValue(mat);
+    this->spinprojector->setWorkingSpace(mat);
+
     this->spinprojector->project(lastpos);
     SbRotation r;
     this->spinprojector->projectAndGetRotation(pointerpos, r);

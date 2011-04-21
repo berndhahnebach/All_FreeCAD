@@ -90,6 +90,11 @@ public:
         Clip        = 3,  /**< Clip objects using a lasso. */
     };
 
+    enum OrbitStyle {
+        Turntable,
+        Trackball
+    };
+
 public:
     NavigationStyle();
     virtual ~NavigationStyle();
@@ -126,6 +131,9 @@ public:
     void stopSelection();
     SbBool isSelecting() const;
     const std::vector<SbVec2s>& getPolygon(SbBool* clip_inner=0) const;
+
+    void setOrbitStyle(OrbitStyle style);
+    OrbitStyle getOrbitStyle() const;
 
 protected:
     void initialize();
