@@ -264,7 +264,7 @@ void CheckListDialog::accept ()
 namespace Gui {
 struct ColorButtonP
 {
-    QColor col;
+    QColor old, col;
     QPointer<QColorDialog> cd;
     bool allowChange;
     bool drawFrame;
@@ -396,8 +396,11 @@ void ColorButton::onChooseColor()
     }
     else {
         if (d->cd.isNull()) {
+            d->old = d->col;
             d->cd = new QColorDialog(d->col, this);
             d->cd->setAttribute(Qt::WA_DeleteOnClose);
+            connect(d->cd, SIGNAL(rejected()),
+                    this, SLOT(onRejected()));
             connect(d->cd, SIGNAL(currentColorChanged(const QColor &)),
                     this, SLOT(onColorChosen(const QColor&)));
         }
@@ -409,6 +412,12 @@ void ColorButton::onChooseColor()
 void ColorButton::onColorChosen(const QColor& c)
 {
     setColor(c);
+    changed();
+}
+
+void ColorButton::onRejected()
+{
+    setColor(d->old);
     changed();
 }
 

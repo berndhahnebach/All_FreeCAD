@@ -98,6 +98,35 @@ ViewProviderMeshCurvature::ViewProviderMeshCurvature()
     pcColorBar->setRange(-0.5f, 0.5f, 3);
     pcLinkRoot = new SoGroup;
     pcLinkRoot->ref();
+
+    App::Material mat;
+    const SbColor* cols;
+    if (pcColorMat->ambientColor.getNum() == 1) {
+        cols = pcColorMat->ambientColor.getValues(0);
+        mat.ambientColor.setPackedValue(cols[0].getPackedValue());
+    }
+    if (pcColorMat->diffuseColor.getNum() == 1) {
+        cols = pcColorMat->diffuseColor.getValues(0);
+        mat.diffuseColor.setPackedValue(cols[0].getPackedValue());
+    }
+    if (pcColorMat->emissiveColor.getNum() == 1) {
+        cols = pcColorMat->emissiveColor.getValues(0);
+        mat.emissiveColor.setPackedValue(cols[0].getPackedValue());
+    }
+    if (pcColorMat->specularColor.getNum() == 1) {
+        cols = pcColorMat->specularColor.getValues(0);
+        mat.specularColor.setPackedValue(cols[0].getPackedValue());
+    }
+    if (pcColorMat->shininess.getNum() == 1) {
+        const float* shiny = pcColorMat->shininess.getValues(0);
+        mat.shininess = shiny[0];
+    }
+    if (pcColorMat->transparency.getNum() == 1) {
+        const float* trans = pcColorMat->transparency.getValues(0);
+        mat.transparency = trans[0];
+    }
+
+    ADD_PROPERTY(TextureMaterial,(mat));
 }
 
 ViewProviderMeshCurvature::~ViewProviderMeshCurvature()
@@ -107,6 +136,20 @@ ViewProviderMeshCurvature::~ViewProviderMeshCurvature()
     pcColorBar->Detach(this);
     pcColorBar->unref();
     pcLinkRoot->unref();
+}
+
+void ViewProviderMeshCurvature::onChanged(const App::Property* prop)
+{
+    if (prop == &TextureMaterial) {
+        const App::Material& Mat = TextureMaterial.getValue();
+        pcColorMat->ambientColor.setValue(Mat.ambientColor.r,Mat.ambientColor.g,Mat.ambientColor.b);
+        pcColorMat->specularColor.setValue(Mat.specularColor.r,Mat.specularColor.g,Mat.specularColor.b);
+        pcColorMat->emissiveColor.setValue(Mat.emissiveColor.r,Mat.emissiveColor.g,Mat.emissiveColor.b);
+        pcColorMat->shininess.setValue(Mat.shininess);
+        pcColorMat->transparency.setValue(Mat.transparency);
+    }
+
+    ViewProviderDocumentObject::onChanged(prop);
 }
 
 void ViewProviderMeshCurvature::hide(void)

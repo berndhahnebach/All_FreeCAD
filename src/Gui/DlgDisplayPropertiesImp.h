@@ -72,6 +72,7 @@ private Q_SLOTS:
     void on_spinLineWidth_valueChanged(int);
     void on_spinLineTransparency_valueChanged(int);
     void on_buttonUserDefinedMaterial_clicked();
+    void on_buttonColorPlot_clicked();
 
 protected:
     void changeEvent(QEvent *e);
@@ -81,6 +82,7 @@ private:
     void reject();
     void setDisplayModes(const std::vector<ViewProvider*>&);
     void setMaterial(const std::vector<ViewProvider*>&);
+    void setColorPlot(const std::vector<ViewProvider*>&);
     void fillupMaterials();
     void setShapeColor(const std::vector<ViewProvider*>&);
     void setLineColor(const std::vector<ViewProvider*>&);
