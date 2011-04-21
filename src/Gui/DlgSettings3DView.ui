@@ -25,7 +25,7 @@
      <property name="title">
       <string>3D View settings</string>
      </property>
-     <layout class="QGridLayout" name="gridViewLayout">
+     <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
        <widget class="Gui::PrefCheckBox" name="CheckBox_CornerCoordSystem">
         <property name="text">
@@ -75,22 +75,22 @@
        </widget>
       </item>
       <item row="3" column="0">
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
+       <layout class="QGridLayout" name="gridLayout2">
+        <item row="0" column="0">
          <widget class="QLabel" name="navigationLabel">
           <property name="text">
            <string>3D Navigation</string>
           </property>
          </widget>
         </item>
-        <item>
+        <item row="0" column="1">
          <widget class="QComboBox" name="comboNavigationStyle">
           <property name="currentIndex">
            <number>-1</number>
           </property>
          </widget>
         </item>
-        <item>
+        <item row="0" column="2">
          <widget class="QPushButton" name="mouseButton">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -101,6 +101,30 @@
           <property name="text">
            <string>Mouse...</string>
           </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="orbitLabel">
+          <property name="text">
+           <string>Orbit style</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QComboBox" name="comboOrbitStyle">
+          <property name="currentIndex">
+           <number>1</number>
+          </property>
+          <item>
+           <property name="text">
+            <string>Turntable</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Trackball</string>
+           </property>
+          </item>
          </widget>
         </item>
        </layout>
@@ -374,6 +398,9 @@
   <tabstop>CheckBox_ShowFPS</tabstop>
   <tabstop>CheckBox_UseAutoRotation</tabstop>
   <tabstop>comboNavigationStyle</tabstop>
+  <tabstop>mouseButton</tabstop>
+  <tabstop>comboOrbitStyle</tabstop>
+  <tabstop>checkBoxInvertZoom</tabstop>
   <tabstop>checkBoxAntiAliasing</tabstop>
   <tabstop>FloatSpinBox_EyeDistance</tabstop>
   <tabstop>checkBoxBacklight</tabstop>

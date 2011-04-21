@@ -134,6 +134,7 @@ View3DInventor::View3DInventor(Gui::Document* pcDocument, QWidget* parent, Qt::W
     OnChange(*hGrp,"BacklightDirection");
     OnChange(*hGrp,"BacklightIntensity");
     OnChange(*hGrp,"NavigationStyle");
+    OnChange(*hGrp,"OrbitStyle");
 
     stopSpinTimer = new QTimer(this);
     connect(stopSpinTimer, SIGNAL(timeout()), this, SLOT(stopAnimating()));
@@ -263,6 +264,10 @@ void View3DInventor::OnChange(ParameterGrp::SubjectType &rCaller,ParameterGrp::M
         std::string model = rGrp.GetASCII("NavigationStyle",CADNavigationStyle::getClassTypeId().getName());
         Base::Type type = Base::Type::fromName(model.c_str());
         _viewer->setNavigationType(type);
+    }
+    else if (strcmp(Reason,"OrbitStyle") == 0) {
+        int style = rGrp.GetInt("OrbitStyle",1);
+        _viewer->navigationStyle()->setOrbitStyle(NavigationStyle::OrbitStyle(style));
     }
     else if (strcmp(Reason,"InvertZoom") == 0) {
         bool on = rGrp.GetBool("InvertZoom", false);
