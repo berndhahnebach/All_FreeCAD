@@ -51,12 +51,19 @@ def decode(name):
     return decodedName
 
 def read(filename):
+    global col
     col = collada.Collada(filename, ignore=[collada.DaeUnsupportedError])
     for geom in col.scene.objects('geometry'):
+    #for geom in col.geometries:
         for prim in geom.primitives():
-            print prim
+        #for prim in geom.primitives:
+            print prim, dir(prim)
             meshdata = []
-            for tri in prim.triangles():
+            if hasattr(prim,"triangles"):
+                tset = prim.triangles()
+            elif hasattr(prim,"triangleset"):
+                tset = prim.triangleset()
+            for tri in tset:
                 face = []
                 for v in tri.vertices:
                     face.append([v[0],v[1],v[2]])
