@@ -734,9 +734,9 @@ def getrgb(color):
         b = str(hex(int(color[2]*255)))[2:].zfill(2)
         return "#"+r+g+b
 
-def getSVG(obj,modifier=100,textmodifier=100,plane=None):
-        '''getSVG(object,[modifier],[textmodifier],[(u,v)]): returns a string containing
-        a SVG representation of the given object. the modifier attribute
+def getSVG(obj,modifier=100,textmodifier=100,linestyle="continuous",fillstyle="shape color",plane=None):
+        '''getSVG(object,[modifier],[textmodifier],[linestyle],[fillstyle],[(u,v)]):
+        returns a string containing a SVG representation of the given object. the modifier attribute
         specifies a scale factor for linewidths in %, and textmodifier specifies
         a scale factor for texts, in % (both default = 100). You can also supply
         an arbitrary (u,v) projection plane as a tuple or list of 2 Vectors.'''
@@ -845,34 +845,23 @@ def getSVG(obj,modifier=100,textmodifier=100,plane=None):
         elif obj.isDerivedFrom('Part::Feature'):
                 if obj.Shape.isNull(): return ''
                 color = getrgb(obj.ViewObject.LineColor)
+                # setting fill
                 if obj.Shape.Faces and (obj.ViewObject.DisplayMode != "Wireframe"):
-                        if 'FillStyle' in obj.ViewObject.PropertiesList:
-                                try:
-                                        if obj.ViewObject.FillStyle == 'shape color':
-                                                fill = getrgb(obj.ViewObject.ShapeColor)
-                                        else:
-                                                hatch = obj.ViewObject.FillStyle
-                                                fill = 'url(#'+hatch+')'
-                                except:
-                                        print "Draft:getSVG: Unable to read FillStyle"
-                                        fill = "none"
+                        if fillstyle == "shape color":
+                                fill = getrgb(obj.ViewObject.ShapeColor)
                         else:
-                                fill = getrgb(obj.ViewObject.ShapeColor)   
-                else: fill = 'none'
-                if "LineStyle" in obj.ViewObject.PropertiesList:
-                        try:
-                                if obj.ViewObject.LineStyle == "dashed":
-                                        lstyle = "0.09,0.05"
-                                elif obj.ViewObject.LineStyle == "dashdotted":
-                                        lstyle = "0.09,0.05,0.02,0.05"
-                                elif obj.ViewObject.LineStyle == "dotted":
-                                        lstyle = "0.02,0.02"
-                                else:
-                                        lstyle = "none"
-                        except:
-                                print "Draft:getSVG: Unable to read LineStyle"
-                                lstyle = "none"
-                else: lstyle = "none"
+                                fill = 'url(#'+hatch+')'
+                else:
+                        fill = 'none'
+                # setting linetype
+                if linestyle == "dashed":
+                        lstyle = "0.09,0.05"
+                elif linestyle == "dashdotted":
+                        lstyle = "0.09,0.05,0.02,0.05"
+                elif linestyle == "dotted":
+                        lstyle = "0.02,0.02"
+                else:
+                        lstyle = "none"
                 name = obj.Name
                 if obj.ViewObject.DisplayMode == "Shaded":
                         stroke = "none"
@@ -905,8 +894,7 @@ def getSVG(obj,modifier=100,textmodifier=100,plane=None):
                         svg += ';stroke-miterlimit:4'
                         svg += ';stroke-dasharray:' + lstyle
                         svg += ';fill:' + fill + '"'
-                        svg += '/>\n'
-                
+                        svg += '/>\n'                
         return svg
 
 def makeDrawingView(obj,page,lwmod=None,tmod=None):
@@ -934,15 +922,6 @@ class ViewProviderDraft:
         "A generic View Provider for Draft objects"
         
 	def __init__(self, obj):
-                obj.addProperty("App::PropertyEnumeration","LineStyle",
-                                "SVG Output","Line Style")
-                obj.addProperty("App::PropertyEnumeration","FillStyle",
-                                "SVG Output","Shape Fill Style")
-                obj.LineStyle = ['continuous','dashed','dashdotted','dotted']
-                fills = ['shape color']
-                for f in FreeCAD.svgpatterns.keys():
-                        fills.append(f)
-                obj.FillStyle = fills
                 obj.Proxy = self
 
 	def attach(self, obj):
@@ -1793,6 +1772,14 @@ class DrawingView:
                 obj.addProperty("App::PropertyFloat","LinewidthModifier","Drawing view","Modifies the linewidth of the lines inside this object")
                 obj.addProperty("App::PropertyFloat","TextModifier","Drawing view","Modifies the size of the texts inside this object")
                 obj.addProperty("App::PropertyLink","Source","Base","The linked object")
+                obj.addProperty("App::PropertyEnumeration","LineStyle","Drawing view","Line Style")
+                obj.addProperty("App::PropertyEnumeration","FillStyle","Drawing view","Shape Fill Style")
+                obj.LineStyle = ['continuous','dashed','dashdotted','dotted']
+                fills = ['shape color']
+                for f in FreeCAD.svgpatterns.keys():
+                        fills.append(f)
+                obj.FillStyle = fills
+
                 obj.Proxy = self
                 obj.LinewidthModifier = 100
                 obj.TextModifier = 100
@@ -1803,13 +1790,14 @@ class DrawingView:
                         obj.ViewResult = self.updateSVG(obj)
 
         def onChanged(self, obj, prop):
-                if prop in ["X","Y","Scale","LinewidthModifier","TextModifier"]:
+                if prop in ["X","Y","Scale","LinewidthModifier","TextModifier","LineStyle","FillStyle"]:
                         obj.ViewResult = self.updateSVG(obj)
 
         def updateSVG(self, obj):
                 "encapsulates a svg fragment into a transformation node"
-                svg = getSVG(obj.Source,obj.LinewidthModifier,obj.TextModifier)
-                result = '<g id="' + obj.Name + '"'
+                svg = getSVG(obj.Source,obj.LinewidthModifier,obj.TextModifier,obj.LineStyle,obj.FillStyle)
+                result = ''
+                result += '<g id="' + obj.Name + '"'
                 result += ' transform="'
                 result += 'rotate('+str(obj.Rotation)+','+str(obj.X)+','+str(obj.Y)+') '
                 result += 'translate('+str(obj.X)+','+str(obj.Y)+') '
