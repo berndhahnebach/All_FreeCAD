@@ -142,6 +142,7 @@ public Q_SLOTS:
 
 private Q_SLOTS:
     void onColorChosen(const QColor&);
+    void onRejected();
 
 Q_SIGNALS:
     /** Emits this signal when color has changed */

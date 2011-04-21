@@ -77,6 +77,7 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp( QWidget* parent, Qt::WFlags fl
     setDisplayModes(views);
     fillupMaterials();
     setMaterial(views);
+    setColorPlot(views);
     setShapeColor(views);
     setLineColor(views);
     setPointSize(views);
@@ -128,6 +129,7 @@ void DlgDisplayPropertiesImp::OnChange(Gui::SelectionSingleton::SubjectType &rCa
         std::vector<Gui::ViewProvider*> views = getSelection();
         setDisplayModes(views);
         setMaterial(views);
+        setColorPlot(views);
         setShapeColor(views);
         setLineColor(views);
         setPointSize(views);
@@ -219,11 +221,26 @@ void DlgDisplayPropertiesImp::reject()
 void DlgDisplayPropertiesImp::on_buttonUserDefinedMaterial_clicked()
 {
     std::vector<Gui::ViewProvider*> Provider = getSelection();
-    DlgMaterialPropertiesImp dlg(this);
+    DlgMaterialPropertiesImp dlg("ShapeMaterial", this);
     dlg.setViewProviders(Provider);
     dlg.exec();
 
     buttonColor->setColor(dlg.diffuseColor->color());
+}
+
+/**
+ * Opens a dialog that allows to modify the 'ShapeMaterial' property of all selected view providers.
+ */
+void DlgDisplayPropertiesImp::on_buttonColorPlot_clicked()
+{
+    std::vector<Gui::ViewProvider*> Provider = getSelection();
+    static QPointer<DlgMaterialPropertiesImp> dlg = 0;
+    if (!dlg)
+        dlg = new DlgMaterialPropertiesImp("TextureMaterial", this);
+    dlg->setModal(false);
+    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    dlg->setViewProviders(Provider);
+    dlg->show();
 }
 
 /**
@@ -411,6 +428,20 @@ void DlgDisplayPropertiesImp::setMaterial(const std::vector<Gui::ViewProvider*>&
 
     changeMaterial->setEnabled(material);
     buttonUserDefinedMaterial->setEnabled(material);
+}
+
+void DlgDisplayPropertiesImp::setColorPlot(const std::vector<Gui::ViewProvider*>& views)
+{
+    bool material = false;
+    for (std::vector<Gui::ViewProvider*>::const_iterator it = views.begin(); it != views.end(); ++it) {
+        App::Property* prop = (*it)->getPropertyByName("TextureMaterial");
+        if (prop && prop->getTypeId() == App::PropertyMaterial::getClassTypeId()) {
+            material = true;
+            break;
+        }
+    }
+
+    buttonColorPlot->setEnabled(material);
 }
 
 void DlgDisplayPropertiesImp::fillupMaterials()

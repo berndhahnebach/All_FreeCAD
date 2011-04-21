@@ -66,6 +66,8 @@ public:
     ViewProviderMeshCurvature();
     virtual ~ViewProviderMeshCurvature();
 
+    App::PropertyMaterial TextureMaterial;
+
     /// Extracts the mesh data from the feature \a pcFeature and creates an Inventor node \a SoNode with these data. 
     void attach(App::DocumentObject* pcFeature);
     /// Sets the viewing mode
@@ -91,6 +93,7 @@ public:
     static void curvatureInfoCallback(void * ud, SoEventCallback * n);
 
 protected:
+    void onChanged(const App::Property* prop);
     void setVertexCurvatureMode(int mode);
     std::string curvatureInfo(bool detail, int index1, int index2, int index3) const;
 
