@@ -398,6 +398,23 @@ def getPoint(target,args,mobile=False,sym=False,workingplane=True):
 	else: ui.displayPoint(point)
 	return point,ctrlPoint
 
+def getSupport(args):
+        "returns the supporting object and sets the working plane"
+        snapped = FreeCADGui.ActiveDocument.ActiveView.getObjectInfo((args["Position"][0],args["Position"][1]))
+        if not snapped: return None
+        obj = None
+        plane.save()
+        try:
+                obj = FreeCAD.ActiveDocument.getObject(snapped['Object'])
+                shape = obj.Shape
+                component = getattr(shape,snapped["Component"])
+                if plane.alignToFace(component, 0) \
+                            or plane.alignToCurve(component, 0):
+                        self.display(plane.axis)
+        except:
+                pass
+        return obj
+        
 #---------------------------------------------------------------------------
 # Trackers
 #---------------------------------------------------------------------------
@@ -1029,6 +1046,7 @@ class Creator:
 		self.ui = None
 		self.call = None
 		self.doc = None
+                self.support = None
 		self.doc = FreeCAD.ActiveDocument
 		self.view = FreeCADGui.ActiveDocument.ActiveView
                 self.featureName = name
@@ -1066,6 +1084,7 @@ class Creator:
 		self.node=[]
                 self.planetrack.finalize()
                 if self.grid: self.grid.finalize()
+                if self.support: plane.restore()
 		FreeCAD.activeDraftCommand = None
 		if self.ui:
 			self.ui.offUi()
@@ -1110,7 +1129,7 @@ class Line(Creator):
                 self.obj = None
 		if (len(self.node) > 1):
                         self.doc.openTransaction("Create "+self.featureName)
-                        Draft.makeWire(self.node,closed,face=self.ui.hasFill.isChecked())
+                        Draft.makeWire(self.node,closed,face=self.ui.hasFill.isChecked(),support=self.support)
                         self.doc.commitTransaction()
 		if self.ui:
 			self.linetrack.finalize()
@@ -1135,6 +1154,7 @@ class Line(Creator):
 				if (arg["Position"] == self.pos):
 					self.finish(False)
 				else:
+                                        if not self.node: self.support = getSupport(arg)
 					point,ctrlPoint = getPoint(self,arg)
 					self.pos = arg["Position"]
 					self.node.append(point)
@@ -1253,6 +1273,7 @@ class BSpline(Line):
                                 if (arg["Position"] == self.pos):
                                         self.finish(False)
                                 else:
+                                        if not self.node: self.support = getSupport(arg)
                                         point,ctrlPoint = getPoint(self,arg)
                                         self.pos = arg["Position"]
                                         self.node.append(point)
@@ -1296,7 +1317,7 @@ class BSpline(Line):
                         old = self.obj.Name
                         self.doc.removeObject(old)
                         self.doc.openTransaction("Create "+self.featureName)
-                        Draft.makeBSpline(self.node,closed,face=self.ui.hasFill.isChecked())
+                        Draft.makeBSpline(self.node,closed,face=self.ui.hasFill.isChecked(),support=self.support)
                         self.doc.commitTransaction()
 		if self.ui:
 			self.bsplinetrack.finalize()
@@ -1395,7 +1416,7 @@ class Rectangle(Creator):
                 p = plane.getRotation()
                 p.move(p1)
                 self.doc.openTransaction("Create "+self.featureName)
-                Draft.makeRectangle(length,height,p,self.ui.hasFill.isChecked())
+                Draft.makeRectangle(length,height,p,self.ui.hasFill.isChecked(),support=self.support)
                 self.doc.commitTransaction()
                 self.finish()
 
@@ -1410,6 +1431,7 @@ class Rectangle(Creator):
 				if (arg["Position"] == self.pos):
 					self.finish()
 				else:
+                                        if not self.node: self.support = getSupport(arg)
 					point,ctrlPoint = getPoint(self,arg)
 					self.appendPoint(point)
 
@@ -1605,6 +1627,7 @@ class Arc(Creator):
 					if not fcvec.isNull(viewdelta):
 						point = point.add(fcvec.neg(viewdelta))
 				if (self.step == 0): # choose center
+                                        self.support = getSupport(arg)
 					if arg["AltDown"]:
 						snapped=self.view.getObjectInfo((arg["Position"][0],arg["Position"][1]))
 						if snapped:
@@ -1661,13 +1684,13 @@ class Arc(Creator):
                 p.move(self.center)
                 self.doc.openTransaction("Create "+self.featureName)
 		if self.closedCircle:                       
-			Draft.makeCircle(self.rad,p,self.ui.hasFill.isChecked())
+			Draft.makeCircle(self.rad,p,self.ui.hasFill.isChecked(),support=self.support)
 		else:
                         sta = math.degrees(self.firstangle)
                         end = math.degrees(self.firstangle+self.angle)
                         print "debug:",sta, end
                         if end < sta: sta,end = end,sta
-                        Draft.makeCircle(self.rad,p,self.ui.hasFill.isChecked(),sta,end)
+                        Draft.makeCircle(self.rad,p,self.ui.hasFill.isChecked(),sta,end,support=self.support)
                 self.doc.commitTransaction()
                 self.finish()
 
@@ -1856,6 +1879,7 @@ class Polygon(Creator):
 					if not fcvec.isNull(viewdelta):
 						point = point.add(fcvec.neg(viewdelta))
 				if (self.step == 0): # choose center
+                                        if not self.node: self.support = getSupport(arg)
 					if arg["AltDown"]:
 						snapped=self.view.getObjectInfo((arg["Position"][0],arg["Position"][1]))
 						if snapped:
@@ -1893,7 +1917,7 @@ class Polygon(Creator):
                 p = plane.getRotation()
                 p.move(self.center)
                 self.doc.openTransaction("Create Polygon")                     
-                Draft.makePolygon(self.ui.numFaces.value(),self.rad,True,p,face=self.ui.hasFill.isChecked())
+                Draft.makePolygon(self.ui.numFaces.value(),self.rad,True,p,face=self.ui.hasFill.isChecked(),support=self.support)
                 self.doc.commitTransaction()
                 self.finish()
 
@@ -2124,6 +2148,7 @@ class Dimension(Creator):
 		elif (arg["Type"] == "SoMouseButtonEvent"):
 			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
 				point,ctrlPoint = getPoint(self,arg)
+                                if not self.node: self.support = getSupport(arg)
 				if arg["AltDown"] and (len(self.node)<3):
 					snapped = self.view.getObjectInfo((arg["Position"][0],arg["Position"][1]))
 					if snapped:

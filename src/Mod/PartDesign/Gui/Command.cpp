@@ -125,7 +125,7 @@ void CmdPartDesignPad::activated(int iMsg)
     // count free wires
     int ctWires=0;
     TopExp_Explorer ex;
-    for (ex.Init(shape, TopAbs_WIRE, TopAbs_FACE); ex.More(); ex.Next()) {
+    for (ex.Init(shape, TopAbs_WIRE); ex.More(); ex.Next()) {
         ctWires++;
     }
     if (ctWires == 0) {
@@ -194,7 +194,7 @@ void CmdPartDesignPocket::activated(int iMsg)
     // count free wires
     int ctWires=0;
     TopExp_Explorer ex;
-    for (ex.Init(shape, TopAbs_WIRE, TopAbs_FACE); ex.More(); ex.Next()) {
+    for (ex.Init(shape, TopAbs_WIRE); ex.More(); ex.Next()) {
         ctWires++;
     }
     if (ctWires == 0) {
