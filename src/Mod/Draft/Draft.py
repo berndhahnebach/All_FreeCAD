@@ -244,7 +244,7 @@ def select(obj):
 	FreeCADGui.Selection.clearSelection()
 	FreeCADGui.Selection.addSelection(obj)
 
-def makeCircle(radius, placement=None, face=True, startangle=None, endangle=None):
+def makeCircle(radius, placement=None, face=True, startangle=None, endangle=None, support=None):
         '''makeCircle(radius,[placement,face,startangle,endangle]): Creates a circle
         object with given radius. If placement is given, it is
         used. If face is False, the circle is shown as a
@@ -260,13 +260,14 @@ def makeCircle(radius, placement=None, face=True, startangle=None, endangle=None
                 if startangle == -0: startangle = 0
                 obj.FirstAngle = startangle
                 obj.LastAngle = endangle
+        obj.Support = support
         if placement: obj.Placement = placement
         formatObject(obj)
         select(obj)
         FreeCAD.ActiveDocument.recompute()
         return obj
         
-def makeRectangle(length, height, placement=None, face=True):
+def makeRectangle(length, height, placement=None, face=True, support=None):
         '''makeRectangle(length,width,[placement],[face]): Creates a Rectangle
         object with length in X direction and height in Y direction.
         If a placement is given, it is used. If face is False, the
@@ -277,6 +278,7 @@ def makeRectangle(length, height, placement=None, face=True):
         ViewProviderRectangle(obj.ViewObject)
         obj.Length = length
         obj.Height = height
+        obj.Support = support
         if not face: obj.ViewObject.DisplayMode = "Wireframe"
         if placement: obj.Placement = placement
         formatObject(obj)
@@ -333,7 +335,7 @@ def makeAngularDimension(center,angles,p3):
         FreeCAD.ActiveDocument.recompute()
         return obj
 
-def makeWire(pointslist,closed=False,placement=None,face=True):
+def makeWire(pointslist,closed=False,placement=None,face=True,support=None):
         '''makeWire(pointslist,[closed],[placement]): Creates a Wire object
         from the given list of vectors. If closed is True or first
         and last points are identical, the wire is closed. If face is
@@ -352,6 +354,7 @@ def makeWire(pointslist,closed=False,placement=None,face=True):
         ViewProviderWire(obj.ViewObject)
         obj.Points = pointslist
         obj.Closed = closed
+        obj.Support = support
         if not face: obj.ViewObject.DisplayMode = "Wireframe"
         if placement: obj.Placement = placement
         formatObject(obj)
@@ -359,7 +362,7 @@ def makeWire(pointslist,closed=False,placement=None,face=True):
 	FreeCAD.ActiveDocument.recompute()
         return obj
 
-def makePolygon(nfaces,radius=1,inscribed=True,placement=None,face=True):
+def makePolygon(nfaces,radius=1,inscribed=True,placement=None,face=True,support=None):
         '''makePolgon(nfaces,[radius],[inscribed],[placement],[face]): Creates a
         polygon object with the given number of faces and the radius.
         if inscribed is False, the polygon is circumscribed around a circle
@@ -377,6 +380,7 @@ def makePolygon(nfaces,radius=1,inscribed=True,placement=None,face=True):
         else:
                 obj.DrawMode = "circumscribed"
         if not face: obj.ViewObject.DisplayMode = "Wireframe"
+        obj.Support = support
         if placement: obj.Placement = placement
         formatObject(obj)
 	select(obj)
@@ -388,7 +392,7 @@ def makeLine(p1,p2):
         obj = makeWire([p1,p2])
         return obj
 
-def makeBSpline(pointslist,closed=False,placement=None,face=True):
+def makeBSpline(pointslist,closed=False,placement=None,face=True,support=None):
         '''makeBSpline(pointslist,[closed],[placement]): Creates a B-Spline object
         from the given list of vectors. If closed is True or first
         and last points are identical, the wire is closed. If face is
@@ -407,6 +411,7 @@ def makeBSpline(pointslist,closed=False,placement=None,face=True):
         ViewProviderBSpline(obj.ViewObject)
         obj.Points = pointslist
         obj.Closed = closed
+        obj.Support = support
         if not face: obj.ViewObject.DisplayMode = "Wireframe"
         if placement: obj.Placement = placement
         formatObject(obj)

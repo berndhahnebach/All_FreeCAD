@@ -86,7 +86,7 @@ App::DocumentObjectExecReturn *Pad::execute(void)
 
     TopExp_Explorer ex;
     std::vector<TopoDS_Wire> wires;
-    for (ex.Init(shape, TopAbs_WIRE, TopAbs_FACE); ex.More(); ex.Next()) {
+    for (ex.Init(shape, TopAbs_WIRE); ex.More(); ex.Next()) {
         wires.push_back(TopoDS::Wire(ex.Current()));
     }
     if (/*shape.ShapeType() != TopAbs_WIRE*/wires.empty()) // there can be several wires
