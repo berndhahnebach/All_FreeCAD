@@ -2792,17 +2792,19 @@ class Upgrade(Modifier):
 				self.proceed()
 
 	def compound(self):
-		shapeslist = []
-		for ob in self.sel: shapeslist.append(ob.Shape)
-		newob = self.doc.addObject("Part::Feature","Compound")
-		newob.Shape = Part.makeCompound(shapeslist)
+		#shapeslist = []
+		#for ob in self.sel: shapeslist.append(ob.Shape)
+		#newob = self.doc.addObject("Part::Feature","Compound")
+		#newob.Shape = Part.makeCompound(shapeslist)
+                newob = Draft.makeBlock(self.sel)
+                self.nodelete = True
 		return newob
 		
 	def proceed(self):
 		if self.call: self.view.removeEventCallback("SoEvent",self.call)
 		self.sel = Draft.getSelection()
                 newob = None
-                nodelete = False
+                self.nodelete = False
 		edges = []
 		wires = []
 		openwires = []
@@ -2855,7 +2857,7 @@ class Upgrade(Modifier):
                                 # we have exactly 2 objects: we fuse them
                                 msg(translate("draft", "Found 2 objects: fusing them\n"))
                                 newob = Draft.fuse(self.sel[0],self.sel[1])
-                                nodelete = True
+                                self.nodelete = True
                         elif (len(self.sel) > 2) or (len(faces) > 1):
                                 # more than 2 objects or faces: we try the draft way: make one face out of them
                                 u = faces.pop(0)
@@ -2888,7 +2890,7 @@ class Upgrade(Modifier):
                                         Draft.formatObject(newob,lastob)
                         elif len(self.sel) == 1:
                                 # only one object: if not parametric, we "draftify" it
-                                nodelete = True
+                                self.nodelete = True
                                 if (not curves) and (Draft.getType(self.sel[0]) == "Part"):
                                         msg(translate("draft", "Found 1 non-parametric objects: draftifying it\n"))
                                         Draft.draftify(self.sel[0])
@@ -2899,7 +2901,7 @@ class Upgrade(Modifier):
                                 newob = Draft.makeWire(self.sel[0].Shape,closed=True)
                                 newob.Base = self.sel[0]
                                 self.sel[0].ViewObject.Visibility = False
-                                nodelete = True
+                                self.nodelete = True
                         else:
                                 # only closed wires
                                 for w in wires:
@@ -2953,7 +2955,7 @@ class Upgrade(Modifier):
                         msg(translate("draft", "Found several non-treatable objects: making compound\n"))
                         newob = self.compound()
                         Draft.formatObject(newob,lastob) 
-                if not nodelete:
+                if not self.nodelete:
                         for ob in self.sel:
                                 if not ob.Type == "App::DocumentObjectGroup":
                                         self.doc.removeObject(ob.Name)
@@ -3002,15 +3004,20 @@ class Downgrade(Modifier):
                         lastob = ob
 		# applying transformation
 		self.doc.openTransaction("Downgrade")
-                if len(self.sel) == 1:
+                if (len(self.sel) == 1) and (Draft.getType(self.sel[0]) == "block"):
+                        # a block, we explode it
+                        pl = self.sel[0].Placement
+                        newob = []
+                        for ob in self.sel[0].Components:
+                                ob.ViewObject.Visibility = True
+                                ob.Placement = ob.Placement.multiply(pl)
+                                newob.append(ob)
+                        self.doc.removeObject(self.sel[0].Name)
+                elif (len(self.sel) == 1) and (self.sel[0].isDerivedFrom("Part::Feature")) and ("Base" in self.sel[0].PropertiesList):
                         # special case, we have one parametric object: we "de-parametrize" it
-                        if (self.sel[0].isDerivedFrom("Part::Feature")) and ("Base" in self.sel[0].PropertiesList):
-                                msg(translate("draft", "Found 1 parametric object: breaking its dependencies\n"))
-                                Draft.shapify(self.sel[0])
-                                self.doc.commitTransaction()
-                                Modifier.finish(self)
-                                return
-                if len(self.sel) == 2:
+                        msg(translate("draft", "Found 1 parametric object: breaking its dependencies\n"))
+                        Draft.shapify(self.sel[0])
+                elif len(self.sel) == 2:
                         # we have only 2 objects: cut 2nd from 1st
                         msg(translate("draft", "Found 2 objects: subtracting them\n"))
                         newob = Draft.cut(self.sel[0],self.sel[1])

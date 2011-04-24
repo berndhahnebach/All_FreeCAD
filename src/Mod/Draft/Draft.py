@@ -239,10 +239,13 @@ def getSelection():
         "getSelection(): returns the current FreeCAD selection"
 	return FreeCADGui.Selection.getSelection()
 
-def select(obj):
-	"select(object): deselects everything and selects only the passed object"
+def select(objs):
+	"select(object): deselects everything and selects only the passed object or list"
 	FreeCADGui.Selection.clearSelection()
-	FreeCADGui.Selection.addSelection(obj)
+        if not isinstance(objs,list):
+                objs = [objs]
+        for obj in objs:
+                FreeCADGui.Selection.addSelection(obj)
 
 def makeCircle(radius, placement=None, face=True, startangle=None, endangle=None, support=None):
         '''makeCircle(radius,[placement,face,startangle,endangle]): Creates a circle
@@ -444,6 +447,17 @@ def makeText(stringslist,point=Vector(0,0,0),screen=False):
         formatObject(obj)
         select(obj)
 	return obj
+
+def makeBlock(objectslist):
+        '''makeBlock(objectslist): Creates a Draft Block from the given objects'''
+        obj = FreeCAD.ActiveDocument.addObject("Part::Part2DObjectPython","Block")
+        Block(obj)
+        ViewProviderBlock(obj.ViewObject)
+        obj.Components = objectslist
+        for o in objectslist:
+                o.ViewObject.Visibility = False
+        select(obj)
+        return obj
 
 def extrude(obj,vector):
         '''makeExtrusion(object,vector): extrudes the given object
@@ -930,6 +944,7 @@ class ViewProviderDraft:
         
 	def __init__(self, obj):
                 obj.Proxy = self
+                self.Object = obj.Object
 
 	def attach(self, obj):
 		return
@@ -1912,3 +1927,60 @@ class ViewProviderBSpline(ViewProviderDraft):
                                 rn.removeChild(self.pt)
 		return
 
+class Block:
+        "The Block object"
+        
+	def __init__(self, obj):
+                obj.addProperty("App::PropertyLinkList","Components","Base",
+                                "The components of this block")
+		obj.Proxy = self
+                self.Type = "block"
+
+	def execute(self, fp):
+                self.createGeometry(fp)
+
+        def onChanged(self, fp, prop):
+                if prop in ["Components"]:
+                        self.createGeometry(fp)
+                        
+        def createGeometry(self,fp):
+                plm = fp.Placement
+                shps = []
+                for c in fp.Components:
+                        shps.append(c.Shape)
+                if shps:
+                        shape = Part.makeCompound(shps)
+                        fp.Shape = shape
+                fp.Placement = plm
+
+class ViewProviderBlock(ViewProviderDraft):
+        "A View Provider for the Block object"
+
+	def getIcon(self):
+		return """
+                        /* XPM */
+                        static char * Draft_block_xpm[] = {
+                        "16 16 3 1",
+                        " 	c None",
+                        ".	c #030110",
+                        "+	c #0B17E8",
+                        "                ",
+                        "............    ",
+                        ".+++++++++++.   ",
+                        ".+++++++++++.   ",
+                        ".+++++++++++.   ",
+                        ".+++++++++...   ",
+                        ".+++++++..++..  ",
+                        ".+++++++.+++++. ",
+                        ".++++++.+++++++.",
+                        ".++++++.+++++++.",
+                        ".+++++..+++++++.",
+                        "........+++++++.",
+                        "       .++++++. ",
+                        "        ..+++.. ",
+                        "         ....   ",
+                        "                "};
+			"""
+
+        def claimChildren(self):
+                return self.Object.Components
