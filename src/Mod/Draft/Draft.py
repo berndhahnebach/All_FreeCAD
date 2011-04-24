@@ -345,6 +345,8 @@ def makeWire(pointslist,closed=False,placement=None,face=True,support=None):
                 nlist = []
                 for v in pointslist.Vertexes:
                         nlist.append(v.Point)
+                if fcgeo.isReallyClosed(pointslist):
+                        nlist.append(pointslist.Vertexes[0].Point)
                 pointslist = nlist
         if placement: typecheck([(placement,FreeCAD.Placement)], "makeWire")
         if len(pointslist) == 2: fname = "Line"
