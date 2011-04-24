@@ -3605,8 +3605,8 @@ class Edit(Modifier):
                                         else:
                                                 self.ui.addButton.setEnabled(True)
                                                 self.ui.delButton.setEnabled(True)
-                                        self.ui.addButton.setChecked(False)
-                                        self.ui.delButton.setChecked(False)
+                                        #self.ui.addButton.setChecked(False)
+                                        #self.ui.delButton.setChecked(False)
                                         self.editing = None
                                         self.editpoints = []
                                         self.pl = None
@@ -3916,106 +3916,10 @@ class AddPoint(Modifier):
 			return False
 
 	def Activated(self):
-                if self.running:
-                        self.finish()
-                else:
-                        Modifier.Activated(self,"Add Point")
-                        self.ui.editUi()
-                        if self.doc:
-                                self.obj = Draft.getSelection()
-                                if self.obj:
-                                        self.obj = self.obj[0]
-                                        self.editing = None
-					self.pl = None
-                                        if "Placement" in self.obj.PropertiesList:
-                                                self.pl = self.obj.Placement
-                                                self.invpl = self.pl.inverse()
-					self.trackers = []
-					self.resetTrackers()
-					self.snap = snapTracker()
-					self.call = self.view.addEventCallback("SoEvent",self.action)
-					self.running = True
-					plane.save()
-					self.planetrack.set(self.obj.Points[0])
-                                else:
-                                        self.finish()
-
-	def finish(self,closed=False):
-		"terminates the operation"
-                if self.ui:
-                        if self.snap:
-                                self.snap.finalize()
-                        if self.trackers:
-                                for t in self.trackers:
-                                        t.finalize()
-		Modifier.finish(self)
-                plane.restore()
-                self.running = False
-
-	def action(self,arg):
-		"scene event handler"
-                if (arg["Type"] == "SoKeyboardEvent") and (arg["Key"] == "ESCAPE"):
-			self.finish()
-		if (arg["Type"] == "SoLocation2Event"): #mouse movement detection
-			point,ctrlPoint = getPoint(self,arg)
-                        self.ui.cross(True)
-		if (arg["Type"] == "SoMouseButtonEvent"):
-			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
-				snapped = self.view.getObjectInfo((arg["Position"][0],arg["Position"][1]))
-				if snapped:
-					if snapped['Object'] == self.obj.Name:
-						point,ctrlPoint = getPoint(self,arg)
-						self.pos = arg["Position"]
-						self.update(point)
-				else:
-					self.finish()
-
-	def update(self,point):
-		pts = self.obj.Points
-		if ( Draft.getType(self.obj) == "Wire" ):
-                        if (self.obj.Closed == True):
-                                # DNC: work around.... seems there is a
-                                # bug in approximate method for closed wires...
-                                edges = self.obj.Shape.Wires[0].Edges
-                                e1 = edges[-1] # last edge
-                                v1 = e1.Vertexes[0].Point
-                                v2 = e1.Vertexes[1].Point
-                                v2.multiply(0.9999)
-                                edges[-1] = Part.makeLine(v1,v2)
-                                edges.reverse()
-                                wire = Part.Wire(edges)
-                                curve = wire.approximate(0.0001,0.0001,100,25)
-                        else:
-                                # DNC: this version is much more reliable near sharp edges!
-                                curve = self.obj.Shape.Wires[0].approximate(0.0001,0.0001,100,25)
-		if ( Draft.getType(self.obj) == "BSpline" ):
-                        if (self.obj.Closed == True):
-                                curve = self.obj.Shape.Edges[0].Curve
-                        else:
-                                curve = self.obj.Shape.Curve
-		uNewPoint = curve.parameter(point)
-		uPoints = []
-		for p in self.obj.Points:
-			uPoints.append(curve.parameter(p))
-		for i in range(len(uPoints)-1):
-			if ( uNewPoint > uPoints[i] ) and ( uNewPoint < uPoints[i+1] ):
-				pts.insert(i+1, self.invpl.multVec(point))
-				break
-		# DNC: fix: add points to last segment if curve is closed 
-		if ( self.obj.Closed ) and ( uNewPoint > uPoints[-1] ) :
-				pts.append(self.invpl.multVec(point))
-		self.obj.Points = pts
-		self.resetTrackers()
-
-	def resetTrackers(self):
-		for t in self.trackers:
-			t.finalize()
-		self.trackers = []
-		for ep in range(len(self.obj.Points)):
-			objPoints = self.obj.Points[ep]
-			if self.pl: objPoints = self.pl.multVec(objPoints)
-			self.trackers.append(editTracker(objPoints,self.obj.Name,ep))
-
+                FreeCADGui.draftToolBar.ui.addButton.setChecked(True)
+                FreeCADGui.draftToolBar.ui.delButton.setChecked(False)
+                FreeCADGui.runCommand("Draft_Edit")
+                
 class DelPoint(Modifier):
 	"The Draft_DelPoint FreeCAD command definition"
 
@@ -4035,75 +3939,9 @@ class DelPoint(Modifier):
 			return False
 
 	def Activated(self):
-                if self.running:
-                        self.finish()
-                else:
-                        Modifier.Activated(self,"Remove Point")
-                        self.ui.editUi()
-                        if self.doc:
-                                self.obj = Draft.getSelection()
-                                if self.obj:
-                                        self.obj = self.obj[0]
-                                        self.editing = None
-                                        self.pl = None
-                                        if "Placement" in self.obj.PropertiesList:
-                                                self.pl = self.obj.Placement
-                                        self.trackers = []
-					self.resetTrackers()
-					if len(self.obj.Points) > 2:
-						self.call = self.view.addEventCallback("SoEvent",self.action)
-						self.running = True
-						plane.save()
-						self.planetrack.set(self.obj.Points[0])
-					else:
-						msg(translate("draft", "Active object must have more than two points/nodes\n"),'warning')
-						self.finish()
-                                else:
-                                        self.finish()
-
-	def finish(self,closed=False):
-		"terminates the operation"
-                if self.ui:
-                        if self.trackers:
-                                for t in self.trackers:
-                                        t.finalize()
-		Modifier.finish(self)
-                plane.restore()
-                self.running = False
-
-	def action(self,arg):
-		"scene event handler"
-                if arg["Type"] == "SoKeyboardEvent" and arg["Key"] == "ESCAPE":
-			self.finish()
-		if (arg["Type"] == "SoMouseButtonEvent"):
-			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
-				snapped = self.view.getObjectInfo((arg["Position"][0],arg["Position"][1]))
-				if snapped:
-					if snapped['Object'] == self.obj.Name:
-						if 'EditNode' in snapped['Component']:
-							self.editing = int(snapped['Component'][8:])
-							self.update()
-				else:
-					self.finish()
-
-        def update(self):
-		if len(self.obj.Points) <= 2:
-			msg(translate("draft", "Active object must have more than two points/nodes\n"),'warning')
-			self.finish()
-		else: 
-			pts = self.obj.Points
-			pts.pop(self.editing)
-			self.obj.Points = pts
-			self.resetTrackers()
-
-	def resetTrackers(self):
-		for t in self.trackers:
-			t.finalize()
-		self.trackers = []
-		for ep in range(len(self.obj.Points)):
-			objPoints = self.obj.Points[ep]
-			if self.pl: objPoints = self.pl.multVec(objPoints)
-			self.trackers.append(editTracker(objPoints,self.obj.Name,ep))
+                FreeCADGui.draftToolBar.ui.addButton.setChecked(False)
+                FreeCADGui.draftToolBar.ui.delButton.setChecked(True)
+                FreeCADGui.runCommand("Draft_Edit")
 
 class WireToBSpline(Modifier):
 	"The Draft_Wire2BSpline FreeCAD command definition"
