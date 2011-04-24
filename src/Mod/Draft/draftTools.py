@@ -2842,8 +2842,17 @@ class Upgrade(Modifier):
                                                         self.sel.append(ob)
                                                         grp.addObject(newob)
                 elif faces and (len(wires)+len(openwires)==len(facewires)):
-                        # we have exactly 2 objects: we fuse them
-                        if (len(self.sel) == 2) and (not curves):
+                        if (len(self.sel) == 1):
+                                # we have a shell: we try to make a solid
+                                sol = Part.makeSolid(self.sel[0].Shape)
+                                if sol.isClosed():
+                                        msg(translate("draft", "Found 1 solidificable object: solidifying it\n"))
+                                        newob = self.doc.addObject("Part::Feature","Solid")
+                                        newob.Shape = sol
+                                        Draft.formatObject(newob,lastob)
+                        
+                        elif (len(self.sel) == 2) and (not curves):
+                                # we have exactly 2 objects: we fuse them
                                 msg(translate("draft", "Found 2 objects: fusing them\n"))
                                 newob = Draft.fuse(self.sel[0],self.sel[1])
                                 nodelete = True
@@ -2859,18 +2868,21 @@ class Upgrade(Modifier):
                                                 f = True
                                         u = fcgeo.concatenate(u)
                                         if not curves:
-                                                msg(translate("draft", "Found 2 objects or faces: making a parametric face\n"))
+                                                msg(translate("draft", "Found several objects or faces: making a parametric face\n"))
                                                 newob = Draft.makeWire(u.Wires[0],closed=True,face=f)
                                                 Draft.formatObject(newob,lastob)
                                         else:
                                                 # if not possible, we do a non-parametric union
-                                                msg(translate("draft", "Found 2 objects containing curves: fusing them\n"))
+                                                msg(translate("draft", "Found objects containing curves: fusing them\n"))
                                                 newob = self.doc.addObject("Part::Feature","Union")
                                                 newob.Shape = u
                                                 Draft.formatObject(newob,lastob)
                                 else:
                                         # if not possible, we do a non-parametric union
-                                        msg(translate("draft", "Found 2 objects: fusing them\n"))
+                                        msg(translate("draft", "Found several objects: fusing them\n"))
+                                        # if we have a solid, make sure we really return a solid
+                                        if (len(u.Faces) > 1) and u.isClosed():
+                                                u = Part.makeSolid(u)
                                         newob = self.doc.addObject("Part::Feature","Union")
                                         newob.Shape = u
                                         Draft.formatObject(newob,lastob)
