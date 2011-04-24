@@ -3086,7 +3086,6 @@ class Trimex(Modifier):
 	def proceed(self):
 		if self.call: self.view.removeEventCallback("SoEvent",self.call)
 		self.sel = Draft.getSelection()[0]
-		if self.sel.Shape.isClosed(): self.finish()
 		self.ui.radiusUi()
 		self.ui.labelRadius.setText("Distance")
 		self.ui.radiusValue.setFocus()
@@ -3099,44 +3098,50 @@ class Trimex(Modifier):
                 self.placement = None
                 if "Placement" in self.sel.PropertiesList:
                         self.placement = self.sel.Placement
-                c = fcgeo.complexity(self.sel)
-                if ((c >= 7) and (len(self.sel.Shape.Faces) > 1)):
-                        msg(translate("draft", "The selected object cannot be extended\n"))
-                        self.finish()
+                if len(self.sel.Shape.Faces) == 1:
+                        self.extrudeMode = True
+                        self.ghost = [ghostTracker([self.sel])]
+                        self.normal = self.sel.Shape.Faces[0].normalAt(.5,.5)
+                        for v in self.sel.Shape.Vertexes:
+                                self.ghost.append(lineTracker())
+                elif len(self.sel.Shape.Faces) > 1:
+                        ss =  FreeCADGui.Selection.getSelectionEx()[0]
+                        if len(ss.SubObjects) == 1:
+                                if ss.SubObjects[0].ShapeType == "Face":
+                                        self.sel = self.doc.addObject("Part::Feature","Face")
+                                        self.sel.Shape = ss.SubObjects[0]
+                                        self.extrudeMode = True
+                                        self.ghost = [ghostTracker([self.sel])]
+                                        self.normal = self.sel.Shape.Faces[0].normalAt(.5,.5)
+                                        for v in self.sel.Shape.Vertexes:
+                                                self.ghost.append(lineTracker())
                 else:
-                        if len(self.sel.Shape.Faces) == 1:
-                                self.extrudeMode = True
-                                self.ghost = [ghostTracker([self.sel])]
-                                self.normal = self.sel.Shape.Faces[0].normalAt(.5,.5)
-                                for v in self.sel.Shape.Vertexes:
-                                        self.ghost.append(lineTracker())
-                                for g in self.ghost: g.on()
+                        self.sel.ViewObject.Visibility = False
+                        self.extrudeMode = False
+                        if self.sel.Shape.Wires:
+                                self.edges = self.sel.Shape.Wires[0].Edges
+                                self.edges = fcgeo.sortEdges(self.edges)
                         else:
-                                self.sel.ViewObject.Visibility = False
-                                self.extrudeMode = False
-                                if (c >= 4): 
-                                        self.edges = self.sel.Shape.Wires[0].Edges
-                                        self.edges = fcgeo.sortEdges(self.edges)
+                                self.edges = self.sel.Shape.Edges	
+                        self.ghost = []
+                        lc = self.sel.ViewObject.LineColor
+                        sc = (lc[0],lc[1],lc[2])
+                        sw = self.sel.ViewObject.LineWidth
+                        for e in self.edges:
+                                if isinstance(e.Curve,Part.Line):
+                                        self.ghost.append(lineTracker(scolor=sc,swidth=sw))
                                 else:
-                                        self.edges = self.sel.Shape.Edges	
-                                self.ghost = []
-                                lc = self.sel.ViewObject.LineColor
-                                sc = (lc[0],lc[1],lc[2])
-                                sw = self.sel.ViewObject.LineWidth
-                                for e in self.edges:
-                                        if isinstance(e.Curve,Part.Line):
-                                                self.ghost.append(lineTracker(scolor=sc,swidth=sw))
-                                        else:
-                                                self.ghost.append(arcTracker(scolor=sc,swidth=sw))
-                                for g in self.ghost: g.on()
-                        self.activePoint = 0
-                        self.nodes = []
-                        self.shift = False
-                        self.alt = False
-                        self.force = None
-                        self.call = self.view.addEventCallback("SoEvent",self.action)
-                        msg(translate("draft", "Pick distance:\n"))
-                        self.ui.cross(True)
+                                        self.ghost.append(arcTracker(scolor=sc,swidth=sw))
+                if not self.ghost: self.finish()
+                for g in self.ghost: g.on()
+                self.activePoint = 0
+                self.nodes = []
+                self.shift = False
+                self.alt = False
+                self.force = None
+                self.call = self.view.addEventCallback("SoEvent",self.action)
+                msg(translate("draft", "Pick distance:\n"))
+                self.ui.cross(True)
 				
 	def action(self,arg):
 		"scene event handler"
