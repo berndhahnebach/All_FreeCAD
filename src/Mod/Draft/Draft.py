@@ -293,11 +293,14 @@ def makeDimension(p1,p2,p3=None,p4=None):
         '''makeDimension(p1,p2,[p3]) or makeDimension(object,i1,i2,p3)
         or makeDimension(objlist,indices,p3): Creates a Dimension object with
         the dimension line passign through p3.The current line width and color
-        will be used. There are 2 ways to create a dimension, depending on
+        will be used. There are multiple  ways to create a dimension, depending on
         the arguments you pass to it:
         - (p1,p2,p3): creates a standard dimension from p1 to p2
         - (object,i1,i2,p3): creates a linked dimension to the given object,
         measuring the distance between its vertices indexed i1 and i2
+        - (object,i1,mode,p3): creates a linked dimension
+        to the given object, i1 is the index of the (curved) edge to measure,
+        and mode is either "radius" or "diameter".
         '''
         obj = FreeCAD.ActiveDocument.addObject("App::FeaturePython","Dimension")
         Dimension(obj)
@@ -308,6 +311,15 @@ def makeDimension(p1,p2,p3=None,p4=None):
         elif isinstance(p2,int) and isinstance(p3,int):
                 obj.Base = p1
                 obj.LinkedVertices = [p2,p3]
+                p3 = p4
+        elif isinstance(p3,str):
+                obj.Base = p1
+                if p3 == "radius":
+                        obj.LinkedVertices = [p2,1,1]
+                        obj.ViewObject.Override = "rdim"
+                elif p3 == "diameter":
+                        obj.LinkedVertices = [p2,2,1]
+                        obj.ViewObject.Override = "ddim"
                 p3 = p4
         if not p3:
                 p3 = p2.sub(p1)
@@ -1047,7 +1059,6 @@ class ViewProviderDimension:
                         tbase = obj.ViewObject.Position
 		if not proj: norm = Vector(0,0,1)
                 else: norm = fcvec.neg(p3.sub(p2).cross(proj))
-                print p1,p2,p3,p4
 		return p1,p2,p3,p4,tbase,angle,norm
 
 	def attach(self, obj):
@@ -1121,8 +1132,20 @@ class ViewProviderDimension:
                 text = None
                 if obj.Base and obj.LinkedVertices:
                         if "Shape" in obj.Base.PropertiesList:
-                                v1 = obj.Base.Shape.Vertexes[obj.LinkedVertices[0]].Point
-                                v2 = obj.Base.Shape.Vertexes[obj.LinkedVertices[1]].Point
+                                if len(obj.LinkedVertices) == 3:
+                                        # arc linked dimension
+                                        e = obj.Base.Shape.Edges[obj.LinkedVertices[0]]
+                                        c = e.Curve.Center
+                                        bray = fcvec.scaleTo(obj.Dimline.sub(c),e.Curve.Radius)
+                                        if obj.LinkedVertices[1] == 1:
+                                                v1 = c
+                                        else:
+                                                v1 = c.add(fcvec.neg(bray))
+                                        v2 = c.add(bray)
+                                        # linear linked dimension
+                                else:
+                                        v1 = obj.Base.Shape.Vertexes[obj.LinkedVertices[0]].Point
+                                        v2 = obj.Base.Shape.Vertexes[obj.LinkedVertices[1]].Point
                                 if v1 != obj.Start: obj.Start = v1
                                 if v2 != obj.End: obj.End = v2
 		p1,p2,p3,p4,tbase,angle,norm = self.calcGeom(obj)

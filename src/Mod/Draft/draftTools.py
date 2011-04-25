@@ -2064,6 +2064,8 @@ class Dimension(Creator):
                         Draft.makeAngularDimension(self.center,self.angledata,self.node[-1])
                 elif self.link and (not self.arcmode):
                         Draft.makeDimension(self.link[0],self.link[1],self.link[2],self.node[2])
+                elif self.arcmode:
+                        Draft.makeDimension(self.link[0],self.link[1],self.arcmode,self.node[2])
                 else:
                         Draft.makeDimension(self.node[0],self.node[1],self.node[2])
 		self.doc.commitTransaction()
@@ -2134,8 +2136,10 @@ class Dimension(Creator):
                                                 v1 = fcvec.neg(v2)
                                                 if shift:
                                                         self.node = [cen,cen.add(v2)]
+                                                        self.arcmode = "radius"
                                                 else:
                                                         self.node = [cen.add(v1),cen.add(v2)]
+                                                        self.arcmode = "diameter"
                                                 self.dimtrack.update(self.node)
                                 if self.node and (not self.arcmode):
                                         self.dimtrack.update(self.node+[point]+[self.cont])
@@ -2172,7 +2176,9 @@ class Dimension(Creator):
                                                                         self.link = [ob,i1,i2]
                                                                         self.edges.append(ed)
                                                                         if isinstance(ed.Curve,Part.Circle):
-                                                                                self.arcmode = True
+                                                                                # snapped edge is an arc
+                                                                                self.arcmode = "diameter"
+                                                                                self.link = [ob,num]
                                                                 else:
                                                                         # there is already a snapped edge, so we start angular dimension
                                                                         self.edges.append(ed)
@@ -2208,11 +2214,12 @@ class Dimension(Creator):
                                         self.createObject()
                                         if not self.cont: self.finish()
 				elif (len(self.node) == 3):
-                                        if self.arcmode:
-                                                v = self.node[1].sub(self.node[0])
-                                                v = fcvec.scale(v,0.5)
-                                                cen = self.node[0].add(v)
-                                                self.node = [self.node[0],self.node[1],cen]
+                                        # for unlinked arc mode:
+                                        #if self.arcmode:
+                                        #        v = self.node[1].sub(self.node[0])
+                                        #        v = fcvec.scale(v,0.5)
+                                        #        cen = self.node[0].add(v)
+                                        #        self.node = [self.node[0],self.node[1],cen]
 					self.createObject()
 					if not self.cont: self.finish()
                                 elif self.angledata:
@@ -2844,7 +2851,7 @@ class Upgrade(Modifier):
                                                         self.sel.append(ob)
                                                         grp.addObject(newob)
                 elif faces and (len(wires)+len(openwires)==len(facewires)):
-                        if (len(self.sel) == 1):
+                        if (len(self.sel) == 1) and (len(faces) > 1):
                                 # we have a shell: we try to make a solid
                                 sol = Part.makeSolid(self.sel[0].Shape)
                                 if sol.isClosed():
@@ -4009,9 +4016,7 @@ class SelectGroup():
                         for parent in ob.InList:
                                 FreeCADGui.Selection.addSelection(parent)
                                 for child in parent.OutList:
-                                        FreeCADGui.Selection.addSelection(child)
-                                
-                        
+                                        FreeCADGui.Selection.addSelection(child)                        
 
 #---------------------------------------------------------------------------
 # Adds the icons & commands to the FreeCAD command manager, and sets defaults
