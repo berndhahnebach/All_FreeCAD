@@ -27,6 +27,7 @@
 # include <Standard_math.hxx>
 # include <Inventor/nodes/SoBaseColor.h>
 # include <Inventor/nodes/SoDrawStyle.h>
+# include <Inventor/nodes/SoMaterial.h>
 # include <Inventor/nodes/SoLineSet.h>
 # include <Inventor/nodes/SoPickStyle.h>
 # include <Inventor/nodes/SoSeparator.h>
@@ -51,18 +52,21 @@ using namespace std;
 //**************************************************************************
 // Construction/Destruction
 
-PROPERTY_SOURCE(PartGui::ViewProvider2DObject, PartGui::ViewProviderPart)
+const char* ViewProvider2DObject::GridStyleEnums[]= {"Dashed","Light",NULL};
 
+PROPERTY_SOURCE(PartGui::ViewProvider2DObject, PartGui::ViewProviderPart)
 
 ViewProvider2DObject::ViewProvider2DObject()
 {
     ADD_PROPERTY_TYPE(ShowGrid,(false),"Grid",(App::PropertyType)(App::Prop_None),"Switch the grid on/off");
     ADD_PROPERTY_TYPE(GridSize,(10),"Grid",(App::PropertyType)(App::Prop_None),"Gap size of the grid");
+    ADD_PROPERTY_TYPE(GridStyle,((long)0),"Grid",(App::PropertyType)(App::Prop_None),"Appearence style of the grid");
 
     GridRoot = new SoSeparator();
     GridRoot->ref();
     MinX = MinY = -100;
     MaxX = MaxY = 100;
+    GridStyle.setEnums(GridStyleEnums);
 
     pcRoot->addChild(GridRoot);
  
@@ -119,10 +123,17 @@ SoSeparator* ViewProvider2DObject::createGrid(void)
     mycolor->rgb.setValue(0.7f, 0.7f ,0.7f);
     parent->addChild(mycolor);
 
-    SoDrawStyle* DrawStyle = new SoDrawStyle;
-    DrawStyle->lineWidth = 1;
-    DrawStyle->linePattern = 0x0f0f;
-    parent->addChild(DrawStyle);
+    SoDrawStyle* DefaultStyle = new SoDrawStyle;
+    DefaultStyle->lineWidth = 1;
+    DefaultStyle->linePattern = 0x0f0f;
+
+    SoMaterial* LightStyle = new SoMaterial;
+    LightStyle->transparency = 0.7;
+
+    if (GridStyle.getValue() == 0)
+      parent->addChild(DefaultStyle);
+    else
+      parent->addChild(LightStyle);
 
     SoPickStyle* PickStyle = new SoPickStyle;
     PickStyle->style = SoPickStyle::UNPICKABLE;
@@ -185,7 +196,7 @@ void ViewProvider2DObject::onChanged(const App::Property* prop)
         else
             GridRoot->removeAllChildren();
     }
-    if (prop == &GridSize) {
+    if ((prop == &GridSize) or (prop == &GridStyle)) {
         if(ShowGrid.getValue()){
             GridRoot->removeAllChildren();
             createGrid();
@@ -219,12 +230,17 @@ std::vector<std::string> ViewProvider2DObject::getDisplayModes(void) const
     std::vector<std::string> StrList = ViewProviderGeometryObject::getDisplayModes();
 
     // add your own modes
-    //StrList.push_back("Flat Lines");
+    StrList.push_back("Flat Lines");
     //StrList.push_back("Shaded");
     StrList.push_back("Wireframe");
     StrList.push_back("Points");
 
     return StrList;
+}
+
+const char* ViewProvider2DObject::getDefaultDisplayMode() const
+{
+  return "Wireframe";
 }
 
 // -----------------------------------------------------------------------
