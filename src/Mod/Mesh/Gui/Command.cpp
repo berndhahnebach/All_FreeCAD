@@ -1085,9 +1085,9 @@ CmdMeshRemoveComponents::CmdMeshRemoveComponents()
     sAppModule    = "Mesh";
     sGroup        = QT_TR_NOOP("Mesh");
     sMenuText     = QT_TR_NOOP("Remove components...");
-    sToolTipText  = QT_TR_NOOP("Remove topologic independant components from the mesh");
+    sToolTipText  = QT_TR_NOOP("Remove topologic independent components from the mesh");
     sWhatsThis    = "Mesh_RemoveComponents";
-    sStatusTip    = QT_TR_NOOP("Remove topologic independant components from the mesh");
+    sStatusTip    = QT_TR_NOOP("Remove topologic independent components from the mesh");
 }
 
 void CmdMeshRemoveComponents::activated(int iMsg)

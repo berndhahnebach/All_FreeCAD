@@ -106,7 +106,7 @@ using namespace boost;
 using namespace boost::program_options;
 
 
-// scriptings (scripts are build in but can be overriden by command line option)
+// scriptings (scripts are build in but can be overridden by command line option)
 #include "InitScript.h"
 #include "TestScript.h"
 

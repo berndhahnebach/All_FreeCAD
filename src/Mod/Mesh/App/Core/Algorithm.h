@@ -144,7 +144,7 @@ public:
    */
   void GetMeshBorder(unsigned long uFacet, std::list<unsigned long>& rBorder) const;
   /**
-   * Boundaries that consist of several loops must be splitted in several independant boundaries
+   * Boundaries that consist of several loops must be splitted in several independent boundaries
    * to perfoom e.g. a polygon triangulation algorithm on them.
    */
   void SplitBoundaryLoops( std::list<std::vector<unsigned long> >& aBorders );
