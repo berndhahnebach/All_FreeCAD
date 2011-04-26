@@ -657,16 +657,38 @@ def scale(objectslist,delta,center=Vector(0,0,0),copy=False):
                 if copy:
                         newobj = makeCopy(obj)
                 else:
-                        newobj = shapify(obj)
-                if (obj.isDerivedFrom("Part::Feature")):
-                        sh = obj.Shape.copy()
-                        m = FreeCAD.Matrix()
-                        m.scale(delta)
-                        sh = sh.transformGeometry(m)
-                        corr = Vector(center.x,center.y,center.z)
-                        corr.scale(delta.x,delta.y,delta.z)
-                        corr = fcvec.neg(corr.sub(center))
-                        sh.translate(corr)
+                        newobj = obj
+                sh = obj.Shape.copy()
+                m = FreeCAD.Matrix()
+                m.scale(delta)
+                sh = sh.transformGeometry(m)
+                corr = Vector(center.x,center.y,center.z)
+                corr.scale(delta.x,delta.y,delta.z)
+                corr = fcvec.neg(corr.sub(center))
+                sh.translate(corr)
+                if getType(obj) == "Rectangle":
+                        p = []
+                        for v in sh.Vertexes: p.append(v.Point)
+                        pl = obj.Placement.copy()
+                        pl.Base = p[0]
+                        diag = p[2].sub(p[0])
+                        bb = p[1].sub(p[0])
+                        bh = p[3].sub(p[0])
+                        nb = fcvec.project(diag,bb)
+                        nh = fcvec.project(diag,bh)
+                        if obj.Length < 0: l = -nb.Length
+                        else: l = nb.Length
+                        if obj.Height < 0: h = -nh.Length
+                        else: h = nh.Length
+                        newobj.Length = l
+                        newobj.Height = h
+                        tr = p[0].sub(obj.Shape.Vertexes[0].Point)
+                        newobj.Placement = pl
+                elif getType(obj) in ["Wire","BSpline"]:
+                        p = []
+                        for v in sh.Vertexes: p.append(v.Point)
+                        newobj.Points = p
+                elif (obj.isDerivedFrom("Part::Feature")):
                         newobj.Shape = sh
                 elif (obj.Type == "App::Annotation"):
                         factor = delta.x * delta.y * delta.z * obj.ViewObject.FontSize
