@@ -585,28 +585,45 @@ def move(objectslist,vector,copy=False):
         if len(newobjlist) == 1: return newobjlist[0]
         return newobjlist
 
-def rectArray(objectslist,xvector,yvector,xnum,ynum):
-        '''rectArray(objectslist,xvector,yvector,xnum,ynum): Creates an array of the
-        objects contained in list (that can be an object or a list of objects) with
-        xnum of iterations in the x direction at xvector distance between iterations.
-        Same for y direction with yvector and ynum.'''
-        typecheck([(xvector,Vector), (yvector,Vector), (xnum,int), (ynum,int)], "rectArray")
-        if not isinstance(objectslist,list): objectslist = [objectslist]
-        for xcount in range(xnum):
-            currentxvector=fcvec.scale(xvector,xcount)
-            if not xcount==0:
-                move(objectslist,currentxvector,True)
-            for ycount in range(ynum):
-                currentxvector=FreeCAD.Base.Vector(currentxvector)
-                currentyvector=currentxvector.add(fcvec.scale(yvector,ycount))
-                if not ycount==0:
-                    move(objectslist,currentyvector,True)
+def array(objectslist,arg1,arg2,arg3,arg4=None):
+        '''array(objectslist,xvector,yvector,xnum,ynum) for rectangular array, or
+        array(objectslist,center,totalangle,totalnum) for polar array: Creates an array
+        of the objects contained in list (that can be an object or a list of objects)
+        with, in case of rectangular array, xnum of iterations in the x direction
+        at xvector distance between iterations, and same for y direction with yvector
+        and ynum. In case of polar array, center is a vector, totalangle is the angle
+        to cover (in degrees) and totalnum is the number of objects, including the original.'''
+        
+        def rectArray(objectslist,xvector,yvector,xnum,ynum):
+                typecheck([(xvector,Vector), (yvector,Vector), (xnum,int), (ynum,int)], "rectArray")
+                if not isinstance(objectslist,list): objectslist = [objectslist]
+                for xcount in range(xnum):
+                        currentxvector=fcvec.scale(xvector,xcount)
+                        if not xcount==0:
+                                move(objectslist,currentxvector,True)
+                        for ycount in range(ynum):
+                                currentxvector=FreeCAD.Base.Vector(currentxvector)
+                                currentyvector=currentxvector.add(fcvec.scale(yvector,ycount))
+                                if not ycount==0:
+                                        move(objectslist,currentyvector,True)
+        def polarArray(objectslist,center,angle,num):
+                typecheck([(center,Vector), (num,int)], "polarArray")
+                if not isinstance(objectslist,list): objectslist = [objectslist]
+                fraction = angle/num
+                for i in range(num):
+                        currangle = fraction + (i*fraction)
+                        rotate(objectslist,currangle,center,copy=True)
 
+        if arg4:
+                rectArray(objectslist,arg1,arg2,arg3,arg4)
+        else:
+                polarArray(objectslist,arg1,arg2,arg3)
+                
 def rotate(objectslist,angle,center=Vector(0,0,0),axis=Vector(0,0,1),copy=False):
         '''rotate(objects,angle,[center,axis,copy]): Rotates the objects contained
         in objects (that can be a list of objects or an object) of the given angle
-        around the center, using axis as a rotation axis. If axis is omitted,
-        the rotation will be around the vertical Z axis.
+        (in degrees) around the center, using axis as a rotation axis. If axis is
+        omitted, the rotation will be around the vertical Z axis.
         If copy is True, the actual objects are not moved, but copies
         are created instead. The objects (or their copies) are returned.'''
         typecheck([(copy,bool)], "rotate")
