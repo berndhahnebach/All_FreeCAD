@@ -201,7 +201,7 @@
         <item row="0" column="0">
          <widget class="QLabel" name="textLabel6">
           <property name="text">
-           <string>Number seperator:</string>
+           <string>Number separator:</string>
           </property>
          </widget>
         </item>
@@ -256,7 +256,7 @@
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QComboBox" name="comboBoxSeperator">
+         <widget class="QComboBox" name="comboBoxSeparator">
           <property name="editable">
            <bool>true</bool>
           </property>
@@ -367,7 +367,7 @@
   <tabstop>radioButtonNbrOfPoints</tabstop>
   <tabstop>lineEditClusterStart</tabstop>
   <tabstop>lineEditComments</tabstop>
-  <tabstop>comboBoxSeperator</tabstop>
+  <tabstop>comboBoxSeparator</tabstop>
   <tabstop>comboBoxPointsFormat</tabstop>
   <tabstop>comboBoxNextBlock1</tabstop>
   <tabstop>comboBoxNextBlock2</tabstop>

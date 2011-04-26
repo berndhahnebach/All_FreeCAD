@@ -14,7 +14,7 @@
 			<Author Licence="LGPL" Name="Juergen Riegel" EMail="Juergen.Riegel@web.de" />
 			<UserDocu>Points() -- Create an empty points object.
 
-This class allows to manipulate the Points object by adding new points, deleting facets, importing from an STL file,
+This class allows one to manipulate the Points object by adding new points, deleting facets, importing from an STL file,
 transforming and much more.
 
       </UserDocu>

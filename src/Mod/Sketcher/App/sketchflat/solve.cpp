@@ -214,7 +214,7 @@ static void SolveByForwardSubstitution(void)
         hParam toReplace, replacement;
         if(EExprMarksTwoParamsEqual(EQ->eqn[i].e, &toReplace, &replacement)) {
 
-            dbp2("equation just marks two paramters equal:");
+            dbp2("equation just marks two parameters equal:");
             EPrint("this: ", EQ->eqn[i].e);
             dbp2("we think %08x and %08x", toReplace, replacement);
 

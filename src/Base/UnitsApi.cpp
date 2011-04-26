@@ -260,6 +260,6 @@ double UnitsApi::parse(const char* buffer,bool &UsedUnit)
     UnitParser::UnitsApi_delete_buffer (my_string_buffer);
 
     if (ScanResult == DOUBLE_MIN)
-        throw Base::Exception("Unknown error in Unit expresion");
+        throw Base::Exception("Unknown error in Unit expression");
     return ScanResult;
 }

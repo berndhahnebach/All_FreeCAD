@@ -72,7 +72,7 @@ bool WindowParameter::setGroupName(const char* name)
 
 void WindowParameter::OnChange(Base::Subject<const char*> &rCaller, const char * sReason)
 {
-  Base::Console().Log("Parameter has changed and window (%s) has not overriden this function!",_handle->GetGroupName());
+  Base::Console().Log("Parameter has changed and window (%s) has not overridden this function!",_handle->GetGroupName());
 }
 
 ParameterGrp::handle  WindowParameter::getWindowParameter(void)
