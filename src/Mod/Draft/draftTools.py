@@ -3011,7 +3011,7 @@ class Downgrade(Modifier):
                         lastob = ob
 		# applying transformation
 		self.doc.openTransaction("Downgrade")
-                if (len(self.sel) == 1) and (Draft.getType(self.sel[0]) == "block"):
+                if (len(self.sel) == 1) and (Draft.getType(self.sel[0]) == "Block"):
                         # a block, we explode it
                         pl = self.sel[0].Placement
                         newob = []

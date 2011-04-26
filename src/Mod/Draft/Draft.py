@@ -460,6 +460,35 @@ def makeText(stringslist,point=Vector(0,0,0),screen=False):
         select(obj)
 	return obj
 
+def makeCopy(obj):
+        '''makeCopy(object): returns an exact copy of an object'''
+        newobj = FreeCAD.ActiveDocument.addObject(obj.Type,getRealName(obj.Name))
+        if getType(obj) == "Rectangle":
+                Rectangle(newobj)
+                ViewProviderRectangle(newobj.ViewObject)
+        elif getType(obj) == "Wire":
+                Wire(newobj)
+                ViewProviderWire(newobj.ViewObject)
+        elif getType(obj) == "Circle":
+                Circle(newobj)
+                ViewProviderCircle(newobj.ViewObject)
+        elif getType(obj) == "Polygon":
+                Polygon(newobj)
+                ViewProviderPolygon(newobj.ViewObject)
+        elif getType(obj) == "BSpline":
+                BSpline(newobj)
+                ViewProviderBSpline(newobj.ViewObject)
+        elif getType(obj) == "Block":
+                Block(newobj)
+                ViewProviderBlock(newobj.ViewObject)
+        else:
+                newobj.Shape = obj.Shape
+        for p in obj.PropertiesList:
+                if p in newobj.PropertiesList:
+                        setattr(newobj,p,obj.getPropertyByName(p))
+        formatObject(newobj,obj)
+        return newobj
+
 def makeBlock(objectslist):
         '''makeBlock(objectslist): Creates a Draft Block from the given objects'''
         obj = FreeCAD.ActiveDocument.addObject("Part::Part2DObjectPython","Block")
@@ -526,12 +555,11 @@ def move(objectslist,vector,copy=False):
         for obj in objectslist:
                 if (obj.isDerivedFrom("Part::Feature")):
                         if copy:
-                                newobj = FreeCAD.ActiveDocument.addObject("Part::Feature",getRealName(obj.Name))
+                                newobj = makeCopy(obj)
                         else:
                                 newobj = obj
-                        sh = obj.Shape.copy()
-                        sh.translate(vector)
-                        newobj.Shape = sh
+                        pla = newobj.Placement
+                        pla.move(vector)
                 elif getType(obj) == "Annotation":
                         if copy:
                                 newobj = FreeCAD.ActiveDocument.addObject("App::Annotation",getRealName(obj.Name))
@@ -553,7 +581,6 @@ def move(objectslist,vector,copy=False):
                         if "Placement" in obj.PropertiesList:
                                 pla = obj.Placement
                                 pla.move(vector)
-		if copy: formatObject(newobj,obj)
                 newobjlist.append(newobj)
         if len(newobjlist) == 1: return newobjlist[0]
         return newobjlist
@@ -587,7 +614,7 @@ def rotate(objectslist,angle,center=Vector(0,0,0),axis=Vector(0,0,1),copy=False)
         newobjlist = []
         for obj in objectslist:
                 if copy:
-                        newobj = FreeCAD.ActiveDocument.addObject("Part::Feature",getRealName(obj.Name))
+                        newobj = makeCopy(obj)
                 else:
                         newobj = obj
                 if (obj.isDerivedFrom("Part::Feature")):
@@ -611,7 +638,7 @@ def scale(objectslist,delta,center=Vector(0,0,0),copy=False):
         newobjlist = []
         for obj in objectslist:
                 if copy:
-                        newobj = FreeCAD.ActiveDocument.addObject("Part::Feature",getRealName(obj.Name))
+                        newobj = makeCopy(obj)
                 else:
                         newobj = shapify(obj)
                 if (obj.isDerivedFrom("Part::Feature")):
@@ -1957,7 +1984,7 @@ class Block:
                 obj.addProperty("App::PropertyLinkList","Components","Base",
                                 "The components of this block")
 		obj.Proxy = self
-                self.Type = "block"
+                self.Type = "Block"
 
 	def execute(self, fp):
                 self.createGeometry(fp)
