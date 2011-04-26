@@ -30,10 +30,11 @@ __title__="FreeCAD Cell"
 __author__ = "Yorik van Havre"
 __url__ = "http://free-cad.sourceforge.net"
 
-def makeCell(objectslist,join=True,name="Cell"):
-    '''makeCell(objectslist): creates a cell including the
-    objects from the given list'''
-    obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython",name)
+def makeCell(objectslist,join=True):
+    '''makeCell(objectslist,[joinmode]): creates a cell including the
+    objects from the given list. If joinmode is False, contents will
+    not be joined.'''
+    obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Cell")
     Cell(obj)
     ViewProviderCell(obj.ViewObject)
     obj.Components = objectslist
@@ -51,25 +52,17 @@ class CommandCell:
                 'ToolTip': QtCore.QT_TRANSLATE_NOOP("Arch_Cell","Creates a cell object including selected objects")}
         
     def Activated(self):
-        sel = FreeCADGui.Selection.getSelection()
-        makeCell(sel)
+        makeCell(FreeCADGui.Selection.getSelection())
 
 class Cell:
     "The Cell object"
     def __init__(self,obj):
         obj.addProperty("App::PropertyLinkList","Components","Base",
                         "The objects that make part of this cell")
-        obj.addProperty("App::PropertyLength","PlanHeight","Base",
-                        "The height of the section plane when making a plan view of this cell")
         obj.addProperty("App::PropertyBool","DebugMode","Base",
                         "if debug mode, no face cleaning!")
         obj.addProperty("App::PropertyBool","JoinMode","Base",
                         "If True, underlying geometry will be joined")
-        obj.addProperty("App::PropertyEnumeration","CellType","Base",
-                        "This cell can define a Cell, a Floor or a Building")
-        obj.PlanHeight = 1.8
-        obj.CellType = ["Cell","Floor","Building"]
-        obj.CellType = "Cell"
         obj.Proxy = self
         self.Type = "Cell"
         
@@ -108,8 +101,7 @@ class ViewProviderCell:
         self.Object = vobj.Object
 
     def getIcon(self):
-        if self.Object.CellType == "Cell":
-            return """
+        return """
                 /* XPM */
                 static char * Arch_Cell_xpm[] = {
                 "16 16 9 1",
@@ -139,69 +131,7 @@ class ViewProviderCell:
                 "         @#*$   ",
                 "         @@#    "};
                 """
-        elif self.Object.CellType == "Floor":
-            return """
-                /* XPM */
-                static char * Arch_Floor_xpm[] = {
-                "16 16 9 1",
-                " 	c None",
-                ".	c #171817",
-                "+	c #2E2876",
-                "@	c #545653",
-                "#	c #605C98",
-                "$	c #959794",
-                "%	c #9694BC",
-                "&	c #C8C9CC",
-                "*	c #F9FBFA",
-                "                ",
-                "                ",
-                "............... ",
-                ".&&%&*&%%%%%&*. ",
-                ".&++#*#+++++#*. ",
-                ".&+%****&+*+#*. ",
-                ".&+#%%&*&+*+#*. ",
-                ".&++++&**+*+#*. ",
-                ".&+%***%%**+.$. ",
-                ".&++###*#+#.$@. ",
-                ".&++++#*+++.&.. ",
-                ".&********&..   ",
-                ".$$$$$$$$$@.    ",
-                " ..........     ",
-                "                ",
-                "                "};
-                """
-        else:
-            return """
-                /* XPM */
-                static char * Arch_Building_xpm[] = {
-                "16 16 9 1",
-                " 	c None",
-                ".	c #160E0A",
-                "+	c #C10007",
-                "@	c #FF0006",
-                "#	c #8F3F00",
-                "$	c #5E5F5D",
-                "%	c #7F817E",
-                "&	c #A0A29F",
-                "*	c #F4F6F3",
-                "                ",
-                "     ........   ",
-                "    ..#@@@@@.   ",
-                "   .&&.+@@@@@.  ",
-                "  .&**%.@@@@@+. ",
-                " .&****..@@@+...",
-                ".%******.##..$$.",
-                ".&******&.$&**%.",
-                ".%*...$**.****% ",
-                ".%*..#.**.****% ",
-                " %*..#.**.****$ ",
-                " $*..#.**.***$. ",
-                " $*..#$**.**..  ",
-                " .$...$**.&.    ",
-                "   .  .$%..     ",
-                "        ..      "};
-                """
-        
+       
     def updateData(self,obj,prop):
         return
 
@@ -227,3 +157,4 @@ class ViewProviderCell:
     def __setstate__(self,state):
         return None
 
+FreeCADGui.addCommand('Arch_Cell',CommandCell())

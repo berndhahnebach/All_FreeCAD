@@ -167,3 +167,5 @@ class ViewProviderWall(Component.ViewProviderComponent):
         
     def claimChildren(self):
         return [self.Object.Base]+self.Object.Appendices+self.Object.Holes
+
+FreeCADGui.addCommand('Arch_Wall',CommandWall())
