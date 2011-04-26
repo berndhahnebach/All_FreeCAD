@@ -54,10 +54,12 @@ public:
   /// Property to switch the grid on and off
   App::PropertyBool ShowGrid;
   App::PropertyDistance GridSize;
+  App::PropertyEnumeration GridStyle;
 
   virtual void attach(App::DocumentObject *);
   virtual void updateData(const App::Property*);
   virtual std::vector<std::string> getDisplayModes(void) const;
+  virtual const char* getDefaultDisplayMode() const;
 
   /// creats the grid
   SoSeparator* createGrid(void); 
@@ -74,6 +76,7 @@ protected:
   float MaxX;
   float MinY;
   float MaxY;
+  static const char* GridStyleEnums[];
 };
 
 typedef Gui::ViewProviderPythonFeatureT<ViewProvider2DObject> ViewProvider2DObjectPython;
