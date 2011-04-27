@@ -19,8 +19,16 @@ else
 	CFLAGS += -O2
 endif
 
-configure: autogen.sh
+patch-stamp:
+	touch $@
+
+configure: autogen.sh patch-stamp
 	dh_testdir
+	for autotools_mod_file in `find . -name Makefile.in` aclocal.m4 \
+	    configure m4/libtool.m4 m4/ltmain.sh m4/ltoptions.m4 \
+	    m4/ltversion.m4 m4/lt~obsolete.m4; do \
+	  cp -a $$autotools_mod_file $$autotools_mod_file.setaside; \
+	done
 	chmod u+x autogen.sh
 	./autogen.sh
 
@@ -33,6 +41,7 @@ config.status: configure
 --infodir=/usr/share/info --datadir=/usr/share/freecad \
 --includedir=/usr/include/freecad --docdir=/usr/share/doc/freecad \
 CFLAGS="$(CFLAGS)" LDFLAGS="-Wl,-z,defs"
+	touch src/Build/Version.h
 
 build: build-stamp
 
@@ -42,14 +51,26 @@ build-stamp: config.status
 	touch $@
 
 clean:
+	mv src/Build/Version.h src/Build/Version.h.old
 	dh clean
+	mv src/Build/Version.h.old src/Build/Version.h
 	rm -f build-stamp
 	find -name '*.pyc' | xargs rm -f
 	find -name 'moc_*.cpp' | xargs rm -f
 	find -name '*.lo' | xargs rm -f
 	find -name '*.deps' | xargs rm -rf
 	find -name '*.libs' | xargs rm -rf
-	rm -f stamp-h1 config.log libtool
+	rm -f stamp-h1 config.log libtool 71
+	if [ -e Makefile.in.setaside ]; then \
+	for autotools_mod_file in `find . -name Makefile.in` aclocal.m4 \
+	    configure m4/libtool.m4 m4/ltmain.sh m4/ltoptions.m4 \
+	    m4/ltversion.m4 m4/lt~obsolete.m4; do \
+	  mv -f $$autotools_mod_file.setaside $$autotools_mod_file; \
+	done; fi
+	dh clean
+	rm -f patch-stamp
+	#quilt pop -a
+	#rm -rf .pc/
 
 install: build install-stamp
 install-stamp:
@@ -84,11 +105,8 @@ install-stamp:
 	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Test/lib*.so.* usr/lib/freecad/Mod/Test
 	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Test/*.py usr/lib/freecad/Mod/Test
 	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Test/QtUnitGui.so usr/lib/freecad/Mod/Test
-	# special treating of Arch module
-	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Arch/*.py usr/lib/freecad/Mod/Arch
 
 	dh_install -pfreecad-dev debian/tmp/freecad/usr/include/* usr/include
-	dh_install -pfreecad-dev debian/tmp/freecad/usr/lib/freecad/lib/lib*.la usr/lib/freecad/lib
 	dh_install -pfreecad-dev debian/tmp/freecad/usr/lib/freecad/lib/lib*.so usr/lib/freecad/lib
 	$(foreach MODULE,$(MODULES), \
 	dh_install -pfreecad-dev debian/tmp/freecad/usr/lib/freecad/Mod/$(MODULE)/lib*.la usr/lib/freecad/Mod/$(MODULE); \
@@ -100,6 +118,9 @@ install-stamp:
 
 override_dh_compress:
 	dh_compress -X.qch -X.qhc
+
+override_dh_makeshlibs:
+
 
 binary-indep: build install
 	dh binary-indep
