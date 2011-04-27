@@ -684,7 +684,7 @@ def scale(objectslist,delta,center=Vector(0,0,0),copy=False):
                         newobj.Height = h
                         tr = p[0].sub(obj.Shape.Vertexes[0].Point)
                         newobj.Placement = pl
-                elif getType(obj) in ["Wire","BSpline"]:
+                elif getType(obj) == "Wire":
                         p = []
                         for v in sh.Vertexes: p.append(v.Point)
                         newobj.Points = p

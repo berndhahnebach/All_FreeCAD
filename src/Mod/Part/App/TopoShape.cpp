@@ -34,6 +34,7 @@
 # include <BRepAlgoAPI_Common.hxx>
 # include <BRepAlgoAPI_Cut.hxx>
 # include <BRepAlgoAPI_Fuse.hxx>
+# include <BRepAlgo_Fuse.hxx>
 # include <BRepAlgoAPI_Section.hxx>
 # include <BRepBndLib.hxx>
 # include <BRepBuilderAPI_GTransform.hxx>
@@ -875,6 +876,12 @@ TopoDS_Shape TopoShape::common(TopoDS_Shape shape) const
 TopoDS_Shape TopoShape::fuse(TopoDS_Shape shape) const
 {
     BRepAlgoAPI_Fuse mkFuse(this->_Shape, shape);
+    return mkFuse.Shape();
+}
+
+TopoDS_Shape TopoShape::oldFuse(TopoDS_Shape shape) const
+{
+    BRepAlgo_Fuse mkFuse(this->_Shape, shape);
     return mkFuse.Shape();
 }
 

@@ -22,7 +22,6 @@
 #***************************************************************************
 
 import FreeCAD,FreeCADGui,Part,Draft
-from draftlibs import fcgeo,fcvec
 from FreeCAD import Vector
 from PyQt4 import QtCore
 
@@ -59,8 +58,6 @@ class Cell:
     def __init__(self,obj):
         obj.addProperty("App::PropertyLinkList","Components","Base",
                         "The objects that make part of this cell")
-        obj.addProperty("App::PropertyBool","DebugMode","Base",
-                        "if debug mode, no face cleaning!")
         obj.addProperty("App::PropertyBool","JoinMode","Base",
                         "If True, underlying geometry will be joined")
         obj.Proxy = self
@@ -70,7 +67,7 @@ class Cell:
         self.createGeometry(obj)
         
     def onChanged(self,obj,prop):
-        if prop in ["Components"]:
+        if prop in ["Components","JoinMode"]:
             self.createGeometry(obj)
 
     def createGeometry(self,obj):
@@ -82,10 +79,7 @@ class Cell:
                 baseShape = f.Shape
                 for comp in components:
                     if Draft.getType(comp) in ["Wall","Cell","Shape"]:
-                        baseShape = baseShape.fuse(comp.Shape)
-                if components:
-                    if not obj.DebugMode:
-                        baseShape = fcgeo.cleanFaces(baseShape)
+                        baseShape = baseShape.oldFuse(comp.Shape)
             else:
                 compshapes = []
                 for o in obj.Components:
