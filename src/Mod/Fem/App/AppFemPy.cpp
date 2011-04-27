@@ -29,6 +29,7 @@
 
 #include <Base/Console.h>
 #include <Base/VectorPy.h>
+#include <Base/PlacementPy.h>
 #include <App/Application.h>
 #include <App/Document.h>
 #include <App/DocumentObject.h>
@@ -291,6 +292,52 @@ static PyObject * calcMeshVolume(PyObject *self, PyObject *args)
 	Py_Return;
 }
 
+static PyObject * checkBB(PyObject *self, PyObject *args)
+{
+	PyObject *input;
+	PyObject* plm=0;
+	float billet_thickness;
+	bool oversize = false;
+
+    if (!PyArg_ParseTuple(args, "O|O!f", &input,&(Base::PlacementPy::Type),&plm,&billet_thickness))
+        return NULL;
+
+    try {
+        Base::Placement* placement = 0;
+        if (plm) {
+            placement = static_cast<Base::PlacementPy*>(plm)->getPlacementPtr();
+
+        }
+		Base::Vector3d current_node;
+        Base::Matrix4D matrix = placement->toMatrix();
+        FemMeshPy *inputMesh = static_cast<FemMeshPy*>(input); 
+		SMDS_NodeIteratorPtr aNodeIter = inputMesh->getFemMeshPtr()->getSMesh()->GetMeshDS()->nodesIterator();
+		for (;aNodeIter->more();) {
+			const SMDS_MeshNode* aNode = aNodeIter->next();
+			current_node.Set(float(aNode->X()),float(aNode->Y()),float(aNode->Z()));
+            current_node = matrix * current_node;
+			if(current_node.z > billet_thickness || current_node.z < 0.0)
+			{
+				//lets jump out of the function as soon as we find a 
+				//Node that is higher or lower than billet thickness
+				oversize = true;
+				Py::Boolean py_oversize(oversize); 
+				return Py::new_reference_to(py_oversize);
+			}
+		}
+		Py::Boolean py_oversize(oversize); 
+		return Py::new_reference_to(py_oversize);
+    }
+    catch (const std::exception& e) {
+        PyErr_SetString(PyExc_Exception, e.what());
+        return 0;
+    }
+    Py_Return;
+}
+
+
+
+
 static PyObject * getBoundary_Conditions(PyObject *self, PyObject *args)
 {
 	PyObject *input;
@@ -455,7 +502,8 @@ static PyObject * minBoundingBox(PyObject *self, PyObject *args)
 			angle_range_min_y=-PI/3.0,angle_range_max_y=PI/3.0,
 			angle_range_min_z=-PI/3.0,angle_range_max_z=PI/3.0;
 
-		for (step_size = (2.0*PI/it_steps);step_size>(2.0*PI/360.0);step_size=(2.0*PI/it_steps))
+		//We rotate until we are 0.1° sure to be in the right position
+		for (step_size = (2.0*PI/it_steps);step_size>(2.0*PI/3600.0);step_size=(2.0*PI/it_steps))
 		{
 			for(alpha_x=angle_range_min_x;alpha_x<angle_range_max_x;alpha_x=alpha_x+step_size)
 			{
@@ -514,6 +562,7 @@ static PyObject * minBoundingBox(PyObject *self, PyObject *args)
 			float(0.0),float(0.0),float(1.0),dist_vector.z,
 			float(0.0),float(0.0),float(0.0),float(1.0));
 		inputMesh->getFemMeshPtr()->transformGeometry(trans_matrix);
+		
 		//inputMesh->getFemMeshPtr()->getSMesh()->ExportUNV("C:/fine_tuning.unv");
 
 	} PY_CATCH;
@@ -959,5 +1008,6 @@ struct PyMethodDef Fem_methods[] = {
 	{"SMESH_PCA" , SMESH_PCA, Py_NEWARGS, "Get a Matrix4D related to the PCA of a Mesh Object"},
 	{"import_NASTRAN",import_NASTRAN, Py_NEWARGS, "Test"},
 	{"minBoundingBox",minBoundingBox,Py_NEWARGS,"Minimize the Bounding Box and reorient the mesh to the 1st Quadrant"},
+	{"checkBB",checkBB,Py_NEWARGS,"Check if the nodal z-values are still in the prescribed range"},
     {NULL, NULL}  /* sentinel */
 };
