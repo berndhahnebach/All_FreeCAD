@@ -16,8 +16,8 @@ import time
 # The command classes
 #---------------------------------------------------------------------------
 
-class MachiningDistortion_ChooseFile:
-    "Choose the file to work with"
+class MachiningDistortion_StartGUI:
+
     def Activated(self):
 #        pi=Base.ProgressIndicator()
 #        pi.start("Hello, World!",100)
@@ -29,16 +29,16 @@ class MachiningDistortion_ChooseFile:
         myapp.exec_()
 
     def GetResources(self):
-        return {'Pixmap'  : 'Std_Tool1', 'MenuText': 'Open FEM file...', 'ToolTip': 'Open the file to work with'}
+        return {'Pixmap'  : 'Std_Tool1', 'MenuText': 'Open Machining Distortion GUI', 'ToolTip': 'Start Up the main GUI'}
 
-class MachiningDistortion_ChooseDir:
-    "Choose the file to work with"
+class MachiningDistortion_StartPostprocess:
+
     def Activated(self):
         app = postprocess_gui.MyForm(QtGui.qApp.activeWindow())
         app.exec_()
 
     def GetResources(self):
-        return {'Pixmap'  : 'Std_Tool2', 'MenuText': 'Open work dir...', 'ToolTip': 'Choose the working directory'}
+        return {'Pixmap'  : 'Std_Tool2', 'MenuText': 'Open Machining Distortion Postprocess GUI', 'ToolTip': 'Start Up the postprocess GUI'}
 
 
 class MachiningDistortion_ChooseParameter:
@@ -99,7 +99,7 @@ class MachiningDistortion_ChooseParameter:
 # Adds the commands to the FreeCAD command manager
 #---------------------------------------------------------------------------
 
-FreeCADGui.addCommand('MachiningDistortion_ChooseFile',MachiningDistortion_ChooseFile())
-FreeCADGui.addCommand('MachiningDistortion_ChooseDir',MachiningDistortion_ChooseDir())
+FreeCADGui.addCommand('MachiningDistortion_StartGUI',MachiningDistortion_StartGUI())
+FreeCADGui.addCommand('MachiningDistortion_StartPostprocess',MachiningDistortion_StartPostprocess())
 FreeCADGui.addCommand('MachiningDistortion_ChooseParameter',MachiningDistortion_ChooseParameter())
 
