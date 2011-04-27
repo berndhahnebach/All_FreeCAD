@@ -30,10 +30,10 @@ __title__="FreeCAD Wall"
 __author__ = "Yorik van Havre"
 __url__ = "http://free-cad.sourceforge.net"
 
-def makeWall(baseobj,width=None,height=None,align="Center",name="Wall"):
+def makeWall(baseobj,width=None,height=None,align="Center"):
     '''makeWall(obj,[width],[height],[align],[name]): creates a wall based on the
     given object'''
-    obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython",name)
+    obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Wall")
     Wall(obj)
     ViewProviderWall(obj.ViewObject)
     obj.Base = baseobj
@@ -66,41 +66,49 @@ class Wall(Component.Component):
         obj.addProperty("App::PropertyLength","Width","Base",
                         "The width of this wall")
         obj.addProperty("App::PropertyLength","Height","Base",
-                        "The height of this wall")
+                        "The height of this wall. Keep 0 for automatic")
         obj.addProperty("App::PropertyVector","Normal","Base",
                         "The normal extrusion direction of this wall (keep (0,0,0) for automatic normal)")
         obj.addProperty("App::PropertyEnumeration","Align","Base",
                         "The alignment of this wall on its base object, if applicable")
-        obj.addProperty("App::PropertyLinkList","Appendices","Base",
-                        "Other shapes that are appended to this wall")
-        obj.addProperty("App::PropertyLinkList","Holes","Base",
-                        "Other shapes that are subtracted from this wall")
         obj.Align = ['Left','Right','Center']
         self.Type = "Wall"
         obj.Width = 0.1
-        obj.Height = 1
+        obj.Height = 0
         
     def execute(self,obj):
         self.createGeometry(obj)
         
     def onChanged(self,obj,prop):
-        if prop in ["Base","Height","Width","Align","Appendices","Holes","CrossingWalls"]:
+        if prop in ["Base","Height","Width","Align","Additions","Subtractions"]:
             self.createGeometry(obj)
 
     def createGeometry(self,obj):
         pl = obj.Placement
+
+        # getting default values
+        height = normal = None
+        if obj.Height:
+            height = obj.height
+        else:
+            for p in obj.InList:
+                if Draft.getType(p) == "Floor":
+                    height = p.Height
+        if not height: height = 1
         if obj.Normal == Vector(0,0,0):
             normal = Vector(0,0,1)
         else:
             normal = Vector(obj.Normal)
+
+        # computing shape
         if obj.Base:
             if obj.Base.isDerivedFrom("Part::Feature"):
                 base = obj.Base.Shape.copy()
                 if base.Solids:
-                    obj.Shape = base
+                    pass
                 elif base.Faces:
-                    if obj.Height:
-                        norm = normal.multiply(obj.Height)
+                    if height:
+                        norm = normal.multiply(height)
                         base = base.extrude(norm)
                 elif base.Wires and not base.isClosed():
                     dvec = fcgeo.vec(base.Edges[0]).cross(normal)
@@ -115,13 +123,13 @@ class Wall(Component.Component):
                     elif obj.Align == "Center":
                         dvec = dvec.multiply(obj.Width)
                         base = Draft.offset(obj.Base,dvec,bind=True,sym=True)
-                    if obj.Height:
-                        norm = normal.multiply(obj.Height)
+                    if height:
+                        norm = normal.multiply(height)
                         base = base.extrude(norm)
-                for app in obj.Appendices:
+                for app in obj.Additions:
                     base = base.fuse(app.Shape)
                     app.viewObject.hide() #to be removed
-                for hole in obj.Holes:
+                for hole in obj.Subtractions:
                     base = base.cut(hole.Shape)
                     hole.ViewObject.hide() # to be removed
                 obj.Shape = base
@@ -164,8 +172,5 @@ class ViewProviderWall(Component.ViewProviderComponent):
                 "           @+   ",
                 "                "};
 		"""
-        
-    def claimChildren(self):
-        return [self.Object.Base]+self.Object.Appendices+self.Object.Holes
 
 FreeCADGui.addCommand('Arch_Wall',CommandWall())

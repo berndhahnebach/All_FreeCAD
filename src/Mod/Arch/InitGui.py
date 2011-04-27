@@ -34,10 +34,11 @@ class ArchWorkbench(Workbench):
 	ToolTip = "Architecture workbench"
 	
 	def Initialize(self):
-                import draftTools,draftGui,Arch_rc,Wall,Cell,Floor,Building,Site
-                archtools = ["Arch_Wall","Arch_Cell","Arch_Floor",
-                         "Arch_Building","Arch_Site"]
-                drafttools = ["Draft_Line","Draft_Wire","Draft_Arc",
+                import draftTools,draftGui,Arch_rc,Wall,Cell,Floor,Building,Site,Structure
+                archtools = ["Arch_Wall","Arch_Structure","Arch_Cell",
+                             "Arch_Floor","Arch_Building","Arch_Site"]
+                drafttools = ["Draft_Line","Draft_Wire","Draft_Rectangle",
+                              "Draft_Polygon","Draft_Arc",
                               "Draft_Circle","Draft_Dimension",
                               "Draft_Move","Draft_Rotate",
                               "Draft_Offset","Draft_Upgrade",

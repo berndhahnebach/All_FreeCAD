@@ -24,12 +24,28 @@
 __title__="FreeCAD Arch Component"
 __author__ = "Yorik van Havre"
 __url__ = "http://free-cad.sourceforge.net"
-      
+
+def addToComponent(compobject,addobject):
+    '''addToComponent(compobject,addobject): adds addobject
+    to the given component'''
+    if "Additions" in compobject.PropertiesList:
+        compobject.Additions.append(addobject)
+
+def removeFromComponent(compobject,subobject):
+    '''removeFromComponent(compobject,subobject): subtracts subobject
+    from the given component'''
+    if "Subtractions" in compobject.PropertiesList:
+        compobject.Subtractions.append(subobject)
+        
 class Component:
     "The Component object"
     def __init__(self,obj):
         obj.addProperty("App::PropertyLink","Base","Base",
                         "The base object this component is built upon")
+        obj.addProperty("App::PropertyLinkList","Additions","Base",
+                        "Other shapes that are appended to this wall")
+        obj.addProperty("App::PropertyLinkList","Subtractions","Base",
+                        "Other shapes that are subtracted from this wall")
         obj.Proxy = self
         self.Type = "Component"
         
@@ -60,4 +76,8 @@ class ViewProviderComponent:
 
     def __setstate__(self,state):
         return None
+
+    def claimChildren(self):
+        return [self.Object.Base]+self.Object.Additions+self.Object.Subtractions
+
 
