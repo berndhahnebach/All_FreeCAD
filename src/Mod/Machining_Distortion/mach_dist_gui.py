@@ -1,4 +1,4 @@
-import os,sys,string,math,shutil,glob,subprocess
+import os,sys,string,math,shutil,glob,subprocess,tempfile
 from time import sleep
 from os.path import join
 
@@ -24,6 +24,7 @@ class MyForm(QtGui.QDialog,Ui_dialog):
         #Define some global variables
         self.filename = QtCore.QString("")
         self.dirname = QtCore.QString("")
+        self.params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Machining_Distortion")
         #Connect Signals and Slots
         QtCore.QObject.connect(self.button_select_file, QtCore.SIGNAL("clicked()"), self.select_file)
         QtCore.QObject.connect(self.button_select_output, QtCore.SIGNAL("clicked()"), self.select_output)
@@ -196,7 +197,7 @@ class MyForm(QtGui.QDialog,Ui_dialog):
         os.mkdir(str(self.dirname))
         batch = open(str(self.dirname + "/" + "lcmt_CALCULIX_Calculation_batch.bat"),'wb')
         #Tell calculixs solver spooles how many cpus to use
-        batch.write("export CCX_NPROC=4\n")
+        #batch.write("export CCX_NPROC=" + str(self.params.GetInt("NumberCPUs")) + "\n")
         #If we have a tcsh
         #batch.write("setenv CCX_NPROC 4\n")
 
@@ -248,7 +249,8 @@ class MyForm(QtGui.QDialog,Ui_dialog):
             #1. Lets translate the geometry to the initial desired z-level
 
             #2. Generate a Folder for the current calculation z-level and output the ABAQUS Geometry and the boundary_conditions
-
+            #Lets first generate a subfolder with the current filename
+            os.mkdir(str(self.dirname + "/" + filename_without_suffix))
             i = z_offset_from
             while i <= z_offset_to:
                 j = x_rot_from
@@ -262,10 +264,15 @@ class MyForm(QtGui.QDialog,Ui_dialog):
                             rotation_around_z = FreeCAD.Base.Placement(FreeCAD.Base.Vector(0,0,0),FreeCAD.Base.Vector(0,0,1),l)
                             translate = FreeCAD.Base.Placement(FreeCAD.Base.Vector(0,0,i),FreeCAD.Base.Vector(0,0,0),0.0)
                             translation = rotation_around_x.multiply(rotation_around_y).multiply(rotation_around_z).multiply(translate)
-                        
-                            #Use the placement as optional argument for the write() method
+                            #Now lets check if the part is still in the billet due to the rotation. If not, we directly skip to the next rotation value
+                            if(Fem.checkBB(meshobject,translation,plate_thickness)):
+                                print "Too heavy rotations"
+                                l= l + z_rot_intervall
+                                continue
+                            print "it seems that nothing changed"
+                            #Use the placedment as optional argument for the write() method
                             #translated_mesh.setTransform(translation)
-                            Case_Dir = str(self.dirname) + "/" + filename_without_suffix + \
+                            Case_Dir = str(self.dirname) + "/" + filename_without_suffix + "/" + filename_without_suffix +\
                             "_"+"x_rot"+ str(int(j))+ \
                             "_"+"y_rot"+ str(int(k))+ \
                             "_"+"z_rot"+ str(int(l))+ \
@@ -273,7 +280,9 @@ class MyForm(QtGui.QDialog,Ui_dialog):
                             if ( os.path.exists(str(Case_Dir)) ):
                                 os.chdir(str(self.dirname))
                                 shutil.rmtree(str(Case_Dir))
+
                             os.mkdir(str(Case_Dir))
+
                             os.chdir("c:/")
                             #Lets generate a sigini Input Deck for the calculix user subroutine
                             sigini_input = open (str(Case_Dir + "/" + "sigini_input.txt"),'wb')
@@ -296,21 +305,43 @@ class MyForm(QtGui.QDialog,Ui_dialog):
                             str(ltc5) + "," + \
                             str(ltc6) + "\n")
                             sigini_input.close()
+                            #Check if the 
                             meshobject.writeABAQUS(str(Case_Dir + "/" + "geometry_fe_input.inp"), translation)
                             ApplyingBC_IC(Case_Dir, young_modulus,poisson_ratio,node_numbers[0],node_numbers[1],node_numbers[2])
-                            batch.write(str("cd \"" + self.dirname[str(self.dirname).rfind("/")+1:] + "/" + filename_without_suffix + 
+                            #Now lets generate a LSF Job-File to be used by the Airbus Clusters
+                            lsf_input = open (str(Case_Dir + "/" + "job.lsf"),"wb")
+                            lsf_input.write("#!/bin/bash\n")
+                            lsf_input.write("export CCX_NPROC=" + str(self.params.GetInt("NumberCPUs")) + "\n")
+                            lsf_input.write("#BSUB -n "+ str(self.params.GetInt("NumberCPUs")) + "\n")
+                            lsf_input.write("#BSUB -W 10:00\n")
+                            lsf_input.write("#BSUB -o %J.out\n")
+                            lsf_input.write("#BSUB -e %J.err\n")
+                            lsf_input.write("#BSUB -J calculix\n")
+                            lsf_input.write("#BSUB -q loc_all_hiio\n")
+                            lsf_input.write(str("datadir=\"" + self.params.GetString("Linux Home Path") + "/" + self.dirname[str(self.dirname).rfind("/")+1:] + "/" + filename_without_suffix + "/" + filename_without_suffix + 
                             "_"+"x_rot"+ str(int(j))+
                             "_"+"y_rot"+ str(int(k))+
                             "_"+"z_rot"+ str(int(l))+
                             "_"+"z_l"+ str(int(i)) + "\"\n"))
-                            batch.write(str(self.lineEdit.text())+" -i final_fe_input > calculix_output.out\n")
-                            batch.write("cd ~\n")
+                            lsf_input.write("cd $datadir\n")
+                            lsf_input.write(self.params.GetString("Solver Link") + " -i final_fe_input\n")
+                            lsf_input.close()
+                            
+                            batch.write(str("cd \"" + self.params.GetString("Linux Home Path") + "/" + self.dirname[str(self.dirname).rfind("/")+1:] + "/" + filename_without_suffix + "/" + filename_without_suffix + 
+                            "_"+"x_rot"+ str(int(j))+
+                            "_"+"y_rot"+ str(int(k))+
+                            "_"+"z_rot"+ str(int(l))+
+                            "_"+"z_l"+ str(int(i)) + "\"\n"))
+                            batch.write("job.lsf\n")
                             l= l + z_rot_intervall
                         k = k + y_rot_intervall
                     j = j + x_rot_intervall
                 i = i+ z_offset_intervall
+        print "Ale Schleifen beendet"
+        batch.write("cd \"" + self.params.GetString("Linux Home Path") + "\"\n")
         batch.write("find \"" + str(self.dirname[str(self.dirname).rfind("/")+1:] + "/") + "\" -name \"sigini_output.txt\" -exec rm -f {} \;\n")
         batch.write("find \"" + str(self.dirname[str(self.dirname).rfind("/")+1:] + "/") + "\" -name \"*.out\" -exec rm -f {} \;\n")
+        batch.write("find \"" + str(self.dirname[str(self.dirname).rfind("/")+1:] + "/") + "\" -name \"*.err\" -exec rm -f {} \;\n")
         batch.write("find \"" + str(self.dirname[str(self.dirname).rfind("/")+1:] + "/") + "\" -name \"*.dat\" -exec rm -f {} \;\n")
         batch.write("find \"" + str(self.dirname[str(self.dirname).rfind("/")+1:] + "/") + "\" -name \"*.sta\" -exec rm -f {} \;\n")
         batch.write("tar cf \"" + str(self.dirname[str(self.dirname).rfind("/")+1:]  + ".tar\" \"" + str(self.dirname[str(self.dirname).rfind("/")+1:] + "/") + "\"\n"))
@@ -319,40 +350,70 @@ class MyForm(QtGui.QDialog,Ui_dialog):
 
         os.chdir("c:/")
         fnull = open(os.devnull, 'w')
-        commandline = "7z a -tzip -mx=0 -mmt=on \"" + str(self.dirname)[0:3] + str(self.dirname)[str(self.dirname).rfind("/")+1:] + ".zip\" \"" + str(self.dirname) + "\""
-        result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
+        #Generate the full zip name:
+        zipname = tempfile.gettempdir() + "/" + str(self.dirname)[str(self.dirname).rfind("/")+1:] + ".zip"
+        #Check if the zip file already exists. If yes, then we have to remove it
+        if os.path.exists(zipname):
+            try:
+                os.remove(zipname)
+            except Exception,e:
+                print e
         
+        #Zip the whole directory structure now and save the zip file in the temp folder for further processing
+        commandline = FreeCAD.getHomePath() + "bin/7z a -tzip -mx=0 " + "\"" + zipname + "\" " + "\"" + str(self.dirname) + "\""
+        result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
         #somehow we have to check for a false return code!
         if not result:
             shutil.rmtree(str(self.dirname))
             
         #Now send the zip file to the server for calculation
-        commandline = "pscp -r -l UN -pw PW " + "\"" + str(self.dirname)[0:3] + str(self.dirname)[str(self.dirname).rfind("/")+1:] + ".zip\" dynabox:/home/rmjzettl"
+        commandline = FreeCAD.getHomePath() + "bin/pscp -r -l "+ self.params.GetString("Linux User Name") + " -pw " + self.params.GetString("Linux Password") + " " + \
+        "\"" + zipname + "\" " + self.params.GetString("Servername") + ":" + self.params.GetString("Linux Home Path")
         result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
         #Now unzip, change into the directory and start the batch file
-        commandline = "plink -batch -l UN -pw PW dynabox unzip -o \'/home/rmjzettl/" + str(self.dirname)[str(self.dirname).rfind("/")+1:] + ".zip\'"
+        commandline = FreeCAD.getHomePath() + "bin/plink -batch -l "+ self.params.GetString("Linux User Name") + " -pw " + self.params.GetString("Linux Password") + " " + \
+        self.params.GetString("Servername") + " unzip -o \"" + self.params.GetString("Linux Home Path") + "/" + str(self.dirname)[str(self.dirname).rfind("/")+1:] + ".zip\""
+        print commandline
         result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
-        commandline = "plink -batch -l UN -pw PW dynabox chmod +x \'/home/rmjzettl/" + str(self.dirname[str(self.dirname).rfind("/")+1:] + "/") + "lcmt_CALCULIX_Calculation_batch.bat\'"
+        commandline = FreeCAD.getHomePath() + "bin/plink -batch -l "+ self.params.GetString("Linux User Name") + " -pw " + self.params.GetString("Linux Password") + " " + \
+        self.params.GetString("Servername") + " chmod +x -R \"" + self.params.GetString("Linux Home Path") + "/" + str(self.dirname)[str(self.dirname).rfind("/")+1:] + "\""
+        print commandline
         result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
-        commandline = "plink -batch -l UN -pw PW dynabox \'/home/rmjzettl/" + str(self.dirname[str(self.dirname).rfind("/")+1:] + "/") + "lcmt_CALCULIX_Calculation_batch.bat\'"
+        commandline = FreeCAD.getHomePath() + "bin/plink -batch -l "+ self.params.GetString("Linux User Name") + " -pw " + self.params.GetString("Linux Password") + " " + \
+        self.params.GetString("Servername") + " chmod +x -R \"" + self.params.GetString("Linux Home Path") + "/" + str(self.dirname)[str(self.dirname).rfind("/")+1:] + "\""
+        print commandline
         result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
-        commandline = "pscp -r -l UN -pw PW dynabox:\"/home/rmjzettl/"+ str(self.dirname)[str(self.dirname).rfind("/")+1:] + ".tar\" " + str(self.dirname)[0:3]
+        #Now we copy the batch file one level ahead as otherwise we cannot delete the calculation folder 
+        commandline = FreeCAD.getHomePath() + "bin/plink -batch -l "+ self.params.GetString("Linux User Name") + " -pw " + self.params.GetString("Linux Password") + " " + \
+        self.params.GetString("Servername") + " mv \"" + self.params.GetString("Linux Home Path") + "/" + str(self.dirname)[str(self.dirname).rfind("/")+1:] + "/lcmt_CALCULIX_Calculation_batch.bat\" " + self.params.GetString("Linux Home Path") 
+        print commandline
         result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
-        commandline = "plink -batch -l UN -pw PW dynabox rm -f \"/home/rmjzettl/"+ str(self.dirname)[str(self.dirname).rfind("/")+1:] + ".tar\""
-        result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
-        commandline = "plink -batch -l UN -pw PW dynabox rm -f \"/home/rmjzettl/"+ str(self.dirname)[str(self.dirname).rfind("/")+1:] + ".zip\""
-        result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
-        commandline = "7z x \"" + str(self.dirname)[0:3] + str(self.dirname)[str(self.dirname).rfind("/")+1:] + ".tar\" -o\"" + str(self.dirname[0:str(self.dirname).rfind("/")]) + "\""
-        result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
-        commandline = "del /Q \"" + str(self.dirname)[0:3] + str(self.dirname)[str(self.dirname).rfind("/")+1:] + ".tar\""
-        result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
-        commandline = "del /Q \"" + str(self.dirname)[0:3] + str(self.dirname)[str(self.dirname).rfind("/")+1:] + ".zip\""
-        result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
+        #commandline = "plink -batch -l UN -pw PW dynabox \'/home/rmjzettl/" + str(self.dirname[str(self.dirname).rfind("/")+1:] + "/") + "lcmt_CALCULIX_Calculation_batch.bat\'"
+        #result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
+        #commandline = "pscp -r -l UN -pw PW dynabox:\"/home/rmjzettl/"+ str(self.dirname)[str(self.dirname).rfind("/")+1:] + ".tar\" " + str(self.dirname)[0:3]
+        #result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
+        #commandline = "plink -batch -l UN -pw PW dynabox rm -f \"/home/rmjzettl/"+ str(self.dirname)[str(self.dirname).rfind("/")+1:] + ".tar\""
+        #result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
+        #commandline = "plink -batch -l UN -pw PW dynabox rm -f \"/home/rmjzettl/"+ str(self.dirname)[str(self.dirname).rfind("/")+1:] + ".zip\""
+        #result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
+        #commandline = "7z x \"" + str(self.dirname)[0:3] + str(self.dirname)[str(self.dirname).rfind("/")+1:] + ".tar\" -o\"" + str(self.dirname[0:str(self.dirname).rfind("/")]) + "\""
+        #result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
+        #commandline = "del /Q \"" + str(self.dirname)[0:3] + str(self.dirname)[str(self.dirname).rfind("/")+1:] + ".tar\""
+        #result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
+        #commandline = "del /Q \"" + str(self.dirname)[0:3] + str(self.dirname)[str(self.dirname).rfind("/")+1:] + ".zip\""
+        #result = subprocess.call(commandline, shell = True, stdout = fnull, stderr = fnull)
 
         fnull.close()
         #Reset the GUI
         os.chdir("c:/")
-        self.JobTable.clear()
+        #Reset the table to be fully empty
+        i = self.JobTable.rowCount()
+        while i > 0:
+            print i
+            self.JobTable.removeRow(i-1)
+            i = i-1
+
+        print "after"
         self.JobTable.setHorizontalHeaderLabels(
         ["Input File","Output Folder","Z-Offset From","Z-Offset To","Z-Intervall","X-Rot From","X-Rot To","X-Rot Intervall",
         "Y-Rot From","Y-Rot To","Y-Rot Intervall","Z-Rot From","Z-Rot To","Z-Rot Intervall","Young Modulus","Poisson Ratio",

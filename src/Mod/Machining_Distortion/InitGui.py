@@ -31,9 +31,12 @@ class MachiningDistortionWorkbench ( Workbench ):
     
     def Initialize(self):
         import MachiningDistortionCommands
-        CmdList = ["MachiningDistortion_ChooseFile","MachiningDistortion_ChooseDir","MachiningDistortion_ChooseParameter"]
+        import machdist_rc
+        CmdList = ["MachiningDistortion_StartGUI","MachiningDistortion_StartPostprocess"]
         self.appendToolbar("MachiningDistortionTools",CmdList)
         self.appendMenu("Machining Distortion",CmdList)
+        Gui.addPreferencePage(":/ui/userprefs-base.ui","Machining Distortion")
+
 
         Log ('Loading MachiningDistortion module... done\n')
     def Activated(self):
