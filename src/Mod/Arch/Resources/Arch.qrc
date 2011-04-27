@@ -5,6 +5,7 @@
         <file>icons/Arch_Cell.svg</file>
         <file>icons/Arch_Wall.svg</file>
         <file>icons/Arch_Site.svg</file>
+        <file>icons/Arch_Structure.svg</file>
         <file>icons/preferences-arch.svg</file>
     </qresource>
 </RCC> 
