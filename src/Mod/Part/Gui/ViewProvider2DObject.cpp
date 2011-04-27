@@ -128,7 +128,7 @@ SoSeparator* ViewProvider2DObject::createGrid(void)
     DefaultStyle->linePattern = 0x0f0f;
 
     SoMaterial* LightStyle = new SoMaterial;
-    LightStyle->transparency = 0.7;
+    LightStyle->transparency = 0.7f;
 
     if (GridStyle.getValue() == 0)
       parent->addChild(DefaultStyle);
@@ -196,8 +196,8 @@ void ViewProvider2DObject::onChanged(const App::Property* prop)
         else
             GridRoot->removeAllChildren();
     }
-    if ((prop == &GridSize) or (prop == &GridStyle)) {
-        if(ShowGrid.getValue()){
+    if ((prop == &GridSize) || (prop == &GridStyle)) {
+        if (ShowGrid.getValue()) {
             GridRoot->removeAllChildren();
             createGrid();
         }
