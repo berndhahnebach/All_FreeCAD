@@ -126,6 +126,7 @@ public:
     TopoDS_Shape cut(TopoDS_Shape) const;
     TopoDS_Shape common(TopoDS_Shape) const;
     TopoDS_Shape fuse(TopoDS_Shape) const;
+    TopoDS_Shape oldFuse(TopoDS_Shape) const;
     TopoDS_Shape section(TopoDS_Shape) const;
     std::list<TopoDS_Wire> slice(const Base::Vector3d&, double) const;
     TopoDS_Compound slices(const Base::Vector3d&, const std::vector<double>&) const;

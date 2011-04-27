@@ -71,6 +71,11 @@ This is a more detailed check as done in isValid().</UserDocu>
         <UserDocu>Union of this and a given topo shape.</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="oldFuse">
+      <Documentation>
+        <UserDocu>Union of this and a given topo shape (old algorithm).</UserDocu>
+      </Documentation>
+    </Methode>
     <Methode Name="common">
       <Documentation>
         <UserDocu>Intersection of this and a given topo shape.</UserDocu>
