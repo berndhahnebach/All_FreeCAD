@@ -29,6 +29,7 @@
 
 #include <iterator>
 #include <string>
+#include <cstddef>
 #include <ctime>
 #include <stdexcept>
 
