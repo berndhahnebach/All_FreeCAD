@@ -249,6 +249,10 @@ static QString getPlatform()
 void AboutDialog::setupLabels()
 {
     QString exeName = QString::fromAscii(App::Application::Config()["ExeName"].c_str());
+    std::map<std::string,std::string>& cfg = App::Application::Config();
+    std::map<std::string,std::string>::iterator it = cfg.find("WindowTitle");
+    if (it != cfg.end())
+        exeName = QString::fromUtf8(it->second.c_str());
     QString banner  = QString::fromUtf8(App::Application::Config()["ConsoleBanner"].c_str());
     banner = banner.left( banner.indexOf(QLatin1Char('\n')) );
     QString major  = QString::fromAscii(App::Application::Config()["BuildVersionMajor"].c_str());
