@@ -2042,6 +2042,7 @@ class Dimension(Creator):
                                 self.indices = []
                                 self.center = None
                                 self.arcmode = False
+                                self.point2 = None
                                 self.constraintrack = lineTracker(dotted=True)
                                 msg(translate("draft", "Pick first point:\n"))
                                 FreeCADGui.draftToolBar.draftWidget.setVisible(True)
@@ -2084,9 +2085,8 @@ class Dimension(Creator):
 	def action(self,arg):
 		"scene event handler"
 		if (arg["Type"] == "SoLocation2Event"): #mouse movement detection
-                        shift = None
-                        if self.arcmode:
-                                shift = arg["ShiftDown"]
+                        shift = arg["ShiftDown"]
+                        if self.arcmode or self.point2:
                                 arg["ShiftDown"] = False
 			point,ctrlPoint = getPoint(self,arg)
                         self.ui.cross(True)
@@ -2141,14 +2141,29 @@ class Dimension(Creator):
                                                         self.node = [cen.add(v1),cen.add(v2)]
                                                         self.arcmode = "diameter"
                                                 self.dimtrack.update(self.node)
+				# Draw constraint tracker line.
+				if shift and (not self.arcmode):
+                                        if len(self.node) == 2:
+                                                if not self.point2:
+                                                        self.point2 = self.node[1]
+                                                else:
+                                                        self.node[1] = self.point2
+                                                a=abs(point.sub(self.node[0]).getAngle(plane.u))
+                                                if (a > math.pi/4) and (a <= 0.75*math.pi):
+                                                        self.node[1] = Vector(self.node[0].x,self.node[1].y,self.node[0].z)
+                                                else:
+                                                        self.node[1] = Vector(self.node[1].x,self.node[0].y,self.node[0].z)
+                                        self.constraintrack.p1(point)
+                                        self.constraintrack.p2(ctrlPoint)
+                                        self.constraintrack.on()
+				else:
+                                        if self.point2:
+                                                self.node[1] = self.point2
+                                                self.point2 = None
+                                        self.constraintrack.off()
+                                # update the dimline
                                 if self.node and (not self.arcmode):
                                         self.dimtrack.update(self.node+[point]+[self.cont])
-				# Draw constraint tracker line.
-				if (arg["ShiftDown"]):
-					self.constraintrack.p1(point)
-					self.constraintrack.p2(ctrlPoint)
-					self.constraintrack.on()
-				else: self.constraintrack.off()
 		elif (arg["Type"] == "SoMouseButtonEvent"):
 			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
 				point,ctrlPoint = getPoint(self,arg)
@@ -2206,6 +2221,8 @@ class Dimension(Creator):
                                                 point = self.node[0].add(fcvec.project(point.sub(self.node[0]),self.dir))
 					self.node.append(point)
 				self.dimtrack.update(self.node)
+                                if (len(self.node) == 2):
+                                        self.point2 = self.node[1]
 				if (len(self.node) == 1):
 					self.dimtrack.on()
                                         self.planetrack.set(self.node[0])
