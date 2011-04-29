@@ -207,6 +207,11 @@ void MDIView::changeEvent(QEvent *e)
     }
 }
 
+#if defined(Q_WS_X11)
+// To fix bug #0000345 move function declaration to here
+extern void qt_x11_wait_for_window_manager( QWidget* w ); // defined in qwidget_x11.cpp
+#endif
+
 void MDIView::setCurrentViewMode(ViewMode mode)
 {
     switch (mode) {
@@ -246,7 +251,7 @@ void MDIView::setCurrentViewMode(ViewMode mode)
                         showNormal();
 
 #if defined(Q_WS_X11)
-                    extern void qt_x11_wait_for_window_manager( QWidget* w ); // defined in qwidget_x11.cpp
+                    //extern void qt_x11_wait_for_window_manager( QWidget* w ); // defined in qwidget_x11.cpp
                     qt_x11_wait_for_window_manager(this);
 #endif
                     activateWindow();

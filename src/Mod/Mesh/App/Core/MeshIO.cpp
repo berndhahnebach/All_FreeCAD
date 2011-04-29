@@ -1412,9 +1412,10 @@ bool MeshOutput::SaveBinarySTL (std::ostream &rstrOut) const
     while (clIter < clEnd) {
         pclFacet = &(*clIter);
         // normal
-        rstrOut.write((const char*)&(pclFacet->GetNormal().x), sizeof(float));
-        rstrOut.write((const char*)&(pclFacet->GetNormal().y), sizeof(float));
-        rstrOut.write((const char*)&(pclFacet->GetNormal().z), sizeof(float));
+        Base::Vector3f normal = pclFacet->GetNormal();
+        rstrOut.write((const char*)&(normal.x), sizeof(float));
+        rstrOut.write((const char*)&(normal.y), sizeof(float));
+        rstrOut.write((const char*)&(normal.z), sizeof(float));
 
         // vertices
         for (i = 0; i < 3; i++) {
