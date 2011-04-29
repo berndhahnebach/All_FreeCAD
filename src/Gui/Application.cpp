@@ -1345,14 +1345,20 @@ void messageHandlerSoQt(const SbString errmsg, SoQt::FatalErrors errcode, void *
 }
 #endif
 
+// To fix bug #0000345 move Q_INIT_RESOURCE() outside initApplication()
+static void init_resources()
+{
+    // init resources
+    Q_INIT_RESOURCE(resource);
+    Q_INIT_RESOURCE(translation);
+}
+
 void Application::initApplication(void)
 {
     try {
         initTypes();
         new Base::ScriptProducer( "FreeCADGuiInit", FreeCADGuiInit );
-        // add resources
-        Q_INIT_RESOURCE(resource);
-        Q_INIT_RESOURCE(translation);
+        init_resources();
         old_qtmsg_handler = qInstallMsgHandler(messageHandler);
     }
     catch (...) {
