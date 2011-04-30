@@ -80,7 +80,7 @@ void PropertyPointKernel::getFaces(std::vector<Base::Vector3d> &Points,
                                    std::vector<Data::ComplexGeoData::FacetTopo> &Topo,
                                    float Accuracy, uint16_t flags) const
 {
-    // no 3d triangulator implemented ==> do nothing
+    _cPoints->getFaces(Points, Topo, Accuracy, flags);
 }
 
 PyObject *PropertyPointKernel::getPyObject(void)
