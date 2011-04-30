@@ -158,6 +158,16 @@ void PointKernel::save(std::ostream& out) const
     //kernel.Write(out);
 }
 
+void PointKernel::getFaces(std::vector<Base::Vector3d> &Points,std::vector<FacetTopo> &Topo,
+                           float Accuracy, uint16_t flags) const
+{
+    unsigned long ctpoints = _Points.size();
+    Points.reserve(ctpoints);
+    for (unsigned long i=0; i<ctpoints; i++) {
+        Points.push_back(this->getPoint(i));
+    }
+}
+
 // ----------------------------------------------------------------------------
 
 PointKernel::const_point_iterator::const_point_iterator
