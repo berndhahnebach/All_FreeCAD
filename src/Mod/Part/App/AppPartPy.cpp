@@ -81,6 +81,7 @@
 #include <GeomFill_Pipe.hxx>
 #include <GeomFill_SectionGenerator.hxx>
 #include <NCollection_List.hxx>
+#include <BRepFill_Filling.hxx>
 
 #include <Base/Console.h>
 #include <Base/PyObjectBase.h>
@@ -323,6 +324,43 @@ makeCompound(PyObject *self, PyObject *args)
         }
 
         return new TopoShapeCompoundPy(new TopoShape(Comp));
+    } PY_CATCH;
+}
+
+static PyObject * makeFilledFace(PyObject *self, PyObject *args)
+{
+    PyObject *obj;
+    if (!PyArg_ParseTuple(args, "O!", &(PyList_Type), &obj))
+        return NULL;
+
+    PY_TRY {
+        BRepFill_Filling builder;
+        
+        try {
+            Py::List list(obj);
+            for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+                if (PyObject_TypeCheck((*it).ptr(), &(Part::TopoShapeEdgePy::Type))) {
+                    const TopoDS_Shape& sh = static_cast<TopoShapeEdgePy*>((*it).ptr())->
+                        getTopoShapePtr()->_Shape;
+                    if (!sh.IsNull())
+                        builder.Add(TopoDS::Edge(sh), GeomAbs_G1);
+                }
+            }
+
+            builder.Build();
+            if (builder.IsDone()) {
+                return new TopoShapeFacePy(new TopoShape(builder.Face()));
+            }
+            else {
+                PyErr_SetString(PyExc_Exception, "Failed to created face by filling edges");
+                return 0;
+            }
+        }
+        catch (Standard_Failure) {
+            Handle_Standard_Failure e = Standard_Failure::Caught();
+            PyErr_SetString(PyExc_Exception, e->GetMessageString());
+            return 0;
+        }
     } PY_CATCH;
 }
 
@@ -1395,6 +1433,9 @@ struct PyMethodDef Part_methods[] = {
 
     {"makeShell"  ,makeShell ,METH_VARARGS,
      "makeShell(list) -- Create a shell out of a list of faces."},
+
+    {"makeFilledFace"  ,makeFilledFace ,METH_VARARGS,
+     "makeFilledFace(list) -- Create a face out of a list of edges."},
 
     {"makeSolid"  ,makeSolid ,METH_VARARGS,
      "makeSolid(shape) -- Create a solid out of the shells inside a shape."},
