@@ -566,13 +566,14 @@ void PropertyLinkSubList::setPyObject(PyObject *value)
     }
     else if(Py::Object(value).isTuple()) {
         Py::Tuple tup(value);
-        DocumentObjectPy  *pcObject;
+        DocumentObjectPy *pcObject=0;
         std::string SubName;
         if (PyObject_TypeCheck(tup[0].ptr(), &(DocumentObjectPy::Type)))
             pcObject = static_cast<DocumentObjectPy*>(value);
         if (Py::Object(tup[1].ptr()).isString())
             SubName = Py::String(tup[1].ptr());
-        setValue(pcObject->getDocumentObjectPtr(),SubName.c_str());
+        if (pcObject)
+            setValue(pcObject->getDocumentObjectPtr(),SubName.c_str());
     }
     else {
         std::string error = std::string("type must be 'DocumentObject' or list of 'DocumentObject', not ");
