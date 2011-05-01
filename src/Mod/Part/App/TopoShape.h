@@ -118,6 +118,7 @@ public:
     //@{
     bool isNull() const;
     bool isValid() const;
+    bool analyze(std::ostream&) const;
     bool isClosed() const;
     //@}
 
@@ -152,7 +153,7 @@ public:
     TopoDS_Shape replaceShape(const std::vector< std::pair<TopoDS_Shape,TopoDS_Shape> >& s) const;
     TopoDS_Shape removeShape(const std::vector<TopoDS_Shape>& s) const;
     void sewShape();
-    bool fix();
+    bool fix(double, double, double);
     bool removeInternalWires(double);
     //@}
 
