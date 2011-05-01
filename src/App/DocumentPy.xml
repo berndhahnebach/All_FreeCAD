@@ -83,6 +83,12 @@
 			<UserDocu>Return the object with the given name</UserDocu>
 		</Documentation>
 	</Methode>
+	<Methode Name="getObjectsByLabel">
+		<Documentation>
+			<UserDocu>Return the objects with the given label name.
+NOTE: It's possible that several objects have the same label name.</UserDocu>
+		</Documentation>
+	</Methode>
 	<Methode Name="findObjects">
 		<Documentation>
 			<UserDocu>findObjects([string (type)], [string (name)]) -&gt; list

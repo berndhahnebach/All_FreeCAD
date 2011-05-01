@@ -231,10 +231,27 @@ PyObject*  DocumentPy::getObject(PyObject *args)
         return NULL;                             // NULL triggers exception 
 
     DocumentObject *pcFtr = getDocumentPtr()->getObject(sName);
-    if(pcFtr)
+    if (pcFtr)
         return pcFtr->getPyObject();
     else
         Py_Return;
+}
+
+PyObject*  DocumentPy::getObjectsByLabel(PyObject *args)
+{
+    char *sName;
+    if (!PyArg_ParseTuple(args, "s",&sName))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+
+    Py::List list;
+    std::string name = sName;
+    std::vector<DocumentObject*> objs = getDocumentPtr()->getObjects();
+    for (std::vector<DocumentObject*>::iterator it = objs.begin(); it != objs.end(); ++it) {
+        if (name == (*it)->Label.getValue())
+            list.append(Py::asObject((*it)->getPyObject()));
+    }
+
+    return Py::new_reference_to(list);
 }
 
 PyObject*  DocumentPy::findObjects(PyObject *args)
