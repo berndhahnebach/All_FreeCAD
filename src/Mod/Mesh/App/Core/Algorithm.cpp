@@ -1764,7 +1764,6 @@ void MeshRefPointToFacets::SearchNeighbours(MeshFacetArray::_TConstIterator f_it
     rclNb.push_back(f_it);
     f_it->SetFlag(MeshFacet::VISIT);
 
-    MeshPointArray::_TConstIterator p_beg = _rclMesh.GetPoints().begin();
     MeshFacetArray::_TConstIterator f_beg = _rclMesh.GetFacets().begin();
 
     for (int i = 0; i < 3; i++) {

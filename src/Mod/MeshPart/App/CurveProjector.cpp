@@ -308,7 +308,7 @@ void CurveProjectorSimple::projectCurve( const TopoDS_Edge& aEdge,
   Handle(Geom_Curve) hCurve = BRep_Tool::Curve(aEdge,fBegin,fEnd);
   float fLen   = float(fEnd - fBegin);
   
-  unsigned long ulNbOfPoints = 1000,PointCount=0,uCurFacetIdx;
+  unsigned long ulNbOfPoints = 1000,PointCount=0;
   
   MeshFacetIterator It(_Mesh);
 
@@ -338,7 +338,6 @@ void CurveProjectorSimple::projectCurve( const TopoDS_Edge& aEdge,
         Base::Console().Log("IDX %d\n",It.Position());
 
         if(bFirst){
-          uCurFacetIdx = It.Position();
           bFirst = false;
         }
 

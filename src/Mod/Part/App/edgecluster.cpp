@@ -174,13 +174,11 @@ bool Edgecluster::PerformEdges(gp_Pnt& point)
     if ( iter != m_vertices.end() )
     {
         tEdgeVector& nextEdges = iter->second;
-        bool somethingRemoved = false;
         for ( edgeIt = nextEdges.begin() ; edgeIt != nextEdges.end(); ++edgeIt )
         {
             if ( theEdge.IsSame(*edgeIt) )
             {
                 nextEdges.erase(edgeIt);
-                somethingRemoved = true;
                 break;
             }
         }

@@ -179,8 +179,7 @@ TaubinSmoothing::~TaubinSmoothing()
 void TaubinSmoothing::Smooth(unsigned int iterations)
 {
     const MeshCore::MeshPointArray& points = kernel.GetPoints();
-    MeshCore::MeshPointArray::_TConstIterator v_it,
-        v_beg = points.begin(), v_end = points.end();
+    MeshCore::MeshPointArray::_TConstIterator v_it;
     MeshCore::MeshRefPointToPoints vv_it(kernel);
     MeshCore::MeshRefPointToFacets vf_it(kernel);
 

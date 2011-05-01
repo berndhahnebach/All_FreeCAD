@@ -176,7 +176,6 @@ void DlgPrimitives::accept()
                 .arg(ui.comboBox1->currentText()), tr("No active document"));
             return;
         }
-        Base::Vector3f dir = ui.getDirection();
         if (ui.comboBox1->currentIndex() == 0) {         // plane
             name = QString::fromAscii(doc->getUniqueObjectName("Plane").c_str());
             cmd = QString::fromAscii(

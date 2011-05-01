@@ -1315,7 +1315,6 @@ void ViewProviderMesh::selectFacet(unsigned long facet)
 
     // Colorize the selection
     pcMatBinding->value = SoMaterialBinding::PER_FACE;
-    App::Color c = ShapeColor.getValue();
     int uCtFacets = (int)rMesh.countFacets();
 
     if (uCtFacets != pcShapeMaterial->diffuseColor.getNum()) {
@@ -1336,7 +1335,6 @@ void ViewProviderMesh::deselectFacet(unsigned long facet)
 
     // Colorize the selection
     pcMatBinding->value = SoMaterialBinding::PER_FACE;
-    App::Color c = ShapeColor.getValue();
     int uCtFacets = (int)rMesh.countFacets();
 
     if (uCtFacets != pcShapeMaterial->diffuseColor.getNum()) {

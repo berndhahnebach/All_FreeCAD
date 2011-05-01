@@ -518,9 +518,9 @@ int PythonDebugger::tracer_callback(PyObject *obj, PyFrameObject *frame, int wha
     if (dbg->d->trystop)
         PyErr_SetInterrupt();
     QCoreApplication::processEvents();
-    int no;
+    //int no;
 
-    no = frame->f_tstate->recursion_depth;
+    //no = frame->f_tstate->recursion_depth;
     //char* name = PyString_AsString(frame->f_code->co_name);
     QString file = QString::fromUtf8(PyString_AsString(frame->f_code->co_filename));
     switch (what) {
@@ -535,7 +535,7 @@ int PythonDebugger::tracer_callback(PyObject *obj, PyFrameObject *frame, int wha
         {
             //PyObject *str;
             //str = PyObject_Str(frame->f_code->co_filename);
-            no = frame->f_lineno;
+            //no = frame->f_lineno;
             int line = PyCode_Addr2Line(frame->f_code, frame->f_lasti);
             //if (str) {
             //    Base::Console().Message("PROFILING: %s:%d\n", PyString_AsString(str), frame->f_lineno);

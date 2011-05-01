@@ -491,8 +491,6 @@ bool MeshFixSingleFacet::Fixup ()
 //  MeshFacetArray& raFacets = _rclMesh._aclFacetArray;
   for ( std::vector<std::list<unsigned long> >::const_iterator it=_raclManifoldList.begin();it!=_raclManifoldList.end();++it )
   {
-    unsigned long uFInd1, uFInd2;
-    uFInd1 = uFInd2 = ULONG_MAX;
     for ( std::list<unsigned long>::const_iterator it2 = it->begin(); it2 != it->end(); ++it2 )
     {
       aulInvalids.push_back(*it2);

@@ -169,6 +169,7 @@ void Sketch::setUpSketch(const std::vector<Part::Geometry *> &geo, const std::ve
 
     // clear the optimize data structure
     PoPMap.clear();
+    (void)rtn;
 }
 
 // Geometry adding ==========================================================

@@ -226,7 +226,6 @@ void  CirclePy::setAxis(Py::Object arg)
         gp_Ax1 axis;
         axis.SetLocation(circle->Location());
         axis.SetDirection(gp_Dir(val.x, val.y, val.z));
-        gp_Dir dir = axis.Direction();
         circle->SetAxis(axis);
     }
     catch (Standard_Failure) {

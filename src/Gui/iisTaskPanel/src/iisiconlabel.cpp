@@ -99,7 +99,7 @@ void iisIconLabel::paintEvent ( QPaintEvent * event )
 		QColor text = myColor, textOver = myColorOver, textOff = myColorDisabled;
 		QFont fnt = myFont;
 		QPen focusPen = myPen;
-		bool underline = m_underlineOver, cursover = m_changeCursorOver;
+		bool underline = m_underlineOver/*, cursover = m_changeCursorOver*/;
 		if (mySchemePointer && *mySchemePointer) {
 			if (!text.isValid()) text = (*mySchemePointer)->text;
 			if (!textOver.isValid()) textOver = (*mySchemePointer)->textOver;
@@ -107,7 +107,7 @@ void iisIconLabel::paintEvent ( QPaintEvent * event )
 			if (!fnt.weight()) fnt = (*mySchemePointer)->font;
 			if (focusPen.style() == Qt::NoPen) focusPen = (*mySchemePointer)->focusPen;
 			underline = (*mySchemePointer)->underlineOver;
-			cursover = (*mySchemePointer)->cursorOver;
+			//cursover = (*mySchemePointer)->cursorOver;
 		}
 
 		p.setPen(isEnabled() ? m_over ? textOver : text : textOff);

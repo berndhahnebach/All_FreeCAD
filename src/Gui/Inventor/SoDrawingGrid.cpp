@@ -73,7 +73,7 @@ SoDrawingGrid::renderGrid(SoGLRenderAction *action)
     //const SbMatrix & projmatrix = (mat * SoViewingMatrixElement::get(state) *
     //                               SoProjectionMatrixElement::get(state));
     const SbViewportRegion & vp = SoViewportRegionElement::get(state);
-    SbVec2s vpsize = vp.getViewportSizePixels();
+    //SbVec2s vpsize = vp.getViewportSizePixels();
     float fRatio = vp.getViewportAspectRatio();
 
     //float width = vv.getWidth();
