@@ -26,9 +26,7 @@
 # include <sstream>
 # include <BRepMesh.hxx>
 # include <BRepBuilderAPI_Copy.hxx>
-# include <BRepCheck_Analyzer.hxx>
-# include <BRepCheck_ListIteratorOfListOfStatus.hxx>
-# include <BRepCheck_Result.hxx>
+# include <BRepBuilderAPI_Sewing.hxx>
 # include <BRepClass3d_SolidClassifier.hxx>
 # include <BRepFilletAPI_MakeFillet.hxx>
 # include <BRepOffsetAPI_MakePipe.hxx>
@@ -446,129 +444,10 @@ PyObject*  TopoShapePy::check(PyObject *args)
     if (!PyArg_ParseTuple(args, ""))
         return NULL;
     if (!getTopoShapePtr()->_Shape.IsNull()) {
-        BRepCheck_Analyzer aChecker(getTopoShapePtr()->_Shape);
-        if (!aChecker.IsValid()) {
-            TopoDS_Iterator it(getTopoShapePtr()->_Shape);
-            for (;it.More(); it.Next()) {
-                if (!aChecker.IsValid(it.Value())) {
-                    const Handle_BRepCheck_Result& result = aChecker.Result(it.Value());
-                    const BRepCheck_ListOfStatus& status = result->StatusOnShape(it.Value());
-
-                    BRepCheck_ListIteratorOfListOfStatus it(status);
-                    while (it.More()) {
-                        BRepCheck_Status& val = it.Value();
-                        switch (val)
-                        {
-                        case BRepCheck_NoError:
-                            PyErr_SetString(PyExc_StandardError, "No error");
-                            break;
-                        case BRepCheck_InvalidPointOnCurve:
-                            PyErr_SetString(PyExc_StandardError, "Invalid point on curve");
-                            break;
-                        case BRepCheck_InvalidPointOnCurveOnSurface:
-                            PyErr_SetString(PyExc_StandardError, "Invalid point on curve on surface");
-                            break;
-                        case BRepCheck_InvalidPointOnSurface:
-                            PyErr_SetString(PyExc_StandardError, "Invalid point on surface");
-                            break;
-                        case BRepCheck_No3DCurve:
-                            PyErr_SetString(PyExc_StandardError, "No 3D curve");
-                            break;
-                        case BRepCheck_Multiple3DCurve:
-                            PyErr_SetString(PyExc_StandardError, "Multiple 3D curve");
-                            break;
-                        case BRepCheck_Invalid3DCurve:
-                            PyErr_SetString(PyExc_StandardError, "Invalid 3D curve");
-                            break;
-                        case BRepCheck_NoCurveOnSurface:
-                            PyErr_SetString(PyExc_StandardError, "No curve on surface");
-                            break;
-                        case BRepCheck_InvalidCurveOnSurface:
-                            PyErr_SetString(PyExc_StandardError, "Invalid curve on surface");
-                            break;
-                        case BRepCheck_InvalidCurveOnClosedSurface:
-                            PyErr_SetString(PyExc_StandardError, "Invalid curve on closed surface");
-                            break;
-                        case BRepCheck_InvalidSameRangeFlag:
-                            PyErr_SetString(PyExc_StandardError, "Invalid same-range flag");
-                            break;
-                        case BRepCheck_InvalidSameParameterFlag:
-                            PyErr_SetString(PyExc_StandardError, "Invalid same-parameter flag");
-                            break;
-                        case BRepCheck_InvalidDegeneratedFlag:
-                            PyErr_SetString(PyExc_StandardError, "Invalid degenerated flag");
-                            break;
-                        case BRepCheck_FreeEdge:
-                            PyErr_SetString(PyExc_StandardError, "Free edge");
-                            break;
-                        case BRepCheck_InvalidMultiConnexity:
-                            PyErr_SetString(PyExc_StandardError, "Invalid multi-connexity");
-                            break;
-                        case BRepCheck_InvalidRange:
-                            PyErr_SetString(PyExc_StandardError, "Invalid range");
-                            break;
-                        case BRepCheck_EmptyWire:
-                            PyErr_SetString(PyExc_StandardError, "Empty wire");
-                            break;
-                        case BRepCheck_RedundantEdge:
-                            PyErr_SetString(PyExc_StandardError, "Redundant edge");
-                            break;
-                        case BRepCheck_SelfIntersectingWire:
-                            PyErr_SetString(PyExc_StandardError, "Self-intersecting wire");
-                            break;
-                        case BRepCheck_NoSurface:
-                            PyErr_SetString(PyExc_StandardError, "No surface");
-                            break;
-                        case BRepCheck_InvalidWire:
-                            PyErr_SetString(PyExc_StandardError, "Invalid wires");
-                            break;
-                        case BRepCheck_RedundantWire:
-                            PyErr_SetString(PyExc_StandardError, "Redundant wires");
-                            break;
-                        case BRepCheck_IntersectingWires:
-                            PyErr_SetString(PyExc_StandardError, "Intersecting wires");
-                            break;
-                        case BRepCheck_InvalidImbricationOfWires:
-                            PyErr_SetString(PyExc_StandardError, "Invalid imbrication of wires");
-                            break;
-                        case BRepCheck_EmptyShell:
-                            PyErr_SetString(PyExc_StandardError, "Empty shell");
-                            break;
-                        case BRepCheck_RedundantFace:
-                            PyErr_SetString(PyExc_StandardError, "Redundant face");
-                            break;
-                        case BRepCheck_UnorientableShape:
-                            PyErr_SetString(PyExc_StandardError, "Unorientable shape");
-                            break;
-                        case BRepCheck_NotClosed:
-                            PyErr_SetString(PyExc_StandardError, "Not closed");
-                            break;
-                        case BRepCheck_NotConnected:
-                            PyErr_SetString(PyExc_StandardError, "Not connected");
-                            break;
-                        case BRepCheck_SubshapeNotInShape:
-                            PyErr_SetString(PyExc_StandardError, "Sub-shape not in shape");
-                            break;
-                        case BRepCheck_BadOrientation:
-                            PyErr_SetString(PyExc_StandardError, "Bad orientation");
-                            break;
-                        case BRepCheck_BadOrientationOfSubshape:
-                            PyErr_SetString(PyExc_StandardError, "Bad orientation of sub-shape");
-                            break;
-                        case BRepCheck_InvalidToleranceValue:
-                            PyErr_SetString(PyExc_StandardError, "Invalid tolerance value");
-                            break;
-                        case BRepCheck_CheckFail:
-                            PyErr_SetString(PyExc_StandardError, "Check failed");
-                            break;
-                        }
-
-                        if (PyErr_Occurred())
-                            PyErr_Print();
-                        it.Next();
-                    }
-                }
-            }
+        std::stringstream str;
+        if (!getTopoShapePtr()->analyze(str)) {
+            PyErr_SetString(PyExc_StandardError, str.str().c_str());
+            PyErr_Print();
         }
     }
 
@@ -1090,6 +969,20 @@ PyObject*  TopoShapePy::isValid(PyObject *args)
         return NULL;
     try {
         return Py_BuildValue("O", (getTopoShapePtr()->isValid() ? Py_True : Py_False));
+    }
+    catch (...) {
+        PyErr_SetString(PyExc_RuntimeError, "check failed, shape may be empty");
+        return NULL;
+    }
+}
+
+PyObject*  TopoShapePy::fix(PyObject *args)
+{
+    double prec, mintol, maxtol;
+    if (!PyArg_ParseTuple(args, "ddd", &prec, &mintol, &maxtol))
+        return NULL;
+    try {
+        return Py_BuildValue("O", (getTopoShapePtr()->fix(prec, mintol, maxtol) ? Py_True : Py_False));
     }
     catch (...) {
         PyErr_SetString(PyExc_RuntimeError, "check failed, shape may be empty");

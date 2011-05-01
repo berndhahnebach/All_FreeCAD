@@ -216,6 +216,11 @@ As a result, this shape becomes null.</UserDocu>
         <UserDocu>Checks if the shape is valid, i.e. neither null, nor empty nor corrupted.</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="fix">
+      <Documentation>
+        <UserDocu>Tries t fix a broken shape. True is returned if the operation succeeded, False otherwise.</UserDocu>
+      </Documentation>
+    </Methode>
     <Methode Name="hashCode" Const="true">
       <Documentation>
         <UserDocu>This value is computed from the value of the underlying shape reference and the location.

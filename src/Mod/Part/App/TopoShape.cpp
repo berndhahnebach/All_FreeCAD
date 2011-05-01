@@ -46,6 +46,8 @@
 # include <BRepBuilderAPI_Copy.hxx>
 # include <BRepBuilderAPI_Transform.hxx>
 # include <BRepCheck_Analyzer.hxx>
+# include <BRepCheck_ListIteratorOfListOfStatus.hxx>
+# include <BRepCheck_Result.hxx>
 # include <BRepFilletAPI_MakeFillet.hxx>
 # include <BRepMesh.hxx>
 # include <BRepMesh_IncrementalMesh.hxx>
@@ -100,6 +102,7 @@
 # include <gp_GTrsf.hxx>
 # include <ShapeAnalysis_Shell.hxx>
 # include <ShapeBuild_ReShape.hxx>
+# include <ShapeFix_Edge.hxx>
 # include <ShapeFix_Face.hxx>
 # include <ShapeFix_Shell.hxx>
 # include <ShapeFix_Solid.hxx>
@@ -856,6 +859,180 @@ bool TopoShape::isValid() const
     return aChecker.IsValid() ? true : false;
 }
 
+bool TopoShape::analyze(std::ostream& str) const
+{
+    if (!this->_Shape.IsNull()) {
+        BRepCheck_Analyzer aChecker(this->_Shape);
+        if (!aChecker.IsValid()) {
+            std::vector<TopoDS_Shape> shapes;
+
+            TopTools_IndexedMapOfShape vertexOfShape;
+            TopExp::MapShapes(this->_Shape, TopAbs_VERTEX, vertexOfShape);
+            for (int i = 1; i <= vertexOfShape.Extent();++i)
+                shapes.push_back(vertexOfShape(i));
+
+            TopTools_IndexedMapOfShape edgeOfShape;
+            TopExp::MapShapes(this->_Shape, TopAbs_EDGE, edgeOfShape);
+            for (int i = 1; i <= edgeOfShape.Extent();++i)
+                shapes.push_back(edgeOfShape(i));
+
+            TopTools_IndexedMapOfShape wireOfShape;
+            TopExp::MapShapes(this->_Shape, TopAbs_WIRE, wireOfShape);
+            for (int i = 1; i <= wireOfShape.Extent();++i)
+                shapes.push_back(wireOfShape(i));
+
+            TopTools_IndexedMapOfShape faceOfShape;
+            TopExp::MapShapes(this->_Shape, TopAbs_FACE, faceOfShape);
+            for (int i = 1; i <= faceOfShape.Extent();++i)
+                shapes.push_back(faceOfShape(i));
+
+            TopTools_IndexedMapOfShape shellOfShape;
+            TopExp::MapShapes(this->_Shape, TopAbs_SHELL, shellOfShape);
+            for (int i = 1; i <= shellOfShape.Extent();++i)
+                shapes.push_back(shellOfShape(i));
+
+            TopTools_IndexedMapOfShape solidOfShape;
+            TopExp::MapShapes(this->_Shape, TopAbs_SOLID, solidOfShape);
+            for (int i = 1; i <= solidOfShape.Extent();++i)
+                shapes.push_back(solidOfShape(i));
+
+            TopTools_IndexedMapOfShape compOfShape;
+            TopExp::MapShapes(this->_Shape, TopAbs_COMPOUND, compOfShape);
+            for (int i = 1; i <= compOfShape.Extent();++i)
+                shapes.push_back(compOfShape(i));
+
+            TopTools_IndexedMapOfShape compsOfShape;
+            TopExp::MapShapes(this->_Shape, TopAbs_COMPSOLID, compsOfShape);
+            for (int i = 1; i <= compsOfShape.Extent();++i)
+                shapes.push_back(compsOfShape(i));
+
+            for (std::vector<TopoDS_Shape>::iterator xp = shapes.begin(); xp != shapes.end(); ++xp) {
+                if (!aChecker.IsValid(*xp)) {
+                    const Handle_BRepCheck_Result& result = aChecker.Result(*xp);
+                    if (result.IsNull())
+                        continue;
+                    const BRepCheck_ListOfStatus& status = result->StatusOnShape(*xp);
+
+                    BRepCheck_ListIteratorOfListOfStatus it(status);
+                    while (it.More()) {
+                        BRepCheck_Status& val = it.Value();
+                        switch (val)
+                        {
+                        case BRepCheck_NoError:
+                            break;
+                        case BRepCheck_InvalidPointOnCurve:
+                            str << "Invalid point on curve" << std::endl;
+                            break;
+                        case BRepCheck_InvalidPointOnCurveOnSurface:
+                            str << "Invalid point on curve on surface" << std::endl;
+                            break;
+                        case BRepCheck_InvalidPointOnSurface:
+                            str << "Invalid point on surface" << std::endl;
+                            break;
+                        case BRepCheck_No3DCurve:
+                            str << "No 3D curve" << std::endl;
+                            break;
+                        case BRepCheck_Multiple3DCurve:
+                            str << "Multiple 3D curve" << std::endl;
+                            break;
+                        case BRepCheck_Invalid3DCurve:
+                            str << "Invalid 3D curve" << std::endl;
+                            break;
+                        case BRepCheck_NoCurveOnSurface:
+                            str << "No curve on surface" << std::endl;
+                            break;
+                        case BRepCheck_InvalidCurveOnSurface:
+                            str << "Invalid curve on surface" << std::endl;
+                            break;
+                        case BRepCheck_InvalidCurveOnClosedSurface:
+                            str << "Invalid curve on closed surface" << std::endl;
+                            break;
+                        case BRepCheck_InvalidSameRangeFlag:
+                            str << "Invalid same-range flag" << std::endl;
+                            break;
+                        case BRepCheck_InvalidSameParameterFlag:
+                            str << "Invalid same-parameter flag" << std::endl;
+                            break;
+                        case BRepCheck_InvalidDegeneratedFlag:
+                            str << "Invalid degenerated flag" << std::endl;
+                            break;
+                        case BRepCheck_FreeEdge:
+                            str << "Free edge" << std::endl;
+                            break;
+                        case BRepCheck_InvalidMultiConnexity:
+                            str << "Invalid multi-connexity" << std::endl;
+                            break;
+                        case BRepCheck_InvalidRange:
+                            str << "Invalid range" << std::endl;
+                            break;
+                        case BRepCheck_EmptyWire:
+                            str << "Empty wire" << std::endl;
+                            break;
+                        case BRepCheck_RedundantEdge:
+                            str << "Redundant edge" << std::endl;
+                            break;
+                        case BRepCheck_SelfIntersectingWire:
+                            str << "Self-intersecting wire" << std::endl;
+                            break;
+                        case BRepCheck_NoSurface:
+                            str << "No surface" << std::endl;
+                            break;
+                        case BRepCheck_InvalidWire:
+                            str << "Invalid wires" << std::endl;
+                            break;
+                        case BRepCheck_RedundantWire:
+                            str << "Redundant wires" << std::endl;
+                            break;
+                        case BRepCheck_IntersectingWires:
+                            str << "Intersecting wires" << std::endl;
+                            break;
+                        case BRepCheck_InvalidImbricationOfWires:
+                            str << "Invalid imbrication of wires" << std::endl;
+                            break;
+                        case BRepCheck_EmptyShell:
+                            str << "Empty shell" << std::endl;
+                            break;
+                        case BRepCheck_RedundantFace:
+                            str << "Redundant face" << std::endl;
+                            break;
+                        case BRepCheck_UnorientableShape:
+                            str << "Unorientable shape" << std::endl;
+                            break;
+                        case BRepCheck_NotClosed:
+                            str << "Not closed" << std::endl;
+                            break;
+                        case BRepCheck_NotConnected:
+                            str << "Not connected" << std::endl;
+                            break;
+                        case BRepCheck_SubshapeNotInShape:
+                            str << "Sub-shape not in shape" << std::endl;
+                            break;
+                        case BRepCheck_BadOrientation:
+                            str << "Bad orientation" << std::endl;
+                            break;
+                        case BRepCheck_BadOrientationOfSubshape:
+                            str << "Bad orientation of sub-shape" << std::endl;
+                            break;
+                        case BRepCheck_InvalidToleranceValue:
+                            str << "Invalid tolerance value" << std::endl;
+                            break;
+                        case BRepCheck_CheckFail:
+                            str << "Check failed" << std::endl;
+                            break;
+                        }
+
+                        it.Next();
+                    }
+                }
+            }
+
+            return false; // errors detected
+        }
+    }
+
+    return true;
+}
+
 bool TopoShape::isClosed() const
 {
     return BRep_Tool::IsClosed(this->_Shape) ? true : false;
@@ -1088,45 +1265,60 @@ void TopoShape::sewShape()
 {
     //ShapeFix_Shape fixer(this->_Shape);
     //fixer.Perform();
-
     BRepBuilderAPI_Sewing sew;
-    sew.Add(this->_Shape/*fixer.Shape()*/);
+    sew.Load(this->_Shape/*fixer.Shape()*/);
     sew.Perform();
 
     //shape = ShapeUpgrade_ShellSewing().ApplySewing(shape);
     this->_Shape = sew.SewedShape();
+
+//#if 0
+    //if (!this->_Shape.IsNull() && this->_Shape.ShapeType() == TopAbs_SOLID) {
+        Standard_Integer count = sew.NbFreeEdges();
+        if (count > 0)
+            std::cerr << "Number of free edges " << count << std::endl;
+    //}
+//#endif
 }
 
-bool TopoShape::fix()
+bool TopoShape::fix(double precision, double mintol, double maxtol)
 {
-    bool ret = false;
     if (this->_Shape.IsNull())
         return false;
+
     TopAbs_ShapeEnum type = this->_Shape.ShapeType();
+
+    ShapeFix_Shape fix(this->_Shape);
+    fix.SetPrecision(precision);
+    fix.SetMaxTolerance(mintol);
+    fix.SetMaxTolerance(maxtol);
+
+    fix.Perform();
+
     if (type == TopAbs_SOLID) {
-        ShapeFix_Solid fix(TopoDS::Solid(this->_Shape));
-        ret = fix.Perform() ? true : false;
-        this->_Shape = fix.Shape();
+        //fix.FixEdgeTool();
+        fix.FixWireTool()->Perform();
+        fix.FixFaceTool()->Perform();
+        fix.FixShellTool()->Perform();
+        fix.FixSolidTool()->Perform();
+        this->_Shape = fix.FixSolidTool()->Shape();
     }
     else if (type == TopAbs_SHELL) {
-        //ShapeAnalysis_Shell eval;
-        //eval.LoadShells(this->_Shape);
-        ShapeFix_Shell fix(TopoDS::Shell(this->_Shape));
-        ret = fix.Perform() ? true : false;
-        this->_Shape = fix.Shape();
+        fix.FixWireTool()->Perform();
+        fix.FixFaceTool()->Perform();
+        fix.FixShellTool()->Perform();
+        this->_Shape = fix.FixShellTool()->Shape();
     }
     else if (type == TopAbs_FACE) {
-        ShapeFix_Face fix(TopoDS::Face(this->_Shape));
-        ret = fix.Perform() ? true : false;
-        this->_Shape = fix.Result();
+        fix.FixWireTool()->Perform();
+        fix.FixFaceTool()->Perform();
+        this->_Shape = fix.Shape();
     }
     else {
-        ShapeFix_Shape fix(this->_Shape);
-        ret = fix.Perform() ? true : false;
         this->_Shape = fix.Shape();
     }
 
-    return ret;
+    return isValid();
 }
 
 bool TopoShape::removeInternalWires(double minArea)

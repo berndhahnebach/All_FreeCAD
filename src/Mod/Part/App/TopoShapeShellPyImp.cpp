@@ -28,11 +28,13 @@
 # include <BRepCheck_Analyzer.hxx>
 # include <TopoDS_Shell.hxx>
 # include <ShapeUpgrade_ShellSewing.hxx>
+# include <ShapeAnalysis_Shell.hxx>
 #endif
 
 #include <Base/VectorPy.h>
 
 #include "TopoShape.h"
+#include "TopoShapeCompoundPy.h"
 #include "TopoShapeCompSolidPy.h"
 #include "TopoShapeFacePy.h"
 #include "TopoShapeShellPy.h"
@@ -134,6 +136,26 @@ PyObject*  TopoShapeShellPy::add(PyObject *args)
     }
 
     Py_Return;
+}
+
+PyObject*  TopoShapeShellPy::getFreeEdges(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+    ShapeAnalysis_Shell as;
+    as.LoadShells(getTopoShapePtr()->_Shape);
+    TopoDS_Compound comp = as.FreeEdges();
+    return new TopoShapeCompoundPy(new TopoShape(comp));
+}
+
+PyObject*  TopoShapeShellPy::getBadEdges(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return NULL;
+    ShapeAnalysis_Shell as;
+    as.LoadShells(getTopoShapePtr()->_Shape);
+    TopoDS_Compound comp = as.BadEdges();
+    return new TopoShapeCompoundPy(new TopoShape(comp));
 }
 
 PyObject *TopoShapeShellPy::getCustomAttributes(const char* /*attr*/) const
