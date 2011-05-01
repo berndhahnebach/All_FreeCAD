@@ -136,7 +136,7 @@ void EditorView::OnChange(Base::Subject<const char*> &rCaller,const char* rcReas
 {
     ParameterGrp::handle hPrefGrp = getWindowParameter();
     if (strcmp(rcReason, "EnableLineNumber") == 0) {
-        bool show = hPrefGrp->GetBool( "EnableLineNumber", true );
+        //bool show = hPrefGrp->GetBool( "EnableLineNumber", true );
     }
 }
 

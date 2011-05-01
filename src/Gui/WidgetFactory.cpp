@@ -685,15 +685,13 @@ SignalConnect::~SignalConnect()
  */
 void SignalConnect::onExecute()
 {
-    int arg;
     PyObject *arglist;
     PyObject *result;
-
-    arg = 123;
 
     /* Time to call the callback */
     arglist = Py_BuildValue("(O)", myResource);
     result = PyEval_CallObject(myCallback, arglist);
+    (void)result;
     Py_DECREF(arglist);
 }
 

@@ -603,7 +603,6 @@ void TopoShape::exportLineSet(std::ostream& str) const
     {
         const TopoDS_Edge& aEdge = TopoDS::Edge(M(i+1));
         gp_Trsf myTransf;
-        Standard_Boolean identity = true;
         TopLoc_Location aLoc;
 
         // try to triangulate the edge
@@ -615,7 +614,6 @@ void TopoShape::exportLineSet(std::ostream& str) const
         // triangulation succeeded?
         if (!aPoly.IsNull()) {
             if (!aLoc.IsIdentity()) {
-                identity = false;
                 myTransf = aLoc.Transformation();
             }
             nbNodesInFace = aPoly->NbNodes();
@@ -640,7 +638,6 @@ void TopoShape::exportLineSet(std::ostream& str) const
             // take the face's triangulation instead
             Handle(Poly_Triangulation) aPolyTria = BRep_Tool::Triangulation(aFace,aLoc);
             if (!aLoc.IsIdentity()) {
-                identity = false;
                 myTransf = aLoc.Transformation();
             }
 

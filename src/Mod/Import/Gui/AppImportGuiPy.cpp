@@ -99,7 +99,7 @@ static PyObject * importer(PyObject *self, PyObject *args)
             PyErr_SetString(PyExc_Exception, "no supported file format");
         }
 
-        TDF_Label anAccess = hDoc->GetData()->Root();
+        //TDF_Label anAccess = hDoc->GetData()->Root();
         // collect sequence of labels to display
         Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool (hDoc->Main());
         Handle_XCAFDoc_ColorTool hColors = XCAFDoc_DocumentTool::ColorTool(hDoc->Main());

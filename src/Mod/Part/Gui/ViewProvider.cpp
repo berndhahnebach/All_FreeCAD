@@ -473,7 +473,6 @@ Standard_Boolean ViewProviderPart::computeEdges(SoGroup* EdgeRoot, const TopoDS_
 
         // getting the transformation of the shape/face
         gp_Trsf myTransf;
-        Standard_Boolean identity = true;
         TopLoc_Location aLoc;
 
         // try to triangulate the edge
@@ -485,7 +484,6 @@ Standard_Boolean ViewProviderPart::computeEdges(SoGroup* EdgeRoot, const TopoDS_
         // triangulation succeeded?
         if (!aPoly.IsNull()) {
             if (!aLoc.IsIdentity()) {
-                identity = false;
                 myTransf = aLoc.Transformation();
             }
             // take the edge's triangulation
@@ -513,7 +511,6 @@ Standard_Boolean ViewProviderPart::computeEdges(SoGroup* EdgeRoot, const TopoDS_
             // take the face's triangulation instead
             Handle(Poly_Triangulation) aPolyTria = BRep_Tool::Triangulation(aFace,aLoc);
             if (!aLoc.IsIdentity()) {
-                identity = false;
                 myTransf = aLoc.Transformation();
             }
 
@@ -975,7 +972,6 @@ void ViewProviderPart::showControlPointsOfFace(const TopoDS_Face& face)
     std::list<gp_Pnt> knots;
     std::vector<std::vector<gp_Pnt> > poles;
     Standard_Integer nCtU=0, nCtV=0;
-    Standard_Integer nKnU=0, nKnV=0;
     BRepAdaptor_Surface surface(face); 
 
     BRepAdaptor_Surface clSurface(face); 
@@ -1005,8 +1001,8 @@ void ViewProviderPart::showControlPointsOfFace(const TopoDS_Face& face)
                     poles[u-1][v-1] = hBSpline->Pole(u, v);
             }
 
-            nKnU = hBSpline->NbUKnots();
-            nKnV = hBSpline->NbVKnots();
+            //Standard_Integer nKnU = hBSpline->NbUKnots();
+            //Standard_Integer nKnV = hBSpline->NbVKnots();
             for (Standard_Integer u = 1; u <= hBSpline->NbUKnots(); u++) {
                 for (Standard_Integer v = 1; v <= hBSpline->NbVKnots(); v++)
                     knots.push_back(hBSpline->Value(hBSpline->UKnot(u), hBSpline->VKnot(v)));

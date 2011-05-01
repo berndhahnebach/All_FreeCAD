@@ -604,11 +604,9 @@ void MeshKernel::RemoveInvalids ()
 {
     std::vector<unsigned long> aulDecrements;
     std::vector<unsigned long>::iterator pDIter;
-    unsigned long ulDec, i, k, ulSteps;
+    unsigned long ulDec, i, k;
     MeshPointArray::_TIterator pPIter, pPEnd;
     MeshFacetArray::_TIterator pFIter, pFEnd;
-
-    ulSteps = 0;
 
     // generate array of decrements
     aulDecrements.resize(_aclPointArray.size());

@@ -183,8 +183,8 @@ private:
 
 void SoFCVectorizeU3DActionP::printText(const SoVectorizeText * item) const
 {
-    SbVec2f mul = publ->getRotatedViewportSize();
-    SbVec2f add = publ->getRotatedViewportStartpos();
+    //SbVec2f mul = publ->getRotatedViewportSize();
+    //SbVec2f add = publ->getRotatedViewportStartpos();
     //float posx = item->pos[0]*mul[0]+add[0];
     //float posy = item->pos[1]*mul[1]+add[1];
 
@@ -341,17 +341,17 @@ void SoFCVectorizeU3DAction::printViewport(void) const
 
 void SoFCVectorizeU3DAction::printBackground(void) const
 {
-    SbVec2f mul = getRotatedViewportSize();
-    SbVec2f add = getRotatedViewportStartpos();
+    //SbVec2f mul = getRotatedViewportSize();
+    //SbVec2f add = getRotatedViewportStartpos();
 
-    float x[2],y[2];
-    x[0] = add[0];
-    x[1] = mul[0] - add[0];
-    y[0] = add[1];
-    y[1] = mul[1] - add[1];
+    //float x[2],y[2];
+    //x[0] = add[0];
+    //x[1] = mul[0] - add[0];
+    //y[0] = add[1];
+    //y[1] = mul[1] - add[1];
 
-    SbColor bg;
-    (void)this->getBackgroundColor(bg);
+    //SbColor bg;
+    //(void)this->getBackgroundColor(bg);
     //uint32_t cc = bg.getPackedValue();
 
     //std::ostream& str = this->getU3DOutput()->getFileStream();

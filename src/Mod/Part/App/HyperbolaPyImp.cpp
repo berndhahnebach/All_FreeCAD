@@ -254,7 +254,6 @@ void HyperbolaPy::setAxis(Py::Object arg)
         gp_Ax1 axis;
         axis.SetLocation(this_curv->Location());
         axis.SetDirection(gp_Dir(dir_x, dir_y, dir_z));
-        gp_Dir dir = axis.Direction();
         this_curv->SetAxis(axis);
     }
     catch (Standard_Failure) {

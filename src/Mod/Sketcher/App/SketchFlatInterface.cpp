@@ -267,7 +267,7 @@ std::string SketchFlatInterface::getGeo(void)
 {
 	for(int i = 0; i<SK->entities; ++i)
 	{
-		SketchEntity e=SK->entity[i];
+		//SketchEntity e=SK->entity[i];
 
 
 	}

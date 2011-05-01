@@ -1343,7 +1343,7 @@ bool MeshOutput::SaveAsciiSTL (std::ostream &rstrOut) const
 {
     MeshFacetIterator clIter(_rclMesh), clEnd(_rclMesh);  
     const MeshGeomFacet *pclFacet;
-    unsigned long i, ulCtFacet;
+    unsigned long i;
 
     if (!rstrOut || rstrOut.bad() == true || _rclMesh.CountFacets() == 0)
         return false;
@@ -1356,7 +1356,6 @@ bool MeshOutput::SaveAsciiSTL (std::ostream &rstrOut) const
 
     clIter.Begin();
     clEnd.End();
-    ulCtFacet = 0;
     while (clIter < clEnd) {
         pclFacet = &(*clIter);
       
@@ -1390,7 +1389,7 @@ bool MeshOutput::SaveBinarySTL (std::ostream &rstrOut) const
 {
     MeshFacetIterator clIter(_rclMesh), clEnd(_rclMesh);  
     const MeshGeomFacet *pclFacet;
-    uint32_t i, ulCtFacet;
+    uint32_t i;
     uint16_t usAtt;
     char szInfo[81];
 
@@ -1408,7 +1407,6 @@ bool MeshOutput::SaveBinarySTL (std::ostream &rstrOut) const
     usAtt = 0;
     clIter.Begin();
     clEnd.End();
-    ulCtFacet = 0;
     while (clIter < clEnd) {
         pclFacet = &(*clIter);
         // normal
@@ -1624,7 +1622,7 @@ bool MeshOutput::SaveInventor (std::ostream &rstrOut) const
     MeshFacetIterator clIter(_rclMesh), clEnd(_rclMesh);
     MeshPointIterator clPtIter(_rclMesh), clPtEnd(_rclMesh);
     const MeshGeomFacet* pclFacet;
-    unsigned long ulCtFacet, ulAllFacets = _rclMesh.CountFacets();
+    unsigned long ulAllFacets = _rclMesh.CountFacets();
 
     Base::SequencerLauncher seq("Saving...", _rclMesh.CountFacets() + 1);
     rstrOut.precision(6);
@@ -1645,7 +1643,6 @@ bool MeshOutput::SaveInventor (std::ostream &rstrOut) const
 
     clIter.Begin();
     clEnd.End();
-    ulCtFacet = 0;
 
     pclFacet = &(*clIter);
     rstrOut << pclFacet->GetNormal().x << "  "
@@ -1672,7 +1669,6 @@ bool MeshOutput::SaveInventor (std::ostream &rstrOut) const
 
     clPtIter.Begin();
     clPtEnd.End();
-    ulCtFacet = 0;
 
     rstrOut << clPtIter->x << "  "
             << clPtIter->y << "  "
