@@ -1271,14 +1271,6 @@ void TopoShape::sewShape()
 
     //shape = ShapeUpgrade_ShellSewing().ApplySewing(shape);
     this->_Shape = sew.SewedShape();
-
-//#if 0
-    //if (!this->_Shape.IsNull() && this->_Shape.ShapeType() == TopAbs_SOLID) {
-        Standard_Integer count = sew.NbFreeEdges();
-        if (count > 0)
-            std::cerr << "Number of free edges " << count << std::endl;
-    //}
-//#endif
 }
 
 bool TopoShape::fix(double precision, double mintol, double maxtol)
