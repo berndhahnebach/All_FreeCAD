@@ -90,11 +90,11 @@ int Part::ImportStepParts(App::Document *pcDoc, const char* Name)
 
     if (!fi.isReadable()) {
         Base::Console().Log("ImportStep() not able to open %s!\n",Name);
-        throw Base::Exception("Cannot open file Step file");
+        throw Base::Exception("Cannot open STEP file");
     }
 
     if (aReader.ReadFile((Standard_CString)Name) != IFSelect_RetDone) {
-        throw Base::Exception("Cannot open file Step file");
+        throw Base::Exception("Cannot open STEP file");
     }
 
     Handle_Message_ProgressIndicator pi = new ProgressIndicator(100);
