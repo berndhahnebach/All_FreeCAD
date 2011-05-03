@@ -1366,6 +1366,8 @@ void TopoShape::getFaces(std::vector<Base::Vector3d> &aPoints,
                          float accuracy, uint16_t flags) const
 {
 #if 1
+    if (this->_Shape.IsNull())
+        return;
     std::set<Vertex> vertices;
     Standard_Real x1, y1, z1;
     Standard_Real x2, y2, z2;

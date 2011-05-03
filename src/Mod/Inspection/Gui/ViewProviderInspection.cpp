@@ -243,6 +243,11 @@ void ViewProviderInspection::updateData(const App::Property* prop)
         }
     }
     else if (prop->getTypeId() == App::PropertyFloatList::getClassTypeId()) {
+        // force an update of the Inventor data nodes
+        if (this->pcObject) {
+            App::Property* link = this->pcObject->getPropertyByName("Actual");
+            if (link) updateData(link);
+        }
         setDistances();
     }
     else if (prop->getTypeId() == App::PropertyFloat::getClassTypeId()) {
