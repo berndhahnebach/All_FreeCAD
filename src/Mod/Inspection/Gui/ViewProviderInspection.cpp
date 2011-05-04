@@ -63,12 +63,16 @@ using namespace InspectionGui;
 
 
 bool ViewProviderInspection::addflag = false;
+App::PropertyFloatConstraint::Constraints ViewProviderInspection::floatRange = {1.0f,64.0f,1.0f};
 
 PROPERTY_SOURCE(InspectionGui::ViewProviderInspection, Gui::ViewProviderDocumentObject)
 
 ViewProviderInspection::ViewProviderInspection() : search_radius(FLT_MAX)
 {
     ADD_PROPERTY_TYPE(OutsideGrayed,(false),"",(App::PropertyType) (App::Prop_Output|App::Prop_Hidden),"");
+    ADD_PROPERTY_TYPE(PointSize,(1.0f),"Display",(App::PropertyType) (App::Prop_None/*App::Prop_Hidden*/),"");
+    PointSize.setConstraints(&floatRange);
+
     pcColorRoot = new SoSeparator();
     pcColorRoot->ref();
     pcMatBinding = new SoMaterialBinding;
@@ -86,6 +90,11 @@ ViewProviderInspection::ViewProviderInspection() : search_radius(FLT_MAX)
     pcColorBar->setRange( -0.1f, 0.1f, 3 );
     pcLinkRoot = new SoGroup;
     pcLinkRoot->ref();
+
+    pcPointStyle = new SoDrawStyle();
+    pcPointStyle->ref();
+    pcPointStyle->style = SoDrawStyle::POINTS;
+    pcPointStyle->pointSize = PointSize.getValue();
 }
 
 ViewProviderInspection::~ViewProviderInspection()
@@ -97,6 +106,7 @@ ViewProviderInspection::~ViewProviderInspection()
     pcColorBar->Detach(this);
     pcColorBar->unref();
     pcLinkRoot->unref();
+    pcPointStyle->unref();
 }
 
 void ViewProviderInspection::onChanged(const App::Property* prop)
@@ -106,6 +116,9 @@ void ViewProviderInspection::onChanged(const App::Property* prop)
             pcColorBar->setOutsideGrayed(OutsideGrayed.getValue());
             pcColorBar->Notify(0);
         }
+    }
+    else if ( prop == &PointSize ) {
+        pcPointStyle->pointSize = PointSize.getValue();
     }
     else {
         inherited::onChanged(prop);
@@ -237,6 +250,7 @@ void ViewProviderInspection::updateData(const App::Property* prop)
                     face->coordIndex.finishEditing();
                 }
                 else {
+                    this->pcLinkRoot->addChild(this->pcPointStyle);
                     this->pcLinkRoot->addChild(new SoPointSet());
                 }
             }
