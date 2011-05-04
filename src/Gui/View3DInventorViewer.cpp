@@ -1286,6 +1286,20 @@ void View3DInventorViewer::setCameraOrientation(const SbRotation& rot)
     navigation->setCameraOrientation(rot);
 }
 
+void View3DInventorViewer::setCameraType(SoType t)
+{
+    inherited::setCameraType(t);
+    if (t.isDerivedFrom(SoPerspectiveCamera::getClassTypeId())) {
+        // When doing a viewAll() for an orthographic camera and switching
+        // to perspective the scene looks completely srange because of the
+        // heightAngle. Setting it to 45 deg also causes an issue with a too
+        // close camera but we don't have this other ugly effect.
+        SoCamera* cam = this->getCamera();
+        if (cam == 0) return;
+        static_cast<SoPerspectiveCamera*>(cam)->heightAngle = (float)(M_PI / 4.0);
+    }
+}
+
 void View3DInventorViewer::moveCameraTo(const SbRotation& rot, const SbVec3f& pos, int steps, int ms)
 {
     SoCamera* cam = this->getCamera();

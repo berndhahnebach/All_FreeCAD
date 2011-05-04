@@ -486,6 +486,7 @@ void Application::importFrom(const char* FileName, const char* DocName, const ch
             else {
                 Command::doCommand(Command::App, "%s.insert(\"%s\",\"%s\")"
                                                , Module, File.filePath().c_str(), DocName);
+                Command::doCommand(Command::Gui, "Gui.SendMsgToActiveView(\"ViewFit\")");
                 if (getDocument(DocName))
                     getDocument(DocName)->setModified(true);
             }
