@@ -56,6 +56,7 @@ public:
     virtual ~ViewProviderInspection();
 
     App::PropertyBool OutsideGrayed;
+    App::PropertyFloatConstraint PointSize;
 
     void attach(App::DocumentObject *pcFeat);
     /// Sets the viewing mode
@@ -87,12 +88,14 @@ protected:
     SoGroup          * pcLinkRoot;
     Gui::SoFCColorBar* pcColorBar;
     SoDrawStyle      * pcColorStyle;
+    SoDrawStyle      * pcPointStyle;
     SoSeparator      * pcColorRoot;
     SoCoordinate3    * pcCoords;
 
 private:
     float search_radius;
     static bool addflag;
+    static App::PropertyFloatConstraint::Constraints floatRange;
 };
 
 class ViewProviderInspectionGroup : public Gui::ViewProviderDocumentObjectGroup
