@@ -28,5 +28,8 @@ EXTRA_DIST = \
 		Resources/icons/preferences-arch.svg \
 		Resources/icons/Arch_Building.svg \
         Resources/icons/Arch_Cell.svg \
-        Resources/icons/Arch_Wall.svg \
-        Resources/icons/Arch_Component.svg
+        Resources/icons/Arch_Floor.svg \
+        Resources/icons/Arch_Site.svg \
+        Resources/icons/Arch_Structure.svg \
+        Resources/icons/Arch_Wall.svg
+
