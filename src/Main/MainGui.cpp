@@ -222,7 +222,7 @@ std::string ProgramOptions::err;
 
 int main( int argc, char ** argv )
 {
-#if defined(FC_OS_LINUX)
+#if defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN) || defined(FC_OS_MACOSX) || defined(FC_OS_BSD)
     // Make sure to setup the Qt locale system before setting LANG and LC_ALL to C.
     // which is needed to use the system locale settings.
     (void)QLocale::system();
