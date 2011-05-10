@@ -131,6 +131,7 @@ void AppPartExport initPart()
     Part::PropertyFilletEdges   ::init();
 
     Part::Feature               ::init();
+    Part::FeatureExt            ::init();
     Part::FeaturePython         ::init();
     Part::FeatureGeometrySet    ::init();
     Part::CustomFeature         ::init();

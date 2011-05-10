@@ -70,6 +70,19 @@ protected:
 
 typedef App::FeaturePythonT<Feature> FeaturePython;
 
+
+/** Base class of all shape feature classes in FreeCAD
+ */
+class AppPartExport FeatureExt : public Feature
+{
+    PROPERTY_HEADER(Part::FeatureExt);
+
+public:
+    const char* getViewProviderName(void) const {
+        return "PartGui::ViewProviderPartExt";
+    }
+};
+
 } //namespace Part
 
 

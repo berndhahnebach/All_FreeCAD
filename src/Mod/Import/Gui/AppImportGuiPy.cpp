@@ -61,6 +61,10 @@ static PyObject * importer(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "ss",&Name,&DocName))
         return 0;
 
+    ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath
+        ("User parameter:BaseApp/Preferences/Mod/Import");
+    bool bUseFast = hGrp->GetBool("UseFastRendering",false);
+
     PY_TRY {
         //Base::Console().Log("Insert in Part with %s",Name);
         Base::FileInfo file(Name);
@@ -113,7 +117,11 @@ static PyObject * importer(PyObject *self, PyObject *args)
             const TDF_Label& label = shapeLabels.Value(i);
             TopoDS_Shape shape;
             if (aShapeTool->GetShape(label, shape) && !shape.IsNull()) {
-                Part::Feature* part = static_cast<Part::Feature*>(pcDoc->addObject("Part::Feature", "Shape"));
+                Part::Feature* part;
+                if(bUseFast)
+                    part = static_cast<Part::Feature*>(pcDoc->addObject("Part::FeatureExt", "Shape"));
+                else
+                    part = static_cast<Part::Feature*>(pcDoc->addObject("Part::Feature", "Shape"));
                 part->Shape.setValue(shape);
                 tagPart[label.Tag()] = part;
             }
