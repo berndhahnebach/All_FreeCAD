@@ -133,6 +133,10 @@ const char* Feature::getViewProviderName(void) const {
 
 // ---------------------------------------------------------
 
+PROPERTY_SOURCE(Part::FeatureExt, Part::Feature)
+
+
+
 namespace App {
 /// @cond DOXERR
 PROPERTY_SOURCE_TEMPLATE(Part::FeaturePython, Part::Feature)
