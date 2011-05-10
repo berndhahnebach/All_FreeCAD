@@ -1,5 +1,7 @@
 #SUBDIRS=Pivy
+if HAVE_OPENCASCADE
 SUBDIRS=salomesmesh
+endif
 
 EXTRA_DIST = \
 		CMakeLists.txt \
