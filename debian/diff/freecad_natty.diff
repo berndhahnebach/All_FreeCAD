@@ -823,7 +823,7 @@
 + libopencascade-modeling-dev, libopencascade-ocaf-dev, 
 + libopencascade-visualization-dev, python-cxx-dev, libswscale-dev, 
 + libzipios++-dev, swig, gfortran, libqtwebkit-dev
-+Standards-Version: 3.9.0
++Standards-Version: 3.9.1
 +
 +Package: freecad
 +Architecture: any
