@@ -84,7 +84,12 @@ void Thumbnail::SaveDocFile (Base::Writer &writer) const
     if (!this->viewer)
         return;
     QImage img;
-    this->viewer->savePicture(this->size, this->size, View3DInventorViewer::Current, img);
+    try {
+        this->viewer->savePicture(this->size, this->size, View3DInventorViewer::Current, img);
+    }
+    catch (...) {
+        return; // offscreen rendering failed
+    }
 
     QPixmap px = Gui::BitmapFactory().pixmap(App::Application::Config()["AppIcon"].c_str());
     px = BitmapFactory().merge(QPixmap::fromImage(img),px,BitmapFactoryInst::BottomRight);
