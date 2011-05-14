@@ -111,6 +111,32 @@ class UnknownControl(VersionControl):
     def printInfo(self):
         print "Unknown version control"
 
+class DebianChangelog(VersionControl):
+    def extractInfo(self, srcdir):
+        # Do not overwrite existing file with almost useless information
+        if os.path.exists(srcdir+"/src/Build/Version.h"):
+            return False
+        try:
+            f = open(srcdir+"/debian/changelog")
+        except:
+            return False
+        c = f.readline()
+        f.close()
+        r=re.search("bzr(\\d+)",c)
+        if r != None:
+            self.rev = r.groups()[0] + " (Launchpad)"
+            self.range = self.rev
+        
+        t = time.localtime()
+        self.url = "https://code.launchpad.net/~vcs-imports/freecad/trunk"
+        #self.time = time.asctime()
+        self.date = ("%d/%02d/%02d %02d:%02d:%02d") % (t.tm_year, t.tm_mon, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec)
+        self.time = ("%d/%02d/%02d %02d:%02d:%02d") % (t.tm_year, t.tm_mon, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec)
+        return True
+
+    def printInfo(self):
+        print "debian/changelog"
+
 class BazaarControl(VersionControl):
     def extractInfo(self, srcdir):
         info=os.popen("bzr log -l 1 %s" % (srcdir)).read()
@@ -221,7 +247,7 @@ def main():
         if o in ("-b", "--bindir"):
             bindir = a
 
-    vcs=[Subversion(), BazaarControl(), GitControl(), MercurialControl(), UnknownControl()]
+    vcs=[Subversion(), BazaarControl(), GitControl(), MercurialControl(), DebianChangelog(), UnknownControl()]
     for i in vcs:
         if i.extractInfo(srcdir):
             # Open the template file and the version file
