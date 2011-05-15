@@ -12,6 +12,7 @@ BUILT_SOURCES=\
 		moc_DlgActivateWindowImp.cpp \
 		moc_DlgCommandsImp.cpp \
 		moc_DlgCustomizeImp.cpp \
+		moc_DlgCustomizeSpaceball.cpp \
 		moc_DlgDisplayPropertiesImp.cpp \
 		moc_DlgEditorImp.cpp \
 		moc_DlgGeneralImp.cpp \
@@ -198,6 +199,8 @@ libFreeCADGui_la_SOURCES=\
 		DlgCommandsImp.h \
 		DlgCustomizeImp.cpp \
 		DlgCustomizeImp.h \
+		DlgCustomizeSpaceball.cpp \
+		DlgCustomizeSpaceball.h \
 		DlgDisplayPropertiesImp.cpp \
 		DlgDisplayPropertiesImp.h \
 		DlgEditorImp.cpp \
