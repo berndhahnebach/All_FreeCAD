@@ -119,6 +119,7 @@
 #include <QStylePainter>
 #include <QSyntaxHighlighter>
 #include <qtabbar.h>
+#include <QTableView>
 #include <qtabwidget.h>
 #include <QTextBrowser>
 #include <QTextDocument>

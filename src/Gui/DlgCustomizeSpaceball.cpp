@@ -28,11 +28,11 @@
 #include <QLabel>
 #include <QSplitter>
 #include <QPushButton>
-#include <QTableView>
 #include <QHeaderView>
 #include <QPrintDialog>
 #include <QPrinter>
 #include <QPainter>
+#include <QTableView>
 #endif
 
 #include "Base/Console.h"
@@ -88,7 +88,7 @@ int ButtonModel::rowCount (const QModelIndex &parent) const
 QVariant ButtonModel::data (const QModelIndex &index, int role) const
 {
     GroupVector groupVector = spaceballButtonGroup()->GetGroups();
-    if (index.row() >= groupVector.size())
+    if (index.row() >= (int)groupVector.size())
     {
         Base::Console().Log("index error in ButtonModel::data\n");
         return QVariant();
@@ -538,6 +538,8 @@ QVariant PrintModel::headerData(int section, Qt::Orientation orientation, int ro
         return QVariant(tr("Button"));
     if (section == 1)
         return QVariant(tr("Command"));
+    else
+        return QVariant();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
