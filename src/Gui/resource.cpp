@@ -44,6 +44,7 @@
 #include "DlgActionsImp.h"
 #include "DlgCommandsImp.h"
 #include "DlgKeyboardImp.h"
+#include "DlgCustomizeSpaceball.h"
 
 using namespace Gui;
 using namespace Gui::Dialog;
@@ -74,6 +75,7 @@ WidgetFactorySupplier::WidgetFactorySupplier()
     new CustomPageProducer<DlgCustomToolbarsImp>;
   //new CustomPageProducer<DlgCustomToolBoxbarsImp>;
     new CustomPageProducer<DlgCustomActionsImp>;
+    new CustomPageProducer<DlgCustomizeSpaceball>;
 
     // ADD YOUR PREFERENCE WIDGETS HERE
     //

@@ -59,16 +59,20 @@ namespace Spaceball
     {
     public:
         ButtonEvent();
+        ButtonEvent(const ButtonEvent& in);
         ButtonStateType buttonStatus();
         void setButtonStatus(const ButtonStateType &buttonStatusIn);
         int buttonNumber();
         void setButtonNumber(const int &buttonNumberIn);
+        bool isHandled(){return handled;}
+        void setHandled(bool in){handled = in;}
 
         static int ButtonEventType;
 
     private:
         ButtonStateType buttonState;
         int button;
+        bool handled;
     };
 }
 #endif // SPACEBALLEVENT_H

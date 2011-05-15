@@ -38,6 +38,7 @@ namespace Gui
         GUIApplicationNativeEventAware(int &argc, char *argv[]);
         ~GUIApplicationNativeEventAware();
         void initSpaceball(QMainWindow *window);
+        bool processSpaceballEvent(QObject *object, QEvent *event);
 #ifdef Q_WS_X11
         bool x11EventFilter(XEvent *event);
 #endif
@@ -45,6 +46,10 @@ namespace Gui
 #ifdef Q_WS_WIN
         bool winEventFilter(MSG *msg, long *result);
 #endif
+        bool isSpaceballPresent(){return spaceballPresent;}
+    private:
+        bool spaceballPresent;
+        QMainWindow *mainWindow;
     };
 }
 #endif // GUIAPPLICATIONNATIVEEVENTAWARE_H

@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/icons" >
+    <qresource prefix="/icons">
         <file>freecadsplash.png</file>
         <file>mouse_pointer.png</file>
         <file>delete.png</file>
@@ -73,5 +73,6 @@
         <file>Tree_Annotation.svg</file>
         <file>Tree_Dimension.svg</file>
         <file>Tree_Python.svg</file>
+        <file>spaceball_button.svg</file>
     </qresource>
 </RCC>
