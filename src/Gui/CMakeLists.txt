@@ -83,6 +83,7 @@ set(Gui_MOC_HDRS
     DlgActivateWindowImp.h
     DlgCommandsImp.h
     DlgCustomizeImp.h
+    DlgCustomizeSpaceball.h
     DlgDisplayPropertiesImp.h
     DlgEditorImp.h
     DlgGeneralImp.h
@@ -308,6 +309,7 @@ SET(Dialog_Customize_CPP_SRCS
     DlgActionsImp.cpp
     DlgCommandsImp.cpp
     DlgCustomizeImp.cpp
+    DlgCustomizeSpaceball.cpp
     DlgKeyboardImp.cpp
     DlgToolbarsImp.cpp
 )
@@ -315,6 +317,7 @@ SET(Dialog_Customize_HPP_SRCS
     DlgActionsImp.h
     DlgCommandsImp.h
     DlgCustomizeImp.h
+    DlgCustomizeSpaceball.h
     DlgKeyboardImp.h
     DlgToolbarsImp.h
 )

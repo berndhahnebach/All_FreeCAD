@@ -46,9 +46,9 @@
 
 
 Gui::GUIApplicationNativeEventAware::GUIApplicationNativeEventAware(int &argc, char *argv[]) :
-        QApplication (argc, argv)
+        QApplication (argc, argv), spaceballPresent(false)
 {
-
+    mainWindow = 0;
 }
 
 Gui::GUIApplicationNativeEventAware::~GUIApplicationNativeEventAware()
@@ -63,15 +63,34 @@ Gui::GUIApplicationNativeEventAware::~GUIApplicationNativeEventAware()
 
 void Gui::GUIApplicationNativeEventAware::initSpaceball(QMainWindow *window)
 {
+    mainWindow = window;
 #ifdef SPNAV_FOUND
     if (spnav_x11_open(QX11Info::display(), window->winId()) == -1)
         Base::Console().Log("Couldn't connect to spacenav daemon\n");
     else
+    {
         Base::Console().Log("Connected to spacenav daemon\n");
+        spaceballPresent = true;
+    }
 #endif
 
     Spaceball::MotionEvent::MotionEventType = QEvent::registerEventType();
     Spaceball::ButtonEvent::ButtonEventType = QEvent::registerEventType();
+}
+
+bool Gui::GUIApplicationNativeEventAware::processSpaceballEvent(QObject *object, QEvent *event)
+{
+    Spaceball::ButtonEvent *ballEvent = dynamic_cast<Spaceball::ButtonEvent *>(event);
+    if (!ballEvent)
+        return true;
+    QApplication::notify(object, ballEvent);
+    if (!ballEvent->isHandled())
+    {
+        //make a new event and post to parent.
+        Spaceball::ButtonEvent *newEvent = new Spaceball::ButtonEvent(*ballEvent);
+        postEvent(object->parent(), newEvent);
+    }
+    return true;
 }
 
 #ifdef Q_WS_X11
@@ -83,6 +102,8 @@ bool Gui::GUIApplicationNativeEventAware::x11EventFilter(XEvent *event)
         return false;
 
     QWidget *currentWidget = this->focusWidget();
+    if (!currentWidget)
+        currentWidget = mainWindow;
 
     if (navEvent.type == SPNAV_EVENT_MOTION)
     {

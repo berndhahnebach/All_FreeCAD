@@ -102,6 +102,8 @@
 #include "MergeDocuments.h"
 #include "ViewProviderExtern.h"
 
+#include "SpaceballEvent.h"
+
 #if defined(Q_OS_WIN32)
 #define slots
 #include <private/qmainwindowlayout_p.h>
@@ -570,6 +572,28 @@ bool MainWindow::event(QEvent *e)
             Action* action = about->getAction();
             if (action) action->setIcon(QApplication::windowIcon());
         }
+    }
+    else if (e->type() == Spaceball::ButtonEvent::ButtonEventType) {
+        Spaceball::ButtonEvent *buttonEvent = dynamic_cast<Spaceball::ButtonEvent *>(e);
+        if (!buttonEvent)
+            return true;
+        buttonEvent->setHandled(true);
+        //only going to respond to button press events.
+        if (buttonEvent->buttonStatus() != Spaceball::BUTTON_PRESSED)
+            return true;
+        ParameterGrp::handle group = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->
+                GetGroup("Spaceball")->GetGroup("Buttons");
+        QByteArray groupName(QVariant(buttonEvent->buttonNumber()).toByteArray());
+        if (group->HasGroup(groupName.data())) {
+            ParameterGrp::handle commandGroup = group->GetGroup(groupName.data());
+            std::string commandName(commandGroup->GetASCII("Command"));
+            if (commandName.empty())
+                return true;
+            else
+                Application::Instance->commandManager().runCommandByName(commandName.c_str());
+        }
+        else
+            return true;
     }
     return QMainWindow::event(e);
 }

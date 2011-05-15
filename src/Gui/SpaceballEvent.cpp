@@ -63,8 +63,15 @@ void MotionEvent::setRotations(const int &xRotIn, const int &yRotIn, const int &
 
 
 ButtonEvent::ButtonEvent() : QInputEvent(static_cast<QEvent::Type>(ButtonEventType)),
-    buttonState(BUTTON_NONE), button(0)
+    buttonState(BUTTON_NONE), button(0), handled(false)
 {
+}
+
+ButtonEvent::ButtonEvent(const ButtonEvent& in) : QInputEvent(static_cast<QEvent::Type>(ButtonEventType))
+{
+    buttonState = in.buttonState;
+    button = in.button;
+    handled = in.handled;
 }
 
 ButtonStateType ButtonEvent::buttonStatus()

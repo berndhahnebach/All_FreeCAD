@@ -76,6 +76,7 @@
 #include "PythonDebugger.h"
 #include "View3DPy.h"
 #include "DlgOnlineHelpImp.h"
+#include "SpaceballEvent.h"
 
 #include "View3DInventor.h"
 #include "ViewProvider.h"
@@ -1423,7 +1424,10 @@ public:
                 (int)event->type());
         }
         try {
-            return QApplication::notify(receiver, event);
+            if (event->type() == Spaceball::ButtonEvent::ButtonEventType)
+                return processSpaceballEvent(receiver, event);
+            else
+                return QApplication::notify(receiver, event);
         }
         catch (const Base::Exception& e) {
             Base::Console().Error("Unhandled Base::Exception caught in GUIApplication::notify.\n"
