@@ -66,6 +66,7 @@ EXTRA_DIST = \
 		applications-accessories.svg \
 		accessories-text-editor.svg \
 		help-browser.svg \
+		spaceball_button.svg \
 		view-unselectable.svg \
 		view-refresh.svg \
 		view-measurement.svg \
