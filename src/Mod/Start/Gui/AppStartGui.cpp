@@ -61,7 +61,7 @@ void StartGuiExport initStartGui()
 
     // load dependent module
     try {
-        Base::Interpreter().loadModule("WebGui");
+        Base::Interpreter().runString("import WebGui");
     }
     catch(const Base::Exception& e) {
         PyErr_SetString(PyExc_ImportError, e.what());

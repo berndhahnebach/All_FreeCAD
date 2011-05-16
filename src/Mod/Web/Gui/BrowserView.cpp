@@ -44,6 +44,7 @@
 # include <QTextCodec>
 # include <QTextStream>
 # include <QTimer>
+# include <QFileInfo>
 #endif
 
 #include "BrowserView.h"
@@ -72,6 +73,8 @@ BrowserView::BrowserView(QWidget* parent)
     WebView = new QWebView(this);
     setCentralWidget(WebView);
 
+    WebView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+
     connect(WebView, SIGNAL(loadStarted()),
             this, SLOT(onLoadStarted()));
     connect(WebView, SIGNAL(loadProgress(int)),
@@ -90,13 +93,29 @@ BrowserView::~BrowserView()
 
 void BrowserView::onLinkClicked (const QUrl & url) 
 {
-    //QString path = url.path();
-    //path;
+    QString scheme   = url.scheme();
+    QString host     = url.host();
+    QString path     = url.path();
+    QString fragment = url.	fragment();
+
+    if(scheme==QString::fromLatin1("http"))
+        load(url);
+
+    // run scripts if not from somewhere else!
+    if(scheme.isEmpty() && host.isEmpty()){
+        QFileInfo fi(path);
+        QString ext = fi.completeSuffix();
+    }
 }
 
 void BrowserView::load(const char* URL)
 {
     QUrl url = QUrl(QString::fromUtf8(URL));
+    load(url);
+}
+
+void BrowserView::load(const QUrl & url)
+{
     WebView->load(url);
     WebView->setUrl(url);
     setWindowTitle(url.host());
