@@ -234,7 +234,32 @@ Gui::MenuItem* Workbench::setupMenuBar() const
           << "Part_Cone"
           << "Part_Torus"
           << "Part_Primitives";
+
+    Gui::MenuItem* PartDesign = new Gui::MenuItem();
+    PartDesign->setCommand("Part design");
+
+    *PartDesign   << "Sketcher_NewSketch"
+                  << "Separator" 
+                  << "Sketcher_CreateArc"
+                  << "Sketcher_CreateCircle"
+                  << "Sketcher_CreateLine"
+                  << "Sketcher_CreatePolyline"
+                  << "Sketcher_CreateRectangle"
+                  << "Separator" 
+                  << "Sketcher_ConstrainCoincident"
+                  << "Sketcher_ConstrainVertical"
+                  << "Sketcher_ConstrainHorizontal"
+                  << "Sketcher_ConstrainDistance"
+                  << "Sketcher_ConstrainParallel"
+                  << "Separator" 
+                  << "PartDesign_Pad" 
+                  << "PartDesign_Pocket"
+                  << "PartDesign_Fillet"
+                  << "PartDesign_Chamfer";
+
+
     *part << para
+          << PartDesign
           << "Part_ShapeFromMesh"
           << "Part_MakeSolid"
           << "Part_ReverseShape"
@@ -248,38 +273,6 @@ Gui::MenuItem* Workbench::setupMenuBar() const
           << "Separator"
           << "Part_ShapeInfo";
 
-#   ifdef COMPLETE_SHOW_SKETCHER
-    if (mgr.getCommandByName("Sketcher_NewSketch")) {
-        Gui::MenuItem* sketch = new Gui::MenuItem(menuBar);
-        sketch->setCommand("Ske&tch");
-        Gui::MenuItem* geom = new Gui::MenuItem();
-        geom->setCommand("Sketcher geoms");
-        *geom /*<< "Sketcher_CreatePoint"*/
-              << "Sketcher_CreateArc"
-              << "Sketcher_CreateCircle"
-              << "Sketcher_CreateLine"
-              << "Sketcher_CreatePolyline"
-              << "Sketcher_CreateRectangle"
-              /*<< "Sketcher_CreateText"*/
-              /*<< "Sketcher_CreateDraftLine"*/;
-        Gui::MenuItem* cons = new Gui::MenuItem();
-        cons->setCommand("Sketcher constraints");
-        *cons << "Sketcher_ConstrainLock"
-              << "Sketcher_ConstrainCoincident"
-              << "Sketcher_ConstrainVertical"
-              << "Sketcher_ConstrainHorizontal"
-              << "Sketcher_ConstrainDistance"
-              << "Sketcher_ConstrainParallel";
-        *sketch 
-            << "Sketcher_NewSketch"
-            << geom
-            << cons
-            << "Separator" 
-            << "PartDesign_Pad" 
-            << "PartDesign_Fillet"
-        ;
-    }
-#   endif
 
     // Drawing ****************************************************************************************************
 
@@ -429,7 +422,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 
     // Part Design
     Gui::ToolBarItem* part_design = new Gui::ToolBarItem( root );
-    part_design->setCommand("Part design");
+    part_design->setCommand("Part");
     *part_design
         << "Part_Box"
         << "Part_Cylinder"
@@ -452,19 +445,27 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     ;
 
     // Sketch based
-
-#   ifdef COMPLETE_SHOW_SKETCHER
-    if (mgr.getCommandByName("Sketcher_NewSketch")) {
         Gui::ToolBarItem* sketch_based = new Gui::ToolBarItem( root );
         sketch_based->setCommand("Sketch based");
-        *sketch_based 
-            << "Sketcher_NewSketch"
-            << "Separator"
-            << "PartDesign_Pad"
-            << "PartDesign_Fillet"
-        ;
-    }
-#   endif 
+       *sketch_based   << "Sketcher_NewSketch"
+                  << "Separator" 
+                  << "Sketcher_CreateArc"
+                  << "Sketcher_CreateCircle"
+                  << "Sketcher_CreateLine"
+                  << "Sketcher_CreatePolyline"
+                  << "Sketcher_CreateRectangle"
+                  << "Separator" 
+                  << "Sketcher_ConstrainCoincident"
+                  << "Sketcher_ConstrainVertical"
+                  << "Sketcher_ConstrainHorizontal"
+                  << "Sketcher_ConstrainDistance"
+                  << "Sketcher_ConstrainParallel"
+                  << "Separator" 
+                  << "PartDesign_Pad" 
+                  << "PartDesign_Pocket"
+                  << "PartDesign_Fillet"
+                  << "PartDesign_Chamfer";
+
 
     // Drawing
     Gui::ToolBarItem* drawing = new Gui::ToolBarItem( root );
