@@ -48,6 +48,7 @@ public:
     ~BrowserView();
 
     void load(const char* URL);
+    void load(const QUrl & url);
 
     void OnChange(Base::Subject<const char*> &rCaller,const char* rcReason);
 

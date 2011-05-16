@@ -27,9 +27,16 @@ SET(StartGui_SRCS
     Workbench.h
 )
 
+SET(StartPage_Resources
+    StartPage/StartPage.html
+    StartPage/Banner.jpeg
+    StartPage/PartDesign.py
+)
+
 add_library(StartGui SHARED ${StartGui_SRCS})
 target_link_libraries(StartGui ${StartGui_LIBS})
 fc_copy_script("Mod/Start" "StartGui" InitGui.py)
+fc_copy_script("Mod/Start" "StartGui" ${StartPage_Resources})
 
 if(MSVC)
     set_target_properties(StartGui PROPERTIES SUFFIX ".pyd")
