@@ -544,7 +544,9 @@ QVariant PrintModel::headerData(int section, Qt::Orientation orientation, int ro
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-DlgCustomizeSpaceball::DlgCustomizeSpaceball(QWidget *parent) : CustomizeActionPage(parent)
+DlgCustomizeSpaceball::DlgCustomizeSpaceball(QWidget *parent)
+  : CustomizeActionPage(parent), buttonView(0), buttonModel(0),
+    commandView(0), commandModel(0), clearButton(0), printReference(0)
 {
     this->setWindowTitle(tr("Spaceball"));
     GUIApplicationNativeEventAware *app = qobject_cast<GUIApplicationNativeEventAware *>(QApplication::instance());
@@ -678,17 +680,21 @@ void DlgCustomizeSpaceball::hideEvent(QHideEvent *event)
     //having a crash with the last item of the macro command list
     //being selected and that macro is removed from the macro tab. Hopefully
     //clearing the selection will cure the problem.
-    buttonView->selectionModel()->clear();
-    commandView->selectionModel()->clear();
-    commandView->collapseAll();
-    commandView->setEnabled(false);
+    if (buttonView)
+        buttonView->selectionModel()->clear();
+    if (commandView) {
+        commandView->selectionModel()->clear();
+        commandView->collapseAll();
+        commandView->setEnabled(false);
+    }
 
     CustomizeActionPage::hideEvent(event);
 }
 
 void DlgCustomizeSpaceball::showEvent (QShowEvent *event)
 {
-    buttonView->setFocus();
+    if (buttonView)
+        buttonView->setFocus();
 
     CustomizeActionPage::showEvent(event);
 }
@@ -706,15 +712,18 @@ void DlgCustomizeSpaceball::changeEvent(QEvent *e)
 void DlgCustomizeSpaceball::onAddMacroAction(const QByteArray &macroName)
 {
     //need to get the new macro to model.
-    commandModel->goAddMacro(macroName);
+    if (commandModel)
+        commandModel->goAddMacro(macroName);
 }
 
 void DlgCustomizeSpaceball::onRemoveMacroAction(const QByteArray &macroName)
 {
     //need to remove macro from model.
-    commandModel->goRemoveMacro(macroName);
+    if (commandModel)
+        commandModel->goRemoveMacro(macroName);
     //need to change any button mapped to macro to an empty string.
-    buttonModel->goMacroRemoved(macroName);
+    if (buttonModel)
+        buttonModel->goMacroRemoved(macroName);
 }
 
 void DlgCustomizeSpaceball::onModifyMacroAction(const QByteArray &macroName)
