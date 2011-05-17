@@ -1361,6 +1361,57 @@ void View3DInventorViewer::viewAll()
     //navigation->viewAll();
 }
 
+void View3DInventorViewer::viewAll(float factor)
+{
+    SoCamera * cam = this->getCamera();
+    if (!cam) return;
+    if (factor <= 0.0f) return;
+
+    if (factor != 1.0f) {
+        SoSearchAction sa;
+        sa.setType(SoSkipBoundingGroup::getClassTypeId());
+        sa.setInterest(SoSearchAction::ALL);
+        sa.apply(this->getSceneGraph());
+        const SoPathList & pathlist = sa.getPaths();
+        for (int i = 0; i < pathlist.getLength(); i++ ) {
+            SoPath * path = pathlist[i];
+            SoSkipBoundingGroup * group = static_cast<SoSkipBoundingGroup*>(path->getTail());
+            group->mode = SoSkipBoundingGroup::EXCLUDE_BBOX;
+        }
+
+        SoGetBoundingBoxAction action(this->getViewportRegion());
+        action.apply(this->getSceneGraph());
+        SbBox3f box = action.getBoundingBox();
+        float minx,miny,minz,maxx,maxy,maxz;
+        box.getBounds(minx,miny,minz,maxx,maxy,maxz);
+
+        for (int i = 0; i < pathlist.getLength(); i++ ) {
+            SoPath * path = pathlist[i];
+            SoSkipBoundingGroup * group = static_cast<SoSkipBoundingGroup*>(path->getTail());
+            group->mode = SoSkipBoundingGroup::INCLUDE_BBOX;
+        }
+
+        SoCube * cube = new SoCube();
+        cube->width  = factor*(maxx-minx);
+        cube->height = factor*(maxy-miny);
+        cube->depth  = factor*(maxz-minz);
+
+        // fake a scenegraph with the desired bounding size
+        SoSeparator* graph = new SoSeparator();
+        graph->ref();
+        SoTranslation * tr = new SoTranslation();
+        tr->translation.setValue(box.getCenter());
+
+        graph->addChild(tr);
+        graph->addChild(cube);
+        cam->viewAll(graph, this->getViewportRegion());
+        graph->unref();
+    }
+    else {
+        viewAll();
+    }
+}
+
 void View3DInventorViewer::viewSelection()
 {
     // Search for all SoFCSelection nodes
