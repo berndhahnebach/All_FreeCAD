@@ -197,7 +197,7 @@ Action * StdCmdAbout::createAction(void)
     if (it != cfg.end())
         exe = QString::fromUtf8(it->second.c_str());
     else
-        QString::fromUtf8(App::GetApplication().getExecutableName());
+        exe = QString::fromUtf8(App::GetApplication().getExecutableName());
     pcAction = new Action(this,getMainWindow());
     pcAction->setText(QCoreApplication::translate(
         this->className(), sMenuText, 0,
@@ -239,7 +239,7 @@ void StdCmdAbout::languageChange()
         if (it != cfg.end())
             exe = QString::fromUtf8(it->second.c_str());
         else
-            QString::fromUtf8(App::GetApplication().getExecutableName());
+            exe = QString::fromUtf8(App::GetApplication().getExecutableName());
         _pcAction->setText(QCoreApplication::translate(
             this->className(), sMenuText, 0,
             QCoreApplication::CodecForTr).arg(exe));
