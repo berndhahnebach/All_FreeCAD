@@ -221,11 +221,12 @@ Py::Object View3DInventorPy::message(const Py::Tuple& args)
 
 Py::Object View3DInventorPy::fitAll(const Py::Tuple& args)
 {
-    if (!PyArg_ParseTuple(args.ptr(), ""))
+    double factor = 1.0;
+    if (!PyArg_ParseTuple(args.ptr(), "|d", &factor))
         throw Py::Exception();
 
     try {
-        _view->viewAll();
+        _view->getViewer()->viewAll((float)factor);
     }
     catch (const Base::Exception& e) {
         throw Py::Exception(e.what());

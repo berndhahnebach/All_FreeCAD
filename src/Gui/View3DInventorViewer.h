@@ -238,6 +238,7 @@ public:
      * Reposition the current camera so we can see the complete scene.
      */
     void viewAll();
+    void viewAll(float factor);
     /**
      * Reposition the current camera so we can see all selected objects 
      * of the scene. Therefore we search for all SOFCSelection nodes, if
