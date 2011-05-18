@@ -30,6 +30,7 @@
 
 #include <Base/Exception.h>
 #include <Base/Console.h>
+#include <Base/FileInfo.h>
 #include <boost/regex.hpp>
 #include <iostream>
 
@@ -58,6 +59,21 @@ FeaturePage::FeaturePage(void)
 
 FeaturePage::~FeaturePage()
 {
+}
+
+/// get called by the container when a Property was changed
+void FeaturePage::onChanged(const App::Property* prop)
+{
+    if (prop == &PageResult) {
+        if (this->isRestoring()) {
+            // When loading a document the included file
+            // doesn't need to exist at this point.
+            Base::FileInfo fi(PageResult.getValue());
+            if (!fi.exists())
+                return;
+        }
+    }
+    App::DocumentObjectGroup::onChanged(prop);
 }
 
 App::DocumentObjectExecReturn *FeaturePage::execute(void)

@@ -59,6 +59,9 @@ public:
     virtual const char* getViewProviderName(void) const {
         return "DrawingGui::ViewProviderDrawingPage";
     }
+
+protected:
+    void onChanged(const App::Property* prop);
 };
 
 
