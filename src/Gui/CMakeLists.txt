@@ -79,6 +79,7 @@ set(Gui_MOC_HDRS
     CombiView.h
     Control.h
     DemoMode.h
+    DownloadDialog.h
     DlgActionsImp.h
     DlgActivateWindowImp.h
     DlgCommandsImp.h
@@ -254,6 +255,7 @@ SET(Dialog_CPP_SRCS
     SceneInspector.cpp
     TextureMapping.cpp
     Transform.cpp
+    DownloadDialog.cpp
 )
 
 SET(Dialog_HPP_SRCS
@@ -277,6 +279,7 @@ SET(Dialog_HPP_SRCS
     SceneInspector.h
     TextureMapping.h
     Transform.h
+    DownloadDialog.h
 )
 
 SET(Dialog_SRCS

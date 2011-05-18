@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2009 Jürgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) 2011 Jürgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -20,76 +20,75 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef GUI_DOWNLOADDIALOG_H
+#define GUI_DOWNLOADDIALOG_H
 
-#ifndef GUI_BROWSERVIEW_H
-#define GUI_BROWSERVIEW_H
+#include <QtCore>
+#include <QDialog>
+#include <QUrl>
+#include <QMessageBox>
+#include <QBuffer>
+#include <QLabel>
+#include <QProgressDialog>
+#include <QHttp>
+#include <QFileInfo>
+#include <QCloseEvent>
 
+namespace Gui {
+namespace Dialog {
 
-#include <Gui/MDIView.h>
-#include <Gui/Window.h>
-
-class QWebView;
-class QUrl;
-
-namespace WebGui {
-
-
-
-/**
- * A special view class which sends the messages from the application to
- * the editor and embeds it in a window.
+ /** Download a resource (file) from the web to a location on the disk
+ * 
  */
-class WebGuiExport BrowserView : public Gui::MDIView, public Gui::WindowParameter
+
+class GuiExport DownloadDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    BrowserView(QWidget* parent);
-    ~BrowserView();
 
-    void load(const char* URL);
-    void load(const QUrl & url);
-    void stop(void);
+    DownloadDialog( QUrl url, QString s, QString p = QString() );
+    ~DownloadDialog();
+    QUrl url;
+    QString purpose;
+    QString path;
+    QByteArray ba;
+    bool stopped;
+    QByteArray return_data();
 
-    void OnChange(Base::Subject<const char*> &rCaller,const char* rcReason);
+public Q_SLOTS:
 
-    const char *getName(void) const {return "BrowserView";}
-    void onUpdate(void){};
+    void request_finished( int, bool );
+    void cancel_download();
+    void update_progress( int read_bytes, int total_bytes );
+    void read_response_header(const QHttpResponseHeader & response_header);
 
-    bool onMsg(const char* pMsg,const char** ppReturn);
-    bool onHasMsg(const char* pMsg) const;
+Q_SIGNALS:
 
-    bool canClose(void);
-
-    /** @name Standard actions of the editor */
-    //@{
-    //bool open   (const QString &f);
-    //bool saveAs ();
-    //void cut    ();
-    //void copy   ();
-    //void paste  ();
-    //void undo   ();
-    //void redo   ();
-    //void run    ();
-    //void print  ();
-    //void printPdf();
-    //@}
+    void download_finished( DownloadDialog * d,
+                            bool ok,
+                            QString s,
+                            QString p,
+                            QString e );
 
 
-protected Q_SLOTS:
-    void onLoadStarted();
-    void onLoadProgress(int);
-    void onLoadFinished();
-    void onLinkClicked ( const QUrl & url ) ;
-    bool chckHostAllowed(const QString& host);
+protected:
+
+    QHttp * http;
+    int http_request_id;
+    QBuffer * buffer;
+    void closeEvent( QCloseEvent * e );
 
 private:
-    QWebView* WebView;
-    bool isLoading;
-    float textSizeMultiplier;
-    bool bIsLoading;
+
+    bool url_is_valid;
+    QProgressDialog * progressDialog;
+    QLabel * statusLabel;
+
 };
 
-} // namespace WebGui
+} // namespace Dialog
+} // namespace Gui
 
-#endif // GUI_EDITORVIEW_H
+
+#endif // GUI_DOWNLOADDIALOG_H
