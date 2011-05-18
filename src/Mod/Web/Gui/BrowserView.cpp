@@ -51,6 +51,8 @@
 #include <Gui/Application.h>
 #include <Gui/MainWindow.h>
 #include <Gui/ProgressBar.h>
+#include <Gui/DownloadDialog.h>
+#include <Gui/Command.h>
 
 #include <Base/Parameter.h>
 
@@ -68,7 +70,8 @@ BrowserView::BrowserView(QWidget* parent)
     : MDIView(0,parent,0),
       WindowParameter( "Browser" ),
       isLoading(false),
-      textSizeMultiplier(1.0)
+      textSizeMultiplier(1.0),
+      bIsLoading(false)
 {
     WebView = new QWebView(this);
     setCentralWidget(WebView);
@@ -95,18 +98,42 @@ void BrowserView::onLinkClicked (const QUrl & url)
 {
     QString scheme   = url.scheme();
     QString host     = url.host();
+
+    // path handling 
     QString path     = url.path();
-    QString fragment = url.	fragment();
+    QFileInfo fi(path);
+    QString ext = fi.completeSuffix();
 
-    if(scheme==QString::fromLatin1("http"))
+    //QString fragment = url.	fragment();
+
+    if(scheme==QString::fromLatin1("http")){
+        Dialog::DownloadDialog Dlg (url,QString::fromLatin1("c:/temp/test.fcstd"));
+        int result = Dlg.exec();
+/*        if(ext ==QString::fromLatin1("fcstd") )
+             Gui::Command::doCommand(Gui::Command::Gui,"Gui.open('%s')",);
+
         load(url);
-
+*/    }
     // run scripts if not from somewhere else!
-    if(scheme.isEmpty() && host.isEmpty()){
+    if(scheme.size() < 2 && host.isEmpty()){
         QFileInfo fi(path);
-        QString ext = fi.completeSuffix();
+        if(fi.exists()){
+            QString ext = fi.completeSuffix();
+            if(ext == QString::fromLatin1("py"))
+                Gui::Command::doCommand(Gui::Command::Gui,"execfile('%s')",(const char*) fi.absoluteFilePath().	toLocal8Bit());
+        }else{
+            QMessageBox::warning(Gui::getMainWindow(), QObject::tr("File does not exist!"),
+            fi.absoluteFilePath ());
+        }
     }
 }
+
+bool BrowserView::chckHostAllowed(const QString& host)
+{
+    // only check if a local file, later we can do here a dialog to ask the user if 
+    return host.isEmpty();
+}
+
 
 void BrowserView::load(const char* URL)
 {
@@ -116,14 +143,24 @@ void BrowserView::load(const char* URL)
 
 void BrowserView::load(const QUrl & url)
 {
+    if(bIsLoading)
+        stop();
+
     WebView->load(url);
     WebView->setUrl(url);
     setWindowTitle(url.host());
     setWindowIcon(QWebSettings::iconForUrl(url));
 }
 
+void BrowserView::stop(void)
+{
+    WebView->stop();
+}
+
 void BrowserView::onLoadStarted()
 {
+    bIsLoading = true;
+
     QProgressBar* bar = Gui::Sequencer::instance()->getProgressBar();
     bar->setRange(0, 100);
     bar->show();
@@ -139,6 +176,8 @@ void BrowserView::onLoadProgress(int step)
 
 void BrowserView::onLoadFinished()
 {
+    bIsLoading = false;
+
     QProgressBar* bar = Sequencer::instance()->getProgressBar();
     bar->setValue(100);
     bar->hide();
@@ -165,7 +204,7 @@ bool BrowserView::onMsg(const char* pMsg,const char** ppReturn)
         WebView->reload();
         return true;
     } else if (strcmp(pMsg,"Stop")==0){
-        WebView->stop();
+        stop();
         return true;
     } else if (strcmp(pMsg,"ZoomIn")==0){
         textSizeMultiplier += 0.2f;
