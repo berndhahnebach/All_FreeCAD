@@ -40,6 +40,7 @@ BUILT_SOURCES=\
 		moc_DlgUndoRedo.cpp \
 		moc_DockWindow.cpp \
 		moc_DockWindowManager.cpp \
+		moc_DownloadDialog.cpp \
 		moc_FileDialog.cpp \
 		moc_Flag.cpp \
 		moc_GuiApplicationNativeEventAware.cpp \
@@ -249,6 +250,8 @@ libFreeCADGui_la_SOURCES=\
 		DlgTipOfTheDayImp.h \
 		DlgToolbarsImp.cpp \
 		DlgToolbarsImp.h \
+		DownloadDialog.cpp \
+		DownloadDialog.h \
 		TaskDlgRelocation.cpp \
 		TaskDlgRelocation.h \
 		DlgUndoRedo.cpp \
