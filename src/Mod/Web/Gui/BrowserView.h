@@ -87,7 +87,6 @@ private:
     QWebView* WebView;
     bool isLoading;
     float textSizeMultiplier;
-    bool bIsLoading;
 };
 
 } // namespace WebGui

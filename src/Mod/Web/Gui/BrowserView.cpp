@@ -53,6 +53,7 @@
 #include <Gui/ProgressBar.h>
 #include <Gui/DownloadDialog.h>
 #include <Gui/Command.h>
+#include <Gui/OnlineDocumentation.h>
 
 #include <Base/Parameter.h>
 
@@ -70,8 +71,7 @@ BrowserView::BrowserView(QWidget* parent)
     : MDIView(0,parent,0),
       WindowParameter( "Browser" ),
       isLoading(false),
-      textSizeMultiplier(1.0),
-      bIsLoading(false)
+      textSizeMultiplier(1.0)
 {
     WebView = new QWebView(this);
     setCentralWidget(WebView);
@@ -107,13 +107,14 @@ void BrowserView::onLinkClicked (const QUrl & url)
     //QString fragment = url.	fragment();
 
     if(scheme==QString::fromLatin1("http")){
-        Dialog::DownloadDialog Dlg (url,QString::fromLatin1("c:/temp/test.fcstd"));
+/*         Dialog::DownloadDialog Dlg (url,QString::fromLatin1("c:/temp/test.fcstd"));
         int result = Dlg.exec();
-/*        if(ext ==QString::fromLatin1("fcstd") )
+       if(ext ==QString::fromLatin1("fcstd") )
              Gui::Command::doCommand(Gui::Command::Gui,"Gui.open('%s')",);
 
-        load(url);
-*/    }
+        load(url);*/
+        OpenURLInBrowser(url.toString().toLatin1());
+    }
     // run scripts if not from somewhere else!
     if(scheme.size() < 2 && host.isEmpty()){
         QFileInfo fi(path);
@@ -143,12 +144,20 @@ void BrowserView::load(const char* URL)
 
 void BrowserView::load(const QUrl & url)
 {
-    if(bIsLoading)
+    if(isLoading)
         stop();
 
     WebView->load(url);
     WebView->setUrl(url);
-    setWindowTitle(url.host());
+    if(url.scheme().size() < 2){
+        QString path     = url.path();
+        QFileInfo fi(path);
+        QString name = fi.baseName();
+
+        setWindowTitle(name);
+    }else 
+        setWindowTitle(url.host());
+
     setWindowIcon(QWebSettings::iconForUrl(url));
 }
 
@@ -159,8 +168,6 @@ void BrowserView::stop(void)
 
 void BrowserView::onLoadStarted()
 {
-    bIsLoading = true;
-
     QProgressBar* bar = Gui::Sequencer::instance()->getProgressBar();
     bar->setRange(0, 100);
     bar->show();
@@ -176,8 +183,6 @@ void BrowserView::onLoadProgress(int step)
 
 void BrowserView::onLoadFinished()
 {
-    bIsLoading = false;
-
     QProgressBar* bar = Sequencer::instance()->getProgressBar();
     bar->setValue(100);
     bar->hide();

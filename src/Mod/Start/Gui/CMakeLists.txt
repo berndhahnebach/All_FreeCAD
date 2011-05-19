@@ -31,6 +31,7 @@ SET(StartPage_Resources
     StartPage/StartPage.html
     StartPage/Banner.jpeg
     StartPage/PartDesign.py
+    StartPage/ArchDesign.py
 )
 
 add_library(StartGui SHARED ${StartGui_SRCS})
