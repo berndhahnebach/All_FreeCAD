@@ -9,6 +9,7 @@ include_directories(
     ${PYTHON_INCLUDE_PATH}
     ${XERCESC_INCLUDE_DIR}
     ${ZLIB_INCLUDE_DIR}
+    ${EIGEN2_INCLUDE_DIR}
 )
 
 

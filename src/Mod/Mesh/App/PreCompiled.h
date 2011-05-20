@@ -46,11 +46,6 @@
 
 #ifdef _PreComp_
 
-#ifdef FC_OS_WIN32
-#   include <windows.h>
-#endif
-
-
 // standard
 #include <stdio.h>
 #include <assert.h>
@@ -77,7 +72,10 @@
 #include <string>
 #include <vector>
 
-//#include <gts.h>
+// FIXME: Causes problem with boost/numeric/bindings/lapack/syev.hpp(117)
+#ifdef FC_OS_WIN32
+//# include <windows.h>
+#endif
 
 // Python
 #include <Python.h>

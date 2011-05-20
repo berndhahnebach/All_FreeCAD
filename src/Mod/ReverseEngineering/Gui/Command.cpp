@@ -30,6 +30,7 @@
 #include <Mod/Part/App/TopoShape.h>
 #include <Mod/Part/App/PartFeature.h>
 #include <Mod/Mesh/App/MeshFeature.h>
+#include <Mod/Mesh/App/Core/Approximation.h>
 
 #include <Gui/Application.h>
 #include <Gui/Command.h>
@@ -101,8 +102,74 @@ bool CmdApproxSurface::isActive(void)
     return false;
 }
 
+DEF_STD_CMD_A(CmdApproxPlane);
+
+CmdApproxPlane::CmdApproxPlane()
+  : Command("Reen_ApproxPlane")
+{
+    sAppModule      = "Reen";
+    sGroup          = QT_TR_NOOP("Reverse Engineering");
+    sMenuText       = QT_TR_NOOP("Approximate plane...");
+    sToolTipText    = QT_TR_NOOP("Approximate a plane");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+}
+
+void CmdApproxPlane::activated(int iMsg)
+{
+    std::vector<App::GeoFeature*> obj = Gui::Selection().getObjectsOfType<App::GeoFeature>();
+    for (std::vector<App::GeoFeature*>::iterator it = obj.begin(); it != obj.end(); ++it) {
+        std::map<std::string, App::Property*> Map;
+        (*it)->getPropertyMap(Map);
+        for (std::map<std::string, App::Property*>::iterator jt = Map.begin(); jt != Map.end(); ++jt) {
+            if (jt->second->getTypeId().isDerivedFrom(App::PropertyComplexGeoData::getClassTypeId())) {
+                std::vector<Base::Vector3d> aPoints;
+                std::vector<Data::ComplexGeoData::FacetTopo> aTopo;
+                static_cast<App::PropertyComplexGeoData*>(jt->second)->getFaces(aPoints, aTopo,0.01f);
+
+                std::vector<Base::Vector3f> aData;
+                aData.reserve(aPoints.size());
+                for (std::vector<Base::Vector3d>::iterator jt = aPoints.begin(); jt != aPoints.end(); ++jt)
+                    aData.push_back(Base::toVector<float>(*jt));
+                MeshCore::PlaneFit fit;
+                fit.AddPoints(aData);
+                float sigma = fit.Fit();
+                Base::Vector3f base = fit.GetBase();
+                Base::Vector3f norm = fit.GetNormal();
+
+                Base::Console().Message("RMS value for plane fit with %ld points: %.4f\n", aData.size(), sigma);
+                Base::Console().Message("  Plane base(%.4f, %.4f, %.4f)\n", base.x, base.y, base.z);
+                Base::Console().Message("  Plane normal(%.4f, %.4f, %.4f)\n", norm.x, norm.y, norm.z);
+
+                std::stringstream str;
+                str << "import Part" << std::endl;
+                str << "from FreeCAD import Base" << std::endl;
+                str << "Part.show(Part.makePlane("
+                    << 10 << ", " << 10 << ", "
+                    << "Base.Vector("
+                    << base.x << ", " << base.y << ", " << base.z << "), "
+                    << "Base.Vector("
+                    << norm.x << ", " << norm.y << ", " << norm.z << ")))" << std::endl;
+                
+                openCommand("Fit plane");
+                doCommand(Gui::Command::Doc, str.str().c_str());
+                commitCommand(); 
+                updateActive();
+            }
+        }
+    }
+}
+
+bool CmdApproxPlane::isActive(void)
+{
+    if (getSelection().countObjectsOfType(App::GeoFeature::getClassTypeId()) == 1)
+        return true;
+    return false;
+}
+
 void CreateReverseEngineeringCommands(void)
 {
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
     rcCmdMgr.addCommand(new CmdApproxSurface());
+    rcCmdMgr.addCommand(new CmdApproxPlane());
 }
