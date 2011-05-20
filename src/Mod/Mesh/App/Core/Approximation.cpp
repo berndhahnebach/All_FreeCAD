@@ -22,10 +22,12 @@
 
 
 #include "PreCompiled.h"
-#include "Approximation.h"
 
 #ifndef _PreComp_
+# include <algorithm>
 #endif
+
+#include "Approximation.h"
 
 #include <Mod/Mesh/App/WildMagic4/Wm4ApprQuadraticFit3.h>
 #include <Mod/Mesh/App/WildMagic4/Wm4ApprPlaneFit3.h>
@@ -33,7 +35,25 @@
 #include <Mod/Mesh/App/WildMagic4/Wm4Matrix3.h>
 #include <Mod/Mesh/App/WildMagic4/Wm4ApprPolyFit3.h>
 
-using namespace Wm4;
+//#define FC_USE_EIGEN
+#if defined(FC_USE_BOOST)
+#include <boost/numeric/ublas/io.hpp>
+#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
+#include <boost/numeric/bindings/traits/ublas_vector.hpp>
+
+#define BOOST_NUMERIC_BINDINGS_USE_CLAPACK
+#include <boost/numeric/bindings/lapack/syev.hpp>
+#include <boost/numeric/bindings/lapack/heev.hpp>
+#include <boost/numeric/bindings/lapack/gesv.hpp> 
+
+namespace ublas = boost::numeric::ublas; 
+extern "C" void LAPACK_DGESV (int const* n, int const* nrhs, 
+                     double* a, int const* lda, int* ipiv, 
+                     double* b, int const* ldb, int* info);
+#elif defined(FC_USE_EIGEN)
+# include <Eigen/LeastSquares>
+#endif
+
 using namespace MeshCore;
 
 
@@ -124,7 +144,7 @@ float PlaneFit::Fit()
     if (CountPoints() < 3)
         return FLOAT_MAX;
 
-    float sxx,sxy,sxz,syy,syz,szz,mx,my,mz;
+    double sxx,sxy,sxz,syy,syz,szz,mx,my,mz;
     sxx=sxy=sxz=syy=syz=szz=mx=my=mz=0.0f;
 
     for (std::list<Base::Vector3f>::iterator it = _vPoints.begin(); it!=_vPoints.end(); ++it) {
@@ -135,16 +155,51 @@ float PlaneFit::Fit()
     }
 
     unsigned int nSize = _vPoints.size();
-    sxx = sxx - mx*mx/((float)nSize);
-    sxy = sxy - mx*my/((float)nSize);
-    sxz = sxz - mx*mz/((float)nSize);
-    syy = syy - my*my/((float)nSize);
-    syz = syz - my*mz/((float)nSize);
-    szz = szz - mz*mz/((float)nSize);
+    sxx = sxx - mx*mx/((double)nSize);
+    sxy = sxy - mx*my/((double)nSize);
+    sxz = sxz - mx*mz/((double)nSize);
+    syy = syy - my*my/((double)nSize);
+    syz = syz - my*mz/((double)nSize);
+    szz = szz - mz*mz/((double)nSize);
 
+#if defined(FC_USE_BOOST)
+    ublas::matrix<double> A(3,3);
+    A(0,0) = sxx;
+    A(1,1) = syy;
+    A(2,2) = szz;
+    A(0,1) = sxy; A(1,0) = sxy;
+    A(0,2) = sxz; A(2,0) = sxz;
+    A(1,2) = syz; A(2,1) = syz;
+    namespace lapack= boost::numeric::bindings::lapack;
+    ublas::vector<double> eigenval(3);
+    int r = lapack::syev('V','U',A,eigenval,lapack::optimal_workspace());
+    if (r) {
+    }
+    float sigma;
+#elif defined(FC_USE_EIGEN)
+    Eigen::Matrix3d covMat = Eigen::Matrix3d::Zero();
+    covMat(0,0) = sxx;
+    covMat(1,1) = syy;
+    covMat(2,2) = szz;
+    covMat(0,1) = sxy; covMat(1,0) = sxy;
+    covMat(0,2) = sxz; covMat(2,0) = sxz;
+    covMat(1,2) = syz; covMat(2,1) = syz;
+    Eigen::SelfAdjointEigenSolver<Eigen::Matrix3d> eig(covMat);
+
+    Eigen::Vector3d u = eig.eigenvectors().col(1);
+    Eigen::Vector3d v = eig.eigenvectors().col(2);
+    Eigen::Vector3d w = eig.eigenvectors().col(0);
+
+    _vDirU.Set(u.x(), u.y(), u.z());
+    _vDirV.Set(v.x(), v.y(), v.z());
+    _vDirW.Set(w.x(), w.y(), w.z());
+    _vBase.Set(mx/(float)nSize, my/(float)nSize, mz/(float)nSize);
+
+    float sigma = w.dot(covMat * w);
+#else
     // Covariance matrix
-    Wm4::Matrix3<float> akMat(sxx,sxy,sxz,sxy,syy,syz,sxz,syz,szz);
-    Wm4::Matrix3<float> rkRot, rkDiag;
+    Wm4::Matrix3<double> akMat(sxx,sxy,sxz,sxy,syy,syz,sxz,syz,szz);
+    Wm4::Matrix3<double> rkRot, rkDiag;
     try {
         akMat.EigenDecomposition(rkRot, rkDiag);
     }
@@ -152,14 +207,16 @@ float PlaneFit::Fit()
         return FLOAT_MAX;
     }
 
-    Wm4::Vector3<float> U = rkRot.GetColumn(1);
-    Wm4::Vector3<float> V = rkRot.GetColumn(2);
-    Wm4::Vector3<float> W = rkRot.GetColumn(0);
+    Wm4::Vector3<double> U = rkRot.GetColumn(1);
+    Wm4::Vector3<double> V = rkRot.GetColumn(2);
+    Wm4::Vector3<double> W = rkRot.GetColumn(0);
 
-    _vDirU.Set(U.X(), U.Y(), U.Z());
-    _vDirV.Set(V.X(), V.Y(), V.Z());
-    _vDirW.Set(W.X(), W.Y(), W.Z());
+    _vDirU.Set((float)U.X(), (float)U.Y(), (float)U.Z());
+    _vDirV.Set((float)V.X(), (float)V.Y(), (float)V.Z());
+    _vDirW.Set((float)W.X(), (float)W.Y(), (float)W.Z());
     _vBase.Set(mx/(float)nSize, my/(float)nSize, mz/(float)nSize);
+    float sigma = (float)W.Dot(akMat * W);
+#endif
 
     // make a right-handed system
     if ((_vDirU % _vDirV) * _vDirW < 0.0f) {
@@ -168,7 +225,6 @@ float PlaneFit::Fit()
         _vDirV = tmp;
     }
 
-    float sigma = W.Dot(akMat * W);
     if (nSize > 3)
         sigma = sqrt(sigma/(nSize-3));
     _fLastResult = sigma;
@@ -305,7 +361,7 @@ bool QuadraticFit::GetCurvatureInfo(float x, float y, float z,
     bool bResult = false;
 
     if (_bIsFitted) {
-        Vector3<float> Dir0, Dir1;
+        Wm4::Vector3<float> Dir0, Dir1;
         FunctionContainer  clFuncCont( _fCoeff );
         bResult = clFuncCont.CurvatureInfo( x, y, z, rfCurv0, rfCurv1, Dir0, Dir1, dDistance );
 
@@ -351,7 +407,7 @@ float QuadraticFit::Fit()
     if (CountPoints() > 0) {
         std::vector< Wm4::Vector3<float> > cPts;
         GetMgcVectorArray( cPts );
-        fResult = QuadraticFit3<float>( CountPoints(), &(cPts[0]), _fCoeff );
+        fResult = Wm4::QuadraticFit3<float>( CountPoints(), &(cPts[0]), _fCoeff );
         _fLastResult = fResult;
 
         _bIsFitted = true;
@@ -386,16 +442,16 @@ void QuadraticFit::CalcEigenValues(float &dLambda1, float &dLambda2, float &dLam
      *
      */
 
-    Matrix3<float>  akMat(_fCoeff[4],       _fCoeff[7]/2.0f, _fCoeff[8]/2.0f,
-                          _fCoeff[7]/2.0f,  _fCoeff[5],      _fCoeff[9]/2.0f,
-                          _fCoeff[8]/2.0f,  _fCoeff[9]/2.0f, _fCoeff[6]       );
+    Wm4::Matrix3<float>  akMat(_fCoeff[4],       _fCoeff[7]/2.0f, _fCoeff[8]/2.0f,
+                               _fCoeff[7]/2.0f,  _fCoeff[5],      _fCoeff[9]/2.0f,
+                               _fCoeff[8]/2.0f,  _fCoeff[9]/2.0f, _fCoeff[6]       );
 
-    Matrix3<float> rkRot, rkDiag;
+    Wm4::Matrix3<float> rkRot, rkDiag;
     akMat.EigenDecomposition( rkRot, rkDiag );
 
-    Vector3<float> vEigenU = rkRot.GetColumn(0);
-    Vector3<float> vEigenV = rkRot.GetColumn(1);
-    Vector3<float> vEigenW = rkRot.GetColumn(2);
+    Wm4::Vector3<float> vEigenU = rkRot.GetColumn(0);
+    Wm4::Vector3<float> vEigenV = rkRot.GetColumn(1);
+    Wm4::Vector3<float> vEigenW = rkRot.GetColumn(2);
 
     Convert( vEigenU, clEV1 );
     Convert( vEigenV, clEV2 );
@@ -470,7 +526,7 @@ bool SurfaceFit::GetCurvatureInfo(float x, float y, float z, float &rfCurv0, flo
     bool bResult = false;
 
     if (_bIsFitted) {
-        Vector3<float> Dir0, Dir1;
+        Wm4::Vector3<float> Dir0, Dir1;
         FunctionContainer  clFuncCont( _fCoeff );
         bResult = clFuncCont.CurvatureInfo( x, y, z, rfCurv0, rfCurv1, Dir0, Dir1, dDistance );
 
@@ -495,29 +551,12 @@ bool SurfaceFit::GetCurvatureInfo(float x, float y, float z, float &rfCurv0, flo
     return bResult;
 }
 
-//FIXME: Replace with non-OCC classes
-//FIXME: Move Projection to Part module
-//FIXME: Move CurveProjector to Part module
-//FIXME: Move MeshAlgos to Part module
-#if defined(FC_USE_BOOST)
-#include <boost/numeric/ublas/io.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector2.hpp>
-
-#define BOOST_NUMERIC_BINDINGS_USE_CLAPACK
-#include <boost/numeric/bindings/lapack/gesv.hpp> 
-
-namespace ublas = boost::numeric::ublas; 
-extern "C" void LAPACK_DGESV (int const* n, int const* nrhs, 
-                     double* a, int const* lda, int* ipiv, 
-                     double* b, int const* ldb, int* info);
-#endif
-
 float SurfaceFit::PolynomFit()
 {
     if (PlaneFit::Fit() == FLOAT_MAX)
         return FLOAT_MAX;
 
+#if 0
 #if defined(FC_USE_BOOST)
     Base::Vector3d bs(this->_vBase.x,this->_vBase.y,this->_vBase.z);
     Base::Vector3d ex(this->_vDirU.x,this->_vDirU.y,this->_vDirU.z);
@@ -617,6 +656,7 @@ float SurfaceFit::PolynomFit()
     _fCoeff[7] = (float)(-b(2));
     _fCoeff[8] = 0.0f;
     _fCoeff[9] = 0.0f;
+#endif
 #endif
     return 0.0f;
 }

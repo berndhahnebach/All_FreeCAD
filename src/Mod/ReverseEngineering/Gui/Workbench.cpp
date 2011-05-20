@@ -28,6 +28,7 @@
 #endif
 
 #include "Workbench.h"
+#include <Gui/MenuManager.h>
 #include <Gui/ToolBarManager.h>
 
 using namespace ReverseEngineeringGui;
@@ -45,6 +46,17 @@ Workbench::Workbench()
 
 Workbench::~Workbench()
 {
+}
+
+Gui::MenuItem* Workbench::setupMenuBar() const
+{
+    Gui::MenuItem* root = StdWorkbench::setupMenuBar();
+    Gui::MenuItem* item = root->findItem("&Windows");
+    Gui::MenuItem* reen = new Gui::MenuItem;
+    root->insertItem(item, reen);
+    reen->setCommand("&REEN");
+    *reen << "Reen_ApproxPlane" << "Reen_ApproxSurface";
+    return root;
 }
 
 Gui::ToolBarItem* Workbench::setupToolBars() const
