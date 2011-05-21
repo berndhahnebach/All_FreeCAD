@@ -37,6 +37,7 @@
 #include "FeatureMainPart.h"
 #include "FeatureDressUp.h"
 #include "FeatureChamfer.h"
+#include "FeatureFace.h"
 
 extern struct PyMethodDef PartDesign_methods[];
 
@@ -73,6 +74,7 @@ void AppPartDesignExport initPartDesign()
     PartDesign::Fillet     ::init();
     PartDesign::Revolution ::init();
     PartDesign::Chamfer    ::init();
+    PartDesign::Face       ::init();
 }
 
 } // extern "C"
