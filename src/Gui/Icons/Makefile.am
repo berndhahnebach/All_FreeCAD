@@ -6,7 +6,7 @@ BUILT_SOURCES=\
 nodist_libIcons_la_SOURCES=\
 		qrc_resource.cpp
 
-data_DATA = freecad.xpm
+data_DATA = freecad.xpm freecad-doc.png
 
 EXTRA_DIST = \
 		$(data_DATA) \
