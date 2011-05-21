@@ -1593,6 +1593,21 @@ SbBool CADNavigationStyle::processSoEvent(const SoEvent * const ev)
                     }
                 }
             }
+            // Alternative way of rotating & zooming
+            if (press && (this->currentmode == NavigationStyle::PANNING ||
+                          this->currentmode == NavigationStyle::ZOOMING)) {
+                newmode = NavigationStyle::DRAGGING;
+                this->centerTime = ev->getTime();
+                processed = TRUE;
+            }
+            else if (!press && (this->currentmode == NavigationStyle::DRAGGING)) {
+                SbTime tmp = (ev->getTime() - this->centerTime);
+                float dci = (float)QApplication::doubleClickInterval()/1000.0f;
+                if (tmp.getValue() < dci) {
+                    newmode = NavigationStyle::ZOOMING;
+                }
+                processed = TRUE;
+            }
             this->button2down = press;
             break;
         case SoMouseButtonEvent::BUTTON3:
