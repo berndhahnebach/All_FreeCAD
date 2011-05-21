@@ -18,9 +18,14 @@ try:
 	image="thumbnails/Thumbnail.png"
 	if image in files:
 		image=zfile.read(image)
-		thumb=open(outfile,"wb")
-		thumb.write(image)
-		thumb.close()
+	else:
+		freecad=open("/usr/share/freecad/freecad-doc.png")
+		image=freecad.read()
+
+	thumb=open(outfile,"wb")
+	thumb.write(image)
+	thumb.close()
+
 except:
 	sys.exit(1)
 
