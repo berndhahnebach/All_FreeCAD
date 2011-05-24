@@ -90,7 +90,7 @@ void CmdDrawingNewA3Landscape::activated(int iMsg)
 
     openCommand("Drawing create page");
     doCommand(Doc,"App.activeDocument().addObject('Drawing::FeaturePage','%s')",FeatName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Template = App.getResourceDir()+'Mod/Drawing/Templates/A3_Landscape.svg'",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Template = 'A3_Landscape.svg'",FeatName.c_str());
     commitCommand();
 }
 
