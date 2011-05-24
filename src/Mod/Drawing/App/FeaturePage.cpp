@@ -31,6 +31,7 @@
 #include <Base/Exception.h>
 #include <Base/Console.h>
 #include <Base/FileInfo.h>
+#include <App/Application.h>
 #include <boost/regex.hpp>
 #include <iostream>
 
@@ -78,15 +79,24 @@ void FeaturePage::onChanged(const App::Property* prop)
 
 App::DocumentObjectExecReturn *FeaturePage::execute(void)
 {
-    if (std::string(PageResult.getValue()).empty())
-        PageResult.setValue(Template.getValue());
+    if(Template.getValue() == "")
+        return App::DocumentObject::StdReturn;
 
     Base::FileInfo fi(Template.getValue());
     if (!fi.isReadable()) {
-        Base::Console().Log("FeaturePage::execute() not able to open %s!\n",Template.getValue());
-        std::string error = std::string("Cannot open file ") + Template.getValue();
-        return new App::DocumentObjectExecReturn(error);
+        // if there is a old absolute template file set use a redirect
+        fi.setFile(App::Application::getResourceDir() + "Mod/Drawing/Templates/" + fi.fileName());
+        // try the redirect
+        if (!fi.isReadable()) {
+            Base::Console().Log("FeaturePage::execute() not able to open %s!\n",Template.getValue());
+            std::string error = std::string("Cannot open file ") + Template.getValue();
+            return new App::DocumentObjectExecReturn(error);
+        }
     }
+
+    if (std::string(PageResult.getValue()).empty())
+        PageResult.setValue(fi.filePath().c_str());
+
     // open Template file
     string line;
     ifstream file (fi.filePath().c_str());
