@@ -42,12 +42,12 @@ namespace Gui
             ButtonView(QWidget *parent = 0);
             void selectButton(int number);
         Q_SIGNALS:
-            void changeCommandSelection(QString commandName);
+            void changeCommandSelection(const QString& commandName);
         private Q_SLOTS:
             void goSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
 
         public Q_SLOTS:
-            void goChangedCommand(QString commandName);
+            void goChangedCommand(const QString& commandName);
         };
 
         class ButtonModel : public QAbstractListModel
@@ -60,7 +60,7 @@ namespace Gui
             void insertRows(int number);
             void setCommand(int row, QString command);
             void goButtonPress(int number);
-            void goMacroRemoved(QByteArray macroName);
+            void goMacroRemoved(const QByteArray& macroName);
             void goClear();
         private:
             ParameterGrp::handle spaceballButtonGroup() const;
@@ -73,11 +73,11 @@ namespace Gui
         public:
             CommandView(QWidget *parent = 0);
         public Q_SLOTS:
-            void goChangeCommandSelection(QString commandName);
+            void goChangeCommandSelection(const QString& commandName);
         private Q_SLOTS:
             void goClicked(const QModelIndex &index);
         Q_SIGNALS:
-            void changedCommand(QString commandName);
+            void changedCommand(const QString& commandName);
         };
 
         class CommandNode
@@ -114,7 +114,7 @@ namespace Gui
             CommandNode *rootNode;
             CommandNode* nodeFromIndex(const QModelIndex &index) const;
             void initialize();
-            void groupCommands(QString groupName);
+            void groupCommands(const QString& groupName);
             QStringList orderedGroups();
         };
 
@@ -157,7 +157,7 @@ namespace Gui
             void setupButtonModelView();
             void setupCommandModelView();
             void setupLayout();
-            void setMessage(QString message);
+            void setMessage(const QString& message);
 
             ButtonView *buttonView;
             ButtonModel *buttonModel;
