@@ -65,7 +65,7 @@ void ButtonView::goSelectionChanged(const QItemSelection &selected, const QItemS
     changeCommandSelection(this->model()->data(select, Qt::UserRole).toString());
 }
 
-void ButtonView::goChangedCommand(QString commandName)
+void ButtonView::goChangedCommand(const QString& commandName)
 {
     QModelIndex index(this->currentIndex());
     ButtonModel *model = dynamic_cast<ButtonModel*>(this->model());
@@ -137,7 +137,7 @@ void ButtonModel::goButtonPress(int number)
         insertRows(number);
 }
 
-void ButtonModel::goMacroRemoved(QByteArray macroName)
+void ButtonModel::goMacroRemoved(const QByteArray& macroName)
 {
     GroupVector groupVector = spaceballButtonGroup()->GetGroups();
     for (GroupVector::iterator it = groupVector.begin(); it != groupVector.end(); ++it)
@@ -198,10 +198,11 @@ QString ButtonModel::getLabel(const int &number) const
 CommandView::CommandView(QWidget *parent) : QTreeView(parent)
 {
     this->setEnabled(false);
-    connect(this, SIGNAL(clicked(QModelIndex)), this, SLOT(goClicked(QModelIndex)));
+    connect(this, SIGNAL(clicked(const QModelIndex&)),
+            this, SLOT(goClicked(const QModelIndex&)));
 }
 
-void CommandView::goChangeCommandSelection(QString commandName)
+void CommandView::goChangeCommandSelection(const QString& commandName)
 {
     if (!this->isEnabled())
         this->setEnabled(true);
@@ -457,7 +458,7 @@ void CommandModel::initialize()
         groupCommands(*it);
 }
 
-void CommandModel::groupCommands(QString groupName)
+void CommandModel::groupCommands(const QString& groupName)
 {
     CommandNode *parentNode = new CommandNode(CommandNode::GroupType);
     parentNode->parent = rootNode;
@@ -560,8 +561,10 @@ DlgCustomizeSpaceball::DlgCustomizeSpaceball(QWidget *parent)
 
     setupButtonModelView();
     setupCommandModelView();
-    connect(buttonView, SIGNAL(changeCommandSelection(QString)), commandView, SLOT(goChangeCommandSelection(QString)));
-    connect(commandView, SIGNAL(changedCommand(QString)), buttonView, SLOT(goChangedCommand(QString)));
+    connect(buttonView, SIGNAL(changeCommandSelection(const QString&)),
+            commandView, SLOT(goChangeCommandSelection(const QString&)));
+    connect(commandView, SIGNAL(changedCommand(const QString&)),
+            buttonView, SLOT(goChangedCommand(const QString&)));
     setupLayout();
     connect(clearButton, SIGNAL(clicked()), this, SLOT(goClear()));
     connect(printReference, SIGNAL(clicked()), this, SLOT(goPrint()));
@@ -572,7 +575,7 @@ DlgCustomizeSpaceball::~DlgCustomizeSpaceball()
 
 }
 
-void DlgCustomizeSpaceball::setMessage(QString message)
+void DlgCustomizeSpaceball::setMessage(const QString& message)
 {
     QLabel *messageLabel = new QLabel(message,this);
     QVBoxLayout *layout = new QVBoxLayout();
@@ -587,8 +590,8 @@ void DlgCustomizeSpaceball::setupButtonModelView()
     buttonView->setModel(buttonModel);
 
     //had to do this here as the views default selection model is not created until after construction.
-    connect(buttonView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), buttonView,
-            SLOT(goSelectionChanged(QItemSelection,QItemSelection)));
+    connect(buttonView->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+            buttonView, SLOT(goSelectionChanged(const QItemSelection&, const QItemSelection&)));
 }
 
 void DlgCustomizeSpaceball::setupCommandModelView()
