@@ -1630,7 +1630,7 @@ void Application::runApplication(void)
 
     // Create new document?
     ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("Document");
-    if (hGrp->GetBool("CreateNewDoc", true)) {
+    if (hGrp->GetBool("CreateNewDoc", false)) {
         App::GetApplication().newDocument();
     }
 #else

@@ -14,12 +14,13 @@ SET /P M=Reebuild and press enter
 "%WIXDIR%\bin\candle.exe" -dProcessorArchitecture=%PLATFORM% -out LibPack.wxobj        LibPack.wxs
 "%WIXDIR%\bin\candle.exe" -dProcessorArchitecture=%PLATFORM% -out FreeCADDoc.wxobj     FreeCADDoc.wxs
 "%WIXDIR%\bin\candle.exe" -dProcessorArchitecture=%PLATFORM% -out FreeCADModules.wxobj FreeCADModules.wxs
+"%WIXDIR%\bin\candle.exe" -dProcessorArchitecture=%PLATFORM% -out FreeCADData.wxobj    FreeCADData.wxs
 "%WIXDIR%\bin\candle.exe" -dProcessorArchitecture=%PLATFORM% -out FreeCAD.wxobj        FreeCAD.wxs
 
 "%WIXDIR%\bin\light.exe"  -dWixUIBannerBmp=Bitmaps/BanerBitmap.bmp -dWixUIDialogBmp=Bitmaps/BackgroundBitmap.bmp -ext WixUIExtension -sice:ICE03 -sice:ICE60 -sice:ICE82 -sice:ICE83 -cultures:en-us -out FreeCAD.msi *.wxobj 
 
 rem making of the bin zip file
-"c:\Program Files\7-Zip\7z.exe" a -t7z FreeCAD.7z -x!*.idb -x!*.pdb -x!*.ilk ..\..\bin ..\..\Mod ..\..\Doc
+"c:\Program Files\7-Zip\7z.exe" a -t7z FreeCAD.7z -x!*.idb -x!*.pdb -x!*.ilk ..\..\bin ..\..\Mod ..\..\Doc ..\..\data
 
 call CopyRelease.bat
 

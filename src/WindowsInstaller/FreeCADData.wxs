@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!--
-   (c) Juergen Riegel (juergen.riegel@web.de) 2005                       
+   (c) Juergen Riegel (juergen.riegel@web.de) 2011                       
                                                                         
    This file is part of the FreeCAD CAx development system.             
                                                                         
@@ -20,10 +20,10 @@
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 
    USA                                                                  
                                                                         
-   Juergen Riegel 2005                                                 
+   Juergen Riegel 2011                                                 
 -->
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Fragment Id="FreeCADModules">
+    <Fragment Id="FreeCADData">
 		<!-- Add the 64-bit registry component to the 64-bit MSI, and add the 32-bit registry        -->
 		<!-- component to the 32-bit MSI.                                                            -->
 		<?if $(var.ProcessorArchitecture)=x64 ?>
@@ -31,26 +31,16 @@
 		<?else ?>
 		<?define Win_64 = "no" ?>
 		<?endif ?>
-        <DirectoryRef Id="ModDir">
-            <?include ModMesh.wxi ?>
-            <?include ModPart.wxi ?>
-			<?include ModSketcher.wxi ?>
-            <?include ModPoints.wxi ?>
-            <?include ModImage.wxi ?>
-            <?include ModRaytracing.wxi ?>
-            <?include ModTest.wxi ?>
-            <!--include ModCam.wxi ?-->
-            <?include ModComplete.wxi ?>
-            <?include ModMeshPart.wxi ?>
-            <?include ModFem.wxi ?>
-            <?include ModPartDesign.wxi ?>
-            <?include ModDrawing.wxi ?>
-            <?include ModDraft.wxi ?>
-            <?include ModRobot.wxi ?>
-            <?include ModInspection.wxi ?>
-            <?include ModImport.wxi ?>
-            <?include ModStart.wxi ?>
-            <?include ModWeb.wxi ?>
+        <DirectoryRef Id="DataDir">
+			<Directory Id="ExamplesDir" Name="examples" FileSource="../../data/examples">
+            	<Component Id="CompExampleData"  Guid="63150a20-864a-11e0-9d78-0800200c9a66" Win64='$(var.Win_64)' KeyPath="yes">
+                    <File Id="ExampleFile1" Name="DrawingExample.FCStd"   />
+                    <File Id="ExampleFile2" Name="PartDesignExample.FCStd"   />
+                    <File Id="ExampleFile3" Name="RobotExample.FCStd"   />
+                    <File Id="ExampleFile4" Name="Schenkel.stp"   />
+                </Component>			
+
+            </Directory>
         </DirectoryRef>
     </Fragment>
 </Wix>
