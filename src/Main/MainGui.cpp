@@ -246,7 +246,7 @@ int main( int argc, char ** argv )
     App::Application::Config()["ConsoleBanner"] = sBanner;
     App::Application::Config()["AppIcon"] = "freecad";
     App::Application::Config()["SplashPicture"] = "freecadsplash";
-    App::Application::Config()["StartWorkbench"] = "CompleteWorkbench";
+    App::Application::Config()["StartWorkbench"] = "StartWorkbench";
     //App::Application::Config()["HiddenDockWindow"] = "Property editor";
     App::Application::Config()["SplashAlignment" ] = "Bottom|Left";
     App::Application::Config()["SplashTextColor" ] = "#ffffff"; // white

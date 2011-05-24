@@ -50,7 +50,7 @@ MacroManager::MacroManager()
   : openMacro(false),
     recordGui(true),
     guiAsComment(true),
-    scriptToPyConsole(false),
+    scriptToPyConsole(true),
     pyConsole(0),
     pyDebugger(new PythonDebugger())
 {
@@ -70,7 +70,7 @@ void MacroManager::OnChange(Base::Subject<const char*> &rCaller, const char * sR
 {
     this->recordGui         = this->params->GetBool("RecordGui", true);
     this->guiAsComment      = this->params->GetBool("GuiAsComment", true);
-    this->scriptToPyConsole = this->params->GetBool("ScriptToPyConsole", false);
+    this->scriptToPyConsole = this->params->GetBool("ScriptToPyConsole", true);
 }
 
 void MacroManager::open(MacroType eType,const char *sName)

@@ -84,23 +84,19 @@
 			<?if $(var.ProcessorArchitecture)=x64 ?>
 			<Directory Id="ProgramFiles64Folder" Name="PFiles">
                 <Directory Id="INSTALLDIR" Name="FreeCAD$(var.FCVersionMajor).$(var.FCVersionMinor)">
-                    <Directory Id="BinDir" Name="bin" />
-                    <Directory Id="ModDir" Name="Mod" />
-                    <Directory Id="DocDir" Name="doc" />
-					<Directory Id="DataDir" Name="data" >
-						<Directory Id="ExamplesDir" Name="examples" />
-					</Directory>
+                    <Directory Id="BinDir"  Name="bin" />
+                    <Directory Id="ModDir"  Name="Mod" />
+                    <Directory Id="DocDir"  Name="doc" />
+					<Directory Id="DataDir" Name="data" />
                 </Directory>
             </Directory>
 			<?else ?>
 			<Directory Id="ProgramFilesFolder" Name="PFiles">
                 <Directory Id="INSTALLDIR" Name="FreeCAD$(var.FCVersionMajor).$(var.FCVersionMinor)">
-                    <Directory Id="BinDir" Name="bin" />
-                    <Directory Id="ModDir" Name="Mod" />
-                    <Directory Id="DocDir" Name="doc" />
-					<Directory Id="DataDir" Name="data" >
-						<Directory Id="ExamplesDir" Name="examples" />
-					</Directory>
+                    <Directory Id="BinDir"  Name="bin" />
+                    <Directory Id="ModDir"  Name="Mod" />
+                    <Directory Id="DocDir"  Name="doc" />
+					<Directory Id="DataDir" Name="data" />
                 </Directory>
             </Directory>
 			<?endif ?>
@@ -158,6 +154,10 @@
             <ComponentRef Id="CompModDrawing" />
             <ComponentRef Id="CompModRobot" />
             <ComponentRef Id="CompModRobotLibKuka" />
+            <ComponentRef Id="CompModStart" />
+            <ComponentRef Id="CompModStartLibStartPage" />
+            <ComponentRef Id="CompModWeb" />
+            <ComponentRef Id="CompExampleData" />
 		
             <Feature Id="FeatModImage" Title="The Image module" Description="Module to handle pictures" Level="1">
                 <ComponentRef Id="CompModImage" />
