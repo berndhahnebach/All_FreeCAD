@@ -888,6 +888,8 @@ AC_SUBST(DOXYGEN_INCLUDE_PATH)
 dnl **************************************************************************
 
 AC_CONFIG_FILES([Makefile 
+data/Makefile 
+data/examples/Makefile 
 src/Makefile 
 src/Build/Makefile 
 src/3rdParty/Makefile 
@@ -974,6 +976,7 @@ src/Mod/Start/Makefile
 src/Mod/Start/App/Makefile
 src/Mod/Start/Gui/Makefile
 src/Mod/Start/Gui/Resources/Makefile
+src/Mod/Start/StartPage/Makefile
 src/Mod/Idf/Makefile
 src/Mod/TemplatePyMod/Makefile
 src/Tools/Makefile
