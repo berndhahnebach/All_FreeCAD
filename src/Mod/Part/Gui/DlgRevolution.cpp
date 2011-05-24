@@ -46,6 +46,9 @@ DlgRevolution::DlgRevolution(QWidget* parent, Qt::WFlags fl)
   : Gui::LocationDialog(parent, fl)
 {
     ui = new Ui_RevolutionComp(this);
+    ui->baseX->setRange(-DBL_MAX,DBL_MAX);
+    ui->baseY->setRange(-DBL_MAX,DBL_MAX);
+    ui->baseZ->setRange(-DBL_MAX,DBL_MAX);
     findShapes();
 }
 
