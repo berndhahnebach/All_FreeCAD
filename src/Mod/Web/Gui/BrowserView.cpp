@@ -116,7 +116,7 @@ void BrowserView::onLinkClicked (const QUrl & url)
         OpenURLInBrowser(url.toString().toLatin1());
     }
     // run scripts if not from somewhere else!
-    if(scheme.size() < 2 && host.isEmpty()){
+    if((scheme.size() < 2 || scheme==QString::fromLatin1("file"))&& host.isEmpty()){
         QFileInfo fi(path);
         if(fi.exists()){
             QString ext = fi.completeSuffix();
