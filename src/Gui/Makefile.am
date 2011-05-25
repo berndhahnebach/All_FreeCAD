@@ -25,6 +25,7 @@ BUILT_SOURCES=\
 		moc_DlgOnlineHelpImp.cpp \
 		moc_DlgParameterImp.cpp \
 		moc_DlgPreferencesImp.cpp \
+		moc_DlgProjectUtility.cpp \
 		moc_DlgReportViewImp.cpp \
 		moc_DlgRunExternal.cpp \
 		moc_DlgSettings3DViewImp.cpp \
@@ -94,6 +95,7 @@ BUILT_SOURCES=\
 		ui_DlgParameter.h \
 		ui_DlgPreferences.h \
 		ui_DlgProjectInformation.h \
+		ui_DlgProjectUtility.h \
 		ui_DlgReportView.h \
 		ui_DlgRunExternal.h \
 		ui_DlgSettings3DView.h \
@@ -142,6 +144,7 @@ libFreeCADGui_la_UI=\
 		DlgParameter.ui \
 		DlgPreferences.ui \
 		DlgProjectInformation.ui \
+		DlgProjectUtility.ui \
 		DlgReportView.ui \
 		DlgRunExternal.ui \
 		DlgSettings3DView.ui \
@@ -226,6 +229,8 @@ libFreeCADGui_la_SOURCES=\
 		DlgPreferencesImp.h \
 		DlgProjectInformationImp.cpp \
 		DlgProjectInformationImp.h \
+		DlgProjectUtility.cpp \
+		DlgProjectUtility.h \
 		DlgReportViewImp.cpp \
 		DlgReportViewImp.h \
 		DlgRunExternal.cpp \
