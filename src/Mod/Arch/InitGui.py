@@ -60,7 +60,7 @@ App.addImportType("Industry Foundation Classes (*.ifc)","importIFC")
 try:
         import collada
 except:
-        Msg("pycollada not found, no collada support\n")
+        Log("pycollada not found, no collada support\n")
 else:
         App.addImportType("Collada (*.dae)","importDAE")
 
