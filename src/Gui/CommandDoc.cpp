@@ -47,6 +47,7 @@
 #include "BitmapFactory.h"
 #include "Selection.h"
 #include "DlgProjectInformationImp.h"
+#include "DlgProjectUtility.h"
 #include "Transform.h"
 #include "Placement.h"
 #include "WaitCursor.h"
@@ -444,6 +445,34 @@ void StdCmdProjectInfo::activated(int iMsg)
 bool StdCmdProjectInfo::isActive(void)
 {
   return ( getActiveGuiDocument() ? true : false );
+}
+
+//===========================================================================
+// Std_ProjectUtil
+//===========================================================================
+
+DEF_STD_CMD_A(StdCmdProjectUtil);
+
+StdCmdProjectUtil::StdCmdProjectUtil()
+  :Command("Std_ProjectUtil")
+{
+    // seting the 
+    sGroup        = QT_TR_NOOP("Tools");
+    sWhatsThis    = "Std_ProjectUtil";
+    sMenuText     = QT_TR_NOOP("Project utility...");
+    sToolTipText  = QT_TR_NOOP("Utility to extract or create project files");
+    sStatusTip    = QT_TR_NOOP("Utility to extract or create project files");
+}
+
+void StdCmdProjectUtil::activated(int iMsg)
+{
+    Gui::Dialog::DlgProjectUtility dlg(getMainWindow());
+    dlg.exec();
+}
+
+bool StdCmdProjectUtil::isActive(void)
+{
+    return true;
 }
 
 //===========================================================================
@@ -980,6 +1009,7 @@ void CreateDocCommands(void)
     rcCmdMgr.addCommand(new StdCmdSave());
     rcCmdMgr.addCommand(new StdCmdSaveAs());
     rcCmdMgr.addCommand(new StdCmdProjectInfo());
+    rcCmdMgr.addCommand(new StdCmdProjectUtil());
     rcCmdMgr.addCommand(new StdCmdUndo());
     rcCmdMgr.addCommand(new StdCmdRedo());
     rcCmdMgr.addCommand(new StdCmdPrint());
