@@ -386,6 +386,9 @@ void DlgBooleanOperation::accept()
             "Gui.activeDocument().hide(\"%s\")",shapeOne.c_str());
         Gui::Command::doCommand(Gui::Command::Gui,
             "Gui.activeDocument().hide(\"%s\")",shapeTwo.c_str());
+        Gui::Command::doCommand(Gui::Command::Gui,
+            "Gui.activeDocument().%s.ShapeColor = Gui.activeDocument().%s.ShapeColor",
+            objName.c_str(),shapeOne.c_str());
         activeDoc->commitTransaction();
         activeDoc->recompute();
     }
