@@ -64,10 +64,12 @@ SoFCControlPoints::SoFCControlPoints()
 {
     SO_NODE_CONSTRUCTOR(SoFCControlPoints);
 
+    SbVec3f c(1.0f, 0.447059f, 0.337255f);
     SO_NODE_ADD_FIELD(numPolesU, (0));
     SO_NODE_ADD_FIELD(numPolesV, (0));
     SO_NODE_ADD_FIELD(numKnotsU, (0));
     SO_NODE_ADD_FIELD(numKnotsV, (0));
+    SO_NODE_ADD_FIELD(lineColor, (c));
 }
 
 /**
@@ -99,7 +101,7 @@ void SoFCControlPoints::GLRender(SoGLRenderAction *action)
 void SoFCControlPoints::drawControlPoints(const SbVec3f * points,int32_t len) const
 {
     glLineWidth(1.0f);
-    glColor3f(1.0f, 0.447059f, 0.337255f);
+    glColor3fv(lineColor.getValue().getValue());
 
     uint32_t nCtU=numPolesU.getValue();
     uint32_t nCtV=numPolesV.getValue();

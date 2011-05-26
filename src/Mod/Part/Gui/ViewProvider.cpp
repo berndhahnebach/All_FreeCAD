@@ -903,31 +903,64 @@ void ViewProviderPart::showControlPoints(bool show, const App::Property* prop)
 void ViewProviderPart::showControlPointsOfEdge(const TopoDS_Edge& edge)
 {
     std::list<gp_Pnt> poles, knots; 
-    gp_Pnt start, end;
+    Standard_Integer nCt=0;
     BRepAdaptor_Curve curve(edge);
     switch (curve.GetType())
     {
     case GeomAbs_BezierCurve:
         {
             Handle(Geom_BezierCurve) hBezier = curve.Bezier();
-            for (Standard_Integer i = 1; i <= hBezier->NbPoles(); i++)
+            nCt = hBezier->NbPoles();
+            for (Standard_Integer i = 1; i <= nCt; i++)
                 poles.push_back(hBezier->Pole(i));
-            start = hBezier->StartPoint();
-            end   = hBezier->EndPoint();
+            if (hBezier->IsClosed()) {
+                nCt++;
+                poles.push_back(hBezier->Pole(1));
+            }
         }   break;
     case GeomAbs_BSplineCurve:
         {
             Handle(Geom_BSplineCurve) hBSpline = curve.BSpline();
-            for (Standard_Integer i = 1; i <= hBSpline->NbPoles(); i++)
+            nCt = hBSpline->NbPoles();
+            for (Standard_Integer i = 1; i <= nCt; i++)
                 poles.push_back(hBSpline->Pole(i));
-            start = hBSpline->StartPoint();
-            end   = hBSpline->EndPoint();
+            if (hBSpline->IsClosed()) {
+                nCt++;
+                poles.push_back(hBSpline->Pole(1));
+            }
             for (Standard_Integer i = hBSpline->FirstUKnotIndex()+1; i <= hBSpline->LastUKnotIndex()-1; i++)
                 knots.push_back(hBSpline->Value(hBSpline->Knot(i)));
         }   break;
     default:
         break;
     }
+
+    if (poles.empty())
+        return; // nothing to do
+
+    SoCoordinate3 * coords = new SoCoordinate3;
+    coords->point.setNum(nCt + knots.size());
+
+    int index=0;
+    SbVec3f* verts = coords->point.startEditing();
+    for (std::list<gp_Pnt>::iterator p = poles.begin(); p != poles.end(); ++p) {
+        verts[index++].setValue((float)p->X(), (float)p->Y(), (float)p->Z());
+    }
+    for (std::list<gp_Pnt>::iterator k = knots.begin(); k != knots.end(); ++k) {
+        verts[index++].setValue((float)k->X(), (float)k->Y(), (float)k->Z());
+    }
+    coords->point.finishEditing();
+
+
+    SoFCControlPoints* control = new SoFCControlPoints();
+    control->numPolesU = nCt;
+    control->numPolesV = 1;
+
+    SoSeparator* nodes = new SoSeparator();
+    nodes->addChild(coords);
+    nodes->addChild(control);
+
+    pcControlPoints->addChild(nodes);
 }
 
 void ViewProviderPart::showControlPointsOfWire(const TopoDS_Wire& wire)
