@@ -256,6 +256,7 @@ void CmdPartCut::activated(int iMsg)
     doCommand(Doc,"App.activeDocument().%s.Tool = App.activeDocument().%s",FeatName.c_str(),ToolName.c_str());
     doCommand(Gui,"Gui.activeDocument().hide('%s')",BaseName.c_str());
     doCommand(Gui,"Gui.activeDocument().hide('%s')",ToolName.c_str());
+    doCommand(Gui,"Gui.activeDocument().%s.ShapeColor = Gui.activeDocument().%s.ShapeColor", FeatName.c_str(),BaseName.c_str());
     updateActive();
     commitCommand();
 }
@@ -307,6 +308,7 @@ void CmdPartCommon::activated(int iMsg)
     doCommand(Doc,"App.activeDocument().%s.Shapes = [%s]",FeatName.c_str(),ObjectBuf.c_str());
     for (std::vector<std::string>::iterator it = tempSelNames.begin(); it != tempSelNames.end(); ++it)
         doCommand(Gui,"Gui.activeDocument().%s.Visibility=False",it->c_str());
+    doCommand(Gui,"Gui.activeDocument().%s.ShapeColor = Gui.activeDocument().%s.ShapeColor", FeatName.c_str(),tempSelNames.front().c_str());
     updateActive();
     commitCommand();
 }
@@ -358,6 +360,7 @@ void CmdPartFuse::activated(int iMsg)
     doCommand(Doc,"App.activeDocument().%s.Shapes = [%s]",FeatName.c_str(),ObjectBuf.c_str());
     for (std::vector<std::string>::iterator it = tempSelNames.begin(); it != tempSelNames.end(); ++it)
         doCommand(Gui,"Gui.activeDocument().%s.Visibility=False",it->c_str());
+    doCommand(Gui,"Gui.activeDocument().%s.ShapeColor = Gui.activeDocument().%s.ShapeColor", FeatName.c_str(),tempSelNames.front().c_str());
     updateActive();
     commitCommand();
 }
@@ -394,16 +397,18 @@ void CmdPartSection::activated(int iMsg)
         return;
     }
 
-    std::string FeatName = getUniqueObjectName("Section");
-
     std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
+    std::string FeatName = getUniqueObjectName("Section");
+    std::string BaseName  = Sel[0].FeatName;
+    std::string ToolName  = Sel[1].FeatName;
 
     openCommand("Section");
     doCommand(Doc,"App.activeDocument().addObject(\"Part::Section\",\"%s\")",FeatName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Base = App.activeDocument().%s",FeatName.c_str(),Sel[0].FeatName);
-    doCommand(Doc,"App.activeDocument().%s.Tool = App.activeDocument().%s",FeatName.c_str(),Sel[1].FeatName);
-    doCommand(Gui,"Gui.activeDocument().hide('%s')",Sel[0].FeatName);
-    doCommand(Gui,"Gui.activeDocument().hide('%s')",Sel[1].FeatName);
+    doCommand(Doc,"App.activeDocument().%s.Base = App.activeDocument().%s",FeatName.c_str(),BaseName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Tool = App.activeDocument().%s",FeatName.c_str(),ToolName.c_str());
+    doCommand(Gui,"Gui.activeDocument().hide('%s')",BaseName.c_str());
+    doCommand(Gui,"Gui.activeDocument().hide('%s')",ToolName.c_str());
+    doCommand(Gui,"Gui.activeDocument().%s.LineColor = Gui.activeDocument().%s.ShapeColor", FeatName.c_str(),BaseName.c_str());
     updateActive();
     commitCommand();
 }
