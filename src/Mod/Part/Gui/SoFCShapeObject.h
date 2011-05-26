@@ -24,6 +24,7 @@
 #define PARTGUI_SOFCSHAPEOBJECT_H
 
 #include <Inventor/fields/SoSFUInt32.h>
+#include <Inventor/fields/SoSFColor.h>
 #include <Inventor/fields/SoSubField.h>
 #include <Inventor/nodes/SoSubNode.h>
 #include <Inventor/nodes/SoShape.h>
@@ -44,6 +45,7 @@ public:
     SoSFUInt32 numPolesV;
     SoSFUInt32 numKnotsU;
     SoSFUInt32 numKnotsV;
+    SoSFColor  lineColor;
 
 protected:
     virtual ~SoFCControlPoints() {};
