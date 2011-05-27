@@ -383,13 +383,6 @@ def getPoint(target,args,mobile=False,sym=False,workingplane=True):
 		ui.xValue.setEnabled(True)
 		ui.yValue.setEnabled(True)
 		ui.zValue.setEnabled(True)
-                if not plane.weak:
-                        if fcvec.equals(plane.axis,Vector(0,0,1)):
-                                ui.zValue.setEnabled(False)
-                        elif fcvec.equals(plane.axis,Vector(0,1,0)):
-                                ui.yValue.setEnabled(False)
-                        elif fcvec.equals(plane.axis,Vector(1,0,0)):
-                                ui.xValue.setEnabled(False)
 	if target.node:
 		if target.featureName == "Rectangle":
 			ui.displayPoint(point, target.node[0])
@@ -990,6 +983,10 @@ class SelectPlane:
 						pass
 
 	def selectHandler(self, arg):
+                try:
+                        self.offset = float(self.ui.offsetValue.text())
+                except:
+                        self.offset = 0
  		if arg == "XY":
 			plane.alignToPointAndAxis(Vector(0,0,0), Vector(0,0,1), self.offset)
                         self.display('top')
