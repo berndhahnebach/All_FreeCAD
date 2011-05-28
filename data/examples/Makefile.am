@@ -3,6 +3,7 @@
 datadir = @datadir@/data/examples
 data_DATA = \
 		DrawingExample.FCStd \
+		EngineBlock.FCStd \
 		PartDesignExample.FCStd \
 		RobotExample.FCStd \
 		Schenkel.stp
