@@ -214,7 +214,7 @@ float PlaneFit::Fit()
     _vDirU.Set((float)U.X(), (float)U.Y(), (float)U.Z());
     _vDirV.Set((float)V.X(), (float)V.Y(), (float)V.Z());
     _vDirW.Set((float)W.X(), (float)W.Y(), (float)W.Z());
-    _vBase.Set(mx/(float)nSize, my/(float)nSize, mz/(float)nSize);
+    _vBase.Set((float)(mx/nSize), (float)(my/nSize), (float)(mz/nSize));
     float sigma = (float)W.Dot(akMat * W);
 #endif
 
