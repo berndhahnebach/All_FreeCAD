@@ -21,6 +21,11 @@
 				<UserDocu>Return the shape for the geometry.</UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="discretize">
+			<Documentation>
+				<UserDocu>Discretizes the curve using a given deflection and returns a list of points</UserDocu>
+			</Documentation>
+		</Methode>
 		<Methode Name="value">
 			<Documentation>
 				<UserDocu>Computes the point of parameter u on this curve</UserDocu>

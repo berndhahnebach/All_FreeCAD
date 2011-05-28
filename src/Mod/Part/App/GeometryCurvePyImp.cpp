@@ -26,9 +26,11 @@
 # include <BRepBuilderAPI_MakeEdge.hxx>
 # include <gp_Dir.hxx>
 # include <gp_Vec.hxx>
+# include <GCPnts_UniformAbscissa.hxx>
 # include <Geom_Geometry.hxx>
 # include <Geom_Curve.hxx>
 # include <Geom_Surface.hxx>
+# include <GeomAdaptor_Curve.hxx>
 # include <GeomFill.hxx>
 # include <GeomLProp_CLProps.hxx>
 # include <Handle_Geom_RectangularTrimmedSurface.hxx>
@@ -87,6 +89,45 @@ PyObject* GeometryCurvePy::toShape(PyObject *args)
             BRepBuilderAPI_MakeEdge mkBuilder(c, u, v);
             TopoDS_Shape sh = mkBuilder.Shape();
             return new TopoShapeEdgePy(new TopoShape(sh));
+        }
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
+
+    PyErr_SetString(PyExc_Exception, "Geometry is not a curve");
+    return 0;
+}
+
+PyObject* GeometryCurvePy::discretize(PyObject *args)
+{
+    double d;
+    if (!PyArg_ParseTuple(args, "d", &d))
+        return 0;
+
+    Handle_Geom_Geometry g = getGeometryPtr()->handle();
+    Handle_Geom_Curve c = Handle_Geom_Curve::DownCast(g);
+    try {
+        if (!c.IsNull()) {
+            GeomAdaptor_Curve curve_adaptator(c);
+            GCPnts_UniformAbscissa discretizer;
+            discretizer.Initialize (curve_adaptator, d);
+            if (discretizer.IsDone () && discretizer.NbPoints () > 0) {
+                Py::List points;
+                int nbPoints = discretizer.NbPoints ();
+                for (int i=1; i<=nbPoints; i++) {
+                    gp_Pnt p = curve_adaptator.Value (discretizer.Parameter (i));
+                    points.append(Py::Vector(Base::Vector3d(p.X(),p.Y(),p.Z())));
+                }
+
+                return Py::new_reference_to(points);
+            }
+            else {
+                PyErr_SetString(PyExc_Exception, "Descretization of curve failed");
+                return 0;
+            }
         }
     }
     catch (Standard_Failure) {
