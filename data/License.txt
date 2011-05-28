@@ -11,3 +11,15 @@ are
 licensed under:
 
 Creative Commons Attribution Share Alike
+
+
+The files:
+
+EngineBlock.FCStd
+
+are
+(c) 2011 Werner Mayer (wmayer@users.sourceforge.net)
+licensed under:
+
+Creative Commons Attribution Share Alike
+
