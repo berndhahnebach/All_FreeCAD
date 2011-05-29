@@ -33,6 +33,7 @@
 # include <TColgp_HArray1OfPnt.hxx>
 # include <TColStd_Array1OfInteger.hxx>
 # include <Handle_TColgp_HArray1OfPnt.hxx>
+# include <Precision.hxx>
 #endif
 
 #include <Base/VectorPy.h>
@@ -730,7 +731,7 @@ PyObject* BSplineCurvePy::approximate(PyObject *args)
 PyObject* BSplineCurvePy::interpolate(PyObject *args)
 {
     PyObject* obj;
-    double tol3d = 0.0001;
+    double tol3d = Precision::Approximation();
     PyObject* closed = Py_False;
     PyObject* t1=0; PyObject* t2=0;
     if (!PyArg_ParseTuple(args, "O!|O!dO!O!",&(PyList_Type), &obj, &PyBool_Type, &closed, &tol3d,
@@ -770,7 +771,9 @@ PyObject* BSplineCurvePy::interpolate(PyObject *args)
     }
     catch (Standard_Failure) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
-        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        std::string err = e->GetMessageString();
+        if (err.empty()) err = e->DynamicType()->Name();
+        PyErr_SetString(PyExc_Exception, err.c_str());
         return 0;
     }
 }
