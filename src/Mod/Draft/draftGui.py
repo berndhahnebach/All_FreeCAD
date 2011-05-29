@@ -123,11 +123,10 @@ class toolBar:
 #---------------------------------------------------------------------------
                         
 			def setupUi(self, draftToolbar):
-				self.params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
-				paramcolor = self.params.GetUnsigned("color")>>8
-				paramlinewidth = self.params.GetInt("linewidth")
-                                paramfontsize = self.params.GetFloat("textheight")
-				paramconstr = self.params.GetUnsigned("constructioncolor")>>8
+				paramcolor = Draft.getParam("color")>>8
+				paramlinewidth = Draft.getParam("linewidth")
+                                paramfontsize = Draft.getParam("textheight")
+				paramconstr = Draft.getParam("constructioncolor")>>8
 				self.constrMode = False
 				draftToolbar.setObjectName("draftToolbar")
 				self.state = None
@@ -242,7 +241,7 @@ class toolBar:
 
 				self.isRelative = _checkbox("isRelative",checked=True)
 
-                                self.hasFill = _checkbox("hasFill",checked=self.params.GetBool("fillmode"))
+                                self.hasFill = _checkbox("hasFill",checked=Draft.getParam("fillmode"))
 
                                 self.continueCmd = _checkbox("continueCmd",checked=False)
                                 
@@ -273,7 +272,7 @@ class toolBar:
                                 # settings buttons
 
                                 self.wplabel = _pushButton("wplabel", icon='Draft_SelectPlane',hide=False,width=120)
-                                defaultWP = self.params.GetInt("defaultWP")
+                                defaultWP = Draft.getParam("defaultWP")
                                 if defaultWP == 1:
                                         self.wplabel.setText("Top")
                                 elif defaultWP == 2:
@@ -566,8 +565,8 @@ class toolBar:
 				self.color=QtGui.QColorDialog.getColor()
 				self.colorPix.fill(self.color)
 				self.colorButton.setIcon(QtGui.QIcon(self.colorPix))
-				if self.params.GetBool("saveonexit"):
-					self.params.SetUnsigned("color",self.color.rgb()<<8)
+				if Draft.getParam("saveonexit"):
+					Draft.setParam("color",self.color.rgb()<<8)
 				r = float(self.color.red()/255.0)
 				g = float(self.color.green()/255.0)
 				b = float(self.color.blue()/255.0)
@@ -595,15 +594,15 @@ class toolBar:
 						i.ViewObject.ShapeColor = col
 					
 			def setwidth(self,val):
-				if self.params.GetBool("saveonexit"):
-					self.params.SetInt("linewidth",int(val))
+				if Draft.getParam("saveonexit"):
+					Draft.setParam("linewidth",int(val))
 				for i in FreeCADGui.Selection.getSelection():
 					if "LineWidth" in i.ViewObject.PropertiesList:
 						i.ViewObject.LineWidth = float(val)
 
                         def setfontsize(self,val):
-				if self.params.GetBool("saveonexit"):
-					self.params.SetFloat("textheight",float(val))
+				if Draft.getParam("saveonexit"):
+					Draft.setParam("textheight",float(val))
 				for i in FreeCADGui.Selection.getSelection():
 					if "FontSize" in i.ViewObject.PropertiesList:
 						i.ViewObject.FontSize = float(val)
@@ -769,7 +768,7 @@ class toolBar:
 			def getDefaultColor(self,type,rgb=False):
 				"gets color from the preferences or toolbar"
 				if type == "snap":
-					color = self.params.GetUnsigned("snapcolor")
+					color = Draft.getParam("snapcolor")
 					r = ((color>>24)&0xFF)/255
 					g = ((color>>16)&0xFF)/255
 					b = ((color>>8)&0xFF)/255
@@ -782,7 +781,7 @@ class toolBar:
 					g = float(self.facecolor.green()/255.0)
 					b = float(self.facecolor.blue()/255.0)
 				elif type == "constr":
-					color = QtGui.QColor(self.params.GetUnsigned("constructioncolor")>>8)
+					color = QtGui.QColor(Draft.getParam("constructioncolor")>>8)
 					r = color.red()/255.0
 					g = color.green()/255.0
 					b = color.blue()/255.0

@@ -235,6 +235,26 @@
        </layout>
       </item>
       <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_18">
+        <item>
+         <widget class="Gui::PrefCheckBox" name="gui::prefcheckbox_3">
+          <property name="toolTip">
+           <string>Normally, after copying objects, the copies get selected. If this option is checked, the base objects will be selected instead.</string>
+          </property>
+          <property name="text">
+           <string>Select base objects after copying</string>
+          </property>
+          <property name="prefEntry" stdset="0">
+           <cstring>selectBaseObjects</cstring>
+          </property>
+          <property name="prefPath" stdset="0">
+           <cstring>Mod/Draft</cstring>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
        <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
          <widget class="Gui::PrefCheckBox" name="gui::prefcheckbox_8">
