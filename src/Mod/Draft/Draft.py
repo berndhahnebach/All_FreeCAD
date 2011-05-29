@@ -90,16 +90,50 @@ def typecheck (args_and_types, name="?"):
                         w += str(v) + " is not " + str(t) + "\n"
 			FreeCAD.Console.PrintWarning(w)
 			raise TypeError("Draft." + str(name))
+
+def getParamType(param):
+        if param in ["dimsymbol","dimPrecision","dimorientation","precision","defaultWP",
+                     "snapRange","gridEvery","lineweight"]:
+                return "int"
+        elif param in ["constructiongroupname","textfont","patternFile","template"]:
+		return "string"
+        elif param in ["textheight","tolerance","gridSpacing"]:
+                return "float"
+        elif param in ["selectBaseObjects","alwaysSnap","grid","fillmode","saveonexit"]:
+                return "bool"
+        elif param in ["color","constructioncolor","snapcolor"]:
+                return "unsigned"
+        else:
+                return None
+
+def getParam(param):
+        "getParam(parameterName): returns a Draft parameter value from the current config"
+        p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
+        t = getParamType(param)
+        if t == "int": return p.GetInt(param)
+        elif t == "string": return p.GetString(param)
+        elif t == "float": return p.GetFloat(param)
+        elif t == "bool": return p.GetBool(param)
+        elif t == "unsigned": return p.GetUnsigned(param)
+        else: return None
+
+def setParam(param,value):
+        "setParam(parameterName,value): sets a Draft parameter with the given value"
+        p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
+        t = getParamType(param)
+        if t == "int": p.SetInt(param,value)
+        elif t == "string": p.SetString(param,value)
+        elif t == "float": p.SetFloat(param,value)
+        elif t == "bool": p.SetBool(param,value)
+        elif t == "unsigned": p.SetUnsigned(param,value)
                 
 def precision():
         "precision(): returns the precision value from Draft user settings"
-        params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
-	return params.GetInt("precision")
+	return getParam("precision")
 
 def tolerance():
         "tolerance(): returns the tolerance value from Draft user settings"
-        params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
-	return params.GetFloat("tolerance")
+	return getParam("tolerance")
         
 def getRealName(name):
 	"getRealName(string): strips the trailing numbers from a string name"
@@ -138,12 +172,10 @@ def ungroup(obj):
                 grp = FreeCAD.ActiveDocument.getObject(g)
                 if grp.hasObject(obj):
                         grp.removeObject(obj)
-        
-                
+      
 def dimSymbol():
         "returns the current dim symbol from the preferences as a pivy SoMarkerSet"
-        s = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").\
-            GetInt("dimsymbol")
+        s = getParam("dimsymbol")
         marker = coin.SoMarkerSet()
         if s == 0: marker.markerIndex = coin.SoMarkerSet.CIRCLE_FILLED_5_5
         elif s == 1: marker.markerIndex = coin.SoMarkerSet.CIRCLE_FILLED_7_7
@@ -197,8 +229,7 @@ def formatObject(target,origin=None):
 	doc = FreeCAD.ActiveDocument
 	if ui.constrButton.isChecked():
 		col = fcol = ui.getDefaultColor("constr")
-		gname = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").\
-		GetString("constructiongroupname")
+		gname = getParam("constructiongroupname")
 		if gname:
 			grp = doc.getObject(gname)
 			if not grp: grp = doc.addObject("App::DocumentObjectGroup",gname) 
@@ -449,12 +480,11 @@ def makeText(stringslist,point=Vector(0,0,0),screen=False):
         obj=FreeCAD.ActiveDocument.addObject("App::Annotation","Text")
         obj.LabelText=textbuffer
         obj.Position=point
-        params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
         if not screen: obj.ViewObject.DisplayMode="World"
-        h = params.GetFloat("textheight")
+        h = getParam("textheight")
         if screen: h = h*10
         obj.ViewObject.FontSize = h
-        obj.ViewObject.FontName = params.GetString("textfont")
+        obj.ViewObject.FontName = getParam("textfont")
         obj.ViewObject.LineSpacing = 0.6
         formatObject(obj)
         select(obj)
@@ -582,6 +612,10 @@ def move(objectslist,vector,copy=False):
                                 pla = obj.Placement
                                 pla.move(vector)
                 newobjlist.append(newobj)
+        if copy and getParam("selectBaseObjects"):
+                select(objectslist)
+        else:
+                select(newobjlist)
         if len(newobjlist) == 1: return newobjlist[0]
         return newobjlist
 
@@ -641,6 +675,10 @@ def rotate(objectslist,angle,center=Vector(0,0,0),axis=Vector(0,0,1),copy=False)
                 if copy:
                         formatObject(newobj,obj)
                 newobjlist.append(newobj)
+        if copy and getParam("selectBaseObjects"):
+                select(objectslist)
+        else:
+                select(newobjlist)
         if len(newobjlist) == 1: return newobjlist[0]
         return newobjlist
 
@@ -695,6 +733,10 @@ def scale(objectslist,delta,center=Vector(0,0,0),copy=False):
                         obj.ViewObject.Fontsize = factor
 		if copy: formatObject(newobj,obj)
                 newobjlist.append(newobj)
+        if copy and getParam("selectBaseObjects"):
+                select(objectslist)
+        else:
+                select(newobjlist)
         if len(newobjlist) == 1: return newobjlist[0]
         return newobjlist
 
@@ -796,6 +838,10 @@ def offset(obj,delta,copy=False,bind=False,sym=False):
                 elif getType(obj) == "Polygon":
                         obj.Radius = getRadius(obj,delta)
                 newobj = obj
+        if copy and getParam("selectBaseObjects"):
+                select(newobj)
+        else:
+                select(obj)
         return newobj
 
 def draftify(objectslist):
@@ -884,7 +930,7 @@ def getSVG(obj,modifier=100,textmodifier=100,linestyle="continuous",fillstyle="s
 
         if getType(obj) == "Dimension":
 		p1,p2,p3,p4,tbase,angle,norm = obj.ViewObject.Proxy.calcGeom(obj)
-                dimText = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("dimPrecision")
+                dimText = getParam("dimPrecision")
                 dimText = "%."+str(dimText)+"f"
                 p1 = getProj(p1)
                 p2 = getProj(p2)
@@ -1075,7 +1121,6 @@ class Dimension:
 class ViewProviderDimension:
 	"A View Provider for the Dimension object"
 	def __init__(self, obj):
-		prm = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
 		obj.addProperty("App::PropertyLength","FontSize","Base","Font size")
 		obj.addProperty("App::PropertyString","FontName","Base","Font name")
 		obj.addProperty("App::PropertyLength","LineWidth","Base","Line width")
@@ -1085,8 +1130,8 @@ class ViewProviderDimension:
                 obj.addProperty("App::PropertyString","Override","Base","Text override. Use 'dim' to insert the dimension length")
 		obj.Proxy = self
 		self.Object = obj.Object
-                obj.FontSize=prm.GetFloat("textheight")
-                obj.FontName=prm.GetString("textfont")
+                obj.FontSize=getParam("textheight")
+                obj.FontName=getParam("textfont")
                 obj.ExtLines=0.3
                 obj.Override = ''
 
@@ -1111,8 +1156,7 @@ class ViewProviderDimension:
 			proj = ed.cross(Vector(0,0,1))
 		angle = -fcvec.angle(p3.sub(p2))
 		if (angle >= math.pi/2) or (angle < -math.pi/2): angle = math.pi+angle
-                s = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").\
-                    GetInt("dimorientation")
+                s = getParam("dimorientation")
                 if s == 0:
                         if (round(angle,precision()) == round(-math.pi/2,precision())) \
                         or (round(angle,precision()) == round(1.5*math.pi,precision())):
@@ -1217,7 +1261,7 @@ class ViewProviderDimension:
 		p1,p2,p3,p4,tbase,angle,norm = self.calcGeom(obj)
                 if 'Override' in obj.ViewObject.PropertiesList:
                         text = str(obj.ViewObject.Override)
-                dtext = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("dimPrecision")
+                dtext = getParam("dimPrecision")
                 dtext = "%."+str(dtext)+"f"
                 dtext = (dtext % p3.sub(p2).Length)
                 if text:
@@ -1356,7 +1400,6 @@ class AngularDimension:
 class ViewProviderAngularDimension:
 	"A View Provider for the Angular Dimension object"
 	def __init__(self, obj):
-		prm = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
 		obj.addProperty("App::PropertyLength","FontSize","Base","Font size")
 		obj.addProperty("App::PropertyString","FontName","Base","Font name")
 		obj.addProperty("App::PropertyLength","LineWidth","Base","Line width")
@@ -1365,8 +1408,8 @@ class ViewProviderAngularDimension:
                 obj.addProperty("App::PropertyString","Override","Base","Text override. Use 'dim' to insert the dimension length")
 		obj.Proxy = self
 		self.Object = obj.Object
-                obj.FontSize=prm.GetFloat("textheight")
-                obj.FontName=prm.GetString("textfont")
+                obj.FontSize=getParam("textheight")
+                obj.FontName=getParam("textfont")
                 obj.Override = ''
 
         def attach(self, vobj):
@@ -1441,8 +1484,7 @@ class ViewProviderAngularDimension:
                 trot = fcvec.angle(rv)-math.pi/2
                 if (trot > math.pi/2) or (trot < -math.pi/2):
                         trot = trot + math.pi
-                s = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").\
-                    GetInt("dimorientation")
+                s = getParam("dimorientation")
                 if s == 0:
                         if round(trot,precision()) == round(-math.pi/2,precision()):
                                 trot = math.pi/2
@@ -1468,7 +1510,7 @@ class ViewProviderAngularDimension:
                 self.selnode.addChild(self.arc)
                 if 'Override' in obj.ViewObject.PropertiesList:
                         text = str(obj.ViewObject.Override)
-                dtext = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("dimPrecision")
+                dtext = getParam("dimPrecision")
                 dtext = "%."+str(dtext)+"f"
                 if obj.LastAngle > obj.FirstAngle:
                         dtext = (dtext % (obj.LastAngle-obj.FirstAngle))+'\xb0'

@@ -59,7 +59,7 @@ def msg(text=None,mode=None):
 
 # loads the fill patterns
 FreeCAD.svgpatterns = importSVG.getContents(Draft_rc.qt_resource_data,'pattern',True)
-altpat = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetString("patternFile")
+altpat = Draft.getParam("patternFile")
 if os.path.isdir(altpat):
         for f in os.listdir(altpat):
                 if '.svg' in f:
@@ -68,7 +68,7 @@ if os.path.isdir(altpat):
 
 # sets the default working plane
 plane = WorkingPlane.plane()
-defaultWP = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("defaultWP")
+defaultWP = Draft.getParam("defaultWP")
 if defaultWP == 1: plane.alignToPointAndAxis(Vector(0,0,0), Vector(0,0,1), 0)
 elif defaultWP == 2: plane.alignToPointAndAxis(Vector(0,0,0), Vector(0,1,0), 0)
 elif defaultWP == 3: plane.alignToPointAndAxis(Vector(0,0,0), Vector(1,0,0), 0)
@@ -154,12 +154,10 @@ def snapPoint(target,point,cursor,ctrl=False):
                 # return gp[fcgeo.findClosest(point,gp)]
 
 	# checking if alwaySnap setting is on
-	if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").\
-		GetBool("alwaysSnap"): ctrl = True
+	if Draft.getParam("alwaysSnap"): ctrl = True
 
         # setting Radius
-        radius =  getScreenDist(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").\
-		GetInt("snapRange"),cursor)
+        radius =  getScreenDist(Draft.getParam("snapRange"),cursor)
 	
 	snapped=target.view.getObjectInfo((cursor[0],cursor[1]))
 
@@ -178,6 +176,9 @@ def snapPoint(target,point,cursor,ctrl=False):
 		return point
 	else:
                 obj = target.doc.getObject(snapped['Object'])
+                if not obj.ViewObject.Selectable:
+                        target.snap.switch.whichChild = -1
+                        return point
                 if not ctrl:
                         # are we in passive snap?
                         snapArray = [getPassivePoint(snapped)]
@@ -827,9 +828,9 @@ class gridTracker(Tracker):
         "A grid tracker"
         def __init__(self):
                 # self.space = 1
-                self.space = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetFloat("gridSpacing")
+                self.space = Draft.getParam("gridSpacing")
                 # self.mainlines = 10
-                self.mainlines = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("gridEvery")
+                self.mainlines = Draft.getParam("gridEvery")
                 self.numlines = 100
                 col = [0.2,0.2,0.3]
 
@@ -1064,7 +1065,7 @@ class Creator:
 			self.constrain = None
 			self.obj = None
                         self.planetrack = PlaneTracker()
-                        if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetBool("grid"):
+                        if Draft.getParam("grid"):
                                 self.grid = gridTracker()
                                 self.grid.set()
                         else:
@@ -2285,7 +2286,7 @@ class Modifier:
                         self.ui.cmdlabel.setText(name)
 			self.featureName = name
                         self.planetrack = PlaneTracker()
-                        if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetBool("grid"):
+                        if Draft.getParam("grid"):
                                 self.grid = gridTracker()
                                 self.grid.set()
                         else:
@@ -3556,7 +3557,7 @@ class Drawing(Modifier):
                                                 self.page.addObject(view)
 
         def createDefaultPage(self):
-                template = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetString("template")
+                template = Draft.getParam("template")
                 if not template:
                         template = FreeCAD.getResourceDir()+'Mod/Drawing/Templates/A3_Landscape.svg'
                 page = self.doc.addObject('Drawing::FeaturePage','Page')
@@ -3726,9 +3727,13 @@ class Edit(Modifier):
                                                                 self.ui.pointUi()
                                                                 self.ui.isRelative.show()
                                                                 self.editing = int(snapped['Component'][8:])
+                                                                self.trackers[self.editing].off()
+                                                                self.obj.ViewObject.Selectable = False
                                                                 if "Points" in self.obj.PropertiesList:
                                                                         self.node.append(self.obj.Points[self.editing])
                                 else:
+                                        self.trackers[self.editing].on()
+                                        self.obj.ViewObject.Selectable = True
                                         self.numericInput(self.trackers[self.editing].get())
 
         def update(self,v):
