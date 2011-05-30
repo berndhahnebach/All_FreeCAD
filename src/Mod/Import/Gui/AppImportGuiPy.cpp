@@ -190,6 +190,9 @@ static PyObject * exporter(PyObject *self, PyObject *args)
                         hColors->SetColor(col_label, col, XCAFDoc_ColorGen);
                     }
                 }
+                else {
+                    Base::Console().Message("'%s' is not a shape, export will be ignored.\n", obj->Label.getValue());
+                }
             }
         }
 
