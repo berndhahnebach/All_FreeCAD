@@ -123,6 +123,8 @@ public:
     int countPoles() const;
     void setPole(int index, const Base::Vector3d&, double weight=-1);
     std::vector<Base::Vector3d> getPoles() const;
+    bool join(const Handle_Geom_BSplineCurve&);
+    void makeC1Continuous(double, double);
 
     // Persistence implementer ---------------------
     virtual unsigned int getMemSize(void) const;
