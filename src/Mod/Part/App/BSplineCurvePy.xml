@@ -278,5 +278,19 @@ from the knots table of this B-Spline curve.</UserDocu>
 				</UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="join">
+			<Documentation>
+				<UserDocu>
+					Build a new spline by joining this and a second spline.
+				</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="makeC1Continuous">
+			<Documentation>
+				<UserDocu>
+					Tries to make the spline C1-continuous where possible.
+				</UserDocu>
+			</Documentation>
+		</Methode>
 	</PythonExport>
 </GenerateModel>

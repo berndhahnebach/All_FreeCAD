@@ -843,6 +843,50 @@ PyObject* BSplineCurvePy::toBezier(PyObject *args)
     return Py::new_reference_to(list);
 }
 
+PyObject* BSplineCurvePy::join(PyObject *args)
+{
+    PyObject* c;
+    if (!PyArg_ParseTuple(args, "O!", &BSplineCurvePy::Type, &c))
+        return 0;
+
+    GeomBSplineCurve* curve1 = this->getGeomBSplineCurvePtr();
+    BSplineCurvePy* curve2 = static_cast<BSplineCurvePy*>(c);
+    Handle_Geom_BSplineCurve spline = Handle_Geom_BSplineCurve::DownCast
+        (curve2->getGeomBSplineCurvePtr()->handle());
+
+    bool ok = curve1->join(spline);
+
+    if (ok) {
+        Py_INCREF(Py_True);
+        return Py_True;
+    }
+    else {
+        Py_INCREF(Py_False);
+        return Py_False;
+    }
+}
+
+PyObject* BSplineCurvePy::makeC1Continuous(PyObject *args)
+{
+    double tol = Precision::Approximation();
+    double ang_tol = 1.0e-7;
+    if (!PyArg_ParseTuple(args, "|dd", &tol, &ang_tol))
+        return 0;
+
+    try {
+        GeomBSplineCurve* spline = this->getGeomBSplineCurvePtr();
+        spline->makeC1Continuous(tol, ang_tol);
+        Py_Return;
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        std::string err = e->GetMessageString();
+        if (err.empty()) err = e->DynamicType()->Name();
+        PyErr_SetString(PyExc_Exception, err.c_str());
+        return 0;
+    }
+}
+
 PyObject* BSplineCurvePy::getCustomAttributes(const char* /*attr*/) const
 {
     return 0;

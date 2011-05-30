@@ -47,6 +47,8 @@
 # include <Geom_RectangularTrimmedSurface.hxx>
 # include <Geom_SurfaceOfRevolution.hxx>
 # include <Geom_SurfaceOfLinearExtrusion.hxx>
+# include <GeomConvert.hxx>
+# include <GeomConvert_CompCurveToBSplineCurve.hxx>
 # include <GeomLProp_CLProps.hxx>
 # include <GeomLProp_SLProps.hxx>
 # include <gp_Circ.hxx>
@@ -329,6 +331,20 @@ std::vector<Base::Vector3d> GeomBSplineCurve::getPoles() const
         poles.push_back(Base::Vector3d(pnt.X(), pnt.Y(), pnt.Z()));
     }
     return poles;
+}
+
+bool GeomBSplineCurve::join(const Handle_Geom_BSplineCurve& spline)
+{
+    GeomConvert_CompCurveToBSplineCurve ccbc(this->myCurve);
+    if (!ccbc.Add(spline, Precision::Approximation()))
+        return false;
+    this->myCurve = ccbc.BSplineCurve();
+    return true;
+}
+
+void GeomBSplineCurve::makeC1Continuous(double tol, double ang_tol)
+{
+    GeomConvert::C0BSplineToC1BSplineCurve(this->myCurve, tol, ang_tol);
 }
 
 // Persistence implementer 
