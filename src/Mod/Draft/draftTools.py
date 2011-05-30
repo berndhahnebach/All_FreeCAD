@@ -1077,7 +1077,7 @@ class Creator:
                         return True
                 else:
                         return False
-		
+
 	def finish(self):
 		self.node=[]
                 self.planetrack.finalize()
@@ -1106,8 +1106,8 @@ class Line(Creator):
 			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Line", "Line"),
 			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Line", "Creates a 2-point line. CTRL to snap, SHIFT to constrain")}
 
-	def Activated(self):
-		Creator.Activated(self,"Line")
+	def Activated(self,name="Line"):
+		Creator.Activated(self,name)
 		if self.doc:
                         self.obj = None
 			self.ui.lineUi()
@@ -1119,7 +1119,7 @@ class Line(Creator):
 			self.call = self.view.addEventCallback("SoEvent",self.action)
 			msg(translate("draft", "Pick first point:\n"))
 
-	def finish(self,closed=False):
+	def finish(self,closed=False,cont=False):
 		"terminates the operation and closes the poly if asked"
                 if self.obj:
                         old = self.obj.Name
@@ -1134,6 +1134,9 @@ class Line(Creator):
 			self.constraintrack.finalize()
 			self.snap.finalize()
 		Creator.finish(self)
+                if cont and self.ui:
+                                if self.ui.continueCmd.isChecked():
+                                        self.Activated()
 
 	def action(self,arg):
 		"scene event handler"
@@ -1150,7 +1153,7 @@ class Line(Creator):
 		elif (arg["Type"] == "SoMouseButtonEvent"):
 			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
 				if (arg["Position"] == self.pos):
-					self.finish(False)
+					self.finish(False,cont=True)
 				else:
                                         if not self.node: self.support = getSupport(arg)
 					point,ctrlPoint = getPoint(self,arg)
@@ -1159,7 +1162,7 @@ class Line(Creator):
 					self.linetrack.p1(point)
 					self.drawSegment(point)
 					if (not self.isWire and len(self.node) == 2):
-						self.finish(False)
+						self.finish(False,cont=True)
 					if (len(self.node) > 2):
                                                 # DNC: allows to close the curve
                                                 # by placing ends close to each other
@@ -1168,7 +1171,7 @@ class Line(Creator):
                                                 # if fcvec.equals(point,self.node[0]):
                                                 if ((point-self.node[0]).Length < Draft.tolerance()):
 							self.undolast()
-							self.finish(True)
+							self.finish(True,cont=True)
                                                         msg(translate("draft", "Wire has been closed\n"))
 
 	def undolast(self):
@@ -1215,7 +1218,7 @@ class Line(Creator):
 		self.linetrack.p1(point)
 		self.drawSegment(point)
 		if (not self.isWire and len(self.node) == 2):
-			self.finish(False)
+			self.finish(False,cont=True)
 		if self.ui.xValue.isEnabled():
 			self.ui.xValue.setFocus()
 			self.ui.xValue.selectAll()
@@ -1225,8 +1228,6 @@ class Line(Creator):
                 else:
                         self.ui.zValue.setFocus()
 			self.ui.zValue.selectAll()
-
-
 
 class Wire(Line):
         "a FreeCAD command for creating a wire"
@@ -1250,7 +1251,7 @@ class BSpline(Line):
 			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_BSpline", "Creates a multiple-point b-spline. CTRL to snap, SHIFT to constrain")}
 
         def Activated(self):
-                Line.Activated(self)
+                Line.Activated(self,"BSpline")
                 if self.doc:
                         self.bsplinetrack = bsplineTracker()
 
@@ -1269,7 +1270,7 @@ class BSpline(Line):
                 elif (arg["Type"] == "SoMouseButtonEvent"):
                         if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
                                 if (arg["Position"] == self.pos):
-                                        self.finish(False)
+                                        self.finish(False,cont=True)
                                 else:
                                         if not self.node: self.support = getSupport(arg)
                                         point,ctrlPoint = getPoint(self,arg)
@@ -1277,7 +1278,7 @@ class BSpline(Line):
                                         self.node.append(point)
                                         self.drawUpdate(point)
                                         if (not self.isWire and len(self.node) == 2):
-                                                self.finish(False)
+                                                self.finish(False,cont=True)
                                         if (len(self.node) > 2):
                                                 # DNC: allows to close the curve
                                                 # by placing ends close to each other
@@ -1285,7 +1286,7 @@ class BSpline(Line):
                                                 # old code has been to insensitive
                                                 if ((point-self.node[0]).Length < Draft.tolerance()):
                                                         self.undolast()
-                                                        self.finish(True)
+                                                        self.finish(True,cont=True)
                                                         msg(translate("draft", "Spline has been closed\n"))
 
         def undolast(self):
@@ -1308,8 +1309,8 @@ class BSpline(Line):
 			spline.interpolate(self.node, False)
 			self.obj.Shape = spline.toShape()
 			msg(translate("draft", "Pick next point, or (F)inish or (C)lose:\n"))
-			
-	def finish(self,closed=False):
+	
+	def finish(self,closed=False,cont=False):
 		"terminates the operation and closes the poly if asked"
 		if (len(self.node) > 1):
                         old = self.obj.Name
@@ -1322,6 +1323,9 @@ class BSpline(Line):
 			self.constraintrack.finalize()
 			self.snap.finalize()
 		Creator.finish(self)
+                if cont and self.ui:
+                                if self.ui.continueCmd.isChecked():
+                                        self.Activated()
 
 class FinishLine:
 	"a FreeCAD command to finish any running Line drawing operation"
@@ -1386,19 +1390,22 @@ class Rectangle(Creator):
 		if self.ui:
 			self.refpoint = None
 			self.ui.pointUi()
-                        self.ui.hasFill.show()
+                        self.ui.extUi()
 			self.call = self.view.addEventCallback("SoEvent",self.action)
 			self.snap = snapTracker()
 			self.rect = rectangleTracker()
 			msg(translate("draft", "Pick first point:\n"))
 
-	def finish(self,closed=False):
+	def finish(self,closed=False,cont=False):
 		"terminates the operation and closes the poly if asked"
 		Creator.finish(self) 
 		if self.ui:
 			self.rect.off()
 			self.rect.finalize()
 			self.snap.finalize()
+                if cont and self.ui:
+                        if self.ui.continueCmd.isChecked():
+                                self.Activated()
 
 	def createObject(self):
 		"creates the final object in the current doc"
@@ -1416,7 +1423,7 @@ class Rectangle(Creator):
                 self.doc.openTransaction("Create "+self.featureName)
                 Draft.makeRectangle(length,height,p,self.ui.hasFill.isChecked(),support=self.support)
                 self.doc.commitTransaction()
-                self.finish()
+                self.finish(cont=True)
 
 	def action(self,arg):
 		"scene event handler"
@@ -1484,7 +1491,7 @@ class Arc(Creator):
 			self.call = self.view.addEventCallback("SoEvent",self.action)
 			msg(translate("draft", "Pick center point:\n"))
 
-	def finish(self,closed=False):
+	def finish(self,closed=False,cont=False):
 		"finishes the arc"
 		Creator.finish(self)
 		if self.ui:
@@ -1493,6 +1500,9 @@ class Arc(Creator):
 			self.constraintrack.finalize()
 			self.arctrack.finalize()
 			self.doc.recompute()
+                if cont and self.ui:
+                        if self.ui.continueCmd.isChecked():
+                                self.Activated()
 
 	def updateAngle(self, angle):
 		# previous absolute angle
@@ -1690,7 +1700,7 @@ class Arc(Creator):
                         if end < sta: sta,end = end,sta
                         Draft.makeCircle(self.rad,p,self.ui.hasFill.isChecked(),sta,end,support=self.support)
                 self.doc.commitTransaction()
-                self.finish()
+                self.finish(cont=True)
 
 	def numericInput(self,numx,numy,numz):
 		"this function gets called by the toolbar when valid x, y, and z have been entered there"
@@ -1780,6 +1790,7 @@ class Polygon(Creator):
 			self.tangents = []
 			self.tanpoints = []
 			self.ui.pointUi()
+                        self.ui.extUi()
                         self.ui.numFaces.show()
 			self.altdown = False
 			self.ui.sourceCmd = self
@@ -1790,7 +1801,7 @@ class Polygon(Creator):
 			self.call = self.view.addEventCallback("SoEvent",self.action)
 			msg(translate("draft", "Pick center point:\n"))
 
-	def finish(self,closed=False):
+	def finish(self,closed=False,cont=False):
 		"finishes the arc"
 		Creator.finish(self)
 		if self.ui:
@@ -1799,6 +1810,9 @@ class Polygon(Creator):
 			self.constraintrack.finalize()
 			self.arctrack.finalize()
 			self.doc.recompute()
+                if cont and self.ui:
+                        if self.ui.continueCmd.isChecked():
+                                self.Activated()
 
 	def action(self,arg):
 		"scene event handler"
@@ -1917,7 +1931,7 @@ class Polygon(Creator):
                 self.doc.openTransaction("Create Polygon")                     
                 Draft.makePolygon(self.ui.numFaces.value(),self.rad,True,p,face=self.ui.hasFill.isChecked(),support=self.support)
                 self.doc.commitTransaction()
-                self.finish()
+                self.finish(cont=True)
 
 	def numericInput(self,numx,numy,numz):
 		"this function gets called by the toolbar when valid x, y, and z have been entered there"
@@ -1972,19 +1986,22 @@ class Text(Creator):
 			msg(translate("draft", "Pick location point:\n"))
 			FreeCADGui.draftToolBar.draftWidget.setVisible(True)
 
-	def finish(self,closed=False):
+	def finish(self,closed=False,cont=False):
 		"terminates the operation"
 		Creator.finish(self)
 		if self.ui:
 			self.snap.finalize()
 			del self.dialog
+                if cont and self.ui:
+                        if self.ui.continueCmd.isChecked():
+                                self.Activated()
 
 	def createObject(self):
 		"creates an object in the current doc"
 		self.doc.openTransaction("Create "+self.featureName)
                 Draft.makeText(self.text,self.node[0])
 		self.doc.commitTransaction()
-		self.finish()
+		self.finish(cont=True)
 
 	def action(self,arg):
 		"scene event handler"
@@ -2340,7 +2357,7 @@ class Move(Modifier):
 		self.sel = Draft.getSelection()
                 self.sel = Draft.getGroupContents(self.sel)
 		self.ui.pointUi()
-                self.ui.isCopy.show()
+                self.ui.modUi()
 		self.ui.xValue.setFocus()
 		self.ui.xValue.selectAll()
 		self.snap = snapTracker()
@@ -2351,13 +2368,17 @@ class Move(Modifier):
 		msg(translate("draft", "Pick start point:\n"))
 		self.ui.cross(True)
 
-	def finish(self,closed=False):
+	def finish(self,closed=False,cont=False):
 		Modifier.finish(self)
 		if self.ui:
 			self.ghost.finalize()
 			self.snap.finalize()
 			self.linetrack.finalize()
 			self.constraintrack.finalize()
+                if cont and self.ui:
+                        if self.ui.continueCmd.isChecked():
+                                FreeCADGui.Selection.clearSelection()
+                                self.Activated()
 
 	def move(self,delta,copy=False):
 		"moving the real shapes"
@@ -2405,7 +2426,7 @@ class Move(Modifier):
 					if arg["AltDown"]:
 						self.extendedCopy = True
 					else:
-						self.finish()
+						self.finish(cont=True)
 
 	def numericInput(self,numx,numy,numz):
 		"this function gets called by the toolbar when valid x, y, and z have been entered there"
@@ -2424,7 +2445,7 @@ class Move(Modifier):
 				self.move(point.sub(last),True)
 			else:
 				self.move(point.sub(last))
-			self.finish()
+			self.finish(cont=True)
 
 			
 class ApplyStyle(Modifier):
@@ -2500,7 +2521,7 @@ class Rotate(Modifier):
 		msg(translate("draft", "Pick rotation center:\n"))
 		self.ui.cross(True)
 				
-	def finish(self,closed=False):
+	def finish(self,closed=False,cont=False):
 		"finishes the arc"
 		Modifier.finish(self)
 		if self.ui:
@@ -2510,6 +2531,10 @@ class Rotate(Modifier):
 			self.arctrack.finalize()
 			self.ghost.finalize()
 			self.doc.recompute()
+                if cont and self.ui:
+                        if self.ui.continueCmd.isChecked():
+                                FreeCADGui.Selection.clearSelection()
+                                self.Activated()
 
 	def rot (self,angle,copy=False):
 		"rotating the real shapes"
@@ -2615,7 +2640,7 @@ class Rotate(Modifier):
 					if arg["AltDown"]:
 						self.extendedCopy = True
 					else:
-						self.finish()
+						self.finish(cont=True)
 
 	def numericInput(self,numx,numy,numz):
 		"this function gets called by the toolbar when valid x, y, and z have been entered there"
@@ -2644,7 +2669,7 @@ class Rotate(Modifier):
 			msg(translate("draft", "Pick rotation angle:\n"))
 		else:
 			self.rot(math.radians(rad),self.ui.isCopy.isChecked())
-			self.finish()
+			self.finish(cont=True)
 
 
 class Offset(Modifier):
@@ -3402,6 +3427,7 @@ class Scale(Modifier):
 		self.sel = Draft.getSelection()
                 self.sel = Draft.getGroupContents(self.sel)
 		self.ui.pointUi()
+                self.ui.modUi()
 		self.ui.xValue.setFocus()
 		self.ui.xValue.selectAll()
 		self.snap = snapTracker()
@@ -3412,13 +3438,17 @@ class Scale(Modifier):
 		msg(translate("draft", "Pick base point:\n"))
 		self.ui.cross(True)
 
-	def finish(self,closed=False):
+	def finish(self,closed=False,cont=False):
 		Modifier.finish(self)
 		if self.ui:
 			self.ghost.finalize()
 			self.snap.finalize()
 			self.linetrack.finalize()
 			self.constraintrack.finalize()
+                if cont and self.ui:
+                        if self.ui.continueCmd.isChecked():
+                                FreeCADGui.Selection.clearSelection()
+                                self.Activated()
 
 	def scale(self,delta,copy=False):
 		"moving the real shapes"
@@ -3469,7 +3499,7 @@ class Scale(Modifier):
 					if arg["AltDown"]:
 						self.extendedCopy = True
 					else:
-						self.finish()
+						self.finish(cont=True)
 
 	def numericInput(self,numx,numy,numz):
 		"this function gets called by the toolbar when valid x, y, and z have been entered there"
@@ -3488,7 +3518,7 @@ class Scale(Modifier):
 				self.scale(point.sub(last),True)
 			else:
 				self.scale(point.sub(last))
-			self.finish()
+			self.finish(cont=True)
 
 class ToggleConstructionMode():
 	"The Draft_ToggleConstructionMode FreeCAD command definition"
@@ -3500,6 +3530,16 @@ class ToggleConstructionMode():
 	def Activated(self):
 		FreeCADGui.draftToolBar.ui.constrButton.toggle()
 
+class ToggleContinueMode():
+	"The Draft_ToggleContinueMode FreeCAD command definition"
+
+	def GetResources(self):
+		return {'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_ToggleContinueMode", "Toggle continue Mode"),
+			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_ToggleContinueMode", "Toggles the Continue Mode for next commands.")}
+
+	def Activated(self):
+		FreeCADGui.draftToolBar.ui.continueCmd.toggle()
+                
 class Drawing(Modifier):
         "The Draft Drawing command definition"
 
@@ -4072,6 +4112,7 @@ FreeCADGui.addCommand('Draft_FinishLine',FinishLine())
 FreeCADGui.addCommand('Draft_CloseLine',CloseLine())
 FreeCADGui.addCommand('Draft_UndoLine',UndoLine())
 FreeCADGui.addCommand('Draft_ToggleConstructionMode',ToggleConstructionMode())
+FreeCADGui.addCommand('Draft_ToggleContinueMode',ToggleContinueMode())
 FreeCADGui.addCommand('Draft_ApplyStyle',ApplyStyle())
 FreeCADGui.addCommand('Draft_ToggleDisplayMode',ToggleDisplayMode())
 FreeCADGui.addCommand('Draft_AddToGroup',AddToGroup())
