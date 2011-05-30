@@ -226,6 +226,7 @@ class toolBar:
 				self.labelz = _label("labelz")
 				self.zValue = _lineedit("zValue", width=60)
 				self.zValue.setText("0.00")
+                                self.textValue = _lineedit("textValue")
 
                                 # options
 
@@ -254,8 +255,6 @@ class toolBar:
 				self.yzButton = _pushButton("yzButton")
 				self.currentViewButton = _pushButton("view")
 				self.resetPlaneButton = _pushButton("none")
-
-				self.textValue = _lineedit("textValue")
 
                                 self.isCopy = QtGui.QCheckBox(draftToolbar)
 				self.isCopy.setChecked(False)
@@ -423,10 +422,12 @@ class toolBar:
 				self.finishButton.show()
 				self.closeButton.show()
 				self.undoButton.show()
+                                self.continueCmd.show()
 				self.pointUi()
 
 			def circleUi(self):
 				self.cmdlabel.setText(translate("draft", "Circle"))
+                                self.continueCmd.show()
 				self.pointUi()
 				self.labelx.setText(translate("draft", "Center X"))
                                 self.hasFill.show()
@@ -434,6 +435,7 @@ class toolBar:
 			def arcUi(self):
 				self.cmdlabel.setText(translate("draft", "Arc"))
 				self.labelx.setText(translate("draft", "Center X"))
+                                self.continueCmd.show()
 				self.pointUi()
 
 			def pointUi(self):
@@ -489,7 +491,6 @@ class toolBar:
 				self.labelRadius.setText(translate("draft", "Radius"))
 				self.labelRadius.show()
 				self.radiusValue.show()
-                                self.hasFill.show()
 
 			def textUi(self):
 				self.labelx.hide()
@@ -503,6 +504,7 @@ class toolBar:
 				self.textValue.setFocus()
 				self.textbuffer=[]
 				self.textline=0
+                                self.continueCmd.show()
 
 			def switchUi(self,store=True):
 				if store:
@@ -546,6 +548,14 @@ class toolBar:
                                 self.addButton.show()
                                 self.delButton.show()
 				self.finishButton.show()
+
+                        def extUi(self):
+                                self.hasFill.show()
+                                self.continueCmd.show()
+
+                        def modUi(self):
+                                self.isCopy.show()
+                                self.continueCmd.show()
 
 			def relocate(self):
 				"relocates the right-aligned buttons depending on the toolbar size"
