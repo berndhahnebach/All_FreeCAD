@@ -184,6 +184,9 @@ static PyObject * exporter(PyObject *self, PyObject *args)
                             global_mesh.addMesh(*mesh);
                     }
                 }
+                else {
+                    Base::Console().Message("'%s' is not a mesh or shape, export will be ignored.\n", obj->Label.getValue());
+                }
             }
         }
 

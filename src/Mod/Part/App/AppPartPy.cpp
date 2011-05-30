@@ -249,6 +249,9 @@ static PyObject * exporter(PyObject *self, PyObject *args)
                     if (!shape.IsNull())
                         builder.Add(comp, shape);
                 }
+                else {
+                    Base::Console().Message("'%s' is not a shape, export will be ignored.\n", obj->Label.getValue());
+                }
             }
         }
     } PY_CATCH;
