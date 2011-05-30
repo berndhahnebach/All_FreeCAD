@@ -82,5 +82,20 @@
 of the nearest orthogonal projection of the point.</UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="toBSpline">
+			<Documentation>
+				<UserDocu>
+					Returns a B-Spline representation of this surface. 
+The required arguments are:
+* tolerance
+* continuity in u (as string e.g. C0, G0, G1, C1, G2, C3, CN)
+* continuity in v (as string e.g. C0, G0, G1, C1, G2, C3, CN)
+* maximum degree in u
+* maximum degree in v
+* maximum number of segments
+* precision code (optional, default=0)
+				</UserDocu>
+			</Documentation>
+		</Methode>
 	</PythonExport>
 </GenerateModel>

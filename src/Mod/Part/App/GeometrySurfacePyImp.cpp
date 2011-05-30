@@ -28,6 +28,7 @@
 # include <gp_Vec.hxx>
 # include <Geom_Geometry.hxx>
 # include <Geom_Surface.hxx>
+# include <GeomConvert_ApproxSurface.hxx>
 # include <GeomLProp_SLProps.hxx>
 # include <Precision.hxx>
 # include <Standard_Failure.hxx>
@@ -40,6 +41,7 @@
 #include "Geometry.h"
 #include "GeometrySurfacePy.h"
 #include "GeometrySurfacePy.cpp"
+#include "BSplineSurfacePy.h"
 
 #include "TopoShape.h"
 #include "TopoShapePy.h"
@@ -302,6 +304,67 @@ PyObject* GeometrySurfacePy::VPeriod(PyObject * args)
         PyErr_SetString(PyExc_Exception, e->GetMessageString());
         return 0;
     }
+}
+
+PyObject* GeometrySurfacePy::toBSpline(PyObject * args)
+{
+    double tol3d;
+    char *ucont, *vcont;
+    int maxDegU,maxDegV,maxSegm,prec=0;
+    if (!PyArg_ParseTuple(args, "dssiii|i",&tol3d,&ucont,&vcont,
+                                           &maxDegU,&maxDegV,&maxSegm,&prec))
+        return 0;
+
+    std::string uc = ucont;
+    GeomAbs_Shape absU, absV;
+    if (uc == "C0")
+        absU = GeomAbs_C0;
+    else if (uc == "C1")
+        absU = GeomAbs_C1;
+    else if (uc == "C2")
+        absU = GeomAbs_C2;
+    else if (uc == "C3")
+        absU = GeomAbs_C3;
+    else if (uc == "CN")
+        absU = GeomAbs_CN;
+    else if (uc == "G1")
+        absU = GeomAbs_G1;
+    else
+        absU = GeomAbs_G2;
+
+    std::string vc = vcont;
+    if (vc == "C0")
+        absV = GeomAbs_C0;
+    else if (vc == "C1")
+        absV = GeomAbs_C1;
+    else if (vc == "C2")
+        absV = GeomAbs_C2;
+    else if (vc == "C3")
+        absV = GeomAbs_C3;
+    else if (vc == "CN")
+        absV = GeomAbs_CN;
+    else if (vc == "G1")
+        absV = GeomAbs_G1;
+    else
+        absV = GeomAbs_G2;
+
+    try {
+        Handle_Geom_Surface surf = Handle_Geom_Surface::DownCast
+            (getGeometryPtr()->handle());
+        GeomConvert_ApproxSurface cvt(surf, tol3d, absU, absV, maxDegU, maxDegV, maxSegm, prec);
+        if (cvt.IsDone() && cvt.HasResult()) {
+            return new BSplineSurfacePy(new GeomBSplineSurface(cvt.Surface()));
+        }
+        else {
+            Standard_Failure::Raise("Cannot convert to B-Spline surface");
+        }
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+    }
+
+    return 0;
 }
 
 PyObject *GeometrySurfacePy::getCustomAttributes(const char* /*attr*/) const
