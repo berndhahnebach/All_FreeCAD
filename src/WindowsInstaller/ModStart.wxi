@@ -31,7 +31,7 @@
         </Component>
 		<Directory Id="ModStartLibStartPage" Name="StartPage" FileSource="../../Mod/Start/StartPage" >
 			<Component Id="CompModStartLibStartPage"  Guid="cd5d0710-864b-11e0-9d78-0800200c9a66" Win64='$(var.Win_64)' KeyPath="yes">
-				<File Id="StartPage1" Name="StartPage.html"   />
+				<File Id="StartPage1" Name="StartPage.py"   />
 				<File Id="StartPage2" Name="PartDesign.py"   />
 				<File Id="StartPage3" Name="Mesh.py"   />
 				<File Id="StartPage4" Name="LoadSchenkel.py"   />

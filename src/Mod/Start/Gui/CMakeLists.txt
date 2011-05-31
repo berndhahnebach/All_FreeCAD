@@ -28,7 +28,7 @@ SET(StartGui_SRCS
 )
 
 SET(StartPage_Resources
-    StartPage/StartPage.html
+    StartPage/StartPage.py
     StartPage/Banner.jpeg
     StartPage/PartDesign.py
     StartPage/ArchDesign.py

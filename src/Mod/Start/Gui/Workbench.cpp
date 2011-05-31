@@ -56,7 +56,9 @@ StartGui::Workbench::~Workbench()
 
 void StartGui::Workbench::activated()
 {
-    Gui::Command::doCommand(Gui::Command::Gui,"WebGui.openBrowser(App.getResourceDir() + 'Mod/Start/StartPage/StartPage.html')");
+    Gui::Command::doCommand(Gui::Command::Gui,"import WebGui");
+    Gui::Command::doCommand(Gui::Command::Gui,"import StartPage");
+    Gui::Command::doCommand(Gui::Command::Gui,"WebGui.openBrowserHTML(StartPage.handle(),App.getResourceDir() + 'Mod/Start/StartPage/','Start page')");
 }
 
 void StartGui::Workbench::setupContextMenu(const char* recipient,Gui::MenuItem* item) const
