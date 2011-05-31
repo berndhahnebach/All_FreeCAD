@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <Python.h>
+# include <QUrl>
 #endif
 
 #include "BrowserView.h"
@@ -53,8 +54,32 @@ openBrowser(PyObject *self, PyObject *args)
 	Py_Return; 
 }
 
+static PyObject * 
+openBrowserHTML(PyObject *self, PyObject *args) 
+{
+    const char* HtmlCode;
+    const char* BaseUrl;
+    const char* TabName = "Browser";
+    if (! PyArg_ParseTuple(args, "ss|s",&HtmlCode,&BaseUrl,&TabName))
+        return NULL; 
+    
+    PY_TRY {
+
+        WebGui::BrowserView* pcBrowserView;
+
+        pcBrowserView = new WebGui::BrowserView(Gui::getMainWindow());   
+        pcBrowserView->resize(400, 300);
+        pcBrowserView->setHtml(QString::fromUtf8(HtmlCode),QUrl(QString::fromAscii(BaseUrl)),QString::fromUtf8(TabName));
+        Gui::getMainWindow()->addWindow(pcBrowserView);
+
+     } PY_CATCH;
+
+	Py_Return; 
+}
+
 /* registration table  */
 struct PyMethodDef WebGui_Import_methods[] = {
-    {"openBrowser"       ,openBrowser ,       1},				/* method name, C func ptr, always-tuple */
+    {"openBrowser"       ,openBrowser     ,  1},				/* method name, C func ptr, always-tuple */
+    {"openBrowserHTML"   ,openBrowserHTML ,  1},				/* method name, C func ptr, always-tuple */
     {NULL, NULL}                   /* end of table marker */
 };

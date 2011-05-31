@@ -161,6 +161,16 @@ void BrowserView::load(const QUrl & url)
     setWindowIcon(QWebSettings::iconForUrl(url));
 }
 
+void BrowserView::setHtml(const QString& HtmlCode,const QUrl & BaseUrl,const QString& TabName)
+{
+    if(isLoading)
+        stop();
+
+    WebView->setHtml(HtmlCode,BaseUrl);
+    setWindowTitle(TabName);
+    setWindowIcon(QWebSettings::iconForUrl(BaseUrl));
+}
+
 void BrowserView::stop(void)
 {
     WebView->stop();
