@@ -30,6 +30,7 @@
 # include <TopoDS_Compound.hxx>
 # include <TopoDS_Face.hxx>
 # include <TopoDS_Wire.hxx>
+# include <TopExp_Explorer.hxx>
 #endif
 
 
@@ -60,6 +61,43 @@ PROPERTY_SOURCE(PartDesign::SketchBased, Part::Feature)
 SketchBased::SketchBased()
 {
     ADD_PROPERTY(Sketch,(0));
+}
+
+TopoDS_Shape SketchBased::makeFace(std::list<TopoDS_Wire>& wires) const
+{
+    BRepBuilderAPI_MakeFace mkFace(wires.front());
+    int countOuterEdges = 0;
+    TopExp_Explorer xp;
+    for (xp.Init(wires.front(), TopAbs_EDGE); xp.More(); xp.Next()) {
+        if (++countOuterEdges > 1)
+            break;
+    }
+
+    wires.pop_front();
+    for (std::list<TopoDS_Wire>::iterator it = wires.begin(); it != wires.end(); ++it) {
+        // It seems if the outer or inner wire has multiple edges the orientation should be
+        // the same but inner wires with only a single edge should be reversed.
+        // If the outer wire has only a single edge then inner wires with multiple edges
+        // must be reversed.
+        int countEdges = 0;
+        TopExp_Explorer xp;
+        for (xp.Init(*it, TopAbs_EDGE); xp.More(); xp.Next()) {
+            if (++countEdges > 1)
+                break;
+        }
+
+        if (countOuterEdges > 1) {
+            if (countEdges == 1)
+                it->Reverse();
+        }
+        else {
+            if (countEdges > 1)
+                it->Reverse();
+        }
+
+        mkFace.Add(*it);
+    }
+    return mkFace.Face();
 }
 
 TopoDS_Shape SketchBased::makeFace(const std::vector<TopoDS_Wire>& w) const
@@ -105,26 +143,14 @@ TopoDS_Shape SketchBased::makeFace(const std::vector<TopoDS_Wire>& w) const
 
     if (sep_wire_list.size() == 1) {
         std::list<TopoDS_Wire>& wires = sep_wire_list.front();
-        BRepBuilderAPI_MakeFace mkFace(wires.front());
-        wires.pop_front();
-        for (std::list<TopoDS_Wire>::iterator it = wires.begin(); it != wires.end(); ++it) {
-            //it->Reverse(); // Shouldn't inner wires be reversed?
-            mkFace.Add(*it);
-        }
-        return mkFace.Face();
+        return makeFace(wires);
     }
     else if (sep_wire_list.size() > 1) {
         TopoDS_Compound comp;
         BRep_Builder builder;
         builder.MakeCompound(comp);
         for (std::list< std::list<TopoDS_Wire> >::iterator it = sep_wire_list.begin(); it != sep_wire_list.end(); ++it) {
-            BRepBuilderAPI_MakeFace mkFace(it->front());
-            it->pop_front();
-            for (std::list<TopoDS_Wire>::iterator jt = it->begin(); jt != it->end(); ++jt) {
-                //jt->Reverse(); // Shouldn't inner wires be reversed?
-                mkFace.Add(*jt);
-            }
-            const TopoDS_Face& aFace = mkFace.Face();
+            TopoDS_Shape aFace = makeFace(*it);
             if (!aFace.IsNull())
                 builder.Add(comp, aFace);
         }
