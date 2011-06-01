@@ -4,6 +4,13 @@ page = """
 <html>
   <head>
     <title>FreeCAD - Start page</title>
+    <script language="javascript">
+      function show(theText) {
+        ddiv = document.getElementById("description");
+        if (theText == "") theText = "&nbsp;";
+        ddiv.innerHTML = theText;
+      }
+    </script>
     <style type="text/css">
       body {
         background: #171A2B url(Background.jpg);
@@ -20,6 +27,9 @@ page = """
         color: white;
         background: #0092E8;
         border-radius: 5px;
+      }
+      p {
+        text-align: justify;
       }
       h1 {
         font-size: 3em;
@@ -44,6 +54,9 @@ page = """
         padding: 8px;
         margin-bottom: 10px;
       }
+      .options {
+        clear: both;
+      }
     </style>
   </head>
 
@@ -54,12 +67,37 @@ page = """
     <div class="column">
 
       <div class="block">
-        <h2>What do you want to do?</h2>
+        <h2>Start a new project</h2>
         <ul>    
-          <li><a href="PartDesign.py">Part Design</a></li>
-          <li><a href="ArchDesign.py">Architectual Design</a></li>
-          <li><a href="Mesh.py">Work with meshes</a></li>
+          <li><a onMouseover="show('<p>The <b>Part Design</b> workbench is designed \
+                              to create complex pieces based on constrained 2D sketches. \
+                              Use it to draw 2D shapes, constrain some of their elements \
+                              and extrude them to form 3D pieces.</p>')" 
+                 onMouseout="show('')" 
+                 href="PartDesign.py">Part Design</a></li>
+          <li><a onMouseover="show('<p>The <b>Architectural Design</b> workbench \
+                              is specially designed for working with architectural \
+                              elements such as walls or windows. Start by drawing \
+                              2D shapes, and use them as guides to build architecutral \
+                              objects.</p>')" 
+                 onMouseout="show('')"
+                 href="ArchDesign.py">Architectual Design</a></li>
+          <li><a onMouseover="show('<p>The <b>Mesh Workbench</b> is used to work with \
+                              Mesh objects. Meshes are simpler 3D objects than Part objects, \
+                              but they are often easier to import and export to/from other \
+                              applications.</p><p>FreeCAD offers you several tools to convert \
+                              between Mesh and Part objects.</p>')" 
+                 onMouseout="show('')" 
+                 href="Mesh.py">Work with Meshes</a></li>
+          <li><a onMouseover="show('<p>This is the <b>FreeCAD default workbench</b>, \
+                              populated with some of the most commonly used tools.</p>')" 
+                 onMouseout="show('')" 
+                 href="Complete.py">The Default Workbench</a></li>
         </ul>
+      </div>
+
+      <div class="block">
+        <h2>Recent Files</h2>
       </div>
 
       <div class="block">
@@ -77,7 +115,11 @@ page = """
       <div class="block">
         <h2>Homepage</h2>
         <ul>
-          <li><a href="http://free-cad.sf.net/">FreeCAD Homepage</a></li>
+          <li><a onMouseover="show('<p>This is the FreeCAD Homepage. Here you will be \
+                              able to find a lot of information about FreeCAD, tutorials, \
+                              examples and user documentation.</p>')" 
+                 onMouseout="show('')"
+                 href="http://free-cad.sf.net/">FreeCAD Homepage</a></li>
         </ul>
       </div>
 
@@ -101,9 +143,19 @@ page = """
 
     </div>
 
+    <div class="column" id="description">
+      &nbsp;
+    </div>
+
+    <form class="options">
+      <input type="checkbox" name="closeThisDialog">
+      Close this window after opening or creating a file<br/>
+      <input type="checkbox" name="dontShowAgain">
+      Don't show me this window again next time
+    </form>
+
   </body>
 </html>
-
 """
 
 def handle():
