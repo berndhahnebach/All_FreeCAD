@@ -47,6 +47,7 @@ public:
 
 protected:
     TopoDS_Shape makeFace(const std::vector<TopoDS_Wire>&) const;
+    TopoDS_Shape makeFace(std::list<TopoDS_Wire>&) const; // for internal use only
 };
 
 } //namespace PartDesign
