@@ -98,7 +98,43 @@ XMLSize_t StdInputStream::readBytes( XMLByte* const  toFill, const XMLSize_t max
   //
   
   stream.read((char *)toFill,maxToRead);
-  return stream.gcount();
+  XMLSize_t len = stream.gcount();
+
+  // See http://de.wikipedia.org/wiki/UTF-8#Kodierung
+  for (XMLSize_t i=0; i<len; i++) {
+      XMLByte& b = toFill[i];
+      int seqlen = 0;
+
+      if ((b & 0x80) == 0) {
+          seqlen = 1;
+      }
+      else if ((b & 0xE0) == 0xC0) {
+          seqlen = 2;
+          if (b == 0xC0 || b == 0xC1)
+              b = '?'; // these both values are not allowed
+      }
+      else if ((b & 0xF0) == 0xE0) {
+          seqlen = 3;
+      }
+      else if ((b & 0xF8) == 0xF0) {
+          seqlen = 4;
+      }
+      else {
+          b = '?';
+      }
+
+      for(int j = 1; j < seqlen; ++j) {
+          i++;
+          XMLByte& c = toFill[i];
+          // range of second, third or fourth byte
+          if ((c & 0xC0) != 0x80) {
+              b = '?';
+              c = '?';
+          }
+      }
+  }
+
+  return len;
 }
 #endif
 
