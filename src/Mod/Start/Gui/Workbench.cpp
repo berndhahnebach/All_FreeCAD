@@ -57,7 +57,7 @@ StartGui::Workbench::~Workbench()
 void StartGui::Workbench::activated()
 {
     Gui::Command::doCommand(Gui::Command::Gui,"import WebGui");
-    Gui::Command::doCommand(Gui::Command::Gui,"from StartPage import StartPage");
+    Gui::Command::doCommand(Gui::Command::Gui,"import StartPage");
     Gui::Command::doCommand(Gui::Command::Gui,"WebGui.openBrowserHTML(StartPage.handle(),App.getResourceDir() + 'Mod/Start/StartPage/','Start page')");
 }
 

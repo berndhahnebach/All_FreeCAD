@@ -1,6 +1,4 @@
-import os,FreeCAD,FreeCADGui
-
-basepath = "file://" + os.path.dirname( __file__)
+import FreeCAD,FreeCADGui
 
 page = """
 <html>
@@ -15,7 +13,7 @@ page = """
     </script>
     <style type="text/css">
       body {
-        background: #171A2B url(basepath/Background.jpg);
+        background: #171A2B url(Background.jpg);
         color: white;
         font-family: Arial, Helvetica, Sans;
       }
@@ -39,21 +37,21 @@ page = """
         padding: 20px 0 0 80px;
       }
       h2 {
+        padding-left: 40px;
         font-size: 1.2em;
       }
       ul {
         list-style-type: none;
-        padding: 0px;
       }
       .column {
-        width: 300px;
+        width: 340px;
         float: left;
         margin-left: 10px;
       }
       .block {
         background: rgba(30,31,33,0.6);;
         border-radius: 5px;
-        padding: 10px;
+        padding: 8px;
         margin-bottom: 10px;
       }
       .options {
@@ -63,6 +61,7 @@ page = """
   </head>
 
   <body>
+
     <h1>FreeCAD Start Center</h1>
 
     <div class="column">
@@ -75,21 +74,25 @@ page = """
                               Use it to draw 2D shapes, constrain some of their elements \
                               and extrude them to form 3D pieces.</p>')" 
                  onMouseout="show('')" 
-                 href="basepath/PartDesign.py">Part Design</a></li>
+                 href="PartDesign.py">Part Design</a></li>
           <li><a onMouseover="show('<p>The <b>Architectural Design</b> workbench \
                               is specially designed for working with architectural \
                               elements such as walls or windows. Start by drawing \
                               2D shapes, and use them as guides to build architecutral \
                               objects.</p>')" 
                  onMouseout="show('')"
-                 href="basepath/ArchDesign.py">Architectual Design</a></li>
+                 href="ArchDesign.py">Architectual Design</a></li>
           <li><a onMouseover="show('<p>The <b>Mesh Workbench</b> is used to work with \
                               Mesh objects. Meshes are simpler 3D objects than Part objects, \
                               but they are often easier to import and export to/from other \
                               applications.</p><p>FreeCAD offers you several tools to convert \
                               between Mesh and Part objects.</p>')" 
                  onMouseout="show('')" 
-                 href="basepath/Mesh.py">Work with Meshes</a></li>
+                 href="Mesh.py">Work with Meshes</a></li>
+          <li><a onMouseover="show('<p>This is the <b>FreeCAD default workbench</b>, \
+                              populated with some of the most commonly used tools.</p>')" 
+                 onMouseout="show('')" 
+                 href="Complete.py">The Default Workbench</a></li>
         </ul>
       </div>
 
@@ -123,10 +126,10 @@ page = """
       <div class="block">
         <h2>Example projects</h2>
         <ul>
-          <li><a href="basepath/LoadSchenkel.py">Schenkel STEP file</a></li>
-          <li><a href="basepath/LoadPartDesignExample.py">Load a PartDesign example</a></li>
-          <li><a href="basepath/LoadDrawingExample.py">Load a Drawing extraction</a></li>
-          <li><a href="basepath/LoadRobotExample.py">Load a Robot simulation example</a></li>
+          <li><a href="LoadSchenkel.py">Schenkel STEP file</a></li>
+          <li><a href="LoadPartDesignExample.py">Load a PartDesign example</a></li>
+          <li><a href="LoadDrawingExample.py">Load a Drawing extraction</a></li>
+          <li><a href="LoadRobotExample.py">Load a Robot simulation example</a></li>
         </ul>
       </div>
 
@@ -154,8 +157,6 @@ page = """
   </body>
 </html>
 """
-
-page = page.replace("basepath",basepath)
 
 def handle():
 	return page

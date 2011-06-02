@@ -12,8 +12,7 @@ data_DATA = \
 		LoadSchenkel.py \
 		Mesh.py \
 		PartDesign.py \
-		StartPage.py \
-		__init__.py
+		StartPage.py
 
 EXTRA_DIST = \
 		$(data_DATA)
