@@ -38,7 +38,6 @@ SET(StartPage_Resources
     StartPage/LoadDrawingExample.py
     StartPage/LoadRobotExample.py
     StartPage/Background.jpg
-    StartPage/__init__.py
     
 )
 
