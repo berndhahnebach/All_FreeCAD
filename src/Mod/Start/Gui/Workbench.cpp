@@ -39,6 +39,8 @@
 #include <Gui/ToolBoxManager.h>
 #include <App/Document.h>
 #include <App/DocumentObject.h>
+#include <Base/Console.h>
+#include <Base/Exception.h>
 
 #include <Mod/Start/App/StartConfiguration.h>
 
@@ -56,9 +58,15 @@ StartGui::Workbench::~Workbench()
 
 void StartGui::Workbench::activated()
 {
-    Gui::Command::doCommand(Gui::Command::Gui,"import WebGui");
-    Gui::Command::doCommand(Gui::Command::Gui,"import StartPage");
-    Gui::Command::doCommand(Gui::Command::Gui,"WebGui.openBrowserHTML(StartPage.handle(),App.getResourceDir() + 'Mod/Start/StartPage/','Start page')");
+    try {
+        Gui::Command::doCommand(Gui::Command::Gui,"import WebGui");
+        Gui::Command::doCommand(Gui::Command::Gui,"import StartPage");
+        Gui::Command::doCommand(Gui::Command::Gui,"WebGui.openBrowserHTML"
+        "(StartPage.handle(),App.getResourceDir() + 'Mod/Start/StartPage/','Start page')");
+    }
+    catch (const Base::Exception& e) {
+        Base::Console().Error("%s\n", e.what());
+    }
 }
 
 void StartGui::Workbench::setupContextMenu(const char* recipient,Gui::MenuItem* item) const
