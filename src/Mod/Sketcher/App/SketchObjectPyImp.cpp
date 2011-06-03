@@ -158,9 +158,28 @@ PyObject *SketchObjectPy::getCustomAttributes(const char* /*attr*/) const
     return 0;
 }
 
-int SketchObjectPy::setCustomAttributes(const char* /*attr*/, PyObject* /*obj*/)
+int SketchObjectPy::setCustomAttributes(const char* attr, PyObject* obj)
 {
-    return 0; 
+    // search in PropertyList
+    App::Property *prop = getSketchObjectPtr()->getPropertyByName(attr);
+    if (prop) {
+        // Read-only attributes must not be set over its Python interface
+        short Type =  getSketchObjectPtr()->getPropertyType(prop);
+        if (Type & App::Prop_ReadOnly) {
+            std::stringstream s;
+            s << "Object attribute '" << attr << "' is read-only";
+            throw Py::AttributeError(s.str());
+        }
+
+        prop->setPyObject(obj);
+        
+        if (strcmp(attr,"Geometry") == 0)
+           getSketchObjectPtr()->rebuildVertexIndex();
+
+        return 1;
+    }
+
+    return 0;
 }
 
 
