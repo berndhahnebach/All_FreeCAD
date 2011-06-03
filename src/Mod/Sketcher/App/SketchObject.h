@@ -84,6 +84,7 @@ public:
     void getGeoVertexIndex(int VertexId, int &GeoId, PointPos &PosId);
     int getHighestVertexIndex(void) { return VertexId2GeoId.size() - 1; }
     int getHighestCurveIndex(void) { return Geometry.getSize() - 1; }
+    void rebuildVertexIndex(void);
 
     // from base class
     virtual PyObject *getPyObject(void);
@@ -94,7 +95,6 @@ public:
 private:
     std::vector<int> VertexId2GeoId;
     std::vector<PointPos> VertexId2PosId;
-    void rebuildVertexIndex(void);
 };
 
 typedef App::FeaturePythonT<SketchObject> SketchObjectPython;
