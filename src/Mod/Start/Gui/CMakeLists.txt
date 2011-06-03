@@ -32,13 +32,14 @@ SET(StartPage_Resources
     StartPage/Banner.jpeg
     StartPage/PartDesign.py
     StartPage/ArchDesign.py
+    StartPage/DefaultWorkbench.py
     StartPage/Mesh.py
     StartPage/LoadSchenkel.py
     StartPage/LoadPartDesignExample.py
     StartPage/LoadDrawingExample.py
     StartPage/LoadRobotExample.py
     StartPage/Background.jpg
-    
+    StartPage/__init__.py
 )
 
 add_library(StartGui SHARED ${StartGui_SRCS})

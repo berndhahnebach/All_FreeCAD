@@ -92,7 +92,7 @@ page = """
           <li><a onMouseover="show('<p>This is the <b>FreeCAD default workbench</b>, \
                               populated with some of the most commonly used tools.</p>')" 
                  onMouseout="show('')" 
-                 href="Complete.py">The Default Workbench</a></li>
+                 href="DefaultWorkbench.py">The Default Workbench</a></li>
         </ul>
       </div>
 
