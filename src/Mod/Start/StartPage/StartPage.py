@@ -1,4 +1,6 @@
-import FreeCAD,FreeCADGui
+import os,FreeCAD,FreeCADGui
+
+basepath = "file://" + os.path.dirname( __file__)
 
 page = """
 <html>
@@ -74,25 +76,25 @@ page = """
                               Use it to draw 2D shapes, constrain some of their elements \
                               and extrude them to form 3D pieces.</p>')" 
                  onMouseout="show('')" 
-                 href="PartDesign.py">Part Design</a></li>
+                 href="basepath/PartDesign.py">Part Design</a></li>
           <li><a onMouseover="show('<p>The <b>Architectural Design</b> workbench \
                               is specially designed for working with architectural \
                               elements such as walls or windows. Start by drawing \
                               2D shapes, and use them as guides to build architecutral \
                               objects.</p>')" 
                  onMouseout="show('')"
-                 href="ArchDesign.py">Architectual Design</a></li>
+                 href="basepath/ArchDesign.py">Architectual Design</a></li>
           <li><a onMouseover="show('<p>The <b>Mesh Workbench</b> is used to work with \
                               Mesh objects. Meshes are simpler 3D objects than Part objects, \
                               but they are often easier to import and export to/from other \
                               applications.</p><p>FreeCAD offers you several tools to convert \
                               between Mesh and Part objects.</p>')" 
                  onMouseout="show('')" 
-                 href="Mesh.py">Work with Meshes</a></li>
+                 href="basepath/Mesh.py">Work with Meshes</a></li>
           <li><a onMouseover="show('<p>This is the <b>FreeCAD default workbench</b>, \
                               populated with some of the most commonly used tools.</p>')" 
                  onMouseout="show('')" 
-                 href="DefaultWorkbench.py">The Default Workbench</a></li>
+                 href="basepath/DefaultWorkbench.py">The Default Workbench</a></li>
         </ul>
       </div>
 
@@ -126,10 +128,10 @@ page = """
       <div class="block">
         <h2>Example projects</h2>
         <ul>
-          <li><a href="LoadSchenkel.py">Schenkel STEP file</a></li>
-          <li><a href="LoadPartDesignExample.py">Load a PartDesign example</a></li>
-          <li><a href="LoadDrawingExample.py">Load a Drawing extraction</a></li>
-          <li><a href="LoadRobotExample.py">Load a Robot simulation example</a></li>
+          <li><a href="basepath/LoadSchenkel.py">Schenkel STEP file</a></li>
+          <li><a href="basepath/LoadPartDesignExample.py">Load a PartDesign example</a></li>
+          <li><a href="basepath/LoadDrawingExample.py">Load a Drawing extraction</a></li>
+          <li><a href="basepath/LoadRobotExample.py">Load a Robot simulation example</a></li>
         </ul>
       </div>
 
@@ -157,6 +159,8 @@ page = """
   </body>
 </html>
 """
+
+page = page.replace("basepath",basepath)
 
 def handle():
 	return page
