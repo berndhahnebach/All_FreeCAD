@@ -15,7 +15,7 @@ page = """
     </script>
     <style type="text/css">
       body {
-        background: #171A2B url(Background.jpg);
+        background: #171A2B url(basepath/Background.jpg);
         color: white;
         font-family: Arial, Helvetica, Sans;
       }
@@ -39,14 +39,14 @@ page = """
         padding: 20px 0 0 80px;
       }
       h2 {
-        padding-left: 40px;
         font-size: 1.2em;
       }
       ul {
         list-style-type: none;
+        padding: 0;
       }
       .column {
-        width: 340px;
+        width: 300px;
         float: left;
         margin-left: 10px;
       }
