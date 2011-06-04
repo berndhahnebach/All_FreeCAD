@@ -8,15 +8,20 @@
 # Change data dir from default ($(prefix)/share) to $(prefix)
 datadir = $(prefix)/Mod/Arch
 data_DATA = \
+		Arch_rc.py \
 		Component.py \
-		Wall.py \
+		Building.py \
 		Cell.py \
-		importIFC.py \
+		Floor.py \
+        IFC2X3_TC1.exp \
 		ifcReader.py \
+		importDAE.py \
+		importIFC.py \
 		Init.py \
 		InitGui.py \
-        IFC2X3_TC1.exp \
-		Arch_rc.py
+		Site.py \
+		Structure.py \
+		Wall.py
 
 CLEANFILES = $(BUILT_SOURCES)
 

@@ -99,6 +99,9 @@ AC_DEFINE_UNQUOTED(HAVE_QT_KEYPAD_DEFINE, 1, [Define this if Qt::Keypad is avail
 AC_DEFINE_UNQUOTED(HAVE_QWIDGET_SHOWFULLSCREEN, 1, [Define this if QWidget::showFullScreen() is available])
 AC_DEFINE_UNQUOTED(HAVE_SYS_TYPES_H, 1, [Define to 1 if you have the <sys/types.h> header file.])
 AC_DEFINE_UNQUOTED(USE_STD_IOSTREAM, 1, [Define to 1 to build zipios++ sources with iostream.])
+AC_DEFINE_UNQUOTED(OCE_HAVE_CLIMITS, 1, [Define to 1 to build with OCE instead of OCC.])
+AC_DEFINE_UNQUOTED(OCE_HAVE_IOSTREAM, 1, [Define to 1 to build with OCE instead of OCC.])
+AC_DEFINE_UNQUOTED(OCE_HAVE_IOMANIP, 1, [Define to 1 to build with OCE instead of OCC.])
 
 dnl Check if you want to use GUI, or not (currently disabled)
 dnl **************************************************************************
