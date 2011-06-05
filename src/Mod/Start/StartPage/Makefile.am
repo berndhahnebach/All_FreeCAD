@@ -24,7 +24,9 @@ data_DATA = \
 		PartDesign.png \
 		ArchDesign.png \
 		Mesh.png \
-		Complete.png
+		Complete.png \
+		PartDesignExample.png \
+		web.png
 
 EXTRA_DIST = \
 		$(data_DATA) $(python_DATA)

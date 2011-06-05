@@ -47,6 +47,8 @@ SET(StartPage_Resources
     StartPage/LoadMRU0.py
     StartPage/LoadMRU1.py
     StartPage/LoadMRU2.py
+    StartPage/PartDesignExample.png
+    StartPage/web.png
 )
 
 add_library(StartGui SHARED ${StartGui_SRCS})
