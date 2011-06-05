@@ -56,6 +56,7 @@
 #include <Gui/OnlineDocumentation.h>
 
 #include <Base/Parameter.h>
+#include <Base/Exception.h>
 
 using namespace WebGui;
 using namespace Gui;
@@ -120,9 +121,16 @@ void BrowserView::onLinkClicked (const QUrl & url)
         QFileInfo fi(path);
         if(fi.exists()){
             QString ext = fi.completeSuffix();
-            if(ext == QString::fromLatin1("py"))
-                Gui::Command::doCommand(Gui::Command::Gui,"execfile('%s')",(const char*) fi.absoluteFilePath().	toLocal8Bit());
-        }else{
+            if (ext == QString::fromLatin1("py")) {
+                try {
+                    Gui::Command::doCommand(Gui::Command::Gui,"execfile('%s')",(const char*) fi.absoluteFilePath().	toLocal8Bit());
+                }
+                catch (const Base::Exception& e) {
+                    QMessageBox::critical(this, tr("Error"), QString::fromUtf8(e.what()));
+                }
+            }
+        }
+        else {
             QMessageBox::warning(Gui::getMainWindow(), QObject::tr("File does not exist!"),
             fi.absoluteFilePath ());
         }

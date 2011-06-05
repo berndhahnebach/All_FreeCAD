@@ -1,3 +1,4 @@
 import FreeCAD,FreeCADGui,sys
 rf=FreeCAD.ParamGet("User parameter:BaseApp/Preferences/RecentFiles")
-FreeCAD.open(rf.GetString("MRU2"))
+FreeCAD.loadFile(rf.GetString("MRU2"))
+
