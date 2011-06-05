@@ -548,6 +548,7 @@ class toolBar:
                                 self.addButton.show()
                                 self.delButton.show()
 				self.finishButton.show()
+                                self.closeButton.show()
 
                         def extUi(self):
                                 self.hasFill.show()
