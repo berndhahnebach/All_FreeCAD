@@ -10,6 +10,9 @@ python_DATA = \
 		LoadPartDesignExample.py \
 		LoadRobotExample.py \
 		LoadSchenkel.py \
+		LoadMRU0.py \
+		LoadMRU1.py \
+		LoadMRU2.py \
 		Mesh.py \
 		PartDesign.py \
 		StartPage.py \
@@ -17,7 +20,11 @@ python_DATA = \
 
 data_DATA = \
 		Background.jpg \
-		Banner.jpeg
+		FreeCAD.png \
+		PartDesign.png \
+		ArchDesign.png \
+		Mesh.png \
+		Complete.png
 
 EXTRA_DIST = \
 		$(data_DATA) $(python_DATA)

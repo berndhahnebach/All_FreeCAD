@@ -29,7 +29,6 @@ SET(StartGui_SRCS
 
 SET(StartPage_Resources
     StartPage/StartPage.py
-    StartPage/Banner.jpeg
     StartPage/PartDesign.py
     StartPage/ArchDesign.py
     StartPage/DefaultWorkbench.py
@@ -40,6 +39,14 @@ SET(StartPage_Resources
     StartPage/LoadRobotExample.py
     StartPage/Background.jpg
     StartPage/__init__.py
+    StartPage/FreeCAD.png
+    StartPage/ArchDesign.png
+    StartPage/PartDesign.png
+    StartPage/Mesh.png
+    StartPage/Complete.png
+    StartPage/LoadMRU0.py
+    StartPage/LoadMRU1.py
+    StartPage/LoadMRU2.py
 )
 
 add_library(StartGui SHARED ${StartGui_SRCS})
