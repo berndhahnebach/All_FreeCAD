@@ -273,6 +273,7 @@ private:
     static PyObject* sGetResourceDir    (PyObject *self,PyObject *args,PyObject *kwd);
     static PyObject* sGetHomePath       (PyObject *self,PyObject *args,PyObject *kwd);
 
+    static PyObject* sLoadFile          (PyObject *self,PyObject *args,PyObject *kwd);
     static PyObject* sOpenDocument      (PyObject *self,PyObject *args,PyObject *kwd);
     static PyObject* sSaveDocument      (PyObject *self,PyObject *args,PyObject *kwd);
     static PyObject* sSaveDocumentAs    (PyObject *self,PyObject *args,PyObject *kwd);

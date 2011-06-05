@@ -42,6 +42,7 @@
 #include <Base/Parameter.h>
 #include <Base/Console.h>
 #include <Base/Factory.h>
+#include <Base/FileInfo.h>
 #include <Base/UnitsApi.h>
 
 #define new DEBUG_CLIENTBLOCK
@@ -85,6 +86,12 @@ PyMethodDef Application::Methods[] = {
     {"getHomePath",    (PyCFunction) Application::sGetHomePath  ,1,
      "Get the home path, i.e. the parent directory of the executable"},
 
+    {"loadFile",       (PyCFunction) Application::sLoadFile,   1,
+     "loadFile(string=filename,[string=module]) -> None\n\n"
+     "Loads an arbitrary file by delegating to the given Python module:\n"
+     "* If no module is given it will be determined by the file extension.\n"
+     "* If more than one module can load a file the first one one will be taken.\n"
+     "* If no module exists to load the file an exception will be raised."},
     {"open",   (PyCFunction) Application::sOpenDocument,   1,
      "See openDocument(string)"},
     {"openDocument",   (PyCFunction) Application::sOpenDocument,   1,
@@ -127,6 +134,51 @@ PyMethodDef Application::Methods[] = {
     {NULL, NULL, 0, NULL}		/* Sentinel */
 };
 
+
+PyObject* Application::sLoadFile(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
+{
+    char *path, *doc="",*mod="";
+    if (!PyArg_ParseTuple(args, "s|ss", &path, &doc, &mod))     // convert args: Python->C
+        return 0;                             // NULL triggers exception
+    try {
+        Base::FileInfo fi(path);
+        if (!fi.isFile() || !fi.exists()) {
+            PyErr_Format(PyExc_IOError, "File %s doesn't exist.", path);
+            return 0;
+        }
+
+        std::string module = mod;
+        if (module.empty()) {
+            std::string ext = fi.extension(false);
+            std::vector<std::string> modules = GetApplication().getImportModules(ext.c_str());
+            if (modules.empty()) {
+                PyErr_Format(PyExc_IOError, "Filetype %s is not supported.", ext.c_str());
+                return 0;
+            }
+            else {
+                module = modules.front();
+            }
+        }
+
+        std::stringstream str;
+        str << "import " << module << std::endl;
+        if (fi.hasExtension("FCStd"))
+            str << module << ".openDocument('" << path << "')" << std::endl;
+        else
+            str << module << ".insert('" << path << "','" << doc << "')" << std::endl;
+        Base::Interpreter().runString(str.str().c_str());
+        Py_Return;
+    }
+    catch (const Base::Exception& e) {
+        PyErr_SetString(PyExc_IOError, e.what());
+        return 0;
+    }
+    catch (const std::exception& e) {
+        // might be subclass from zipios
+        PyErr_Format(PyExc_IOError, "Invalid project file %s: %s", path, e.what());
+        return 0;
+    }
+}
 
 PyObject* Application::sOpenDocument(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
 {
