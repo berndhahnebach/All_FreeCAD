@@ -16,6 +16,7 @@ page = """
         background: #171A2B url(basepath/Background.jpg);
         color: white;
         font-family: Arial, Helvetica, Sans;
+        font-size: 11px;
       }
       a {
         color: #0092E8;
@@ -69,40 +70,7 @@ page = """
 
       <div class="block">
         <h2>Start a new project</h2>
-        <ul>    
-          <li><img src="basepath/PartDesign.png">&nbsp;
-              <a onMouseover="show('<h3>Designing parts</h3> \
-                              <p>The <b>Part Design</b> workbench is designed \
-                              to create complex pieces based on constrained 2D sketches. \
-                              Use it to draw 2D shapes, constrain some of their elements \
-                              and extrude them to form 3D pieces.</p>')" 
-                 onMouseout="show('')" 
-                 href="basepath/PartDesign.py">Part Design</a></li>
-          <li><img src="basepath/ArchDesign.png">&nbsp;
-              <a onMouseover="show('<h3>Designing architectural elements</h3> \
-                              <p>The <b>Architectural Design</b> workbench \
-                              is specially designed for working with architectural \
-                              elements such as walls or windows. Start by drawing \
-                              2D shapes, and use them as guides to build architecutral \
-                              objects.</p>')" 
-                 onMouseout="show('')"
-                 href="basepath/ArchDesign.py">Architectual Design</a></li>
-          <li><img src="basepath/Mesh.png">&nbsp;
-              <a onMouseover="show('<h3>Working with Meshes</h3> \
-                              <p>The <b>Mesh Workbench</b> is used to work with \
-                              Mesh objects. Meshes are simpler 3D objects than Part objects, \
-                              but they are often easier to import and export to/from other \
-                              applications.</p><p>FreeCAD offers you several tools to convert \
-                              between Mesh and Part objects.</p>')" 
-                 onMouseout="show('')" 
-                 href="basepath/Mesh.py">Work with Meshes</a></li>
-          <li><img src="basepath/Complete.png">&nbsp;
-              <a onMouseover="show('<h3>A complete workbench</h3> \
-                              <p>This is the <b>FreeCAD default workbench</b>, \
-                              populated with some of the most commonly used tools.</p>')" 
-                 onMouseout="show('')" 
-                 href="basepath/DefaultWorkbench.py">The Default Workbench</a></li>
-        </ul>
+          defaultworkbenches
       </div>
 
       <div class="block">
@@ -125,7 +93,8 @@ page = """
       <div class="block">
         <h2>Homepage</h2>
         <ul>
-          <li><a onMouseover="show('<p>This is the FreeCAD Homepage. Here you will be \
+          <li><img src="basepath/web.png">&nbsp;
+              <a onMouseover="show('<p>This is the FreeCAD Homepage. Here you will be \
                               able to find a lot of information about FreeCAD, tutorials, \
                               examples and user documentation.</p>')" 
                  onMouseout="show('')"
@@ -168,7 +137,44 @@ page = """
 </html>
 """
 
-
+def getWorkbenches():
+        return '''
+        <ul>    
+          <li><img src="basepath/PartDesign.png">&nbsp;
+              <a onMouseover="show('<h3>Designing parts</h3> \
+                              <p>The <b>Part Design</b> workbench is designed \
+                              to create complex pieces based on constrained 2D sketches. \
+                              Use it to draw 2D shapes, constrain some of their elements \
+                              and extrude them to form 3D pieces.</p><p><small>Example \
+                              workflow:</small></p><img src=basepath/PartDesignExample.png>')" 
+                 onMouseout="show('')" 
+                 href="basepath/PartDesign.py">Part Design</a></li>
+          <li><img src="basepath/ArchDesign.png">&nbsp;
+              <a onMouseover="show('<h3>Designing architectural elements</h3> \
+                              <p>The <b>Architectural Design</b> workbench \
+                              is specially designed for working with architectural \
+                              elements such as walls or windows. Start by drawing \
+                              2D shapes, and use them as guides to build architecutral \
+                              objects.</p>')" 
+                 onMouseout="show('')"
+                 href="basepath/ArchDesign.py">Architectual Design</a></li>
+          <li><img src="basepath/Mesh.png">&nbsp;
+              <a onMouseover="show('<h3>Working with Meshes</h3> \
+                              <p>The <b>Mesh Workbench</b> is used to work with \
+                              Mesh objects. Meshes are simpler 3D objects than Part objects, \
+                              but they are often easier to import and export to/from other \
+                              applications.</p><p>FreeCAD offers you several tools to convert \
+                              between Mesh and Part objects.</p>')" 
+                 onMouseout="show('')" 
+                 href="basepath/Mesh.py">Work with Meshes</a></li>
+          <li><img src="basepath/Complete.png">&nbsp;
+              <a onMouseover="show('<h3>A complete workbench</h3> \
+                              <p>This is the <b>FreeCAD default workbench</b>, \
+                              populated with some of the most commonly used tools.</p>')" 
+                 onMouseout="show('')" 
+                 href="basepath/DefaultWorkbench.py">The Default Workbench</a></li>
+        </ul>
+'''
 
 def getInfo(filename):
         "returns available file information"
@@ -244,6 +250,9 @@ def handle():
         recentfiles = getRecentFiles()
         html = page.replace("recentfiles",recentfiles)
 
+        # add default workbenches
+        html = html.replace("defaultworkbenches",getWorkbenches())
+        
         # replace paths
         basepath = "file://" + os.path.dirname( __file__)
         html = html.replace("basepath",basepath)
