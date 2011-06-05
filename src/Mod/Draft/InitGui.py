@@ -174,10 +174,10 @@ class DraftWorkbench (Workbench):
                 
                 if depsOK:
                     import Draft_rc
-                    Gui.addLanguagePath(":/translations")
-                    Gui.addIconPath(":/icons")
-                    Gui.addPreferencePage(":/ui/userprefs-base.ui","Draft")
-                    Gui.addPreferencePage(":/ui/userprefs-import.ui","Draft")
+                    FreeCADGui.addLanguagePath(":/translations")
+                    FreeCADGui.addIconPath(":/icons")
+                    FreeCADGui.addPreferencePage(":/ui/userprefs-base.ui","Draft")
+                    FreeCADGui.addPreferencePage(":/ui/userprefs-import.ui","Draft")
                 else:
                     return
                 Log ('Loading Draft GUI...\n')
@@ -197,7 +197,7 @@ class DraftWorkbench (Workbench):
                 self.lineList = ["Draft_UndoLine","Draft_FinishLine","Draft_CloseLine"]
                 self.appendToolbar("Draft tools",self.cmdList+self.modList)
                 self.appendMenu("Draft",self.cmdList+self.modList)
-                self.appendMenu(["Draft","Context tools"],self.treecmdList)
+                self.appendMenu(["Draft","Display options"],self.treecmdList)
                 self.appendMenu(["Draft","Wire tools"],self.lineList)
                                         
 	def Activated(self):
@@ -214,7 +214,7 @@ class DraftWorkbench (Workbench):
                         if (FreeCAD.activeDraftCommand == None):
                                 if (FreeCADGui.Selection.getSelection() != []):
                                         self.appendContextMenu("Draft",self.cmdList+self.modList)
-                                        self.appendContextMenu("Context tools",self.treecmdList)
+                                        self.appendContextMenu("Display options",self.treecmdList)
                                 else:
                                         self.appendContextMenu("Draft",self.cmdList)
                         else:
@@ -222,12 +222,12 @@ class DraftWorkbench (Workbench):
                                         self.appendContextMenu("",self.lineList)
                 else:
                         if (FreeCADGui.Selection.getSelection() != []):
-                                self.appendContextMenu("Context tools",self.treecmdList)
+                                self.appendContextMenu("Display options",self.treecmdList)
 
 	def GetClassName(self): 
 		return "Gui::PythonWorkbench"
 
-Gui.addWorkbench(DraftWorkbench)
+FreeCADGui.addWorkbench(DraftWorkbench)
 App.addImportType("Autodesk DXF (*.dxf)","importDXF") 
 App.addImportType("SVG as geometry (*.svg)","importSVG")
 App.addImportType("Open CAD Format (*.oca *.gcad)","importOCA")
