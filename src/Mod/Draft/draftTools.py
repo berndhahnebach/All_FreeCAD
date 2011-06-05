@@ -3726,6 +3726,10 @@ class Edit(Modifier):
 
 	def finish(self,closed=False):
 		"terminates the operation"
+                if closed:
+                        if "Closed" in self.obj.PropertiesList:
+                                if not self.obj.Closed:
+                                        self.obj.Closed = True
                 if self.ui:
                         if self.snap:
                                 self.snap.finalize()
