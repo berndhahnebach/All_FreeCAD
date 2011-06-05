@@ -3525,6 +3525,7 @@ class ToggleConstructionMode():
 
 	def GetResources(self):
 		return {'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_ToggleConstructionMode", "Toggle construcion Mode"),
+                        'Accel' : "C, M",
 			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_ToggleConstructionMode", "Toggles the Construction Mode for next objects.")}
 
 	def Activated(self):
@@ -3545,6 +3546,7 @@ class Drawing(Modifier):
 
         def GetResources(self):
 		return {'Pixmap'  : 'Draft_Drawing',
+                        'Accel' : "D, D",
 			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Drawing", "Drawing"),
 			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Drawing", "Puts the selected objects on a Drawing sheet.")}
 
@@ -3613,6 +3615,7 @@ class ToggleDisplayMode():
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_SwitchMode',
+                        'Accel' : "Shift+Space",
 			'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_ToggleDisplayMode", "Toggle display mode"),
 			'ToolTip' : QtCore.QT_TRANSLATE_NOOP("Draft_ToggleDisplayMode", "Swaps display mode of selected objects between wireframe and flatlines")}
 
@@ -3925,7 +3928,7 @@ class AddToGroup():
 
 	def GetResources(self):
 		return {'Pixmap'  : 'Draft_AddToGroup',
-                        'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_AddToGroup", "Add to group"),
+                        'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_AddToGroup", "Add to group..."),
 			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_AddToGroup", "Adds the selected object(s) to an existing group")}
 
         def IsActive(self):
