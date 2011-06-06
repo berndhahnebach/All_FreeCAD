@@ -267,7 +267,7 @@ inline XUTF8Str::XUTF8Str(const char* const fromTranscode)
     while (inputLength)
     {
         outputLength = transcoder->transcodeFrom(xmlBytes + offset, inputLength, outBuff, 128, eaten, charSizes);
-        str.append(outBuff, outputLength);
+        str.append((wchar_t*)outBuff, outputLength);
         offset += eaten;
         inputLength -= eaten;
     }
@@ -285,7 +285,7 @@ inline XUTF8Str::~XUTF8Str()
 // -----------------------------------------------------------------------
 inline const XMLCh* XUTF8Str::unicodeForm() const
 {
-    return str.c_str();
+    return (XMLCh*)str.c_str();
 }
 
 #endif // BASE_XMLTOOLS_H
