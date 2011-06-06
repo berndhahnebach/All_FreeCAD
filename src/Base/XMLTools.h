@@ -232,17 +232,12 @@ public :
     const XMLCh* unicodeForm() const;
 
 private :
-#if 0
-    std::wstring  str;
+    std::basic_string<XMLCh>  str;
     static std::auto_ptr<XERCES_CPP_NAMESPACE::XMLTranscoder> transcoder;
-#else
-    XMLCh*   fUnicodeForm;
-#endif
 };
 
 inline XUTF8Str::XUTF8Str(const char* const fromTranscode)
 {
-#if 0
     if (!fromTranscode)
         return;
 
@@ -272,22 +267,16 @@ inline XUTF8Str::XUTF8Str(const char* const fromTranscode)
     while (inputLength)
     {
         outputLength = transcoder->transcodeFrom(xmlBytes + offset, inputLength, outBuff, 128, eaten, charSizes);
-        str.append((wchar_t*)outBuff, outputLength);
+        str.append(outBuff, outputLength);
         offset += eaten;
         inputLength -= eaten;
     }
 
     delete[] charSizes;
-#else
-    fUnicodeForm = XERCES_CPP_NAMESPACE_QUALIFIER XMLString::transcode(fromTranscode);
-#endif
 }
 
 inline XUTF8Str::~XUTF8Str()
 {
-#if 1
-    XERCES_CPP_NAMESPACE_QUALIFIER XMLString::release(&fUnicodeForm);
-#endif
 }
 
 
@@ -296,11 +285,7 @@ inline XUTF8Str::~XUTF8Str()
 // -----------------------------------------------------------------------
 inline const XMLCh* XUTF8Str::unicodeForm() const
 {
-#if 0
-    return (XMLCh*)str.c_str();
-#else
-    return fUnicodeForm;
-#endif
+    return str.c_str();
 }
 
 #endif // BASE_XMLTOOLS_H
