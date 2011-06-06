@@ -1,4 +1,4 @@
-import os,FreeCAD,FreeCADGui,tempfile,time,zipfile
+import os,FreeCAD,FreeCADGui,tempfile,time,zipfile,platform
 
 page = """
 <html>
@@ -254,7 +254,9 @@ def handle():
         html = html.replace("defaultworkbenches",getWorkbenches())
         
         # replace paths
-        basepath = "file://" + os.path.dirname( __file__)
+        basepath = FreeCAD.getResourceDir() + "/Mod/Start/StartPage"
+        if platform.system() is not "Windows":
+            basepath = "file://" + basepath
         html = html.replace("basepath",basepath)
         
 	return html
