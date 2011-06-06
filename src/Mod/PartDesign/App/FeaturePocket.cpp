@@ -24,8 +24,10 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <Bnd_Box.hxx>
+# include <gp_Dir.hxx>
 # include <gp_Pln.hxx>
 # include <BRep_Builder.hxx>
+# include <BRepAdaptor_Surface.hxx>
 # include <BRepBndLib.hxx>
 # include <BRepPrimAPI_MakePrism.hxx>
 # include <BRepBuilderAPI_Copy.hxx>
@@ -110,9 +112,6 @@ App::DocumentObjectExecReturn *Pocket::execute(void)
     if (!SupportObject)
         return new App::DocumentObjectExecReturn("No support in Sketch!");
 
-    Handle(Geom_Surface) aSurf = new Geom_Plane (gp_Pln(gp_Pnt(0,0,0),gp_Dir(0,0,1)));
-    //anti-clockwise circles if too look from surface normal
-
     TopoDS_Shape aFace = makeFace(wires);
     if (aFace.IsNull())
         return new App::DocumentObjectExecReturn("Creating a face from sketch failed");
@@ -120,8 +119,14 @@ App::DocumentObjectExecReturn *Pocket::execute(void)
     // lengthen the vector
     SketchOrientationVector *= Length.getValue();
 
-    // turn around for pockes
-    SketchOrientationVector *= -1;
+    // turn around for pockets if needed
+    BRepAdaptor_Surface adapt(TopoDS::Face(aFace));
+    if (adapt.GetType() != GeomAbs_Plane)
+        return new App::DocumentObjectExecReturn("Support shape is not a plane");
+    gp_Dir axis = adapt.Plane().Axis().Direction();
+    gp_Dir dir(SketchOrientationVector.x,SketchOrientationVector.y,SketchOrientationVector.z);
+    if (axis.Dot(dir) > 0)
+        SketchOrientationVector *= -1;
 
     // extrude the face to a solid
     gp_Vec vec(SketchOrientationVector.x,SketchOrientationVector.y,SketchOrientationVector.z);
