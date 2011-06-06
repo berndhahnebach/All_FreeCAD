@@ -1202,7 +1202,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <tabstops>
   <tabstop>comboBox1</tabstop>
   <tabstop>xPos</tabstop>

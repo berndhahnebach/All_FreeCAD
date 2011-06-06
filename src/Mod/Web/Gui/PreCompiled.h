@@ -67,6 +67,11 @@
 # include <Gui/Qt4All.h>
 #endif
 
+// QtWebKit
+#include <QWebFrame>
+#include <QWebView>
+#include <QWebSettings>
+
 #endif //_PreComp_
 
 #endif // WEBGUI_PRECOMPILED_H
