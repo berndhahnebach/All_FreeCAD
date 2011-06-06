@@ -666,11 +666,11 @@ void  ParameterGrp::SetASCII(const char* Name, const char *sValue)
     DOMNode *pcElem2 = pcElem->getFirstChild();
     if (!pcElem2) {
         XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *pDocument = _pGroupNode->getOwnerDocument();
-        DOMText *pText = pDocument->createTextNode(XStr(sValue).unicodeForm());
+        DOMText *pText = pDocument->createTextNode(XUTF8Str(sValue).unicodeForm());
         pcElem->appendChild(pText);
     }
     else {
-        pcElem2->setNodeValue(XStr(sValue).unicodeForm());
+        pcElem2->setNodeValue(XUTF8Str(sValue).unicodeForm());
     }
     // trigger observer
     Notify(Name);
@@ -691,7 +691,7 @@ std::string ParameterGrp::GetASCII(const char* Name, const char * pPreset) const
     // if yes check the value and return
     DOMNode *pcElem2 = pcElem->getFirstChild();
     if (pcElem2)
-        return std::string(StrX(pcElem2->getNodeValue()).c_str());
+        return std::string(StrXUTF8(pcElem2->getNodeValue()).c_str());
     else if (pPreset==0)
         return std::string("");
 
@@ -707,13 +707,13 @@ std::vector<std::string> ParameterGrp::GetASCIIs(const char * sFilter) const
 
     pcTemp = FindElement(_pGroupNode,"FCText");
     while ( pcTemp  ) {
-        Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
+        Name = StrXUTF8( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
         // check on filter condition
         if (sFilter == NULL || Name.find(sFilter)!= std::string::npos) {
             // retrive the text element
             DOMNode *pcElem2 = pcTemp->getFirstChild();
             if (pcElem2)
-                vrValues.push_back( std::string(StrX(pcElem2->getNodeValue()).c_str()) );
+                vrValues.push_back( std::string(StrXUTF8(pcElem2->getNodeValue()).c_str()) );
         }
         pcTemp = FindNextElement(pcTemp,"FCText");
     }
@@ -729,13 +729,13 @@ std::vector<std::pair<std::string,std::string> > ParameterGrp::GetASCIIMap(const
 
     pcTemp = FindElement(_pGroupNode,"FCText");
     while ( pcTemp) {
-        Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
+        Name = StrXUTF8( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
         // check on filter condition
         if (sFilter == NULL || Name.find(sFilter)!= std::string::npos) {
             // retrive the text element
             DOMNode *pcElem2 = pcTemp->getFirstChild();
             if (pcElem2)
-                vrValues.push_back(std::make_pair<std::string, std::string>(Name, std::string(StrX(pcElem2->getNodeValue()).c_str())));
+                vrValues.push_back(std::make_pair<std::string, std::string>(Name, std::string(StrXUTF8(pcElem2->getNodeValue()).c_str())));
         }
         pcTemp = FindNextElement(pcTemp,"FCText");
     }
