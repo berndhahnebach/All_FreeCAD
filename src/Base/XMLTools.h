@@ -217,4 +217,75 @@ inline const XMLCh* XStr::unicodeForm() const
     return fUnicodeForm;
 }
 
+//**************************************************************************
+//**************************************************************************
+// XUTF-8Str
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+class XUTF8Str
+{
+public :
+    XUTF8Str(const char* const fromTranscode);
+    ~XUTF8Str();
+
+    /// Getter method
+    const XMLCh* unicodeForm() const;
+
+private :
+    std::wstring  str;
+    static std::auto_ptr<XERCES_CPP_NAMESPACE::XMLTranscoder> transcoder;
+};
+
+inline XUTF8Str::XUTF8Str(const char* const fromTranscode)
+{
+    if (!fromTranscode)
+        return;
+
+    XERCES_CPP_NAMESPACE_USE;
+    if(!transcoder.get()){
+        XMLTransService::Codes  res;
+        transcoder.reset(XERCES_CPP_NAMESPACE_QUALIFIER XMLPlatformUtils::fgTransService->makeNewTranscoderFor(XERCES_CPP_NAMESPACE_QUALIFIER XMLRecognizer::UTF_8, res, 4096, XERCES_CPP_NAMESPACE_QUALIFIER XMLPlatformUtils::fgMemoryManager));
+        if (res != XMLTransService::Ok)
+            throw Base::Exception("Cant create UTF-8 decoder in XUTF8Str::XUTF8Str()");
+    }
+
+    static XMLCh outBuff[128];
+    XMLByte* xmlBytes = (XMLByte*)fromTranscode;
+#if (XERCES_VERSION_MAJOR == 2)
+    unsigned int outputLength;
+    unsigned int eaten = 0;
+    unsigned int offset = 0;
+    unsigned int inputLength = std::string(fromTranscode).size();
+#else
+    XMLSize_t outputLength;
+    XMLSize_t eaten = 0;
+    XMLSize_t offset = 0;
+    XMLSize_t inputLength = std::string(fromTranscode).size();
+#endif
+
+    unsigned char* charSizes = new unsigned char[inputLength];
+    while (inputLength)
+    {
+        outputLength = transcoder->transcodeFrom(xmlBytes + offset, inputLength, outBuff, 128, eaten, charSizes);
+        str.append(outBuff, outputLength);
+        offset += eaten;
+        inputLength -= eaten;
+    }
+
+    delete[] charSizes;
+}
+
+inline XUTF8Str::~XUTF8Str()
+{
+}
+
+
+// -----------------------------------------------------------------------
+//  Getter methods
+// -----------------------------------------------------------------------
+inline const XMLCh* XUTF8Str::unicodeForm() const
+{
+    return str.c_str();
+}
+
 #endif // BASE_XMLTOOLS_H
