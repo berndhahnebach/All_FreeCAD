@@ -3,7 +3,12 @@
 pythondir = $(prefix)/Mod/Start/StartPage
 datadir = @datadir@/Mod/Start/StartPage
 
+# Only these two scripts must be here!
 python_DATA = \
+		StartPage.py \
+		__init__.py
+
+data_DATA = \
 		ArchDesign.py \
 		DefaultWorkbench.py \
 		LoadDrawingExample.py \
@@ -15,10 +20,6 @@ python_DATA = \
 		LoadMRU2.py \
 		Mesh.py \
 		PartDesign.py \
-		StartPage.py \
-		__init__.py
-
-data_DATA = \
 		Background.jpg \
 		FreeCAD.png \
 		PartDesign.png \

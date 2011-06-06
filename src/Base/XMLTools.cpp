@@ -35,5 +35,7 @@
 using namespace Base;
 
 std::auto_ptr<XERCES_CPP_NAMESPACE::XMLTranscoder> StrXUTF8::transcoder;
+#if 0
 std::auto_ptr<XERCES_CPP_NAMESPACE::XMLTranscoder> XUTF8Str::transcoder;
+#endif
 
