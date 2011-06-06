@@ -98,12 +98,16 @@ void View3DInventorPy::init_type()
         "Return the current cursor position relative to the coordinate system of the\n"
         "viewport region.\n");
     add_varargs_method("getObjectInfo",&View3DInventorPy::getObjectInfo,
-        "getObjectInfoPos(tuple of integers) -> dictionary or None\n"
+        "getObjectInfo(tuple of integers) -> dictionary or None\n"
         "\n"
         "Return a dictionary with the name of document, object and component. The\n"
         "dictionary also contains the coordinates of the appropriate 3d point of\n"
         "the underlying geometry in the scenegraph.\n"
         "If no geometry was found 'None' is returned, instead.\n");
+    add_varargs_method("getObjectsInfo",&View3DInventorPy::getObjectsInfo,
+        "getObjectsInfo(tuple of integers) -> dictionary or None\n"
+        "\n"
+        "Does the same as getObjectInfo() but returns a list of dictionaries or None.\n");
     add_varargs_method("getSize",&View3DInventorPy::getSize,"getSize()");
     add_varargs_method("getPoint",&View3DInventorPy::getPoint,
         "getPoint(pixel coords (as integer)) -> 3D vector\n"
@@ -905,6 +909,68 @@ Py::Object View3DInventorPy::getObjectInfo(const Py::Tuple& args)
                 // ok, found the node of interest
                 ret = dict;
             }
+        }
+
+        return ret;
+    }
+    catch (const Py::Exception&) {
+        throw;
+    }
+}
+
+Py::Object View3DInventorPy::getObjectsInfo(const Py::Tuple& args)
+{
+    PyObject* object;
+    if (!PyArg_ParseTuple(args.ptr(), "O", &object))
+        throw Py::Exception();
+
+    try {
+        //Note: For gcc (4.2) we need the 'const' keyword to avoid the compiler error:
+        //conversion from 'Py::seqref<Py::Object>' to non-scalar type 'Py::Int' requested
+        //We should report this problem to the PyCXX project as in the documentation an 
+        //example without the 'const' keyword is used.
+        //Or we can also write Py::Int x(tuple[0]);
+        const Py::Tuple tuple(object);
+        Py::Int x(tuple[0]);
+        Py::Int y(tuple[1]);
+
+        // As this method could be called during a SoHandleEventAction scene
+        // graph traversal we must not use a second SoHandleEventAction as
+        // we will get Coin warnings because of multiple scene graph traversals
+        // which is regarded as error-prone.
+        SoRayPickAction action(_view->getViewer()->getViewportRegion());
+        action.setPickAll(true);
+        action.setPoint(SbVec2s((long)x,(long)y));
+        action.apply(_view->getViewer()->getSceneManager()->getSceneGraph());
+        const SoPickedPointList& pp = action.getPickedPointList();
+
+        Py::Object ret = Py::None();
+        if (pp.getLength() > 0) {
+            Py::List list;
+            for (int i=0; i<pp.getLength(); i++) {
+                Py::Dict dict;
+                SoPickedPoint* point = static_cast<SoPickedPoint*>(pp.get(i));
+                SbVec3f pt = point->getPoint();
+                dict.setItem("x", Py::Float(pt[0]));
+                dict.setItem("y", Py::Float(pt[1]));
+                dict.setItem("z", Py::Float(pt[2]));
+
+                // search for a SoFCSelection node
+                SoFCDocumentObjectAction objaction;
+                objaction.apply(point->getPath());
+                if (objaction.isHandled()) {
+                    dict.setItem("Document",
+                        Py::String(objaction.documentName.getString()));
+                    dict.setItem("Object",
+                        Py::String(objaction.objectName.getString()));
+                    dict.setItem("Component",
+                        Py::String(objaction.componentName.getString()));
+                    // ok, found the node of interest
+                    list.append(dict);
+                }
+            }
+
+            ret = list;
         }
 
         return ret;
