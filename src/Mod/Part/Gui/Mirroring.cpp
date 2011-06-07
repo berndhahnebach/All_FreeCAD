@@ -29,6 +29,7 @@
 # include <TopoDS_Shape.hxx>
 # include <TopExp_Explorer.hxx>
 # include <boost/bind.hpp>
+# include <cfloat>
 #endif
 
 #include "Mirroring.h"
@@ -54,6 +55,9 @@ Mirroring::Mirroring(QWidget* parent)
   : QWidget(parent), ui(new Ui_Mirroring)
 {
     ui->setupUi(this);
+    ui->baseX->setRange(-DBL_MAX, DBL_MAX);
+    ui->baseY->setRange(-DBL_MAX, DBL_MAX);
+    ui->baseZ->setRange(-DBL_MAX, DBL_MAX);
     findShapes();
 }
 
@@ -132,6 +136,9 @@ bool Mirroring::accept()
         normy = 1.0f;
     else
         normx = 1.0f;
+    double basex = ui->baseX->value();
+    double basey = ui->baseY->value();
+    double basez = ui->baseZ->value();
     for (QList<QTreeWidgetItem *>::iterator it = items.begin(); it != items.end(); ++it) {
         shape = (*it)->data(0, Qt::UserRole).toString();
         label = (*it)->text(0);
@@ -148,8 +155,11 @@ bool Mirroring::accept()
             "__doc__.ActiveObject.Source=__doc__.getObject(\"%2\")\n"
             "__doc__.ActiveObject.Label=\"%3\"\n"
             "__doc__.ActiveObject.Normal=(%4,%5,%6)\n"
+            "__doc__.ActiveObject.Base=(%7,%8,%9)\n"
             "del __doc__")
-            .arg(this->document).arg(shape).arg(label).arg(normx).arg(normy).arg(normz);
+            .arg(this->document).arg(shape).arg(label)
+            .arg(normx).arg(normy).arg(normz)
+            .arg(basex).arg(basey).arg(basez);
         Gui::Application::Instance->runPythonCode((const char*)code.toAscii());
     }
 
