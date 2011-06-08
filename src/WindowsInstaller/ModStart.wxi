@@ -40,6 +40,12 @@
 				<File Id="StartPage7" Name="LoadDrawingExample.py"   />
 				<File Id="StartPage8" Name="Banner.jpeg"   />
 				<File Id="StartPage9" Name="Background.jpg"   />
+				<File Id="StartPage10" Name="Complete.png"   />
+				<File Id="StartPage11" Name="FreeCAD.png"   />
+				<File Id="StartPage12" Name="Mesh.png"   />
+				<File Id="StartPage13" Name="PartDesign.png"   />
+				<File Id="StartPage14" Name="PartDesignExample.png"   />
+				<File Id="StartPage15" Name="web.png"   />
 			</Component>			
 		</Directory>
     </Directory>
