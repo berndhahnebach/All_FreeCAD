@@ -124,6 +124,12 @@ MergeDocuments::importObjects(std::istream& input)
         std::string name = reader.getAttribute("name");
         std::string docn = name;
 
+        // remove number from end to avoid lengthy names
+        size_t lastpos = docn.length()-1;
+        while (docn[lastpos] >= 48 && docn[lastpos] <= 57)
+            lastpos--;
+        docn = docn.substr(0, lastpos+1);
+
         try {
             App::DocumentObject* o = appdoc->addObject(type.c_str(),docn.c_str());
             objs.push_back(o);

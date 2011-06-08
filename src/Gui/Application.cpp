@@ -184,32 +184,35 @@ void ObjectLabelObserver::slotRelabelObject(const App::DocumentObject& obj, cons
         if (current) {
             return;
         }
-        // only if Label differ from internal name it can happen to have non-unique label
+
         std::string label = obj.Label.getValue();
-        if (label != obj.getNameInDocument()) {
-            App::Document* doc = obj.getDocument();
-            if (doc && !_hPGrp->GetBool("DuplicateLabels")) {
-                std::vector<std::string> objectLabels;
-                std::vector<App::DocumentObject*>::const_iterator it;
-                std::vector<App::DocumentObject*> objs = doc->getObjects();
-                bool match = false;
+        App::Document* doc = obj.getDocument();
+        if (doc && !_hPGrp->GetBool("DuplicateLabels")) {
+            std::vector<std::string> objectLabels;
+            std::vector<App::DocumentObject*>::const_iterator it;
+            std::vector<App::DocumentObject*> objs = doc->getObjects();
+            bool match = false;
 
-                for (it = objs.begin();it != objs.end();++it) {
-                    if (*it == &obj)
-                        continue; // don't compare object with itself
-                    std::string objLabel = (*it)->Label.getValue();
-                    if (!match && objLabel == label)
-                        match = true;
-                    objectLabels.push_back(objLabel);
-                }
+            for (it = objs.begin();it != objs.end();++it) {
+                if (*it == &obj)
+                    continue; // don't compare object with itself
+                std::string objLabel = (*it)->Label.getValue();
+                if (!match && objLabel == label)
+                    match = true;
+                objectLabels.push_back(objLabel);
+            }
 
-                // make sure that there is a name conflict otherwise we don't have to do anything
-                if (match) {
-                    label = Base::Tools::getUniqueName(label, objectLabels, 3);
-                    this->current = &obj;
-                    const_cast<App::DocumentObject&>(obj).Label.setValue(label);
-                    this->current = 0;
-                }
+            // make sure that there is a name conflict otherwise we don't have to do anything
+            if (match) {
+                // remove number from end to avoid lengthy names
+                size_t lastpos = label.length()-1;
+                while (label[lastpos] >= 48 && label[lastpos] <= 57)
+                    lastpos--;
+                label = label.substr(0, lastpos+1);
+                label = Base::Tools::getUniqueName(label, objectLabels, 3);
+                this->current = &obj;
+                const_cast<App::DocumentObject&>(obj).Label.setValue(label);
+                this->current = 0;
             }
         }
     }

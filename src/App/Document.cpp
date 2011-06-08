@@ -1395,7 +1395,13 @@ DocumentObject* Document::_copyObject(DocumentObject* obj, std::map<DocumentObje
                                       DocumentObject*>& copy_map, bool recursive)
 {
     if (!obj) return 0;
-    DocumentObject* copy = addObject(obj->getTypeId().getName(),obj->getNameInDocument());
+    // remove number from end to avoid lengthy names
+    std::string objname = obj->getNameInDocument();
+    size_t lastpos = objname.length()-1;
+    while (objname[lastpos] >= 48 && objname[lastpos] <= 57)
+        lastpos--;
+    objname = objname.substr(0, lastpos+1);
+    DocumentObject* copy = addObject(obj->getTypeId().getName(),objname.c_str());
     if (!copy) return 0;
 
     copy_map[obj] = copy;
