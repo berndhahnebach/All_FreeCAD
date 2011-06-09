@@ -1223,7 +1223,7 @@ DocumentObject * Document::addObject(const char* sType, const char* pObjectName)
         d->activeUndoTransaction->addObjectDel(pcObject);
 
     // get Unique name
-    if (pObjectName)
+    if (pObjectName && pObjectName[0] != '\0')
         ObjectName = getUniqueObjectName(pObjectName);
     else
         ObjectName = getUniqueObjectName(sType);

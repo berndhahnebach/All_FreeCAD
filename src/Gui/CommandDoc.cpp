@@ -884,7 +884,7 @@ void StdCmdDelete::activated(int iMsg)
             (*it)->openTransaction("Delete");
             for (std::vector<Gui::SelectionObject>::iterator ft = sel.begin(); ft != sel.end(); ++ft) {
                 Gui::ViewProvider* vp = pGuiDoc->getViewProvider(ft->getObject());
-                if (vp->isEditing())
+                if (vp && vp->isEditing())
                     vp->delSelected();
                 else {
                     if (ft->isObjectTypeOf(App::DocumentObjectGroup::getClassTypeId()))

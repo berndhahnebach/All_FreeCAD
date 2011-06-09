@@ -64,27 +64,28 @@ SelectionObject::~SelectionObject()
 
 const App::DocumentObject * SelectionObject::getObject(void) const
 {
-	if(DocName != ""){
-		App::Document *doc = App::GetApplication().getDocument(DocName.c_str());
-		if(doc && FeatName != "")
-			return doc->getObject(FeatName.c_str());
-	}
-	return 0;
+    if (DocName != "") {
+        App::Document *doc = App::GetApplication().getDocument(DocName.c_str());
+        if (doc && FeatName != "")
+            return doc->getObject(FeatName.c_str());
+    }
+    return 0;
 }
 
 App::DocumentObject * SelectionObject::getObject(void) 
 {
-	if(DocName != ""){
-		App::Document *doc = App::GetApplication().getDocument(DocName.c_str());
-		if(doc && FeatName != "")
-			return doc->getObject(FeatName.c_str());
-	}
-	return 0;
+    if (DocName != "") {
+        App::Document *doc = App::GetApplication().getDocument(DocName.c_str());
+        if (doc && FeatName != "")
+            return doc->getObject(FeatName.c_str());
+    }
+    return 0;
 }
 
-bool SelectionObject::isObjectTypeOf(const Base::Type& typeId)const
+bool SelectionObject::isObjectTypeOf(const Base::Type& typeId) const
 {
-  return getObject()->getTypeId().isDerivedFrom(typeId);
+    const App::DocumentObject* obj = getObject();
+    return (obj && obj->getTypeId().isDerivedFrom(typeId));
 }
 
 std::string SelectionObject::getAsPropertyLinkSubString(void)const
