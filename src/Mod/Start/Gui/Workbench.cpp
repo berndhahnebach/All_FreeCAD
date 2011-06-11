@@ -61,8 +61,13 @@ void StartGui::Workbench::activated()
     try {
         Gui::Command::doCommand(Gui::Command::Gui,"import WebGui");
         Gui::Command::doCommand(Gui::Command::Gui,"from StartPage import StartPage");
+#if defined(FC_OS_WIN32)
         Gui::Command::doCommand(Gui::Command::Gui,"WebGui.openBrowserHTML"
         "(StartPage.handle(),App.getResourceDir() + 'Mod/Start/StartPage/','Start page')");
+#else
+        Gui::Command::doCommand(Gui::Command::Gui,"WebGui.openBrowserHTML"
+        "(StartPage.handle(),'file://' + App.getResourceDir() + 'Mod/Start/StartPage/','Start page')");
+#endif
     }
     catch (const Base::Exception& e) {
         Base::Console().Error("%s\n", e.what());

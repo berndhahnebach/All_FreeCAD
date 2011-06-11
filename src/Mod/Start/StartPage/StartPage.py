@@ -1,4 +1,4 @@
-import os,FreeCAD,FreeCADGui,tempfile,time,zipfile,platform
+import os,FreeCAD,FreeCADGui,tempfile,time,zipfile
 
 page = """
 <html>
@@ -13,7 +13,7 @@ page = """
     </script>
     <style type="text/css">
       body {
-        background: #171A2B url(basepath/Background.jpg);
+        background: #171A2B url(Background.jpg);
         color: white;
         font-family: Arial, Helvetica, Sans;
         font-size: 11px;
@@ -64,7 +64,7 @@ page = """
 
   <body>
 
-    <h1><img src="basepath/FreeCAD.png">&nbsp;FreeCAD Start Center</h1>
+    <h1><img src="FreeCAD.png">&nbsp;FreeCAD Start Center</h1>
 
     <div class="column">
 
@@ -93,7 +93,7 @@ page = """
       <div class="block">
         <h2>Homepage</h2>
         <ul>
-          <li><img src="basepath/web.png">&nbsp;
+          <li><img src="web.png">&nbsp;
               <a onMouseover="show('<p>This is the FreeCAD Homepage. Here you will be \
                               able to find a lot of information about FreeCAD, tutorials, \
                               examples and user documentation.</p>')" 
@@ -105,10 +105,10 @@ page = """
       <div class="block">
         <h2>Example projects</h2>
         <ul>
-          <li><a href="basepath/LoadSchenkel.py">Schenkel STEP file</a></li>
-          <li><a href="basepath/LoadPartDesignExample.py">Load a PartDesign example</a></li>
-          <li><a href="basepath/LoadDrawingExample.py">Load a Drawing extraction</a></li>
-          <li><a href="basepath/LoadRobotExample.py">Load a Robot simulation example</a></li>
+          <li><a href="LoadSchenkel.py">Schenkel STEP file</a></li>
+          <li><a href="LoadPartDesignExample.py">Load a PartDesign example</a></li>
+          <li><a href="LoadDrawingExample.py">Load a Drawing extraction</a></li>
+          <li><a href="LoadRobotExample.py">Load a Robot simulation example</a></li>
         </ul>
       </div>
 
@@ -140,16 +140,16 @@ page = """
 def getWorkbenches():
         return '''
         <ul>    
-          <li><img src="basepath/PartDesign.png">&nbsp;
+          <li><img src="PartDesign.png">&nbsp;
               <a onMouseover="show('<h3>Designing parts</h3> \
                               <p>The <b>Part Design</b> workbench is designed \
                               to create complex pieces based on constrained 2D sketches. \
                               Use it to draw 2D shapes, constrain some of their elements \
                               and extrude them to form 3D pieces.</p><p><small>Example \
-                              workflow:</small></p><img src=basepath/PartDesignExample.png>')" 
+                              workflow:</small></p><img src=PartDesignExample.png>')" 
                  onMouseout="show('')" 
-                 href="basepath/PartDesign.py">Part Design</a></li>
-          <li><img src="basepath/ArchDesign.png">&nbsp;
+                 href="PartDesign.py">Part Design</a></li>
+          <li><img src="ArchDesign.png">&nbsp;
               <a onMouseover="show('<h3>Designing architectural elements</h3> \
                               <p>The <b>Architectural Design</b> workbench \
                               is specially designed for working with architectural \
@@ -157,8 +157,8 @@ def getWorkbenches():
                               2D shapes, and use them as guides to build architecutral \
                               objects.</p>')" 
                  onMouseout="show('')"
-                 href="basepath/ArchDesign.py">Architectual Design</a></li>
-          <li><img src="basepath/Mesh.png">&nbsp;
+                 href="ArchDesign.py">Architectual Design</a></li>
+          <li><img src="Mesh.png">&nbsp;
               <a onMouseover="show('<h3>Working with Meshes</h3> \
                               <p>The <b>Mesh Workbench</b> is used to work with \
                               Mesh objects. Meshes are simpler 3D objects than Part objects, \
@@ -166,13 +166,13 @@ def getWorkbenches():
                               applications.</p><p>FreeCAD offers you several tools to convert \
                               between Mesh and Part objects.</p>')" 
                  onMouseout="show('')" 
-                 href="basepath/Mesh.py">Work with Meshes</a></li>
-          <li><img src="basepath/Complete.png">&nbsp;
+                 href="Mesh.py">Work with Meshes</a></li>
+          <li><img src="Complete.png">&nbsp;
               <a onMouseover="show('<h3>A complete workbench</h3> \
                               <p>This is the <b>FreeCAD default workbench</b>, \
                               populated with some of the most commonly used tools.</p>')" 
                  onMouseout="show('')" 
-                 href="basepath/DefaultWorkbench.py">The Default Workbench</a></li>
+                 href="DefaultWorkbench.py">The Default Workbench</a></li>
         </ul>
 '''
 
@@ -218,6 +218,7 @@ def getInfo(filename):
                                         thumb.write(image)
                                         thumb.close()
                                         html += '<img src=file://'
+
                                         html += thumbfile + '><br/>'
         else:
                 html += "<p>File not found</p>"
@@ -237,7 +238,7 @@ def getRecentFiles():
                         html += '<li><a '
                         html += 'onMouseover="show(\''+getInfo(mr)+'\')" '
                         html += 'onMouseout="show(\'\')" '
-                        html += 'href="basepath/LoadMRU'+str(i)+'.py">'
+                        html += 'href="LoadMRU'+str(i)+'.py">'
                         html += fn
                         html += '</a></li>'
         html += '</ul>'
@@ -253,11 +254,5 @@ def handle():
         # add default workbenches
         html = html.replace("defaultworkbenches",getWorkbenches())
         
-        # replace paths
-        basepath = FreeCAD.getResourceDir() + "/Mod/Start/StartPage"
-        if platform.system() is not "Windows":
-            basepath = "file://" + basepath
-        html = html.replace("basepath",basepath)
-        
-	return html
+        return html
 	
