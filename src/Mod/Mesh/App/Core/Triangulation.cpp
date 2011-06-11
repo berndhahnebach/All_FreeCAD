@@ -349,7 +349,7 @@ bool EarClippingTriangulator::Triangulate::Process(const std::vector<Base::Vecto
         }
     }
 
-    delete V;
+    delete [] V;
 
     return true;
 }
