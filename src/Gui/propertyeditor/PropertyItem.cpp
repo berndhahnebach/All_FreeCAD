@@ -40,6 +40,7 @@
 #include <App/DocumentObject.h>
 #include <App/PropertyGeo.h>
 #include <App/PropertyFile.h>
+#include <App/PropertyUnits.h>
 #include <Gui/Application.h>
 #include <Gui/Control.h>
 #include <Gui/Document.h>
@@ -620,6 +621,56 @@ QVariant PropertyFloatItem::editorData(QWidget *editor) const
 {
     QDoubleSpinBox *sb = qobject_cast<QDoubleSpinBox*>(editor);
     return QVariant(sb->value());
+}
+
+// --------------------------------------------------------------------
+
+
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::PropertyUnitItem, Gui::PropertyEditor::PropertyItem);
+
+PropertyUnitItem::PropertyUnitItem()
+{
+}
+
+QVariant PropertyUnitItem::value(const App::Property* prop) const
+{
+    assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyLength::getClassTypeId()));
+    //UnitType = Base::Length;
+
+    double value = static_cast<const App::PropertyLength*>(prop)->getValue();
+    QString nbr;
+    nbr = Base::UnitsApi::toStrWithUserPrefs(Base::Length,value);
+
+    return QVariant(nbr);
+}
+
+void PropertyUnitItem::setValue(const QVariant& value)
+{
+    if (!value.canConvert(QVariant::String))
+        return;
+    QString val = value.toString();
+    QString data = QString::fromAscii("\"%1\"").arg(val);
+    setPropertyValue(data);
+}
+
+QWidget* PropertyUnitItem::createEditor(QWidget* parent, const QObject* receiver, const char* method) const
+{
+    QLineEdit *le = new QLineEdit(parent);
+    le->setFrame(false);
+    QObject::connect(le, SIGNAL(textChanged(const QString&)), receiver, method);
+    return le;
+}
+
+void PropertyUnitItem::setEditorData(QWidget *editor, const QVariant& data) const
+{
+    QLineEdit *le = qobject_cast<QLineEdit*>(editor);
+    le->setText(data.toString());
+}
+
+QVariant PropertyUnitItem::editorData(QWidget *editor) const
+{
+    QLineEdit *le = qobject_cast<QLineEdit*>(editor);
+    return QVariant(le->text());
 }
 
 // --------------------------------------------------------------------

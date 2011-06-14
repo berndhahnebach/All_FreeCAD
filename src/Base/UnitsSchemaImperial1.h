@@ -32,14 +32,16 @@
 namespace Base {
     
 
-/**
- * The UnitSchema class
+/** The schema class for the imperial unit system
+ *  Here are the definiton for the imperial unit system.
+ *  It also defines how the value/units get printed.
  */
 class UnitsSchemaImperial1: public UnitsSchema
 {
 public:
     void setSchemaUnits(void);
     void toStrWithUserPrefs(QuantityType t,double Value,QString &outValue,QString &outUnit);
+    QString toStrWithUserPrefs(QuantityType t,double Value);
 };
 
 

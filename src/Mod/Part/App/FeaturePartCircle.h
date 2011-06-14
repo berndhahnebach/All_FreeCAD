@@ -24,7 +24,7 @@
 #ifndef PART_FEATUREPARTCIRCLE_H
 #define PART_FEATUREPARTCIRCLE_H
 
-#include <App/PropertyStandard.h>
+#include <App/PropertyUnits.h>
 #include "PrimitiveFeature.h"
 
 namespace Part

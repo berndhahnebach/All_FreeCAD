@@ -24,7 +24,7 @@
 #ifndef PARTDESIGN_Revolution_H
 #define PARTDESIGN_Revolution_H
 
-#include <App/PropertyStandard.h>
+#include <App/PropertyUnits.h>
 #include "FeatureSketchBased.h"
 
 namespace PartDesign

@@ -31,6 +31,7 @@
 #include <Base/Type.h>
 #include <Base/Vector3D.h>
 #include <Base/Placement.h>
+#include <Base/UnitsApi.h>
 #include <App/PropertyStandard.h>
 
 Q_DECLARE_METATYPE(Base::Vector3f)
@@ -208,6 +209,27 @@ protected:
 
 protected:
     PropertyFloatItem();
+};
+
+/**
+ * Change a Unit based floating point number.
+ * \author Juergen Riegel
+ */
+class GuiExport PropertyUnitItem: public PropertyItem
+{
+    TYPESYSTEM_HEADER();
+
+    virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
+    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+    virtual QVariant editorData(QWidget *editor) const;
+
+protected:
+    //virtual QVariant toString(const QVariant&) const;
+    virtual QVariant value(const App::Property*) const;
+    virtual void setValue(const QVariant&);
+    Base::QuantityType  UnitType;
+
+    PropertyUnitItem();
 };
 
 /**

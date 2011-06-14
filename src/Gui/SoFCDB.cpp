@@ -99,6 +99,7 @@ void Gui::SoFCDB::init()
     PropertyIntegerItem             ::init();
     PropertyIntegerConstraintItem   ::init();
     PropertyFloatItem               ::init();
+    PropertyUnitItem                ::init();
     PropertyFloatConstraintItem     ::init();
     PropertyAngleItem               ::init();
     PropertyBoolItem                ::init();

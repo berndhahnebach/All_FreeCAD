@@ -131,13 +131,14 @@ double UnitsApi::translateUnit(const QString & str)
 
 QString UnitsApi::toStrWithUserPrefs(QuantityType t,double Value)
 {
-    double UnitValue = toDblWithUserPrefs(t,Value);
-    return QString::fromAscii("%1%2").arg(UnitValue).arg(UserPrefUnit[t]);
+    return UserPrefSystem->toStrWithUserPrefs(t,Value);
+    //double UnitValue = Value/UserPrefFactor[t];
+    //return QString::fromAscii("%1 %2").arg(UnitValue).arg(UserPrefUnit[t]);
 }
 
 void UnitsApi::toStrWithUserPrefs(QuantityType t,double Value,QString &outValue,QString &outUnit)
 {
-
+    UserPrefSystem->toStrWithUserPrefs(t,Value,outValue,outUnit);
 }
 
 PyObject *UnitsApi::toPyWithUserPrefs(QuantityType t,double Value)
@@ -158,12 +159,12 @@ double UnitsApi::toDblWithUserPrefs(QuantityType t,const char* Str)
     if (UsedUnit)
         return Value;
     else
-        return Value/UserPrefFactor[t];
+        return toDblWithUserPrefs(t,Value);
 }
 
 double UnitsApi::toDblWithUserPrefs(QuantityType t,double UserVal)
 {
-    return UserVal/UserPrefFactor[t];
+    return UserVal*UserPrefFactor[t];
 }
 
 double UnitsApi::toDblWithUserPrefs(QuantityType t,PyObject *ArgObj)

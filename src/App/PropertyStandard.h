@@ -300,6 +300,10 @@ private:
 
 /** Float properties
  * This is the father of all properties handling floats.
+ * Use this Type only in rare cases. Mostly you want to 
+ * use the more specialiced types like e.g. PropertyLenth.
+ * This properties fullfill also the needs of the unit system.
+ * See PropertyUnits.h for all properies with Units.
  */
 class AppExport PropertyFloat: public Property
 {
@@ -390,74 +394,7 @@ protected:
     const Constraints* _ConstStruct;
 };
 
-/** Distance property
- * This is a property for representing distances. It is basically a float
- * property. On the Gui it has a quantity like m or mm.
- */
-class AppExport PropertyDistance: public PropertyFloat
-{
-    TYPESYSTEM_HEADER();
-public:
-    PropertyDistance(void){}
-    virtual ~PropertyDistance(){}
-    virtual const char* getEditorName(void) const
-    { return "Gui::PropertyEditor::PropertyFloatItem"; }
-};
 
-/** Length property
- * This is a property for representing lengths. It is basically a float
- * property which must not be negative. On the Gui it has a quantity like m or mm.
- */
-class AppExport PropertyLength : public PropertyFloat
-{
-    TYPESYSTEM_HEADER();
-public:
-    PropertyLength(void){}
-    virtual ~PropertyLength(){}
-    virtual const char* getEditorName(void) const
-    { return "Gui::PropertyEditor::PropertyFloatItem"; }
-
-    virtual void setPyObject(PyObject *);
-};
-
-/** Angle property
- * This is a property for representing angles. It basicly a float
- * property. On the Gui it has a quantity like RAD.
- */
-class AppExport PropertyAngle: public PropertyFloatConstraint
-{
-    TYPESYSTEM_HEADER();
-public:
-    PropertyAngle(void){}
-    virtual ~PropertyAngle(){}
-    virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyAngleItem"; }
-};
-
-/** Speed property
- * This is a property for representing speed. It is basically a float
- * property. On the Gui it has a quantity like m/s or km/h.
- */
-class AppExport PropertySpeed: public PropertyFloat
-{
-    TYPESYSTEM_HEADER();
-public:
-    PropertySpeed(void){}
-    virtual ~PropertySpeed(){}
-    virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyFloatItem"; }
-};
-
-/** Acceleration property
- * This is a property for representing acceleration. It is basically a float
- * property. On the Gui it has a quantity like m/s^2.
- */
-class AppExport PropertyAcceleration: public PropertyFloat
-{
-    TYPESYSTEM_HEADER();
-public:
-    PropertyAcceleration(void){}
-    virtual ~PropertyAcceleration(){}
-    virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyFloatItem"; }
-};
 
 
 class AppExport PropertyFloatList: public PropertyLists
