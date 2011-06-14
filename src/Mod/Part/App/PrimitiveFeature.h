@@ -24,7 +24,7 @@
 #ifndef PART_PRIMITIVEFEATURE_H
 #define PART_PRIMITIVEFEATURE_H
 
-#include <App/PropertyStandard.h>
+#include <App/PropertyUnits.h>
 #include "PartFeature.h"
 
 namespace Part

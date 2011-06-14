@@ -106,6 +106,7 @@ SET(Properties_CPP_SRCS
     PropertyLinks.cpp
     PropertyPythonObject.cpp
     PropertyStandard.cpp
+    PropertyUnits.cpp
 )
 SET(Properties_HPP_SRCS
     DynamicProperty.h
@@ -116,6 +117,7 @@ SET(Properties_HPP_SRCS
     PropertyLinks.h
     PropertyPythonObject.h
     PropertyStandard.h
+    PropertyUnits.h
 )
 SET(Properties_SRCS
     ${Properties_CPP_SRCS}

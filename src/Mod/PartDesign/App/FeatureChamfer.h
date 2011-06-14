@@ -24,7 +24,7 @@
 #ifndef PARTDESIGN_FEATURECHAMFER_H
 #define PARTDESIGN_FEATURECHAMFER_H
 
-#include <App/PropertyStandard.h>
+#include <App/PropertyUnits.h>
 #include <App/PropertyLinks.h>
 #include "FeatureDressUp.h"
 

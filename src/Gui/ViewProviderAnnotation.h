@@ -25,6 +25,7 @@
 #define GUI_VIEWPROVIDERANNOTATION_H
 
 #include "ViewProviderDocumentObject.h"
+#include <App/PropertyUnits.h>
 
 class SoFont;
 class SoText2;

@@ -25,6 +25,7 @@
 #define PARTGUI_IEWPROVIDER2DOBJECT_H
 
 #include "ViewProvider.h"
+#include <App/PropertyUnits.h>
 #include <Gui/ViewProviderPythonFeature.h>
 
 class TopoDS_Shape;

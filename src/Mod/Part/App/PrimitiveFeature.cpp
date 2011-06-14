@@ -52,6 +52,10 @@
 #include "PrimitiveFeature.h"
 #include <Base/Tools.h>
 
+#ifndef M_PI
+#define M_PI       3.14159265358979323846
+#endif
+
 
 namespace Part {
     const App::PropertyFloatConstraint::Constraints floatRange  = {0.0f,1000.0f,0.1f};

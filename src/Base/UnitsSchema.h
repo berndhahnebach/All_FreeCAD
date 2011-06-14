@@ -52,14 +52,23 @@ namespace Base {
         Temperature
     } ;
 
-/**
- * The UnitSchema class
+/** The UnitSchema class
+ * The subclasses of this class define the stuff for a 
+ * certain units schema. 
  */
 class UnitsSchema 
 {
 public:
+    /// if called set all the units of the units schema
     virtual void setSchemaUnits(void)=0;
+    /// return the value and the unit as string
     virtual void toStrWithUserPrefs(QuantityType t,double Value,QString &outValue,QString &outUnit)=0;
+    /** return one string with the formated value/unit pair.
+     *  The designer of the unit schema can decide how he wants the 
+     *  value presented. Only rule is its still parseble by the 
+     *  units parser. 
+     */
+    virtual QString toStrWithUserPrefs(QuantityType t,double Value)=0;
 };
 
 

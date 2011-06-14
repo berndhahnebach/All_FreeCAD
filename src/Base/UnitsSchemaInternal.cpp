@@ -50,11 +50,16 @@ void UnitsSchemaInternal::setSchemaUnits(void)
 
 void UnitsSchemaInternal::toStrWithUserPrefs(QuantityType t,double Value,QString &outValue,QString &outUnit)
 {
-    double UnitValue = UnitsApi::toDblWithUserPrefs(t,Value);
+    double UnitValue = Value/UnitsApi::getPrefFactorOf(t);
     outUnit = UnitsApi::getPrefUnitOf(t);
     outValue = QString::fromAscii("%1").arg(UnitValue);
 
 }
 
+QString UnitsSchemaInternal::toStrWithUserPrefs(QuantityType t,double Value)
+{
+    double UnitValue = Value/UnitsApi::getPrefFactorOf(t);
+    return QString::fromAscii("%1 %2").arg(UnitValue).arg(UnitsApi::getPrefUnitOf(t));
+}
 
 

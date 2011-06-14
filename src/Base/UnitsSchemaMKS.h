@@ -40,6 +40,7 @@ class UnitsSchemaMKS: public UnitsSchema
 public:
     void setSchemaUnits(void);
     void toStrWithUserPrefs(QuantityType t,double Value,QString &outValue,QString &outUnit);
+    QString toStrWithUserPrefs(QuantityType t,double Value);
 };
 
 

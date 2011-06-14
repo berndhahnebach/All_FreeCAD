@@ -59,6 +59,7 @@ libFreeCADApp_la_SOURCES=\
 		PropertyLinks.cpp \
 		PropertyPythonObject.cpp \
 		PropertyStandard.cpp \
+		PropertyUnits.cpp \
 		Transactions.cpp
 
 includedir = @includedir@/App
@@ -92,6 +93,7 @@ include_HEADERS=\
 		PropertyLinks.h \
 		PropertyPythonObject.h \
 		PropertyStandard.h \
+		PropertyUnits.h \
 		Transactions.h
 
 %Script.h: FreeCAD%.py

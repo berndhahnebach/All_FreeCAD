@@ -32,14 +32,17 @@
 namespace Base {
     
 
-/**
- * The UnitSchema class
+/** The standard units schema
+ *  Here is defined what internal (base) units FreeCAD uses.
+ *  FreeCAD uses a mm/kg/deg scala.
+ *  Also it defines how the units get presented.
  */
 class UnitsSchemaInternal: public UnitsSchema
 {
 public:
     void setSchemaUnits(void);
     void toStrWithUserPrefs(QuantityType t,double Value,QString &outValue,QString &outUnit);
+    QString toStrWithUserPrefs(QuantityType t,double Value);
 };
 
 
