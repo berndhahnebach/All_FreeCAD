@@ -53,7 +53,7 @@ using namespace Gui;
 
 TYPESYSTEM_SOURCE(Gui::BlenderNavigationStyle, Gui::UserNavigationStyle);
 
-BlenderNavigationStyle::BlenderNavigationStyle()
+BlenderNavigationStyle::BlenderNavigationStyle() : lockButton1(FALSE)
 {
 }
 
@@ -167,35 +167,29 @@ SbBool BlenderNavigationStyle::processSoEvent(const SoEvent * const ev)
         // SoDebugError::postInfo("processSoEvent", "button = %d", button);
         switch (button) {
         case SoMouseButtonEvent::BUTTON1:
+            this->lockrecenter = TRUE;
             this->button1down = press;
-            if (press && ev->wasShiftDown() &&
-                (this->currentmode != NavigationStyle::SELECTION)) {
-                this->centerTime = ev->getTime();
-                float ratio = vp.getViewportAspectRatio();
-                SbViewVolume vv = viewer->getCamera()->getViewVolume(ratio);
-                this->panningplane = vv.getPlane(viewer->getCamera()->focalDistance.getValue());
-                this->lockrecenter = FALSE;
-            }
-            else if (!press && ev->wasShiftDown() &&
-                (this->currentmode != NavigationStyle::SELECTION)) {
-                SbTime tmp = (ev->getTime() - this->centerTime);
-                float dci = (float)QApplication::doubleClickInterval()/1000.0f;
-                // is it just a left click?
-                if (tmp.getValue() < dci && !this->lockrecenter) {
-                    if (!this->seekToPoint(pos)) {
-                        panToCenter(panningplane, posn);
-                        this->interactiveCountDec();
-                    }
-                    processed = TRUE;
-                }
-            }
-            else if (press && (this->currentmode == NavigationStyle::SEEK_WAIT_MODE)) {
+            if (press && (this->currentmode == NavigationStyle::SEEK_WAIT_MODE)) {
                 newmode = NavigationStyle::SEEK_MODE;
                 this->seekToPoint(pos); // implicitly calls interactiveCountInc()
                 processed = TRUE;
             }
-            else if (press && (this->currentmode == NavigationStyle::IDLE)) {
-                this->setViewing(true);
+            //else if (press && (this->currentmode == NavigationStyle::IDLE)) {
+            //    this->setViewing(true);
+            //    processed = TRUE;
+            //}
+            else if (press && (this->currentmode == NavigationStyle::PANNING ||
+                               this->currentmode == NavigationStyle::ZOOMING)) {
+                newmode = NavigationStyle::DRAGGING;
+                this->centerTime = ev->getTime();
+                processed = TRUE;
+            }
+            else if (!press && (this->currentmode == NavigationStyle::DRAGGING)) {
+                SbTime tmp = (ev->getTime() - this->centerTime);
+                float dci = (float)QApplication::doubleClickInterval()/1000.0f;
+                if (tmp.getValue() < dci) {
+                    newmode = NavigationStyle::ZOOMING;
+                }
                 processed = TRUE;
             }
             else if (!press && (this->currentmode == NavigationStyle::DRAGGING)) {
@@ -205,7 +199,6 @@ SbBool BlenderNavigationStyle::processSoEvent(const SoEvent * const ev)
             else if (viewer->isEditing() && (this->currentmode == NavigationStyle::SPINNING)) {
                 processed = TRUE;
             }
-            this->lockrecenter = TRUE;
             break;
         case SoMouseButtonEvent::BUTTON2:
             // If we are in edit mode then simply ignore the RMB events
@@ -215,7 +208,8 @@ SbBool BlenderNavigationStyle::processSoEvent(const SoEvent * const ev)
                 // If we are in zoom or pan mode ignore RMB events otherwise
                 // the canvas doesn't get any release events 
                 if (this->currentmode != NavigationStyle::ZOOMING && 
-                    this->currentmode != NavigationStyle::PANNING) {
+                    this->currentmode != NavigationStyle::PANNING &&
+                    this->currentmode != NavigationStyle::DRAGGING) {
                     if (this->isPopupMenuEnabled()) {
                         if (!press) { // release right mouse button
                             this->openPopupMenu(event->getPosition());
@@ -223,6 +217,22 @@ SbBool BlenderNavigationStyle::processSoEvent(const SoEvent * const ev)
                     }
                 }
             }
+            // Alternative way of rotating & zooming
+            if (press && (this->currentmode == NavigationStyle::PANNING ||
+                          this->currentmode == NavigationStyle::ZOOMING)) {
+                newmode = NavigationStyle::DRAGGING;
+                this->centerTime = ev->getTime();
+                processed = TRUE;
+            }
+            else if (!press && (this->currentmode == NavigationStyle::DRAGGING)) {
+                SbTime tmp = (ev->getTime() - this->centerTime);
+                float dci = (float)QApplication::doubleClickInterval()/1000.0f;
+                if (tmp.getValue() < dci) {
+                    newmode = NavigationStyle::ZOOMING;
+                }
+                processed = TRUE;
+            }
+            this->button2down = press;
             break;
         case SoMouseButtonEvent::BUTTON3:
             if (press) {
@@ -289,24 +299,31 @@ SbBool BlenderNavigationStyle::processSoEvent(const SoEvent * const ev)
     if (type.isDerivedFrom(SoMotion3Event::getClassTypeId())) {
         SoMotion3Event * const event = (SoMotion3Event *) ev;
         SoCamera * const camera = viewer->getCamera();
-        if (camera) {
-            SbVec3f dir = event->getTranslation();
-            camera->orientation.getValue().multVec(dir,dir);
-            camera->position = camera->position.getValue() + dir;
-            camera->orientation = 
-                event->getRotation() * camera->orientation.getValue();
-            processed = TRUE;
+
+        SbVec3f dir = event->getTranslation();
+        if (camera->getTypeId().isDerivedFrom(SoOrthographicCamera::getClassTypeId())){
+            static float zoomConstant(-.03f);
+            dir[2] = 0.0;//don't move the cam for z translation.
+
+            SoOrthographicCamera *oCam = static_cast<SoOrthographicCamera *>(camera);
+            oCam->scaleHeight(1.0-event->getTranslation()[2] * zoomConstant);
         }
+        camera->orientation.getValue().multVec(dir,dir);
+        camera->position = camera->position.getValue() + dir;
+        camera->orientation = event->getRotation() * camera->orientation.getValue();
+        processed = TRUE;
     }
 
     enum {
         BUTTON1DOWN = 1 << 0,
         BUTTON3DOWN = 1 << 1,
         CTRLDOWN =    1 << 2,
-        SHIFTDOWN =   1 << 3
+        SHIFTDOWN =   1 << 3,
+        BUTTON2DOWN = 1 << 4
     };
     unsigned int combo =
         (this->button1down ? BUTTON1DOWN : 0) |
+        (this->button2down ? BUTTON2DOWN : 0) |
         (this->button3down ? BUTTON3DOWN : 0) |
         (this->ctrldown ? CTRLDOWN : 0) |
         (this->shiftdown ? SHIFTDOWN : 0);
@@ -315,44 +332,36 @@ SbBool BlenderNavigationStyle::processSoEvent(const SoEvent * const ev)
     case 0:
         if (curmode == NavigationStyle::SPINNING) { break; }
         newmode = NavigationStyle::IDLE;
-
-        if (curmode == NavigationStyle::DRAGGING) {
-            if (doSpin())
-                newmode = NavigationStyle::SPINNING;
+        // The left mouse button has been released right now but
+        // we want to avoid that the event is procesed elsewhere
+        if (this->lockButton1) {
+            this->lockButton1 = FALSE;
+            processed = TRUE;
         }
+
+        //if (curmode == NavigationStyle::DRAGGING) {
+        //    if (doSpin())
+        //        newmode = NavigationStyle::SPINNING;
+        //}
         break;
     case BUTTON1DOWN:
-        newmode = NavigationStyle::DRAGGING;
+        // make sure not to change the selection when stopping spinning
+        if (curmode == NavigationStyle::SPINNING || this->lockButton1)
+            newmode = NavigationStyle::IDLE;
+        else
+            newmode = NavigationStyle::SELECTION;
         break;
-    case BUTTON3DOWN:
-    case SHIFTDOWN|BUTTON1DOWN:
+    case SHIFTDOWN|BUTTON3DOWN:
         newmode = NavigationStyle::PANNING;
         break;
-    case CTRLDOWN:
-    case CTRLDOWN|BUTTON1DOWN:
-    case CTRLDOWN|SHIFTDOWN:
-    case CTRLDOWN|SHIFTDOWN|BUTTON1DOWN:
-        newmode = NavigationStyle::SELECTION;
+    case BUTTON3DOWN:
+        newmode = NavigationStyle::DRAGGING;
         break;
-    case BUTTON1DOWN|BUTTON3DOWN:
-    case CTRLDOWN|BUTTON3DOWN:
+    case CTRLDOWN|SHIFTDOWN|BUTTON2DOWN:
         newmode = NavigationStyle::ZOOMING;
         break;
 
-        // There are many cases we don't handle that just falls through to
-        // the default case, like SHIFTDOWN, CTRLDOWN, CTRLDOWN|SHIFTDOWN,
-        // SHIFTDOWN|BUTTON3DOWN, SHIFTDOWN|CTRLDOWN|BUTTON3DOWN, etc.
-        // This is a feature, not a bug. :-)
-        //
-        // mortene.
-
     default:
-        // The default will make a spin stop and otherwise not do
-        // anything.
-        if ((curmode != NavigationStyle::SEEK_WAIT_MODE) &&
-            (curmode != NavigationStyle::SEEK_MODE)) {
-            newmode = NavigationStyle::IDLE;
-        }
         break;
     }
 
@@ -360,9 +369,15 @@ SbBool BlenderNavigationStyle::processSoEvent(const SoEvent * const ev)
         this->setViewingMode(newmode);
     }
 
+    // If for dragging the buttons 1 and 3 are pressed
+    // but then button 3 is relaesed we shouldn't switch
+    // into selection mode.
+    if (this->button1down && this->button3down)
+        this->lockButton1 = TRUE;
+
     // If not handled in this class, pass on upwards in the inheritance
     // hierarchy.
-    if ((curmode == NavigationStyle::SELECTION || viewer->isEditing()) && !processed)
+    if (/*(curmode == NavigationStyle::SELECTION || viewer->isEditing()) && */!processed)
         processed = inherited::processSoEvent(ev);
     else
         return TRUE;
