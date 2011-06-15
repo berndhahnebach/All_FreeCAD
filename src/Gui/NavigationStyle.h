@@ -260,6 +260,20 @@ private:
     SbBool lockButton1;
 };
 
+class GuiExport BlenderNavigationStyle : public UserNavigationStyle {
+    typedef UserNavigationStyle inherited;
+
+    TYPESYSTEM_HEADER();
+
+public:
+    BlenderNavigationStyle();
+    ~BlenderNavigationStyle();
+    const char* mouseButtons(ViewerMode);
+
+protected:
+    SbBool processSoEvent(const SoEvent * const ev);
+};
+
 } // namespace Gui
 
 #endif // GUI_NAVIGATIONSTYLE_H 

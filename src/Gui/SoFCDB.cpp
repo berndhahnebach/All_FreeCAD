@@ -117,6 +117,7 @@ void Gui::SoFCDB::init()
     UserNavigationStyle             ::init();
     InventorNavigationStyle         ::init();
     CADNavigationStyle              ::init();
+    BlenderNavigationStyle          ::init();
 
     qRegisterMetaType<Base::Vector3f>("Base::Vector3f");
     qRegisterMetaType<Base::Vector3d>("Base::Vector3d");

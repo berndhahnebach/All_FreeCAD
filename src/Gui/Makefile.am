@@ -182,6 +182,8 @@ libFreeCADGui_la_SOURCES=\
 		Assistant.cpp \
 		Assistant.h \
 		BitmapFactory.cpp \
+		BlenderNavigationStyle.cpp \
+		CADNavigationStyle.cpp \
 		CallTips.cpp \
 		CombiView.cpp \
 		Control.cpp \
@@ -275,6 +277,7 @@ libFreeCADGui_la_SOURCES=\
 		HelpView.cpp \
 		InputVector.cpp \
 		InputVector.h \
+		InventorNavigationStyle.cpp \
 		Placement.cpp \
 		Placement.h \
 		Macro.cpp \
