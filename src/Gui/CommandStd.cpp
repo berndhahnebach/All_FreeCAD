@@ -275,27 +275,6 @@ void StdCmdAboutQt::activated(int iMsg)
 }
 
 //===========================================================================
-// Std_TipOfTheDay
-//===========================================================================
-DEF_STD_CMD(StdCmdTipOfTheDay);
-
-StdCmdTipOfTheDay::StdCmdTipOfTheDay()
-  :Command("Std_TipOfTheDay")
-{
-  sGroup        = QT_TR_NOOP("Help");
-  sMenuText     = QT_TR_NOOP("&Tip of the day...");
-  sToolTipText  = QT_TR_NOOP("Tip of the day");
-  sWhatsThis    = "Std_TipOfTheDay";
-  sStatusTip    = QT_TR_NOOP("Tip of the day");
-  eType         = 0;
-}
-
-void StdCmdTipOfTheDay::activated(int iMsg)
-{
-  getMainWindow()->showTipOfTheDay( true );
-}
-
-//===========================================================================
 // Std_WhatsThis
 //===========================================================================
 DEF_STD_CMD(StdCmdWhatsThis);
@@ -646,7 +625,6 @@ void CreateStdCommands(void)
     rcCmdMgr.addCommand(new StdCmdPythonWebsite());
     rcCmdMgr.addCommand(new StdCmdMeasurementSimple());
     //rcCmdMgr.addCommand(new StdCmdDownloadOnlineHelp());
-    rcCmdMgr.addCommand(new StdCmdTipOfTheDay());
     //rcCmdMgr.addCommand(new StdCmdDescription());
 }
 

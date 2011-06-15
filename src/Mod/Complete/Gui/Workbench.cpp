@@ -377,7 +377,6 @@ Gui::MenuItem* Workbench::setupMenuBar() const
           << "Std_OnlineHelpPython" 
           << "Std_PythonHelp"
           << helpWebsites  
-          << "Std_TipOfTheDay"
           << "Separator" 
           << "Test_Test" 
           << "Separator" 

@@ -1,68 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS>
-  <context>
+<TS version="2.0" language="de_DE">
+<context>
     <name>CmdMeshPartMesher</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <location filename="../../Command.cpp" line="+46"/>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Create mesh from shape...</source>
-      <translation>Create mesh from shape...</translation>
+        <location line="+1"/>
+        <source>Create mesh from shape...</source>
+        <translation>Netz aus Form erstellen...</translation>
     </message>
     <message>
-      <location/>
-      <source>Tessellate shape</source>
-      <translation>Tessellate shape</translation>
+        <location line="+1"/>
+        <source>Tessellate shape</source>
+        <translation>Form tessellieren</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>MeshPartGui::Tessellation</name>
     <message>
-      <location/>
-      <source>Tessellation</source>
-      <translation>Tessellation</translation>
+        <location filename="../../Tessellation.ui" line="+14"/>
+        <source>Tessellation</source>
+        <translation>Tessellierung</translation>
     </message>
     <message>
-      <location/>
-      <source>Shapes</source>
-      <translation>Shapes</translation>
+        <location line="+10"/>
+        <source>Shapes</source>
+        <translation>Formen</translation>
     </message>
     <message>
-      <location/>
-      <source>Settings</source>
-      <translation>Einstellungen</translation>
+        <location line="+8"/>
+        <source>Settings</source>
+        <translation>Einstellungen</translation>
     </message>
     <message>
-      <location/>
-      <source>Surface deviation:</source>
-      <translation>Surface deviation:</translation>
+        <location line="+6"/>
+        <source>Surface deviation:</source>
+        <translation>Flächenabweichung:</translation>
     </message>
     <message>
-      <location/>
-      <source>Max. edge length:</source>
-      <translation>Max. edge length:</translation>
+        <location line="+26"/>
+        <source>Max. edge length:</source>
+        <translation>Max. Kantenlänge:</translation>
     </message>
     <message>
-      <location/>
-      <source>Select a shape for meshing, first.</source>
-      <translation>Wählen Sie zuerst eine Form für die Vernetzung.</translation>
+        <location filename="../../Tessellation.cpp" line="+98"/>
+        <source>Select a shape for meshing, first.</source>
+        <translation>Wählen Sie zuerst eine Form für die Vernetzung.</translation>
     </message>
     <message>
-      <location/>
-      <source>No such document '%1'.</source>
-      <translation>Es gibt kein Dokument "%1".</translation>
+        <location line="+7"/>
+        <source>No such document &apos;%1&apos;.</source>
+        <translation>Es gibt kein Dokument &quot;%1&quot;.</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Workbench</name>
     <message>
-      <location/>
-      <source>MeshPart</source>
-      <translation>Mesh-Teil</translation>
+        <location filename="../../Workbench.cpp" line="+36"/>
+        <source>MeshPart</source>
+        <translation>Netz-Formteil</translation>
     </message>
-  </context>
+</context>
 </TS>

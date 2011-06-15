@@ -518,7 +518,7 @@ MenuItem* StdWorkbench::setupMenuBar() const
     MenuItem* help = new MenuItem( menuBar );
     help->setCommand("&Help");
     *help << "Std_OnlineHelp" << "Std_OnlineHelpPython" << "Std_PythonHelp"
-          << helpWebsites  << "Std_TipOfTheDay"<< "Separator" << "Std_About"
+          << helpWebsites  << "Separator" << "Std_About"
           << "Std_AboutQt" << "Separator" << "Std_WhatsThis";
 
     return menuBar;

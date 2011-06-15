@@ -1,6360 +1,6662 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS>
-  <context>
+<TS version="2.0" language="de_DE">
+<context>
     <name>Angle</name>
     <message>
-      <location/>
-      <source>Form</source>
-      <translation>Form</translation>
+        <location filename="../DlgLocationAngle.ui" line="+14"/>
+        <source>Form</source>
+        <translation>Form</translation>
     </message>
     <message>
-      <location/>
-      <source>A:</source>
-      <translation>A:</translation>
+        <location line="+8"/>
+        <source>A:</source>
+        <translation>A:</translation>
     </message>
     <message>
-      <location/>
-      <source>B:</source>
-      <translation>B:</translation>
+        <location line="+21"/>
+        <source>B:</source>
+        <translation>B:</translation>
     </message>
     <message>
-      <location/>
-      <source>C:</source>
-      <translation>C:</translation>
+        <location line="+21"/>
+        <source>C:</source>
+        <translation>C:</translation>
     </message>
     <message>
-      <location/>
-      <source>Angle Snap</source>
-      <translation>Angle Snap</translation>
+        <location line="+22"/>
+        <source>Angle Snap</source>
+        <translation>Einrastwinkel</translation>
+    </message>
+    <message utf8="true">
+        <location line="+11"/>
+        <source>1 °</source>
+        <translation>1 °</translation>
+    </message>
+    <message utf8="true">
+        <location line="+5"/>
+        <source>2 °</source>
+        <translation>2 °</translation>
+    </message>
+    <message utf8="true">
+        <location line="+5"/>
+        <source>5 °</source>
+        <translation>5 °</translation>
+    </message>
+    <message utf8="true">
+        <location line="+5"/>
+        <source>10 °</source>
+        <translation>10 °</translation>
+    </message>
+    <message utf8="true">
+        <location line="+5"/>
+        <source>20 °</source>
+        <translation>20 °</translation>
+    </message>
+    <message utf8="true">
+        <location line="+5"/>
+        <source>45 °</source>
+        <translation>45 °</translation>
+    </message>
+    <message utf8="true">
+        <location line="+5"/>
+        <source>90 °</source>
+        <translation>90 °</translation>
+    </message>
+    <message utf8="true">
+        <location line="+5"/>
+        <source>180 °</source>
+        <translation>180 °</translation>
+    </message>
+</context>
+<context>
+    <name>DocumentModel</name>
+    <message>
+        <location filename="../DocumentModel.cpp" line="+115"/>
+        <source>Application</source>
+        <translation>Applikation</translation>
     </message>
     <message>
-      <location/>
-      <source>1 °</source>
-      <translation>1 °</translation>
+        <location line="+443"/>
+        <source>Labels &amp; Attributes</source>
+        <translation>Bezeichnungen &amp; Eigenschaften</translation>
     </message>
-    <message>
-      <location/>
-      <source>2 °</source>
-      <translation>2 °</translation>
-    </message>
-    <message>
-      <location/>
-      <source>5 °</source>
-      <translation>5 °</translation>
-    </message>
-    <message>
-      <location/>
-      <source>10 °</source>
-      <translation>10 °</translation>
-    </message>
-    <message>
-      <location/>
-      <source>20 °</source>
-      <translation>20 °</translation>
-    </message>
-    <message>
-      <location/>
-      <source>45 °</source>
-      <translation>45 °</translation>
-    </message>
-    <message>
-      <location/>
-      <source>90 °</source>
-      <translation>90 °</translation>
-    </message>
-    <message>
-      <location/>
-      <source>180 °</source>
-      <translation>180 °</translation>
-    </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::AccelLineEdit</name>
     <message>
-      <location/>
-      <source>none</source>
-      <translation>kein</translation>
+        <location filename="../Widgets.cpp" line="+114"/>
+        <location line="+9"/>
+        <source>none</source>
+        <translation>kein</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::CADNavigationStyle</name>
     <message>
-      <location/>
-      <source>Press left mouse button</source>
-      <translation>Drücken Sie die linke Maustaste</translation>
+        <location filename="../NavigationStyle.cpp" line="+1324"/>
+        <source>Press left mouse button</source>
+        <translation>Drücken Sie die linke Maustaste</translation>
     </message>
     <message>
-      <location/>
-      <source>Press middle mouse button</source>
-      <translation>Drücken Sie die mittlere Maustaste</translation>
+        <location line="+2"/>
+        <source>Press middle mouse button</source>
+        <translation>Drücken Sie die mittlere Maustaste</translation>
     </message>
     <message>
-      <location/>
-      <source>Press left and middle mouse button</source>
-      <translation>Drücken Sie die linke und die mittlere Maustaste</translation>
+        <location line="+2"/>
+        <source>Press left and middle mouse button</source>
+        <translation>Drücken Sie die linke und die mittlere Maustaste</translation>
     </message>
     <message>
-      <location/>
-      <source>Scroll middle mouse button</source>
-      <translation>Scroll middle mouse button</translation>
+        <location line="+2"/>
+        <source>Scroll middle mouse button</source>
+        <translation>Scrollen Sie die mittlere Maustaste</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Command</name>
     <message>
-      <location/>
-      <source>Standard</source>
-      <translation>Standard</translation>
+        <location filename="../Command.cpp" line="+201"/>
+        <source>Standard</source>
+        <translation>Standard</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::ContainerDialog</name>
     <message>
-      <location/>
-      <source>&amp;OK</source>
-      <translation>&amp;OK</translation>
+        <location filename="../WidgetFactory.cpp" line="+254"/>
+        <source>&amp;OK</source>
+        <translation>&amp;OK</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Cancel</source>
-      <translation>A&amp;bbrechen</translation>
+        <location line="+10"/>
+        <source>&amp;Cancel</source>
+        <translation>A&amp;bbrechen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::ControlSingleton</name>
     <message>
-      <location/>
-      <source>Task panel</source>
-      <translation>Taskleiste</translation>
+        <location filename="../Control.cpp" line="+83"/>
+        <source>Task panel</source>
+        <translation>Taskleiste</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::AboutApplication</name>
     <message>
-      <location/>
-      <source>About</source>
-      <translation>Über</translation>
+        <location filename="../AboutApplication.ui" line="+16"/>
+        <source>About</source>
+        <translation>Über</translation>
     </message>
     <message>
-      <location/>
-      <source>Revision number</source>
-      <translation>Revisionsnummer</translation>
+        <location line="+67"/>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline; color:#0000ff;&quot;&gt; Unknown Application (c) Unknown Author&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline; color:#0000ff;&quot;&gt; Unknown Application (c) Unknown Author&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-      <location/>
-      <source>Version</source>
-      <translation>Version</translation>
+        <location line="+37"/>
+        <location line="+7"/>
+        <location line="+14"/>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Unknown&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Unknown&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-      <location/>
-      <source>OK</source>
-      <translation>OK</translation>
+        <location line="-7"/>
+        <source>Revision number</source>
+        <translation>Revisionsnummer</translation>
     </message>
     <message>
-      <location/>
-      <source></source>
-      <translation type="unfinished"/>
+        <location line="+14"/>
+        <source>Version</source>
+        <translation>Version</translation>
     </message>
     <message>
-      <location/>
-      <source>Release date</source>
-      <translation>Erscheinungsdatum</translation>
+        <location line="+71"/>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
-  </context>
-  <context>
+    <message>
+        <source></source>
+        <translation></translation>
+    </message>
+    <message>
+        <location line="-106"/>
+        <source>Release date</source>
+        <translation>Erscheinungsdatum</translation>
+    </message>
+</context>
+<context>
     <name>Gui::Dialog::DemoMode</name>
     <message>
-      <location/>
-      <source>View Turntable</source>
-      <translation>View Turntable</translation>
+        <location filename="../DemoMode.ui" line="+14"/>
+        <source>View Turntable</source>
+        <translation>Drehteller</translation>
     </message>
     <message>
-      <location/>
-      <source>Speed</source>
-      <translation>Geschwindigkeit</translation>
+        <location line="+24"/>
+        <source>Speed</source>
+        <translation>Geschwindigkeit</translation>
     </message>
     <message>
-      <location/>
-      <source>Maximum</source>
-      <translation>Maximum</translation>
+        <location line="+28"/>
+        <source>Maximum</source>
+        <translation>Maximum</translation>
     </message>
     <message>
-      <location/>
-      <source>Minimum</source>
-      <translation>Minimum</translation>
+        <location line="+7"/>
+        <source>Minimum</source>
+        <translation>Minimum</translation>
     </message>
     <message>
-      <location/>
-      <source>Fullscreen</source>
-      <translation>Vollbild</translation>
+        <location line="+18"/>
+        <source>Fullscreen</source>
+        <translation>Vollbild</translation>
     </message>
     <message>
-      <location/>
-      <source>Enable timer</source>
-      <translation>Timer aktivieren</translation>
+        <location line="+7"/>
+        <source>Enable timer</source>
+        <translation>Timer aktivieren</translation>
     </message>
     <message>
-      <location/>
-      <source> s</source>
-      <translation> s</translation>
+        <location line="+10"/>
+        <source> s</source>
+        <translation> s</translation>
     </message>
     <message>
-      <location/>
-      <source>Angle</source>
-      <translation>Winkel</translation>
+        <location line="+15"/>
+        <source>Angle</source>
+        <translation>Winkel</translation>
+    </message>
+    <message utf8="true">
+        <location line="+25"/>
+        <source>90°</source>
+        <translation>90°</translation>
+    </message>
+    <message utf8="true">
+        <location line="+7"/>
+        <source>-90°</source>
+        <translation>-90 °</translation>
     </message>
     <message>
-      <location/>
-      <source>90°</source>
-      <translation>90°</translation>
+        <location line="+34"/>
+        <source>Play</source>
+        <translation>Wiedergabe</translation>
     </message>
     <message>
-      <location/>
-      <source>-90°</source>
-      <translation>-90 °</translation>
+        <location line="+7"/>
+        <source>Stop</source>
+        <translation>Beenden</translation>
     </message>
     <message>
-      <location/>
-      <source>Play</source>
-      <translation>Wiedergabe</translation>
+        <location line="+20"/>
+        <source>Close</source>
+        <translation>Schließen</translation>
     </message>
-    <message>
-      <location/>
-      <source>Stop</source>
-      <translation>Beenden</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Close</source>
-      <translation>Schließen</translation>
-    </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgActivateWindow</name>
     <message>
-      <location/>
-      <source>Choose Window</source>
-      <translation>Fenster auswählen</translation>
+        <location filename="../DlgActivateWindow.ui" line="+16"/>
+        <source>Choose Window</source>
+        <translation>Fenster auswählen</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Activate</source>
-      <translation>&amp;Aktivieren</translation>
+        <location line="+33"/>
+        <source>&amp;Activate</source>
+        <translation>&amp;Aktivieren</translation>
     </message>
     <message>
-      <location/>
-      <source>Alt+A</source>
-      <translation>Alt+W</translation>
+        <location line="+3"/>
+        <source>Alt+A</source>
+        <translation>Alt+W</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Cancel</source>
-      <translation>A&amp;bbrechen</translation>
+        <location line="+29"/>
+        <source>&amp;Cancel</source>
+        <translation>A&amp;bbrechen</translation>
     </message>
     <message>
-      <location/>
-      <source></source>
-      <translation type="unfinished"/>
+        <source></source>
+        <translation></translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgActivateWindowImp</name>
     <message>
-      <location/>
-      <source>Windows</source>
-      <translation>Fenster</translation>
+        <location filename="../DlgActivateWindowImp.cpp" line="+50"/>
+        <source>Windows</source>
+        <translation>Fenster</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgAuthorization</name>
     <message>
-      <location/>
-      <source>Authorization</source>
-      <translation>Autorisiertung</translation>
+        <location filename="../DlgAuthorization.ui" line="+16"/>
+        <source>Authorization</source>
+        <translation>Autorisiertung</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;OK</source>
-      <translation>&amp;OK</translation>
+        <location line="+23"/>
+        <source>&amp;OK</source>
+        <translation>&amp;OK</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Cancel</source>
-      <translation>A&amp;bbrechen</translation>
+        <location line="+32"/>
+        <source>&amp;Cancel</source>
+        <translation>A&amp;bbrechen</translation>
     </message>
     <message>
-      <location/>
-      <source>Password:</source>
-      <translation>Passwort:</translation>
+        <location line="+22"/>
+        <source>Password:</source>
+        <translation>Kennwort:</translation>
     </message>
     <message>
-      <location/>
-      <source>User name:</source>
-      <translation>Benutzerame:</translation>
+        <location line="+10"/>
+        <source>User name:</source>
+        <translation>Benutzerame:</translation>
     </message>
     <message>
-      <location/>
-      <source></source>
-      <translation type="unfinished"/>
+        <source></source>
+        <translation></translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgChooseIcon</name>
     <message>
-      <location/>
-      <source>Choose Icon</source>
-      <translation>Symbol auswählen</translation>
+        <location filename="../DlgChooseIcon.ui" line="+16"/>
+        <source>Choose Icon</source>
+        <translation>Symbol auswählen</translation>
     </message>
     <message>
-      <location/>
-      <source>OK</source>
-      <translation>OK</translation>
+        <location line="+49"/>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
     <message>
-      <location/>
-      <source>Cancel</source>
-      <translation>Abbrechen</translation>
+        <location line="+10"/>
+        <source>Cancel</source>
+        <translation>Abbrechen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgCustomActions</name>
     <message>
-      <location/>
-      <source>Macros</source>
-      <translation>Makros</translation>
+        <location filename="../DlgActions.ui" line="+16"/>
+        <source>Macros</source>
+        <translation>Makros</translation>
     </message>
     <message>
-      <location/>
-      <source>Setup Custom Macros</source>
-      <translation>Erstellen benutzerdefinierter Makros</translation>
+        <location line="+12"/>
+        <source>Setup Custom Macros</source>
+        <translation>Erstellen benutzerdefinierter Makros</translation>
     </message>
     <message>
-      <location/>
-      <source>Macro:</source>
-      <translation>Makro:</translation>
+        <location line="+25"/>
+        <source>Macro:</source>
+        <translation>Makro:</translation>
     </message>
     <message>
-      <location/>
-      <source>...</source>
-      <translation>...</translation>
+        <location line="+43"/>
+        <source>...</source>
+        <translation>...</translation>
     </message>
     <message>
-      <location/>
-      <source>Pixmap</source>
-      <translation>Symbol</translation>
+        <location line="+7"/>
+        <source>Pixmap</source>
+        <translation>Symbol</translation>
     </message>
     <message>
-      <location/>
-      <source>Accelerator:</source>
-      <translation>Tastenbelegung:</translation>
+        <location line="+10"/>
+        <source>Accelerator:</source>
+        <translation>Tastenbelegung:</translation>
     </message>
     <message>
-      <location/>
-      <source>What's this:</source>
-      <translation>Kontexthilfe:</translation>
+        <location line="+10"/>
+        <source>What&apos;s this:</source>
+        <translation>Direkthilfe:</translation>
     </message>
     <message>
-      <location/>
-      <source>Status text:</source>
-      <translation>Statustext:</translation>
+        <location line="+10"/>
+        <source>Status text:</source>
+        <translation>Statustext:</translation>
     </message>
     <message>
-      <location/>
-      <source>Tool tip:</source>
-      <translation>Tooltipp:</translation>
+        <location line="+19"/>
+        <source>Tool tip:</source>
+        <translation>Tooltipp:</translation>
     </message>
     <message>
-      <location/>
-      <source>Menu text:</source>
-      <translation>Menütext:</translation>
+        <location line="+10"/>
+        <source>Menu text:</source>
+        <translation>Menütext:</translation>
     </message>
     <message>
-      <location/>
-      <source>Add</source>
-      <translation>Hinzufügen</translation>
+        <location line="+61"/>
+        <source>Add</source>
+        <translation>Hinzufügen</translation>
     </message>
     <message>
-      <location/>
-      <source>Remove</source>
-      <translation>Entfernen</translation>
+        <location line="+7"/>
+        <source>Remove</source>
+        <translation>Entfernen</translation>
     </message>
     <message>
-      <location/>
-      <source>Replace</source>
-      <translation>Ersetzen</translation>
+        <location line="+7"/>
+        <source>Replace</source>
+        <translation>Ersetzen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgCustomActionsImp</name>
     <message>
-      <location/>
-      <source>Icons</source>
-      <translation>Symbole</translation>
+        <location filename="../DlgActionsImp.cpp" line="+63"/>
+        <source>Icons</source>
+        <translation>Symbole</translation>
     </message>
     <message>
-      <location/>
-      <source>Macros</source>
-      <translation>Makros</translation>
+        <location line="+0"/>
+        <source>Macros</source>
+        <translation>Makros</translation>
     </message>
     <message>
-      <location/>
-      <source>No macro</source>
-      <translation>Kein Makro</translation>
+        <location line="+21"/>
+        <source>No macro</source>
+        <translation>Kein Makro</translation>
     </message>
     <message>
-      <location/>
-      <source>No macros found.</source>
-      <translation>Keine Makros gefunden.</translation>
+        <location line="+0"/>
+        <source>No macros found.</source>
+        <translation>Keine Makros gefunden.</translation>
     </message>
     <message>
-      <location/>
-      <source>Macro not found</source>
-      <translation>Makro nicht gefunden</translation>
+        <location line="+101"/>
+        <source>Macro not found</source>
+        <translation>Makro nicht gefunden</translation>
     </message>
     <message>
-      <location/>
-      <source>Sorry, couldn't find macro file '%1'.</source>
-      <translation>Das Makro '%1' konnte nicht gefunden werden.</translation>
+        <location line="+1"/>
+        <source>Sorry, couldn&apos;t find macro file &apos;%1&apos;.</source>
+        <translation>Das Makro &apos;%1&apos; konnte nicht gefunden werden.</translation>
     </message>
     <message>
-      <location/>
-      <source>Empty macro</source>
-      <translation>Leeres Makrofeld</translation>
+        <location line="+26"/>
+        <source>Empty macro</source>
+        <translation>Leeres Makrofeld</translation>
     </message>
     <message>
-      <location/>
-      <source>Please specify the macro first.</source>
-      <translation>Wählen Sie bitte vorher das Makro aus.</translation>
+        <location line="+0"/>
+        <source>Please specify the macro first.</source>
+        <translation>Wählen Sie bitte vorher das Makro aus.</translation>
     </message>
     <message>
-      <location/>
-      <source>Empty text</source>
-      <translation>LeeresTextfeld</translation>
+        <location line="+6"/>
+        <location line="+68"/>
+        <source>Empty text</source>
+        <translation>Leeres Textfeld</translation>
     </message>
     <message>
-      <location/>
-      <source>Please specify the menu text first.</source>
-      <translation>Geben Sie bitte den Menütext an.</translation>
+        <location line="-68"/>
+        <location line="+68"/>
+        <source>Please specify the menu text first.</source>
+        <translation>Geben Sie bitte den Menütext an.</translation>
     </message>
     <message>
-      <location/>
-      <source>No item selected</source>
-      <translation>Kein Element ausgewählt</translation>
+        <location line="-6"/>
+        <source>No item selected</source>
+        <translation>Kein Element ausgewählt</translation>
     </message>
     <message>
-      <location/>
-      <source>Please select a macro item first.</source>
-      <translation>Wählen Sie bitte vorher ein Makroelement aus.</translation>
+        <location line="+0"/>
+        <source>Please select a macro item first.</source>
+        <translation>Wählen Sie bitte vorher ein Makroelement aus.</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgCustomCommands</name>
     <message>
-      <location/>
-      <source>Commands</source>
-      <translation>Befehle</translation>
+        <location filename="../DlgCommands.ui" line="+16"/>
+        <source>Commands</source>
+        <translation>Befehle</translation>
     </message>
     <message>
-      <location/>
-      <source></source>
-      <translation type="unfinished"/>
+        <source></source>
+        <translation></translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgCustomCommandsImp</name>
     <message>
-      <location/>
-      <source>Category</source>
-      <translation>Kategorie</translation>
+        <location filename="../DlgCommandsImp.cpp" line="+102"/>
+        <source>Category</source>
+        <translation>Kategorie</translation>
     </message>
     <message>
-      <location/>
-      <source>Icon</source>
-      <translation>Symbol</translation>
+        <location line="+9"/>
+        <source>Icon</source>
+        <translation>Symbol</translation>
     </message>
     <message>
-      <location/>
-      <source>Command</source>
-      <translation>Befehl</translation>
+        <location line="+0"/>
+        <source>Command</source>
+        <translation>Befehl</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgCustomKeyboard</name>
     <message>
-      <location/>
-      <source>Keyboard</source>
-      <translation>Tastatur</translation>
+        <location filename="../DlgKeyboard.ui" line="+16"/>
+        <source>Keyboard</source>
+        <translation>Tastatur</translation>
     </message>
     <message>
-      <location/>
-      <source>Description:</source>
-      <translation>Beschreibung:</translation>
+        <location line="+20"/>
+        <source>Description:</source>
+        <translation>Beschreibung:</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Category:</source>
-      <translation>&amp;Kategorie:</translation>
+        <location line="+40"/>
+        <source>&amp;Category:</source>
+        <translation>&amp;Kategorie:</translation>
     </message>
     <message>
-      <location/>
-      <source>C&amp;ommands:</source>
-      <translation>Be&amp;fehle:</translation>
+        <location line="+13"/>
+        <source>C&amp;ommands:</source>
+        <translation>Be&amp;fehle:</translation>
     </message>
     <message>
-      <location/>
-      <source>Current shortcut:</source>
-      <translation>Aktuell verwendete Tastenkombination:</translation>
+        <location line="+33"/>
+        <source>Current shortcut:</source>
+        <translation>Aktuell verwendete Tastenkombination:</translation>
     </message>
     <message>
-      <location/>
-      <source>Press &amp;new shortcut:</source>
-      <translation>&amp;Neue Tastenkombination drücken:</translation>
+        <location line="+14"/>
+        <source>Press &amp;new shortcut:</source>
+        <translation>&amp;Neue Tastenkombination drücken:</translation>
     </message>
     <message>
-      <location/>
-      <source>Currently assigned to:</source>
-      <translation>Im Moment verwendet von:</translation>
+        <location line="+13"/>
+        <source>Currently assigned to:</source>
+        <translation>Im Moment verwendet von:</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Assign</source>
-      <translation>Zu&amp;weisen</translation>
+        <location line="+33"/>
+        <source>&amp;Assign</source>
+        <translation>Zu&amp;weisen</translation>
     </message>
     <message>
-      <location/>
-      <source>Alt+A</source>
-      <translation>Alt+W</translation>
+        <location line="+3"/>
+        <source>Alt+A</source>
+        <translation>Alt+W</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Reset</source>
-      <translation>Zu&amp;rücksetzen</translation>
+        <location line="+7"/>
+        <source>&amp;Reset</source>
+        <translation>Zu&amp;rücksetzen</translation>
     </message>
     <message>
-      <location/>
-      <source>Alt+R</source>
-      <translation>Alt+R</translation>
+        <location line="+3"/>
+        <source>Alt+R</source>
+        <translation>Alt+R</translation>
     </message>
     <message>
-      <location/>
-      <source>Re&amp;set All</source>
-      <translation>&amp;Alles zurücksetzen</translation>
+        <location line="+7"/>
+        <source>Re&amp;set All</source>
+        <translation>&amp;Alles zurücksetzen</translation>
     </message>
     <message>
-      <location/>
-      <source>Alt+S</source>
-      <translation>Alt+S</translation>
+        <location line="+3"/>
+        <source>Alt+S</source>
+        <translation>Alt+S</translation>
     </message>
     <message>
-      <location/>
-      <source></source>
-      <translation type="unfinished"/>
+        <source></source>
+        <translation></translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgCustomKeyboardImp</name>
     <message>
-      <location/>
-      <source>Icon</source>
-      <translation>Symbol</translation>
+        <location filename="../DlgKeyboardImp.cpp" line="+101"/>
+        <source>Icon</source>
+        <translation>Symbol</translation>
     </message>
     <message>
-      <location/>
-      <source>Command</source>
-      <translation>Befehl</translation>
+        <location line="+0"/>
+        <source>Command</source>
+        <translation>Befehl</translation>
     </message>
     <message>
-      <location/>
-      <source>none</source>
-      <translation>kein</translation>
+        <location line="+40"/>
+        <location line="+9"/>
+        <location line="+78"/>
+        <source>none</source>
+        <translation>kein</translation>
     </message>
     <message>
-      <location/>
-      <source>Multiple defined shortcut</source>
-      <translation>Mehrfach belegte Tastenkombination</translation>
+        <location line="+70"/>
+        <source>Multiple defined shortcut</source>
+        <translation>Mehrfach belegte Tastenkombination</translation>
     </message>
     <message>
-      <location/>
-      <source>The shortcut '%1' is defined more than once. This could result into unexpected behaviour.</source>
-      <translation>Die Tastenkombination '%1' ist mehr als einmal vergeben. Dies kann zu unerwartetem Verhalten führen.</translation>
+        <location line="+1"/>
+        <source>The shortcut &apos;%1&apos; is defined more than once. This could result into unexpected behaviour.</source>
+        <translation>Die Tastenkombination &apos;%1&apos; ist mehr als einmal vergeben. Dies kann zu unerwartetem Verhalten führen.</translation>
     </message>
     <message>
-      <location/>
-      <source>Already defined shortcut</source>
-      <translation>Bereits belegte Tastenkombination</translation>
+        <location line="+4"/>
+        <source>Already defined shortcut</source>
+        <translation>Bereits belegte Tastenkombination</translation>
     </message>
     <message>
-      <location/>
-      <source>The shortcut '%1' is already assigned to '%2'.
+        <location line="+1"/>
+        <source>The shortcut &apos;%1&apos; is already assigned to &apos;%2&apos;.
 
 Please define another shortcut.</source>
-      <translation>Die Tastenkombination '%1' wird bereits von '%2' verwendet. 
+        <translation>Die Tastenkombination &apos;%1&apos; wird bereits von &apos;%2&apos; verwendet. 
 Wählen Sie bitte eine andere Tastenkombination.</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgCustomToolBoxbarsImp</name>
     <message>
-      <location/>
-      <source>Toolbox bars</source>
-      <translation>Werkzeugleisten</translation>
+        <location filename="../DlgToolbarsImp.cpp" line="+672"/>
+        <source>Toolbox bars</source>
+        <translation>Werkzeugleisten</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgCustomToolbars</name>
     <message>
-      <location/>
-      <source>Toolbars</source>
-      <translation>Symbolleisten</translation>
+        <location filename="../DlgToolbars.ui" line="+16"/>
+        <source>Toolbars</source>
+        <translation>Symbolleisten</translation>
     </message>
     <message>
-      <location/>
-      <source>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600;"&gt;Note:&lt;/span&gt; The changes become active the next time you load the appropriate workbench&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600;"&gt;Bemerkung:&lt;/span&gt; Die Änderungen werden beim nächsten Laden des Arbeitsbereiches wirksam&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <location line="+12"/>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; The changes become active the next time you load the appropriate workbench&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Bemerkung:&lt;/span&gt; Die Änderungen werden beim nächsten Laden des Arbeitsbereiches wirksam&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-      <location/>
-      <source>Move right</source>
-      <translation>Nach rechts verschieben</translation>
+        <location line="+16"/>
+        <source>Move right</source>
+        <translation>Nach rechts verschieben</translation>
     </message>
     <message>
-      <location/>
-      <source>&lt;b&gt;Move the selected item one level down.&lt;/b&gt;&lt;p&gt;This will also change the level of the parent item.&lt;/p&gt;</source>
-      <translation>&lt;b&gt;Ausgewähltes Element um eine Stufe nach unten verschieben.&lt;/b&gt;&lt;p&gt;Das verändert auch die Stufe des Vaterelements.&lt;/p&gt;</translation>
+        <location line="+3"/>
+        <source>&lt;b&gt;Move the selected item one level down.&lt;/b&gt;&lt;p&gt;This will also change the level of the parent item.&lt;/p&gt;</source>
+        <translation>&lt;b&gt;Ausgewähltes Element um eine Stufe nach unten verschieben.&lt;/b&gt;&lt;p&gt;Das verändert auch die Stufe des Vaterelements.&lt;/p&gt;</translation>
     </message>
     <message>
-      <location/>
-      <source>Move left</source>
-      <translation>Nach links verschieben</translation>
+        <location line="+54"/>
+        <source>Move left</source>
+        <translation>Nach links verschieben</translation>
     </message>
     <message>
-      <location/>
-      <source>&lt;b&gt;Move the selected item one level up.&lt;/b&gt;&lt;p&gt;This will also change the level of the parent item.&lt;/p&gt;</source>
-      <translation>&lt;b&gt;Ausgewähltes Element um eine Stufe nach oben verschieben.&lt;/b&gt;&lt;p&gt;Das verändert auch die Stufe des Vaterelements.&lt;/p&gt;</translation>
+        <location line="+3"/>
+        <source>&lt;b&gt;Move the selected item one level up.&lt;/b&gt;&lt;p&gt;This will also change the level of the parent item.&lt;/p&gt;</source>
+        <translation>&lt;b&gt;Ausgewähltes Element um eine Stufe nach oben verschieben.&lt;/b&gt;&lt;p&gt;Das verändert auch die Stufe des Vaterelements.&lt;/p&gt;</translation>
     </message>
     <message>
-      <location/>
-      <source>Move down</source>
-      <translation>Nache unten verschieben</translation>
+        <location line="+28"/>
+        <source>Move down</source>
+        <translation>Nache unten verschieben</translation>
     </message>
     <message>
-      <location/>
-      <source>&lt;b&gt;Move the selected item down.&lt;/b&gt;&lt;p&gt;The item will be moved within the hierarchy level.&lt;/p&gt;</source>
-      <translation>&lt;b&gt;Ausgewähltes Element nach unten verschieben.&lt;/b&gt;&lt;p&gt;Das Element wird innerhalb der Hierarchiestufe verschoben.&lt;/p&gt;</translation>
+        <location line="+3"/>
+        <source>&lt;b&gt;Move the selected item down.&lt;/b&gt;&lt;p&gt;The item will be moved within the hierarchy level.&lt;/p&gt;</source>
+        <translation>&lt;b&gt;Ausgewähltes Element nach unten verschieben.&lt;/b&gt;&lt;p&gt;Das Element wird innerhalb der Hierarchiestufe verschoben.&lt;/p&gt;</translation>
     </message>
     <message>
-      <location/>
-      <source>Move up</source>
-      <translation>Noch oben verschieben</translation>
+        <location line="+25"/>
+        <source>Move up</source>
+        <translation>Noch oben verschieben</translation>
     </message>
     <message>
-      <location/>
-      <source>&lt;b&gt;Move the selected item up.&lt;/b&gt;&lt;p&gt;The item will be moved within the hierarchy level.&lt;/p&gt;</source>
-      <translation>&lt;b&gt;Ausgewähltes Element nach oben verschieben.&lt;/b&gt;&lt;p&gt;Das Element wird innerhalb der Hierarchiestufe verschoben.&lt;/p&gt;</translation>
+        <location line="+3"/>
+        <source>&lt;b&gt;Move the selected item up.&lt;/b&gt;&lt;p&gt;The item will be moved within the hierarchy level.&lt;/p&gt;</source>
+        <translation>&lt;b&gt;Ausgewähltes Element nach oben verschieben.&lt;/b&gt;&lt;p&gt;Das Element wird innerhalb der Hierarchiestufe verschoben.&lt;/p&gt;</translation>
     </message>
     <message>
-      <location/>
-      <source>New...</source>
-      <translation>Neu...</translation>
+        <location line="+77"/>
+        <source>New...</source>
+        <translation>Neu...</translation>
     </message>
     <message>
-      <location/>
-      <source>Rename...</source>
-      <translation>Umbenennen...</translation>
+        <location line="+7"/>
+        <source>Rename...</source>
+        <translation>Umbenennen...</translation>
     </message>
     <message>
-      <location/>
-      <source>Delete</source>
-      <translation>Löschen</translation>
+        <location line="+7"/>
+        <source>Delete</source>
+        <translation>Löschen</translation>
     </message>
     <message>
-      <location/>
-      <source>Icon</source>
-      <translation>Symbol</translation>
+        <location filename="../DlgToolbarsImp.cpp" line="-555"/>
+        <source>Icon</source>
+        <translation>Symbol</translation>
     </message>
     <message>
-      <location/>
-      <source>Command</source>
-      <translation>Befehl</translation>
+        <location line="+0"/>
+        <location line="+3"/>
+        <source>Command</source>
+        <translation>Befehl</translation>
     </message>
     <message>
-      <location/>
-      <source>&lt;Separator&gt;</source>
-      <translation>&lt;Separator&gt;</translation>
+        <location line="+67"/>
+        <location line="+47"/>
+        <source>&lt;Separator&gt;</source>
+        <translation>&lt;Trennlinie&gt;</translation>
     </message>
     <message>
-      <location/>
-      <source>New toolbar</source>
-      <translation>Neue Symbolleiste</translation>
+        <location line="+138"/>
+        <source>New toolbar</source>
+        <translation>Neue Symbolleiste</translation>
     </message>
     <message>
-      <location/>
-      <source>Toolbar name:</source>
-      <translation>Name der Symbolleiste:</translation>
+        <location line="+0"/>
+        <location line="+46"/>
+        <source>Toolbar name:</source>
+        <translation>Name der Symbolleiste:</translation>
     </message>
     <message>
-      <location/>
-      <source>Duplicated name</source>
-      <translation>Doppelter Namen</translation>
+        <location line="-39"/>
+        <location line="+47"/>
+        <source>Duplicated name</source>
+        <translation>Doppelter Namen</translation>
     </message>
     <message>
-      <location/>
-      <source>The toolbar name '%1' is already used</source>
-      <translation>Der Name der Symbolleiste '%1' wird bereits verwendet</translation>
+        <location line="-47"/>
+        <location line="+47"/>
+        <source>The toolbar name &apos;%1&apos; is already used</source>
+        <translation>Der Name der Symbolleiste &apos;%1&apos; wird bereits verwendet</translation>
     </message>
     <message>
-      <location/>
-      <source>Rename toolbar</source>
-      <translation>Symbolleiste umbenennen</translation>
+        <location line="-8"/>
+        <source>Rename toolbar</source>
+        <translation>Symbolleiste umbenennen</translation>
     </message>
     <message>
-      <location/>
-      <source></source>
-      <translation type="unfinished"/>
+        <source></source>
+        <translation></translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgCustomizeImp</name>
     <message>
-      <location/>
-      <source>Customize</source>
-      <translation>Benutzerdefiniert</translation>
+        <location filename="../DlgCustomizeImp.cpp" line="+49"/>
+        <source>Customize</source>
+        <translation>Benutzerdefiniert</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Help</source>
-      <translation>&amp;Hilfe</translation>
+        <location line="+12"/>
+        <source>&amp;Help</source>
+        <translation>&amp;Hilfe</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Close</source>
-      <translation>Schl&amp;ießen</translation>
+        <location line="+7"/>
+        <source>&amp;Close</source>
+        <translation>Schl&amp;ießen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgDisplayProperties</name>
     <message>
-      <location/>
-      <source>Display properties</source>
-      <translation>Anzeigeeigenschaften</translation>
+        <location filename="../DlgDisplayProperties.ui" line="+16"/>
+        <source>Display properties</source>
+        <translation>Anzeigeeigenschaften</translation>
     </message>
     <message>
-      <location/>
-      <source>Display</source>
-      <translation>Anzeige</translation>
+        <location line="+12"/>
+        <source>Display</source>
+        <translation>Anzeige</translation>
     </message>
     <message>
-      <location/>
-      <source>Transparency:</source>
-      <translation>Transparenz:</translation>
+        <location line="+19"/>
+        <source>Transparency:</source>
+        <translation>Transparenz:</translation>
     </message>
     <message>
-      <location/>
-      <source>Line width:</source>
-      <translation>Linienstärke:</translation>
+        <location line="+91"/>
+        <source>Line width:</source>
+        <translation>Linienstärke:</translation>
     </message>
     <message>
-      <location/>
-      <source>Point size:</source>
-      <translation>Punktgröße:</translation>
+        <location line="-46"/>
+        <source>Point size:</source>
+        <translation>Punktgröße:</translation>
     </message>
     <message>
-      <location/>
-      <source>Material</source>
-      <translation>Material</translation>
+        <location line="+125"/>
+        <source>Material</source>
+        <translation>Material</translation>
     </message>
     <message>
-      <location/>
-      <source>...</source>
-      <translation>...</translation>
+        <location line="+71"/>
+        <source>...</source>
+        <translation>...</translation>
     </message>
     <message>
-      <location/>
-      <source>Close</source>
-      <translation>Schließen</translation>
+        <location line="+36"/>
+        <source>Close</source>
+        <translation>Schließen</translation>
     </message>
     <message>
-      <location/>
-      <source>Viewing mode</source>
-      <translation>Anzeigemodus</translation>
+        <location line="+9"/>
+        <source>Viewing mode</source>
+        <translation>Anzeigemodus</translation>
     </message>
     <message>
-      <location/>
-      <source>Display mode:</source>
-      <translation>Anzeigemodus:</translation>
+        <location line="+20"/>
+        <source>Display mode:</source>
+        <translation>Anzeigemodus:</translation>
     </message>
     <message>
-      <location/>
-      <source>Plot mode:</source>
-      <translation>Plotmodus:</translation>
+        <location line="+23"/>
+        <source>Plot mode:</source>
+        <translation>Plotmodus:</translation>
     </message>
     <message>
-      <location/>
-      <source></source>
-      <translation type="unfinished"/>
+        <source></source>
+        <translation></translation>
     </message>
     <message>
-      <location/>
-      <source>Line transparency:</source>
-      <translation>Linientransparenz:</translation>
+        <location line="-336"/>
+        <source>Line transparency:</source>
+        <translation>Linientransparenz:</translation>
     </message>
     <message>
-      <location/>
-      <source>Line color:</source>
-      <translation>Linienfarbe:</translation>
+        <location line="+197"/>
+        <source>Line color:</source>
+        <translation>Linienfarbe:</translation>
     </message>
     <message>
-      <location/>
-      <source>Shape color:</source>
-      <translation>Shape color:</translation>
+        <location line="+7"/>
+        <source>Shape color:</source>
+        <translation>Flächenfarbe:</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgEditorSettings</name>
     <message>
-      <location/>
-      <source>Editor</source>
-      <translation>Editor</translation>
+        <location filename="../DlgEditor.ui" line="+16"/>
+        <source>Editor</source>
+        <translation>Editor</translation>
     </message>
     <message>
-      <location/>
-      <source>Options</source>
-      <translation>Optionen</translation>
+        <location line="+12"/>
+        <source>Options</source>
+        <translation>Optionen</translation>
     </message>
     <message>
-      <location/>
-      <source>Enable line numbers</source>
-      <translation>Zeilennummerierung</translation>
+        <location line="+15"/>
+        <source>Enable line numbers</source>
+        <translation>Zeilennummerierung</translation>
     </message>
     <message>
-      <location/>
-      <source>Enable folding</source>
-      <translation>Faltung zulassen</translation>
+        <location line="+16"/>
+        <source>Enable folding</source>
+        <translation>Faltung zulassen</translation>
     </message>
     <message>
-      <location/>
-      <source>Indentation</source>
-      <translation>Einrückung</translation>
+        <location line="+35"/>
+        <source>Indentation</source>
+        <translation>Einrückung</translation>
     </message>
     <message>
-      <location/>
-      <source>Insert spaces</source>
-      <translation>Leerzeichen-Einrückung beibehalten</translation>
+        <location line="+12"/>
+        <source>Insert spaces</source>
+        <translation>Leerzeichen-Einrückung beibehalten</translation>
     </message>
     <message>
-      <location/>
-      <source>Tab size:</source>
-      <translation>Tabulator-Breite:</translation>
+        <location line="+13"/>
+        <source>Tab size:</source>
+        <translation>Tabulator-Breite:</translation>
     </message>
     <message>
-      <location/>
-      <source>Indent size:</source>
-      <translation>Einrückungsbreite:</translation>
+        <location line="+20"/>
+        <source>Indent size:</source>
+        <translation>Einrückungsbreite:</translation>
     </message>
     <message>
-      <location/>
-      <source>Keep tabs</source>
-      <translation>Tanulator-Einrückung beibehalten</translation>
+        <location line="+20"/>
+        <source>Keep tabs</source>
+        <translation>Tanulator-Einrückung beibehalten</translation>
     </message>
     <message>
-      <location/>
-      <source>Display Items</source>
-      <translation>Elemente</translation>
+        <location line="+27"/>
+        <source>Display Items</source>
+        <translation>Elemente</translation>
     </message>
     <message>
-      <location/>
-      <source>Family:</source>
-      <translation>Familie:</translation>
+        <location line="+59"/>
+        <source>Family:</source>
+        <translation>Familie:</translation>
     </message>
     <message>
-      <location/>
-      <source>Size:</source>
-      <translation>Größe:</translation>
+        <location line="+7"/>
+        <source>Size:</source>
+        <translation>Größe:</translation>
     </message>
     <message>
-      <location/>
-      <source>Preview:</source>
-      <translation>Vorschau:</translation>
+        <location line="+27"/>
+        <source>Preview:</source>
+        <translation>Vorschau:</translation>
     </message>
     <message>
-      <location/>
-      <source></source>
-      <translation type="unfinished"/>
+        <source></source>
+        <translation></translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgGeneral</name>
     <message>
-      <location/>
-      <source>General</source>
-      <translation>Allgemein</translation>
+        <location filename="../DlgGeneral.ui" line="+16"/>
+        <location line="+12"/>
+        <source>General</source>
+        <translation>Allgemein</translation>
     </message>
     <message>
-      <location/>
-      <source>Start up</source>
-      <translation>Start</translation>
+        <location line="+25"/>
+        <source>Start up</source>
+        <translation>Start</translation>
     </message>
     <message>
-      <location/>
-      <source>Enable splash screen at start up</source>
-      <translation>Splashscreen beim Starten anzeigen</translation>
+        <location line="+12"/>
+        <source>Enable splash screen at start up</source>
+        <translation>Splashscreen beim Starten anzeigen</translation>
     </message>
     <message>
-      <location/>
-      <source>Switch to tab of report window:</source>
-      <translation>Wechsle zu Reiter des Ausgabefensters:</translation>
+        <location line="+24"/>
+        <source>Switch to tab of report window:</source>
+        <translation>Wechsle zu Reiter des Ausgabefensters:</translation>
     </message>
     <message>
-      <location/>
-      <source>Auto load module after start up:</source>
-      <translation>Lade Modul automatisch nach Startvorgang:</translation>
+        <location line="+20"/>
+        <source>Auto load module after start up:</source>
+        <translation>Lade Modul automatisch nach Startvorgang:</translation>
     </message>
     <message>
-      <location/>
-      <source>Language</source>
-      <translation>Sprache</translation>
+        <location line="+12"/>
+        <source>Language</source>
+        <translation>Sprache</translation>
     </message>
     <message>
-      <location/>
-      <source>Change language:</source>
-      <translation>Sprache auswählen:</translation>
+        <location line="+20"/>
+        <source>Change language:</source>
+        <translation>Sprache auswählen:</translation>
     </message>
     <message>
-      <location/>
-      <source>Main window</source>
-      <translation>Hauptfenster</translation>
+        <location line="+15"/>
+        <source>Main window</source>
+        <translation>Hauptfenster</translation>
     </message>
     <message>
-      <location/>
-      <source>Size of recent file list</source>
-      <translation>Anzahl der zuletzt benutzten Dateien</translation>
+        <location line="+20"/>
+        <source>Size of recent file list</source>
+        <translation>Anzahl der zuletzt benutzten Dateien</translation>
     </message>
     <message>
-      <location/>
-      <source>Window style:</source>
-      <translation>Fenster-Stil:</translation>
+        <location line="+46"/>
+        <source>Window style:</source>
+        <translation>Fenster-Stil:</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgInputDialog</name>
     <message>
-      <location/>
-      <source>Input</source>
-      <translation>Eingabe</translation>
+        <location filename="../DlgInputDialog.ui" line="+16"/>
+        <source>Input</source>
+        <translation>Eingabe</translation>
     </message>
     <message>
-      <location/>
-      <source>OK</source>
-      <translation>OK</translation>
+        <location line="+115"/>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
     <message>
-      <location/>
-      <source>Cancel</source>
-      <translation>Abbrechen</translation>
+        <location line="+13"/>
+        <source>Cancel</source>
+        <translation>Abbrechen</translation>
     </message>
     <message>
-      <location/>
-      <source></source>
-      <translation type="unfinished"/>
+        <source></source>
+        <translation></translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgInspector</name>
     <message>
-      <location/>
-      <source>Scene Inspector</source>
-      <translation>Scene Inspector</translation>
+        <location filename="../SceneInspector.cpp" line="+110"/>
+        <source>Scene Inspector</source>
+        <translation>Scene Inspector</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgMacroExecute</name>
     <message>
-      <location/>
-      <source>Execute macro</source>
-      <translation>Makro ausführen</translation>
+        <location filename="../DlgMacroExecute.ui" line="+16"/>
+        <source>Execute macro</source>
+        <translation>Makro ausführen</translation>
     </message>
     <message>
-      <location/>
-      <source>Macro name:</source>
-      <translation>Makroname:</translation>
+        <location line="+23"/>
+        <source>Macro name:</source>
+        <translation>Makroname:</translation>
     </message>
     <message>
-      <location/>
-      <source>Macro destination:</source>
-      <translation>Makro-Zielpfad:</translation>
+        <location line="+29"/>
+        <source>Macro destination:</source>
+        <translation>Makro-Zielpfad:</translation>
     </message>
     <message>
-      <location/>
-      <source>Execute</source>
-      <translation>Ausführen</translation>
+        <location line="+36"/>
+        <source>Execute</source>
+        <translation>Ausführen</translation>
     </message>
     <message>
-      <location/>
-      <source>Close</source>
-      <translation>Schließen</translation>
+        <location line="+7"/>
+        <source>Close</source>
+        <translation>Schließen</translation>
     </message>
     <message>
-      <location/>
-      <source>Create</source>
-      <translation>Erstellen</translation>
+        <location line="+26"/>
+        <source>Create</source>
+        <translation>Erstellen</translation>
     </message>
     <message>
-      <location/>
-      <source>Delete</source>
-      <translation>Löschen</translation>
+        <location line="+10"/>
+        <source>Delete</source>
+        <translation>Löschen</translation>
     </message>
     <message>
-      <location/>
-      <source>Edit</source>
-      <translation>Bearbeiten</translation>
+        <location line="+10"/>
+        <source>Edit</source>
+        <translation>Bearbeiten</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgMacroExecuteImp</name>
     <message>
-      <location/>
-      <source>Macros</source>
-      <translation>Makros</translation>
+        <location filename="../DlgMacroExecuteImp.cpp" line="+67"/>
+        <source>Macros</source>
+        <translation>Makros</translation>
     </message>
     <message>
-      <location/>
-      <source>Macro file</source>
-      <translation>Makro</translation>
+        <location line="+92"/>
+        <source>Macro file</source>
+        <translation>Makro</translation>
     </message>
     <message>
-      <location/>
-      <source>Enter a file name, please:</source>
-      <translation>Geben Sie bitte einen Dateinamen an:</translation>
+        <location line="+0"/>
+        <source>Enter a file name, please:</source>
+        <translation>Geben Sie bitte einen Dateinamen an:</translation>
     </message>
     <message>
-      <location/>
-      <source>Existing file</source>
-      <translation>Vorhandene Datei</translation>
+        <location line="+11"/>
+        <source>Existing file</source>
+        <translation>Vorhandene Datei</translation>
     </message>
     <message>
-      <location/>
-      <source>'%1'.
+        <location line="+1"/>
+        <source>&apos;%1&apos;.
 This file already exists.</source>
-      <translation>'%1'.\n
+        <translation>&apos;%1&apos;.\n
 Diese Datei ist bereits vorhanden.</translation>
     </message>
     <message>
-      <location/>
-      <source>Delete macro</source>
-      <translation>Makro löschen</translation>
+        <location line="+30"/>
+        <source>Delete macro</source>
+        <translation>Makro löschen</translation>
     </message>
     <message>
-      <location/>
-      <source>Do you really want to delete the macro '%1'?</source>
-      <translation>Möchten Sie das Makro '%1' wirklich löschen?</translation>
+        <location line="+1"/>
+        <source>Do you really want to delete the macro &apos;%1&apos;?</source>
+        <translation>Möchten Sie das Makro &apos;%1&apos; wirklich löschen?</translation>
     </message>
     <message>
-      <location/>
-      <source>Cannot create file</source>
-      <translation>Datei kann nicht erstellt werden</translation>
+        <location line="-25"/>
+        <source>Cannot create file</source>
+        <translation>Datei kann nicht erstellt werden</translation>
     </message>
     <message>
-      <location/>
-      <source>Creation of file '%1' failed.</source>
-      <translation>Creation of file '%1' failed.</translation>
+        <location line="+1"/>
+        <source>Creation of file &apos;%1&apos; failed.</source>
+        <translation>Erstellen der Datei %1&apos; fehlgeschlagen.</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgMacroRecord</name>
     <message>
-      <location/>
-      <source>Macro recording</source>
-      <translation>Makroaufzeichnung</translation>
+        <location filename="../DlgMacroRecord.ui" line="+13"/>
+        <source>Macro recording</source>
+        <translation>Makroaufzeichnung</translation>
     </message>
     <message>
-      <location/>
-      <source>Macro name:</source>
-      <translation>Makroname:</translation>
+        <location line="+15"/>
+        <source>Macro name:</source>
+        <translation>Makroname:</translation>
     </message>
     <message>
-      <location/>
-      <source>Stop</source>
-      <translation>Beenden</translation>
+        <location line="+93"/>
+        <source>Stop</source>
+        <translation>Beenden</translation>
     </message>
     <message>
-      <location/>
-      <source>Cancel</source>
-      <translation>Abbrechen</translation>
+        <location line="+10"/>
+        <source>Cancel</source>
+        <translation>Abbrechen</translation>
     </message>
     <message>
-      <location/>
-      <source>Macro path:</source>
-      <translation>Makro-Zielpfad:</translation>
+        <location line="-76"/>
+        <source>Macro path:</source>
+        <translation>Makro-Zielpfad:</translation>
     </message>
     <message>
-      <location/>
-      <source>...</source>
-      <translation>...</translation>
+        <location line="+25"/>
+        <source>...</source>
+        <translation>...</translation>
     </message>
     <message>
-      <location/>
-      <source>Record</source>
-      <translation>Record</translation>
+        <location line="+18"/>
+        <source>Record</source>
+        <translation>Aufzeichnen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgMacroRecordImp</name>
     <message>
-      <location/>
-      <source>Macro recorder</source>
-      <translation>Makroaufzeichnung</translation>
+        <location filename="../DlgMacroRecordImp.cpp" line="+85"/>
+        <location line="+7"/>
+        <source>Macro recorder</source>
+        <translation>Makroaufzeichnung</translation>
     </message>
     <message>
-      <location/>
-      <source>Specify first a place to save.</source>
-      <translation>Geben Sie vorher einen Speicherort an.</translation>
+        <location line="-6"/>
+        <source>Specify first a place to save.</source>
+        <translation>Geben Sie vorher einen Speicherort an.</translation>
     </message>
     <message>
-      <location/>
-      <source>Existing macro</source>
-      <translation>Bestehendes Makro</translation>
+        <location line="+17"/>
+        <source>Existing macro</source>
+        <translation>Bestehendes Makro</translation>
     </message>
     <message>
-      <location/>
-      <source>The macro '%1' already exists. Do you want to overwrite?</source>
-      <translation>Das Makro '%1' existiert bereits. Wollen Sie es überschreiben?</translation>
+        <location line="+1"/>
+        <source>The macro &apos;%1&apos; already exists. Do you want to overwrite?</source>
+        <translation>Das Makro &apos;%1&apos; existiert bereits. Wollen Sie es überschreiben?</translation>
     </message>
     <message>
-      <location/>
-      <source>The macro directory doesn't exist. Please, choose another one.</source>
-      <translation>The macro directory doesn't exist. Please, choose another one.</translation>
+        <location line="-11"/>
+        <source>The macro directory doesn&apos;t exist. Please, choose another one.</source>
+        <translation>Das Makro-Verzeichnis existiert nicht. Wählen Sie bitte ein anderes aus.</translation>
     </message>
     <message>
-      <location/>
-      <source>Choose macro directory</source>
-      <translation>Wählen Sie ein Makro-Verzeichnis</translation>
+        <location line="+51"/>
+        <source>Choose macro directory</source>
+        <translation>Wählen Sie ein Makro-Verzeichnis</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgMaterialProperties</name>
     <message>
-      <location/>
-      <source>Material properties</source>
-      <translation>Materialeigenschaften</translation>
+        <location filename="../DlgMaterialProperties.ui" line="+16"/>
+        <source>Material properties</source>
+        <translation>Materialeigenschaften</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Close</source>
-      <translation>Schl&amp;ießen</translation>
+        <location line="+153"/>
+        <source>&amp;Close</source>
+        <translation>Schl&amp;ießen</translation>
     </message>
     <message>
-      <location/>
-      <source>Alt+C</source>
-      <translation>Alt+I</translation>
+        <location line="+3"/>
+        <source>Alt+C</source>
+        <translation>Alt+I</translation>
     </message>
     <message>
-      <location/>
-      <source>Material</source>
-      <translation>Material</translation>
+        <location line="-138"/>
+        <source>Material</source>
+        <translation>Material</translation>
     </message>
     <message>
-      <location/>
-      <source>Diffuse color:</source>
-      <translation>Streufarbe:</translation>
+        <location line="+33"/>
+        <source>Diffuse color:</source>
+        <translation>Streufarbe:</translation>
     </message>
     <message>
-      <location/>
-      <source>Specular color:</source>
-      <translation>Glanzfarbe:</translation>
+        <location line="-14"/>
+        <source>Specular color:</source>
+        <translation>Glanzfarbe:</translation>
     </message>
     <message>
-      <location/>
-      <source>Shininess:</source>
-      <translation>Glanz:</translation>
+        <location line="+43"/>
+        <source>Shininess:</source>
+        <translation>Glanz:</translation>
     </message>
     <message>
-      <location/>
-      <source>%</source>
-      <translation>%</translation>
+        <location line="+23"/>
+        <source>%</source>
+        <translation>%</translation>
     </message>
     <message>
-      <location/>
-      <source>Ambient color:</source>
-      <translation>Umgebungsfarbe:</translation>
+        <location line="-59"/>
+        <source>Ambient color:</source>
+        <translation>Umgebungsfarbe:</translation>
     </message>
     <message>
-      <location/>
-      <source></source>
-      <translation type="unfinished"/>
+        <source></source>
+        <translation></translation>
     </message>
     <message>
-      <location/>
-      <source>Emissive color:</source>
-      <translation>Emissive color:</translation>
+        <location line="-14"/>
+        <source>Emissive color:</source>
+        <translation>Ausstrahlfarbe:</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgOnlineHelp</name>
     <message>
-      <location/>
-      <source>On-line help</source>
-      <translation>Online-Hilfe</translation>
+        <location filename="../DlgOnlineHelp.ui" line="+14"/>
+        <source>On-line help</source>
+        <translation>Online-Hilfe</translation>
     </message>
     <message>
-      <location/>
-      <source>Help viewer</source>
-      <translation>Hilfe</translation>
+        <location line="+28"/>
+        <source>Help viewer</source>
+        <translation>Hilfe</translation>
     </message>
     <message>
-      <location/>
-      <source>Location of start page</source>
-      <translation>Startseite</translation>
+        <location line="+12"/>
+        <source>Location of start page</source>
+        <translation>Startseite</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgOnlineHelpImp</name>
     <message>
-      <location/>
-      <source>HTML files (*.html *.htm)</source>
-      <translation>HTML-Dateien (*.html *.htm)</translation>
+        <location filename="../DlgOnlineHelpImp.cpp" line="+52"/>
+        <source>HTML files (*.html *.htm)</source>
+        <translation>HTML-Dateien (*.html *.htm)</translation>
     </message>
     <message>
-      <location/>
-      <source>Access denied</source>
-      <translation>Zugriff verweigert</translation>
+        <location line="+52"/>
+        <source>Access denied</source>
+        <translation>Zugriff verweigert</translation>
     </message>
     <message>
-      <location/>
-      <source>Access denied to '%1'
+        <location line="+0"/>
+        <source>Access denied to &apos;%1&apos;
 
 Specify another directory, please.</source>
-      <translation>Zugriff auf '%1' verweigert
+        <translation>Zugriff auf &apos;%1&apos; verweigert
 
 Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgParameter</name>
     <message>
-      <location/>
-      <source>Parameter Editor</source>
-      <translation>Parametereditor</translation>
+        <location filename="../DlgParameter.ui" line="+16"/>
+        <source>Parameter Editor</source>
+        <translation>Parametereditor</translation>
     </message>
     <message>
-      <location/>
-      <source>Save to disk</source>
-      <translation>Speichern</translation>
+        <location line="+42"/>
+        <source>Save to disk</source>
+        <translation>Speichern</translation>
     </message>
     <message>
-      <location/>
-      <source>Alt+C</source>
-      <translation>Alt+I</translation>
+        <location line="+3"/>
+        <location line="+16"/>
+        <source>Alt+C</source>
+        <translation>Alt+I</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Close</source>
-      <translation>Schl&amp;ießen</translation>
+        <location line="-3"/>
+        <source>&amp;Close</source>
+        <translation>Schl&amp;ießen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgParameterImp</name>
     <message>
-      <location/>
-      <source>Group</source>
-      <translation>Gruppe</translation>
+        <location filename="../DlgParameterImp.cpp" line="+64"/>
+        <location line="+54"/>
+        <source>Group</source>
+        <translation>Gruppe</translation>
     </message>
     <message>
-      <location/>
-      <source>Name</source>
-      <translation>Name</translation>
+        <location line="-48"/>
+        <location line="+49"/>
+        <source>Name</source>
+        <translation>Name</translation>
     </message>
     <message>
-      <location/>
-      <source>Type</source>
-      <translation>Typ</translation>
+        <location line="-49"/>
+        <location line="+50"/>
+        <source>Type</source>
+        <translation>Typ</translation>
     </message>
     <message>
-      <location/>
-      <source>Value</source>
-      <translation>Wert</translation>
+        <location line="-50"/>
+        <location line="+51"/>
+        <source>Value</source>
+        <translation>Wert</translation>
     </message>
     <message>
-      <location/>
-      <source>User parameter</source>
-      <translation>Benutzerdefinierte Parameter</translation>
+        <location line="-39"/>
+        <source>User parameter</source>
+        <translation>Benutzerdefinierte Parameter</translation>
     </message>
     <message>
-      <location/>
-      <source>Invalid input</source>
-      <translation>Ungültige Eingabe</translation>
+        <location line="+228"/>
+        <source>Invalid input</source>
+        <translation>Ungültige Eingabe</translation>
     </message>
     <message>
-      <location/>
-      <source>Invalid key name '%1'</source>
-      <translation>Ungültiger Schlüsselname '%1'</translation>
+        <location line="+1"/>
+        <source>Invalid key name &apos;%1&apos;</source>
+        <translation>Ungültiger Schlüsselname &apos;%1&apos;</translation>
     </message>
     <message>
-      <location/>
-      <source>System parameter</source>
-      <translation>Systemparameter</translation>
+        <location line="-230"/>
+        <source>System parameter</source>
+        <translation>Systemparameter</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgPreferences</name>
     <message>
-      <location/>
-      <source>Preferences</source>
-      <translation>Einstellungen</translation>
+        <location filename="../DlgPreferences.ui" line="+16"/>
+        <source>Preferences</source>
+        <translation>Einstellungen</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Help</source>
-      <translation>&amp;Hilfe</translation>
+        <location line="+87"/>
+        <source>&amp;Help</source>
+        <translation>&amp;Hilfe</translation>
     </message>
     <message>
-      <location/>
-      <source>Alt+H</source>
-      <translation>Alt+H</translation>
+        <location line="+3"/>
+        <source>Alt+H</source>
+        <translation>Alt+H</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;OK</source>
-      <translation>&amp;OK</translation>
+        <location line="+26"/>
+        <source>&amp;OK</source>
+        <translation>&amp;OK</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Apply</source>
-      <translation>An&amp;wenden</translation>
+        <location line="+16"/>
+        <source>&amp;Apply</source>
+        <translation>Ü&amp;bernehmen</translation>
     </message>
     <message>
-      <location/>
-      <source>Alt+A</source>
-      <translation>Alt+W</translation>
+        <location line="+3"/>
+        <source>Alt+A</source>
+        <translation>Alt+B</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Cancel</source>
-      <translation>A&amp;bbrechen</translation>
+        <location line="+10"/>
+        <source>&amp;Cancel</source>
+        <translation>A&amp;bbrechen</translation>
     </message>
     <message>
-      <location/>
-      <source></source>
-      <translation type="unfinished"/>
+        <source></source>
+        <translation></translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgPreferencesImp</name>
     <message>
-      <location/>
-      <source>Wrong parameter</source>
-      <translation>Falscher Parameter</translation>
+        <location filename="../DlgPreferencesImp.cpp" line="+202"/>
+        <source>Wrong parameter</source>
+        <translation>Falscher Parameter</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgProjectInformation</name>
     <message>
-      <location/>
-      <source>Project information</source>
-      <translation>Projektinformationen</translation>
+        <location filename="../DlgProjectInformation.ui" line="+16"/>
+        <source>Project information</source>
+        <translation>Projektinformationen</translation>
     </message>
     <message>
-      <location/>
-      <source>Information</source>
-      <translation>Information</translation>
+        <location line="+18"/>
+        <source>Information</source>
+        <translation>Information</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Name:</source>
-      <translation>&amp;Name:</translation>
+        <location line="+15"/>
+        <source>&amp;Name:</source>
+        <translation>&amp;Name:</translation>
     </message>
     <message>
-      <location/>
-      <source>Commen&amp;t:</source>
-      <translation>Kommen&amp;tar:</translation>
+        <location line="+29"/>
+        <source>Commen&amp;t:</source>
+        <translation>Kommen&amp;tar:</translation>
     </message>
     <message>
-      <location/>
-      <source>Path:</source>
-      <translation>Pfad:</translation>
+        <location line="+13"/>
+        <source>Path:</source>
+        <translation>Pfad:</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Last modified by:</source>
-      <translation>Zuletzt &amp;geändert von:</translation>
+        <location line="+43"/>
+        <source>&amp;Last modified by:</source>
+        <translation>Zuletzt &amp;geändert von:</translation>
     </message>
     <message>
-      <location/>
-      <source>Created &amp;by:</source>
-      <translation>Erstellt &amp;von:</translation>
+        <location line="+13"/>
+        <source>Created &amp;by:</source>
+        <translation>Erstellt &amp;von:</translation>
     </message>
     <message>
-      <location/>
-      <source>Com&amp;pany:</source>
-      <translation>&amp;Firma:</translation>
+        <location line="+13"/>
+        <source>Com&amp;pany:</source>
+        <translation>&amp;Firma:</translation>
     </message>
     <message>
-      <location/>
-      <source>Last &amp;modification date:</source>
-      <translation>Zuletzt geändert a&amp;m:</translation>
+        <location line="+13"/>
+        <source>Last &amp;modification date:</source>
+        <translation>Zuletzt geändert a&amp;m:</translation>
     </message>
     <message>
-      <location/>
-      <source>Creation &amp;date:</source>
-      <translation>Erstell&amp;datum:</translation>
+        <location line="+49"/>
+        <source>Creation &amp;date:</source>
+        <translation>Erstell&amp;datum:</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;OK</source>
-      <translation>&amp;OK</translation>
+        <location line="+53"/>
+        <source>&amp;OK</source>
+        <translation>&amp;OK</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Cancel</source>
-      <translation>A&amp;bbrechen</translation>
+        <location line="+16"/>
+        <source>&amp;Cancel</source>
+        <translation>A&amp;bbrechen</translation>
     </message>
     <message>
-      <location/>
-      <source></source>
-      <translation type="unfinished"/>
+        <source></source>
+        <translation></translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgReportView</name>
     <message>
-      <location/>
-      <source>Output window</source>
-      <translation>Ausgabefenster</translation>
+        <location filename="../DlgReportView.ui" line="+16"/>
+        <source>Output window</source>
+        <translation>Ausgabefenster</translation>
     </message>
     <message>
-      <location/>
-      <source>Output</source>
-      <translation>Ausgabe</translation>
+        <location line="+41"/>
+        <source>Output</source>
+        <translation>Ausgabe</translation>
     </message>
     <message>
-      <location/>
-      <source>Record log messages</source>
-      <translation>Protokoll-Meldungen ausgeben</translation>
+        <location line="+12"/>
+        <source>Record log messages</source>
+        <translation>Protokoll-Meldungen ausgeben</translation>
     </message>
     <message>
-      <location/>
-      <source>Record warnings</source>
-      <translation>Warnungen ausgeben</translation>
+        <location line="+13"/>
+        <source>Record warnings</source>
+        <translation>Warnungen ausgeben</translation>
     </message>
     <message>
-      <location/>
-      <source>Record error messages</source>
-      <translation>Fehlermeldungen ausgeben</translation>
+        <location line="+16"/>
+        <source>Record error messages</source>
+        <translation>Fehlermeldungen ausgeben</translation>
     </message>
     <message>
-      <location/>
-      <source>Colors</source>
-      <translation>Farben</translation>
+        <location line="+19"/>
+        <source>Colors</source>
+        <translation>Farben</translation>
     </message>
     <message>
-      <location/>
-      <source>Normal messages:</source>
-      <translation>Normale Meldungen:</translation>
+        <location line="+102"/>
+        <source>Normal messages:</source>
+        <translation>Normale Meldungen:</translation>
     </message>
     <message>
-      <location/>
-      <source>Log messages:</source>
-      <translation>Protokoll-Meldungen:</translation>
+        <location line="+57"/>
+        <source>Log messages:</source>
+        <translation>Protokoll-Meldungen:</translation>
     </message>
     <message>
-      <location/>
-      <source>Warnings:</source>
-      <translation>Warnungen:</translation>
+        <location line="+41"/>
+        <source>Warnings:</source>
+        <translation>Warnungen:</translation>
     </message>
     <message>
-      <location/>
-      <source>Errors:</source>
-      <translation>Fehlermeldungen:</translation>
+        <location line="+23"/>
+        <source>Errors:</source>
+        <translation>Fehlermeldungen:</translation>
     </message>
     <message>
-      <location/>
-      <source></source>
-      <translation type="unfinished"/>
+        <source></source>
+        <translation></translation>
     </message>
     <message>
-      <location/>
-      <source>Redirect internal Python errors to report view</source>
-      <translation>Redirect internal Python errors to report view</translation>
+        <location line="-296"/>
+        <source>Redirect internal Python errors to report view</source>
+        <translation>Interne Python-Fehlermeldungen auf Ausgabefenster umleiten</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgReportViewImp</name>
     <message>
-      <location/>
-      <source>Redirect Python errors</source>
-      <translation>Python-Fehler umleiten</translation>
+        <location filename="../DlgReportViewImp.cpp" line="+88"/>
+        <source>Redirect Python errors</source>
+        <translation>Python-Fehler umleiten</translation>
     </message>
     <message>
-      <location/>
-      <source>In order to take effect this change you must restart the application.</source>
-      <translation>In order to take effect this change you must restart the application.</translation>
+        <location line="+1"/>
+        <source>In order to take effect this change you must restart the application.</source>
+        <translation>Um diese Äderungen wirksam werden zu lassen, müssen Sie die Anwendung neu starten.</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgRunExternal</name>
     <message>
-      <location/>
-      <source>Running external program</source>
-      <translation>Externes Programm ausführen</translation>
+        <location filename="../DlgRunExternal.ui" line="+20"/>
+        <source>Running external program</source>
+        <translation>Externes Programm ausführen</translation>
     </message>
     <message>
-      <location/>
-      <source>TextLabel</source>
-      <translation>TextLabel</translation>
+        <location line="+19"/>
+        <source>TextLabel</source>
+        <translation>TextLabel</translation>
     </message>
     <message>
-      <location/>
-      <source>Advanced &gt;&gt;</source>
-      <translation>Erweitert &gt;&gt;</translation>
+        <location line="+20"/>
+        <source>Advanced &gt;&gt;</source>
+        <translation>Erweitert &gt;&gt;</translation>
     </message>
     <message>
-      <location/>
-      <source>...</source>
-      <translation>...</translation>
+        <location line="+29"/>
+        <source>...</source>
+        <translation>...</translation>
     </message>
     <message>
-      <location/>
-      <source>Accept changes</source>
-      <translation>Änderungen übernehmen</translation>
+        <location line="+17"/>
+        <source>Accept changes</source>
+        <translation>Änderungen übernehmen</translation>
     </message>
     <message>
-      <location/>
-      <source>Discard changes</source>
-      <translation>Änderungen verwerfen</translation>
+        <location line="+7"/>
+        <source>Discard changes</source>
+        <translation>Änderungen verwerfen</translation>
     </message>
     <message>
-      <location/>
-      <source>Abort program</source>
-      <translation>Programm abbrechen</translation>
+        <location line="+7"/>
+        <source>Abort program</source>
+        <translation>Programm abbrechen</translation>
     </message>
     <message>
-      <location/>
-      <source>Help</source>
-      <translation>Hilfe</translation>
+        <location line="+20"/>
+        <source>Help</source>
+        <translation>Hilfe</translation>
     </message>
     <message>
-      <location/>
-      <source>Select a file</source>
-      <translation>Wählen Sie eine Datei aus</translation>
+        <location filename="../DlgRunExternal.cpp" line="+125"/>
+        <source>Select a file</source>
+        <translation>Wählen Sie eine Datei aus</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgSettings3DView</name>
     <message>
-      <location/>
-      <source>3D View</source>
-      <translation>3D-Viewer</translation>
+        <location filename="../DlgSettings3DView.ui" line="+14"/>
+        <source>3D View</source>
+        <translation>3D-Viewer</translation>
     </message>
     <message>
-      <location/>
-      <source>3D View settings</source>
-      <translation>Einstellungen 3D-Viewer</translation>
+        <location line="+12"/>
+        <source>3D View settings</source>
+        <translation>Einstellungen 3D-Viewer</translation>
     </message>
     <message>
-      <location/>
-      <source>Show coordinate system in the corner</source>
-      <translation>Koordinatensystem in Ecke anzeigen</translation>
+        <location line="+6"/>
+        <source>Show coordinate system in the corner</source>
+        <translation>Koordinatensystem in Ecke anzeigen</translation>
     </message>
     <message>
-      <location/>
-      <source>Show counter of frames per second</source>
-      <translation>Anzeigen der Datenrate pro Sekunde</translation>
+        <location line="+16"/>
+        <source>Show counter of frames per second</source>
+        <translation>Anzeigen der Datenrate pro Sekunde</translation>
     </message>
     <message>
-      <location/>
-      <source>Enable animation</source>
-      <translation>Animation zulassen</translation>
+        <location line="+16"/>
+        <source>Enable animation</source>
+        <translation>Animation zulassen</translation>
     </message>
     <message>
-      <location/>
-      <source>Enable anti-aliasing (slower)</source>
-      <translation>Anti-Aliasing aktivieren (langsam)</translation>
+        <location line="+47"/>
+        <source>Invert zoom</source>
+        <translation>Zoom umkehren</translation>
     </message>
     <message>
-      <location/>
-      <source>Eye to eye distance for stereo modes:</source>
-      <translation>Augabstand für Stereomodus:</translation>
+        <location line="+13"/>
+        <source>Enable anti-aliasing (slower)</source>
+        <translation>Anti-Aliasing aktivieren (langsam)</translation>
     </message>
     <message>
-      <location/>
-      <source>Camera type</source>
-      <translation>Kameratyp</translation>
+        <location line="+34"/>
+        <source>Eye to eye distance for stereo modes:</source>
+        <translation>Augabstand für Stereomodus:</translation>
     </message>
     <message>
-      <location/>
-      <source>Orthographic rendering</source>
-      <translation>Orthographische Darstellung</translation>
+        <location line="+124"/>
+        <source>Camera type</source>
+        <translation>Kameratyp</translation>
     </message>
     <message>
-      <location/>
-      <source>Perspective rendering</source>
-      <translation>Perspektivische Darstellung</translation>
+        <location line="+12"/>
+        <source>Orthographic rendering</source>
+        <translation>Orthographische Darstellung</translation>
     </message>
     <message>
-      <location/>
-      <source></source>
-      <translation type="unfinished"/>
+        <location line="+16"/>
+        <source>Perspective rendering</source>
+        <translation>Perspektivische Darstellung</translation>
     </message>
     <message>
-      <location/>
-      <source>3D Navigation</source>
-      <translation>3D-Navigation</translation>
+        <source></source>
+        <translation></translation>
     </message>
     <message>
-      <location/>
-      <source>Mouse...</source>
-      <translation>Maus...</translation>
+        <location line="-228"/>
+        <source>3D Navigation</source>
+        <translation>3D-Navigation</translation>
     </message>
     <message>
-      <location/>
-      <source>Intensity of backlight</source>
-      <translation>Intensität der Hintergrundbeleuchtung</translation>
+        <location line="+20"/>
+        <source>Mouse...</source>
+        <translation>Maus...</translation>
     </message>
     <message>
-      <location/>
-      <source>Enable backlight color</source>
-      <translation>Aktiviere farbige Hintergrundbeleuchtung</translation>
+        <location line="+155"/>
+        <source>Intensity of backlight</source>
+        <translation>Intensität der Hintergrundbeleuchtung</translation>
     </message>
-  </context>
-  <context>
+    <message>
+        <location line="+7"/>
+        <source>Enable backlight color</source>
+        <translation>Aktiviere farbige Hintergrundbeleuchtung</translation>
+    </message>
+</context>
+<context>
     <name>Gui::Dialog::DlgSettings3DViewImp</name>
     <message>
-      <location/>
-      <source>%1 navigation</source>
-      <translation>%1 Navigation</translation>
+        <location filename="../DlgSettings3DViewImp.cpp" line="+153"/>
+        <source>%1 navigation</source>
+        <translation>%1 Navigation</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgSettingsColorGradient</name>
     <message>
-      <location/>
-      <source>Color model</source>
-      <translation>Farbmodell</translation>
+        <location filename="../DlgSettingsColorGradient.ui" line="+34"/>
+        <source>Color model</source>
+        <translation>Farbmodell</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Gradient:</source>
-      <translation>&amp;Verlauf:</translation>
+        <location line="+20"/>
+        <source>&amp;Gradient:</source>
+        <translation>&amp;Verlauf:</translation>
     </message>
     <message>
-      <location/>
-      <source>red-yellow-green-cyan-blue</source>
-      <translation>Rot-Gelb-Grün-Türkis-Blau</translation>
+        <location line="+11"/>
+        <source>red-yellow-green-cyan-blue</source>
+        <translation>Rot-Gelb-Grün-Türkis-Blau</translation>
     </message>
     <message>
-      <location/>
-      <source>blue-cyan-green-yellow-red</source>
-      <translation>Blau-Türkis-Grün-Gelb-Rot</translation>
+        <location line="+5"/>
+        <source>blue-cyan-green-yellow-red</source>
+        <translation>Blau-Türkis-Grün-Gelb-Rot</translation>
     </message>
     <message>
-      <location/>
-      <source>white-black</source>
-      <translation>Weiß-Schwarz</translation>
+        <location line="+5"/>
+        <source>white-black</source>
+        <translation>Weiß-Schwarz</translation>
     </message>
     <message>
-      <location/>
-      <source>black-white</source>
-      <translation>Schwarz-Weiß</translation>
+        <location line="+5"/>
+        <source>black-white</source>
+        <translation>Schwarz-Weiß</translation>
     </message>
     <message>
-      <location/>
-      <source>Visibility</source>
-      <translation>Sichtbarkeit</translation>
+        <location line="+29"/>
+        <source>Visibility</source>
+        <translation>Sichtbarkeit</translation>
     </message>
     <message>
-      <location/>
-      <source>Out g&amp;rayed</source>
-      <translation>Außerhalb geg&amp;raut</translation>
+        <location line="+12"/>
+        <source>Out g&amp;rayed</source>
+        <translation>Außerhalb geg&amp;raut</translation>
     </message>
     <message>
-      <location/>
-      <source>Alt+R</source>
-      <translation>Alt+R</translation>
+        <location line="+3"/>
+        <source>Alt+R</source>
+        <translation>Alt+R</translation>
     </message>
     <message>
-      <location/>
-      <source>Out &amp;invisible</source>
-      <translation>Außerhalb uns&amp;ichtbar</translation>
+        <location line="+7"/>
+        <source>Out &amp;invisible</source>
+        <translation>Außerhalb uns&amp;ichtbar</translation>
     </message>
     <message>
-      <location/>
-      <source>Alt+I</source>
-      <translation>Alt+I</translation>
+        <location line="+3"/>
+        <source>Alt+I</source>
+        <translation>Alt+I</translation>
     </message>
     <message>
-      <location/>
-      <source>Style</source>
-      <translation>Stil</translation>
+        <location line="+10"/>
+        <source>Style</source>
+        <translation>Stil</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Zero</source>
-      <translation>N&amp;ull-basiert</translation>
+        <location line="+12"/>
+        <source>&amp;Zero</source>
+        <translation>N&amp;ull-basiert</translation>
     </message>
     <message>
-      <location/>
-      <source>Alt+Z</source>
-      <translation>Alt+U</translation>
+        <location line="+3"/>
+        <source>Alt+Z</source>
+        <translation>Alt+U</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Flow</source>
-      <translation>&amp;Fließend</translation>
+        <location line="+7"/>
+        <source>&amp;Flow</source>
+        <translation>&amp;Fließend</translation>
     </message>
     <message>
-      <location/>
-      <source>Alt+F</source>
-      <translation>Alt+F</translation>
+        <location line="+3"/>
+        <source>Alt+F</source>
+        <translation>Alt+F</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;OK</source>
-      <translation>&amp;OK</translation>
+        <location line="+37"/>
+        <source>&amp;OK</source>
+        <translation>&amp;OK</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Cancel</source>
-      <translation>A&amp;bbrechen</translation>
+        <location line="+16"/>
+        <source>&amp;Cancel</source>
+        <translation>A&amp;bbrechen</translation>
     </message>
     <message>
-      <location/>
-      <source>Parameter range</source>
-      <translation>Parameterbereich</translation>
+        <location line="+15"/>
+        <source>Parameter range</source>
+        <translation>Parameterbereich</translation>
     </message>
     <message>
-      <location/>
-      <source>Mi&amp;nimum:</source>
-      <translation>Mi&amp;nimum:</translation>
+        <location line="+42"/>
+        <source>Mi&amp;nimum:</source>
+        <translation>Mi&amp;nimum:</translation>
     </message>
     <message>
-      <location/>
-      <source>Ma&amp;ximum:</source>
-      <translation>Ma&amp;ximum:</translation>
+        <location line="+10"/>
+        <source>Ma&amp;ximum:</source>
+        <translation>Ma&amp;ximum:</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Labels:</source>
-      <translation>&amp;Beschriftungen:</translation>
+        <location line="+33"/>
+        <source>&amp;Labels:</source>
+        <translation>&amp;Beschriftungen:</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Decimals:</source>
-      <translation>Nach&amp;kommastellen:</translation>
+        <location line="+10"/>
+        <source>&amp;Decimals:</source>
+        <translation>Nach&amp;kommastellen:</translation>
     </message>
     <message>
-      <location/>
-      <source></source>
-      <translation type="unfinished"/>
+        <source></source>
+        <translation></translation>
     </message>
     <message>
-      <location/>
-      <source>Color-gradient settings</source>
-      <translation>Farbverlauf-Einstellungen</translation>
+        <location line="-316"/>
+        <source>Color-gradient settings</source>
+        <translation>Farbverlauf-Einstellungen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgSettingsColorGradientImp</name>
     <message>
-      <location/>
-      <source>Wrong parameter</source>
-      <translation>Falscher Parameter</translation>
+        <location filename="../DlgSettingsColorGradientImp.cpp" line="+175"/>
+        <source>Wrong parameter</source>
+        <translation>Falscher Parameter</translation>
     </message>
     <message>
-      <location/>
-      <source>The maximum value must be higher than the minimum value.</source>
-      <translation>Der Maximalwert muss größer als der Minimalwert sein.</translation>
+        <location line="+1"/>
+        <source>The maximum value must be higher than the minimum value.</source>
+        <translation>Der Maximalwert muss größer als der Minimalwert sein.</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgSettingsDocument</name>
     <message>
-      <location/>
-      <source>Document</source>
-      <translation>Dokument</translation>
+        <location filename="../DlgSettingsDocument.ui" line="+14"/>
+        <source>Document</source>
+        <translation>Dokument</translation>
     </message>
     <message>
-      <location/>
-      <source>General</source>
-      <translation>Allgemein</translation>
+        <location line="+6"/>
+        <source>General</source>
+        <translation>Allgemein</translation>
     </message>
     <message>
-      <location/>
-      <source>Document save compression level
+        <location line="+20"/>
+        <source>Document save compression level
 (0 = none, 9 = highest, 3 = default)</source>
-      <translation>Kompressionsstufe beim Speichern des Dokuments
+        <translation>Kompressionsstufe beim Speichern des Dokuments
 (0 = keine, 9 = höchste, 3 = standardmäßige Kompression)</translation>
     </message>
     <message>
-      <location/>
-      <source>Undo Redo Size (in Megabyte)</source>
-      <translation>Maximaler Speicherverbrauch (in Megabyte)</translation>
+        <location line="+31"/>
+        <source>Undo Redo Size (in Megabyte)</source>
+        <translation>Maximaler Speicherverbrauch (in Megabyte)</translation>
     </message>
     <message>
-      <location/>
-      <source>Create new document at start up</source>
-      <translation>Neues Dokument beim Start erzeugen</translation>
+        <location line="+22"/>
+        <source>Create new document at start up</source>
+        <translation>Neues Dokument beim Start erzeugen</translation>
     </message>
     <message>
-      <location/>
-      <source>Using Undo/Redo on documents (can be very memory consuming)</source>
-      <translation>Undo/Redo für Dokumente verwenden (kann sehr speicheraufwendig sein)</translation>
+        <location line="+42"/>
+        <source>Using Undo/Redo on documents (can be very memory consuming)</source>
+        <translation>Undo/Redo für Dokumente verwenden (kann sehr speicheraufwendig sein)</translation>
     </message>
     <message>
-      <location/>
-      <source>Storage</source>
-      <translation>Speichern</translation>
+        <location line="+19"/>
+        <source>Storage</source>
+        <translation>Speichern</translation>
     </message>
     <message>
-      <location/>
-      <source>Saving transactions (Auto-save)</source>
-      <translation>Transaktionen speichern (Automatisches Speichern)</translation>
+        <location line="+9"/>
+        <source>Saving transactions (Auto-save)</source>
+        <translation>Transaktionen speichern (Automatisches Speichern)</translation>
     </message>
     <message>
-      <location/>
-      <source>Discard saved transaction after saving document</source>
-      <translation>Transaktionen nach Speichern von Dokument verwerfen</translation>
+        <location line="+16"/>
+        <source>Discard saved transaction after saving document</source>
+        <translation>Transaktionen nach Speichern von Dokument verwerfen</translation>
     </message>
     <message>
-      <location/>
-      <source>Save thumbnail into project file when saving document</source>
-      <translation>Beim Speichern des Dokumentes Miniaturansicht in Projektdatei speichrn</translation>
+        <location line="+26"/>
+        <source>Save thumbnail into project file when saving document</source>
+        <translation>Beim Speichern des Dokumentes Miniaturansicht in Projektdatei speichrn</translation>
     </message>
     <message>
-      <location/>
-      <source>Create up to backup files when resaving document</source>
-      <translation>Create up to backup files when resaving document</translation>
+        <location line="+21"/>
+        <source>Create up to backup files when resaving document</source>
+        <translation>Beim Speichern des Dokuments erstelle Backup-Dateien von bis zu</translation>
     </message>
     <message>
-      <location/>
-      <source>Document objects</source>
-      <translation>Dokumentobjekte</translation>
+        <location line="+50"/>
+        <source>Document objects</source>
+        <translation>Dokumentobjekte</translation>
     </message>
     <message>
-      <location/>
-      <source>Allow duplicate object labels in one document</source>
-      <translation>Doppelte Objektbezeichnungen in einem Dokument zulassen</translation>
+        <location line="+6"/>
+        <source>Allow duplicate object labels in one document</source>
+        <translation>Doppelte Objektbezeichnungen in einem Dokument zulassen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgSettingsEditorImp</name>
     <message>
-      <location/>
-      <source>Text</source>
-      <translation>Text</translation>
+        <location filename="../DlgEditorImp.cpp" line="+65"/>
+        <source>Text</source>
+        <translation>Text</translation>
     </message>
     <message>
-      <location/>
-      <source>Bookmark</source>
-      <translation>Lesezeichen</translation>
+        <location line="+4"/>
+        <source>Bookmark</source>
+        <translation>Lesezeichen</translation>
     </message>
     <message>
-      <location/>
-      <source>Breakpoint</source>
-      <translation>Haltepunkt</translation>
+        <location line="+4"/>
+        <source>Breakpoint</source>
+        <translation>Haltepunkt</translation>
     </message>
     <message>
-      <location/>
-      <source>Keyword</source>
-      <translation>Schlüsselwort</translation>
+        <location line="+4"/>
+        <source>Keyword</source>
+        <translation>Schlüsselwort</translation>
     </message>
     <message>
-      <location/>
-      <source>Comment</source>
-      <translation>Kommentieren</translation>
+        <location line="+4"/>
+        <source>Comment</source>
+        <translation>Kommentieren</translation>
     </message>
     <message>
-      <location/>
-      <source>Block comment</source>
-      <translation>Blockkommentar</translation>
+        <location line="+4"/>
+        <source>Block comment</source>
+        <translation>Blockkommentar</translation>
     </message>
     <message>
-      <location/>
-      <source>Number</source>
-      <translation>Ziffer</translation>
+        <location line="+4"/>
+        <source>Number</source>
+        <translation>Ziffer</translation>
     </message>
     <message>
-      <location/>
-      <source>String</source>
-      <translation>Zeichenkette</translation>
+        <location line="+4"/>
+        <source>String</source>
+        <translation>Zeichenkette</translation>
     </message>
     <message>
-      <location/>
-      <source>Character</source>
-      <translation>Zeichen</translation>
+        <location line="+4"/>
+        <source>Character</source>
+        <translation>Zeichen</translation>
     </message>
     <message>
-      <location/>
-      <source>Class name</source>
-      <translation>Klassenname</translation>
+        <location line="+4"/>
+        <source>Class name</source>
+        <translation>Klassenname</translation>
     </message>
     <message>
-      <location/>
-      <source>Define name</source>
-      <translation>Define-Name</translation>
+        <location line="+4"/>
+        <source>Define name</source>
+        <translation>Define-Name</translation>
     </message>
     <message>
-      <location/>
-      <source>Operator</source>
-      <translation>Operator</translation>
+        <location line="+4"/>
+        <source>Operator</source>
+        <translation>Operator</translation>
     </message>
     <message>
-      <location/>
-      <source>Python output</source>
-      <translation>Pythonausgabe</translation>
+        <location line="+4"/>
+        <source>Python output</source>
+        <translation>Pythonausgabe</translation>
     </message>
     <message>
-      <location/>
-      <source>Python error</source>
-      <translation>Pythonfehler</translation>
+        <location line="+4"/>
+        <source>Python error</source>
+        <translation>Pythonfehler</translation>
     </message>
     <message>
-      <location/>
-      <source>Items</source>
-      <translation>Elemente</translation>
+        <location line="+2"/>
+        <source>Items</source>
+        <translation>Elemente</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgSettingsImage</name>
     <message>
-      <location/>
-      <source>Image settings</source>
-      <translation>Bildparameter</translation>
+        <location filename="../DlgSettingsImage.ui" line="+16"/>
+        <source>Image settings</source>
+        <translation>Bildparameter</translation>
     </message>
     <message>
-      <location/>
-      <source>Image properties</source>
-      <translation>Bildeigenschaften</translation>
+        <location line="+12"/>
+        <source>Image properties</source>
+        <translation>Bildeigenschaften</translation>
     </message>
     <message>
-      <location/>
-      <source>Back&amp;ground:</source>
-      <translation>Hinter&amp;grund:</translation>
+        <location line="+12"/>
+        <source>Back&amp;ground:</source>
+        <translation>Hinter&amp;grund:</translation>
     </message>
     <message>
-      <location/>
-      <source>Current</source>
-      <translation>Aktuell</translation>
+        <location line="+11"/>
+        <source>Current</source>
+        <translation>Aktuell</translation>
     </message>
     <message>
-      <location/>
-      <source>White</source>
-      <translation>Weiß</translation>
+        <location line="+5"/>
+        <source>White</source>
+        <translation>Weiß</translation>
     </message>
     <message>
-      <location/>
-      <source>Black</source>
-      <translation>Schwarz</translation>
+        <location line="+5"/>
+        <source>Black</source>
+        <translation>Schwarz</translation>
     </message>
     <message>
-      <location/>
-      <source>Transparent</source>
-      <translation>Transparent</translation>
+        <location line="+5"/>
+        <source>Transparent</source>
+        <translation>Transparent</translation>
     </message>
     <message>
-      <location/>
-      <source>Image dimensions</source>
-      <translation>Bildabmessungen</translation>
+        <location line="+11"/>
+        <source>Image dimensions</source>
+        <translation>Bildabmessungen</translation>
     </message>
     <message>
-      <location/>
-      <source>Pixel</source>
-      <translation>Pixel</translation>
+        <location line="+53"/>
+        <location line="+156"/>
+        <source>Pixel</source>
+        <translation>Pixel</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Width:</source>
-      <translation>&amp;Breite:</translation>
+        <location line="-149"/>
+        <source>&amp;Width:</source>
+        <translation>&amp;Breite:</translation>
     </message>
     <message>
-      <location/>
-      <source>Current screen</source>
-      <translation>Aktueller Bildschirm</translation>
+        <location line="+11"/>
+        <source>Current screen</source>
+        <translation>Aktueller Bildschirm</translation>
     </message>
     <message>
-      <location/>
-      <source>Icon       32  x 32</source>
-      <translation>Symbol 32 x 32</translation>
+        <location line="+5"/>
+        <source>Icon       32  x 32</source>
+        <translation>Symbol 32 x 32</translation>
     </message>
     <message>
-      <location/>
-      <source>Icon       64 x 64</source>
-      <translation>Symbol 64 x 64</translation>
+        <location line="+5"/>
+        <source>Icon       64 x 64</source>
+        <translation>Symbol 64 x 64</translation>
     </message>
     <message>
-      <location/>
-      <source>Icon       128 x 128</source>
-      <translation>Symbol 128 x 128</translation>
+        <location line="+5"/>
+        <source>Icon       128 x 128</source>
+        <translation>Symbol 128 x 128</translation>
     </message>
     <message>
-      <location/>
-      <source>CGA       320 x 200</source>
-      <translation>CGA 320 x 320</translation>
+        <location line="+5"/>
+        <source>CGA       320 x 200</source>
+        <translation>CGA 320 x 320</translation>
     </message>
     <message>
-      <location/>
-      <source>QVGA     320 x 240</source>
-      <translation>QVGA 320 x 240</translation>
+        <location line="+5"/>
+        <source>QVGA     320 x 240</source>
+        <translation>QVGA 320 x 240</translation>
     </message>
     <message>
-      <location/>
-      <source>VGA       640 x 480</source>
-      <translation>VGA 640 x 480</translation>
+        <location line="+5"/>
+        <source>VGA       640 x 480</source>
+        <translation>VGA 640 x 480</translation>
     </message>
     <message>
-      <location/>
-      <source>NTSC     720 x 480</source>
-      <translation>NISC 720 x 480</translation>
+        <location line="+5"/>
+        <source>NTSC     720 x 480</source>
+        <translation>NISC 720 x 480</translation>
     </message>
     <message>
-      <location/>
-      <source>PAL        768 x 578</source>
-      <translation>PAL 768 x 578</translation>
+        <location line="+5"/>
+        <source>PAL        768 x 578</source>
+        <translation>PAL 768 x 578</translation>
     </message>
     <message>
-      <location/>
-      <source>SVGA     800 x 600</source>
-      <translation>SVGA 800 x 600</translation>
+        <location line="+5"/>
+        <source>SVGA     800 x 600</source>
+        <translation>SVGA 800 x 600</translation>
     </message>
     <message>
-      <location/>
-      <source>XGA       1024 x 768</source>
-      <translation>XGA 1024 x 768</translation>
+        <location line="+5"/>
+        <source>XGA       1024 x 768</source>
+        <translation>XGA 1024 x 768</translation>
     </message>
     <message>
-      <location/>
-      <source>HD720   1280 x 720</source>
-      <translation>HD720 1280 x 720</translation>
+        <location line="+5"/>
+        <source>HD720   1280 x 720</source>
+        <translation>HD720 1280 x 720</translation>
     </message>
     <message>
-      <location/>
-      <source>SXGA     1280 x 1024</source>
-      <translation>SXGA 1280 x 1024</translation>
+        <location line="+5"/>
+        <source>SXGA     1280 x 1024</source>
+        <translation>SXGA 1280 x 1024</translation>
     </message>
     <message>
-      <location/>
-      <source>SXGA+   1400 x 1050</source>
-      <translation>SXGA+ 1400 x 1050</translation>
+        <location line="+5"/>
+        <source>SXGA+   1400 x 1050</source>
+        <translation>SXGA+ 1400 x 1050</translation>
     </message>
     <message>
-      <location/>
-      <source>UXGA     1600 x 1200</source>
-      <translation>UXGA 1600 x 1200</translation>
+        <location line="+5"/>
+        <source>UXGA     1600 x 1200</source>
+        <translation>UXGA 1600 x 1200</translation>
     </message>
     <message>
-      <location/>
-      <source>HD1080 1920 x 1080</source>
-      <translation>HD1080 1920 x 1080</translation>
+        <location line="+5"/>
+        <source>HD1080 1920 x 1080</source>
+        <translation>HD1080 1920 x 1080</translation>
     </message>
     <message>
-      <location/>
-      <source>WUXGA  1920 x 1200</source>
-      <translation>WUXGA 1920 x 1200</translation>
+        <location line="+5"/>
+        <source>WUXGA  1920 x 1200</source>
+        <translation>WUXGA 1920 x 1200</translation>
     </message>
     <message>
-      <location/>
-      <source>QXGA     2048 x 1538</source>
-      <translation>QXGA 2048 x 1538</translation>
+        <location line="+5"/>
+        <source>QXGA     2048 x 1538</source>
+        <translation>QXGA 2048 x 1538</translation>
     </message>
     <message>
-      <location/>
-      <source>WQXGA  2560 x 1600</source>
-      <translation>WQXGA 2560 x 1600</translation>
+        <location line="+5"/>
+        <source>WQXGA  2560 x 1600</source>
+        <translation>WQXGA 2560 x 1600</translation>
     </message>
     <message>
-      <location/>
-      <source>QSXGA   2560 x 2048</source>
-      <translation>QSXGA 2560 x 2024</translation>
+        <location line="+5"/>
+        <source>QSXGA   2560 x 2048</source>
+        <translation>QSXGA 2560 x 2024</translation>
+    </message>
+    <message utf8="true">
+        <location line="+5"/>
+        <source>QUXGA   3200 × 2400</source>
+        <translation>QUXGA 3200 x 2400</translation>
+    </message>
+    <message utf8="true">
+        <location line="+5"/>
+        <source>HUXGA   6400 × 4800</source>
+        <translation>HUXGA 6400 x 4800</translation>
     </message>
     <message>
-      <location/>
-      <source>QUXGA   3200 × 2400</source>
-      <translation>QUXGA 3200 x 2400</translation>
+        <location line="+5"/>
+        <source>!!!          10000 x 10000</source>
+        <translation>!!! 10000 x 10000</translation>
     </message>
     <message>
-      <location/>
-      <source>HUXGA   6400 × 4800</source>
-      <translation>HUXGA 6400 x 4800</translation>
+        <location line="+8"/>
+        <source>Standard sizes:</source>
+        <translation>Standardauflösungen:</translation>
     </message>
     <message>
-      <location/>
-      <source>!!!          10000 x 10000</source>
-      <translation>!!! 10000 x 10000</translation>
+        <location line="+40"/>
+        <source>&amp;Height:</source>
+        <translation>&amp;Höhe:</translation>
     </message>
     <message>
-      <location/>
-      <source>Standard sizes:</source>
-      <translation>Standardauflösungen:</translation>
+        <location line="+20"/>
+        <source>Aspect ratio:</source>
+        <translation>Seitenverhältnis:</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Height:</source>
-      <translation>&amp;Höhe:</translation>
+        <location line="+7"/>
+        <source>&amp;Screen</source>
+        <translation>Bild&amp;schirm</translation>
     </message>
     <message>
-      <location/>
-      <source>Aspect ratio:</source>
-      <translation>Seitenverhältnis:</translation>
+        <location line="+3"/>
+        <source>Alt+S</source>
+        <translation>Alt+S</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Screen</source>
-      <translation>Bild&amp;schirm</translation>
+        <location line="+7"/>
+        <source>&amp;4:3</source>
+        <translation>&amp;4:3</translation>
     </message>
     <message>
-      <location/>
-      <source>Alt+S</source>
-      <translation>Alt+S</translation>
+        <location line="+3"/>
+        <source>Alt+4</source>
+        <translation>Alt+4</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;4:3</source>
-      <translation>&amp;4:3</translation>
+        <location line="+7"/>
+        <source>1&amp;6:9</source>
+        <translation>1&amp;6:9</translation>
     </message>
     <message>
-      <location/>
-      <source>Alt+4</source>
-      <translation>Alt+4</translation>
+        <location line="+3"/>
+        <source>Alt+6</source>
+        <translation>Alt+6</translation>
     </message>
     <message>
-      <location/>
-      <source>1&amp;6:9</source>
-      <translation>1&amp;6:9</translation>
+        <location line="+7"/>
+        <source>&amp;1:1</source>
+        <translation>&amp;1:1</translation>
     </message>
     <message>
-      <location/>
-      <source>Alt+6</source>
-      <translation>Alt+6</translation>
+        <location line="+3"/>
+        <source>Alt+1</source>
+        <translation>Alt+1</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;1:1</source>
-      <translation>&amp;1:1</translation>
+        <location line="+15"/>
+        <source>Image comment</source>
+        <translation>Kommentar zum Bild</translation>
     </message>
     <message>
-      <location/>
-      <source>Alt+1</source>
-      <translation>Alt+1</translation>
+        <location line="+12"/>
+        <source>Insert MIBA</source>
+        <translation>MIBA-Informationen einfügen</translation>
     </message>
     <message>
-      <location/>
-      <source>Image comment</source>
-      <translation>Kommentar zum Bild</translation>
+        <location line="+17"/>
+        <source>Insert comment</source>
+        <translation>Kommentar einfügen</translation>
     </message>
-    <message>
-      <location/>
-      <source>Insert MIBA</source>
-      <translation>MIBA-Informationen einfügen</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Insert comment</source>
-      <translation>Kommentar einfügen</translation>
-    </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgSettingsMacro</name>
     <message>
-      <location/>
-      <source>Macro</source>
-      <translation>Makro</translation>
+        <location filename="../DlgSettingsMacro.ui" line="+16"/>
+        <source>Macro</source>
+        <translation>Makro</translation>
     </message>
     <message>
-      <location/>
-      <source>Macro recording settings</source>
-      <translation>Einstellugen für Makroaufzeichnung</translation>
+        <location line="+12"/>
+        <source>Macro recording settings</source>
+        <translation>Einstellugen für Makroaufzeichnung</translation>
     </message>
     <message>
-      <location/>
-      <source>Logging Commands</source>
-      <translation>Befehle protokollieren</translation>
+        <location line="+25"/>
+        <source>Logging Commands</source>
+        <translation>Befehle protokollieren</translation>
     </message>
     <message>
-      <location/>
-      <source>Show script commands in python console</source>
-      <translation>Skript-Befehle in Pythonkonsole anzeigen</translation>
+        <location line="+12"/>
+        <source>Show script commands in python console</source>
+        <translation>Skript-Befehle in Pythonkonsole anzeigen</translation>
     </message>
     <message>
-      <location/>
-      <source>Log all commands issued by menus to file:</source>
-      <translation>Alle Menübefehle in Datei protokollieren:</translation>
+        <location line="+13"/>
+        <source>Log all commands issued by menus to file:</source>
+        <translation>Alle Menübefehle in Datei protokollieren:</translation>
     </message>
     <message>
-      <location/>
-      <source>FullScript.FCScript</source>
-      <translation>FullScript.FCScript</translation>
+        <location line="+13"/>
+        <source>FullScript.FCScript</source>
+        <translation>FullScript.FCScript</translation>
     </message>
     <message>
-      <location/>
-      <source>Gui commands</source>
-      <translation>Gui-Befehle</translation>
+        <location line="+16"/>
+        <source>Gui commands</source>
+        <translation>Gui-Befehle</translation>
     </message>
     <message>
-      <location/>
-      <source>Recording GUI commands</source>
-      <translation>GUI-Befehle aufzeichnen</translation>
+        <location line="+12"/>
+        <source>Recording GUI commands</source>
+        <translation>GUI-Befehle aufzeichnen</translation>
     </message>
     <message>
-      <location/>
-      <source>Record as comment</source>
-      <translation>Aufnahme als Kommentar behandeln</translation>
+        <location line="+16"/>
+        <source>Record as comment</source>
+        <translation>Aufnahme als Kommentar behandeln</translation>
     </message>
     <message>
-      <location/>
-      <source>Macro path</source>
-      <translation>Makro-Zielpfad</translation>
+        <location line="+19"/>
+        <source>Macro path</source>
+        <translation>Makro-Zielpfad</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgSettingsUnits</name>
     <message>
-      <location/>
-      <source>Units</source>
-      <translation>Einheiten</translation>
+        <location filename="../DlgSettingsUnits.ui" line="+14"/>
+        <source>Units</source>
+        <translation>Einheiten</translation>
     </message>
     <message>
-      <location/>
-      <source>Units settings</source>
-      <translation>Einheiten-Einstellungen</translation>
+        <location line="+6"/>
+        <source>Units settings</source>
+        <translation>Einheiten-Einstellungen</translation>
     </message>
     <message>
-      <location/>
-      <source>Standard (mm/kg/s/degree)</source>
-      <translation>Standard (mm/kg/s/Grad)</translation>
+        <location line="+16"/>
+        <source>Standard (mm/kg/s/degree)</source>
+        <translation>Standard (mm/kg/s/Grad)</translation>
     </message>
     <message>
-      <location/>
-      <source>MKS (m/kg/s/degree)</source>
-      <translation>MKS (m/kg/s/Grad)</translation>
+        <location line="+5"/>
+        <source>MKS (m/kg/s/degree)</source>
+        <translation>MKS (m/kg/s/Grad)</translation>
     </message>
     <message>
-      <location/>
-      <source>Magnitude</source>
-      <translation>Größenordnung</translation>
+        <location line="+25"/>
+        <source>Magnitude</source>
+        <translation>Größenordnung</translation>
     </message>
     <message>
-      <location/>
-      <source>Unit</source>
-      <translation>Einheit</translation>
+        <location line="+5"/>
+        <source>Unit</source>
+        <translation>Einheit</translation>
     </message>
     <message>
-      <location/>
-      <source>User system:</source>
-      <translation>User system:</translation>
+        <location line="-43"/>
+        <source>User system:</source>
+        <translation>Einheitsystem:</translation>
     </message>
     <message>
-      <location/>
-      <source>Imperial (in/lb)</source>
-      <translation>Imperial (in/lb)</translation>
+        <location line="+18"/>
+        <source>Imperial (in/lb)</source>
+        <translation>Imperial (in/lb)</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgSettingsViewColor</name>
     <message>
-      <location/>
-      <source>Colors</source>
-      <translation>Farben</translation>
+        <location filename="../DlgSettingsViewColor.ui" line="+14"/>
+        <source>Colors</source>
+        <translation>Farben</translation>
     </message>
     <message>
-      <location/>
-      <source>Selection</source>
-      <translation>Auswahl</translation>
+        <location line="+12"/>
+        <source>Selection</source>
+        <translation>Auswahl</translation>
     </message>
     <message>
-      <location/>
-      <source>Enable selection highlighting</source>
-      <translation>Hervorhebung von Auswahl aktivieren</translation>
+        <location line="+56"/>
+        <source>Enable selection highlighting</source>
+        <translation>Hervorhebung von Auswahl aktivieren</translation>
     </message>
     <message>
-      <location/>
-      <source>Enable preselection highlighting</source>
-      <translation>Enable preselection highlighting</translation>
+        <location line="+16"/>
+        <source>Enable preselection highlighting</source>
+        <translation>Hervorhebung von Vorauswahl aktivieren</translation>
     </message>
     <message>
-      <location/>
-      <source>Background color</source>
-      <translation>Hintergrundfarbe</translation>
+        <location line="+50"/>
+        <source>Background color</source>
+        <translation>Hintergrundfarbe</translation>
     </message>
     <message>
-      <location/>
-      <source>Middle color</source>
-      <translation>Mittlere Farbe</translation>
+        <location line="+78"/>
+        <source>Middle color</source>
+        <translation>Mittlere Farbe</translation>
     </message>
     <message>
-      <location/>
-      <source>Color gradient</source>
-      <translation>Farbverlauf</translation>
+        <location line="+56"/>
+        <source>Color gradient</source>
+        <translation>Farbverlauf</translation>
     </message>
     <message>
-      <location/>
-      <source>Simple color</source>
-      <translation>Einfache Farbe</translation>
+        <location line="+36"/>
+        <source>Simple color</source>
+        <translation>Einfache Farbe</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgTipOfTheDay</name>
     <message>
-      <location/>
-      <source>Tip of the day</source>
-      <translation>Tipp des Tages</translation>
+        <location filename="../DlgTipOfTheDay.ui" line="+16"/>
+        <location line="+877"/>
+        <source>Tip of the day</source>
+        <translation>Tipp des Tages</translation>
     </message>
     <message>
-      <location/>
-      <source>&lt;b&gt;&lt;font face="Times New Roman"&gt;&lt;font size="+3"&gt;Did you know...&lt;/font&gt;&lt;/font&gt;&lt;/b&gt;</source>
-      <translation>&lt;b&gt;&lt;font face="Times New Roman"&gt;&lt;font size="+3"&gt;Wussten Sie schon...&lt;/font&gt;&lt;/font&gt;&lt;/b&gt;</translation>
+        <location line="+290"/>
+        <source>&lt;b&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;font size=&quot;+3&quot;&gt;Did you know...&lt;/font&gt;&lt;/font&gt;&lt;/b&gt;</source>
+        <translation>&lt;b&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&lt;font size=&quot;+3&quot;&gt;Wussten Sie schon...&lt;/font&gt;&lt;/font&gt;&lt;/b&gt;</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Show tips at start up</source>
-      <translation>Tipps beim &amp;Start anzeigen</translation>
+        <location line="+21"/>
+        <source>&amp;Show tips at start up</source>
+        <translation>Tipps beim &amp;Start anzeigen</translation>
     </message>
     <message>
-      <location/>
-      <source>Alt+S</source>
-      <translation>Alt+S</translation>
+        <location line="+3"/>
+        <source>Alt+S</source>
+        <translation>Alt+S</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Next Tip</source>
-      <translation>&amp;Nächster Tipp</translation>
+        <location line="+23"/>
+        <source>&amp;Next Tip</source>
+        <translation>&amp;Nächster Tipp</translation>
     </message>
     <message>
-      <location/>
-      <source>Alt+N</source>
-      <translation>Alt+N</translation>
+        <location line="+3"/>
+        <source>Alt+N</source>
+        <translation>Alt+N</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Close</source>
-      <translation>Schl&amp;ießen</translation>
+        <location line="+10"/>
+        <source>&amp;Close</source>
+        <translation>Schl&amp;ießen</translation>
     </message>
     <message>
-      <location/>
-      <source>Alt+C</source>
-      <translation>Alt+I</translation>
+        <location line="+3"/>
+        <source>Alt+C</source>
+        <translation>Alt+I</translation>
     </message>
     <message>
-      <location/>
-      <source></source>
-      <translation type="unfinished"/>
+        <source></source>
+        <translation></translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DlgTipOfTheDayImp</name>
     <message>
-      <location/>
-      <source>Download failed: %1
+        <location filename="../DlgTipOfTheDayImp.cpp" line="+106"/>
+        <source>Download failed: %1
 </source>
-      <translation>Download fehlgeschlagen: %1
+        <translation>Download fehlgeschlagen: %1
 </translation>
     </message>
     <message>
-      <location/>
-      <source>If you want to learn more about FreeCAD you must go to %1 or press the Help item in the Help menu.</source>
-      <translation>Wenn Sie mehr über FreeCAD erfahren möchten, besuchen Sie %1 oder drücken Sie auf Hilfe im Hilfe-Menü.</translation>
+        <location line="-8"/>
+        <source>If you want to learn more about FreeCAD you must go to %1 or press the Help item in the Help menu.</source>
+        <translation>Wenn Sie mehr über FreeCAD erfahren möchten, besuchen Sie %1 oder drücken Sie auf Hilfe im Hilfe-Menü.</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::DockablePlacement</name>
     <message>
-      <location/>
-      <source>Placement</source>
-      <translation>Placement</translation>
+        <location filename="../Placement.cpp" line="+319"/>
+        <source>Placement</source>
+        <translation>Placement</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::InputVector</name>
     <message>
-      <location/>
-      <source>Input vector</source>
-      <translation>Eingabevektor</translation>
+        <location filename="../InputVector.ui" line="+16"/>
+        <source>Input vector</source>
+        <translation>Eingabevektor</translation>
     </message>
     <message>
-      <location/>
-      <source>Vector</source>
-      <translation>Vektor</translation>
+        <location line="+12"/>
+        <source>Vector</source>
+        <translation>Vektor</translation>
     </message>
     <message>
-      <location/>
-      <source>Z:</source>
-      <translation>Z:</translation>
+        <location line="+45"/>
+        <source>Z:</source>
+        <translation>Z:</translation>
     </message>
     <message>
-      <location/>
-      <source>Y:</source>
-      <translation>Y:</translation>
+        <location line="+7"/>
+        <source>Y:</source>
+        <translation>Y:</translation>
     </message>
     <message>
-      <location/>
-      <source>X:</source>
-      <translation>X:</translation>
+        <location line="+7"/>
+        <source>X:</source>
+        <translation>X:</translation>
     </message>
     <message>
-      <location/>
-      <source>OK</source>
-      <translation>OK</translation>
+        <location line="+31"/>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::MouseButtons</name>
     <message>
-      <location/>
-      <source>Mouse buttons</source>
-      <translation>Maustasten</translation>
+        <location filename="../MouseButtons.ui" line="+14"/>
+        <source>Mouse buttons</source>
+        <translation>Maustasten</translation>
     </message>
     <message>
-      <location/>
-      <source>Configuration</source>
-      <translation>Konfiguration</translation>
+        <location line="+6"/>
+        <source>Configuration</source>
+        <translation>Konfiguration</translation>
     </message>
     <message>
-      <location/>
-      <source>Selection:</source>
-      <translation>Auswahl:</translation>
+        <location line="+8"/>
+        <source>Selection:</source>
+        <translation>Auswahl:</translation>
     </message>
     <message>
-      <location/>
-      <source>Panning</source>
-      <translation>Panning</translation>
+        <location line="+14"/>
+        <source>Panning</source>
+        <translation>Verschieben</translation>
     </message>
     <message>
-      <location/>
-      <source>Rotation:</source>
-      <translation>Drehung:</translation>
+        <location line="+14"/>
+        <source>Rotation:</source>
+        <translation>Drehung:</translation>
     </message>
     <message>
-      <location/>
-      <source>Zooming:</source>
-      <translation>Zooming:</translation>
+        <location line="+14"/>
+        <source>Zooming:</source>
+        <translation>Zooming:</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::ParameterGroup</name>
     <message>
-      <location/>
-      <source>Expand</source>
-      <translation>Erweitern</translation>
+        <location filename="../DlgParameterImp.cpp" line="+246"/>
+        <location line="+27"/>
+        <location line="+144"/>
+        <source>Expand</source>
+        <translation>Erweitern</translation>
     </message>
     <message>
-      <location/>
-      <source>Add sub-group</source>
-      <translation>Gruppe hinzufügen</translation>
+        <location line="-169"/>
+        <location line="+170"/>
+        <source>Add sub-group</source>
+        <translation>Gruppe hinzufügen</translation>
     </message>
     <message>
-      <location/>
-      <source>Remove group</source>
-      <translation>Gruppe entfernen</translation>
+        <location line="-169"/>
+        <location line="+47"/>
+        <location line="+123"/>
+        <source>Remove group</source>
+        <translation>Gruppe entfernen</translation>
     </message>
     <message>
-      <location/>
-      <source>Rename group</source>
-      <translation>Gruppe umbenennen</translation>
+        <location line="-169"/>
+        <location line="+170"/>
+        <source>Rename group</source>
+        <translation>Gruppe umbenennen</translation>
     </message>
     <message>
-      <location/>
-      <source>Export parameter</source>
-      <translation>Parameter exportieren</translation>
+        <location line="-168"/>
+        <location line="+169"/>
+        <source>Export parameter</source>
+        <translation>Parameter exportieren</translation>
     </message>
     <message>
-      <location/>
-      <source>Import parameter</source>
-      <translation>Parameter importieren</translation>
+        <location line="-168"/>
+        <location line="+169"/>
+        <source>Import parameter</source>
+        <translation>Parameter importieren</translation>
     </message>
     <message>
-      <location/>
-      <source>Collapse</source>
-      <translation>Reduzieren</translation>
+        <location line="-151"/>
+        <source>Collapse</source>
+        <translation>Reduzieren</translation>
     </message>
     <message>
-      <location/>
-      <source>Do really want to remove this parameter group?</source>
-      <translation>Möchten Sie diese Gruppe wirklich entfernen?</translation>
+        <location line="+25"/>
+        <source>Do really want to remove this parameter group?</source>
+        <translation>Möchten Sie diese Gruppe wirklich entfernen?</translation>
     </message>
     <message>
-      <location/>
-      <source>Existing sub-group</source>
-      <translation>Bereits vorhandene Gruppe</translation>
+        <location line="+42"/>
+        <source>Existing sub-group</source>
+        <translation>Bereits vorhandene Gruppe</translation>
     </message>
     <message>
-      <location/>
-      <source>The sub-group '%1' already exists.</source>
-      <translation>Diese Gruppe '%1' ist bereits vorhanden.</translation>
+        <location line="+1"/>
+        <source>The sub-group &apos;%1&apos; already exists.</source>
+        <translation>Diese Gruppe &apos;%1&apos; ist bereits vorhanden.</translation>
     </message>
     <message>
-      <location/>
-      <source>Export parameter to file</source>
-      <translation>Parameter in Datei schreiben</translation>
+        <location line="+13"/>
+        <source>Export parameter to file</source>
+        <translation>Parameter in Datei schreiben</translation>
     </message>
     <message>
-      <location/>
-      <source>XML (*.FCParam)</source>
-      <translation>XML (*.FCParam)</translation>
+        <location line="+1"/>
+        <location line="+16"/>
+        <source>XML (*.FCParam)</source>
+        <translation>XML (*.FCParam)</translation>
     </message>
     <message>
-      <location/>
-      <source>Import parameter from file</source>
-      <translation>Parameter aus Datei lesen</translation>
+        <location line="-1"/>
+        <source>Import parameter from file</source>
+        <translation>Parameter aus Datei lesen</translation>
     </message>
     <message>
-      <location/>
-      <source>Import Error</source>
-      <translation>Fehler bei Importieren</translation>
+        <location line="+31"/>
+        <source>Import Error</source>
+        <translation>Fehler bei Importieren</translation>
     </message>
     <message>
-      <location/>
-      <source>Reading from '%1' failed.</source>
-      <translation>Lesen von '%1' fehlgeschlagen.</translation>
+        <location line="+0"/>
+        <source>Reading from &apos;%1&apos; failed.</source>
+        <translation>Lesen von &apos;%1&apos; fehlgeschlagen.</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::ParameterValue</name>
     <message>
-      <location/>
-      <source>Change value</source>
-      <translation>Wert ändern</translation>
+        <location line="+37"/>
+        <source>Change value</source>
+        <translation>Wert ändern</translation>
     </message>
     <message>
-      <location/>
-      <source>Remove key</source>
-      <translation>Schlüssel entfernen</translation>
+        <location line="+2"/>
+        <source>Remove key</source>
+        <translation>Schlüssel entfernen</translation>
     </message>
     <message>
-      <location/>
-      <source>Rename key</source>
-      <translation>Schlüssel umbenennen</translation>
+        <location line="+1"/>
+        <source>Rename key</source>
+        <translation>Schlüssel umbenennen</translation>
     </message>
     <message>
-      <location/>
-      <source>New</source>
-      <translation>Neu</translation>
+        <location line="+4"/>
+        <source>New</source>
+        <translation>Neu</translation>
     </message>
     <message>
-      <location/>
-      <source>New string item</source>
-      <translation>Neue Zeichenkette</translation>
+        <location line="+1"/>
+        <source>New string item</source>
+        <translation>Neue Zeichenkette</translation>
     </message>
     <message>
-      <location/>
-      <source>New float item</source>
-      <translation>Neuer Gleitkommawert</translation>
+        <location line="+1"/>
+        <source>New float item</source>
+        <translation>Neuer Gleitkommawert</translation>
     </message>
     <message>
-      <location/>
-      <source>New integer item</source>
-      <translation>Neue Ganzzahl</translation>
+        <location line="+1"/>
+        <source>New integer item</source>
+        <translation>Neue Ganzzahl</translation>
     </message>
     <message>
-      <location/>
-      <source>New unsigned item</source>
-      <translation>Neue positive Ganzzahl</translation>
+        <location line="+1"/>
+        <source>New unsigned item</source>
+        <translation>Neue positive Ganzzahl</translation>
     </message>
     <message>
-      <location/>
-      <source>New Boolean item</source>
-      <translation>Neuer Bool'scher Wert</translation>
+        <location line="+1"/>
+        <source>New Boolean item</source>
+        <translation>Neuer Bool&apos;scher Wert</translation>
     </message>
     <message>
-      <location/>
-      <source>Existing item</source>
-      <translation>Bereits vorhandener Schlüssel</translation>
+        <location line="+90"/>
+        <location line="+29"/>
+        <location line="+30"/>
+        <location line="+36"/>
+        <location line="+29"/>
+        <source>Existing item</source>
+        <translation>Bereits vorhandener Schlüssel</translation>
     </message>
     <message>
-      <location/>
-      <source>The item '%1' already exists.</source>
-      <translation>Der Schlüssel '%1' ist bereits vorhanden.</translation>
+        <location line="-123"/>
+        <location line="+29"/>
+        <location line="+30"/>
+        <location line="+36"/>
+        <location line="+29"/>
+        <source>The item &apos;%1&apos; already exists.</source>
+        <translation>Der Schlüssel &apos;%1&apos; ist bereits vorhanden.</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::Placement</name>
     <message>
-      <location/>
-      <source>Placement</source>
-      <translation>Placement</translation>
+        <location filename="../Placement.ui" line="+14"/>
+        <source>Placement</source>
+        <translation>Placement</translation>
     </message>
     <message>
-      <location/>
-      <source>OK</source>
-      <translation>OK</translation>
+        <location line="+504"/>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
     <message>
-      <location/>
-      <source>Translation:</source>
-      <translation>Verschiebung:</translation>
+        <location line="-498"/>
+        <source>Translation:</source>
+        <translation>Verschiebung:</translation>
     </message>
     <message>
-      <location/>
-      <source>Z:</source>
-      <translation>Z:</translation>
+        <location line="+79"/>
+        <location line="+115"/>
+        <source>Z:</source>
+        <translation>Z:</translation>
     </message>
     <message>
-      <location/>
-      <source>Y:</source>
-      <translation>Y:</translation>
+        <location line="-102"/>
+        <location line="+115"/>
+        <source>Y:</source>
+        <translation>Y:</translation>
     </message>
     <message>
-      <location/>
-      <source>X:</source>
-      <translation>X:</translation>
+        <location line="-102"/>
+        <location line="+115"/>
+        <source>X:</source>
+        <translation>X:</translation>
     </message>
     <message>
-      <location/>
-      <source>Rotation:</source>
-      <translation>Drehung:</translation>
+        <location line="+10"/>
+        <source>Rotation:</source>
+        <translation>Drehung:</translation>
     </message>
     <message>
-      <location/>
-      <source>Angle:</source>
-      <translation>Winkel:</translation>
+        <location line="+49"/>
+        <source>Angle:</source>
+        <translation>Winkel:</translation>
     </message>
     <message>
-      <location/>
-      <source>Axis:</source>
-      <translation>Achse:</translation>
+        <location line="+20"/>
+        <source>Axis:</source>
+        <translation>Achse:</translation>
     </message>
     <message>
-      <location/>
-      <source>Center:</source>
-      <translation>Center:</translation>
+        <location line="-184"/>
+        <source>Center:</source>
+        <translation>Drehpunkt:</translation>
     </message>
     <message>
-      <location/>
-      <source>Pitch:</source>
-      <translation>Steigung:</translation>
+        <location line="+237"/>
+        <source>Pitch:</source>
+        <translation>Steigung:</translation>
     </message>
     <message>
-      <location/>
-      <source>Roll:</source>
-      <translation>Roll:</translation>
+        <location line="+23"/>
+        <source>Roll:</source>
+        <translation>Roll:</translation>
     </message>
     <message>
-      <location/>
-      <source>Yaw:</source>
-      <translation>Gierung:</translation>
+        <location line="+13"/>
+        <source>Yaw:</source>
+        <translation>Gierung:</translation>
     </message>
     <message>
-      <location/>
-      <source>Rotation axis wih angle</source>
-      <translation>Rotation axis wih angle</translation>
+        <location line="+28"/>
+        <source>Rotation axis wih angle</source>
+        <translation>Rotationsachse mit Winkel</translation>
     </message>
     <message>
-      <location/>
-      <source>Euler angles</source>
-      <translation>Euler angles</translation>
+        <location line="+5"/>
+        <source>Euler angles</source>
+        <translation>Euler-Winkel</translation>
     </message>
     <message>
-      <location/>
-      <source>Apply placement changes immediately</source>
-      <translation>Apply placement changes immediately</translation>
+        <location line="+11"/>
+        <source>Apply placement changes immediately</source>
+        <translation>Änderungen sofort übernehmen</translation>
     </message>
     <message>
-      <location/>
-      <source>Apply incremental changes to object placement</source>
-      <translation>Apply incremental changes to object placement</translation>
+        <location line="+10"/>
+        <source>Apply incremental changes to object placement</source>
+        <translation>Änderungen an Objektplacement inkrementell übernehmen</translation>
     </message>
     <message>
-      <location/>
-      <source>Apply</source>
-      <translation>Übernehmen</translation>
+        <location line="+22"/>
+        <source>Apply</source>
+        <translation>Übernehmen</translation>
     </message>
     <message>
-      <location/>
-      <source>Reset</source>
-      <translation>Reset</translation>
+        <location line="+7"/>
+        <source>Reset</source>
+        <translation>Zurücksetzen</translation>
     </message>
     <message>
-      <location/>
-      <source>Close</source>
-      <translation>Schließen</translation>
+        <location line="+34"/>
+        <source>Close</source>
+        <translation>Schließen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::SceneInspector</name>
     <message>
-      <location/>
-      <source>Dialog</source>
-      <translation>Dialog</translation>
+        <location filename="../SceneInspector.ui" line="+14"/>
+        <source>Dialog</source>
+        <translation>Dialog</translation>
     </message>
     <message>
-      <location/>
-      <source>Close</source>
-      <translation>Schließen</translation>
+        <location line="+31"/>
+        <source>Close</source>
+        <translation>Schließen</translation>
     </message>
     <message>
-      <location/>
-      <source>Refresh</source>
-      <translation>Aktualisieren</translation>
+        <location line="-20"/>
+        <source>Refresh</source>
+        <translation>Aktualisieren</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::SceneModel</name>
     <message>
-      <location/>
-      <source>Inventor Tree</source>
-      <translation>Szenengraph</translation>
+        <location filename="../SceneInspector.cpp" line="-45"/>
+        <source>Inventor Tree</source>
+        <translation>Szenengraph</translation>
     </message>
     <message>
-      <location/>
-      <source>Nodes</source>
-      <translation>Knoten</translation>
+        <location line="+14"/>
+        <source>Nodes</source>
+        <translation>Knoten</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::TextureMapping</name>
     <message>
-      <location/>
-      <source>Texture</source>
-      <translation>Textur</translation>
+        <location filename="../TextureMapping.ui" line="+14"/>
+        <source>Texture</source>
+        <translation>Textur</translation>
     </message>
     <message>
-      <location/>
-      <source>Texture mapping</source>
-      <translation>Texture mapping</translation>
+        <location line="+6"/>
+        <source>Texture mapping</source>
+        <translation>Texturabbildung</translation>
     </message>
     <message>
-      <location/>
-      <source>Global</source>
-      <translation>Global</translation>
+        <location line="+6"/>
+        <source>Global</source>
+        <translation>Global</translation>
     </message>
     <message>
-      <location/>
-      <source>Environment</source>
-      <translation>Environment</translation>
+        <location line="+7"/>
+        <source>Environment</source>
+        <translation>Umgebung</translation>
     </message>
     <message>
-      <location/>
-      <source>Image files (%1)</source>
-      <translation>Image files (%1)</translation>
+        <location filename="../TextureMapping.cpp" line="+65"/>
+        <source>Image files (%1)</source>
+        <translation>Bilddateien (%1)</translation>
     </message>
     <message>
-      <location/>
-      <source>No image</source>
-      <translation>Kein Bild</translation>
+        <location line="+53"/>
+        <source>No image</source>
+        <translation>Kein Bild</translation>
     </message>
     <message>
-      <location/>
-      <source>The specified file is not a valid image file.</source>
-      <translation>The specified file is not a valid image file.</translation>
+        <location line="+0"/>
+        <source>The specified file is not a valid image file.</source>
+        <translation>Die angegebene Datei ist keine gültige Bilddatei.</translation>
     </message>
     <message>
-      <location/>
-      <source>No 3d view</source>
-      <translation>Keine 3D-Ansicht</translation>
+        <location line="+20"/>
+        <source>No 3d view</source>
+        <translation>Keine 3D-Ansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>No active 3d view found.</source>
-      <translation>Keine aktive 3D-Ansicht gefunden.</translation>
+        <location line="+0"/>
+        <source>No active 3d view found.</source>
+        <translation>Keine aktive 3D-Ansicht gefunden.</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Dialog::Transform</name>
     <message>
-      <location/>
-      <source>Cancel</source>
-      <translation>Abbrechen</translation>
+        <location filename="../Transform.cpp" line="+317"/>
+        <location line="+128"/>
+        <source>Cancel</source>
+        <translation>Abbrechen</translation>
     </message>
     <message>
-      <location/>
-      <source>Transform</source>
-      <translation>Umwandeln</translation>
+        <location line="-127"/>
+        <location line="+128"/>
+        <source>Transform</source>
+        <translation>Transformieren</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::DlgTreeWidget</name>
     <message>
-      <location/>
-      <source>Dialog</source>
-      <translation>Dialog</translation>
+        <location filename="../DlgTreeWidget.ui" line="+16"/>
+        <source>Dialog</source>
+        <translation>Dialog</translation>
     </message>
     <message>
-      <location/>
-      <source>Items</source>
-      <translation>Elemente</translation>
+        <location line="+25"/>
+        <source>Items</source>
+        <translation>Elemente</translation>
     </message>
     <message>
-      <location/>
-      <source>OK</source>
-      <translation>OK</translation>
+        <location line="+32"/>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
     <message>
-      <location/>
-      <source>Cancel</source>
-      <translation>Abbrechen</translation>
+        <location line="+7"/>
+        <source>Cancel</source>
+        <translation>Abbrechen</translation>
     </message>
     <message>
-      <location/>
-      <source></source>
-      <translation type="unfinished"/>
+        <source></source>
+        <translation></translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::DockWnd::CombiView</name>
     <message>
-      <location/>
-      <source>CombiView</source>
-      <translation>Combi-Ansicht</translation>
+        <location filename="../CombiView.cpp" line="+47"/>
+        <source>CombiView</source>
+        <translation>Combi-Ansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Project</source>
-      <translation>Projekt</translation>
+        <location line="+26"/>
+        <source>Project</source>
+        <translation>Projekt</translation>
     </message>
     <message>
-      <location/>
-      <source>Tasks</source>
-      <translation>Aufgaben</translation>
+        <location line="+4"/>
+        <source>Tasks</source>
+        <translation>Aufgaben</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::DockWnd::HelpView</name>
     <message>
-      <location/>
-      <source>Previous</source>
-      <translation>Letzte</translation>
+        <location filename="../HelpView.cpp" line="+566"/>
+        <source>Previous</source>
+        <translation>Letzte</translation>
     </message>
     <message>
-      <location/>
-      <source>Next</source>
-      <translation>Nächster</translation>
+        <location line="+6"/>
+        <source>Next</source>
+        <translation>Weiter</translation>
     </message>
     <message>
-      <location/>
-      <source>Home</source>
-      <translation>Startseite</translation>
+        <location line="+6"/>
+        <source>Home</source>
+        <translation>Startseite</translation>
     </message>
     <message>
-      <location/>
-      <source>Open</source>
-      <translation>Öffnen</translation>
+        <location line="+6"/>
+        <source>Open</source>
+        <translation>Öffnen</translation>
     </message>
     <message>
-      <location/>
-      <source>Open file</source>
-      <translation>Datei öffnen</translation>
+        <location line="+63"/>
+        <source>Open file</source>
+        <translation>Datei öffnen</translation>
     </message>
     <message>
-      <location/>
-      <source>All HTML files (*.html *.htm)</source>
-      <translation>Alle HTML-Dateien (*.html *.htm)</translation>
+        <location line="+0"/>
+        <source>All HTML files (*.html *.htm)</source>
+        <translation>Alle HTML-Dateien (*.html *.htm)</translation>
     </message>
     <message>
-      <location/>
-      <source>External browser</source>
-      <translation>Externer Browser</translation>
+        <location line="+17"/>
+        <location line="+10"/>
+        <source>External browser</source>
+        <translation>Externer Browser</translation>
     </message>
     <message>
-      <location/>
-      <source>No external browser found. Specify in preferences, please</source>
-      <translation>Kein externer Browser gefunden. Setzen Sie die Einstellungen hierfür</translation>
+        <location line="-10"/>
+        <source>No external browser found. Specify in preferences, please</source>
+        <translation>Kein externer Browser gefunden. Setzen Sie die Einstellungen hierfür</translation>
     </message>
     <message>
-      <location/>
-      <source>Starting of %1 failed</source>
-      <translation>Start von %1 fehlgeschlagen</translation>
+        <location line="+10"/>
+        <source>Starting of %1 failed</source>
+        <translation>Start von %1 fehlgeschlagen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::DockWnd::PropertyDockView</name>
     <message>
-      <location/>
-      <source>Property View</source>
-      <translation>Eigenschaften-Ansicht</translation>
+        <location filename="../PropertyView.cpp" line="+167"/>
+        <source>Property View</source>
+        <translation>Eigenschaften-Ansicht</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::DockWnd::ReportOutput</name>
     <message>
-      <location/>
-      <source>Logging</source>
-      <translation>Protokoll-Meldungen</translation>
+        <location filename="../ReportView.cpp" line="+328"/>
+        <source>Logging</source>
+        <translation>Protokoll-Meldungen</translation>
     </message>
     <message>
-      <location/>
-      <source>Warning</source>
-      <translation>Warnung</translation>
+        <location line="+4"/>
+        <source>Warning</source>
+        <translation>Warnung</translation>
     </message>
     <message>
-      <location/>
-      <source>Error</source>
-      <translation>Fehlermeldungen</translation>
+        <location line="+4"/>
+        <source>Error</source>
+        <translation>Fehlermeldungen</translation>
     </message>
     <message>
-      <location/>
-      <source>Options</source>
-      <translation>Optionen</translation>
+        <location line="+9"/>
+        <source>Options</source>
+        <translation>Optionen</translation>
     </message>
     <message>
-      <location/>
-      <source>Clear</source>
-      <translation>Löschen</translation>
+        <location line="+4"/>
+        <source>Clear</source>
+        <translation>Löschen</translation>
     </message>
     <message>
-      <location/>
-      <source>Save As...</source>
-      <translation>Speichern unter...</translation>
+        <location line="+2"/>
+        <source>Save As...</source>
+        <translation>Speichern unter...</translation>
     </message>
     <message>
-      <location/>
-      <source>Save Report Output</source>
-      <translation>Ausgabe speichern</translation>
+        <location line="+8"/>
+        <source>Save Report Output</source>
+        <translation>Ausgabe speichern</translation>
     </message>
     <message>
-      <location/>
-      <source>Plain Text Files (*.txt *.log)</source>
-      <translation>Einfache Textdateien (*.txt *.log)</translation>
+        <location line="+0"/>
+        <source>Plain Text Files (*.txt *.log)</source>
+        <translation>Einfache Textdateien (*.txt *.log)</translation>
     </message>
     <message>
-      <location/>
-      <source>Go to end</source>
-      <translation>Go to end</translation>
+        <location line="-18"/>
+        <source>Go to end</source>
+        <translation>Go to end</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::DockWnd::ReportView</name>
     <message>
-      <location/>
-      <source>Output</source>
-      <translation>Ausgabe</translation>
+        <location line="-274"/>
+        <location line="+32"/>
+        <source>Output</source>
+        <translation>Ausgabe</translation>
     </message>
     <message>
-      <location/>
-      <source>Python console</source>
-      <translation>Python-Konsole</translation>
+        <location line="-24"/>
+        <location line="+25"/>
+        <source>Python console</source>
+        <translation>Python-Konsole</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::DockWnd::SelectionView</name>
     <message>
-      <location/>
-      <source>Property View</source>
-      <translation>Eigenschaften-Ansicht</translation>
+        <location filename="../SelectionView.cpp" line="+50"/>
+        <source>Property View</source>
+        <translation>Eigenschaften-Ansicht</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::DockWnd::TaskPanelView</name>
     <message>
-      <location/>
-      <source>Task View</source>
-      <translation>Aufgaben</translation>
+        <location filename="../TaskPanelView.cpp" line="+49"/>
+        <source>Task View</source>
+        <translation>Aufgaben</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::DockWnd::TextBrowser</name>
     <message>
-      <location/>
-      <source>Could not open file.</source>
-      <translation>Datei konnte nicht geöffnet werden.</translation>
+        <location filename="../HelpView.cpp" line="-452"/>
+        <source>Could not open file.</source>
+        <translation>Datei konnte nicht geöffnet werden.</translation>
     </message>
     <message>
-      <location/>
-      <source>You tried to access the address %1 which is currently unavailable. Please make sure that the URL exists and try reloading the page.</source>
-      <translation>Sie haben versucht, die Adresse %1 aufzurufen, die im Moment nicht erreichbar ist. Stellen Sie sicher, dass die URL existiert und versuchen Sie die Seite erneut zu laden.</translation>
+        <location line="+0"/>
+        <location line="+98"/>
+        <source>You tried to access the address %1 which is currently unavailable. Please make sure that the URL exists and try reloading the page.</source>
+        <translation>Sie haben versucht, die Adresse %1 aufzurufen, die im Moment nicht erreichbar ist. Stellen Sie sicher, dass die URL existiert und versuchen Sie die Seite erneut zu laden.</translation>
     </message>
     <message>
-      <location/>
-      <source>Connecting to %1</source>
-      <translation>Verbinden mit %1</translation>
+        <location line="+42"/>
+        <source>Connecting to %1</source>
+        <translation>Verbinden mit %1</translation>
     </message>
     <message>
-      <location/>
-      <source>Sending to %1</source>
-      <translation>Senden an %1</translation>
+        <location line="+3"/>
+        <source>Sending to %1</source>
+        <translation>Senden an %1</translation>
     </message>
     <message>
-      <location/>
-      <source>Reading from %1</source>
-      <translation>Lesen von %1</translation>
+        <location line="+3"/>
+        <source>Reading from %1</source>
+        <translation>Lesen von %1</translation>
     </message>
     <message>
-      <location/>
-      <source>Download failed: %1.</source>
-      <translation>Download fehlgeschlagen: %1.</translation>
+        <location line="+20"/>
+        <source>Download failed: %1.</source>
+        <translation>Download fehlgeschlagen: %1.</translation>
     </message>
     <message>
-      <location/>
-      <source>Previous</source>
-      <translation>Letzte</translation>
+        <location line="+53"/>
+        <source>Previous</source>
+        <translation>Letzte</translation>
     </message>
     <message>
-      <location/>
-      <source>Forward</source>
-      <translation>Vor</translation>
+        <location line="+3"/>
+        <source>Forward</source>
+        <translation>Vor</translation>
     </message>
     <message>
-      <location/>
-      <source>Home</source>
-      <translation>Startseite</translation>
+        <location line="+4"/>
+        <source>Home</source>
+        <translation>Startseite</translation>
     </message>
     <message>
-      <location/>
-      <source>Refresh</source>
-      <translation>Aktualisieren</translation>
+        <location line="+1"/>
+        <source>Refresh</source>
+        <translation>Aktualisieren</translation>
     </message>
     <message>
-      <location/>
-      <source>Copy</source>
-      <translation>Kopieren</translation>
+        <location line="+2"/>
+        <source>Copy</source>
+        <translation>Kopieren</translation>
     </message>
     <message>
-      <location/>
-      <source>Select all</source>
-      <translation>Alles auswählen</translation>
+        <location line="+1"/>
+        <source>Select all</source>
+        <translation>Alles auswählen</translation>
     </message>
     <message>
-      <location/>
-      <source>No description for</source>
-      <translation>Keine Beschreibung für</translation>
+        <location line="+42"/>
+        <source>No description for</source>
+        <translation>Keine Beschreibung für</translation>
     </message>
-  </context>
-  <context>
-    <name>Gui::DocumentModel</name>
-    <message>
-      <location/>
-      <source>Application</source>
-      <translation>Applikation</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Labels &amp; Attributes</source>
-      <translation>Bezeichnungen &amp; Eigenschaften</translation>
-    </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::EditorView</name>
     <message>
-      <location/>
-      <source>Modified file</source>
-      <translation>Geänderte Datei</translation>
+        <location filename="../EditorView.cpp" line="+208"/>
+        <source>Modified file</source>
+        <translation>Geänderte Datei</translation>
     </message>
     <message>
-      <location/>
-      <source>%1.
+        <location line="+1"/>
+        <source>%1.
 
 This has been modified outside of the source editor. Do you want to reload it?</source>
-      <translation>%1. 
+        <translation>%1. 
 
 Diese Datei wurde außerhalb des Editors verändert. Wollen Sie sie erneut laden?</translation>
     </message>
     <message>
-      <location/>
-      <source>Unsaved document</source>
-      <translation>Nicht gespeichertes Dokument</translation>
+        <location line="+94"/>
+        <source>Unsaved document</source>
+        <translation>Nicht gespeichertes Dokument</translation>
     </message>
     <message>
-      <location/>
-      <source>The document has been modified.
+        <location line="+1"/>
+        <source>The document has been modified.
 Do you want to save your changes?</source>
-      <translation>Das Dokument wurde geändert.
+        <translation>Das Dokument wurde geändert.
 Sollen die Änderungen gespeichert werden?</translation>
     </message>
     <message>
-      <location/>
-      <source>FreeCAD macro (*.FCMacro);;Python (*.py)</source>
-      <translation>FreeCAD-Makro (*.FCMacro);;Python (*.py)</translation>
+        <location line="+22"/>
+        <source>FreeCAD macro (*.FCMacro);;Python (*.py)</source>
+        <translation>FreeCAD-Makro (*.FCMacro);;Python (*.py)</translation>
     </message>
     <message>
-      <location/>
-      <source>Export PDF</source>
-      <translation>PDF exportieren</translation>
+        <location line="+108"/>
+        <source>Export PDF</source>
+        <translation>PDF exportieren</translation>
     </message>
     <message>
-      <location/>
-      <source>PDF file (*.pdf)</source>
-      <translation>PDF-Datei (*.pdf)</translation>
+        <location line="+0"/>
+        <source>PDF file (*.pdf)</source>
+        <translation>PDF-Datei (*.pdf)</translation>
     </message>
     <message>
-      <location/>
-      <source>untitled[*]</source>
-      <translation>Unbenannt[*]</translation>
+        <location line="+16"/>
+        <source>untitled[*]</source>
+        <translation>Unbenannt[*]</translation>
     </message>
     <message>
-      <location/>
-      <source> - Editor</source>
-      <translation> - Editor</translation>
+        <location line="+3"/>
+        <source> - Editor</source>
+        <translation> - Editor</translation>
     </message>
     <message>
-      <location/>
-      <source>%1 chars removed</source>
-      <translation>%1 Zeichen gelöscht</translation>
+        <location line="+51"/>
+        <source>%1 chars removed</source>
+        <translation>%1 Zeichen gelöscht</translation>
     </message>
     <message>
-      <location/>
-      <source>%1 chars added</source>
-      <translation>%1 Zeichen hinzugefügt</translation>
+        <location line="+2"/>
+        <source>%1 chars added</source>
+        <translation>%1 Zeichen hinzugefügt</translation>
     </message>
     <message>
-      <location/>
-      <source>Formatted</source>
-      <translation>Formatiert</translation>
+        <location line="+2"/>
+        <source>Formatted</source>
+        <translation>Formatiert</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::FileChooser</name>
     <message>
-      <location/>
-      <source>Select a file</source>
-      <translation>Wählen Sie eine Datei aus</translation>
+        <location filename="../FileDialog.cpp" line="+402"/>
+        <source>Select a file</source>
+        <translation>Wählen Sie eine Datei aus</translation>
     </message>
     <message>
-      <location/>
-      <source>Select a directory</source>
-      <translation>Wählen Sie ein Verzeichnis aus</translation>
+        <location line="+2"/>
+        <source>Select a directory</source>
+        <translation>Wählen Sie ein Verzeichnis aus</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::FileDialog</name>
     <message>
-      <location/>
-      <source>Save as</source>
-      <translation>Speichern unter</translation>
+        <location line="-325"/>
+        <source>Save as</source>
+        <translation>Speichern unter</translation>
     </message>
     <message>
-      <location/>
-      <source>Open</source>
-      <translation>Öffnen</translation>
+        <location line="+49"/>
+        <location line="+26"/>
+        <source>Open</source>
+        <translation>Öffnen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::FileOptionsDialog</name>
     <message>
-      <location/>
-      <source>Extended</source>
-      <translation>Erweitert</translation>
+        <location line="+55"/>
+        <source>Extended</source>
+        <translation>Erweitert</translation>
     </message>
     <message>
-      <location/>
-      <source>All files (*.*)</source>
-      <translation>Alle Dateien (*.*)</translation>
+        <location line="+44"/>
+        <source>All files (*.*)</source>
+        <translation>Alle Dateien (*.*)</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Flag</name>
     <message>
-      <location/>
-      <source>Top left</source>
-      <translation>Oben links</translation>
+        <location filename="../Flag.cpp" line="+316"/>
+        <source>Top left</source>
+        <translation>Oben links</translation>
     </message>
     <message>
-      <location/>
-      <source>Bottom left</source>
-      <translation>Unten links</translation>
+        <location line="+2"/>
+        <source>Bottom left</source>
+        <translation>Unten links</translation>
     </message>
     <message>
-      <location/>
-      <source>Top right</source>
-      <translation>Oben rechts</translation>
+        <location line="+2"/>
+        <source>Top right</source>
+        <translation>Oben rechts</translation>
     </message>
     <message>
-      <location/>
-      <source>Bottom right</source>
-      <translation>Unten rechts</translation>
+        <location line="+2"/>
+        <source>Bottom right</source>
+        <translation>Unten rechts</translation>
     </message>
     <message>
-      <location/>
-      <source>Remove</source>
-      <translation>Entfernen</translation>
+        <location line="+3"/>
+        <source>Remove</source>
+        <translation>Entfernen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::InventorNavigationStyle</name>
     <message>
-      <location/>
-      <source>Press CTRL and left mouse button</source>
-      <translation>Drücken Sie STRG und die linke Maustaste</translation>
+        <location filename="../NavigationStyle.cpp" line="-329"/>
+        <source>Press CTRL and left mouse button</source>
+        <translation>Drücken Sie STRG und die linke Maustaste</translation>
     </message>
     <message>
-      <location/>
-      <source>Press middle mouse button</source>
-      <translation>Drücken Sie die mittlere Maustaste</translation>
+        <location line="+2"/>
+        <source>Press middle mouse button</source>
+        <translation>Drücken Sie die mittlere Maustaste</translation>
     </message>
     <message>
-      <location/>
-      <source>Press left mouse button</source>
-      <translation>Drücken Sie die linke Maustaste</translation>
+        <location line="+2"/>
+        <source>Press left mouse button</source>
+        <translation>Drücken Sie die linke Maustaste</translation>
     </message>
     <message>
-      <location/>
-      <source>Scroll middle mouse button</source>
-      <translation>Scroll middle mouse button</translation>
+        <location line="+2"/>
+        <source>Scroll middle mouse button</source>
+        <translation>Scrollen Sie die mittlere Maustaste</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::LocationDialog</name>
     <message>
-      <location/>
-      <source>Wrong direction</source>
-      <translation>Falsche Richtung</translation>
+        <location filename="../InputVector.h" line="+155"/>
+        <location line="+138"/>
+        <source>Wrong direction</source>
+        <translation>Falsche Richtung</translation>
     </message>
     <message>
-      <location/>
-      <source>Direction must not be the null vector</source>
-      <translation>Richtungsvektor darf nicht der Nullvektor sein</translation>
+        <location line="-137"/>
+        <location line="+138"/>
+        <source>Direction must not be the null vector</source>
+        <translation>Richtungsvektor darf nicht der Nullvektor sein</translation>
     </message>
     <message>
-      <location/>
-      <source>X</source>
-      <translation>X</translation>
+        <location line="-204"/>
+        <location line="+15"/>
+        <location line="+107"/>
+        <location line="+15"/>
+        <source>X</source>
+        <translation>X</translation>
     </message>
     <message>
-      <location/>
-      <source>Y</source>
-      <translation>Y</translation>
+        <location line="-136"/>
+        <location line="+16"/>
+        <location line="+106"/>
+        <location line="+16"/>
+        <source>Y</source>
+        <translation>Y</translation>
     </message>
     <message>
-      <location/>
-      <source>Z</source>
-      <translation>Z</translation>
+        <location line="-137"/>
+        <location line="+17"/>
+        <location line="+105"/>
+        <location line="+17"/>
+        <source>Z</source>
+        <translation>Z</translation>
     </message>
     <message>
-      <location/>
-      <source>User defined...</source>
-      <translation>Benutzerdefiniert...</translation>
+        <location line="-138"/>
+        <location line="+19"/>
+        <location line="+103"/>
+        <location line="+19"/>
+        <source>User defined...</source>
+        <translation>Benutzerdefiniert...</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::MacroCommand</name>
     <message>
-      <location/>
-      <source>Macros</source>
-      <translation>Makros</translation>
+        <location filename="../Command.cpp" line="+333"/>
+        <location filename="../DlgCommandsImp.cpp" line="-22"/>
+        <location filename="../DlgKeyboardImp.cpp" line="-223"/>
+        <location filename="../DlgToolbarsImp.cpp" line="-335"/>
+        <source>Macros</source>
+        <translation>Makros</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::MainWindow</name>
     <message>
-      <location/>
-      <source>Dimension</source>
-      <translation>Abmessung</translation>
+        <location filename="../MainWindow.cpp" line="+289"/>
+        <location line="+1140"/>
+        <source>Dimension</source>
+        <translation>Abmessung</translation>
     </message>
     <message>
-      <location/>
-      <source>Ready</source>
-      <translation>Bereit</translation>
+        <location line="-1009"/>
+        <source>Ready</source>
+        <translation>Bereit</translation>
     </message>
     <message>
-      <location/>
-      <source>Toggles this toolbar</source>
-      <translation>Symbolleiste ein-/ausschalten</translation>
+        <location line="+568"/>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Toggles this toolbar</source>
+        <translation>Symbolleiste ein-/ausschalten</translation>
     </message>
     <message>
-      <location/>
-      <source>Toggles this dockable window</source>
-      <translation>Andockbares Fenster ein-/ausschalten</translation>
+        <location line="+13"/>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Toggles this dockable window</source>
+        <translation>Andockbares Fenster ein-/ausschalten</translation>
     </message>
     <message>
-      <location/>
-      <source>Close All</source>
-      <translation>Alles schließen</translation>
+        <location line="-338"/>
+        <source>Close All</source>
+        <translation>Alles schließen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::NetworkRetriever</name>
     <message>
-      <location/>
-      <source>Download started...
+        <location filename="../NetworkRetriever.cpp" line="+121"/>
+        <source>Download started...
 </source>
-      <translation>Download hat begonnen...
+        <translation>Download hat begonnen...
 </translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::ProgressBar</name>
     <message>
-      <location/>
-      <source>Remaining: %1</source>
-      <translation>Verbleibend: %1</translation>
+        <location filename="../ProgressBar.cpp" line="+232"/>
+        <source>Remaining: %1</source>
+        <translation>Verbleibend: %1</translation>
     </message>
     <message>
-      <location/>
-      <source>Aborting</source>
-      <translation>Abbrechen</translation>
+        <location line="+145"/>
+        <source>Aborting</source>
+        <translation>Abbrechen</translation>
     </message>
     <message>
-      <location/>
-      <source>Do you really want to abort the operation?</source>
-      <translation>Möchten Sie die Operation wirklich abbrechen?</translation>
+        <location line="+1"/>
+        <source>Do you really want to abort the operation?</source>
+        <translation>Möchten Sie die Operation wirklich abbrechen?</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::ProgressDialog</name>
     <message>
-      <location/>
-      <source>Remaining: %1</source>
-      <translation>Verbleibend: %1</translation>
+        <location filename="../ProgressDialog.cpp" line="+197"/>
+        <source>Remaining: %1</source>
+        <translation>Verbleibend: %1</translation>
     </message>
     <message>
-      <location/>
-      <source>Aborting</source>
-      <translation>Abbrechen</translation>
+        <location line="+93"/>
+        <source>Aborting</source>
+        <translation>Abbrechen</translation>
     </message>
     <message>
-      <location/>
-      <source>Do you really want to abort the operation?</source>
-      <translation>Möchten Sie die Operation wirklich abbrechen?</translation>
+        <location line="+1"/>
+        <source>Do you really want to abort the operation?</source>
+        <translation>Möchten Sie die Operation wirklich abbrechen?</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::PropertyEditor::PropertyModel</name>
     <message>
-      <location/>
-      <source>Property</source>
-      <translation>Eigenschaft</translation>
+        <location filename="../propertyeditor/PropertyModel.cpp" line="+152"/>
+        <source>Property</source>
+        <translation>Eigenschaft</translation>
     </message>
     <message>
-      <location/>
-      <source>Value</source>
-      <translation>Wert</translation>
+        <location line="+2"/>
+        <source>Value</source>
+        <translation>Wert</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::PropertyView</name>
     <message>
-      <location/>
-      <source>View</source>
-      <translation>Ansicht</translation>
+        <location filename="../PropertyView.cpp" line="-96"/>
+        <location line="+84"/>
+        <source>View</source>
+        <translation>Ansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Data</source>
-      <translation>Daten</translation>
+        <location line="-81"/>
+        <location line="+82"/>
+        <source>Data</source>
+        <translation>Daten</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::PythonConsole</name>
     <message>
-      <location/>
-      <source>System exit</source>
-      <translation>System beenden</translation>
+        <location filename="../PythonConsole.cpp" line="+626"/>
+        <source>System exit</source>
+        <translation>System beenden</translation>
     </message>
     <message>
-      <location/>
-      <source>The application is still running.
+        <location line="+0"/>
+        <source>The application is still running.
 Do you want to exit without saving your data?</source>
-      <translation>Die Anwendung läuft immer noch.
+        <translation>Die Anwendung läuft immer noch.
 Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
     </message>
     <message>
-      <location/>
-      <source>Python console</source>
-      <translation>Python-Konsole</translation>
+        <location line="+9"/>
+        <location line="+3"/>
+        <location line="+3"/>
+        <location line="+3"/>
+        <source>Python console</source>
+        <translation>Python-Konsole</translation>
     </message>
     <message>
-      <location/>
-      <source>Unhandled PyCXX exception.</source>
-      <translation>Unbehnadelte PyCXX-Ausnahme.</translation>
+        <location line="-9"/>
+        <source>Unhandled PyCXX exception.</source>
+        <translation>Unbehnadelte PyCXX-Ausnahme.</translation>
     </message>
     <message>
-      <location/>
-      <source>Unhandled FreeCAD exception.</source>
-      <translation>Unbehandelte FreeCAD-Ausnahme.</translation>
+        <location line="+3"/>
+        <source>Unhandled FreeCAD exception.</source>
+        <translation>Unbehandelte FreeCAD-Ausnahme.</translation>
     </message>
     <message>
-      <location/>
-      <source>Unhandled unknown C++ exception.</source>
-      <translation>Unbehandelte C++-Ausnahme.</translation>
+        <location line="+6"/>
+        <source>Unhandled unknown C++ exception.</source>
+        <translation>Unbehandelte C++-Ausnahme.</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Copy command</source>
-      <translation>&amp;Befehle kopieren</translation>
+        <location line="+345"/>
+        <source>&amp;Copy command</source>
+        <translation>&amp;Befehle kopieren</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Copy history</source>
-      <translation>&amp;Verlauf kopieren</translation>
+        <location line="+3"/>
+        <source>&amp;Copy history</source>
+        <translation>&amp;Verlauf kopieren</translation>
     </message>
     <message>
-      <location/>
-      <source>Save history as...</source>
-      <translation>Verlauf speichern unter...</translation>
+        <location line="+3"/>
+        <source>Save history as...</source>
+        <translation>Verlauf speichern unter...</translation>
     </message>
     <message>
-      <location/>
-      <source>Insert file name...</source>
-      <translation>Dateinamen einfügen...</translation>
+        <location line="+12"/>
+        <source>Insert file name...</source>
+        <translation>Dateinamen einfügen...</translation>
     </message>
     <message>
-      <location/>
-      <source>Save History</source>
-      <translation>Verlauf speichern</translation>
+        <location line="+18"/>
+        <source>Save History</source>
+        <translation>Verlauf speichern</translation>
     </message>
     <message>
-      <location/>
-      <source>Macro Files (*.FCMacro *.py)</source>
-      <translation>Makro-Dateien (*.FCMacro *.py)</translation>
+        <location line="+1"/>
+        <source>Macro Files (*.FCMacro *.py)</source>
+        <translation>Makro-Dateien (*.FCMacro *.py)</translation>
     </message>
     <message>
-      <location/>
-      <source>Insert file name</source>
-      <translation>Dateinamen einfügen</translation>
+        <location line="+18"/>
+        <source>Insert file name</source>
+        <translation>Dateinamen einfügen</translation>
     </message>
     <message>
-      <location/>
-      <source>All Files (*.*)</source>
-      <translation>Alle Dateien (*.*)</translation>
+        <location line="+0"/>
+        <source>All Files (*.*)</source>
+        <translation>Alle Dateien (*.*)</translation>
     </message>
     <message>
-      <location/>
-      <source>Python Input Dialog</source>
-      <translation>Pythoneingabe-Dialog</translation>
+        <location line="+175"/>
+        <location line="+25"/>
+        <source>Python Input Dialog</source>
+        <translation>Pythoneingabe-Dialog</translation>
     </message>
     <message>
-      <location/>
-      <source>Unhandled std C++ exception.</source>
-      <translation>Unbehandelte std C++-Ausnahme.</translation>
+        <location line="-603"/>
+        <source>Unhandled std C++ exception.</source>
+        <translation>Unbehandelte std C++-Ausnahme.</translation>
     </message>
     <message>
-      <location/>
-      <source>Word wrap</source>
-      <translation>Word wrap</translation>
+        <location line="+369"/>
+        <source>Word wrap</source>
+        <translation>Zeilenumbruch</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::PythonEditor</name>
     <message>
-      <location/>
-      <source>Comment</source>
-      <translation>Kommentieren</translation>
+        <location filename="../PythonEditor.cpp" line="+105"/>
+        <source>Comment</source>
+        <translation>Kommentieren</translation>
     </message>
     <message>
-      <location/>
-      <source>Uncomment</source>
-      <translation>Entkommentieren</translation>
+        <location line="+1"/>
+        <source>Uncomment</source>
+        <translation>Entkommentieren</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::PythonInputField</name>
     <message>
-      <location/>
-      <source>OK</source>
-      <translation>OK</translation>
+        <location filename="../PythonConsole.cpp" line="+210"/>
+        <location line="+25"/>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
     <message>
-      <location/>
-      <source>Clear</source>
-      <translation>Löschen</translation>
+        <location line="-24"/>
+        <location line="+25"/>
+        <source>Clear</source>
+        <translation>Löschen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::RecentFilesAction</name>
     <message>
-      <location/>
-      <source>Open file %1</source>
-      <translation>Öffne Datei %1</translation>
+        <location filename="../Action.cpp" line="+576"/>
+        <source>Open file %1</source>
+        <translation>Öffne Datei %1</translation>
     </message>
     <message>
-      <location/>
-      <source>File not found</source>
-      <translation>Datei nicht gefunden</translation>
+        <location line="+42"/>
+        <source>File not found</source>
+        <translation>Datei nicht gefunden</translation>
     </message>
     <message>
-      <location/>
-      <source>The file '%1' cannot be opened.</source>
-      <translation>Die Datei '%1' kann nicht geöffnet werden.</translation>
+        <location line="+0"/>
+        <source>The file &apos;%1&apos; cannot be opened.</source>
+        <translation>Die Datei &apos;%1&apos; kann nicht geöffnet werden.</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::SelectModule</name>
     <message>
-      <location/>
-      <source>Select module</source>
-      <translation>Modul auswählen</translation>
+        <location filename="../FileDialog.cpp" line="+228"/>
+        <source>Select module</source>
+        <translation>Modul auswählen</translation>
     </message>
     <message>
-      <location/>
-      <source>Open %1 as</source>
-      <translation>Öffne %1 als</translation>
+        <location line="+2"/>
+        <source>Open %1 as</source>
+        <translation>Öffne %1 als</translation>
     </message>
     <message>
-      <location/>
-      <source>Select</source>
-      <translation>Wähle</translation>
+        <location line="+52"/>
+        <source>Select</source>
+        <translation>Wähle</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::StdCmdDescription</name>
     <message>
-      <location/>
-      <source>Help</source>
-      <translation>Hilfe</translation>
+        <location filename="../WhatsThis.cpp" line="+45"/>
+        <source>Help</source>
+        <translation>Hilfe</translation>
     </message>
     <message>
-      <location/>
-      <source>Des&amp;cription</source>
-      <translation>Bes&amp;chreibung</translation>
+        <location line="+1"/>
+        <source>Des&amp;cription</source>
+        <translation>Bes&amp;chreibung</translation>
     </message>
     <message>
-      <location/>
-      <source>Long description of commands</source>
-      <translation>Ausführliche Beschreibung aller Befehle</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Long description of commands</source>
+        <translation>Ausführliche Beschreibung aller Befehle</translation>
     </message>
-  </context>
-  <context>
-    <name>Gui::StdCmdDownloadOnlineHelp</name>
-    <message>
-      <location/>
-      <source>Help</source>
-      <translation>Hilfe</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Download online help</source>
-      <translation>Online-Hilfe herunterladen</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Download %1's online help</source>
-      <translation>Online-Hilfe von %1 herunterladen</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Non-existing directory</source>
-      <translation>Nicht existierendes Verzeichnis</translation>
-    </message>
-    <message>
-      <location/>
-      <source>The directory '%1' does not exist.
-
-Do you want to specify an existing directory?</source>
-      <translation>Das Verzeichnis '%1' existiert nicht.
-
-Möchten Sie ein existierendes Verzeichnis angeben?</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Missing permission</source>
-      <translation>Fehlende Berechtigung</translation>
-    </message>
-    <message>
-      <location/>
-      <source>You don't have write permission to '%1'
-
-Do you want to specify another directory?</source>
-      <translation>Sie haben keine Schreibberechtigung für '%1'
-
-Möchten Sie ein anderes Verzeichnis angeben?</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Stop downloading</source>
-      <translation>Downloadvorgang abbrechen</translation>
-    </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::StdCmdPythonHelp</name>
     <message>
-      <location/>
-      <source>Tools</source>
-      <translation>Werkzeuge</translation>
+        <location filename="../OnlineDocumentation.cpp" line="+403"/>
+        <source>Tools</source>
+        <translation>Werkzeuge</translation>
     </message>
     <message>
-      <location/>
-      <source>Python Modules</source>
-      <translation>Python-Module</translation>
+        <location line="+1"/>
+        <source>Python Modules</source>
+        <translation>Python-Module</translation>
     </message>
     <message>
-      <location/>
-      <source>Opens a browser to show the Python modules</source>
-      <translation>Browser zum Anzeigen aller Python-Module öffnen</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Opens a browser to show the Python modules</source>
+        <translation>Browser zum Anzeigen aller Python-Module öffnen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::TaskBoxAngle</name>
     <message>
-      <location/>
-      <source>Angle</source>
-      <translation>Winkel</translation>
+        <location filename="../TaskDlgRelocation.cpp" line="+72"/>
+        <source>Angle</source>
+        <translation>Winkel</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::TaskBoxPosition</name>
     <message>
-      <location/>
-      <source>Position</source>
-      <translation>Position</translation>
+        <location line="-27"/>
+        <source>Position</source>
+        <translation>Position</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::TaskView::TaskAppearance</name>
     <message>
-      <location/>
-      <source>Display mode:</source>
-      <translation>Anzeigemodus:</translation>
+        <location filename="../TaskView/TaskAppearance.ui" line="+36"/>
+        <source>Display mode:</source>
+        <translation>Anzeigemodus:</translation>
     </message>
     <message>
-      <location/>
-      <source>Plot mode:</source>
-      <translation>Plotmodus:</translation>
+        <location line="+23"/>
+        <source>Plot mode:</source>
+        <translation>Plotmodus:</translation>
     </message>
     <message>
-      <location/>
-      <source>Point size:</source>
-      <translation>Punktgröße:</translation>
+        <location line="+24"/>
+        <source>Point size:</source>
+        <translation>Punktgröße:</translation>
     </message>
     <message>
-      <location/>
-      <source>Line width:</source>
-      <translation>Linienstärke:</translation>
+        <location line="+46"/>
+        <source>Line width:</source>
+        <translation>Linienstärke:</translation>
     </message>
     <message>
-      <location/>
-      <source>Transparency:</source>
-      <translation>Transparenz:</translation>
+        <location line="+38"/>
+        <source>Transparency:</source>
+        <translation>Transparenz:</translation>
     </message>
     <message>
-      <location/>
-      <source>Appearance</source>
-      <translation>Erscheinungsbild</translation>
+        <location filename="../TaskView/TaskAppearance.cpp" line="+45"/>
+        <location filename="../TaskView/TaskAppearance.ui" line="-151"/>
+        <source>Appearance</source>
+        <translation>Erscheinungsbild</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::TaskView::TaskEditControl</name>
     <message>
-      <location/>
-      <source>Edit</source>
-      <translation>Bearbeiten</translation>
+        <location filename="../TaskView/TaskEditControl.ui" line="+14"/>
+        <source>Edit</source>
+        <translation>Bearbeiten</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::TaskView::TaskSelectLinkProperty</name>
     <message>
-      <location/>
-      <source>Appearance</source>
-      <translation>Erscheinungsbild</translation>
+        <location filename="../TaskView/TaskSelectLinkProperty.ui" line="+14"/>
+        <source>Appearance</source>
+        <translation>Erscheinungsbild</translation>
     </message>
     <message>
-      <location/>
-      <source>...</source>
-      <translation>...</translation>
+        <location line="+8"/>
+        <location line="+7"/>
+        <location line="+7"/>
+        <location line="+20"/>
+        <source>...</source>
+        <translation>...</translation>
     </message>
     <message>
-      <location/>
-      <source>edit selection</source>
-      <translation>edit selection</translation>
+        <location filename="../TaskView/TaskSelectLinkProperty.cpp" line="+47"/>
+        <source>edit selection</source>
+        <translation>Selektion bearbeiten</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::Translator</name>
     <message>
-      <location/>
-      <source>English</source>
-      <translation>Englisch</translation>
+        <location filename="../DlgGeneralImp.cpp" line="+168"/>
+        <location filename="Translator.cpp" line="+132"/>
+        <source>English</source>
+        <translation>Englisch</translation>
     </message>
     <message>
-      <location/>
-      <source>German</source>
-      <translation>Deutsch</translation>
+        <location filename="Translator.cpp" line="+1"/>
+        <source>German</source>
+        <translation>Deutsch</translation>
     </message>
     <message>
-      <location/>
-      <source>French</source>
-      <translation>Französisch</translation>
+        <location line="+2"/>
+        <source>French</source>
+        <translation>Französisch</translation>
     </message>
     <message>
-      <location/>
-      <source>Italian</source>
-      <translation>Italienisch</translation>
+        <location line="+1"/>
+        <source>Italian</source>
+        <translation>Italienisch</translation>
     </message>
     <message>
-      <location/>
-      <source>Japanese</source>
-      <translation>Japanisch</translation>
+        <location line="+1"/>
+        <source>Japanese</source>
+        <translation>Japanisch</translation>
     </message>
     <message>
-      <location/>
-      <source>Chinese</source>
-      <translation>Chinesisch</translation>
+        <location line="+1"/>
+        <source>Chinese</source>
+        <translation>Chinesisch</translation>
     </message>
     <message>
-      <location/>
-      <source>Spanish</source>
-      <translation>Spanisch</translation>
+        <location line="+4"/>
+        <source>Afrikaans</source>
+        <translation>Afrikaans</translation>
     </message>
     <message>
-      <location/>
-      <source>Korean</source>
-      <translation>Koreanisch</translation>
+        <location line="+1"/>
+        <source>Norwegian</source>
+        <translation>Norwegisch</translation>
     </message>
     <message>
-      <location/>
-      <source>Russian</source>
-      <translation>Russisch</translation>
+        <location line="+1"/>
+        <source>Portuguese</source>
+        <translation>Portugiesisch</translation>
     </message>
     <message>
-      <location/>
-      <source>Swedish</source>
-      <translation>Schwedisch</translation>
+        <location line="+1"/>
+        <source>Dutch</source>
+        <translation>Holländisch</translation>
     </message>
-  </context>
-  <context>
+    <message>
+        <location line="+1"/>
+        <source>Ukrainian</source>
+        <translation>Ukrainisch</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Finnish</source>
+        <translation>Finnisch</translation>
+    </message>
+    <message>
+        <location line="-13"/>
+        <source>Spanish</source>
+        <translation>Spanisch</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Korean</source>
+        <translation>Koreanisch</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Russian</source>
+        <translation>Russisch</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Swedish</source>
+        <translation>Schwedisch</translation>
+    </message>
+</context>
+<context>
     <name>Gui::TreeDockWidget</name>
     <message>
-      <location/>
-      <source>Tree view</source>
-      <translation>Baumansicht</translation>
+        <location filename="../Tree.cpp" line="+698"/>
+        <source>Tree view</source>
+        <translation>Baumansicht</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::TreeWidget</name>
     <message>
-      <location/>
-      <source>Create group...</source>
-      <translation>Gruppe erstellen...</translation>
+        <location line="-627"/>
+        <source>Create group...</source>
+        <translation>Gruppe erstellen...</translation>
     </message>
     <message>
-      <location/>
-      <source>Create a group</source>
-      <translation>Erstelle eine Gruppe</translation>
+        <location line="+1"/>
+        <source>Create a group</source>
+        <translation>Erstelle eine Gruppe</translation>
     </message>
     <message>
-      <location/>
-      <source>Group</source>
-      <translation>Gruppe</translation>
+        <location line="+137"/>
+        <source>Group</source>
+        <translation>Gruppe</translation>
     </message>
     <message>
-      <location/>
-      <source>Rename</source>
-      <translation>Umbenennen</translation>
+        <location line="-133"/>
+        <source>Rename</source>
+        <translation>Umbenennen</translation>
     </message>
     <message>
-      <location/>
-      <source>Rename object</source>
-      <translation>Objekt umbenennen</translation>
+        <location line="+1"/>
+        <source>Rename object</source>
+        <translation>Objekt umbenennen</translation>
     </message>
     <message>
-      <location/>
-      <source>Labels &amp; Attributes</source>
-      <translation>Bezeichnungen &amp; Eigenschaften</translation>
+        <location line="+18"/>
+        <location line="+489"/>
+        <source>Labels &amp; Attributes</source>
+        <translation>Bezeichnungen &amp; Eigenschaften</translation>
     </message>
     <message>
-      <location/>
-      <source>Application</source>
-      <translation>Applikation</translation>
+        <location line="-484"/>
+        <source>Application</source>
+        <translation>Applikation</translation>
     </message>
     <message>
-      <location/>
-      <source>Finish editing</source>
-      <translation>Finish editing</translation>
+        <location line="-18"/>
+        <source>Finish editing</source>
+        <translation>Bearbeitung beenden</translation>
     </message>
     <message>
-      <location/>
-      <source>Finish editing object</source>
-      <translation>Finish editing object</translation>
+        <location line="+1"/>
+        <source>Finish editing object</source>
+        <translation>Finish editing object</translation>
     </message>
     <message>
-      <location/>
-      <source>Activate document</source>
-      <translation>Activate document</translation>
+        <location line="+105"/>
+        <source>Activate document</source>
+        <translation>Activate document</translation>
     </message>
     <message>
-      <location/>
-      <source>Activate document %1</source>
-      <translation>Activate document %1</translation>
+        <location line="+7"/>
+        <source>Activate document %1</source>
+        <translation>Activate document %1</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::View3DInventor</name>
     <message>
-      <location/>
-      <source>Export PDF</source>
-      <translation>PDF exportieren</translation>
+        <location filename="../View3DInventor.cpp" line="+354"/>
+        <source>Export PDF</source>
+        <translation>PDF exportieren</translation>
     </message>
     <message>
-      <location/>
-      <source>PDF file (*.pdf)</source>
-      <translation>PDF-Datei (*.pdf)</translation>
+        <location line="+0"/>
+        <source>PDF file (*.pdf)</source>
+        <translation>PDF-Datei (*.pdf)</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Gui::WorkbenchGroup</name>
     <message>
-      <location/>
-      <source>Select the '%1' workbench</source>
-      <translation>Wähle den Arbeitsbereich %1</translation>
+        <location filename="../Action.cpp" line="-148"/>
+        <location line="+43"/>
+        <source>Select the &apos;%1&apos; workbench</source>
+        <translation>Wähle den Arbeitsbereich %1</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Position</name>
     <message>
-      <location/>
-      <source>Form</source>
-      <translation>Form</translation>
+        <location filename="../DlgLocationPos.ui" line="+14"/>
+        <source>Form</source>
+        <translation>Form</translation>
     </message>
     <message>
-      <location/>
-      <source>X:</source>
-      <translation>X:</translation>
+        <location line="+8"/>
+        <source>X:</source>
+        <translation>X:</translation>
     </message>
     <message>
-      <location/>
-      <source>Y:</source>
-      <translation>Y:</translation>
+        <location line="+21"/>
+        <source>Y:</source>
+        <translation>Y:</translation>
     </message>
     <message>
-      <location/>
-      <source>Z:</source>
-      <translation>Z:</translation>
+        <location line="+21"/>
+        <source>Z:</source>
+        <translation>Z:</translation>
     </message>
     <message>
-      <location/>
-      <source>0.1 mm</source>
-      <translation>0.1 mm</translation>
+        <location line="+33"/>
+        <source>0.1 mm</source>
+        <translation>0.1 mm</translation>
     </message>
     <message>
-      <location/>
-      <source>0.5 mm</source>
-      <translation>0.5 mm</translation>
+        <location line="+5"/>
+        <source>0.5 mm</source>
+        <translation>0.5 mm</translation>
     </message>
     <message>
-      <location/>
-      <source>1 mm</source>
-      <translation>1 mm</translation>
+        <location line="+5"/>
+        <source>1 mm</source>
+        <translation>1 mm</translation>
     </message>
     <message>
-      <location/>
-      <source>2 mm</source>
-      <translation>2 mm</translation>
+        <location line="+5"/>
+        <source>2 mm</source>
+        <translation>2 mm</translation>
     </message>
     <message>
-      <location/>
-      <source>5 mm</source>
-      <translation>5 mm</translation>
+        <location line="+5"/>
+        <source>5 mm</source>
+        <translation>5 mm</translation>
     </message>
     <message>
-      <location/>
-      <source>10 mm</source>
-      <translation>10 mm</translation>
+        <location line="+5"/>
+        <source>10 mm</source>
+        <translation>10 mm</translation>
     </message>
     <message>
-      <location/>
-      <source>20 mm</source>
-      <translation>20 mm</translation>
+        <location line="+5"/>
+        <source>20 mm</source>
+        <translation>20 mm</translation>
     </message>
     <message>
-      <location/>
-      <source>50 mm</source>
-      <translation>50 mm</translation>
+        <location line="+5"/>
+        <source>50 mm</source>
+        <translation>50 mm</translation>
     </message>
     <message>
-      <location/>
-      <source>100 mm</source>
-      <translation>100 mm</translation>
+        <location line="+5"/>
+        <source>100 mm</source>
+        <translation>100 mm</translation>
     </message>
     <message>
-      <location/>
-      <source>200 mm</source>
-      <translation>200 mm</translation>
+        <location line="+5"/>
+        <source>200 mm</source>
+        <translation>200 mm</translation>
     </message>
     <message>
-      <location/>
-      <source>500 mm</source>
-      <translation>500 mm</translation>
+        <location line="+5"/>
+        <source>500 mm</source>
+        <translation>500 mm</translation>
     </message>
     <message>
-      <location/>
-      <source>1 m</source>
-      <translation>1 m</translation>
+        <location line="+5"/>
+        <source>1 m</source>
+        <translation>1 m</translation>
     </message>
     <message>
-      <location/>
-      <source>2 m</source>
-      <translation>2 m</translation>
+        <location line="+5"/>
+        <source>2 m</source>
+        <translation>2 m</translation>
     </message>
     <message>
-      <location/>
-      <source>5 m </source>
-      <translation>5 m </translation>
+        <location line="+5"/>
+        <source>5 m </source>
+        <translation>5 m </translation>
     </message>
     <message>
-      <location/>
-      <source>Grid Snap in</source>
-      <translation>Grid Snap in</translation>
+        <location line="-76"/>
+        <source>Grid Snap in</source>
+        <translation>Grid Snap in</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>QDockWidget</name>
     <message>
-      <location/>
-      <source>Tree view</source>
-      <translation>Baumansicht</translation>
+        <location filename="../MainWindow.cpp" line="-312"/>
+        <source>Tree view</source>
+        <translation>Baumansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Property view</source>
-      <translation>Eigenschaften</translation>
+        <location line="+7"/>
+        <source>Property view</source>
+        <translation>Eigenschaften</translation>
     </message>
     <message>
-      <location/>
-      <source>Selection view</source>
-      <translation>Selektionsansicht</translation>
+        <location line="+7"/>
+        <source>Selection view</source>
+        <translation>Selektionsansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Report view</source>
-      <translation>Ausgabefenster</translation>
+        <location line="+14"/>
+        <location line="+7"/>
+        <source>Report view</source>
+        <translation>Ausgabefenster</translation>
     </message>
     <message>
-      <location/>
-      <source>Task View</source>
-      <translation>Aufgaben</translation>
+        <location line="-43"/>
+        <source>Task View</source>
+        <translation>Aufgaben</translation>
     </message>
     <message>
-      <location/>
-      <source>Combo View</source>
-      <translation>Combo-Ansicht</translation>
+        <location line="+28"/>
+        <source>Combo View</source>
+        <translation>Combo-Ansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Toolbox</source>
-      <translation>Werkzeugkasten</translation>
+        <location line="-40"/>
+        <source>Toolbox</source>
+        <translation>Werkzeugkasten</translation>
     </message>
     <message>
-      <location/>
-      <source>Python console</source>
-      <translation>Python-Konsole</translation>
+        <location line="+63"/>
+        <source>Python console</source>
+        <translation>Python-Konsole</translation>
     </message>
-  </context>
-  <context>
+    <message>
+        <source>Display properties</source>
+        <translation>Anzeigeeigenschaften</translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
-      <location/>
-      <source>General</source>
-      <translation>Allgemein</translation>
+        <location filename="../resource.cpp" line="+59"/>
+        <location line="+2"/>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>General</source>
+        <translation>Allgemein</translation>
     </message>
     <message>
-      <location/>
-      <source>Display</source>
-      <translation>Anzeige</translation>
+        <location line="+2"/>
+        <location line="+1"/>
+        <source>Display</source>
+        <translation>Anzeige</translation>
     </message>
     <message>
-      <location/>
-      <source>Unknown filetype</source>
-      <translation>Unbekannter Dateityp</translation>
+        <location filename="../Application.cpp" line="+468"/>
+        <location line="+42"/>
+        <location line="+44"/>
+        <source>Unknown filetype</source>
+        <translation>Unbekannter Dateityp</translation>
     </message>
     <message>
-      <location/>
-      <source>Cannot open unknown filetype: %1</source>
-      <translation>Kann unbekannten Dateityp nicht öffnen: %1</translation>
+        <location line="-85"/>
+        <location line="+42"/>
+        <source>Cannot open unknown filetype: %1</source>
+        <translation>Kann unbekannten Dateityp nicht öffnen: %1</translation>
     </message>
     <message>
-      <location/>
-      <source>Cannot save to unknown filetype: %1</source>
-      <translation>Kann in unbekannten Dateityp nicht speichern: %1</translation>
+        <location line="+44"/>
+        <source>Cannot save to unknown filetype: %1</source>
+        <translation>Kann in unbekannten Dateityp nicht speichern: %1</translation>
     </message>
     <message>
-      <location/>
-      <source>Workbench failure</source>
-      <translation>Wechsel von Arbeitsbereich fehlgeschlagen</translation>
+        <location line="+416"/>
+        <source>Workbench failure</source>
+        <translation>Wechsel von Arbeitsbereich fehlgeschlagen</translation>
     </message>
     <message>
-      <location/>
-      <source>%1</source>
-      <translation>%1</translation>
+        <location line="+1"/>
+        <source>%1</source>
+        <translation>%1</translation>
     </message>
     <message>
-      <location/>
-      <source>Unable to launch Qt Assistant (%1)</source>
-      <translation>Qt Assistant (%1) kann nicht gestartet werden</translation>
+        <location filename="../Assistant.cpp" line="+110"/>
+        <source>Unable to launch Qt Assistant (%1)</source>
+        <translation>Qt Assistant (%1) kann nicht gestartet werden</translation>
     </message>
     <message>
-      <location/>
-      <source>Exception</source>
-      <translation>Ausnahme</translation>
+        <location filename="../Command.cpp" line="-250"/>
+        <source>Exception</source>
+        <translation>Ausnahme</translation>
     </message>
     <message>
-      <location/>
-      <source>Open document</source>
-      <translation>Öffne Dokument</translation>
+        <location filename="../CommandDoc.cpp" line="+121"/>
+        <source>Open document</source>
+        <translation>Öffne Dokument</translation>
     </message>
     <message>
-      <location/>
-      <source>Import file</source>
-      <translation>Importiere Datei</translation>
+        <location line="+61"/>
+        <source>Import file</source>
+        <translation>Importiere Datei</translation>
     </message>
     <message>
-      <location/>
-      <source>Export file</source>
-      <translation>Exportiere Datei</translation>
+        <location line="+67"/>
+        <source>Export file</source>
+        <translation>Exportiere Datei</translation>
     </message>
     <message>
-      <location/>
-      <source>Printing...</source>
-      <translation>Drucken...</translation>
+        <location line="+220"/>
+        <source>Printing...</source>
+        <translation>Drucken...</translation>
     </message>
     <message>
-      <location/>
-      <source>Cannot load workbench</source>
-      <translation>Kann Arbeitsbereich nicht laden</translation>
+        <location filename="../CommandStd.cpp" line="+107"/>
+        <location line="+3"/>
+        <source>Cannot load workbench</source>
+        <translation>Kann Arbeitsbereich nicht laden</translation>
     </message>
     <message>
-      <location/>
-      <source>A general error occurred while loading the workbench</source>
-      <translation>Allgemeiner Fehler beim Laden des Arbeitsbereiches aufgetreten</translation>
+        <location line="+1"/>
+        <source>A general error occurred while loading the workbench</source>
+        <translation>Allgemeiner Fehler beim Laden des Arbeitsbereiches aufgetreten</translation>
     </message>
     <message>
-      <location/>
-      <source>File not found</source>
-      <translation>Datei nicht gefunden</translation>
+        <location line="+376"/>
+        <source>File not found</source>
+        <translation>Datei nicht gefunden</translation>
     </message>
     <message>
-      <location/>
-      <source>Cannot open file %1</source>
-      <translation>Kann Datei %1 nicht öffnen</translation>
+        <location line="+1"/>
+        <source>Cannot open file %1</source>
+        <translation>Kann Datei %1 nicht öffnen</translation>
     </message>
     <message>
-      <location/>
-      <source>Save views...</source>
-      <translation>Ansichten speichern...</translation>
+        <location filename="../CommandView.cpp" line="+221"/>
+        <location line="+217"/>
+        <source>Save views...</source>
+        <translation>Ansichten speichern...</translation>
     </message>
     <message>
-      <location/>
-      <source>Load views...</source>
-      <translation>Ansichten laden...</translation>
+        <location line="-216"/>
+        <location line="+217"/>
+        <source>Load views...</source>
+        <translation>Ansichten laden...</translation>
     </message>
     <message>
-      <location/>
-      <source>Freeze view</source>
-      <translation>Ansicht einfrieren</translation>
+        <location line="-215"/>
+        <location line="+216"/>
+        <source>Freeze view</source>
+        <translation>Ansicht einfrieren</translation>
     </message>
     <message>
-      <location/>
-      <source>Clear views</source>
-      <translation>Ansichten löschen</translation>
+        <location line="-214"/>
+        <location line="+215"/>
+        <source>Clear views</source>
+        <translation>Ansichten löschen</translation>
     </message>
     <message>
-      <location/>
-      <source>Restore view &amp;%1</source>
-      <translation>Ansicht &amp;%1 wiederherstellen</translation>
+        <location line="-183"/>
+        <location line="+139"/>
+        <location line="+48"/>
+        <source>Restore view &amp;%1</source>
+        <translation>Ansicht &amp;%1 wiederherstellen</translation>
     </message>
     <message>
-      <location/>
-      <source>Save frozen views</source>
-      <translation>Eingefrorene Ansichten speichern</translation>
+        <location line="-157"/>
+        <source>Save frozen views</source>
+        <translation>Eingefrorene Ansichten speichern</translation>
     </message>
     <message>
-      <location/>
-      <source>Frozen views (*.cam)</source>
-      <translation>Feste Kamerapositionen (*.cam)</translation>
+        <location line="+1"/>
+        <location line="+50"/>
+        <source>Frozen views (*.cam)</source>
+        <translation>Feste Kamerapositionen (*.cam)</translation>
     </message>
     <message>
-      <location/>
-      <source>Restore views</source>
-      <translation>Ansichten wiederherstellen</translation>
+        <location line="-10"/>
+        <location line="+15"/>
+        <source>Restore views</source>
+        <translation>Ansichten wiederherstellen</translation>
     </message>
     <message>
-      <location/>
-      <source>Importing the restored views would clear the already stored views.
+        <location line="-14"/>
+        <source>Importing the restored views would clear the already stored views.
 Do you want to continue?</source>
-      <translation>Wiederherstellen der importierten Ansichten löscht die bereits gespeicherten Ansichten.
+        <translation>Wiederherstellen der importierten Ansichten löscht die bereits gespeicherten Ansichten.
 Wollen Sie fortfahren?</translation>
     </message>
     <message>
-      <location/>
-      <source>Restore frozen views</source>
-      <translation>Eingefrorene Ansichten wiederherstellen</translation>
+        <location line="+8"/>
+        <source>Restore frozen views</source>
+        <translation>Eingefrorene Ansichten wiederherstellen</translation>
     </message>
     <message>
-      <location/>
-      <source>Cannot open file '%1'.</source>
-      <translation>Kann Datei '%1' nicht öffnen.</translation>
+        <location line="+7"/>
+        <source>Cannot open file &apos;%1&apos;.</source>
+        <translation>Kann Datei &apos;%1&apos; nicht öffnen.</translation>
     </message>
     <message>
-      <location/>
-      <source>Docked</source>
-      <translation>Angedockt</translation>
+        <location line="+729"/>
+        <source>Docked</source>
+        <translation>Angedockt</translation>
     </message>
     <message>
-      <location/>
-      <source>Undocked</source>
-      <translation>Abgedockt</translation>
+        <location line="+13"/>
+        <source>Undocked</source>
+        <translation>Abgedockt</translation>
     </message>
     <message>
-      <location/>
-      <source>Fullscreen</source>
-      <translation>Vollbild</translation>
+        <location line="+13"/>
+        <source>Fullscreen</source>
+        <translation>Vollbild</translation>
     </message>
     <message>
-      <location/>
-      <source>files</source>
-      <translation>Dateien</translation>
+        <location line="+89"/>
+        <source>files</source>
+        <translation>Dateien</translation>
     </message>
     <message>
-      <location/>
-      <source>Save picture</source>
-      <translation>Bildinhalt speichern</translation>
+        <location line="+6"/>
+        <source>Save picture</source>
+        <translation>Bildinhalt speichern</translation>
     </message>
     <message>
-      <location/>
-      <source>New sub-group</source>
-      <translation>Neue Gruppe</translation>
+        <location filename="../DlgParameterImp.cpp" line="-338"/>
+        <source>New sub-group</source>
+        <translation>Neue Gruppe</translation>
     </message>
     <message>
-      <location/>
-      <source>Enter the name:</source>
-      <translation>Geben Sie einen Namen an:</translation>
+        <location line="+0"/>
+        <location line="+203"/>
+        <location line="+29"/>
+        <location line="+30"/>
+        <location line="+36"/>
+        <location line="+29"/>
+        <source>Enter the name:</source>
+        <translation>Geben Sie einen Namen an:</translation>
     </message>
     <message>
-      <location/>
-      <source>New text item</source>
-      <translation>Neuer Texteintrag</translation>
+        <location line="-124"/>
+        <location line="+16"/>
+        <source>New text item</source>
+        <translation>Neuer Texteintrag</translation>
     </message>
     <message>
-      <location/>
-      <source>Enter your text:</source>
-      <translation>Geben Sie einen Text ein:</translation>
+        <location line="+0"/>
+        <location line="+269"/>
+        <source>Enter your text:</source>
+        <translation>Geben Sie einen Text ein:</translation>
     </message>
     <message>
-      <location/>
-      <source>New integer item</source>
-      <translation>Neue Ganzzahl</translation>
+        <location line="-256"/>
+        <location line="+16"/>
+        <source>New integer item</source>
+        <translation>Neue Ganzzahl</translation>
     </message>
     <message>
-      <location/>
-      <source>Enter your number:</source>
-      <translation>Geben Sie einen ganzzahligen Wert an:</translation>
+        <location line="+0"/>
+        <location line="+30"/>
+        <location line="+36"/>
+        <location line="+218"/>
+        <location line="+44"/>
+        <location line="+53"/>
+        <source>Enter your number:</source>
+        <translation>Geben Sie einen ganzzahligen Wert an:</translation>
     </message>
     <message>
-      <location/>
-      <source>New unsigned item</source>
-      <translation>Neue positive Ganzzahl</translation>
+        <location line="-367"/>
+        <location line="+17"/>
+        <source>New unsigned item</source>
+        <translation>Neue positive Ganzzahl</translation>
     </message>
     <message>
-      <location/>
-      <source>New float item</source>
-      <translation>Neuer Gleitkommawert</translation>
+        <location line="+19"/>
+        <location line="+16"/>
+        <source>New float item</source>
+        <translation>Neuer Gleitkommawert</translation>
     </message>
     <message>
-      <location/>
-      <source>New Boolean item</source>
-      <translation>Neuer Bool'scher Wert</translation>
+        <location line="+13"/>
+        <source>New Boolean item</source>
+        <translation>Neuer Bool&apos;scher Wert</translation>
     </message>
     <message>
-      <location/>
-      <source>Choose an item:</source>
-      <translation>Wählen Sie einen Eintrag aus:</translation>
+        <location line="+18"/>
+        <location line="+332"/>
+        <source>Choose an item:</source>
+        <translation>Wählen Sie einen Eintrag aus:</translation>
     </message>
     <message>
-      <location/>
-      <source>Rename group</source>
-      <translation>Gruppe umbenennen</translation>
+        <location line="-273"/>
+        <source>Rename group</source>
+        <translation>Gruppe umbenennen</translation>
     </message>
     <message>
-      <location/>
-      <source>The group '%1' cannot be renamed.</source>
-      <translation>Die Gruppe '%1' kann nicht umbenannt werden.</translation>
+        <location line="+1"/>
+        <source>The group &apos;%1&apos; cannot be renamed.</source>
+        <translation>Die Gruppe &apos;%1&apos; kann nicht umbenannt werden.</translation>
     </message>
     <message>
-      <location/>
-      <source>Existing group</source>
-      <translation>Bereits vorhandene Gruppe</translation>
+        <location line="+5"/>
+        <source>Existing group</source>
+        <translation>Bereits vorhandene Gruppe</translation>
     </message>
     <message>
-      <location/>
-      <source>The group '%1' already exists.</source>
-      <translation>Die Gruppe '%1' ist bereits vorhanden.</translation>
+        <location line="+1"/>
+        <source>The group &apos;%1&apos; already exists.</source>
+        <translation>Die Gruppe &apos;%1&apos; ist bereits vorhanden.</translation>
     </message>
     <message>
-      <location/>
-      <source>Change value</source>
-      <translation>Wert ändern</translation>
+        <location line="+77"/>
+        <location line="+44"/>
+        <location line="+45"/>
+        <location line="+52"/>
+        <location line="+48"/>
+        <source>Change value</source>
+        <translation>Wert ändern</translation>
     </message>
     <message>
-      <location/>
-      <source>Save document under new filename...</source>
-      <translation>Dokument unter neuem Dateinamen speichern...</translation>
+        <location filename="../Document.cpp" line="+502"/>
+        <source>Save document under new filename...</source>
+        <translation>Dokument unter neuem Dateinamen speichern...</translation>
     </message>
     <message>
-      <location/>
-      <source>Saving aborted</source>
-      <translation>Speichern abgebrochen</translation>
+        <location line="+46"/>
+        <source>Saving aborted</source>
+        <translation>Speichern abgebrochen</translation>
     </message>
     <message>
-      <location/>
-      <source>Unsaved document</source>
-      <translation>Nicht gespeichertes Dokument</translation>
+        <location line="+383"/>
+        <source>Unsaved document</source>
+        <translation>Nicht gespeichertes Dokument</translation>
     </message>
     <message>
-      <location/>
-      <source>Save document before close?</source>
-      <translation>Soll das Dokument vorher gespeichert werden?</translation>
+        <location line="+1"/>
+        <source>Save document before close?</source>
+        <translation>Soll das Dokument vorher gespeichert werden?</translation>
     </message>
     <message>
-      <location/>
-      <source>Save Macro</source>
-      <translation>Makro speichern</translation>
+        <location filename="../EditorView.cpp" line="-183"/>
+        <source>Save Macro</source>
+        <translation>Makro speichern</translation>
     </message>
     <message>
-      <location/>
-      <source>Finish</source>
-      <translation>Beenden</translation>
+        <location filename="../MouseSelection.cpp" line="+302"/>
+        <source>Finish</source>
+        <translation>Beenden</translation>
     </message>
     <message>
-      <location/>
-      <source>Clear</source>
-      <translation>Löschen</translation>
+        <location line="+1"/>
+        <source>Clear</source>
+        <translation>Löschen</translation>
     </message>
     <message>
-      <location/>
-      <source>Cancel</source>
-      <translation>Abbrechen</translation>
+        <location line="+1"/>
+        <location line="+122"/>
+        <source>Cancel</source>
+        <translation>Abbrechen</translation>
     </message>
     <message>
-      <location/>
-      <source>Inner</source>
-      <translation>Innen</translation>
+        <location line="-2"/>
+        <source>Inner</source>
+        <translation>Innen</translation>
     </message>
     <message>
-      <location/>
-      <source>Outer</source>
-      <translation>Außen</translation>
+        <location line="+1"/>
+        <source>Outer</source>
+        <translation>Außen</translation>
     </message>
     <message>
-      <location/>
-      <source>No Browser</source>
-      <translation>Kein Browser</translation>
+        <location filename="../OnlineDocumentation.cpp" line="+49"/>
+        <location line="+36"/>
+        <source>No Browser</source>
+        <translation>Kein Browser</translation>
     </message>
     <message>
-      <location/>
-      <source>Unable to open your browser.
+        <location line="-35"/>
+        <source>Unable to open your browser.
 
 Please open a browser window and type in: http://localhost:%1.</source>
-      <translation>Kann Browser nicht öffnen.
+        <translation>Kann Browser nicht öffnen.
 
 Bitte starten Sie einen Browser und geben darin ein: http://localhost:%1.</translation>
     </message>
     <message>
-      <location/>
-      <source>No Server</source>
-      <translation>Kein Server</translation>
+        <location line="+5"/>
+        <source>No Server</source>
+        <translation>Kein Server</translation>
     </message>
     <message>
-      <location/>
-      <source>Unable to start the server to port %1: %2.</source>
-      <translation>Kann Server auf Port %1 nicht starten: %2.</translation>
+        <location line="+1"/>
+        <source>Unable to start the server to port %1: %2.</source>
+        <translation>Kann Server auf Port %1 nicht starten: %2.</translation>
     </message>
     <message>
-      <location/>
-      <source>Unable to open your system browser.</source>
-      <translation>Kann Systembrowser nicht starten.</translation>
+        <location line="+30"/>
+        <source>Unable to open your system browser.</source>
+        <translation>Kann Systembrowser nicht starten.</translation>
     </message>
     <message>
-      <location/>
-      <source>Options...</source>
-      <translation>Einstellungen...</translation>
+        <location filename="../SoFCColorBar.cpp" line="+273"/>
+        <source>Options...</source>
+        <translation>Einstellungen...</translation>
     </message>
     <message>
-      <location/>
-      <source>Out of memory</source>
-      <translation>Nicht genügend Speicher</translation>
+        <location filename="../View3DInventorViewer.cpp" line="+887"/>
+        <source>Out of memory</source>
+        <translation>Nicht genügend Speicher</translation>
     </message>
     <message>
-      <location/>
-      <source>Not enough memory available to display the data.</source>
-      <translation>Nicht genüged Speicher verfügbar, um die Daten darstellen zu können.</translation>
+        <location line="+1"/>
+        <source>Not enough memory available to display the data.</source>
+        <translation>Nicht genüged Speicher verfügbar, um die Daten darstellen zu können.</translation>
     </message>
     <message>
-      <location/>
-      <source>Cannot find file %1</source>
-      <translation>Kann Datei %1 nicht finden</translation>
+        <location filename="../WidgetFactory.cpp" line="+124"/>
+        <location line="+19"/>
+        <source>Cannot find file %1</source>
+        <translation>Kann Datei %1 nicht finden</translation>
     </message>
     <message>
-      <location/>
-      <source>Cannot find file %1 neither in %2 nor in %3</source>
-      <translation>Kann Datei %1 weder in %2 nich in %3 finden</translation>
+        <location line="-12"/>
+        <source>Cannot find file %1 neither in %2 nor in %3</source>
+        <translation>Kann Datei %1 weder in %2 nich in %3 finden</translation>
     </message>
     <message>
-      <location/>
-      <source>Save %1 Document</source>
-      <translation>Dokument %1 speichern</translation>
+        <location filename="../Document.cpp" line="-427"/>
+        <source>Save %1 Document</source>
+        <translation>Dokument %1 speichern</translation>
     </message>
     <message>
-      <location/>
-      <source>%1 document (*.FCStd)</source>
-      <translation>%1-Dokument (*.FCStd)</translation>
+        <location line="+1"/>
+        <source>%1 document (*.FCStd)</source>
+        <translation>%1-Dokument (*.FCStd)</translation>
     </message>
     <message>
-      <location/>
-      <source>Save As</source>
-      <translation>Speichern unter</translation>
+        <location line="+10"/>
+        <source>Save As</source>
+        <translation>Speichern unter</translation>
     </message>
     <message>
-      <location/>
-      <source>%1 already exists.
+        <location line="+1"/>
+        <source>%1 already exists.
 Do you want to replace it?</source>
-      <translation>%1 besteht bereits.
+        <translation>%1 besteht bereits.
 Möchten Sie sie ersetzen?</translation>
     </message>
     <message>
-      <location/>
-      <source>Document not closable</source>
-      <translation>Dokument kann nicht geschlossen werden</translation>
+        <location line="+399"/>
+        <location line="+6"/>
+        <source>Document not closable</source>
+        <translation>Dokument kann nicht geschlossen werden</translation>
     </message>
     <message>
-      <location/>
-      <source>The document is not closable for the moment.</source>
-      <translation>Das Dokument kann im Moment nicht geschlossen werden.</translation>
+        <location line="-5"/>
+        <location line="+6"/>
+        <source>The document is not closable for the moment.</source>
+        <translation>Das Dokument kann im Moment nicht geschlossen werden.</translation>
     </message>
     <message>
-      <location/>
-      <source>No OpenGL</source>
-      <translation>Kein OpenGL</translation>
+        <location filename="../Application.cpp" line="+485"/>
+        <source>No OpenGL</source>
+        <translation>Kein OpenGL</translation>
     </message>
     <message>
-      <location/>
-      <source>This system does not support OpenGL</source>
-      <translation>Dieses System unterstützt kein OpenGL</translation>
+        <location line="+0"/>
+        <source>This system does not support OpenGL</source>
+        <translation>Dieses System unterstützt kein OpenGL</translation>
     </message>
     <message>
-      <location/>
-      <source>Help</source>
-      <translation>Hilfe</translation>
+        <location filename="../Assistant.cpp" line="-43"/>
+        <source>Help</source>
+        <translation>Hilfe</translation>
     </message>
     <message>
-      <location/>
-      <source>Unable to load documentation.
+        <location line="+1"/>
+        <source>Unable to load documentation.
 In order to load it Qt 4.4 or higher is required.</source>
-      <translation>Kann Dokumentation nicht laden.
+        <translation>Kann Dokumentation nicht laden.
 Es wird dazu Qt 4.4 oder höher benötigt.</translation>
     </message>
     <message>
-      <location/>
-      <source>%1 Help</source>
-      <translation>%1 Help</translation>
+        <location line="+41"/>
+        <source>%1 Help</source>
+        <translation>%1 Help</translation>
     </message>
     <message>
-      <location/>
-      <source>Exporting PDF...</source>
-      <translation>Exportiert als PDF...</translation>
+        <location filename="../CommandDoc.cpp" line="+28"/>
+        <source>Exporting PDF...</source>
+        <translation>Exportiert als PDF...</translation>
     </message>
     <message>
-      <location/>
-      <source>Wrong selection</source>
-      <translation>Falsche Auswahl</translation>
+        <location filename="../CommandStd.cpp" line="+96"/>
+        <location line="+6"/>
+        <source>Wrong selection</source>
+        <translation>Falsche Auswahl</translation>
     </message>
     <message>
-      <location/>
-      <source>Only one object selected. Please select two objects.
+        <location line="-5"/>
+        <source>Only one object selected. Please select two objects.
 Be aware the point where you click matters.</source>
-      <translation>Nur ein Objekt ausgewählt. Bitte wählen Sie zwei Objekte aus.
+        <translation>Nur ein Objekt ausgewählt. Bitte wählen Sie zwei Objekte aus.
 Beachten Sie, dass es auf den Punkt ankommt, auf den Sie klicken.</translation>
     </message>
     <message>
-      <location/>
-      <source>Please select two objects.
+        <location line="+6"/>
+        <source>Please select two objects.
 Be aware the point where you click matters.</source>
-      <translation>Bitte wählen Sie zwei Objekte aus.
+        <translation>Bitte wählen Sie zwei Objekte aus.
 Beachten Sie, dass es auf den Punkt ankommt, auf den Sie klicken.</translation>
     </message>
     <message>
-      <location/>
-      <source>New boolean item</source>
-      <translation>New boolean item</translation>
+        <location filename="../DlgParameterImp.cpp" line="-332"/>
+        <source>New boolean item</source>
+        <translation>Neuer Bool&apos;scher Wert</translation>
     </message>
     <message>
-      <location/>
-      <source>Navigation styles</source>
-      <translation>Navigation styles</translation>
+        <location filename="../NavigationStyle.cpp" line="-71"/>
+        <source>Navigation styles</source>
+        <translation>Navigationsstile</translation>
     </message>
     <message>
-      <location/>
-      <source>%1 navigation</source>
-      <translation>%1 Navigation</translation>
+        <location line="+14"/>
+        <source>%1 navigation</source>
+        <translation>%1 Navigation</translation>
     </message>
     <message>
-      <location/>
-      <source>Move annotation</source>
-      <translation>Move annotation</translation>
+        <location filename="../ViewProviderAnnotation.cpp" line="+370"/>
+        <source>Move annotation</source>
+        <translation>Beschriftung verschieben</translation>
     </message>
     <message>
-      <location/>
-      <source>Transform</source>
-      <translation>Umwandeln</translation>
+        <location filename="../ViewProviderGeometryObject.cpp" line="+205"/>
+        <source>Transform</source>
+        <translation>Transformieren</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>QTextEdit</name>
     <message>
-      <location/>
-      <source>&amp;Copy</source>
-      <translation>&amp;Kopieren</translation>
+        <location filename="../PythonConsole.cpp" line="-260"/>
+        <source>&amp;Copy</source>
+        <translation>&amp;Kopieren</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Paste</source>
-      <translation>Ein&amp;fügen</translation>
+        <location line="+13"/>
+        <source>&amp;Paste</source>
+        <translation>Ein&amp;fügen</translation>
     </message>
     <message>
-      <location/>
-      <source>Select All</source>
-      <translation>Alles auswählen</translation>
+        <location line="+4"/>
+        <source>Select All</source>
+        <translation>Alles auswählen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdAbout</name>
     <message>
-      <location/>
-      <source>Help</source>
-      <translation>Hilfe</translation>
+        <location filename="../CommandStd.cpp" line="-408"/>
+        <source>Help</source>
+        <translation>Hilfe</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;About %1</source>
-      <translation>&amp;Über %1</translation>
+        <location line="+1"/>
+        <source>&amp;About %1</source>
+        <translation>&amp;Über %1</translation>
     </message>
     <message>
-      <location/>
-      <source>About %1</source>
-      <translation>Über %1</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>About %1</source>
+        <translation>Über %1</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdAboutQt</name>
     <message>
-      <location/>
-      <source>Help</source>
-      <translation>Hilfe</translation>
+        <location line="+65"/>
+        <source>Help</source>
+        <translation>Hilfe</translation>
     </message>
     <message>
-      <location/>
-      <source>About &amp;Qt</source>
-      <translation>Über &amp;Qt</translation>
+        <location line="+1"/>
+        <source>About &amp;Qt</source>
+        <translation>Über &amp;Qt</translation>
     </message>
     <message>
-      <location/>
-      <source>About Qt</source>
-      <translation>Über Qt</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>About Qt</source>
+        <translation>Über Qt</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdActivateNextWindow</name>
     <message>
-      <location/>
-      <source>Window</source>
-      <translation>Fenster</translation>
+        <location filename="../CommandWindow.cpp" line="+191"/>
+        <source>Window</source>
+        <translation>Fenster</translation>
     </message>
     <message>
-      <location/>
-      <source>Ne&amp;xt</source>
-      <translation>Nächs&amp;tes Fenster</translation>
+        <location line="+1"/>
+        <source>Ne&amp;xt</source>
+        <translation>Nächs&amp;tes Fenster</translation>
     </message>
     <message>
-      <location/>
-      <source>Activate next window</source>
-      <translation>Nächstes Fenster aktivieren</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Activate next window</source>
+        <translation>Nächstes Fenster aktivieren</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdActivatePrevWindow</name>
     <message>
-      <location/>
-      <source>Window</source>
-      <translation>Fenster</translation>
+        <location line="+28"/>
+        <source>Window</source>
+        <translation>Fenster</translation>
     </message>
     <message>
-      <location/>
-      <source>Pre&amp;vious</source>
-      <translation>&amp;Vorheriges Fenster</translation>
+        <location line="+1"/>
+        <source>Pre&amp;vious</source>
+        <translation>&amp;Vorheriges Fenster</translation>
     </message>
     <message>
-      <location/>
-      <source>Activate previous window</source>
-      <translation>Vorheriges Fenster aktivieren</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Activate previous window</source>
+        <translation>Vorheriges Fenster aktivieren</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdArrangeIcons</name>
     <message>
-      <location/>
-      <source>Window</source>
-      <translation>Fenster</translation>
+        <location line="-175"/>
+        <source>Window</source>
+        <translation>Fenster</translation>
     </message>
     <message>
-      <location/>
-      <source>Arrange &amp;Icons</source>
-      <translation>&amp;Symbole anordnen</translation>
+        <location line="+1"/>
+        <source>Arrange &amp;Icons</source>
+        <translation>&amp;Symbole anordnen</translation>
     </message>
     <message>
-      <location/>
-      <source>Arrange Icons</source>
-      <translation>Symbole anordnen</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Arrange Icons</source>
+        <translation>Symbole anordnen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdCascadeWindows</name>
     <message>
-      <location/>
-      <source>Window</source>
-      <translation>Fenster</translation>
+        <location line="+51"/>
+        <source>Window</source>
+        <translation>Fenster</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Cascade</source>
-      <translation>Ü&amp;berlappend anordnen</translation>
+        <location line="+1"/>
+        <source>&amp;Cascade</source>
+        <translation>Ü&amp;berlappend anordnen</translation>
     </message>
     <message>
-      <location/>
-      <source>Tile pragmatic</source>
-      <translation>Überlappend anordnen</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Tile pragmatic</source>
+        <translation>Überlappend anordnen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdCloseActiveWindow</name>
     <message>
-      <location/>
-      <source>Window</source>
-      <translation>Fenster</translation>
+        <location line="+24"/>
+        <source>Window</source>
+        <translation>Fenster</translation>
     </message>
     <message>
-      <location/>
-      <source>Cl&amp;ose</source>
-      <translation>Schl&amp;ießen</translation>
+        <location line="+1"/>
+        <source>Cl&amp;ose</source>
+        <translation>Schl&amp;ießen</translation>
     </message>
     <message>
-      <location/>
-      <source>Close active window</source>
-      <translation>Aktives Fenster schließen</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Close active window</source>
+        <translation>Aktives Fenster schließen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdCloseAllWindows</name>
     <message>
-      <location/>
-      <source>Window</source>
-      <translation>Fenster</translation>
+        <location line="+25"/>
+        <source>Window</source>
+        <translation>Fenster</translation>
     </message>
     <message>
-      <location/>
-      <source>Close Al&amp;l</source>
-      <translation>Alles sch&amp;ließen</translation>
+        <location line="+1"/>
+        <source>Close Al&amp;l</source>
+        <translation>Alles sch&amp;ließen</translation>
     </message>
     <message>
-      <location/>
-      <source>Close all windows</source>
-      <translation>Alle Fenster schließen</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Close all windows</source>
+        <translation>Alle Fenster schließen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdCommandLine</name>
     <message>
-      <location/>
-      <source>Tools</source>
-      <translation>Werkzeuge</translation>
+        <location filename="../CommandStd.cpp" line="+137"/>
+        <source>Tools</source>
+        <translation>Werkzeuge</translation>
     </message>
     <message>
-      <location/>
-      <source>Start command &amp;line...</source>
-      <translation>Kommandozei&amp;le...</translation>
+        <location line="+1"/>
+        <source>Start command &amp;line...</source>
+        <translation>Kommandozei&amp;le...</translation>
     </message>
     <message>
-      <location/>
-      <source>Opens the command line in the console</source>
-      <translation>In Kommandozeile springen</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Opens the command line in the console</source>
+        <translation>In Kommandozeile springen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdCopy</name>
     <message>
-      <location/>
-      <source>Edit</source>
-      <translation>Bearbeiten</translation>
+        <location filename="../CommandDoc.cpp" line="+155"/>
+        <source>Edit</source>
+        <translation>Bearbeiten</translation>
     </message>
     <message>
-      <location/>
-      <source>C&amp;opy</source>
-      <translation>&amp;Kopieren</translation>
+        <location line="+1"/>
+        <source>C&amp;opy</source>
+        <translation>&amp;Kopieren</translation>
     </message>
     <message>
-      <location/>
-      <source>Copy operation</source>
-      <translation>Kopieren</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Copy operation</source>
+        <translation>Kopieren</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdCut</name>
     <message>
-      <location/>
-      <source>Edit</source>
-      <translation>Bearbeiten</translation>
+        <location line="-31"/>
+        <source>Edit</source>
+        <translation>Bearbeiten</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Cut</source>
-      <translation>&amp;Ausschneiden</translation>
+        <location line="+1"/>
+        <source>&amp;Cut</source>
+        <translation>&amp;Ausschneiden</translation>
     </message>
     <message>
-      <location/>
-      <source>Cut out</source>
-      <translation>Ausschneiden</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Cut out</source>
+        <translation>Ausschneiden</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdDDuplicateSelection</name>
     <message>
-      <location/>
-      <source>Edit</source>
-      <translation>Bearbeiten</translation>
+        <location line="+96"/>
+        <source>Edit</source>
+        <translation>Bearbeiten</translation>
     </message>
     <message>
-      <location/>
-      <source>Duplicate selection</source>
-      <translation>Auswahl duplizieren</translation>
+        <location line="+1"/>
+        <source>Duplicate selection</source>
+        <translation>Auswahl duplizieren</translation>
     </message>
     <message>
-      <location/>
-      <source>Put duplicates of the selected objects to the active document</source>
-      <translation>Put duplicates of the selected objects to the active document</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Put duplicates of the selected objects to the active document</source>
+        <translation>Duplikate der selektierten Objekte in aktives Dokument einfügen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdDelete</name>
     <message>
-      <location/>
-      <source>Edit</source>
-      <translation>Bearbeiten</translation>
+        <location line="+105"/>
+        <source>Edit</source>
+        <translation>Bearbeiten</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Delete</source>
-      <translation>&amp;Löschen</translation>
+        <location line="+1"/>
+        <source>&amp;Delete</source>
+        <translation>&amp;Löschen</translation>
     </message>
     <message>
-      <location/>
-      <source>Deletes the selected objects</source>
-      <translation>Löscht die ausgewählten Objekte</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Deletes the selected objects</source>
+        <translation>Löscht die ausgewählten Objekte</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdDemoMode</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location filename="../CommandView.cpp" line="+662"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>View turntable...</source>
-      <translation>View turntable...</translation>
+        <location line="+1"/>
+        <source>View turntable...</source>
+        <translation>Drehteller...</translation>
     </message>
     <message>
-      <location/>
-      <source>View turntable</source>
-      <translation>View turntable</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>View turntable</source>
+        <translation>Drehteller</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdDlgCustomize</name>
     <message>
-      <location/>
-      <source>Tools</source>
-      <translation>Werkzeuge</translation>
+        <location filename="../CommandStd.cpp" line="-31"/>
+        <source>Tools</source>
+        <translation>Werkzeuge</translation>
     </message>
     <message>
-      <location/>
-      <source>Cu&amp;stomize...</source>
-      <translation>&amp;Benutzerdefiniert...</translation>
+        <location line="+1"/>
+        <source>Cu&amp;stomize...</source>
+        <translation>&amp;Benutzerdefiniert...</translation>
     </message>
     <message>
-      <location/>
-      <source>Customize toolbars and command bars</source>
-      <translation>Benutzerdefinierte Einstellungen für Symbolleisten und Befehlsleisten</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Customize toolbars and command bars</source>
+        <translation>Benutzerdefinierte Einstellungen für Symbolleisten und Befehlsleisten</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdDlgMacroExecute</name>
     <message>
-      <location/>
-      <source>Macros ...</source>
-      <translation>Makros...</translation>
+        <location filename="../CommandMacro.cpp" line="+105"/>
+        <source>Macros ...</source>
+        <translation>Makros...</translation>
     </message>
     <message>
-      <location/>
-      <source>Opens a dialog to let you execute a recorded macro</source>
-      <translation>Öffnet Dialog zum Ausführen eines gespeichrten Makros</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Opens a dialog to let you execute a recorded macro</source>
+        <translation>Öffnet Dialog zum Ausführen eines gespeichrten Makros</translation>
     </message>
     <message>
-      <location/>
-      <source>Macro</source>
-      <translation>Makro</translation>
+        <location line="-4"/>
+        <source>Macro</source>
+        <translation>Makro</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdDlgMacroExecuteDirect</name>
     <message>
-      <location/>
-      <source>Macro</source>
-      <translation>Makro</translation>
+        <location line="+29"/>
+        <source>Macro</source>
+        <translation>Makro</translation>
     </message>
     <message>
-      <location/>
-      <source>Execute macro</source>
-      <translation>Makro ausführen</translation>
+        <location line="+1"/>
+        <source>Execute macro</source>
+        <translation>Makro ausführen</translation>
     </message>
     <message>
-      <location/>
-      <source>Execute the macro in the editor</source>
-      <translation>Führe das macro im Editor aus</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Execute the macro in the editor</source>
+        <translation>Führe das Makro im Editor aus</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdDlgMacroRecord</name>
     <message>
-      <location/>
-      <source>&amp;Macro recording ...</source>
-      <translation>&amp;Makro aufzeichnen...</translation>
+        <location line="-89"/>
+        <source>&amp;Macro recording ...</source>
+        <translation>&amp;Makro aufzeichnen...</translation>
     </message>
     <message>
-      <location/>
-      <source>Opens a dialog to record a macro</source>
-      <translation>Öffnet einen Dialog zur Makroaufzeichnung</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Opens a dialog to record a macro</source>
+        <translation>Öffnet einen Dialog zur Makroaufzeichnung</translation>
     </message>
     <message>
-      <location/>
-      <source>Macro</source>
-      <translation>Makro</translation>
+        <location line="-4"/>
+        <source>Macro</source>
+        <translation>Makro</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdDlgParameter</name>
     <message>
-      <location/>
-      <source>Tools</source>
-      <translation>Werkzeuge</translation>
+        <location filename="../CommandStd.cpp" line="-53"/>
+        <source>Tools</source>
+        <translation>Werkzeuge</translation>
     </message>
     <message>
-      <location/>
-      <source>E&amp;dit parameters ...</source>
-      <translation>P&amp;arameter bearbeiten...</translation>
+        <location line="+1"/>
+        <source>E&amp;dit parameters ...</source>
+        <translation>P&amp;arameter bearbeiten...</translation>
     </message>
     <message>
-      <location/>
-      <source>Opens a Dialog to edit the parameters</source>
-      <translation>Öffnet Dialog zum Ändern der Parameter</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Opens a Dialog to edit the parameters</source>
+        <translation>Öffnet Dialog zum Ändern der Parameter</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdDlgPreferences</name>
     <message>
-      <location/>
-      <source>Tools</source>
-      <translation>Werkzeuge</translation>
+        <location line="+21"/>
+        <source>Tools</source>
+        <translation>Werkzeuge</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Preferences ...</source>
-      <translation>&amp;Einstellungen...</translation>
+        <location line="+1"/>
+        <source>&amp;Preferences ...</source>
+        <translation>&amp;Einstellungen...</translation>
     </message>
     <message>
-      <location/>
-      <source>Opens a Dialog to edit the preferences</source>
-      <translation>Öffnet Dialog zum Ändern der Benutzereinstellungen</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Opens a Dialog to edit the preferences</source>
+        <translation>Öffnet Dialog zum Ändern der Benutzereinstellungen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdDockViewMenu</name>
     <message>
-      <location/>
-      <source>View</source>
-      <translation>Ansicht</translation>
+        <location filename="../CommandWindow.cpp" line="+134"/>
+        <source>View</source>
+        <translation>Ansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Vie&amp;ws</source>
-      <translation>An&amp;sichten</translation>
+        <location line="+1"/>
+        <source>Vie&amp;ws</source>
+        <translation>An&amp;sichten</translation>
     </message>
     <message>
-      <location/>
-      <source>Toggles this window</source>
-      <translation>Fenster ein/ausblenden</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Toggles this window</source>
+        <translation>Fenster ein/ausblenden</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
+    <name>StdCmdDownloadOnlineHelp</name>
+    <message>
+        <location filename="../NetworkRetriever.cpp" line="+265"/>
+        <source>Help</source>
+        <translation>Hilfe</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Download online help</source>
+        <translation>Online-Hilfe herunterladen</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Download %1&apos;s online help</source>
+        <translation>Online-Hilfe von %1 herunterladen</translation>
+    </message>
+    <message>
+        <location line="+108"/>
+        <source>Non-existing directory</source>
+        <translation>Nicht existierendes Verzeichnis</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>The directory &apos;%1&apos; does not exist.
+
+Do you want to specify an existing directory?</source>
+        <translation>Das Verzeichnis &apos;%1&apos; existiert nicht.
+
+Möchten Sie ein existierendes Verzeichnis angeben?</translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Missing permission</source>
+        <translation>Fehlende Berechtigung</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>You don&apos;t have write permission to &apos;%1&apos;
+
+Do you want to specify another directory?</source>
+        <translation>Sie haben keine Schreibberechtigung für &apos;%1&apos;
+
+Möchten Sie ein anderes Verzeichnis angeben?</translation>
+    </message>
+    <message>
+        <location line="+26"/>
+        <source>Stop downloading</source>
+        <translation>Downloadvorgang abbrechen</translation>
+    </message>
+</context>
+<context>
     <name>StdCmdExport</name>
     <message>
-      <location/>
-      <source>File</source>
-      <translation>Datei</translation>
+        <location filename="../CommandDoc.cpp" line="-630"/>
+        <source>File</source>
+        <translation>Datei</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Export...</source>
-      <translation>&amp;Exportieren...</translation>
+        <location line="+1"/>
+        <source>&amp;Export...</source>
+        <translation>&amp;Exportieren...</translation>
     </message>
     <message>
-      <location/>
-      <source>Export an object in the active document</source>
-      <translation>Objekt im aktiven Dokument exportieren</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Export an object in the active document</source>
+        <translation>Objekt im aktiven Dokument exportieren</translation>
     </message>
     <message>
-      <location/>
-      <source>Supported formats</source>
-      <translation>Unterstützte Formate</translation>
+        <location line="+9"/>
+        <source>Supported formats</source>
+        <translation>Unterstützte Formate</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdFeatRecompute</name>
     <message>
-      <location/>
-      <source>File</source>
-      <translation>Datei</translation>
+        <location filename="../CommandFeat.cpp" line="+49"/>
+        <source>File</source>
+        <translation>Datei</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Recompute</source>
-      <translation>Neu &amp;berechenen</translation>
+        <location line="+1"/>
+        <source>&amp;Recompute</source>
+        <translation>Neu &amp;berechenen</translation>
     </message>
     <message>
-      <location/>
-      <source>Recompute feature or document</source>
-      <translation>Feature oder Dokument neu berechnen</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Recompute feature or document</source>
+        <translation>Feature oder Dokument neu berechnen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdFreeCADWebsite</name>
     <message>
-      <location/>
-      <source>Help</source>
-      <translation>Hilfe</translation>
+        <location filename="../CommandStd.cpp" line="+179"/>
+        <source>Help</source>
+        <translation>Hilfe</translation>
     </message>
     <message>
-      <location/>
-      <source>FreeCAD Website</source>
-      <translation>FreeCAD Webseite</translation>
+        <location line="+1"/>
+        <location line="+3"/>
+        <source>FreeCAD Website</source>
+        <translation>FreeCAD Webseite</translation>
     </message>
     <message>
-      <location/>
-      <source>The FreeCAD website</source>
-      <translation>Die FreeCAD Webseite</translation>
+        <location line="-2"/>
+        <source>The FreeCAD website</source>
+        <translation>Die FreeCAD Webseite</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdFreezeViews</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location filename="../CommandView.cpp" line="-1656"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Freeze display</source>
-      <translation>Ansicht einfrieren</translation>
+        <location line="+1"/>
+        <source>Freeze display</source>
+        <translation>Ansicht einfrieren</translation>
     </message>
     <message>
-      <location/>
-      <source>Freezes the current view position</source>
-      <translation>Aktuelle Ansicht einfrieren</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Freezes the current view position</source>
+        <translation>Aktuelle Ansicht einfrieren</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdHideObjects</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="+558"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Hide all objects</source>
-      <translation>Alle Objekte ausblenden</translation>
+        <location line="+1"/>
+        <source>Hide all objects</source>
+        <translation>Alle Objekte ausblenden</translation>
     </message>
     <message>
-      <location/>
-      <source>Hide all objects in the document</source>
-      <translation>Alle Objekte im Dokument ausblenden</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Hide all objects in the document</source>
+        <translation>Alle Objekte im Dokument ausblenden</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdHideSelection</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="-112"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Hide selection</source>
-      <translation>Auswahl ausblenden</translation>
+        <location line="+1"/>
+        <source>Hide selection</source>
+        <translation>Auswahl ausblenden</translation>
     </message>
     <message>
-      <location/>
-      <source>Hide all selected objects</source>
-      <translation>Alle ausgewählten Objekte ausblenden</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Hide all selected objects</source>
+        <translation>Alle ausgewählten Objekte ausblenden</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdImport</name>
     <message>
-      <location/>
-      <source>File</source>
-      <translation>Datei</translation>
+        <location filename="../CommandDoc.cpp" line="-82"/>
+        <source>File</source>
+        <translation>Datei</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Import...</source>
-      <translation>&amp;Importieren...</translation>
+        <location line="+1"/>
+        <source>&amp;Import...</source>
+        <translation>&amp;Importieren...</translation>
     </message>
     <message>
-      <location/>
-      <source>Import a file in the active document</source>
-      <translation>Datei in das aktive Dokument importieren</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Import a file in the active document</source>
+        <translation>Datei in das aktive Dokument importieren</translation>
     </message>
     <message>
-      <location/>
-      <source>Supported formats</source>
-      <translation>Unterstützte Formate</translation>
+        <location line="+9"/>
+        <source>Supported formats</source>
+        <translation>Unterstützte Formate</translation>
     </message>
     <message>
-      <location/>
-      <source>All files (*.*)</source>
-      <translation>Alle Dateien (*.*)</translation>
+        <location line="+1"/>
+        <source>All files (*.*)</source>
+        <translation>Alle Dateien (*.*)</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdMacroStartDebug</name>
     <message>
-      <location/>
-      <source>Macro</source>
-      <translation>Makro</translation>
+        <location filename="../CommandMacro.cpp" line="+111"/>
+        <source>Macro</source>
+        <translation>Makro</translation>
     </message>
     <message>
-      <location/>
-      <source>Debug macro</source>
-      <translation>Debug Makro</translation>
+        <location line="+1"/>
+        <source>Debug macro</source>
+        <translation>Debug Makro</translation>
     </message>
     <message>
-      <location/>
-      <source>Start debugging of macro</source>
-      <translation>Starte das Makro Debugging</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Start debugging of macro</source>
+        <translation>Starte das Makro Debugging</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdMacroStepOver</name>
     <message>
-      <location/>
-      <source>Macro</source>
-      <translation>Makro</translation>
+        <location line="+49"/>
+        <source>Macro</source>
+        <translation>Makro</translation>
     </message>
     <message>
-      <location/>
-      <source>Step over</source>
-      <translation>Einen Schritt weiter</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Step over</source>
+        <translation>Einen Schritt weiter</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdMacroStopDebug</name>
     <message>
-      <location/>
-      <source>Macro</source>
-      <translation>Makro</translation>
+        <location line="-30"/>
+        <source>Macro</source>
+        <translation>Makro</translation>
     </message>
     <message>
-      <location/>
-      <source>Stop debugging</source>
-      <translation>Debugging stoppen</translation>
+        <location line="+1"/>
+        <source>Stop debugging</source>
+        <translation>Debugging stoppen</translation>
     </message>
     <message>
-      <location/>
-      <source>Stop debugging of macro</source>
-      <translation>Makro-Debugging stoppen</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Stop debugging of macro</source>
+        <translation>Makro-Debugging stoppen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdMacroStopRecord</name>
     <message>
-      <location/>
-      <source>Macro</source>
-      <translation>Makro</translation>
+        <location line="-113"/>
+        <source>Macro</source>
+        <translation>Makro</translation>
     </message>
     <message>
-      <location/>
-      <source>S&amp;top macro recording</source>
-      <translation>Ma&amp;kroaufzeichnung beenden</translation>
+        <location line="+1"/>
+        <source>S&amp;top macro recording</source>
+        <translation>Ma&amp;kroaufzeichnung beenden</translation>
     </message>
     <message>
-      <location/>
-      <source>Stop the macro recording session</source>
-      <translation>Makroaufzeichnung beenden</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Stop the macro recording session</source>
+        <translation>Makroaufzeichnung beenden</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdMeasureDistance</name>
     <message>
-      <location/>
-      <source>View</source>
-      <translation>Ansicht</translation>
+        <location filename="../CommandView.cpp" line="+1091"/>
+        <source>View</source>
+        <translation>Ansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Measure distance</source>
-      <translation>Abstand messen</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Measure distance</source>
+        <translation>Abstand messen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdMeasurementSimple</name>
     <message>
-      <location/>
-      <source>Tools</source>
-      <translation>Werkzeuge</translation>
+        <location filename="../CommandStd.cpp" line="+43"/>
+        <source>Tools</source>
+        <translation>Werkzeuge</translation>
     </message>
     <message>
-      <location/>
-      <source>Mesure distance</source>
-      <translation>Messe Distanz</translation>
+        <location line="+1"/>
+        <source>Mesure distance</source>
+        <translation>Messe Distanz</translation>
     </message>
     <message>
-      <location/>
-      <source>Measures distance between two selected objects</source>
-      <translation>Misst die Distanz zwischen zwei ausgewählten Objekten</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Measures distance between two selected objects</source>
+        <translation>Misst die Distanz zwischen zwei ausgewählten Objekten</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdMergeProjects</name>
     <message>
-      <location/>
-      <source>File</source>
-      <translation>Datei</translation>
+        <location filename="../CommandDoc.cpp" line="+125"/>
+        <source>File</source>
+        <translation>Datei</translation>
     </message>
     <message>
-      <location/>
-      <source>Merge project...</source>
-      <translation>Merge project...</translation>
+        <location line="+1"/>
+        <source>Merge project...</source>
+        <translation>Projekt zusammenführen...</translation>
     </message>
     <message>
-      <location/>
-      <source>Merge project</source>
-      <translation>Merge project</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+7"/>
+        <location line="+8"/>
+        <source>Merge project</source>
+        <translation>Projekt zusammenführen</translation>
     </message>
     <message>
-      <location/>
-      <source>%1 document (*.fcstd)</source>
-      <translation>%1 document (*.fcstd)</translation>
+        <location line="-7"/>
+        <source>%1 document (*.fcstd)</source>
+        <translation>%1-Dokument (*.fcstd)</translation>
     </message>
     <message>
-      <location/>
-      <source>Cannot merge project with itself.</source>
-      <translation>Cannot merge project with itself.</translation>
+        <location line="+8"/>
+        <source>Cannot merge project with itself.</source>
+        <translation>Kann Projekt nicht mit sich selbst zusammenführen.</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdNew</name>
     <message>
-      <location/>
-      <source>File</source>
-      <translation>Datei</translation>
+        <location line="+28"/>
+        <source>File</source>
+        <translation>Datei</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;New</source>
-      <translation>&amp;Neu</translation>
+        <location line="+1"/>
+        <source>&amp;New</source>
+        <translation>&amp;Neu</translation>
     </message>
     <message>
-      <location/>
-      <source>Create a new empty document</source>
-      <translation>Neues Dokument erstellen</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Create a new empty document</source>
+        <translation>Neues Dokument erstellen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdOnlineHelp</name>
     <message>
-      <location/>
-      <source>Help</source>
-      <translation>Hilfe</translation>
+        <location filename="../CommandStd.cpp" line="-133"/>
+        <location line="+1"/>
+        <location line="+3"/>
+        <source>Help</source>
+        <translation>Hilfe</translation>
     </message>
     <message>
-      <location/>
-      <source>Show help to the application</source>
-      <translation>Hilfe zur Applikation anzeigen</translation>
+        <location line="-2"/>
+        <source>Show help to the application</source>
+        <translation>Hilfe zur Applikation anzeigen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdOnlineHelpPython</name>
     <message>
-      <location/>
-      <source>Help</source>
-      <translation>Hilfe</translation>
+        <location line="+22"/>
+        <source>Help</source>
+        <translation>Hilfe</translation>
     </message>
     <message>
-      <location/>
-      <source>Python Manuals</source>
-      <translation>Python-Handbuch</translation>
+        <location line="+1"/>
+        <source>Python Manuals</source>
+        <translation>Python-Handbuch</translation>
     </message>
     <message>
-      <location/>
-      <source>Show the Python documentation</source>
-      <translation>Python-Dokumentation anzeigen</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Show the Python documentation</source>
+        <translation>Python-Dokumentation anzeigen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdOnlineHelpWebsite</name>
     <message>
-      <location/>
-      <source>Help</source>
-      <translation>Hilfe</translation>
+        <location line="+32"/>
+        <source>Help</source>
+        <translation>Hilfe</translation>
     </message>
     <message>
-      <location/>
-      <source>Help Website</source>
-      <translation>Hilfe-Webseite</translation>
+        <location line="+1"/>
+        <location line="+3"/>
+        <source>Help Website</source>
+        <translation>Hilfe-Webseite</translation>
     </message>
     <message>
-      <location/>
-      <source>The website where the help is maintained</source>
-      <translation>Die Webseite, wo die Hilfe gepflegt wird</translation>
+        <location line="-2"/>
+        <source>The website where the help is maintained</source>
+        <translation>Die Webseite, wo die Hilfe gepflegt wird</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdOpen</name>
     <message>
-      <location/>
-      <source>File</source>
-      <translation>Datei</translation>
+        <location filename="../CommandDoc.cpp" line="-261"/>
+        <source>File</source>
+        <translation>Datei</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Open...</source>
-      <translation>&amp;Öffnen...</translation>
+        <location line="+1"/>
+        <source>&amp;Open...</source>
+        <translation>&amp;Öffnen...</translation>
     </message>
     <message>
-      <location/>
-      <source>Open a document or import files</source>
-      <translation>Öffnen eines Dokuments/Importieren von Dateien</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Open a document or import files</source>
+        <translation>Öffnen eines Dokuments/Importieren von Dateien</translation>
     </message>
     <message>
-      <location/>
-      <source>Supported formats</source>
-      <translation>Unterstützte Formate</translation>
+        <location line="+9"/>
+        <source>Supported formats</source>
+        <translation>Unterstützte Formate</translation>
     </message>
     <message>
-      <location/>
-      <source>All files (*.*)</source>
-      <translation>Alle Dateien (*.*)</translation>
+        <location line="+1"/>
+        <source>All files (*.*)</source>
+        <translation>Alle Dateien (*.*)</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdPaste</name>
     <message>
-      <location/>
-      <source>Edit</source>
-      <translation>Bearbeiten</translation>
+        <location line="+604"/>
+        <source>Edit</source>
+        <translation>Bearbeiten</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Paste</source>
-      <translation>Ein&amp;fügen</translation>
+        <location line="+1"/>
+        <source>&amp;Paste</source>
+        <translation>Ein&amp;fügen</translation>
     </message>
     <message>
-      <location/>
-      <source>Paste operation</source>
-      <translation>Einfügen</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Paste operation</source>
+        <translation>Einfügen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdPlacement</name>
     <message>
-      <location/>
-      <source>Edit</source>
-      <translation>Bearbeiten</translation>
+        <location line="+245"/>
+        <source>Edit</source>
+        <translation>Bearbeiten</translation>
     </message>
     <message>
-      <location/>
-      <source>Placement...</source>
-      <translation>Placement...</translation>
+        <location line="+1"/>
+        <source>Placement...</source>
+        <translation>Placement...</translation>
     </message>
     <message>
-      <location/>
-      <source>Place the selected objects</source>
-      <translation>Platziere die ausgewählten Objekte</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Place the selected objects</source>
+        <translation>Platziere die ausgewählten Objekte</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdPrint</name>
     <message>
-      <location/>
-      <source>File</source>
-      <translation>Datei</translation>
+        <location line="-482"/>
+        <source>File</source>
+        <translation>Datei</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Print...</source>
-      <translation>&amp;Drucken...</translation>
+        <location line="+1"/>
+        <source>&amp;Print...</source>
+        <translation>&amp;Drucken...</translation>
     </message>
     <message>
-      <location/>
-      <source>Print the document</source>
-      <translation>Dokument drucken</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Print the document</source>
+        <translation>Dokument drucken</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdPrintPdf</name>
     <message>
-      <location/>
-      <source>File</source>
-      <translation>Datei</translation>
+        <location line="+26"/>
+        <source>File</source>
+        <translation>Datei</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Export PDF...</source>
-      <translation>PDF &amp;exportieren...</translation>
+        <location line="+1"/>
+        <source>&amp;Export PDF...</source>
+        <translation>PDF &amp;exportieren...</translation>
     </message>
     <message>
-      <location/>
-      <source>Export the document as PDF</source>
-      <translation>Das Dokument als PDF exportieren</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Export the document as PDF</source>
+        <translation>Das Dokument als PDF exportieren</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdProjectInfo</name>
     <message>
-      <location/>
-      <source>File</source>
-      <translation>Datei</translation>
+        <location line="-63"/>
+        <source>File</source>
+        <translation>Datei</translation>
     </message>
     <message>
-      <location/>
-      <source>Project i&amp;nformation...</source>
-      <translation>Projekti&amp;nformationen...</translation>
+        <location line="+1"/>
+        <source>Project i&amp;nformation...</source>
+        <translation>Projekti&amp;nformationen...</translation>
     </message>
     <message>
-      <location/>
-      <source>Show details of the currently active project</source>
-      <translation>Details des momentan aktiven Projekts anzeigen</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Show details of the currently active project</source>
+        <translation>Details des momentan aktiven Projekts anzeigen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdPythonWebsite</name>
     <message>
-      <location/>
-      <source>Help</source>
-      <translation>Hilfe</translation>
+        <location filename="../CommandStd.cpp" line="+44"/>
+        <source>Help</source>
+        <translation>Hilfe</translation>
     </message>
     <message>
-      <location/>
-      <source>Python Website</source>
-      <translation>Python-Webseite</translation>
+        <location line="+1"/>
+        <location line="+3"/>
+        <source>Python Website</source>
+        <translation>Python-Webseite</translation>
     </message>
     <message>
-      <location/>
-      <source>The official Python website</source>
-      <translation>Die offizielle Python-Webseite</translation>
+        <location line="-2"/>
+        <source>The official Python website</source>
+        <translation>Die offizielle Python-Webseite</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdQuit</name>
     <message>
-      <location/>
-      <source>File</source>
-      <translation>Datei</translation>
+        <location filename="../CommandDoc.cpp" line="+84"/>
+        <source>File</source>
+        <translation>Datei</translation>
     </message>
     <message>
-      <location/>
-      <source>E&amp;xit</source>
-      <translation>B&amp;eenden</translation>
+        <location line="+1"/>
+        <source>E&amp;xit</source>
+        <translation>B&amp;eenden</translation>
     </message>
     <message>
-      <location/>
-      <source>Quits the application</source>
-      <translation>Anwendung beenden</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Quits the application</source>
+        <translation>Anwendung beenden</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdRandomColor</name>
     <message>
-      <location/>
-      <source>File</source>
-      <translation>Datei</translation>
+        <location filename="../CommandFeat.cpp" line="+18"/>
+        <source>File</source>
+        <translation>Datei</translation>
     </message>
     <message>
-      <location/>
-      <source>Random color</source>
-      <translation>Zufällige Farbe</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Random color</source>
+        <translation>Zufällige Farbe</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdRecentFiles</name>
     <message>
-      <location/>
-      <source>File</source>
-      <translation>Datei</translation>
+        <location filename="../CommandStd.cpp" line="-407"/>
+        <source>File</source>
+        <translation>Datei</translation>
     </message>
     <message>
-      <location/>
-      <source>Recent files</source>
-      <translation>Letzte Dateien</translation>
+        <location line="+1"/>
+        <source>Recent files</source>
+        <translation>Letzte Dateien</translation>
     </message>
     <message>
-      <location/>
-      <source>Recent file list</source>
-      <translation>Zuletzt geöffnete Dateien</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Recent file list</source>
+        <translation>Zuletzt geöffnete Dateien</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdRedo</name>
     <message>
-      <location/>
-      <source>Edit</source>
-      <translation>Bearbeiten</translation>
+        <location filename="../CommandDoc.cpp" line="+64"/>
+        <source>Edit</source>
+        <translation>Bearbeiten</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Redo</source>
-      <translation>Wieder&amp;herstellen</translation>
+        <location line="+1"/>
+        <source>&amp;Redo</source>
+        <translation>Wieder&amp;herstellen</translation>
     </message>
     <message>
-      <location/>
-      <source>Redoes a previously undone action</source>
-      <translation>Zuletzt rückgängig gemachte Aktion wiederherstellen</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Redoes a previously undone action</source>
+        <translation>Zuletzt rückgängig gemachte Aktion wiederherstellen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdRefresh</name>
     <message>
-      <location/>
-      <source>Edit</source>
-      <translation>Bearbeiten</translation>
+        <location line="+291"/>
+        <source>Edit</source>
+        <translation>Bearbeiten</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Refresh</source>
-      <translation>A&amp;ktualisieren</translation>
+        <location line="+1"/>
+        <source>&amp;Refresh</source>
+        <translation>A&amp;ktualisieren</translation>
     </message>
     <message>
-      <location/>
-      <source>Recomputes the current active document</source>
-      <translation>Aktualisiert das momentan aktive Dokument</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Recomputes the current active document</source>
+        <translation>Aktualisiert das momentan aktive Dokument</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdSave</name>
     <message>
-      <location/>
-      <source>File</source>
-      <translation>Datei</translation>
+        <location line="-535"/>
+        <source>File</source>
+        <translation>Datei</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Save</source>
-      <translation>&amp;Speichern</translation>
+        <location line="+1"/>
+        <source>&amp;Save</source>
+        <translation>&amp;Speichern</translation>
     </message>
     <message>
-      <location/>
-      <source>Save the active document</source>
-      <translation>Aktives Dokument speichern</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Save the active document</source>
+        <translation>Aktives Dokument speichern</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdSaveAs</name>
     <message>
-      <location/>
-      <source>File</source>
-      <translation>Datei</translation>
+        <location line="+34"/>
+        <source>File</source>
+        <translation>Datei</translation>
     </message>
     <message>
-      <location/>
-      <source>Save &amp;As...</source>
-      <translation>Speichern &amp;unter...</translation>
+        <location line="+1"/>
+        <source>Save &amp;As...</source>
+        <translation>Speichern &amp;unter...</translation>
     </message>
     <message>
-      <location/>
-      <source>Save the active document under a new file name</source>
-      <translation>Aktives Dokument unter anderem Namen speichern</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Save the active document under a new file name</source>
+        <translation>Aktives Dokument unter anderem Namen speichern</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdSceneInspector</name>
     <message>
-      <location/>
-      <source>Tools</source>
-      <translation>Werkzeuge</translation>
+        <location filename="../CommandView.cpp" line="+44"/>
+        <source>Tools</source>
+        <translation>Werkzeuge</translation>
     </message>
     <message>
-      <location/>
-      <source>Scene inspector...</source>
-      <translation>Scene inspector...</translation>
+        <location line="+1"/>
+        <source>Scene inspector...</source>
+        <translation>Scene inspector...</translation>
     </message>
     <message>
-      <location/>
-      <source>Scene inspector</source>
-      <translation>Szenengraph untersuchen</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Scene inspector</source>
+        <translation>Szenengraph untersuchen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdSelectAll</name>
     <message>
-      <location/>
-      <source>Edit</source>
-      <translation>Bearbeiten</translation>
+        <location filename="../CommandDoc.cpp" line="+412"/>
+        <source>Edit</source>
+        <translation>Bearbeiten</translation>
     </message>
     <message>
-      <location/>
-      <source>Select &amp;All</source>
-      <translation>&amp;Alles auswählen</translation>
+        <location line="+1"/>
+        <source>Select &amp;All</source>
+        <translation>&amp;Alles auswählen</translation>
     </message>
     <message>
-      <location/>
-      <source>Select all</source>
-      <translation>Alles auswählen</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Select all</source>
+        <translation>Alles auswählen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdSetAppearance</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location filename="../CommandView.cpp" line="-1002"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Appearance...</source>
-      <translation>Darstellung...</translation>
+        <location line="+1"/>
+        <source>Appearance...</source>
+        <translation>Darstellung...</translation>
     </message>
     <message>
-      <location/>
-      <source>Sets the display properties of the selected object</source>
-      <translation>Setzen der Anzeigeeigenschaften des ausgewählten Objektes</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Sets the display properties of the selected object</source>
+        <translation>Setzen der Anzeigeeigenschaften des ausgewählten Objektes</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdShowObjects</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="-74"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Show all objects</source>
-      <translation>Alle Objekte einblenden</translation>
+        <location line="+1"/>
+        <source>Show all objects</source>
+        <translation>Alle Objekte einblenden</translation>
     </message>
     <message>
-      <location/>
-      <source>Show all objects in the document</source>
-      <translation>Alle Objekte im Dokument einblenden</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Show all objects in the document</source>
+        <translation>Alle Objekte im Dokument einblenden</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdShowSelection</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="-112"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Show selection</source>
-      <translation>Auswahl einblenden</translation>
+        <location line="+1"/>
+        <source>Show selection</source>
+        <translation>Auswahl einblenden</translation>
     </message>
     <message>
-      <location/>
-      <source>Show all selected objects</source>
-      <translation>Alle ausgewählten Objekte einblenden</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Show all selected objects</source>
+        <translation>Alle ausgewählten Objekte einblenden</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdStatusBar</name>
     <message>
-      <location/>
-      <source>View</source>
-      <translation>Ansicht</translation>
+        <location filename="../CommandWindow.cpp" line="+68"/>
+        <source>View</source>
+        <translation>Ansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Status bar</source>
-      <translation>Statuszeile</translation>
+        <location line="+1"/>
+        <source>Status bar</source>
+        <translation>Statusleiste</translation>
     </message>
     <message>
-      <location/>
-      <source>Toggles the status bar</source>
-      <translation>Statuszeile ein/ausblenden</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Toggles the status bar</source>
+        <translation>Statuszeile ein/ausblenden</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdTextureMapping</name>
     <message>
-      <location/>
-      <source>Tools</source>
-      <translation>Werkzeuge</translation>
+        <location filename="../CommandView.cpp" line="+1206"/>
+        <source>Tools</source>
+        <translation>Werkzeuge</translation>
     </message>
     <message>
-      <location/>
-      <source>Texture mapping...</source>
-      <translation>Texture mapping...</translation>
+        <location line="+1"/>
+        <source>Texture mapping...</source>
+        <translation>Texturabbildung...</translation>
     </message>
     <message>
-      <location/>
-      <source>Texture mapping</source>
-      <translation>Texture mapping</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Texture mapping</source>
+        <translation>Texturabbildung</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdTileWindows</name>
     <message>
-      <location/>
-      <source>Window</source>
-      <translation>Fenster</translation>
+        <location filename="../CommandWindow.cpp" line="-299"/>
+        <source>Window</source>
+        <translation>Fenster</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Tile</source>
-      <translation>&amp;Anordnen</translation>
+        <location line="+1"/>
+        <source>&amp;Tile</source>
+        <translation>&amp;Anordnen</translation>
     </message>
     <message>
-      <location/>
-      <source>Tile the windows</source>
-      <translation>Fenster anordnen</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Tile the windows</source>
+        <translation>Fenster anordnen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdTipOfTheDay</name>
     <message>
-      <location/>
-      <source>Help</source>
-      <translation>Hilfe</translation>
+        <location filename="../CommandStd.cpp" line="+127"/>
+        <source>Help</source>
+        <translation>Hilfe</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Tip of the day...</source>
-      <translation>&amp;Tipp des Tages...</translation>
+        <location line="+1"/>
+        <source>&amp;Tip of the day...</source>
+        <translation>&amp;Tipp des Tages...</translation>
     </message>
     <message>
-      <location/>
-      <source>Tip of the day</source>
-      <translation>Tipp des Tages</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Tip of the day</source>
+        <translation>Tipp des Tages</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdToggleBreakpoint</name>
     <message>
-      <location/>
-      <source>Macro</source>
-      <translation>Makro</translation>
+        <location filename="../CommandMacro.cpp" line="+157"/>
+        <source>Macro</source>
+        <translation>Makro</translation>
     </message>
     <message>
-      <location/>
-      <source>Toggle breakpoint</source>
-      <translation>Haltepunkt an/aus</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Toggle breakpoint</source>
+        <translation>Haltepunkt an/aus</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdToggleClipPlane</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location filename="../CommandView.cpp" line="-1376"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Clipping plane</source>
-      <translation>Schnittebene</translation>
+        <location line="+1"/>
+        <source>Clipping plane</source>
+        <translation>Schnittebene</translation>
     </message>
     <message>
-      <location/>
-      <source>Toggles clipping plane for active view</source>
-      <translation>Schnittebene für aktive Ansicht ein- und ausblenden</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Toggles clipping plane for active view</source>
+        <translation>Schnittebene für aktive Ansicht ein- und ausblenden</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdToggleNavigation</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="+837"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Toggle navigation/Edit mode</source>
-      <translation>Toggle navigation/Edit mode</translation>
+        <location line="+1"/>
+        <source>Toggle navigation/Edit mode</source>
+        <translation>Navigations/Editier-Modus</translation>
     </message>
     <message>
-      <location/>
-      <source>Toggle between navigation and edit mode</source>
-      <translation>Toggle between navigation and edit mode</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Toggle between navigation and edit mode</source>
+        <translation>Zwischen Navigations- und Editier-Modus umschalten</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdToggleObjects</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="-611"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Toggle all objects</source>
-      <translation>Alle Objekte umkehren</translation>
+        <location line="+1"/>
+        <source>Toggle all objects</source>
+        <translation>Alle Objekte umkehren</translation>
     </message>
     <message>
-      <location/>
-      <source>Toggles visibility of all objects in the active document</source>
-      <translation>Die Sichtbarkeit aller Objekte im aktiven Dokument umkehren</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Toggles visibility of all objects in the active document</source>
+        <translation>Die Sichtbarkeit aller Objekte im aktiven Dokument umkehren</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdToggleSelectability</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="-119"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Toggle selectability</source>
-      <translation>Selektierbarkeit an/aus</translation>
+        <location line="+1"/>
+        <source>Toggle selectability</source>
+        <translation>Selektierbarkeit an/aus</translation>
     </message>
     <message>
-      <location/>
-      <source>Toggles the property of the objects to get selected in the 3D-View</source>
-      <translation>Schaltet die Eigenschaft der Objekte, in der 3D-Ansicht ausgewählt zu werden um</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Toggles the property of the objects to get selected in the 3D-View</source>
+        <translation>Schaltet die Eigenschaft der Objekte, in der 3D-Ansicht ausgewählt zu werden um</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdToggleVisibility</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="-69"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Toggle visibility</source>
-      <translation>Ein/Ausblenden</translation>
+        <location line="+1"/>
+        <source>Toggle visibility</source>
+        <translation>Ein/Ausblenden</translation>
     </message>
     <message>
-      <location/>
-      <source>Toggles visibility</source>
-      <translation>Wechselt zwischen Sichtbarkeit und Unsichtbarkeit</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Toggles visibility</source>
+        <translation>Wechselt zwischen Sichtbarkeit und Unsichtbarkeit</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdToolBarMenu</name>
     <message>
-      <location/>
-      <source>View</source>
-      <translation>Ansicht</translation>
+        <location filename="../CommandWindow.cpp" line="+255"/>
+        <source>View</source>
+        <translation>Ansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Tool&amp;bars</source>
-      <translation>Symbol&amp;leisten</translation>
+        <location line="+1"/>
+        <source>Tool&amp;bars</source>
+        <translation>Symbol&amp;leisten</translation>
     </message>
     <message>
-      <location/>
-      <source>Toggles this window</source>
-      <translation>Fenster ein/ausblenden</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Toggles this window</source>
+        <translation>Fenster ein/ausblenden</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdTransform</name>
     <message>
-      <location/>
-      <source>Edit</source>
-      <translation>Bearbeiten</translation>
+        <location filename="../CommandDoc.cpp" line="+105"/>
+        <source>Edit</source>
+        <translation>Bearbeiten</translation>
     </message>
     <message>
-      <location/>
-      <source>Transform...</source>
-      <translation>Schaltet die Eigenschaft der Objekte, in der 3D-Ansicht ausgewählt zu werden um</translation>
+        <location line="+1"/>
+        <source>Transform...</source>
+        <translation>Transformieren...</translation>
     </message>
     <message>
-      <location/>
-      <source>Transform the geometry of selected objects</source>
-      <translation>Transform the geometry of selected objects</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Transform the geometry of selected objects</source>
+        <translation>Geometrie ausgewählter Objekte transformieren</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdTreeSelection</name>
     <message>
-      <location/>
-      <source>View</source>
-      <translation>Ansicht</translation>
+        <location filename="../CommandView.cpp" line="+1211"/>
+        <source>View</source>
+        <translation>Ansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Go to selection</source>
-      <translation>Gehe zu Selektion</translation>
+        <location line="+1"/>
+        <source>Go to selection</source>
+        <translation>Gehe zu Selektion</translation>
     </message>
     <message>
-      <location/>
-      <source>Scroll to first selected item</source>
-      <translation>Zum ersten selektierten Element rollen</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Scroll to first selected item</source>
+        <translation>Zum ersten selektierten Element rollen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdUndo</name>
     <message>
-      <location/>
-      <source>Edit</source>
-      <translation>Bearbeiten</translation>
+        <location filename="../CommandDoc.cpp" line="-372"/>
+        <source>Edit</source>
+        <translation>Bearbeiten</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Undo</source>
-      <translation>&amp;Rückgängig</translation>
+        <location line="+1"/>
+        <source>&amp;Undo</source>
+        <translation>&amp;Rückgängig</translation>
     </message>
     <message>
-      <location/>
-      <source>Undo exactly one action</source>
-      <translation>Letzte Aktion rückgängig machen</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Undo exactly one action</source>
+        <translation>Letzte Aktion rückgängig machen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdUserInterface</name>
     <message>
-      <location/>
-      <source>View</source>
-      <translation>Ansicht</translation>
+        <location filename="../CommandWindow.cpp" line="-63"/>
+        <source>View</source>
+        <translation>Ansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Dock views</source>
-      <translation>Fenster andocken</translation>
+        <location line="+1"/>
+        <source>Dock views</source>
+        <translation>Fenster andocken</translation>
     </message>
     <message>
-      <location/>
-      <source>Dock all top-level views</source>
-      <translation>Alle Top-Level-Fenster andocken</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Dock all top-level views</source>
+        <translation>Alle Top-Level-Fenster andocken</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdViewAxo</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location filename="../CommandView.cpp" line="-756"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Axometric</source>
-      <translation>Axometrisch</translation>
+        <location line="+1"/>
+        <source>Axometric</source>
+        <translation>Axometrisch</translation>
     </message>
     <message>
-      <location/>
-      <source>Set to axometric view</source>
-      <translation>Axometrisch</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Set to axometric view</source>
+        <translation>Axometrisch</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdViewBottom</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="-142"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Bottom</source>
-      <translation>Unten</translation>
+        <location line="+1"/>
+        <source>Bottom</source>
+        <translation>Unten</translation>
     </message>
     <message>
-      <location/>
-      <source>Set to bottom view</source>
-      <translation>Unten</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Set to bottom view</source>
+        <translation>Unten</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdViewCreate</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="+434"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Create new view</source>
-      <translation>Neue Ansicht</translation>
+        <location line="+1"/>
+        <source>Create new view</source>
+        <translation>Neue Ansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Creates a new  view window for the active document</source>
-      <translation>Neue Ansicht für das aktive Dokument erstellen</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Creates a new  view window for the active document</source>
+        <translation>Neue Ansicht für das aktive Dokument erstellen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdViewExample1</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="+62"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Inventor example #1</source>
-      <translation>Inventor Beispiel #1</translation>
+        <location line="+1"/>
+        <source>Inventor example #1</source>
+        <translation>Inventor Beispiel #1</translation>
     </message>
     <message>
-      <location/>
-      <source>Shows a 3D texture with manipulator</source>
-      <translation>Zeigt 3D-Textur mit Manipulator</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Shows a 3D texture with manipulator</source>
+        <translation>Zeigt 3D-Textur mit Manipulator</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdViewExample2</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="+23"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Inventor example #2</source>
-      <translation>Inventor Beispiel #2</translation>
+        <location line="+1"/>
+        <source>Inventor example #2</source>
+        <translation>Inventor Beispiel #2</translation>
     </message>
     <message>
-      <location/>
-      <source>Shows spheres and drag-lights</source>
-      <translation>Kugeln mit verschiebbarer Lichtquelle</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Shows spheres and drag-lights</source>
+        <translation>Kugeln mit verschiebbarer Lichtquelle</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdViewExample3</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="+24"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Inventor example #3</source>
-      <translation>Inventor Beispiel #3</translation>
+        <location line="+1"/>
+        <source>Inventor example #3</source>
+        <translation>Inventor Beispiel #3</translation>
     </message>
     <message>
-      <location/>
-      <source>Shows a animated texture</source>
-      <translation>Zeigt animierte Textur</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Shows a animated texture</source>
+        <translation>Zeigt animierte Textur</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdViewFitAll</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="-402"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Fit all</source>
-      <translation>Einpassen</translation>
+        <location line="+1"/>
+        <source>Fit all</source>
+        <translation>Einpassen</translation>
     </message>
     <message>
-      <location/>
-      <source>Fits the whole content on the screen</source>
-      <translation>Inhalt auf Bildschirmgröße einpassen</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Fits the whole content on the screen</source>
+        <translation>Inhalt auf Bildschirmgröße einpassen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdViewFitSelection</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="+26"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Fit selection</source>
-      <translation>Selektion einpassen</translation>
+        <location line="+1"/>
+        <source>Fit selection</source>
+        <translation>Selektion einpassen</translation>
     </message>
     <message>
-      <location/>
-      <source>Fits the selected content on the screen</source>
-      <translation>Selektierte Objekte auf den Bildschirm einpassen</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Fits the selected content on the screen</source>
+        <translation>Selektierte Objekte auf den Bildschirm einpassen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdViewFront</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="-172"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Front</source>
-      <translation>Vorne</translation>
+        <location line="+1"/>
+        <source>Front</source>
+        <translation>Vorne</translation>
     </message>
     <message>
-      <location/>
-      <source>Set to front view</source>
-      <translation>Vorderansicht</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Set to front view</source>
+        <translation>Vorderansicht</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdViewIvIssueCamPos</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="+703"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Issue camera position</source>
-      <translation>Kameraposition ausgeben</translation>
+        <location line="+1"/>
+        <source>Issue camera position</source>
+        <translation>Kameraposition ausgeben</translation>
     </message>
     <message>
-      <location/>
-      <source>Issue the camera position to the console and to a macro, to easily recall this position</source>
-      <translation>Ausgeben der Kameraposition auf die Konsole und in ein Makro, um diese Position einfach wiederherstellen zu können</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Issue the camera position to the console and to a macro, to easily recall this position</source>
+        <translation>Ausgeben der Kameraposition auf die Konsole und in ein Makro, um diese Position einfach wiederherstellen zu können</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdViewIvStereoInterleavedColumns</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="-33"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Stereo Interleaved Columns</source>
-      <translation>Vertikales Interlacing</translation>
+        <location line="+1"/>
+        <source>Stereo Interleaved Columns</source>
+        <translation>Vertikales Interlacing</translation>
     </message>
     <message>
-      <location/>
-      <source>Switch stereo viewing to Interleaved Columns</source>
-      <translation>Wechsle in vertikale Interlacing-Stereo-Ansicht</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Switch stereo viewing to Interleaved Columns</source>
+        <translation>Wechsle in vertikale Interlacing-Stereo-Ansicht</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdViewIvStereoInterleavedRows</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="-32"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Stereo Interleaved Rows</source>
-      <translation>Horizontales Interlacing</translation>
+        <location line="+1"/>
+        <source>Stereo Interleaved Rows</source>
+        <translation>Horizontales Interlacing</translation>
     </message>
     <message>
-      <location/>
-      <source>Switch stereo viewing to Interleaved Rows</source>
-      <translation>Wechsle in horizontale Interlacing-Stereo-Ansicht</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Switch stereo viewing to Interleaved Rows</source>
+        <translation>Wechsle in horizontale Interlacing-Stereo-Ansicht</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdViewIvStereoOff</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="-89"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Stereo Off</source>
-      <translation>Stereo aus</translation>
+        <location line="+1"/>
+        <source>Stereo Off</source>
+        <translation>Stereo aus</translation>
     </message>
     <message>
-      <location/>
-      <source>Switch stereo viewing off</source>
-      <translation>Schalte Stereo-Ansicht aus</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Switch stereo viewing off</source>
+        <translation>Schalte Stereo-Ansicht aus</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdViewIvStereoQuadBuff</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="+53"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Stereo quad buffer</source>
-      <translation>Stereo 4-fach Puffer</translation>
+        <location line="+1"/>
+        <source>Stereo quad buffer</source>
+        <translation>Stereo 4-fach Puffer</translation>
     </message>
     <message>
-      <location/>
-      <source>Switch stereo viewing to quad buffer</source>
-      <translation>Wechsle in Stereo-Ansicht mit 4-fach Puffer</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Switch stereo viewing to quad buffer</source>
+        <translation>Wechsle in Stereo-Ansicht mit 4-fach Puffer</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdViewIvStereoRedGreen</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="-32"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Stereo red/green</source>
-      <translation>Stereo rot/grün</translation>
+        <location line="+1"/>
+        <source>Stereo red/green</source>
+        <translation>Stereo rot/grün</translation>
     </message>
     <message>
-      <location/>
-      <source>Switch stereo viewing to red/green</source>
-      <translation>Wechsle in Stereo-Rot-Grün-Ansicht</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Switch stereo viewing to red/green</source>
+        <translation>Wechsle in Stereo-Rot-Grün-Ansicht</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdViewLeft</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="-575"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Left</source>
-      <translation>Links</translation>
+        <location line="+1"/>
+        <source>Left</source>
+        <translation>Links</translation>
     </message>
     <message>
-      <location/>
-      <source>Set to left view</source>
-      <translation>Linksansicht</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Set to left view</source>
+        <translation>Linksansicht</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdViewRear</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="+19"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Rear</source>
-      <translation>Hinten</translation>
+        <location line="+1"/>
+        <source>Rear</source>
+        <translation>Hinten</translation>
     </message>
     <message>
-      <location/>
-      <source>Set to rear view</source>
-      <translation>Hinteransicht</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Set to rear view</source>
+        <translation>Hinteransicht</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdViewRight</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="+19"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Right</source>
-      <translation>Rechts</translation>
+        <location line="+1"/>
+        <source>Right</source>
+        <translation>Rechts</translation>
     </message>
     <message>
-      <location/>
-      <source>Set to right view</source>
-      <translation>Rechtsansicht</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Set to right view</source>
+        <translation>Rechtsansicht</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdViewTop</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="+19"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Top</source>
-      <translation>Oben</translation>
+        <location line="+1"/>
+        <source>Top</source>
+        <translation>Oben</translation>
     </message>
     <message>
-      <location/>
-      <source>Set to top view</source>
-      <translation>Oberansicht</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Set to top view</source>
+        <translation>Oberansicht</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdWhatsThis</name>
     <message>
-      <location/>
-      <source>Help</source>
-      <translation>Hilfe</translation>
+        <location filename="../CommandStd.cpp" line="+17"/>
+        <source>Help</source>
+        <translation>Hilfe</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;What's This?</source>
-      <translation>Was ist &amp;das?</translation>
+        <location line="+1"/>
+        <source>&amp;What&apos;s This?</source>
+        <translation>Dire&amp;kthilfe</translation>
     </message>
     <message>
-      <location/>
-      <source>What's This</source>
-      <translation>Direkthilfe</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>What&apos;s This</source>
+        <translation>Direkthilfe</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdWindows</name>
     <message>
-      <location/>
-      <source>Window</source>
-      <translation>Fenster</translation>
+        <location filename="../CommandWindow.cpp" line="-28"/>
+        <source>Window</source>
+        <translation>Fenster</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Windows...</source>
-      <translation>&amp;Fenster...</translation>
+        <location line="+1"/>
+        <source>&amp;Windows...</source>
+        <translation>&amp;Fenster...</translation>
     </message>
     <message>
-      <location/>
-      <source>Windows list</source>
-      <translation>Liste von Fenstern</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Windows list</source>
+        <translation>Liste von Fenstern</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdWindowsMenu</name>
     <message>
-      <location/>
-      <source>Window</source>
-      <translation>Fenster</translation>
+        <location line="+147"/>
+        <source>Window</source>
+        <translation>Fenster</translation>
     </message>
     <message>
-      <location/>
-      <source>Activates this window</source>
-      <translation>Schaltet dieses Fenster aktiv</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Activates this window</source>
+        <translation>Schaltet dieses Fenster aktiv</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdCmdWorkbench</name>
     <message>
-      <location/>
-      <source>View</source>
-      <translation>Ansicht</translation>
+        <location filename="../CommandStd.cpp" line="-222"/>
+        <source>View</source>
+        <translation>Ansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Workbench</source>
-      <translation>Arbeitsbereich</translation>
+        <location line="+1"/>
+        <source>Workbench</source>
+        <translation>Arbeitsbereich</translation>
     </message>
     <message>
-      <location/>
-      <source>Switch between workbenches</source>
-      <translation>Zwischen Arbeitsbereichen wechseln</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Switch between workbenches</source>
+        <translation>Zwischen Arbeitsbereichen wechseln</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdOrthographicCamera</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location filename="../CommandView.cpp" line="-871"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Orthographic view</source>
-      <translation>Orthographische Ansicht</translation>
+        <location line="+1"/>
+        <source>Orthographic view</source>
+        <translation>Orthographische Ansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Switches to orthographic view mode</source>
-      <translation>In orthographische Ansicht wechseln</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Switches to orthographic view mode</source>
+        <translation>In orthographische Ansicht wechseln</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdPerspectiveCamera</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="+42"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Perspective view</source>
-      <translation>Perspektivische Ansicht</translation>
+        <location line="+1"/>
+        <source>Perspective view</source>
+        <translation>Perspektivische Ansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Switches to perspective view mode</source>
-      <translation>In perspektivische Ansicht wechseln</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Switches to perspective view mode</source>
+        <translation>In perspektivische Ansicht wechseln</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdViewBoxZoom</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="+1561"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Box zoom</source>
-      <translation>Boxzoom</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Box zoom</source>
+        <translation>Boxzoom</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdViewDockUndockFullscreen</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="-640"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Display mode</source>
-      <translation>Anzeige-Modus</translation>
+        <location line="+1"/>
+        <source>Display mode</source>
+        <translation>Anzeige-Modus</translation>
     </message>
     <message>
-      <location/>
-      <source>Display the active view either in fullscreen, in undocked or docked mode</source>
-      <translation>Aktives Fenster im Vollbild-Modus, im abgedockten oder angedockten Modus anzeigen</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Display the active view either in fullscreen, in undocked or docked mode</source>
+        <translation>Aktives Fenster im Vollbild-Modus, im abgedockten oder angedockten Modus anzeigen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdViewScreenShot</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="+102"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Save picture...</source>
-      <translation>Bildinhalt speichern...</translation>
+        <location line="+1"/>
+        <source>Save picture...</source>
+        <translation>Bildinhalt speichern...</translation>
     </message>
     <message>
-      <location/>
-      <source>Creates a screenshot of the active view</source>
-      <translation>Erzeugt einen Schnappschuss der aktiven Ansicht</translation>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Creates a screenshot of the active view</source>
+        <translation>Erzeugt einen Schnappschuss der aktiven Ansicht</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdViewZoomIn</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="+447"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Zoom In</source>
-      <translation>Vergrößern</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Zoom In</source>
+        <translation>Vergrößern</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>StdViewZoomOut</name>
     <message>
-      <location/>
-      <source>Standard-View</source>
-      <translation>Standardansicht</translation>
+        <location line="+36"/>
+        <source>Standard-View</source>
+        <translation>Standardansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Zoom Out</source>
-      <translation>Verkleinern</translation>
+        <location line="+1"/>
+        <location line="+1"/>
+        <location line="+2"/>
+        <source>Zoom Out</source>
+        <translation>Verkleinern</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Workbench</name>
     <message>
-      <location/>
-      <source>&amp;File</source>
-      <translation>&amp;Datei</translation>
+        <location filename="../Workbench.cpp" line="+362"/>
+        <source>&amp;File</source>
+        <translation>&amp;Datei</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Edit</source>
-      <translation>&amp;Bearbeiten</translation>
+        <location line="+1"/>
+        <source>&amp;Edit</source>
+        <translation>&amp;Bearbeiten</translation>
     </message>
     <message>
-      <location/>
-      <source>Standard views</source>
-      <translation>Standardansichten</translation>
+        <location line="+1"/>
+        <source>Standard views</source>
+        <translation>Standardansichten</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Stereo</source>
-      <translation>&amp;Stereo</translation>
+        <location line="+1"/>
+        <source>&amp;Stereo</source>
+        <translation>&amp;Stereo</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Zoom</source>
-      <translation>&amp;Zoom</translation>
+        <location line="+1"/>
+        <source>&amp;Zoom</source>
+        <translation>&amp;Zoom</translation>
     </message>
     <message>
-      <location/>
-      <source>Visibility</source>
-      <translation>Sichtbarkeit</translation>
+        <location line="+1"/>
+        <source>Visibility</source>
+        <translation>Sichtbarkeit</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;View</source>
-      <translation>&amp;Ansicht</translation>
+        <location line="+1"/>
+        <source>&amp;View</source>
+        <translation>&amp;Ansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Tools</source>
-      <translation>&amp;Werkzeuge</translation>
+        <location line="+1"/>
+        <source>&amp;Tools</source>
+        <translation>&amp;Werkzeuge</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Macro</source>
-      <translation>&amp;Macro</translation>
+        <location line="+1"/>
+        <source>&amp;Macro</source>
+        <translation>&amp;Makro</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Windows</source>
-      <translation>&amp;Fenster</translation>
+        <location line="+1"/>
+        <source>&amp;Windows</source>
+        <translation>&amp;Fenster</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;On-line help</source>
-      <translation>&amp;Online-Hilfe</translation>
+        <location line="+1"/>
+        <source>&amp;On-line help</source>
+        <translation>&amp;Online-Hilfe</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Help</source>
-      <translation>&amp;Hilfe</translation>
+        <location line="+1"/>
+        <source>&amp;Help</source>
+        <translation>&amp;Hilfe</translation>
     </message>
     <message>
-      <location/>
-      <source>File</source>
-      <translation>Datei</translation>
+        <location line="+1"/>
+        <source>File</source>
+        <translation>Datei</translation>
     </message>
     <message>
-      <location/>
-      <source>Macro</source>
-      <translation>Makro</translation>
+        <location line="+1"/>
+        <source>Macro</source>
+        <translation>Makro</translation>
     </message>
     <message>
-      <location/>
-      <source>View</source>
-      <translation>Ansicht</translation>
+        <location line="+1"/>
+        <source>View</source>
+        <translation>Ansicht</translation>
     </message>
     <message>
-      <location/>
-      <source>Special Ops</source>
-      <translation>Spezialfunktionen</translation>
+        <location line="+1"/>
+        <source>Special Ops</source>
+        <translation>Spezialfunktionen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>testClass</name>
     <message>
-      <location/>
-      <source>test</source>
-      <translation>test</translation>
+        <location filename="../iisTaskPanel/tests/styles/styles.ui" line="+13"/>
+        <location filename="../iisTaskPanel/tests/test/test.ui" line="+13"/>
+        <source>test</source>
+        <translation>test</translation>
     </message>
     <message>
-      <location/>
-      <source>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+        <location line="+29"/>
+        <location filename="../iisTaskPanel/tests/test/test.ui" line="+17"/>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;"&gt;
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-size:20pt; font-weight:600;"&gt;iisTaskPanel&lt;/span&gt;&lt;/p&gt;
-&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;"&gt;&lt;/p&gt;
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;"&gt;&lt;span style=" font-size:12pt;"&gt;Created for Qt 4.3.x&lt;/span&gt;&lt;/p&gt;
-&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;"&gt;&lt;/p&gt;
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;"&gt;www.ii-system.com&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-size:20pt; font-weight:600;&quot;&gt;iisTaskPanel&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Created for Qt 4.3.x&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;&quot;&gt;www.ii-system.com&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;"&gt;
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-size:20pt; font-weight:600;"&gt;iisTaskPanel&lt;/span&gt;&lt;/p&gt;
-&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;"&gt;&lt;/p&gt;
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;"&gt;&lt;span style=" font-size:12pt;"&gt;Created for Qt 4.3.x&lt;/span&gt;&lt;/p&gt;
-&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;"&gt;&lt;/p&gt;
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;"&gt;www.ii-system.com&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-size:20pt; font-weight:600;&quot;&gt;iisTaskPanel&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Created for Qt 4.3.x&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;&quot;&gt;www.ii-system.com&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-      <location/>
-      <source>Choose the style of the Task Panel</source>
-      <translation>Wählen Sie den Stil des Aufgabenfeldes</translation>
+        <location line="+14"/>
+        <source>Choose the style of the Task Panel</source>
+        <translation>Wählen Sie den Stil des Aufgabenfeldes</translation>
     </message>
     <message>
-      <location/>
-      <source>Default</source>
-      <translation>Standard</translation>
+        <location line="+6"/>
+        <source>Default</source>
+        <translation>Standard</translation>
     </message>
     <message>
-      <location/>
-      <source>Windows XP</source>
-      <translation>Windows XP</translation>
+        <location line="+10"/>
+        <source>Windows XP</source>
+        <translation>Windows XP</translation>
     </message>
-  </context>
+</context>
 </TS>

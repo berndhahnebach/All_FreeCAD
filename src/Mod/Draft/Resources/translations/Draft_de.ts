@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1">
+<!DOCTYPE TS>
+<TS version="2.0" language="de_DE">
 <context>
     <name>Draft_AddPoint</name>
     <message>
         <location filename="draftTools.py" line="3791"/>
         <source>Add Point</source>
-        <translation type="unfinished">Punkt hinzufügen</translation>
+        <translation>Punkt hinzufügen</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="3792"/>
         <source>Adds a point to an existing wire/bspline</source>
-        <translation type="unfinished">Fügt einen Punkt zu einer vorhandenen Linie/bspline</translation>
+        <translation>Fügt einen Punkt zu einer vorhandenen Linie/bspline</translation>
     </message>
 </context>
 <context>
@@ -18,25 +19,25 @@
     <message>
         <location filename="draftTools.py" line="3745"/>
         <source>Add to group</source>
-        <translation type="unfinished">Zur Gruppe hinzufügen</translation>
+        <translation>Zur Gruppe hinzufügen</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="3746"/>
         <source>Adds the selected object(s) to an existing group</source>
-        <translation type="unfinished">Fügt die ausgewählten Objekte zu einer vorhandenen Gruppe</translation>
+        <translation>Fügt die ausgewählten Objekte zu einer vorhandenen Gruppe</translation>
     </message>
 </context>
 <context>
-    <name>Draft_Apply</name>
+    <name>Draft_ApplyStyle</name>
     <message>
-        <location filename="draftTools.py" line="2333"/>
+        <location filename="../../draftTools.py" line="2326"/>
         <source>Apply Current Style</source>
-        <translation type="unfinished">Aktuellen Style anwenden</translation>
+        <translation>Aktuellen Style anwenden</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2334"/>
         <source>Applies current line width and color to selected objects</source>
-        <translation type="unfinished">Aktuelle Linienbreite und Farbe auf ausgewählte Objekte anwenden</translation>
+        <translation>Aktuelle Linienbreite und Farbe auf ausgewählte Objekte anwenden</translation>
     </message>
 </context>
 <context>
@@ -44,12 +45,12 @@
     <message>
         <location filename="draftTools.py" line="1428"/>
         <source>Arc</source>
-        <translation type="unfinished">Kreisbogen</translation>
+        <translation>Kreisbogen</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="1429"/>
         <source>Creates an arc. CTRL to snap, SHIFT to constrain</source>
-        <translation type="unfinished">Erzeugt einen Bogen. CTRL zum Einrasten, SHIFT zum Beschränken</translation>
+        <translation>Erzeugt einen Bogen. STRG zum Einrasten, SHIFT zum Beschränken</translation>
     </message>
 </context>
 <context>
@@ -57,12 +58,12 @@
     <message>
         <location filename="draftTools.py" line="1217"/>
         <source>B-Spline</source>
-        <translation type="unfinished">B-Spline</translation>
+        <translation>B-Spline</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="1218"/>
         <source>Creates a multiple-point b-spline. CTRL to snap, SHIFT to constrain</source>
-        <translation type="unfinished">Creates a multiple-point b-spline. CTRL to snap, SHIFT to constrain</translation>
+        <translation>Erzeugt eine B-Spline-Kurve.STRG zum Einrasten, SHIFT zum Beschränken</translation>
     </message>
 </context>
 <context>
@@ -70,12 +71,12 @@
     <message>
         <location filename="draftTools.py" line="1723"/>
         <source>Circle</source>
-        <translation type="unfinished">Kreis</translation>
+        <translation>Kreis</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="1724"/>
         <source>Creates a circle. CTRL to snap, ALT to select tangent objects</source>
-        <translation type="unfinished">Erzeugt einen Kreis. STRG zum Einrasten, ALT um berührende Objekte auszuwählen</translation>
+        <translation>Erzeugt einen Kreis. STRG zum Einrasten, ALT um berührende Objekte auszuwählen</translation>
     </message>
 </context>
 <context>
@@ -83,12 +84,12 @@
     <message>
         <location filename="draftTools.py" line="1317"/>
         <source>Close Line</source>
-        <translation type="unfinished">Linie schließen</translation>
+        <translation>Linie schließen</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="1318"/>
         <source>Closes the line being drawn</source>
-        <translation type="unfinished">Schließt die gezeichnete Linie</translation>
+        <translation>Schließt die gezeichnete Linie</translation>
     </message>
 </context>
 <context>
@@ -96,12 +97,12 @@
     <message>
         <location filename="draftTools.py" line="3910"/>
         <source>Remove Point</source>
-        <translation type="unfinished">Punkt entfernen</translation>
+        <translation>Punkt entfernen</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="3911"/>
         <source>Removes a point from an existing wire or bspline</source>
-        <translation type="unfinished">Removes a point from an existing wire or bspline</translation>
+        <translation>Entfernt einen Punkt von einem Linienzug oder eines B-Splines</translation>
     </message>
 </context>
 <context>
@@ -109,12 +110,12 @@
     <message>
         <location filename="draftTools.py" line="1980"/>
         <source>Dimension</source>
-        <translation type="unfinished">Abmessung</translation>
+        <translation>Abmessung</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="1981"/>
         <source>Creates a dimension. CTRL to snap, SHIFT to constrain, ALT to select a segment</source>
-        <translation type="unfinished">Erstellt eine Dimension. CTRL zum Einrasten, SHIFT zum Beschränken, ALT um ein Segment auszuwählen</translation>
+        <translation>Erstellt eine Dimension. STRG zum Einrasten, SHIFT zum Beschränken, ALT um ein Segment auszuwählen</translation>
     </message>
 </context>
 <context>
@@ -122,12 +123,12 @@
     <message>
         <location filename="draftTools.py" line="2882"/>
         <source>Downgrade</source>
-        <translation type="unfinished">herunterstufen</translation>
+        <translation>Herunterstufen</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2883"/>
         <source>Explodes the selected objects into simpler objects, or subtract faces</source>
-        <translation type="unfinished">Sprengt die markierten Objekte in einfachere Objekte auf oder subtrahiert Oberflächen</translation>
+        <translation>Sprengt die markierten Objekte in einfachere Objekte auf oder subtrahiert Oberflächen</translation>
     </message>
 </context>
 <context>
@@ -135,12 +136,12 @@
     <message>
         <location filename="draftTools.py" line="3369"/>
         <source>Drawing</source>
-        <translation type="unfinished">Zeichnung</translation>
+        <translation>Zeichnung</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="3370"/>
         <source>Puts the selected objects on a Drawing sheet.</source>
-        <translation type="unfinished">Puts the selected objects on a Drawing sheet.</translation>
+        <translation>Setzt die ausgewählten Objekte auf das Zeichenblatt.</translation>
     </message>
 </context>
 <context>
@@ -148,12 +149,12 @@
     <message>
         <location filename="draftTools.py" line="3464"/>
         <source>Edit</source>
-        <translation type="unfinished">Bearbeiten</translation>
+        <translation>Bearbeiten</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="3465"/>
         <source>Edits the active object</source>
-        <translation type="unfinished">Bearbeitet das aktive Objekt</translation>
+        <translation>Bearbeitet das aktive Objekt</translation>
     </message>
 </context>
 <context>
@@ -161,12 +162,12 @@
     <message>
         <location filename="draftTools.py" line="1301"/>
         <source>Finish line</source>
-        <translation type="unfinished">Linie beenden</translation>
+        <translation>Linie beenden</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="1302"/>
         <source>Finishes a line without closing it</source>
-        <translation type="unfinished">Beendet eine Linie, ohne sie zu schließen</translation>
+        <translation>Beendet eine Linie, ohne sie zu schließen</translation>
     </message>
 </context>
 <context>
@@ -174,12 +175,12 @@
     <message>
         <location filename="draftTools.py" line="1077"/>
         <source>Line</source>
-        <translation type="unfinished">Linie</translation>
+        <translation>Linie</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="1078"/>
         <source>Creates a 2-point line. CTRL to snap, SHIFT to constrain</source>
-        <translation type="unfinished">Erzeugt Linie aus 2 Punkten. STRG zum Einrasten, SHIFT zum Beschränken</translation>
+        <translation>Erzeugt Linie aus 2 Punkten. STRG zum Einrasten, SHIFT zum Beschränken</translation>
     </message>
 </context>
 <context>
@@ -187,12 +188,12 @@
     <message>
         <location filename="draftTools.py" line="2219"/>
         <source>Move</source>
-        <translation type="unfinished">Verschieben</translation>
+        <translation>Verschieben</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2220"/>
         <source>Moves the selected objects between 2 points. CTRL to snap, SHIFT to constrain, ALT to copy</source>
-        <translation type="unfinished">Verschiebt die ausgewählten Objekte zwischen 2 Punkten. CTRL zum Einrasten, SHIFT zum Beschränken, ALT zum Kopieren</translation>
+        <translation>Verschiebt die ausgewählten Objekte zwischen 2 Punkten. STRG zum Einrasten, SHIFT zum Beschränken, ALT zum Kopieren</translation>
     </message>
 </context>
 <context>
@@ -200,12 +201,12 @@
     <message>
         <location filename="draftTools.py" line="2552"/>
         <source>Offset</source>
-        <translation type="unfinished">Verschiebung</translation>
+        <translation>Versetzen</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2553"/>
         <source>Offsets the active object. CTRL to snap, SHIFT to constrain, ALT to copy</source>
-        <translation type="unfinished">Verschiebt das aktive Objekt, STRG zum Einrasten, SHIFT zum Beschränken, ALT zum Kopieren</translation>
+        <translation>Versetzt das aktive Objekt, STRG zum Einrasten, SHIFT zum Beschränken, ALT zum Kopieren</translation>
     </message>
 </context>
 <context>
@@ -213,12 +214,12 @@
     <message>
         <location filename="draftTools.py" line="1732"/>
         <source>Polygon</source>
-        <translation type="unfinished">Polygon</translation>
+        <translation>Polygon</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="1733"/>
         <source>Creates a regular polygon. CTRL to snap, SHIFT to constrain</source>
-        <translation type="unfinished">Erstellt ein regelmäßiges Polygon. STRG = anfassen, SHIFT = einschränken</translation>
+        <translation>Erstellt ein regelmäßiges Polygon. STRG = anfassen, SHIFT = einschränken</translation>
     </message>
 </context>
 <context>
@@ -226,12 +227,12 @@
     <message>
         <location filename="draftTools.py" line="1347"/>
         <source>Rectangle</source>
-        <translation type="unfinished">Rechteck</translation>
+        <translation>Rechteck</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="1348"/>
         <source>Creates a 2-point rectangle. CTRL to snap</source>
-        <translation type="unfinished">Erstellt eine 2-Punkt-Rechteck. Einrasten mit STRG</translation>
+        <translation>Erstellt eine 2-Punkt-Rechteck. Einrasten mit STRG</translation>
     </message>
 </context>
 <context>
@@ -239,12 +240,12 @@
     <message>
         <location filename="draftTools.py" line="2364"/>
         <source>Rotate</source>
-        <translation type="unfinished">Drehen</translation>
+        <translation>Drehen</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2365"/>
         <source>Rotates the selected objects. CTRL to snap, SHIFT to constrain, ALT creates a copy</source>
-        <translation type="unfinished">Dreht die ausgewählten Objekte. STRG zum Einrasten, SHIFT zum Beschränken, ALT erstellt eine Kopie</translation>
+        <translation>Dreht die ausgewählten Objekte. STRG zum Einrasten, SHIFT zum Beschränken, ALT erstellt eine Kopie</translation>
     </message>
 </context>
 <context>
@@ -252,12 +253,12 @@
     <message>
         <location filename="draftTools.py" line="3244"/>
         <source>Scale</source>
-        <translation type="unfinished">Skalieren</translation>
+        <translation>Skalieren</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="3245"/>
         <source>Scales the selected objects from a base point. CTRL to snap, SHIFT to constrain, ALT to copy</source>
-        <translation type="unfinished">Skaliert die markierten Objekte von einem Basispunkt. STRG zum Einrasten, SHIFT zum Beschränken, ALT zum Kopieren</translation>
+        <translation>Skaliert die markierten Objekte von einem Basispunkt. STRG zum Einrasten, SHIFT zum Beschränken, ALT zum Kopieren</translation>
     </message>
 </context>
 <context>
@@ -265,12 +266,12 @@
     <message>
         <location filename="draftTools.py" line="4040"/>
         <source>Select group</source>
-        <translation type="unfinished"></translation>
+        <translation>Wähle Gruppe</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="4041"/>
         <source>Selects all objects with the same parents as this group</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählt alle Objekte mit den selben Eltern wie diese Gruppe</translation>
     </message>
 </context>
 <context>
@@ -278,25 +279,25 @@
     <message>
         <location filename="draftTools.py" line="924"/>
         <source>SelectPlane</source>
-        <translation type="unfinished">Ebene markieren</translation>
+        <translation>Ebene markieren</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="925"/>
         <source>Select a working plane for geometry creation</source>
-        <translation type="unfinished">Markieren Sie eine Bearbeitungsebene für die Geometrieerstellung</translation>
+        <translation>Markieren Sie eine Bearbeitungsebene für die Geometrieerstellung</translation>
     </message>
 </context>
 <context>
-    <name>Draft_SwitchMode</name>
+    <name>Draft_ToggleDisplayMode</name>
     <message>
         <location filename="draftTools.py" line="3437"/>
         <source>Toggle display mode</source>
-        <translation type="unfinished">Anzeige-Modus umschalten</translation>
+        <translation>Anzeige-Modus umschalten</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="3438"/>
         <source>Swaps display mode of selected objects between wireframe and flatlines</source>
-        <translation type="unfinished">Wechselt den Anzeigemodus der ausgewählten Objekte zwischen Drahtmodell und flatlines</translation>
+        <translation>Wechselt den Anzeigemodus der ausgewählten Objekte zwischen Drahtmodell und flatlines</translation>
     </message>
 </context>
 <context>
@@ -304,12 +305,12 @@
     <message>
         <location filename="draftTools.py" line="1918"/>
         <source>Text</source>
-        <translation type="unfinished">Text</translation>
+        <translation>Text</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="1919"/>
         <source>Creates an annotation. CTRL to snap</source>
-        <translation type="unfinished">Erzeugt eine Anmerkung. STRG zum Einrasten</translation>
+        <translation>Erzeugt eine Anmerkung. STRG zum Einrasten</translation>
     </message>
 </context>
 <context>
@@ -317,12 +318,12 @@
     <message>
         <location filename="draftTools.py" line="3358"/>
         <source>Toggle construcion Mode</source>
-        <translation type="unfinished">Konstruktionsmodus umschalten</translation>
+        <translation>Konstruktionsmodus umschalten</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="3359"/>
         <source>Toggles the Construction Mode for next objects.</source>
-        <translation type="unfinished">Schaltet den Konstruktionsmodus für die nächsten Objekte um.</translation>
+        <translation>Schaltet den Konstruktionsmodus für die nächsten Objekte um.</translation>
     </message>
 </context>
 <context>
@@ -330,12 +331,12 @@
     <message>
         <location filename="draftTools.py" line="2972"/>
         <source>Trimex</source>
-        <translation type="unfinished">Trimex</translation>
+        <translation>Trimex</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2973"/>
         <source>Trims or Extends the selected object, or extrudes single faces. CTRL snaps, SHIFT constrains to current segment or to normal, ALT inverts</source>
-        <translation type="unfinished">Beschneidet oder erweitert das markierte Objekt oder erweitert einzelne Oberflächen. STRG rastet ein, SHIFT beschränkt das aktuelle Segment, ALT invertiert</translation>
+        <translation>Beschneidet oder erweitert das markierte Objekt oder erweitert einzelne Oberflächen. STRG rastet ein, SHIFT beschränkt das aktuelle Segment, ALT invertiert</translation>
     </message>
 </context>
 <context>
@@ -343,12 +344,12 @@
     <message>
         <location filename="draftTools.py" line="1334"/>
         <source>Undo last segment</source>
-        <translation type="unfinished">Letztes Segment rückgängig machen</translation>
+        <translation>Letztes Segment rückgängig machen</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="1335"/>
         <source>Undoes the last drawn segment of the line being drawn</source>
-        <translation type="unfinished">Letztes Segment rückgängig machen</translation>
+        <translation>Letztes Segment rückgängig machen</translation>
     </message>
 </context>
 <context>
@@ -356,12 +357,12 @@
     <message>
         <location filename="draftTools.py" line="2698"/>
         <source>Upgrade</source>
-        <translation type="unfinished">Aktualisieren</translation>
+        <translation>Verbinden</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2699"/>
         <source>Joins the selected objects into one, or converts closed wires to filled faces, or unite faces</source>
-        <translation type="unfinished">Verbindet die markierten Objekte zu Einem, konvertiert Drähte zu abgerundeten Kanten oder verbindet Oberflächen</translation>
+        <translation>Verbindet die markierten Objekte zu Einem, konvertiert Drähte zu abgerundeten Kanten oder verbindet Oberflächen</translation>
     </message>
 </context>
 <context>
@@ -369,12 +370,12 @@
     <message>
         <location filename="draftTools.py" line="1207"/>
         <source>Wire</source>
-        <translation type="unfinished">Draht</translation>
+        <translation>Draht</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="1208"/>
         <source>Creates a multiple-point wire. CTRL to snap, SHIFT to constrain</source>
-        <translation type="unfinished">Erstellt eine Mehrpunkt-Linienzug. STRG zum Einrasten, SHIFT zum Beschränken</translation>
+        <translation>Erstellt eine Mehrpunkt-Linienzug. STRG zum Einrasten, SHIFT zum Beschränken</translation>
     </message>
 </context>
 <context>
@@ -382,12 +383,12 @@
     <message>
         <location filename="draftTools.py" line="3999"/>
         <source>Wire to BSpline</source>
-        <translation type="unfinished">Wire to BSpline</translation>
+        <translation>Linienzug zu B-Spline</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="4000"/>
         <source>Converts between Wire and BSpline</source>
-        <translation type="unfinished">Converts between Wire and BSpline</translation>
+        <translation>Zwischen Linienzug und BSpline wandeln</translation>
     </message>
 </context>
 <context>
@@ -425,7 +426,7 @@
     <message>
         <location filename="userprefs-base.ui" line="68"/>
         <source>the default color for snap symbols</source>
-        <translation>Die Standardfarbe für Snap Symbole</translation>
+        <translation>Die Standardfarbe für Einrast Symbole</translation>
     </message>
     <message>
         <location filename="userprefs-base.ui" line="88"/>
@@ -465,7 +466,7 @@
     <message>
         <location filename="userprefs-base.ui" line="222"/>
         <source>Global copy mode</source>
-        <translation>GLobaler Kopiermodus</translation>
+        <translation>Globaler Kopiermodus</translation>
     </message>
     <message>
         <location filename="userprefs-base.ui" line="239"/>
@@ -485,12 +486,12 @@
     <message>
         <location filename="userprefs-base.ui" line="262"/>
         <source>Fill objects by default</source>
-        <translation>Fülle Objekte mit den Standardeinstellungen</translation>
+        <translation>Fülle Objekte standardmäßig</translation>
     </message>
     <message>
         <location filename="userprefs-base.ui" line="279"/>
         <source>Default working plane</source>
-        <translation>Standard-Bearbeitungsebene</translation>
+        <translation>Standard-Arbeitssebene</translation>
     </message>
     <message>
         <location filename="userprefs-base.ui" line="293"/>
@@ -520,7 +521,7 @@
     <message>
         <location filename="userprefs-base.ui" line="333"/>
         <source>The number of decimals in internal coordinates operations (for ex. 3 = 0.001)</source>
-        <translation>Die Anzahl der Dezimalstellen in internen Koordinaten Operationen (für ex. 3 = 0,001)</translation>
+        <translation>Die Anzahl der Dezimalstellen in internen Koordinaten Operationen (z.B. 3 = 0,001)</translation>
     </message>
     <message>
         <location filename="userprefs-base.ui" line="393"/>
@@ -568,7 +569,7 @@ such as &quot;Arial:Bold&quot;</source>
     <message>
         <location filename="userprefs-base.ui" line="498"/>
         <source>The default template to use when creating a new drawing sheet</source>
-        <translation>Die Standardvorlage, zum Erstellen einer neuen Zeichnung</translation>
+        <translation>Die Standardvorlage zum Erstellen einer neuen Zeichnung</translation>
     </message>
     <message>
         <location filename="userprefs-import.ui" line="259"/>
@@ -580,8 +581,8 @@ such as &quot;Arial:Bold&quot;</source>
         <source>This is the method choosed for importing or translating DXF object color into FreeCAD. 
 If color mapping is choosed, you must choose a color mapping file containing a translation table that will convert colors into linewidths.
 </source>
-        <translation>This is the method choosed for importing or translating DXF object color into FreeCAD. 
-If color mapping is choosed, you must choose a color mapping file containing a translation table that will convert colors into linewidths.
+        <translation>Das ist die gewählte Methode, um DXF-Objektfarben in FreeCAD zu importieren. 
+Falls Farbzuordnung ausgewählt ist, müssen Sie eine Datei mit einer Look-up-Tabelle laden, die Farben in Linienstärken wandelt.
 </translation>
     </message>
     <message>
@@ -607,7 +608,7 @@ If color mapping is choosed, you must choose a color mapping file containing a t
     <message>
         <location filename="userprefs-import.ui" line="178"/>
         <source>if this is checked, paper space objects will be imported too</source>
-        <translation>if this is checked, paper space objects will be imported too</translation>
+        <translation>Falls aktiviert, werden Papierbereichs-Objekte ebenfalls importiert</translation>
     </message>
     <message>
         <location filename="userprefs-import.ui" line="181"/>
@@ -622,32 +623,32 @@ If color mapping is choosed, you must choose a color mapping file containing a t
     <message>
         <location filename="userprefs-import.ui" line="128"/>
         <source>Color mapping file</source>
-        <translation>Color mapping file</translation>
+        <translation>Datei zur Farbzuordung</translation>
     </message>
     <message>
         <location filename="userprefs-import.ui" line="141"/>
         <source>The color mapping file for translating dxf colors into linewidths</source>
-        <translation>The color mapping file for translating dxf colors into linewidths</translation>
+        <translation>Die Datei zur Zuordnung von Farben zu Linienstärken</translation>
     </message>
     <message>
         <location filename="userprefs-import.ui" line="95"/>
         <source>Max Spline Segment</source>
-        <translation>Max Spline Segment</translation>
+        <translation>Max Spline-Segment</translation>
     </message>
     <message>
         <location filename="userprefs-import.ui" line="108"/>
         <source>When exporting splines to DXF, they are transformed in polylines. This value is the maximum length of each of the polyline segments. If 0, then the whole spline is treated as a straight segment.</source>
-        <translation>When exporting splines to DXF, they are transformed in polylines. This value is the maximum length of each of the polyline segments. If 0, then the whole spline is treated as a straight segment.</translation>
+        <translation>Wenn Splines in DXF exportiert werden, werden sie in Polygonzüge umgewandelt. Dieser Wert ist die maximale Länge eines Segments des Polygonzuges. Falls 0, wird die ganze Spline-Kurve als ein Geradenstück behandelt.</translation>
     </message>
     <message>
         <location filename="userprefs-import.ui" line="279"/>
         <source>This is the method choosed for importing SVG object color into FreeCAD.</source>
-        <translation>This is the method choosed for importing SVG object color into FreeCAD.</translation>
+        <translation>Das ist die ausgewählt Methode, SVG-Objektefarben in FreeCAD zu importieren.</translation>
     </message>
     <message>
         <location filename="userprefs-import.ui" line="335"/>
         <source>Check this if you want the areas (3D faces) to be imported too.</source>
-        <translation>Check this if you want the areas (3D faces) to be imported too.</translation>
+        <translation>Aktivieren Sie dies, falls Sie die 3D-Flächen ebenfalls importien möchten.</translation>
     </message>
     <message>
         <location filename="userprefs-import.ui" line="338"/>
@@ -657,12 +658,12 @@ If color mapping is choosed, you must choose a color mapping file containing a t
     <message>
         <location filename="userprefs-base.ui" line="14"/>
         <source>General settings</source>
-        <translation>General settings</translation>
+        <translation>Allgemeine Einstellungen</translation>
     </message>
     <message>
         <location filename="userprefs-base.ui" line="159"/>
         <source>Construction group name</source>
-        <translation>Construction group name</translation>
+        <translation>Konstruktionsgruppenname</translation>
     </message>
     <message>
         <location filename="userprefs-base.ui" line="353"/>
@@ -673,13 +674,13 @@ If color mapping is choosed, you must choose a color mapping file containing a t
         <location filename="userprefs-base.ui" line="366"/>
         <source>This is the value used by functions that use a tolerance.
 Values with differences below this value will be treated as same.</source>
-        <translation>This is the value used by functions that use a tolerance.
-Values with differences below this value will be treated as same.</translation>
+        <translation>Dieser Wert wird von Funktionen verwendet, die Toleranzen benutzen.
+Werte mit Differenzen unterhalb diesen Wertes werden als gleich behandelt.</translation>
     </message>
     <message>
         <location filename="userprefs-base.ui" line="515"/>
         <source>Dimensions &amp; Leader arrow style</source>
-        <translation>Dimensions &amp; Leader arrow style</translation>
+        <translation>Abmessungs &amp; Führungspfeil-Stil</translation>
     </message>
     <message>
         <location filename="userprefs-base.ui" line="529"/>
@@ -704,7 +705,7 @@ Values with differences below this value will be treated as same.</translation>
     <message>
         <location filename="userprefs-base.ui" line="549"/>
         <source>Circle 7</source>
-        <translation>Circle 7</translation>
+        <translation>Kreis 7</translation>
     </message>
     <message>
         <location filename="userprefs-base.ui" line="554"/>
@@ -764,37 +765,37 @@ Values with differences below this value will be treated as same.</translation>
     <message>
         <location filename="userprefs-import.ui" line="201"/>
         <source>Import *blocks</source>
-        <translation>Import *blocks</translation>
+        <translation>*blocks importieren</translation>
     </message>
     <message>
         <location filename="userprefs-import.ui" line="218"/>
         <source>If checked, freecad will try to joint coincident objects into wires. Beware, this can take a while...</source>
-        <translation>If checked, freecad will try to joint coincident objects into wires. Beware, this can take a while...</translation>
+        <translation>Falls aktiviert, werden zusammentreffende Objekte als Linienzüge (Wires) zusammengefasst. Achtung, dies kann einige Zeit in Anspruch nehmen...</translation>
     </message>
     <message>
         <location filename="userprefs-import.ui" line="221"/>
         <source>Join geometry</source>
-        <translation>Join geometry</translation>
+        <translation>Geometrie vereinen</translation>
     </message>
     <message>
         <location filename="userprefs-import.ui" line="239"/>
         <source>SVG format options</source>
-        <translation>SVG format options</translation>
+        <translation>Einstellungen für SVG Format</translation>
     </message>
     <message>
         <location filename="userprefs-import.ui" line="315"/>
         <source>OCA format options</source>
-        <translation>OCA format options</translation>
+        <translation>Einstellungen für OCA Format</translation>
     </message>
     <message>
         <location filename="userprefs-base.ui" line="596"/>
         <source>Alternate SVG Patterns location</source>
-        <translation type="unfinished"></translation>
+        <translation>Alternative SVG-Muster</translation>
     </message>
     <message>
         <location filename="userprefs-base.ui" line="622"/>
         <source>Here you can specify a directory containing SVG files containing &lt;pattern&gt; definitions that can be added to the standard Draft hatch patterns</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie ein Verzeichnis angeben, das SVG-Dateien mit &lt;pattern&gt;-Definitionen enthält. Diese werden zu den Standard-Entwurfs-Schraffierungsmustern hinzugefügt</translation>
     </message>
 </context>
 <context>
@@ -877,7 +878,7 @@ Values with differences below this value will be treated as same.</translation>
     <message>
         <location filename="draftGui.py" line="383"/>
         <source>Offset</source>
-        <translation>Verschiebung</translation>
+        <translation>Versetzen</translation>
     </message>
     <message>
         <location filename="draftGui.py" line="384"/>
@@ -1046,7 +1047,8 @@ Values with differences below this value will be treated as same.</translation>
         <location filename="draftTools.py" line="1277"/>
         <source>Pick next point, or (F)inish or (C)lose:
 </source>
-        <translation>Nächsten Punkt auswählen, Beenden (F) oder S(c)hließen </translation>
+        <translation>Nächsten Punkt auswählen, Beenden (F) oder S(c)hließen :
+</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="1068"/>
@@ -1102,7 +1104,8 @@ Values with differences below this value will be treated as same.</translation>
         <location filename="draftTools.py" line="1412"/>
         <source>Pick opposite point:
 </source>
-        <translation>Gegenüberliegenden Punkt auswählen: </translation>
+        <translation>Gegenüberliegenden Punkt auswählen: 
+</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="1290"/>
@@ -1113,25 +1116,29 @@ Values with differences below this value will be treated as same.</translation>
         <location filename="draftTools.py" line="1751"/>
         <source>Pick center point:
 </source>
-        <translation>Mittelpunkt auswählen: </translation>
+        <translation>Mittelpunkt auswählen: 
+</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="1892"/>
         <source>Pick radius:
 </source>
-        <translation>Radius auswählen: </translation>
+        <translation>Radius auswählen:
+</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="1695"/>
         <source>Pick start angle:
 </source>
-        <translation>Startwinkel auswählen: </translation>
+        <translation>Startwinkel auswählen:
+</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="1637"/>
         <source>Pick aperture:
 </source>
-        <translation>Wählen Sie Aperture: </translation>
+        <translation>Wählen Sie Aperture:
+</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="1706"/>
@@ -1159,7 +1166,8 @@ Values with differences below this value will be treated as same.</translation>
         <location filename="draftTools.py" line="1932"/>
         <source>Pick location point:
 </source>
-        <translation>Einbaupunkt auswählen </translation>
+        <translation>Einbaupunkt auswählen:
+</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="1843"/>
@@ -1185,19 +1193,22 @@ Values with differences below this value will be treated as same.</translation>
         <location filename="draftTools.py" line="2231"/>
         <source>Select an object to move
 </source>
-        <translation>Ein Objekt zum Bewegen auswählen </translation>
+        <translation>Ein Objekt zum Bewegen auswählen
+</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2249"/>
         <source>Pick start point:
 </source>
-        <translation>Startpunkt auswählen: </translation>
+        <translation>Startpunkt auswählen:
+</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2318"/>
         <source>Pick end point:
 </source>
-        <translation>Endpunkt auswählen: </translation>
+        <translation>Endpunkt auswählen:
+</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2197"/>
@@ -1218,48 +1229,55 @@ Values with differences below this value will be treated as same.</translation>
         <location filename="draftTools.py" line="2377"/>
         <source>Select an object to rotate
 </source>
-        <translation>Objekt zum Drehen auswählen</translation>
+        <translation>Objekt zum Drehen auswählen
+</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2397"/>
         <source>Pick rotation center:
 </source>
-        <translation>Rotationsmittelpunkt auswählen: </translation>
+        <translation>Rotationsmittelpunkt auswählen: 
+</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2530"/>
         <source>Pick base angle:
 </source>
-        <translation>Basiswinkel wählen:</translation>
+        <translation>Basiswinkel wählen:
+</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2541"/>
         <source>Pick rotation angle:
 </source>
-        <translation>Drehwinkel auswählen:</translation>
+        <translation>Drehwinkel auswählen:
+</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2415"/>
         <source>Offsets the active object. CTRL to snap, SHIFT to constrain, ALT to copy</source>
-        <translation type="obsolete">Verschiebt das aktive Objekt, STRG zum Einrasten, SHIFT zum Beschränken, ALT zum Kopieren</translation>
+        <translation type="obsolete">Versetzt das aktive Objekt, STRG zum Einrasten, SHIFT zum Beschränken, ALT zum Kopieren</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2566"/>
         <source>Select an object to offset
 </source>
-        <translation>Objekt zum Verschieben markieren </translation>
+        <translation>Objekt zum Versetzen markieren 
+</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2569"/>
         <source>Offset only works on one object at a time
 </source>
-        <translation>Verschiebung funktioniert nur auf ein Objekt zu bei einer Zeit </translation>
+        <translation>Versetzen funktioniert nur auf ein Objekt zu einem Zeitpunkt
+</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="3038"/>
         <source>Pick distance:
 </source>
-        <translation>Entfernen auswählen: </translation>
+        <translation>Entfernen auswählen: 
+</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2549"/>
@@ -1275,7 +1293,8 @@ Values with differences below this value will be treated as same.</translation>
         <location filename="draftTools.py" line="2890"/>
         <source>Select an object to upgrade
 </source>
-        <translation>Wählen Sie ein Objekt zum Aktualisieren </translation>
+        <translation>Wählen Sie ein Objekt zum Aktualisieren 
+</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2732"/>
@@ -1301,13 +1320,15 @@ Values with differences below this value will be treated as same.</translation>
         <location filename="draftTools.py" line="2984"/>
         <source>Select an object to trim/extend
 </source>
-        <translation>Wählen Sie ein Objekt zum Beschneiden / Erweitern </translation>
+        <translation>Wählen Sie ein Objekt zum Beschneiden / Erweitern 
+</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="3004"/>
         <source>The selected object cannot be extended
 </source>
-        <translation>Das ausgewählte Objekt kann nicht erweitert werden </translation>
+        <translation>Das ausgewählte Objekt kann nicht erweitert werden 
+</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="3093"/>
@@ -1318,19 +1339,22 @@ Values with differences below this value will be treated as same.</translation>
         <location filename="draftTools.py" line="3256"/>
         <source>Select an object to scale
 </source>
-        <translation>Ein Objekt zum Skalieren auswählen </translation>
+        <translation>Ein Objekt zum Skalieren auswählen 
+</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="3273"/>
         <source>Pick base point:
 </source>
-        <translation>Basispunkt auswählen: </translation>
+        <translation>Basispunkt auswählen: 
+</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="3345"/>
         <source>Pick scale factor:
 </source>
-        <translation>Skalierungsfaktor auswählen: </translation>
+        <translation>Skalierungsfaktor auswählen: 
+</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="3206"/>
@@ -1375,60 +1399,61 @@ Values with differences below this value will be treated as same.</translation>
     <message>
         <location filename="draftGui.py" line="370"/>
         <source>&amp;Relative</source>
-        <translation>&amp;Relative</translation>
+        <translation>&amp;Relativ</translation>
     </message>
     <message>
         <location filename="draftGui.py" line="372"/>
         <source>&amp;Filled</source>
-        <translation>&amp;Filled</translation>
+        <translation>Ge&amp;füllt</translation>
     </message>
     <message>
         <location filename="draftGui.py" line="373"/>
         <source>Check this if the object should appear as filled, otherwise it will appear as wireframe (F)</source>
-        <translation>Check this if the object should appear as filled, otherwise it will appear as wireframe (F)</translation>
+        <translation>Aktivieren Sie dies, falls Objekt gefüllt dargestellt werden sollen, andernfalls werden sie als Drahtgitter dargestellt (F)</translation>
     </message>
     <message>
         <location filename="draftGui.py" line="374"/>
         <source>F&amp;inish</source>
-        <translation>F&amp;inish</translation>
+        <translation>F&amp;ertig</translation>
     </message>
     <message>
         <location filename="draftGui.py" line="378"/>
         <source>&amp;Undo</source>
-        <translation>&amp;Undo</translation>
+        <translation>&amp;Rückgängig</translation>
     </message>
     <message>
         <location filename="draftGui.py" line="380"/>
         <source>&amp;Close</source>
-        <translation>&amp;Close</translation>
+        <translation>S&amp;chließen</translation>
     </message>
     <message>
         <location filename="draftGui.py" line="394"/>
         <source>&amp;Copy</source>
-        <translation>&amp;Copy</translation>
+        <translation>&amp;Kopieren</translation>
     </message>
     <message>
         <location filename="draftGui.py" line="397"/>
         <source>If checked, command will not finish until you press the command button again</source>
-        <translation>If checked, command will not finish until you press the command button again</translation>
+        <translation>Falls aktiviert, wird Befehl nicht beendet bis Sie den Befehlsknopf nochmals drüchen</translation>
     </message>
     <message>
         <location filename="draftGui.py" line="398"/>
         <source>&amp;Continue</source>
+        <translatorcomment>&amp;Weiter</translatorcomment>
         <translation>&amp;Continue</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="1142"/>
         <source>Wire has been closed
 </source>
-        <translation>Wire has been closed
+        <translation>Linienzug wurde geschlossen
 </translation>
     </message>
     <message>
         <location filename="draftTools.py" line="1266"/>
         <source>Last point has been removed
 </source>
-        <translation>Last point has been removed
+        <translation>Letzter Punkt wurde entfernt
 </translation>
     </message>
     <message>
@@ -1445,141 +1470,141 @@ Values with differences below this value will be treated as same.</translation>
         <location filename="draftTools.py" line="1256"/>
         <source>Spline has been closed
 </source>
-        <translation>Spline has been closed
+        <translation>Spline wurde geschlossen
 </translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2128"/>
         <source>Edges don&apos;t intersect!
 </source>
-        <translation>Edges don&apos;t intersect!
+        <translation>Kanten überschneiden nicht!
 </translation>
-    </message>
-    <message>
-        <location filename="draftTools.py" line="2196"/>
-        <source>Apply Current Style</source>
-        <translation type="obsolete">Aktuellen Style anwenden</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2577"/>
         <source>Cannot offset this object type
 </source>
-        <translation>Cannot offset this object type
+        <translation>Dieser Objekttyp kann nicht versetzt werden
 </translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2753"/>
         <source>Found groups: closing each open object inside
 </source>
-        <translation>Found groups: closing each open object inside
+        <translation>Gruppen gefunden: jedes Objekt innerhalb wird geschlossen
 </translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2790"/>
         <source>Found 2 objects: fusing them
 </source>
-        <translation>Found 2 objects: fusing them
+        <translation>2 Objekte gefunden: werden vereinigt
 </translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2779"/>
         <source>Found 2 objects or faces: making a parametric face
 </source>
-        <translation>Found 2 objects or faces: making a parametric face
+        <translation>2 Objekte oder Flächen gefunden: erstelle eine parametrische Fläche
 </translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2784"/>
         <source>Found 2 objects containing curves: fusing them
 </source>
-        <translation>Found 2 objects containing curves: fusing them
+        <translation>2 Objekte mit Kurven gefunden: werden vereinigt
 </translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2798"/>
         <source>Found 1 non-parametric objects: draftifying it
 </source>
-        <translation>Found 1 non-parametric objects: draftifying it
+        <translation>1 nicht-parametrisches Objekt gefunden: erstelle Entwurfsobjekt daraus
 </translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2803"/>
         <source>Found 1 closed sketch object: making a face from it
 </source>
-        <translation>Found 1 closed sketch object: making a face from it
+        <translation>1 geschlossenes Skizzen-Objekt gefunden: erstelle eine Fläche daraus
 </translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2818"/>
         <source>Found closed wires: making faces
 </source>
-        <translation>Found closed wires: making faces
+        <translation>Geschlossene Linienzüge gefunden: erstelle Flächen daraus
 </translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2829"/>
         <source>Found 1 open wire: closing it
 </source>
-        <translation>1 Offene Linie gefunden: Schließen </translation>
+        <translation>1 offenen Linienzug gefunden: schließen
+</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2845"/>
         <source>Found several edges: wiring them
 </source>
-        <translation>Found several edges: wiring them
+        <translation>Mehrere Kanten gefunden: erstelle eine Linienzug daraus
 </translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2854"/>
         <source>Found several non-connected edges: making compound
 </source>
-        <translation>Found several non-connected edges: making compound
+        <translation>Mehrere nicht-verbundene Kanten gefunden: erstelle ein Verbund-Objekt
 </translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2858"/>
         <source>Found several non-treatable objects: making compound
 </source>
-        <translation>Found several non-treatable objects: making compound
+        <translation>Mehrere nicht behandelebare Objekte gefunden: erstelle Verbund-Objekt
 </translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2912"/>
         <source>Found 1 parametric object: breaking its dependencies
 </source>
-        <translation>1 parametrische Objekt gefunden: Löse Abhängigkeiten auf </translation>
+        <translation>1 parametrisches Objekt gefunden: löse Abhängigkeiten auf
+</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2919"/>
         <source>Found 2 objects: subtracting them
 </source>
-        <translation>2 Objekte gefunden: subtrahieren </translation>
+        <translation>2 Objekte gefunden: subtrahieren
+</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2925"/>
         <source>Found several faces: splitting them
 </source>
-        <translation>Found several faces: splitting them
+        <translation>Mehrere Flächen gefunden: aufbrechen
 </translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2932"/>
         <source>Found several objects: subtracting them from the first one
 </source>
-        <translation>Mehrere Objekte gefunden: subtrahieren Sie vom ersten Objekt </translation>
+        <translation>Mehrere Objekte gefunden: diese vom ersten Objekt subtrahieren
+</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2943"/>
         <source>Found 1 face: extracting its wires
 </source>
-        <translation>Found 1 face: extracting its wires
+        <translation>1 Fläche gefunden: seine Linienzüge extrahieren
 </translation>
     </message>
     <message>
         <location filename="draftTools.py" line="2952"/>
         <source>Found only wires: extracting their edges
 </source>
-        <translation>Nur Linien gefunden: Extrahieren Ihre Punkte </translation>
+        <translation>Nur Linienzüge gefunden: extrahieren ihre Kanten
+ </translation>
     </message>
     <message>
         <location filename="draftTools.py" line="3217"/>
@@ -1590,7 +1615,8 @@ Values with differences below this value will be treated as same.</translation>
         <location filename="draftTools.py" line="3540"/>
         <source>This object type is not editable
 </source>
-        <translation>Dieser Objekttyp kann nicht bearbeitet werden </translation>
+        <translation>Dieser Objekttyp kann nicht bearbeitet werden
+</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="3518"/>
@@ -1626,7 +1652,8 @@ Values with differences below this value will be treated as same.</translation>
         <location filename="draftTools.py" line="3974"/>
         <source>Active object must have more than two points/nodes
 </source>
-        <translation>Aktives Objekt muss mehr als zwei Punkte / Knoten haben </translation>
+        <translation>Aktives Objekt muss mehr als zwei Punkte / Knoten haben
+</translation>
     </message>
     <message>
         <location filename="draftTools.py" line="3772"/>
@@ -1641,17 +1668,17 @@ Values with differences below this value will be treated as same.</translation>
     <message>
         <location filename="draftGui.py" line="375"/>
         <source>Finishes the current drawing or editing operation (F)</source>
-        <translation type="unfinished"></translation>
+        <translation>Momentanen Zeichnungs- oder Editier-Operation (F) beenden</translation>
     </message>
     <message>
         <location filename="draftGui.py" line="376"/>
         <source>Add points to the current object</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkte zu momentanem Objekt hinzufügen</translation>
     </message>
     <message>
         <location filename="draftGui.py" line="377"/>
         <source>Remove points from the current object</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkte von momentanem Objekt entfernen</translation>
     </message>
 </context>
 </TS>

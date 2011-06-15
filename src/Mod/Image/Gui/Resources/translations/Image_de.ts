@@ -1,165 +1,174 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS>
-  <context>
+<TS version="2.0" language="de_DE">
+<context>
     <name>CmdCreateImagePlane</name>
     <message>
-      <location/>
-      <source>Image</source>
-      <translation>Grafik</translation>
+        <location filename="../../Command.cpp" line="+83"/>
+        <source>Image</source>
+        <translation>Grafik</translation>
     </message>
     <message>
-      <location/>
-      <source>Create image plane...</source>
-      <translation>Erstellen Sie eine Bildebene...</translation>
+        <location line="+1"/>
+        <source>Create image plane...</source>
+        <translation>Erstellen Sie eine Bildebene...</translation>
     </message>
     <message>
-      <location/>
-      <source>create a planar image in the 3D space</source>
-      <translation>Erstellen Sie eine ebenes Bild im 3D-Raum</translation>
+        <location line="+1"/>
+        <source>create a planar image in the 3D space</source>
+        <translation>Erstellen Sie eine ebenes Bild im 3D-Raum</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdImageOpen</name>
     <message>
-      <location/>
-      <source>Image</source>
-      <translation>Grafik</translation>
+        <location line="-36"/>
+        <source>Image</source>
+        <translation>Grafik</translation>
     </message>
     <message>
-      <location/>
-      <source>Open...</source>
-      <translation>Öffnen...</translation>
+        <location line="+1"/>
+        <source>Open...</source>
+        <translation>Öffnen...</translation>
     </message>
     <message>
-      <location/>
-      <source>Open image view</source>
-      <translation>Öffne Bildansicht</translation>
+        <location line="+1"/>
+        <source>Open image view</source>
+        <translation>Öffne Bildansicht</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>ImageGui::GLImageBox</name>
     <message>
-      <location/>
-      <source>Undefined type of colour space for image viewing</source>
-      <translation>Undefinierter Farbraum-Typ für die Bildbetrachtung</translation>
+        <location filename="../../GLImageBox.cpp" line="+308"/>
+        <source>Undefined type of colour space for image viewing</source>
+        <translation>Undefinierter Farbraum-Typ für die Bildbetrachtung</translation>
     </message>
     <message>
-      <location/>
-      <source>Image pixel format</source>
-      <translation>Pixelformat des Bildes</translation>
+        <location line="-1"/>
+        <source>Image pixel format</source>
+        <translation>Pixelformat des Bildes</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>ImageGui::ImageView</name>
     <message>
-      <location/>
-      <source>&amp;Fit image</source>
-      <translation>Bild an&amp;passen</translation>
+        <location filename="../../ImageView.cpp" line="+76"/>
+        <source>&amp;Fit image</source>
+        <translation>Bild an&amp;passen</translation>
     </message>
     <message>
-      <location/>
-      <source>Stretch the image to fit the view</source>
-      <translation>Bild auf die Ansicht ausdehnen</translation>
+        <location line="+2"/>
+        <source>Stretch the image to fit the view</source>
+        <translation>Bild auf die Ansicht ausdehnen</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;1:1 scale</source>
-      <translation>&amp;1:1 Maßstab</translation>
+        <location line="+4"/>
+        <source>&amp;1:1 scale</source>
+        <translation>&amp;1:1 Maßstab</translation>
     </message>
     <message>
-      <location/>
-      <source>Display the image at a 1:1 scale</source>
-      <translation>Das Bild im Maßstab 1:1 anzeigen</translation>
+        <location line="+2"/>
+        <source>Display the image at a 1:1 scale</source>
+        <translation>Das Bild im Maßstab 1:1 anzeigen</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Original color</source>
-      <translation>&amp;Ursprüngliche Farbe</translation>
+        <location line="+10"/>
+        <source>&amp;Original color</source>
+        <translation>&amp;Ursprüngliche Farbe</translation>
     </message>
     <message>
-      <location/>
-      <source>Display the image with its original color(s)</source>
-      <translation>Das Bild mit seinen ursprünglichen Farbe(n) anzeigen</translation>
+        <location line="+2"/>
+        <source>Display the image with its original color(s)</source>
+        <translation>Das Bild mit seinen ursprünglichen Farbe(n) anzeigen</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Brightened color</source>
-      <translation>&amp;Farbe aufhellen</translation>
+        <location line="+4"/>
+        <source>&amp;Brightened color</source>
+        <translation>&amp;Farbe aufhellen</translation>
     </message>
     <message>
-      <location/>
-      <source>Display the image with brightened color(s)</source>
-      <translation>Das Bild mit aufgehellten Farben anzeigen</translation>
+        <location line="+2"/>
+        <source>Display the image with brightened color(s)</source>
+        <translation>Das Bild mit aufgehellten Farben anzeigen</translation>
     </message>
     <message>
-      <location/>
-      <source>Standard</source>
-      <translation>Standard</translation>
+        <location line="+10"/>
+        <source>Standard</source>
+        <translation>Standard</translation>
     </message>
     <message>
-      <location/>
-      <source>Ready...</source>
-      <translation>Fertig...</translation>
+        <location line="+29"/>
+        <source>Ready...</source>
+        <translation>Fertig...</translation>
     </message>
     <message>
-      <location/>
-      <source>grey</source>
-      <translation>grau</translation>
+        <location line="+451"/>
+        <source>grey</source>
+        <translation>grau</translation>
     </message>
     <message>
-      <location/>
-      <source>zoom</source>
-      <translation>Zoom</translation>
+        <location line="+1"/>
+        <location line="+3"/>
+        <location line="+10"/>
+        <location line="+5"/>
+        <location line="+10"/>
+        <location line="+5"/>
+        <location line="+11"/>
+        <location line="+5"/>
+        <location line="+11"/>
+        <location line="+5"/>
+        <source>zoom</source>
+        <translation>Zoom</translation>
     </message>
     <message>
-      <location/>
-      <source>outside image</source>
-      <translation>externes Bild</translation>
+        <location line="-62"/>
+        <location line="+10"/>
+        <location line="+15"/>
+        <location line="+16"/>
+        <location line="+16"/>
+        <source>outside image</source>
+        <translation>außerhalb Bild</translation>
     </message>
-  </context>
-  <context>
-    <name>ImageGui::Workbench</name>
-    <message>
-      <location/>
-      <source>Image</source>
-      <translation>Grafik</translation>
-    </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>QObject</name>
     <message>
-      <location/>
-      <source>Image viewer</source>
-      <translation>Bildbetrachter</translation>
+        <location filename="../../AppImageGuiPy.cpp" line="+75"/>
+        <source>Image viewer</source>
+        <translation>Bildbetrachter</translation>
     </message>
     <message>
-      <location/>
-      <source>Images (*.png *.xpm *.jpg *.bmp)</source>
-      <translation>Bilder (*.png *.xpm *.jpg *.bmp)</translation>
+        <location filename="../../Command.cpp" line="+11"/>
+        <location line="+34"/>
+        <location line="+42"/>
+        <source>Images (*.png *.xpm *.jpg *.bmp)</source>
+        <translation>Bilder (*.png *.xpm *.jpg *.bmp)</translation>
     </message>
     <message>
-      <location/>
-      <source>Choose an image file to open</source>
-      <translation>Wählen Sie ein Bild zum Öffnen aus</translation>
+        <location line="-77"/>
+        <location line="+34"/>
+        <location line="+42"/>
+        <source>Choose an image file to open</source>
+        <translation>Wählen Sie ein Bild zum Öffnen aus</translation>
     </message>
     <message>
-      <location/>
-      <source>Error open image</source>
-      <translation>Fehler beim Öffnen des Bildes</translation>
+        <location line="-36"/>
+        <source>Error open image</source>
+        <translation>Fehler beim Öffnen des Bildes</translation>
     </message>
     <message>
-      <location/>
-      <source>Could not load the choosen image</source>
-      <translation>Das gewählte Bild konnte nicht geladen werden</translation>
+        <location line="+1"/>
+        <source>Could not load the choosen image</source>
+        <translation>Das gewählte Bild konnte nicht geladen werden</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Workbench</name>
     <message>
-      <location/>
-      <source>Image</source>
-      <translation>Grafik</translation>
+        <location filename="../../Workbench.cpp" line="+36"/>
+        <source>Image</source>
+        <translation>Grafik</translation>
     </message>
-  </context>
+</context>
 </TS>
