@@ -4,7 +4,7 @@
 <context>
     <name>CmdDrawingExportPage</name>
     <message>
-        <location filename="../../Command.cpp" line="+165"/>
+        <location filename="../../Command.cpp" line="+167"/>
         <source>File</source>
         <translation>Datei</translation>
     </message>
@@ -75,6 +75,25 @@
     </message>
 </context>
 <context>
+    <name>CmdDrawingProjectShape</name>
+    <message>
+        <location line="+169"/>
+        <source>Drawing</source>
+        <translation>Zeichnung</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Project shape...</source>
+        <translation>Fläche projizieren...</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Project shape onto a user-defined plane</source>
+        <translation>Fläche auf eine benutzerdefinierte Ebene projizieren</translation>
+    </message>
+</context>
+<context>
     <name>DrawingGui::DrawingView</name>
     <message>
         <location filename="../../DrawingView.cpp" line="+200"/>
@@ -133,9 +152,67 @@
     </message>
 </context>
 <context>
+    <name>DrawingGui::TaskProjection</name>
+    <message>
+        <location filename="../../TaskDialog.cpp" line="+49"/>
+        <source>Visible sharp edges</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Visible smooth edges</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Visible sewn edges</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Visible outline edges</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Visible isoparameters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Hidden sharp edges</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Hidden smooth edges</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Hidden sewn edges</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Hidden outline edges</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Hidden isoparameters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Project shapes</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
-        <location filename="../../Command.cpp" line="+10"/>
+        <location filename="../../Command.cpp" line="-162"/>
         <source>Choose an SVG file to open</source>
         <translation>Wählen Sie eine SVG-Datei zum Öffnen aus</translation>
     </message>
@@ -153,12 +230,12 @@
     </message>
     <message>
         <location line="+68"/>
-        <location line="+52"/>
+        <location line="+51"/>
         <source>Wrong selection</source>
         <translation>Falsche Auswahl</translation>
     </message>
     <message>
-        <location line="-51"/>
+        <location line="-50"/>
         <source>Select a Part object.</source>
         <translation>Wählen Sie ein Teile-Objekt aus..</translation>
     </message>
@@ -173,7 +250,7 @@
         <translation>Erzeugen Sie eine Seite zum Einfügen des Objekts.</translation>
     </message>
     <message>
-        <location line="+45"/>
+        <location line="+44"/>
         <source>Select one Page object.</source>
         <translation>Wählen Sie ein Page-Objekt aus.</translation>
     </message>

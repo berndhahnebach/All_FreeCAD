@@ -4,7 +4,7 @@
 <context>
     <name>CmdRaytracingExportProject</name>
     <message>
-        <location filename="../../Command.cpp" line="+454"/>
+        <location filename="../../Command.cpp" line="+451"/>
         <source>File</source>
         <translation>Datei</translation>
     </message>
@@ -58,7 +58,7 @@
 <context>
     <name>CmdRaytracingWriteCamera</name>
     <message>
-        <location line="-298"/>
+        <location line="-295"/>
         <source>Raytracing</source>
         <translation>Raytracing</translation>
     </message>
@@ -76,7 +76,7 @@
 <context>
     <name>CmdRaytracingWritePart</name>
     <message>
-        <location line="+85"/>
+        <location line="+84"/>
         <source>Raytracing</source>
         <translation>Raytracing</translation>
     </message>
@@ -94,7 +94,7 @@
 <context>
     <name>CmdRaytracingWriteView</name>
     <message>
-        <location line="+48"/>
+        <location line="+47"/>
         <source>Raytracing</source>
         <translation>Raytracing</translation>
     </message>
@@ -112,37 +112,37 @@
 <context>
     <name>QObject</name>
     <message>
-        <location line="-92"/>
-        <location line="+52"/>
-        <location line="+50"/>
-        <location line="+250"/>
+        <location line="-91"/>
+        <location line="+51"/>
+        <location line="+49"/>
+        <location line="+249"/>
         <source>Povray(*.pov)</source>
         <translation>Povray(*.pov)</translation>
     </message>
     <message>
-        <location line="-351"/>
-        <location line="+52"/>
-        <location line="+50"/>
-        <location line="+250"/>
+        <location line="-348"/>
+        <location line="+51"/>
+        <location line="+49"/>
+        <location line="+249"/>
         <source>All Files (*.*)</source>
         <translation>Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location line="-351"/>
-        <location line="+52"/>
-        <location line="+50"/>
-        <location line="+251"/>
+        <location line="-348"/>
+        <location line="+51"/>
+        <location line="+49"/>
+        <location line="+250"/>
         <source>Export page</source>
         <translation>Seite exportieren</translation>
     </message>
     <message>
-        <location line="-57"/>
-        <location line="+48"/>
+        <location line="-56"/>
+        <location line="+47"/>
         <source>Wrong selection</source>
         <translation>Falsche Auswahl</translation>
     </message>
     <message>
-        <location line="-47"/>
+        <location line="-46"/>
         <source>Select a Part object.</source>
         <translation>Formteil auswählen.</translation>
     </message>
@@ -157,7 +157,7 @@
         <translation>Povray-Projekt erstellen, um eine Ansicht einzufügen.</translation>
     </message>
     <message>
-        <location line="+40"/>
+        <location line="+39"/>
         <source>Select one Povray project object.</source>
         <translation>Wählen Sie ein Povray-Projekt aus.</translation>
     </message>

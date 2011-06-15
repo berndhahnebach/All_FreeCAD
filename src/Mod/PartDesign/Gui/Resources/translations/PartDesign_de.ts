@@ -4,7 +4,7 @@
 <context>
     <name>CmdPartDesignChamfer</name>
     <message>
-        <location filename="../../Command.cpp" line="+288"/>
+        <location filename="../../Command.cpp" line="+286"/>
         <source>Part</source>
         <translation>Part</translation>
     </message>
@@ -22,7 +22,7 @@
 <context>
     <name>CmdPartDesignFillet</name>
     <message>
-        <location line="-53"/>
+        <location line="-52"/>
         <source>PartDesign</source>
         <translation>Teile-Konstruktion</translation>
     </message>
@@ -40,7 +40,7 @@
 <context>
     <name>CmdPartDesignPad</name>
     <message>
-        <location line="-142"/>
+        <location line="-141"/>
         <source>PartDesign</source>
         <translation>Teile-Konstruktion</translation>
     </message>
@@ -82,17 +82,18 @@
     </message>
     <message>
         <location line="+1"/>
-        <location line="+236"/>
+        <location line="+270"/>
         <source>Start distance</source>
         <translation>Anfangsabstand</translation>
     </message>
     <message>
-        <location line="-235"/>
+        <location line="-269"/>
         <source>End distance</source>
         <translation>Endabstand</translation>
     </message>
     <message>
-        <location line="+196"/>
+        <location line="+174"/>
+        <location line="+56"/>
         <source>Edge%1</source>
         <translation>Kante%1</translation>
     </message>
@@ -225,18 +226,18 @@ Bitte markieren Sie zuerst ein oder mehrere Kanten.</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../Command.cpp" line="-58"/>
+        <location filename="../../Command.cpp" line="-59"/>
         <location line="+11"/>
         <location line="+12"/>
         <location line="+46"/>
         <location line="+11"/>
         <location line="+12"/>
-        <location line="+51"/>
+        <location line="+50"/>
         <source>Wrong selection</source>
         <translation>Falsche Auswahl</translation>
     </message>
     <message>
-        <location line="-142"/>
+        <location line="-141"/>
         <location line="+69"/>
         <source>Select a sketch or 2D object.</source>
         <translation>Wählen Sie eine Skizze oder ein 2D-Objekt.</translation>
@@ -254,7 +255,7 @@ Bitte markieren Sie zuerst ein oder mehrere Kanten.</translation>
         <translation>Wählen Sie eine Kante, eine Fläche oder einen Körper. Nur ein Körper ist erlaubt.</translation>
     </message>
     <message>
-        <location line="+51"/>
+        <location line="+50"/>
         <source>Select an edge, face or body. Only one body is allowed.</source>
         <translation>Wählen Sie eine Kante, eine Fläche oder einen Körper. Nur ein Körper ist erlaubt.</translation>
     </message>
@@ -269,7 +270,7 @@ Bitte markieren Sie zuerst ein oder mehrere Kanten.</translation>
         <translation>Rundung funktioniert nur bei Teilen</translation>
     </message>
     <message>
-        <location line="-52"/>
+        <location line="-51"/>
         <source>No Support</source>
         <translation>Keine Auflage</translation>
     </message>

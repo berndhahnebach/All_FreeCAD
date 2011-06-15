@@ -134,7 +134,7 @@
 <context>
     <name>CmdPartBoolean</name>
     <message>
-        <location filename="../../Command.cpp" line="+659"/>
+        <location filename="../../Command.cpp" line="+651"/>
         <source>Part</source>
         <translation>Formteil</translation>
     </message>
@@ -178,7 +178,7 @@
 <context>
     <name>CmdPartBox2</name>
     <message>
-        <location filename="../../Command.cpp" line="-541"/>
+        <location filename="../../Command.cpp" line="-535"/>
         <source>Part</source>
         <translation>Formteil</translation>
     </message>
@@ -200,7 +200,7 @@
 <context>
     <name>CmdPartBox3</name>
     <message>
-        <location line="+40"/>
+        <location line="+39"/>
         <source>Part</source>
         <translation>Formteil</translation>
     </message>
@@ -222,7 +222,7 @@
 <context>
     <name>CmdPartCommon</name>
     <message>
-        <location line="+119"/>
+        <location line="+117"/>
         <source>Part</source>
         <translation>Formteil</translation>
     </message>
@@ -266,7 +266,7 @@
 <context>
     <name>CmdPartCrossSections</name>
     <message>
-        <location filename="../../Command.cpp" line="+517"/>
+        <location filename="../../Command.cpp" line="+509"/>
         <source>Part</source>
         <translation>Formteil</translation>
     </message>
@@ -284,7 +284,7 @@
 <context>
     <name>CmdPartCut</name>
     <message>
-        <location line="-569"/>
+        <location line="-561"/>
         <source>Part</source>
         <translation>Formteil</translation>
     </message>
@@ -328,7 +328,7 @@
 <context>
     <name>CmdPartExtrude</name>
     <message>
-        <location filename="../../Command.cpp" line="+453"/>
+        <location filename="../../Command.cpp" line="+449"/>
         <source>Part</source>
         <translation>Formteil</translation>
     </message>
@@ -346,7 +346,7 @@
 <context>
     <name>CmdPartFillet</name>
     <message>
-        <location line="+54"/>
+        <location line="+52"/>
         <source>Part</source>
         <translation>Formteil</translation>
     </message>
@@ -364,7 +364,7 @@
 <context>
     <name>CmdPartFuse</name>
     <message>
-        <location line="-413"/>
+        <location line="-407"/>
         <source>Part</source>
         <translation>Formteil</translation>
     </message>
@@ -390,7 +390,7 @@
 <context>
     <name>CmdPartImport</name>
     <message>
-        <location line="+97"/>
+        <location line="+98"/>
         <source>Part</source>
         <translation>Formteil</translation>
     </message>
@@ -408,7 +408,7 @@
 <context>
     <name>CmdPartImportCurveNet</name>
     <message>
-        <location line="+46"/>
+        <location line="+45"/>
         <source>Part</source>
         <translation>Formteil</translation>
     </message>
@@ -426,7 +426,7 @@
 <context>
     <name>CmdPartMakeSolid</name>
     <message>
-        <location line="+45"/>
+        <location line="+44"/>
         <source>Part</source>
         <translation>Formteil</translation>
     </message>
@@ -444,7 +444,7 @@
 <context>
     <name>CmdPartMirror</name>
     <message>
-        <location line="+245"/>
+        <location line="+239"/>
         <source>Part</source>
         <translation>Formteil</translation>
     </message>
@@ -462,7 +462,7 @@
 <context>
     <name>CmdPartPickCurveNet</name>
     <message>
-        <location line="-703"/>
+        <location line="-691"/>
         <source>Part</source>
         <translation>Formteil</translation>
     </message>
@@ -480,7 +480,7 @@
 <context>
     <name>CmdPartPrimitives</name>
     <message>
-        <location line="+128"/>
+        <location line="+124"/>
         <source>Part</source>
         <translation>Formteil</translation>
     </message>
@@ -498,7 +498,7 @@
 <context>
     <name>CmdPartReverseShape</name>
     <message>
-        <location line="+400"/>
+        <location line="+397"/>
         <source>Part</source>
         <translation>Formteil</translation>
     </message>
@@ -516,7 +516,7 @@
 <context>
     <name>CmdPartRevolve</name>
     <message>
-        <location line="+111"/>
+        <location line="+108"/>
         <source>Part</source>
         <translation>Formteil</translation>
     </message>
@@ -534,7 +534,7 @@
 <context>
     <name>CmdPartRuledSurface</name>
     <message>
-        <location line="+212"/>
+        <location line="+208"/>
         <source>Part</source>
         <translation>Formteil</translation>
     </message>
@@ -552,7 +552,7 @@
 <context>
     <name>CmdPartSection</name>
     <message>
-        <location line="-545"/>
+        <location line="-536"/>
         <source>Make a section of two shapes</source>
         <translation>Schnitt von zwei Formen erzeugen</translation>
     </message>
@@ -654,15 +654,20 @@
 <context>
     <name>DlgExtrusion</name>
     <message>
-        <location filename="../../DlgExtrusion.cpp" line="+114"/>
+        <location filename="../../DlgExtrusion.cpp" line="+137"/>
         <source>Select a shape for extrusion, first.</source>
         <translation>Wählen Sie zuerst eine Form zum extrudieren.</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>The document &apos;%1&apos; doesn&apos;t exist.</source>
+        <translation>Das Dokument &apos;%1&apos; existiert nicht.</translation>
     </message>
 </context>
 <context>
     <name>DlgRevolution</name>
     <message>
-        <location filename="../../DlgRevolution.cpp" line="+111"/>
+        <location filename="../../DlgRevolution.cpp" line="+114"/>
         <source>Select a shape for revolution, first.</source>
         <translation>Wählen Sie zuerst eine Form zum Umdrehen aus.</translation>
     </message>
@@ -792,7 +797,7 @@
         <translation type="obsolete">Verwerfen</translation>
     </message>
     <message>
-        <location filename="../../DlgBooleanOperation.cpp" line="+309"/>
+        <location filename="../../DlgBooleanOperation.cpp" line="+317"/>
         <source>Cannot perform a boolean operation with the same shape</source>
         <translation>Kann eine boolesche Operation mit der gleichen Form nicht ausführen</translation>
     </message>
@@ -869,12 +874,12 @@
         <translation>Extrudieren</translation>
     </message>
     <message>
-        <location line="+24"/>
+        <location line="+12"/>
         <source>Direction</source>
         <translation>Richtung</translation>
     </message>
     <message>
-        <location line="+129"/>
+        <location line="+123"/>
         <source>Along normal</source>
         <translation>Entlang der Normalen</translation>
     </message>
@@ -892,7 +897,17 @@
         <translation>Länge:</translation>
     </message>
     <message>
-        <location line="-103"/>
+        <location line="+41"/>
+        <source>3D view</source>
+        <translation>3D-Ansicht</translation>
+    </message>
+    <message>
+        <location line="+20"/>
+        <source>Note:This option works for planes only</source>
+        <translation>Achtung: Diese Option wird nur für Ebenen verwendet</translation>
+    </message>
+    <message>
+        <location line="+26"/>
         <source>Shape</source>
         <translation>Form</translation>
     </message>
@@ -917,17 +932,17 @@
         <translation></translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="-168"/>
         <source>X:</source>
         <translation>X:</translation>
     </message>
     <message>
-        <location line="+26"/>
+        <location line="+52"/>
         <source>Z:</source>
         <translation>Z:</translation>
     </message>
     <message>
-        <location line="+26"/>
+        <location line="-26"/>
         <source>Y:</source>
         <translation>Y:</translation>
     </message>
@@ -998,17 +1013,17 @@
     </message>
     <message>
         <location line="+1"/>
-        <location line="+277"/>
+        <location line="+314"/>
         <source>Start radius</source>
         <translation>Start-Radius</translation>
     </message>
     <message>
-        <location line="-276"/>
+        <location line="-313"/>
         <source>End radius</source>
         <translation>End-Radius</translation>
     </message>
     <message>
-        <location line="+271"/>
+        <location line="+308"/>
         <source>Radius</source>
         <translation>Radius</translation>
     </message>
@@ -1035,7 +1050,8 @@ Bitte markieren Sie zuerst ein oder mehrere Kantengebilde.</translation>
         <translation>Keine</translation>
     </message>
     <message>
-        <location filename="../../DlgFilletEdges.cpp" line="-132"/>
+        <location filename="../../DlgFilletEdges.cpp" line="-188"/>
+        <location line="+56"/>
         <source>Edge%1</source>
         <translation>Kante%1</translation>
     </message>
@@ -1460,15 +1476,15 @@ Bitte wählen Sie eine gültige Form im Dropdown-Feld.</translation>
         <translation>Alt+O</translation>
     </message>
     <message>
-        <location filename="../../DlgPrimitives.cpp" line="+123"/>
+        <location filename="../../DlgPrimitives.cpp" line="+152"/>
         <location line="+23"/>
-        <location line="+129"/>
+        <location line="+128"/>
         <location line="+8"/>
         <source>Create %1</source>
         <translation>%1 erstellen</translation>
     </message>
     <message>
-        <location line="-159"/>
+        <location line="-158"/>
         <location line="+23"/>
         <source>No active document</source>
         <translation>Kein aktives Dokument</translation>
@@ -1662,7 +1678,7 @@ Bitte wählen Sie eine gültige Form im Dropdown-Feld.</translation>
         <translation>Spiegelung</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+19"/>
         <source>Shapes</source>
         <translation>Formen</translation>
     </message>
@@ -1687,7 +1703,27 @@ Bitte wählen Sie eine gültige Form im Dropdown-Feld.</translation>
         <translation>YZ-Ebene</translation>
     </message>
     <message>
-        <location filename="../../Mirroring.cpp" line="+101"/>
+        <location line="+8"/>
+        <source>Base point:</source>
+        <translation>Basispunkt:</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>x</source>
+        <translation>x</translation>
+    </message>
+    <message>
+        <location line="+20"/>
+        <source>y</source>
+        <translation>y</translation>
+    </message>
+    <message>
+        <location line="+20"/>
+        <source>z</source>
+        <translation>z</translation>
+    </message>
+    <message>
+        <location filename="../../Mirroring.cpp" line="+113"/>
         <source>Select a shape for mirroring, first.</source>
         <translation>Wählen Sie zuerst eine Form für die Spiegelung.</translation>
     </message>
@@ -1700,52 +1736,52 @@ Bitte wählen Sie eine gültige Form im Dropdown-Feld.</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../Command.cpp" line="-140"/>
+        <location filename="../../Command.cpp" line="-141"/>
         <location line="+48"/>
         <location line="+52"/>
         <location line="+53"/>
-        <location line="+615"/>
+        <location line="+607"/>
         <source>Wrong selection</source>
         <translation>Falsche Auswahl</translation>
     </message>
     <message>
-        <location line="-767"/>
+        <location line="-759"/>
         <location line="+153"/>
         <source>Select two shapes please.</source>
         <translation>Wählen Sie bitte zwei Formen.</translation>
     </message>
     <message>
-        <location line="+45"/>
         <location line="+46"/>
+        <location line="+45"/>
         <source>All CAD Files (*.stp *.step *.igs *.iges *.brp *.brep)</source>
         <translation>Alle CAD-Dateien (*.stp *.step *IGS .IGES *.brp *.brep)</translation>
     </message>
     <message>
-        <location line="-45"/>
-        <location line="+46"/>
+        <location line="-44"/>
+        <location line="+45"/>
         <source>STEP (*.stp *.step)</source>
         <translation>STEP (*.stp *.step)</translation>
     </message>
     <message>
-        <location line="-45"/>
-        <location line="+46"/>
+        <location line="-44"/>
+        <location line="+45"/>
         <source>IGES (*.igs *.iges)</source>
         <translation>IGES (*.igs *.IGES)</translation>
     </message>
     <message>
-        <location line="-45"/>
-        <location line="+46"/>
+        <location line="-44"/>
+        <location line="+45"/>
         <source>BREP (*.brp *.brep)</source>
         <translation>BREP (*.brp *.brep)</translation>
     </message>
     <message>
-        <location line="-45"/>
-        <location line="+46"/>
+        <location line="-44"/>
+        <location line="+45"/>
         <source>All Files (*.*)</source>
         <translation>Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location filename="../../CommandSimple.cpp" line="+59"/>
+        <location filename="../../CommandSimple.cpp" line="+58"/>
         <source>Sewing Tolerance</source>
         <translation>Toleranz</translation>
     </message>
@@ -1766,7 +1802,7 @@ Bitte wählen Sie eine gültige Form im Dropdown-Feld.</translation>
         <translation>Transformieren</translation>
     </message>
     <message>
-        <location filename="../../AppPartGui.cpp" line="+110"/>
+        <location filename="../../AppPartGui.cpp" line="+114"/>
         <location line="+1"/>
         <source>Part design</source>
         <translation>Part design</translation>
@@ -1778,7 +1814,7 @@ Bitte wählen Sie eine gültige Form im Dropdown-Feld.</translation>
         <translation>Wählen Sie bitte zwei oder mehrere Formen aus.</translation>
     </message>
     <message>
-        <location line="+668"/>
+        <location line="+660"/>
         <source>You have to select either two edges or two wires.</source>
         <translation>Wählen Sie entweder zwei Kanten oder zwei Drahtgitter aus.</translation>
     </message>

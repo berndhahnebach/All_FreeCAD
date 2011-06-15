@@ -2,9 +2,27 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="de_DE">
 <context>
+    <name>CmdApproxPlane</name>
+    <message>
+        <location filename="../../Command.cpp" line="+111"/>
+        <source>Reverse Engineering</source>
+        <translation>Rückführung</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Approximate plane...</source>
+        <translation>Ebene approximieren...</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Approximate a plane</source>
+        <translation>Approximieren einer Ebene</translation>
+    </message>
+</context>
+<context>
     <name>CmdApproxSurface</name>
     <message>
-        <location filename="../../Command.cpp" line="+50"/>
+        <location line="-62"/>
         <source>Reverse Engineering</source>
         <translation>Rückführung</translation>
     </message>
@@ -22,7 +40,7 @@
 <context>
     <name>Workbench</name>
     <message>
-        <location filename="../../Workbench.cpp" line="+36"/>
+        <location filename="../../Workbench.cpp" line="+37"/>
         <source>Reverse Engineering</source>
         <translation>Rückführung</translation>
     </message>

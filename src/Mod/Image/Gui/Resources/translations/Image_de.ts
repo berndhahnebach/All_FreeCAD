@@ -4,7 +4,7 @@
 <context>
     <name>CmdCreateImagePlane</name>
     <message>
-        <location filename="../../Command.cpp" line="+83"/>
+        <location filename="../../Command.cpp" line="+82"/>
         <source>Image</source>
         <translation>Grafik</translation>
     </message>
@@ -22,7 +22,7 @@
 <context>
     <name>CmdImageOpen</name>
     <message>
-        <location line="-36"/>
+        <location line="-35"/>
         <source>Image</source>
         <translation>Grafik</translation>
     </message>
@@ -53,7 +53,7 @@
 <context>
     <name>ImageGui::ImageView</name>
     <message>
-        <location filename="../../ImageView.cpp" line="+76"/>
+        <location filename="../../ImageView.cpp" line="+77"/>
         <source>&amp;Fit image</source>
         <translation>Bild an&amp;passen</translation>
     </message>
@@ -139,21 +139,21 @@
         <translation>Bildbetrachter</translation>
     </message>
     <message>
-        <location filename="../../Command.cpp" line="+11"/>
-        <location line="+34"/>
-        <location line="+42"/>
+        <location filename="../../Command.cpp" line="+10"/>
+        <location line="+33"/>
+        <location line="+46"/>
         <source>Images (*.png *.xpm *.jpg *.bmp)</source>
         <translation>Bilder (*.png *.xpm *.jpg *.bmp)</translation>
     </message>
     <message>
-        <location line="-77"/>
-        <location line="+34"/>
-        <location line="+42"/>
+        <location line="-80"/>
+        <location line="+33"/>
+        <location line="+46"/>
         <source>Choose an image file to open</source>
         <translation>Wählen Sie ein Bild zum Öffnen aus</translation>
     </message>
     <message>
-        <location line="-36"/>
+        <location line="-40"/>
         <source>Error open image</source>
         <translation>Fehler beim Öffnen des Bildes</translation>
     </message>

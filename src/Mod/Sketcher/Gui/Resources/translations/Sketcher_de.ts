@@ -4,7 +4,7 @@
 <context>
     <name>CmdSketcherConstrainCoincident</name>
     <message>
-        <location filename="../../CommandConstraints.cpp" line="+240"/>
+        <location filename="../../CommandConstraints.cpp" line="+286"/>
         <source>Sketcher</source>
         <translation>Skizze</translation>
     </message>
@@ -44,7 +44,7 @@
 <context>
     <name>CmdSketcherConstrainHorizontal</name>
     <message>
-        <location line="-259"/>
+        <location line="-305"/>
         <source>Sketcher</source>
         <translation>Skizze</translation>
     </message>
@@ -70,7 +70,7 @@
 <context>
     <name>CmdSketcherConstrainLock</name>
     <message>
-        <location line="+148"/>
+        <location line="+146"/>
         <source>Sketcher</source>
         <translation>Skizze</translation>
     </message>
@@ -83,20 +83,24 @@
         <translation type="obsolete">Erstellt eine gesperrte Beschränkung auf das ausgewählte Element</translation>
     </message>
     <message>
-        <location line="+2"/>
         <source>Create a lock constrain on the selected item</source>
-        <translation>Eine Sperrung für das gewählte Element setzen</translation>
+        <translation type="obsolete">Eine Sperrung für das gewählte Element setzen</translation>
     </message>
     <message>
-        <location line="-1"/>
+        <location line="+1"/>
         <source>Constrain lock</source>
         <translation>Sperren</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Create a lock constraint on the selected item</source>
+        <translation>Eine Sperrung für das gewählte Element setzen</translation>
     </message>
 </context>
 <context>
     <name>CmdSketcherConstrainParallel</name>
     <message>
-        <location line="+189"/>
+        <location line="+233"/>
         <source>Sketcher</source>
         <translation>Skizze</translation>
     </message>
@@ -112,9 +116,27 @@
     </message>
 </context>
 <context>
+    <name>CmdSketcherConstrainTangent</name>
+    <message>
+        <location line="+74"/>
+        <source>Sketcher</source>
+        <translation>Skizze</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Constrain tangent</source>
+        <translation>Tangente setzen</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Create a tangent constraint between two entities</source>
+        <translation>Tangente zwischen zwei Elementen erzwingen</translation>
+    </message>
+</context>
+<context>
     <name>CmdSketcherConstrainVertical</name>
     <message>
-        <location line="-267"/>
+        <location line="-386"/>
         <source>Sketcher</source>
         <translation>Skizze</translation>
     </message>
@@ -140,7 +162,7 @@
 <context>
     <name>CmdSketcherCreateArc</name>
     <message>
-        <location filename="../../CommandCreateGeo.cpp" line="+680"/>
+        <location filename="../../CommandCreateGeo.cpp" line="+714"/>
         <source>Sketcher</source>
         <translation>Skizze</translation>
     </message>
@@ -158,25 +180,22 @@
 <context>
     <name>CmdSketcherCreateBox</name>
     <message>
-        <location line="-320"/>
         <source>Sketcher</source>
-        <translation>Skizze</translation>
+        <translation type="obsolete">Skizze</translation>
     </message>
     <message>
-        <location line="+1"/>
         <source>Create box</source>
-        <translation>Rechteck erstellen</translation>
+        <translation type="obsolete">Rechteck erstellen</translation>
     </message>
     <message>
-        <location line="+1"/>
         <source>Create a box in the sketch</source>
-        <translation>Rechteck in der Skizze erstellen</translation>
+        <translation type="obsolete">Rechteck in der Skizze erstellen</translation>
     </message>
 </context>
 <context>
     <name>CmdSketcherCreateCircle</name>
     <message>
-        <location line="+462"/>
+        <location line="+135"/>
         <source>Sketcher</source>
         <translation>Skizze</translation>
     </message>
@@ -194,7 +213,7 @@
 <context>
     <name>CmdSketcherCreateDraftLine</name>
     <message>
-        <location line="+81"/>
+        <location line="+77"/>
         <source>Sketcher</source>
         <translation>Skizze</translation>
     </message>
@@ -212,7 +231,7 @@
 <context>
     <name>CmdSketcherCreateLine</name>
     <message>
-        <location line="-724"/>
+        <location line="-748"/>
         <source>Sketcher</source>
         <translation>Skizze</translation>
     </message>
@@ -230,7 +249,7 @@
 <context>
     <name>CmdSketcherCreatePoint</name>
     <message>
-        <location line="+668"/>
+        <location line="+692"/>
         <source>Sketcher</source>
         <translation>Skizze</translation>
     </message>
@@ -248,7 +267,7 @@
 <context>
     <name>CmdSketcherCreatePolyline</name>
     <message>
-        <location line="-321"/>
+        <location line="-347"/>
         <source>Sketcher</source>
         <translation>Skizze</translation>
     </message>
@@ -264,9 +283,27 @@
     </message>
 </context>
 <context>
+    <name>CmdSketcherCreateRectangle</name>
+    <message>
+        <location line="-178"/>
+        <source>Sketcher</source>
+        <translation>Skizze</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Create rectangle</source>
+        <translation>Rechteck erstellen</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Create a rectangle in the sketch</source>
+        <translation>Rechteck in der Skizze erstellen</translation>
+    </message>
+</context>
+<context>
     <name>CmdSketcherCreateText</name>
     <message>
-        <location line="+343"/>
+        <location line="+545"/>
         <source>Sketcher</source>
         <translation>Skizze</translation>
     </message>
@@ -342,9 +379,12 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../CommandConstraints.cpp" line="-59"/>
-        <location line="+76"/>
-        <location line="+101"/>
+        <location filename="../../CommandConstraints.cpp" line="-60"/>
+        <location line="+75"/>
+        <location line="+72"/>
+        <location line="+10"/>
+        <location line="+14"/>
+        <location line="+51"/>
         <location line="+11"/>
         <location line="+10"/>
         <location line="+9"/>
@@ -352,7 +392,11 @@
         <location line="+12"/>
         <location line="+10"/>
         <location line="+8"/>
-        <location line="+53"/>
+        <location line="+50"/>
+        <location line="+10"/>
+        <location line="+10"/>
+        <location line="+9"/>
+        <location line="+47"/>
         <location line="+10"/>
         <location line="+10"/>
         <location line="+9"/>
@@ -360,37 +404,48 @@
         <translation>Falsche Auswahl</translation>
     </message>
     <message>
-        <location line="-369"/>
-        <location line="+76"/>
+        <location line="-487"/>
+        <location line="+75"/>
         <source>Select an edge from the sketch.</source>
         <translation>Wählen Sie eine Kante aus der Skizze.</translation>
     </message>
     <message>
-        <location line="-56"/>
-        <location line="+81"/>
+        <location line="-55"/>
+        <location line="+80"/>
         <source>Double constraint</source>
         <translation>Doppelbedingung</translation>
     </message>
     <message>
-        <location line="-80"/>
-        <location line="+76"/>
+        <location line="-79"/>
+        <location line="+75"/>
         <source>The selected edge has already a horizontal constraint!</source>
         <translation>Die gewählte Kante hat bereits eine Horizontal-Beschränkung!</translation>
     </message>
     <message>
-        <location line="-72"/>
-        <location line="+71"/>
+        <location line="-71"/>
+        <location line="+70"/>
         <source>Impossible constraint</source>
         <translation>Nicht erfüllbare Bedingung</translation>
     </message>
     <message>
-        <location line="-70"/>
-        <location line="+76"/>
+        <location line="-69"/>
+        <location line="+75"/>
         <source>The selected edge has already a vertical constraint!</source>
         <translation>Die gewählte Kante hat bereits eine Vertikal-Beschränkung!</translation>
     </message>
     <message>
-        <location line="+75"/>
+        <location line="+46"/>
+        <source>Select entities from the sketch.</source>
+        <translation>Wählen Sie Elemente aus der Skizze aus.</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <location line="+14"/>
+        <source>Select exactly one entity from the sketch.</source>
+        <translation>Wählen Sie genau ein Element aus der Skizze aus.</translation>
+    </message>
+    <message>
+        <location line="+51"/>
         <location line="+81"/>
         <source>Select vertexes from the sketch.</source>
         <translation>Wählen Sie Vertexe aus der Skizze aus.</translation>
@@ -410,7 +465,7 @@
         <translation>Wählen Sie genau einen Vertex aus der Skizze aus.</translation>
     </message>
     <message>
-        <location line="+53"/>
+        <location line="+50"/>
         <source>Select two lines from the sketch.</source>
         <translation>Wählen Sie zwei Linien aus der Skizze aus.</translation>
     </message>
@@ -422,7 +477,19 @@
         <translation>Wählen Sie genau zwei Linien aus der Skizze aus.</translation>
     </message>
     <message>
-        <location filename="../../ViewProviderSketch.cpp" line="+1012"/>
+        <location line="+47"/>
+        <source>Select two entities from the sketch.</source>
+        <translation>Wählen Sie zwei Elemente aus der Skizze aus.</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <location line="+10"/>
+        <location line="+9"/>
+        <source>Select exactly two entities from the sketch.</source>
+        <translation>Wählen Sie genau zwei Elemente aus der Skizze aus.</translation>
+    </message>
+    <message>
+        <location filename="../../ViewProviderSketch.cpp" line="+1235"/>
         <source>Edit sketch</source>
         <translation>Skizze bearbeiten</translation>
     </message>
@@ -656,7 +723,7 @@
 <context>
     <name>Workbench</name>
     <message>
-        <location filename="../../Workbench.cpp" line="+36"/>
+        <location filename="../../Workbench.cpp" line="+37"/>
         <source>Sketcher</source>
         <translation>Skizze</translation>
     </message>

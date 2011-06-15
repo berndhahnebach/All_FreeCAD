@@ -47,7 +47,7 @@
         <translation>Max. Kantenlänge:</translation>
     </message>
     <message>
-        <location filename="../../Tessellation.cpp" line="+98"/>
+        <location filename="../../Tessellation.cpp" line="+106"/>
         <source>Select a shape for meshing, first.</source>
         <translation>Wählen Sie zuerst eine Form für die Vernetzung.</translation>
     </message>
