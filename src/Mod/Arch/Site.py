@@ -28,10 +28,10 @@ __title__="FreeCAD Site"
 __author__ = "Yorik van Havre"
 __url__ = "http://free-cad.sourceforge.net"
 
-def makeSite(objectslist):
+def makeSite(objectslist,name="Site"):
     '''makeBuilding(objectslist): creates a site including the
     objects from the given list.'''
-    obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Site")
+    obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython",name)
     Site(obj)
     ViewProviderSite(obj.ViewObject)
     obj.Components = objectslist

@@ -28,10 +28,10 @@ __title__="FreeCAD Building"
 __author__ = "Yorik van Havre"
 __url__ = "http://free-cad.sourceforge.net"
 
-def makeBuilding(objectslist,join=False):
+def makeBuilding(objectslist,join=False,name="Building"):
     '''makeBuilding(objectslist,[joinmode]): creates a building including the
     objects from the given list. If joinmode is True, components will be joined.'''
-    obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Building")
+    obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython",name)
     Building(obj)
     ViewProviderBuilding(obj.ViewObject)
     obj.Components = objectslist

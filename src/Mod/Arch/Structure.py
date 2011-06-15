@@ -30,10 +30,10 @@ __title__="FreeCAD Structure"
 __author__ = "Yorik van Havre"
 __url__ = "http://free-cad.sourceforge.net"
 
-def makeStructure(baseobj,length=None):
+def makeStructure(baseobj,length=None,name="Structure"):
     '''makeStructure(obj,[length]): creates a structure element
     based on the given object and the given length'''
-    obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Structure")
+    obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython",name)
     Structure(obj)
     ViewProviderStructure(obj.ViewObject)
     obj.Base = baseobj
