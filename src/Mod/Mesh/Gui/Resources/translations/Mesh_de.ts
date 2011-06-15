@@ -879,13 +879,6 @@ Bitte starten Sie vorher den Befehl zum Reparieren von Falten</translation>
     </message>
 </context>
 <context>
-    <name>QDockWidget</name>
-    <message>
-        <source>Evaluate &amp; Repair Mesh</source>
-        <translation>Netz auswerten &amp; reparieren</translation>
-    </message>
-</context>
-<context>
     <name>MeshGui::MeshFaceAddition</name>
     <message>
         <source>Add triangle</source>
@@ -976,6 +969,13 @@ Bitte starten Sie vorher den Befehl zum Reparieren von Falten</translation>
     <message>
         <source>Invert</source>
         <translation>Umkehren</translation>
+    </message>
+</context>
+<context>
+    <name>QDockWidget</name>
+    <message>
+        <source>Evaluate &amp; Repair Mesh</source>
+        <translation>Netz auswerten &amp; reparieren</translation>
     </message>
 </context>
 <context>

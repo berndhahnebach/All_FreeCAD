@@ -58,7 +58,7 @@
 <context>
     <name>CmdRobotEdge2Trac</name>
     <message>
-        <location line="+259"/>
+        <location line="+257"/>
         <source>Robot</source>
         <translation>Roboter</translation>
     </message>
@@ -184,7 +184,7 @@
 <context>
     <name>CmdRobotInsertWaypoint</name>
     <message>
-        <location filename="../../CommandTrajectory.cpp" line="-230"/>
+        <location filename="../../CommandTrajectory.cpp" line="-228"/>
         <source>Robot</source>
         <translation>Roboter</translation>
     </message>
@@ -252,7 +252,7 @@
 <context>
     <name>CmdRobotSetDefaultValues</name>
     <message>
-        <location line="+38"/>
+        <location line="+37"/>
         <source>Robot</source>
         <translation>Roboter</translation>
     </message>
@@ -302,7 +302,7 @@
 <context>
     <name>CmdRobotTrajectoryCompound</name>
     <message>
-        <location filename="../../CommandTrajectory.cpp" line="+183"/>
+        <location filename="../../CommandTrajectory.cpp" line="+175"/>
         <source>Robot</source>
         <translation>Roboter</translation>
     </message>
@@ -320,7 +320,7 @@
 <context>
     <name>CmdRobotTrajectoryDressUp</name>
     <message>
-        <location line="-43"/>
+        <location line="-49"/>
         <source>Robot</source>
         <translation>Roboter</translation>
     </message>
@@ -345,9 +345,10 @@
         <location filename="../../CommandExport.cpp" line="-52"/>
         <location line="+65"/>
         <location filename="../../CommandInsertRobot.cpp" line="+181"/>
-        <location filename="../../CommandTrajectory.cpp" line="-291"/>
+        <location filename="../../CommandTrajectory.cpp" line="-276"/>
         <location line="+56"/>
         <location line="+17"/>
+        <location line="+229"/>
         <source>Wrong selection</source>
         <translation>Falsche Auswahl</translation>
     </message>
@@ -356,7 +357,7 @@
         <location line="+29"/>
         <location filename="../../CommandExport.cpp" line="-64"/>
         <location line="+65"/>
-        <location filename="../../CommandTrajectory.cpp" line="-72"/>
+        <location filename="../../CommandTrajectory.cpp" line="-301"/>
         <source>Select one Robot and one Trajectory object.</source>
         <translation>Wählen Sie einen Roboter und eine Arbeitsbewegung.</translation>
     </message>
@@ -421,7 +422,7 @@ Siehe Dokumentation für Details.</translation>
         <translation>Einen Bewegungsablauf wählen.</translation>
     </message>
     <message>
-        <location line="+86"/>
+        <location line="+84"/>
         <source>set default speed</source>
         <translation>Standardgeschwindigkeit setzen</translation>
     </message>
@@ -449,6 +450,11 @@ Siehe Dokumentation für Details.</translation>
         <location line="+1"/>
         <source>acceleration: (e.g. 1 m/s^2 or 3 cm/s^2)</source>
         <translation>Beschleunigung: (zB 1 m / s ^ 2 oder 3 cm / s ^ 2)</translation>
+    </message>
+    <message>
+        <location line="+127"/>
+        <source>Select the Trajectory which you want to dress up.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../Workbench.cpp" line="+78"/>
@@ -584,7 +590,7 @@ Siehe Dokumentation für Details.</translation>
         <translation>Werkzeug: (0,0,400,0,0,0)</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+16"/>
         <source>...</source>
         <translation>...</translation>
     </message>
@@ -742,6 +748,11 @@ Siehe Dokumentation für Details.</translation>
         <location line="+11"/>
         <source>Sizing Value:</source>
         <translation>Größenwert:</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>Use orientation of edge</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../TaskEdge2TracParameter.cpp" line="+47"/>
@@ -960,7 +971,7 @@ Siehe Dokumentation für Details.</translation>
         <translation>(0,0,0),(0,0,0)</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+13"/>
         <source>...</source>
         <translation>...</translation>
     </message>
