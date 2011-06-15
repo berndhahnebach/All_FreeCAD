@@ -21,7 +21,7 @@
 #*                                                                         *
 #***************************************************************************
 
-import ifcReader, FreeCAD, Wall, Draft, os, time, Cell
+import ifcReader, FreeCAD, Wall, Draft, os, time, Cell, Floor, Building, Site
 from draftlibs import fcvec
 
 __title__="FreeCAD IFC importer"
@@ -75,7 +75,7 @@ def read(filename):
     t3 = time.time()
     if DEBUG: print "done processing",ifc,"in %s s" % ((t3-t1))
 
-def makeCell(entity,type="Cell"):
+def makeCell(entity,mode="Cell"):
     "makes a cell in the freecad document"
     try:
         if DEBUG: print "=====> making cell",entity.id
@@ -100,7 +100,15 @@ def makeCell(entity,type="Cell"):
                     if r.type == "IFCBUILDINGSTOREY":
                         o = FreeCAD.ActiveDocument.getObject("Floor"+str(r.id))
                         if o: fcelts.append(o)
-        cell = Cell.makeCell(fcelts,join=False,name=type+str(entity.id))
+        name = mode+str(entity.id)
+        if mode == "Site":
+            cell = Cell.makeSite(fcelts,name=name)
+        elif mode == "Floor":
+            cell = Cell.makeFloor(fcelts,join=True,name=name)
+        elif mode == "Building":
+            cell = Cell.makeBuilding(fcelts,name=name)
+        else:
+            cell = Cell.makeCell(fcelts,join=True,name=name)
         cell.CellType = type
     except:
         if DEBUG: print "error: skipping cell",entity.id        
@@ -115,7 +123,7 @@ def makeWall(entity):
         width = entity.getProperty("Width")
         height = entity.getProperty("Height")
         if width and height:
-                if DEBUG: print "got width, height ",entity.id,":",width,height
+                if DEBUG: print "got width, height ",entity.id,":",width,"/",height
                 for r in entity.Representation.Representations:
                     if r.RepresentationIdentifier == "Axis":
                         wire = makeWire(r.Items,placement)

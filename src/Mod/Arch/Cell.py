@@ -29,11 +29,11 @@ __title__="FreeCAD Cell"
 __author__ = "Yorik van Havre"
 __url__ = "http://free-cad.sourceforge.net"
 
-def makeCell(objectslist,join=True):
+def makeCell(objectslist,join=True,name="Cell"):
     '''makeCell(objectslist,[joinmode]): creates a cell including the
     objects from the given list. If joinmode is False, contents will
     not be joined.'''
-    obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Cell")
+    obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython",name)
     Cell(obj)
     ViewProviderCell(obj.ViewObject)
     obj.Components = objectslist

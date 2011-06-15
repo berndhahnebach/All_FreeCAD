@@ -28,11 +28,11 @@ __title__="FreeCAD Arch Floor"
 __author__ = "Yorik van Havre"
 __url__ = "http://free-cad.sourceforge.net"
 
-def makeFloor(objectslist,join=True):
+def makeFloor(objectslist,join=True,name="Floor"):
     '''makeFloor(objectslist,[joinmode]): creates a floor including the
     objects from the given list. If joinmode is False, components will
     not be joined.'''
-    obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Floor")
+    obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython",name)
     Floor(obj)
     ViewProviderFloor(obj.ViewObject)
     obj.Components = objectslist

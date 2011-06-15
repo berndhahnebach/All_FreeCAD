@@ -30,10 +30,10 @@ __title__="FreeCAD Wall"
 __author__ = "Yorik van Havre"
 __url__ = "http://free-cad.sourceforge.net"
 
-def makeWall(baseobj,width=None,height=None,align="Center"):
+def makeWall(baseobj,width=None,height=None,align="Center",name="Wall"):
     '''makeWall(obj,[width],[height],[align],[name]): creates a wall based on the
     given object'''
-    obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Wall")
+    obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython",name)
     Wall(obj)
     ViewProviderWall(obj.ViewObject)
     obj.Base = baseobj
@@ -89,7 +89,7 @@ class Wall(Component.Component):
         # getting default values
         height = normal = None
         if obj.Height:
-            height = obj.height
+            height = obj.Height
         else:
             for p in obj.InList:
                 if Draft.getType(p) == "Floor":
