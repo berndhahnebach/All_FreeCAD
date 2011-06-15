@@ -272,6 +272,9 @@ public:
 
 protected:
     SbBool processSoEvent(const SoEvent * const ev);
+
+private:
+    SbBool lockButton1;
 };
 
 } // namespace Gui
