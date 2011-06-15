@@ -300,10 +300,10 @@ private:
 
 /** Float properties
  * This is the father of all properties handling floats.
- * Use this Type only in rare cases. Mostly you want to 
- * use the more specialiced types like e.g. PropertyLenth.
- * This properties fullfill also the needs of the unit system.
- * See PropertyUnits.h for all properies with Units.
+ * Use this type only in rare cases. Mostly you want to 
+ * use the more specialized types like e.g. PropertyLenth.
+ * These properties fulfill also the needs of the unit system.
+ * See PropertyUnits.h for all properties with units.
  */
 class AppExport PropertyFloat: public Property
 {

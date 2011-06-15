@@ -1,283 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS>
-  <context>
+<TS version="2.0" language="de_DE">
+<context>
     <name>CmdCompleteConstraintAxle</name>
     <message>
-      <location/>
-      <source>Complete</source>
-      <translation>Abschließen</translation>
+        <location filename="../../Command.cpp" line="+42"/>
+        <source>Complete</source>
+        <translation>Komplett</translation>
     </message>
     <message>
-      <location/>
-      <source>Constraint Axle...</source>
-      <translation>Constraint Axle...</translation>
+        <location line="+1"/>
+        <source>Constraint Axle...</source>
+        <translation>Achse vorgeben...</translation>
     </message>
     <message>
-      <location/>
-      <source>set a axle constraint between two objects</source>
-      <translation>set a axle constraint between two objects</translation>
+        <location line="+1"/>
+        <source>set a axle constraint between two objects</source>
+        <translation>Eine Achse zwischen zwei Objekten vorgeben</translation>
     </message>
-  </context>
-  <context>
-    <name>CompleteGui::Workbench</name>
-    <message>
-      <location/>
-      <source>&amp;File</source>
-      <translation>&amp;Datei</translation>
-    </message>
-    <message>
-      <location/>
-      <source>&amp;Edit</source>
-      <translation>B&amp;earbeiten</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Standard views</source>
-      <translation>Standardansichten</translation>
-    </message>
-    <message>
-      <location/>
-      <source>&amp;Stereo</source>
-      <translation>&amp;Stereo</translation>
-    </message>
-    <message>
-      <location/>
-      <source>&amp;Zoom</source>
-      <translation>&amp;Zoom</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Visibility</source>
-      <translation>Sichtbarkeit</translation>
-    </message>
-    <message>
-      <location/>
-      <source>&amp;View</source>
-      <translation>&amp;Ansicht</translation>
-    </message>
-    <message>
-      <location/>
-      <source>&amp;Tools</source>
-      <translation>&amp;Werkzeuge</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Analyze</source>
-      <translation>Analysieren</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Boolean</source>
-      <translation>Boolean</translation>
-    </message>
-    <message>
-      <location/>
-      <source>&amp;Meshes</source>
-      <translation>&amp;Meshes</translation>
-    </message>
-    <message>
-      <location/>
-      <source>&amp;Part</source>
-      <translation>&amp;Teil</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Parametric</source>
-      <translation>Parametrisch</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Ske&amp;tch</source>
-      <translation>Entwurf</translation>
-    </message>
-    <message>
-      <location/>
-      <source>&amp;Drawing</source>
-      <translation>&amp;Zeichnung</translation>
-    </message>
-    <message>
-      <location/>
-      <source>&amp;Raytracing</source>
-      <translation>&amp;Raytracing</translation>
-    </message>
-    <message>
-      <location/>
-      <source>&amp;Drafting</source>
-      <translation>&amp;Drafting</translation>
-    </message>
-    <message>
-      <location/>
-      <source>&amp;Windows</source>
-      <translation>&amp;Fenster</translation>
-    </message>
-    <message>
-      <location/>
-      <source>&amp;Online-help</source>
-      <translation>&amp;Online-Hilfe</translation>
-    </message>
-    <message>
-      <location/>
-      <source>&amp;Help</source>
-      <translation>&amp;Hilfe</translation>
-    </message>
-    <message>
-      <location/>
-      <source>File</source>
-      <translation>Datei</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Macro</source>
-      <translation>Makro</translation>
-    </message>
-    <message>
-      <location/>
-      <source>View</source>
-      <translation>Ansicht</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Part design</source>
-      <translation>Part design</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Sketch based</source>
-      <translation>skizzenbasiert</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Drawings</source>
-      <translation>Zeichnungen</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Raytracing</source>
-      <translation>Raytracing</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Drafting</source>
-      <translation>Drafting</translation>
-    </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Workbench</name>
     <message>
-      <location/>
-      <source>&amp;File</source>
-      <translation>&amp;Datei</translation>
+        <location filename="../../Workbench.cpp" line="+49"/>
+        <source>&amp;Drawing</source>
+        <translation>&amp;Zeichnung</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Edit</source>
-      <translation>B&amp;earbeiten</translation>
+        <location line="-1"/>
+        <source>Ske&amp;tch</source>
+        <translation>Ski&amp;zze</translation>
     </message>
     <message>
-      <location/>
-      <source>Standard views</source>
-      <translation>Standardansichten</translation>
+        <location line="+2"/>
+        <source>&amp;Raytracing</source>
+        <translation>&amp;Raytracing</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;3D View</source>
-      <translation>&amp;3D-Ansicht</translation>
+        <location line="+1"/>
+        <source>&amp;Drafting</source>
+        <translation>&amp;Entwurf</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Zoom</source>
-      <translation>&amp;Zoom</translation>
+        <location line="+1"/>
+        <source>Sketch based</source>
+        <translation>skizzenbasiert</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;View</source>
-      <translation>&amp;Ansicht</translation>
+        <location line="+1"/>
+        <source>Parametric</source>
+        <translation>Parametrisch</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Tools</source>
-      <translation>&amp;Werkzeuge</translation>
+        <location line="+1"/>
+        <source>Object appearence</source>
+        <translation>Objektdarstellung</translation>
     </message>
     <message>
-      <location/>
-      <source>Analyze</source>
-      <translation>Analysieren</translation>
+        <location line="+1"/>
+        <source>Wire Tools</source>
+        <translation>Linien-Werkzeuge</translation>
     </message>
-    <message>
-      <location/>
-      <source>Boolean</source>
-      <translation>Boolean</translation>
-    </message>
-    <message>
-      <location/>
-      <source>&amp;Meshes</source>
-      <translation>&amp;Meshes</translation>
-    </message>
-    <message>
-      <location/>
-      <source>&amp;Part</source>
-      <translation>&amp;Teil</translation>
-    </message>
-    <message>
-      <location/>
-      <source>&amp;Drawing</source>
-      <translation>&amp;Zeichnung</translation>
-    </message>
-    <message>
-      <location/>
-      <source>&amp;Windows</source>
-      <translation>&amp;Fenster</translation>
-    </message>
-    <message>
-      <location/>
-      <source>&amp;Online-help</source>
-      <translation>&amp;Online-Hilfe</translation>
-    </message>
-    <message>
-      <location/>
-      <source>&amp;Help</source>
-      <translation>&amp;Hilfe</translation>
-    </message>
-    <message>
-      <location/>
-      <source>File</source>
-      <translation>Datei</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Macro</source>
-      <translation>Makro</translation>
-    </message>
-    <message>
-      <location/>
-      <source>View</source>
-      <translation>Ansicht</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Ske&amp;tch</source>
-      <translation>Entwurf</translation>
-    </message>
-    <message>
-      <location/>
-      <source>&amp;Raytracing</source>
-      <translation>&amp;Raytracing</translation>
-    </message>
-    <message>
-      <location/>
-      <source>&amp;Drafting</source>
-      <translation>&amp;Drafting</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Sketch based</source>
-      <translation>skizzenbasiert</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Parametric</source>
-      <translation>Parametrisch</translation>
-    </message>
-  </context>
+</context>
 </TS>

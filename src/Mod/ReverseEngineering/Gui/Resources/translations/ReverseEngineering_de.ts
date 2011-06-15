@@ -1,38 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS>
-  <context>
+<TS version="2.0" language="de_DE">
+<context>
     <name>CmdApproxSurface</name>
     <message>
-      <location/>
-      <source>Reverse Engineering</source>
-      <translation>Nachbau</translation>
+        <location filename="../../Command.cpp" line="+50"/>
+        <source>Reverse Engineering</source>
+        <translation>Rückführung</translation>
     </message>
     <message>
-      <location/>
-      <source>Approximate surface...</source>
-      <translation>Ungefähre Oberfläche ...</translation>
+        <location line="+1"/>
+        <source>Approximate surface...</source>
+        <translation>Ungefähre Oberfläche ...</translation>
     </message>
     <message>
-      <location/>
-      <source>Approximate a B-Spline surface</source>
-      <translation>Ungefähre B-Spline-Oberfläche</translation>
+        <location line="+1"/>
+        <source>Approximate a B-Spline surface</source>
+        <translation>Ungefähre B-Spline-Oberfläche</translation>
     </message>
-  </context>
-  <context>
-    <name>ReverseEngineeringGui::Workbench</name>
-    <message>
-      <location/>
-      <source>Reverse Engineering</source>
-      <translation>Nachbau</translation>
-    </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Workbench</name>
     <message>
-      <location/>
-      <source>Reverse Engineering</source>
-      <translation>Nachbau</translation>
+        <location filename="../../Workbench.cpp" line="+36"/>
+        <source>Reverse Engineering</source>
+        <translation>Rückführung</translation>
     </message>
-  </context>
+</context>
 </TS>

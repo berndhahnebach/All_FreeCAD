@@ -1,1522 +1,1159 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS>
-  <context>
+<TS version="2.0" language="de_DE">
+<context>
     <name>CmdMeshAddFacet</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Add triangle</source>
-      <translation>Add triangle</translation>
+        <source>Add triangle</source>
+        <translation>Dreieck hinzufügen</translation>
     </message>
     <message>
-      <location/>
-      <source>Add triangle manually to a mesh</source>
-      <translation>Add triangle manually to a mesh</translation>
+        <source>Add triangle manually to a mesh</source>
+        <translation>Dreieck manuell zu einem Netz hinzufügen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdMeshBoundingBox</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Boundings info...</source>
-      <translation>Boundings info...</translation>
+        <source>Boundings info...</source>
+        <translation>Abmessungen...</translation>
     </message>
     <message>
-      <location/>
-      <source>Shows the boundings of the selected mesh</source>
-      <translation>Shows the boundings of the selected mesh</translation>
+        <source>Shows the boundings of the selected mesh</source>
+        <translation>Anzeigen der Abmessungen des gewählten Netzes</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdMeshBuildRegularSolid</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Regular solid...</source>
-      <translation>Regular solid...</translation>
+        <source>Regular solid...</source>
+        <translation>Regelgeometrie...</translation>
     </message>
     <message>
-      <location/>
-      <source>Builds a regular solid</source>
-      <translation>Builds a regular solid</translation>
+        <source>Builds a regular solid</source>
+        <translation>Erstellen einer Regelgeometrie</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdMeshDemolding</name>
     <message>
-      <location/>
-      <source>Interactive demolding direction</source>
-      <translation>Interactive demolding direction</translation>
+        <source>Interactive demolding direction</source>
+        <translation>Interaktive Entformrichtung</translation>
     </message>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdMeshDifference</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Difference</source>
-      <translation>Differenz</translation>
+        <source>Difference</source>
+        <translation>Differenz</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdMeshEvaluateFacet</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Face info</source>
-      <translation>Face info</translation>
+        <source>Face info</source>
+        <translation>Dreiecksinformation</translation>
     </message>
     <message>
-      <location/>
-      <source>Information about face</source>
-      <translation>Information about face</translation>
+        <source>Information about face</source>
+        <translation>Information über Dreieck</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdMeshEvaluateSolid</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Check solid mesh</source>
-      <translation>Check solid mesh</translation>
+        <source>Check solid mesh</source>
+        <translation>Netz auf Solid überprüfen</translation>
     </message>
     <message>
-      <location/>
-      <source>Checks whether the mesh is a solid</source>
-      <translation>Checks whether the mesh is a solid</translation>
+        <source>Checks whether the mesh is a solid</source>
+        <translation>Überprüft, ob das Netz ein Solid ist</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdMeshEvaluation</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Evaluate mesh...</source>
-      <translation>Evaluate mesh...</translation>
+        <source>Evaluate mesh...</source>
+        <translation type="obsolete">Netz auswerten...</translation>
     </message>
     <message>
-      <location/>
-      <source>Opens a dialog to analyze and repair a mesh</source>
-      <translation>Opens a dialog to analyze and repair a mesh</translation>
+        <source>Opens a dialog to analyze and repair a mesh</source>
+        <translation>Öffnet einen Dialog zum Analysieren und Reparieren eines Netzes</translation>
     </message>
     <message>
-      <location/>
-      <source>Evaluate &amp;&amp; Repair mesh...</source>
-      <translation>Evaluate &amp;&amp; Repair mesh...</translation>
+        <source>Evaluate &amp;&amp; Repair mesh...</source>
+        <translation>Netz auswerten &amp;&amp; reparieren...</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdMeshExMakeMesh</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Make a Box</source>
-      <translation>Make a Box</translation>
+        <source>Make a Box</source>
+        <translation>Würfel erstellen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdMeshExMakeTool</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Make a Tool</source>
-      <translation>Make a Tool</translation>
+        <source>Make a Tool</source>
+        <translation>Werkzeug erstellen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdMeshExMakeUnion</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Make Union</source>
-      <translation>Make Union</translation>
+        <source>Make Union</source>
+        <translation>Verschneiden</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdMeshExport</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Export mesh...</source>
-      <translation>Export mesh...</translation>
+        <source>Export mesh...</source>
+        <translation>Netz exportieren...</translation>
     </message>
     <message>
-      <location/>
-      <source>Exports a mesh to file</source>
-      <translation>Exports a mesh to file</translation>
+        <source>Exports a mesh to file</source>
+        <translation>Netz in eine Datei exportieren</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdMeshFillInteractiveHole</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Close hole</source>
-      <translation>Loch schließen</translation>
+        <source>Close hole</source>
+        <translation>Loch schließen</translation>
     </message>
     <message>
-      <location/>
-      <source>Close holes interactively</source>
-      <translation>Close holes interactively</translation>
+        <source>Close holes interactively</source>
+        <translation>Loch interaktiv schließen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdMeshFillupHoles</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Fill holes...</source>
-      <translation>Löcher füllen...</translation>
+        <source>Fill holes...</source>
+        <translation>Löcher schließen...</translation>
     </message>
     <message>
-      <location/>
-      <source>Fill holes of the mesh</source>
-      <translation>Fill holes of the mesh</translation>
+        <source>Fill holes of the mesh</source>
+        <translation>Schließt Löcher in dem Netz</translation>
     </message>
-  </context>
-  <context>
-    <name>CmdMeshFixDegenerations</name>
-    <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Remove degenerated faces</source>
-      <translation>Remove degenerated faces</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Remove degenerated faces from the mesh</source>
-      <translation>Remove degenerated faces from the mesh</translation>
-    </message>
-  </context>
-  <context>
-    <name>CmdMeshFixDuplicateFaces</name>
-    <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Remove duplicated faces</source>
-      <translation>Remove duplicated faces</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Remove duplicated faces from the mesh</source>
-      <translation>Remove duplicated faces from the mesh</translation>
-    </message>
-  </context>
-  <context>
-    <name>CmdMeshFixDuplicatePoints</name>
-    <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Remove duplicated points</source>
-      <translation>Remove duplicated points</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Remove duplicated points from the mesh</source>
-      <translation>Remove duplicated points from the mesh</translation>
-    </message>
-  </context>
-  <context>
-    <name>CmdMeshFixIndices</name>
-    <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Fix indices</source>
-      <translation>Fix indices</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Fixes invalid indices in the mesh structure</source>
-      <translation>Fixes invalid indices in the mesh structure</translation>
-    </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdMeshFlipNormals</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Flip normals</source>
-      <translation>Flip normals</translation>
+        <source>Flip normals</source>
+        <translation>Normalen umdrehen</translation>
     </message>
     <message>
-      <location/>
-      <source>Flips the normals of the mesh</source>
-      <translation>Flips the normals of the mesh</translation>
+        <source>Flips the normals of the mesh</source>
+        <translation>Dreht die Dreiecksnormalen des Netzes um</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdMeshFromGeometry</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Create mesh from geometry...</source>
-      <translation>Create mesh from geometry...</translation>
+        <source>Create mesh from geometry...</source>
+        <translation>Erzeuge Netz aus Geometrie...</translation>
     </message>
     <message>
-      <location/>
-      <source>Create mesh from the selected geometry</source>
-      <translation>Create mesh from the selected geometry</translation>
+        <source>Create mesh from the selected geometry</source>
+        <translation>Erzeuge Netz aus selektierter Geometrie</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdMeshHarmonizeNormals</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Harmonize normals</source>
-      <translation>Harmonize normals</translation>
+        <source>Harmonize normals</source>
+        <translation>Normalen ausrichten</translation>
     </message>
     <message>
-      <location/>
-      <source>Harmonizes the normals of the mesh</source>
-      <translation>Harmonizes the normals of the mesh</translation>
+        <source>Harmonizes the normals of the mesh</source>
+        <translation>Richtet die Normalen des Netzes aus</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdMeshImport</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Import mesh...</source>
-      <translation>Import mesh...</translation>
+        <source>Import mesh...</source>
+        <translation>Netz importieren...</translation>
     </message>
     <message>
-      <location/>
-      <source>Imports a mesh from file</source>
-      <translation>Imports a mesh from file</translation>
+        <source>Imports a mesh from file</source>
+        <translation>Importiert Netz aus einer Datei</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdMeshIntersection</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Intersection</source>
-      <translation>Intersection</translation>
+        <source>Intersection</source>
+        <translation>Schnitt</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdMeshPolyCut</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Cut mesh</source>
-      <translation>Cut mesh</translation>
+        <source>Cut mesh</source>
+        <translation>Netz schneiden</translation>
     </message>
     <message>
-      <location/>
-      <source>Cuts a mesh with a picked polygon</source>
-      <translation>Cuts a mesh with a picked polygon</translation>
+        <source>Cuts a mesh with a picked polygon</source>
+        <translation>Schneidet ein Netz mit einem ausgewählten Polygon</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdMeshPolySegm</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Make segment</source>
-      <translation>Make segment</translation>
+        <source>Make segment</source>
+        <translation>Segment erzeugen</translation>
     </message>
     <message>
-      <location/>
-      <source>Creates a mesh segment</source>
-      <translation>Creates a mesh segment</translation>
+        <source>Creates a mesh segment</source>
+        <translation>Erzeuge Netz-Segment</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdMeshPolySelect</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Select mesh</source>
-      <translation>Select mesh</translation>
+        <source>Select mesh</source>
+        <translation>Netz auswählen</translation>
     </message>
     <message>
-      <location/>
-      <source>Select an area of the mesh</source>
-      <translation>Select an area of the mesh</translation>
+        <source>Select an area of the mesh</source>
+        <translation>Wähle einen Bereich des Netzes aus</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdMeshPolySplit</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Split mesh</source>
-      <translation>Split mesh</translation>
+        <source>Split mesh</source>
+        <translation>Netz auftrennen</translation>
     </message>
     <message>
-      <location/>
-      <source>Splits a mesh into two meshes</source>
-      <translation>Splits a mesh into two meshes</translation>
+        <source>Splits a mesh into two meshes</source>
+        <translation>Netz in zwei Teile trennen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdMeshRemoveCompByHand</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Remove components by hand...</source>
-      <translation>Remove components by hand...</translation>
+        <source>Remove components by hand...</source>
+        <translation>Komponente von Hand entfernen...</translation>
     </message>
     <message>
-      <location/>
-      <source>Mark a component to remove it from the mesh</source>
-      <translation>Mark a component to remove it from the mesh</translation>
+        <source>Mark a component to remove it from the mesh</source>
+        <translation>Markiere Komponente um von Hand zu entfernen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdMeshRemoveComponents</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Remove components...</source>
-      <translation>Remove components...</translation>
+        <source>Remove components...</source>
+        <translation>Komponenten entfernen...</translation>
     </message>
     <message>
-      <location/>
-      <source>Remove topologic independant components from the mesh</source>
-      <translation>Remove topologic independant components from the mesh</translation>
+        <source>Remove topologic independent components from the mesh</source>
+        <translation>Entfernt topologisch unabhängige Komponenten aus dem Netz</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdMeshSmoothing</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Smooth...</source>
-      <translation>Smooth...</translation>
+        <source>Smooth...</source>
+        <translation>Glätten...</translation>
     </message>
     <message>
-      <location/>
-      <source>Smooth the selected meshes</source>
-      <translation>Smooth the selected meshes</translation>
+        <source>Smooth the selected meshes</source>
+        <translation>Selektierte Netze glätten</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdMeshToolMesh</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Segment by tool mesh</source>
-      <translation>Segment by tool mesh</translation>
+        <source>Segment by tool mesh</source>
+        <translation>Segmentieren</translation>
     </message>
     <message>
-      <location/>
-      <source>Creates a segment from a given tool mesh</source>
-      <translation>Creates a segment from a given tool mesh</translation>
+        <source>Creates a segment from a given tool mesh</source>
+        <translation>Segment mit Hilfe eines gegebenen Hilfsnetzes erstellen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdMeshTransform</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Transform mesh</source>
-      <translation>Transform mesh</translation>
+        <source>Transform mesh</source>
+        <translation>Netz transformieren</translation>
     </message>
     <message>
-      <location/>
-      <source>Rotate or move a mesh</source>
-      <translation>Rotate or move a mesh</translation>
+        <source>Rotate or move a mesh</source>
+        <translation>Dreht oder verschiebt ein Netz</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdMeshUnion</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Union</source>
-      <translation>Union</translation>
+        <source>Union</source>
+        <translation>Vereinigung</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdMeshVertexCurvature</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Calculates the curvature of the vertices of a mesh</source>
-      <translation>Calculates the curvature of the vertices of a mesh</translation>
+        <source>Calculates the curvature of the vertices of a mesh</source>
+        <translation>Berechnet die Krümmungen in den Vertexen eines Netzes</translation>
     </message>
     <message>
-      <location/>
-      <source>Curvature plot</source>
-      <translation>Curvature plot</translation>
+        <source>Curvature plot</source>
+        <translation>Krümmungsplot</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>CmdMeshVertexCurvatureInfo</name>
     <message>
-      <location/>
-      <source>Mesh</source>
-      <translation>Mesh</translation>
+        <source>Mesh</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Curvature info</source>
-      <translation>Curvature info</translation>
+        <source>Curvature info</source>
+        <translation>Krümmungsinformation</translation>
     </message>
     <message>
-      <location/>
-      <source>Information about curvature</source>
-      <translation>Information about curvature</translation>
+        <source>Information about curvature</source>
+        <translation>Informationen über Krümmung</translation>
     </message>
-  </context>
-  <context>
-    <name>DockEvaluateMeshImp</name>
-    <message>
-      <location/>
-      <source>Evaluate Mesh</source>
-      <translation>Evaluate Mesh</translation>
-    </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>MeshGui::DlgEvaluateMesh</name>
     <message>
-      <location/>
-      <source>Evaluate Mesh</source>
-      <translation>Evaluate Mesh</translation>
+        <source>Evaluate Mesh</source>
+        <translation type="obsolete">Netz auswerten</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Help</source>
-      <translation>&amp;Help</translation>
+        <source>&amp;Help</source>
+        <translation>&amp;Hilfe</translation>
     </message>
     <message>
-      <location/>
-      <source>F1</source>
-      <translation>F1</translation>
+        <source>F1</source>
+        <translation>F1</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Close</source>
-      <translation>&amp;Close</translation>
+        <source>&amp;Close</source>
+        <translation>Schl&amp;ießen</translation>
     </message>
     <message>
-      <location/>
-      <source>Alt+C</source>
-      <translation>Alt + C</translation>
+        <source>Alt+C</source>
+        <translation>Alt+I</translation>
     </message>
     <message>
-      <location/>
-      <source>Mesh information</source>
-      <translation>Mesh information</translation>
+        <source>Mesh information</source>
+        <translation>Informationen zum Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>No information</source>
-      <translation>Keine Informationen</translation>
+        <source>No information</source>
+        <translation>Keine Informationen</translation>
     </message>
     <message>
-      <location/>
-      <source>Number of points:</source>
-      <translation>Anzahl der Punkte:</translation>
+        <source>Number of points:</source>
+        <translation>Anzahl Punkte:</translation>
     </message>
     <message>
-      <location/>
-      <source>Number of edges:</source>
-      <translation>Anzahl der Ecken:</translation>
+        <source>Number of edges:</source>
+        <translation>Anzahl Kanten:</translation>
     </message>
     <message>
-      <location/>
-      <source>Refresh</source>
-      <translation>Aktualisieren</translation>
+        <source>Refresh</source>
+        <translation>Erneut laden</translation>
     </message>
     <message>
-      <location/>
-      <source>Analyze</source>
-      <translation>Analysieren</translation>
+        <source>Analyze</source>
+        <translation>Analysieren</translation>
     </message>
     <message>
-      <location/>
-      <source>Repair</source>
-      <translation>Repair</translation>
+        <source>Repair</source>
+        <translation>Reparieren</translation>
     </message>
     <message>
-      <location/>
-      <source>Orientation</source>
-      <translation>Richtung</translation>
+        <source>Orientation</source>
+        <translation>Orientierung</translation>
     </message>
     <message>
-      <location/>
-      <source>Degenerated faces</source>
-      <translation>Degenerated faces</translation>
+        <source>Degenerated faces</source>
+        <translation>Entartete Facetten</translation>
     </message>
     <message>
-      <location/>
-      <source>Face indices</source>
-      <translation>Face indices</translation>
+        <source>Face indices</source>
+        <translation>Facettenindexe</translation>
     </message>
     <message>
-      <location/>
-      <source>Number of faces:</source>
-      <translation>Number of faces:</translation>
+        <source>Number of faces:</source>
+        <translation>Anzahl Facetten:</translation>
     </message>
     <message>
-      <location/>
-      <source>Duplicated faces</source>
-      <translation>Duplicated faces</translation>
+        <source>Duplicated faces</source>
+        <translation>Doppelte Dreiecke</translation>
     </message>
     <message>
-      <location/>
-      <source>Duplicated points</source>
-      <translation>Duplicated points</translation>
+        <source>Duplicated points</source>
+        <translation>Doppelte Punkte</translation>
     </message>
     <message>
-      <location/>
-      <source>Non-manifolds</source>
-      <translation>Non-manifolds</translation>
+        <source>Non-manifolds</source>
+        <translation>Nichtmannigfaltigkeiten</translation>
     </message>
     <message>
-      <location/>
-      <source>Self-intersections</source>
-      <translation>Self-intersections</translation>
+        <source>Self-intersections</source>
+        <translation>Selbstdurchdringungen</translation>
     </message>
     <message>
-      <location/>
-      <source>All above tests together</source>
-      <translation>All above tests together</translation>
+        <source>All above tests together</source>
+        <translation>Alle Tests zusammen</translation>
     </message>
     <message>
-      <location/>
-      <source>Repetitive repair</source>
-      <translation>Repetitive repair</translation>
+        <source>Repetitive repair</source>
+        <translation>Reparatur wiederholen</translation>
     </message>
     <message>
-      <location/>
-      <source>Evaluate &amp; Repair Mesh</source>
-      <translation>Evaluate &amp; Repair Mesh</translation>
+        <source>Evaluate &amp; Repair Mesh</source>
+        <translation>Netz auswerten &amp; reparieren</translation>
     </message>
     <message>
-      <location/>
-      <source>Folds on surface</source>
-      <translation>Folds on surface</translation>
+        <source>Folds on surface</source>
+        <translation>Oberflächenfalten</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>MeshGui::DlgEvaluateMeshImp</name>
     <message>
-      <location/>
-      <source>No information</source>
-      <translation>Keine Informationen</translation>
+        <source>No information</source>
+        <translation>Keine Informationen</translation>
     </message>
     <message>
-      <location/>
-      <source>Invalid neighbour indices</source>
-      <translation>Invalid neighbour indices</translation>
+        <source>Invalid neighbour indices</source>
+        <translation>Ungültige Nachbarindexe</translation>
     </message>
     <message>
-      <location/>
-      <source>Invalid face indices</source>
-      <translation>Invalid face indices</translation>
+        <source>Invalid face indices</source>
+        <translation>Ungültige Facettenindexe</translation>
     </message>
     <message>
-      <location/>
-      <source>Invalid point indices</source>
-      <translation>Invalid point indices</translation>
+        <source>Invalid point indices</source>
+        <translation>Ungültige Punktindexe</translation>
     </message>
     <message>
-      <location/>
-      <source>Multiple point indices</source>
-      <translation>Multiple point indices</translation>
+        <source>Multiple point indices</source>
+        <translation>Mehrfache Punktindexe</translation>
     </message>
     <message>
-      <location/>
-      <source>Non-manifolds</source>
-      <translation>Non-manifolds</translation>
+        <source>Non-manifolds</source>
+        <translation>Nichtmannigfaltigkeiten</translation>
     </message>
     <message>
-      <location/>
-      <source>Cannot remove non-manifolds</source>
-      <translation>Cannot remove non-manifolds</translation>
+        <source>Cannot remove non-manifolds</source>
+        <translation>Nichtmannigfaltigkeiten können nicht entfernt werden</translation>
     </message>
     <message>
-      <location/>
-      <source>No selection</source>
-      <translation>No selection</translation>
+        <source>No selection</source>
+        <translation>Keine Auswahl</translation>
     </message>
     <message>
-      <location/>
-      <source>No flipped normals</source>
-      <translation>No flipped normals</translation>
+        <source>No flipped normals</source>
+        <translation>Keine verdrehten Normalen</translation>
     </message>
     <message>
-      <location/>
-      <source>%1 flipped normals</source>
-      <translation>%1 flipped normals</translation>
+        <source>%1 flipped normals</source>
+        <translation>%1 verdrehte Normalen</translation>
     </message>
     <message>
-      <location/>
-      <source>No non-manifolds</source>
-      <translation>No non-manifolds</translation>
+        <source>No non-manifolds</source>
+        <translation>Keine Nichtmannigfaltigkeiten</translation>
     </message>
     <message>
-      <location/>
-      <source>%1 non-manifolds</source>
-      <translation>%1 non-manifolds</translation>
+        <source>%1 non-manifolds</source>
+        <translation>%1 Nichtmannigfaltigkeiten</translation>
     </message>
     <message>
-      <location/>
-      <source>No invalid indices</source>
-      <translation>No invalid indices</translation>
+        <source>No invalid indices</source>
+        <translation>Keine ungültige Indexe</translation>
     </message>
     <message>
-      <location/>
-      <source>No degenerations</source>
-      <translation>No degenerations</translation>
+        <source>No degenerations</source>
+        <translation>Keine Entartungen</translation>
     </message>
     <message>
-      <location/>
-      <source>%1 degenerated faces</source>
-      <translation>%1 degenerated faces</translation>
+        <source>%1 degenerated faces</source>
+        <translation>%1 entartete Facetten</translation>
     </message>
     <message>
-      <location/>
-      <source>No duplicated faces</source>
-      <translation>No duplicated faces</translation>
+        <source>No duplicated faces</source>
+        <translation>Keine doppelten Facetten</translation>
     </message>
     <message>
-      <location/>
-      <source>%1 duplicated faces</source>
-      <translation>%1 duplicated faces</translation>
+        <source>%1 duplicated faces</source>
+        <translation>%1 doppelte Facetten</translation>
     </message>
     <message>
-      <location/>
-      <source>No duplicated points</source>
-      <translation>No duplicated points</translation>
+        <source>No duplicated points</source>
+        <translation>Keine doppelten Punkte</translation>
     </message>
     <message>
-      <location/>
-      <source>Duplicated points</source>
-      <translation>Duplicated points</translation>
+        <source>Duplicated points</source>
+        <translation>Doppelte Punkte</translation>
     </message>
     <message>
-      <location/>
-      <source>Orientation</source>
-      <translation>Richtung</translation>
+        <source>Orientation</source>
+        <translation>Orientierung</translation>
     </message>
     <message>
-      <location/>
-      <source>Indices</source>
-      <translation>Indices</translation>
+        <source>Indices</source>
+        <translation>Indexe</translation>
     </message>
     <message>
-      <location/>
-      <source>Degenerations</source>
-      <translation>Degenerations</translation>
+        <source>Degenerations</source>
+        <translation>Degenerierungen</translation>
     </message>
     <message>
-      <location/>
-      <source>Duplicated faces</source>
-      <translation>Duplicated faces</translation>
+        <source>Duplicated faces</source>
+        <translation>Doppelte Dreiecke</translation>
     </message>
     <message>
-      <location/>
-      <source>No self-intersections</source>
-      <translation>No self-intersections</translation>
+        <source>No self-intersections</source>
+        <translation>Keine Selbstdurchdringungen</translation>
     </message>
     <message>
-      <location/>
-      <source>Self-intersections</source>
-      <translation>Self-intersections</translation>
+        <source>Self-intersections</source>
+        <translation>Selbstdurchdringungen</translation>
     </message>
     <message>
-      <location/>
-      <source>Mesh repair</source>
-      <translation>Mesh repair</translation>
+        <source>Mesh repair</source>
+        <translation>Netz reparieren</translation>
     </message>
     <message>
-      <location/>
-      <source>Flipped normals found</source>
-      <translation>Flipped normals found</translation>
+        <source>Flipped normals found</source>
+        <translation>Verdrehte Normalen gefunden</translation>
     </message>
     <message>
-      <location/>
-      <source>Check failed due to folds on the surface.
+        <source>Check failed due to folds on the surface.
 Please run the command to repair folds first</source>
-      <translation>Check failed due to folds on the surface.
-Please run the command to repair folds first</translation>
+        <translation>Überprüfung wegen Falten in der Oberfläche fehlgeschlagen.
+Bitte starten Sie vorher den Befehl zum Reparieren von Falten</translation>
     </message>
     <message>
-      <location/>
-      <source>No folds on surface</source>
-      <translation>No folds on surface</translation>
+        <source>No folds on surface</source>
+        <translation>Keine Oberflächenfalten</translation>
     </message>
     <message>
-      <location/>
-      <source>%1 folds on surface</source>
-      <translation>%1 folds on surface</translation>
+        <source>%1 folds on surface</source>
+        <translation>%1 Oberflächenfalten</translation>
     </message>
     <message>
-      <location/>
-      <source>Folds</source>
-      <translation>Folds</translation>
+        <source>Folds</source>
+        <translation>Falten</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>MeshGui::DlgRegularSolid</name>
     <message>
-      <location/>
-      <source>Regular Solid</source>
-      <translation>Regular Solid</translation>
+        <source>Regular Solid</source>
+        <translation>Regelgeometrie</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Create</source>
-      <translation>&amp;Create</translation>
+        <source>&amp;Create</source>
+        <translation>&amp;Erstellen</translation>
     </message>
     <message>
-      <location/>
-      <source>Alt+C</source>
-      <translation>Alt + C</translation>
+        <source>Alt+C</source>
+        <translation>Alt+S</translation>
     </message>
     <message>
-      <location/>
-      <source>Cl&amp;ose</source>
-      <translation>Cl&amp;ose</translation>
+        <source>Cl&amp;ose</source>
+        <translation>Schl&amp;ießen</translation>
     </message>
     <message>
-      <location/>
-      <source>Alt+O</source>
-      <translation>Alt+O</translation>
+        <source>Alt+O</source>
+        <translation>Alt+I</translation>
     </message>
     <message>
-      <location/>
-      <source>Solid:</source>
-      <translation>Solid:</translation>
+        <source>Solid:</source>
+        <translation>Körper:</translation>
     </message>
     <message>
-      <location/>
-      <source>Cube</source>
-      <translation>Cube</translation>
+        <source>Cube</source>
+        <translation>Würfel</translation>
     </message>
     <message>
-      <location/>
-      <source>Cylinder</source>
-      <translation>Cylinder</translation>
+        <source>Cylinder</source>
+        <translation>Zylinder</translation>
     </message>
     <message>
-      <location/>
-      <source>Cone</source>
-      <translation>Cone</translation>
+        <source>Cone</source>
+        <translation>Kegel</translation>
     </message>
     <message>
-      <location/>
-      <source>Sphere</source>
-      <translation>Sphere</translation>
+        <source>Sphere</source>
+        <translation>Kugel</translation>
     </message>
     <message>
-      <location/>
-      <source>Ellipsoid</source>
-      <translation>Ellipsoid</translation>
+        <source>Ellipsoid</source>
+        <translation>Ellipsoid</translation>
     </message>
     <message>
-      <location/>
-      <source>Torus</source>
-      <translation>Torus</translation>
+        <source>Torus</source>
+        <translation>Torus</translation>
     </message>
     <message>
-      <location/>
-      <source>Height:</source>
-      <translation>Höhe:</translation>
+        <source>Height:</source>
+        <translation>Höhe:</translation>
     </message>
     <message>
-      <location/>
-      <source>Length:</source>
-      <translation>Länge:</translation>
+        <source>Length:</source>
+        <translation>Länge:</translation>
     </message>
     <message>
-      <location/>
-      <source>Width:</source>
-      <translation>Breite:</translation>
+        <source>Width:</source>
+        <translation>Breite:</translation>
     </message>
     <message>
-      <location/>
-      <source>Radius:</source>
-      <translation>Radius:</translation>
+        <source>Radius:</source>
+        <translation>Radius:</translation>
     </message>
     <message>
-      <location/>
-      <source>Closed</source>
-      <translation>Closed</translation>
+        <source>Closed</source>
+        <translation>Geschlossen</translation>
     </message>
     <message>
-      <location/>
-      <source>Sampling:</source>
-      <translation>Sampling:</translation>
+        <source>Sampling:</source>
+        <translation>Abtastung:</translation>
     </message>
     <message>
-      <location/>
-      <source>Edge length:</source>
-      <translation>Edge length:</translation>
+        <source>Edge length:</source>
+        <translation>Kantenlänge:</translation>
     </message>
     <message>
-      <location/>
-      <source>Radius 1:</source>
-      <translation>Radius 1:</translation>
+        <source>Radius 1:</source>
+        <translation>Radius 1:</translation>
     </message>
     <message>
-      <location/>
-      <source>Radius 2:</source>
-      <translation>Radius 2:</translation>
+        <source>Radius 2:</source>
+        <translation>Radius 2:</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>MeshGui::DlgRegularSolidImp</name>
     <message>
-      <location/>
-      <source>Create %1</source>
-      <translation>Erstelle %1</translation>
+        <source>Create %1</source>
+        <translation>Erstelle %1</translation>
     </message>
     <message>
-      <location/>
-      <source>No active document</source>
-      <translation>Kein aktives Dokument</translation>
+        <source>No active document</source>
+        <translation>Kein aktives Dokument</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>MeshGui::DlgSettingsMeshView</name>
     <message>
-      <location/>
-      <source>Mesh view</source>
-      <translation>Mesh view</translation>
+        <source>Mesh view</source>
+        <translation>Netz</translation>
     </message>
     <message>
-      <location/>
-      <source>Appearance</source>
-      <translation>Appearance</translation>
+        <source>Appearance</source>
+        <translation type="obsolete">Erscheinungsbild</translation>
     </message>
     <message>
-      <location/>
-      <source>Face color</source>
-      <translation>Oberflächenfarbe</translation>
+        <source>Face color</source>
+        <translation type="obsolete">Dreiecksfarbe</translation>
     </message>
     <message>
-      <location/>
-      <source>Two-side rendering</source>
-      <translation>Two-side rendering</translation>
+        <source>Two-side rendering</source>
+        <translation>Doppelseitiges Rendern</translation>
     </message>
     <message>
-      <location/>
-      <source>Backface color</source>
-      <translation>Backface color</translation>
+        <source>Backface color</source>
+        <translation>Untergrundfarbe</translation>
     </message>
     <message>
-      <location/>
-      <source>Smoothing</source>
-      <translation>Smoothing</translation>
+        <source>Smoothing</source>
+        <translation>Glättung</translation>
     </message>
     <message>
-      <location/>
-      <source>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;This is the smallest angle between two faces where normals get calculated to do flat shading.&lt;/p&gt;&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;If the angle between the normals of two neighbouring faces is less than the crease angle, the faces will be smoothshaded around their common edge.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;This is the smallest angle between two faces where normals get calculated to do flat shading.&lt;/p&gt;&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;If the angle between the normals of two neighbouring faces is less than the crease angle, the faces will be smoothshaded around their common edge.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;This is the smallest angle between two faces where normals get calculated to do flat shading.&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;If the angle between the normals of two neighbouring faces is less than the crease angle, the faces will be smoothshaded around their common edge.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Das ist der kleinste Winkel zwischen zwei Dreiecken zur Berechenung beider Normalen für das Flat-Shading.&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Falls der Winkel zweier benachbarter dreiecke kleiner als der Knitterwinkel ist, werden die Dreiecke um die gemeinsame Kante geglättet gerendert.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-      <location/>
-      <source>Crease angle</source>
-      <translation>Crease angle</translation>
+        <source>Crease angle</source>
+        <translation>Knitterwinkel</translation>
     </message>
     <message>
-      <location/>
-      <source>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600;"&gt;Flat shading/Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;Defines the appearance of surfaces.&lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;With flat shading the surface normals are not defined per vertex that leads to a unreal appearance for curved surfaces while using Phong shading leads to a smoother appearance. &lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;If this option is set Phong shading is used, if it is unset flat shading is used.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600;"&gt;Flat shading/Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;Defines the appearance of surfaces.&lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;With flat shading the surface normals are not defined per vertex that leads to a unreal appearance for curved surfaces while using Phong shading leads to a smoother appearance. &lt;/p&gt;&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;If this option is set Phong shading is used, if it is unset flat shading is used.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Flat shading/Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Defines the appearance of surfaces.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;With flat shading the surface normals are not defined per vertex that leads to a unreal appearance for curved surfaces while using Phong shading leads to a smoother appearance. &lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;If this option is set Phong shading is used, if it is unset flat shading is used.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Flat shading/Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Definiert das Aussehen von Oberflächen.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Bei Flat-Shading werden die Flächennormalen nicht pro Vertex gesetzt, was zu unnatürlichem Aussehen führen kann, während Phong-Shading zu glatterem Aussehen führt. &lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Falls diese Option gesetzt ist, wird Phong-Shading verwendet, andernfalls wird Flat-Shading verwendet.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-      <location/>
-      <source>Define normal per vertex</source>
-      <translation>Define normal per vertex</translation>
+        <source>Define normal per vertex</source>
+        <translation>Definiere Normale pro Vertex</translation>
+    </message>
+    <message utf8="true">
+        <source> °</source>
+        <translation> °</translation>
     </message>
     <message>
-      <location/>
-      <source> °</source>
-      <translation> °</translation>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Hint&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Defining the normals per vertex is also called &lt;span style=&quot; font-style:italic;&quot;&gt;Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;while defining the normals per face is called &lt;/span&gt;Flat shading&lt;span style=&quot; font-style:normal;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Hinweis&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Die Angabe der Normalen per Vertex wird auch &lt;span style=&quot; font-style:italic;&quot;&gt;Phong shading&lt;/span&gt; genannt,&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;während die Angabe der Normalen pro Fläche &lt;/span&gt;Flat shading&lt;span style=&quot; font-style:normal;&quot;&gt; gennant wird.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-      <location/>
-      <source>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600;"&gt;Hint&lt;/span&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;Defining the normals per vertex is also called &lt;span style=" font-style:italic;"&gt;Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;"&gt;&lt;span style=" font-style:normal;"&gt;while defining the normals per face is called &lt;/span&gt;Flat shading&lt;span style=" font-style:normal;"&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-      <translation>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;"&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;&lt;span style=" font-weight:600;"&gt;Hint&lt;/span&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"&gt;Defining the normals per vertex is also called &lt;span style=" font-style:italic;"&gt;Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;"&gt;&lt;span style=" font-style:normal;"&gt;while defining the normals per face is called &lt;/span&gt;Flat shading&lt;span style=" font-style:normal;"&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <source>Default appearance for new meshes</source>
+        <translation>Standardmäßiges Erscheinungsbild für neue Netze</translation>
     </message>
     <message>
-      <location/>
-      <source>Default appearance for new meshes</source>
-      <translation>Default appearance for new meshes</translation>
+        <source>Default line color</source>
+        <translation>Standard-Kantenfarbe</translation>
     </message>
     <message>
-      <location/>
-      <source>Default line color</source>
-      <translation>Default line color</translation>
+        <source>Mesh transparency</source>
+        <translation>Transparenz des Netzes</translation>
     </message>
     <message>
-      <location/>
-      <source>Mesh transparency</source>
-      <translation>Mesh transparency</translation>
+        <source>Default mesh color</source>
+        <translation>Standard-Flächenfarbe</translation>
     </message>
     <message>
-      <location/>
-      <source>Default mesh color</source>
-      <translation>Default mesh color</translation>
+        <source>Show bounding-box for highlighted or selected meshes</source>
+        <translation>Bounding-Box für gehighlightete oder selekierte Netze anzeigen</translation>
     </message>
     <message>
-      <location/>
-      <source>Show bounding-box for highlighted or selected meshes</source>
-      <translation>Show bounding-box for highlighted or selected meshes</translation>
+        <source>Line transparency</source>
+        <translation>Transparenz der Kanten</translation>
     </message>
-    <message>
-      <location/>
-      <source>Line transparency</source>
-      <translation>Linientransparenz</translation>
-    </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>MeshGui::DlgSmoothing</name>
     <message>
-      <location/>
-      <source>Smoothing</source>
-      <translation>Smoothing</translation>
+        <source>Smoothing</source>
+        <translation>Glättung</translation>
     </message>
     <message>
-      <location/>
-      <source>Method</source>
-      <translation>Methode</translation>
+        <source>Method</source>
+        <translation>Methode</translation>
     </message>
     <message>
-      <location/>
-      <source>Taubin</source>
-      <translation>Taubin</translation>
+        <source>Taubin</source>
+        <translation>Taubin</translation>
     </message>
     <message>
-      <location/>
-      <source>Laplace</source>
-      <translation>Laplace</translation>
+        <source>Laplace</source>
+        <translation>Laplace</translation>
     </message>
     <message>
-      <location/>
-      <source>Parameter</source>
-      <translation>Parameter</translation>
+        <source>Parameter</source>
+        <translation>Parameter</translation>
     </message>
     <message>
-      <location/>
-      <source>Iterations:</source>
-      <translation>Iterations:</translation>
+        <source>Iterations:</source>
+        <translation>Iterationen:</translation>
     </message>
     <message>
-      <location/>
-      <source>Lambda:</source>
-      <translation>Lambda:</translation>
+        <source>Lambda:</source>
+        <translation>Lambda:</translation>
     </message>
     <message>
-      <location/>
-      <source>Mu:</source>
-      <translation>Mu:</translation>
+        <source>Mu:</source>
+        <translation>Mu:</translation>
     </message>
-  </context>
-  <context>
-    <name>MeshGui::DockEvaluateMeshImp</name>
+</context>
+<context>
+    <name>QDockWidget</name>
     <message>
-      <location/>
-      <source>Evaluate &amp; Repair Mesh</source>
-      <translation>Evaluate &amp; Repair Mesh</translation>
+        <source>Evaluate &amp; Repair Mesh</source>
+        <translation>Netz auswerten &amp; reparieren</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>MeshGui::MeshFaceAddition</name>
     <message>
-      <location/>
-      <source>Add triangle</source>
-      <translation>Add triangle</translation>
+        <source>Add triangle</source>
+        <translation>Dreieck hinzufügen</translation>
     </message>
     <message>
-      <location/>
-      <source>Flip normal</source>
-      <translation>Flip normal</translation>
+        <source>Flip normal</source>
+        <translation>Normalen umdrehen</translation>
     </message>
     <message>
-      <location/>
-      <source>Clear</source>
-      <translation>Clear</translation>
+        <source>Clear</source>
+        <translation>Löschen</translation>
     </message>
     <message>
-      <location/>
-      <source>Finish</source>
-      <translation>Fertig stellen</translation>
+        <source>Finish</source>
+        <translation>Fertig</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>MeshGui::RemoveComponents</name>
     <message>
-      <location/>
-      <source>Remove components</source>
-      <translation>Bauteile entfernen</translation>
+        <source>Remove components</source>
+        <translation>Komponenten entfernen</translation>
     </message>
     <message>
-      <location/>
-      <source>Select</source>
-      <translation>Wählen</translation>
+        <source>Select</source>
+        <translation>Auswählen</translation>
     </message>
     <message>
-      <location/>
-      <source>Select whole component</source>
-      <translation>Select whole component</translation>
+        <source>Select whole component</source>
+        <translation>Ganze Komponente auswählen</translation>
     </message>
     <message>
-      <location/>
-      <source>Pick triangle</source>
-      <translation>Pick triangle</translation>
+        <source>Pick triangle</source>
+        <translation>Dreieck aufnehmen</translation>
     </message>
     <message>
-      <location/>
-      <source>&lt; faces than</source>
-      <translation>&lt; faces than</translation>
+        <source>&lt; faces than</source>
+        <translation>&lt; Dreiecke als</translation>
     </message>
     <message>
-      <location/>
-      <source>Region</source>
-      <translation>Bereich</translation>
+        <source>Region</source>
+        <translation>Bereich</translation>
     </message>
     <message>
-      <location/>
-      <source>Components</source>
-      <translation>Bauteile</translation>
+        <source>Components</source>
+        <translation>Komponenten</translation>
     </message>
     <message>
-      <location/>
-      <source>All</source>
-      <translation>Alles</translation>
+        <source>All</source>
+        <translation>Alles</translation>
     </message>
     <message>
-      <location/>
-      <source>Deselect</source>
-      <translation>Auswahl aufheben</translation>
+        <source>Deselect</source>
+        <translation>Auswahl aufheben</translation>
     </message>
     <message>
-      <location/>
-      <source>Deselect whole component</source>
-      <translation>Deselect whole component</translation>
+        <source>Deselect whole component</source>
+        <translation>Ganze Komponente abwählen</translation>
     </message>
     <message>
-      <location/>
-      <source>&gt; faces than</source>
-      <translation>&gt; faces than</translation>
+        <source>&gt; faces than</source>
+        <translation>&gt; Dreiecke als</translation>
     </message>
     <message>
-      <location/>
-      <source>Region options</source>
-      <translation>Region options</translation>
+        <source>Region options</source>
+        <translation>Einstellungen</translation>
     </message>
     <message>
-      <location/>
-      <source>Respect only front triangles</source>
-      <translation>Respect only front triangles</translation>
+        <source>Respect only front triangles</source>
+        <translation type="obsolete">Nur vordere Dreiecke beachten</translation>
     </message>
     <message>
-      <location/>
-      <source>Respect only triangles with normals facing screen</source>
-      <translation>Respect only triangles with normals facing screen</translation>
+        <source>Respect only triangles with normals facing screen</source>
+        <translation>Nur Dreiecke mit Normalen beachten, die zum Bildschirm zeigen</translation>
     </message>
     <message>
-      <location/>
-      <source>Respect only visible triangles</source>
-      <translation>Respect only visible triangles</translation>
+        <source>Respect only visible triangles</source>
+        <translation>Nur sichtbare Dreiecke berücksichtigen</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>MeshGui::TaskRemoveComponents</name>
     <message>
-      <location/>
-      <source>Delete</source>
-      <translation>Löschen</translation>
+        <source>Delete</source>
+        <translation>Löschen</translation>
     </message>
     <message>
-      <location/>
-      <source>Invert</source>
-      <translation>Invert</translation>
+        <source>Invert</source>
+        <translation>Umkehren</translation>
     </message>
-  </context>
-  <context>
-    <name>MeshGui::Workbench</name>
-    <message>
-      <location/>
-      <source>Analyze</source>
-      <translation>Analysieren</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Boolean</source>
-      <translation>Boolean</translation>
-    </message>
-    <message>
-      <location/>
-      <source>&amp;Meshes</source>
-      <translation>&amp;Meshes</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Mesh tools</source>
-      <translation>Mesh tools</translation>
-    </message>
-    <message>
-      <location/>
-      <source>Mesh test suite</source>
-      <translation>Mesh test suite</translation>
-    </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>QObject</name>
     <message>
-      <location/>
-      <source>Import mesh</source>
-      <translation>Import mesh</translation>
+        <source>Import mesh</source>
+        <translation>Netz importieren</translation>
     </message>
     <message>
-      <location/>
-      <source>Export mesh</source>
-      <translation>Export mesh</translation>
+        <source>Export mesh</source>
+        <translation>Netz exportieren</translation>
     </message>
     <message>
-      <location/>
-      <source>Solid Mesh</source>
-      <translation>Solid Mesh</translation>
+        <source>Solid Mesh</source>
+        <translation>Fester Körper</translation>
     </message>
     <message>
-      <location/>
-      <source>Boundings</source>
-      <translation>Boundings</translation>
+        <source>Boundings</source>
+        <translation>Abmessungen</translation>
     </message>
     <message>
-      <location/>
-      <source>Fill holes</source>
-      <translation>Fill holes</translation>
+        <source>Fill holes</source>
+        <translation>Löcher schließen</translation>
     </message>
     <message>
-      <location/>
-      <source>Fill holes with maximum number of edges:</source>
-      <translation>Fill holes with maximum number of edges:</translation>
+        <source>Fill holes with maximum number of edges:</source>
+        <translation>Löcher schließen mit maximaler Anzahl Kanten:</translation>
     </message>
     <message>
-      <location/>
-      <source>Remove components</source>
-      <translation>Bauteile entfernen</translation>
+        <source>Remove components</source>
+        <translation type="obsolete">Komponenten entfernen</translation>
     </message>
     <message>
-      <location/>
-      <source>Removes components up to a maximum number of triangles:</source>
-      <translation>Removes components up to a maximum number of triangles:</translation>
+        <source>Removes components up to a maximum number of triangles:</source>
+        <translation type="obsolete">Komponenten entfernen mit bis maximal vorgegebener Anzahl Dreiecken:</translation>
     </message>
     <message>
-      <location/>
-      <source>All Mesh Files (*.stl *.ast *.bms *.obj)</source>
-      <translation>All Mesh Files (*.stl *.ast *.bms *.obj)</translation>
+        <source>All Mesh Files (*.stl *.ast *.bms *.obj)</source>
+        <translation type="obsolete">Alle Netz-Dateien (*.stl *.ast *.bms *.obj)</translation>
     </message>
     <message>
-      <location/>
-      <source>Binary STL (*.stl)</source>
-      <translation>Binary STL (*.stl)</translation>
+        <source>Binary STL (*.stl)</source>
+        <translation>Binäres STL (*.stl)</translation>
     </message>
     <message>
-      <location/>
-      <source>ASCII STL (*.ast)</source>
-      <translation>ASCII STL (*.ast)</translation>
+        <source>ASCII STL (*.ast)</source>
+        <translation>ASCII STL (*.ast)</translation>
     </message>
     <message>
-      <location/>
-      <source>Binary Mesh (*.bms)</source>
-      <translation>Binary Mesh (*.bms)</translation>
+        <source>Binary Mesh (*.bms)</source>
+        <translation>Netz-Binärformat (*.bms)</translation>
     </message>
     <message>
-      <location/>
-      <source>Alias Mesh (*.obj)</source>
-      <translation>Alias Mesh (*.obj)</translation>
+        <source>Alias Mesh (*.obj)</source>
+        <translation>Alias-Format (*.obj)</translation>
     </message>
     <message>
-      <location/>
-      <source>Inventor V2.1 ascii (*.iv)</source>
-      <translation>Inventor V2.1 ascii (*.iv)</translation>
+        <source>Inventor V2.1 ascii (*.iv)</source>
+        <translation>Inventor V2.1 ascii (*.iv)</translation>
     </message>
     <message>
-      <location/>
-      <source>All Files (*.*)</source>
-      <translation>All Files (*.*)</translation>
+        <source>All Files (*.*)</source>
+        <translation>Alle Dateien (*.*)</translation>
     </message>
     <message>
-      <location/>
-      <source>ASCII STL (*.stl)</source>
-      <translation>ASCII STL (*.stl)</translation>
+        <source>ASCII STL (*.stl)</source>
+        <translation>ASCII STL (*.stl)</translation>
     </message>
     <message>
-      <location/>
-      <source>VRML V2.0 (*.wrl *.vrml)</source>
-      <translation>VRML V2.0 (*.wrl *.vrml)</translation>
+        <source>VRML V2.0 (*.wrl *.vrml)</source>
+        <translation>VRML V2.0 (*.wrl *.vrml)</translation>
     </message>
     <message>
-      <location/>
-      <source>Compressed VRML 2.0 (*.wrz)</source>
-      <translation>Compressed VRML 2.0 (*.wrz)</translation>
+        <source>Compressed VRML 2.0 (*.wrz)</source>
+        <translation>Komprimiertes VRML 2.0 (*.wrz)</translation>
     </message>
     <message>
-      <location/>
-      <source>Nastran (*.nas *.bdf)</source>
-      <translation>Nastran (*.nas *.bdf)</translation>
+        <source>Nastran (*.nas *.bdf)</source>
+        <translation>Nastran (*.nas *.bdf)</translation>
     </message>
     <message>
-      <location/>
-      <source>Python module def (*.py)</source>
-      <translation>Python module def (*.py)</translation>
+        <source>Python module def (*.py)</source>
+        <translation>Python-Modul (*.py)</translation>
     </message>
     <message>
-      <location/>
-      <source>Meshing Tolerance</source>
-      <translation>Meshing Tolerance</translation>
+        <source>Meshing Tolerance</source>
+        <translation>Toleranz</translation>
     </message>
     <message>
-      <location/>
-      <source>Enter tolerance for meshing geometry:</source>
-      <translation>Enter tolerance for meshing geometry:</translation>
+        <source>Enter tolerance for meshing geometry:</source>
+        <translation>Toleranz zum Erzeugen von Dreiecksnetz eingeben:</translation>
     </message>
     <message>
-      <location/>
-      <source>The mesh '%1' is a solid.</source>
-      <translation>The mesh '%1' is a solid.</translation>
+        <source>The mesh &apos;%1&apos; is a solid.</source>
+        <translation>Das Netz &apos;%1&apos; ist ein Solid.</translation>
     </message>
     <message>
-      <location/>
-      <source>The mesh '%1' is not a solid.</source>
-      <translation>The mesh '%1' is not a solid.</translation>
+        <source>The mesh &apos;%1&apos; is not a solid.</source>
+        <translation>Das Netz &apos;%1&apos; ist kein Solid.</translation>
     </message>
     <message>
-      <location/>
-      <source>Min=&lt;%1,%2,%3&gt;
+        <source>Min=&lt;%1,%2,%3&gt;
 
 Max=&lt;%4,%5,%6&gt;</source>
-      <translation>Min=&lt;%1,%2,%3&gt;
+        <translation>Min=&lt;%1,%2,%3&gt;
 
 Max=&lt;%4,%5,%6&gt;</translation>
     </message>
     <message>
-      <location/>
-      <source>[Points: %1, Edges: %2 Faces: %3]</source>
-      <translation>[Points: %1, Edges: %2 Faces: %3]</translation>
+        <source>[Points: %1, Edges: %2 Faces: %3]</source>
+        <translation>[Punkte: %1, Kanten: %2 Dreiecke: %3]</translation>
     </message>
     <message>
-      <location/>
-      <source>Leave info mode</source>
-      <translation>Leave info mode</translation>
+        <source>Leave info mode</source>
+        <translation>Info-Modus verlassen</translation>
     </message>
     <message>
-      <location/>
-      <source>Index: %1</source>
-      <translation>Index: %1</translation>
+        <source>Index: %1</source>
+        <translation>Index: %1</translation>
     </message>
     <message>
-      <location/>
-      <source>Leave hole-filling mode</source>
-      <translation>Leave hole-filling mode</translation>
+        <source>Leave hole-filling mode</source>
+        <translation>Löcher-Schließen-Modus verlassen</translation>
     </message>
     <message>
-      <location/>
-      <source>Leave removal mode</source>
-      <translation>Leave removal mode</translation>
+        <source>Leave removal mode</source>
+        <translation>Entfernen-Modus verlassen</translation>
     </message>
     <message>
-      <location/>
-      <source>All Mesh Files (*.stl *.ast *.bms *.obj *.ply)</source>
-      <translation>All Mesh Files (*.stl *.ast *.bms *.obj *.ply)</translation>
+        <source>All Mesh Files (*.stl *.ast *.bms *.obj *.ply)</source>
+        <translation>Alle Mesh Formate (*.stl *.ast *.bms *.obj *.ply)</translation>
     </message>
     <message>
-      <location/>
-      <source>Stanford Polygon (*.ply)</source>
-      <translation>Stanford Polygon (*.ply)</translation>
+        <source>Stanford Polygon (*.ply)</source>
+        <translation>Stanford Polygon (*.ply)</translation>
     </message>
     <message>
-      <location/>
-      <source>Object File Format (*.off)</source>
-      <translation>Object File Format (*.off)</translation>
+        <source>Object File Format (*.off)</source>
+        <translation>Object File Format (*.off)</translation>
     </message>
     <message>
-      <location/>
-      <source>Standford Polygon (*.ply)</source>
-      <translation>Standford Polygon (*.ply)</translation>
+        <source>Standford Polygon (*.ply)</source>
+        <translation>Standford Polygon (*.ply)</translation>
     </message>
     <message>
-      <location/>
-      <source>Delete selected faces</source>
-      <translation>Delete selected faces</translation>
+        <source>Delete selected faces</source>
+        <translation>Selektierte Dreiecke löschen</translation>
     </message>
     <message>
-      <location/>
-      <source>Clear selected faces</source>
-      <translation>Clear selected faces</translation>
+        <source>Clear selected faces</source>
+        <translation>Auswahl aufheben</translation>
     </message>
     <message>
-      <location/>
-      <source>Annotation</source>
-      <translation>Annotation</translation>
+        <source>Annotation</source>
+        <translation>Anmerkung</translation>
     </message>
-  </context>
-  <context>
+</context>
+<context>
     <name>Workbench</name>
     <message>
-      <location/>
-      <source>Analyze</source>
-      <translation>Analysieren</translation>
+        <source>Analyze</source>
+        <translation>Analysieren</translation>
     </message>
     <message>
-      <location/>
-      <source>Boolean</source>
-      <translation>Boolean</translation>
+        <source>Boolean</source>
+        <translation>Bool&apos;sche Operationen</translation>
     </message>
     <message>
-      <location/>
-      <source>&amp;Meshes</source>
-      <translation>&amp;Meshes</translation>
+        <source>&amp;Meshes</source>
+        <translation>&amp;Netze</translation>
     </message>
     <message>
-      <location/>
-      <source>Mesh tools</source>
-      <translation>Mesh tools</translation>
+        <source>Mesh tools</source>
+        <translation>Netz-Werkzeuge</translation>
     </message>
     <message>
-      <location/>
-      <source>Mesh test suite</source>
-      <translation>Mesh test suite</translation>
+        <source>Mesh test suite</source>
+        <translation type="obsolete">Netz Testumgebung</translation>
     </message>
-  </context>
+</context>
 </TS>

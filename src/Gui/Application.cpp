@@ -1623,8 +1623,6 @@ void Application::runApplication(void)
     SoQt::setFatalErrorHandler( messageHandlerSoQt, 0 );
 #endif
 
-    // open the 'Iip of the day' dialog if needed
-    mw.showTipOfTheDay();
     Instance->d->startingUp = false;
 
 #if 0
