@@ -133,3 +133,5 @@ bool TaskProjection::accept()
     Gui::Command::commitCommand();
     return true;
 }
+
+#include "moc_TaskDialog.cpp"

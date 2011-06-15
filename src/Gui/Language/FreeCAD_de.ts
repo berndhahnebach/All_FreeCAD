@@ -70,6 +70,55 @@
     </message>
 </context>
 <context>
+    <name>ButtonModel</name>
+    <message>
+        <location filename="../DlgCustomizeSpaceball.cpp" line="+167"/>
+        <source>Button %1</source>
+        <translation>Button %1</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Out Of Range</source>
+        <translation>Außerhalb des Bereichs</translation>
+    </message>
+</context>
+<context>
+    <name>CommandModel</name>
+    <message>
+        <location line="+167"/>
+        <source>Commands</source>
+        <translation>Befehle</translation>
+    </message>
+</context>
+<context>
+    <name>DlgCustomizeSpaceball</name>
+    <message>
+        <location line="+192"/>
+        <source>Spaceball</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>No Spaceball Present</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+48"/>
+        <source>Buttons</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Clear</source>
+        <translation type="unfinished">Löschen</translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Print Reference</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>DocumentModel</name>
     <message>
         <location filename="../DocumentModel.cpp" line="+115"/>
@@ -83,8 +132,17 @@
     </message>
 </context>
 <context>
+    <name>DownloadDialog</name>
+    <message>
+        <location filename="../DownloadDialog.cpp" line="+150"/>
+        <source>Canceled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Gui::AccelLineEdit</name>
     <message>
+        <location filename="../DlgActionsImp.cpp" line="+455"/>
         <location filename="../Widgets.cpp" line="+114"/>
         <location line="+9"/>
         <source>none</source>
@@ -94,7 +152,7 @@
 <context>
     <name>Gui::CADNavigationStyle</name>
     <message>
-        <location filename="../NavigationStyle.cpp" line="+1324"/>
+        <location filename="../NavigationStyle.cpp" line="+1415"/>
         <source>Press left mouse button</source>
         <translation>Drücken Sie die linke Maustaste</translation>
     </message>
@@ -117,7 +175,7 @@
 <context>
     <name>Gui::Command</name>
     <message>
-        <location filename="../Command.cpp" line="+201"/>
+        <location filename="../Command.cpp" line="+210"/>
         <source>Standard</source>
         <translation>Standard</translation>
     </message>
@@ -146,24 +204,25 @@
 <context>
     <name>Gui::Dialog::AboutApplication</name>
     <message>
-        <location filename="../AboutApplication.ui" line="+16"/>
+        <location filename="../AboutApplication.ui" line="+14"/>
         <source>About</source>
         <translation>Über</translation>
     </message>
     <message>
-        <location line="+67"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline; color:#0000ff;&quot;&gt; Unknown Application (c) Unknown Author&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline; color:#0000ff;&quot;&gt; Unknown Application (c) Unknown Author&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline; color:#0000ff;&quot;&gt; Unknown Application (c) Unknown Author&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location line="+37"/>
-        <location line="+7"/>
-        <location line="+14"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Unknown&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Unknown&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Unknown&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location line="-7"/>
+        <location line="+97"/>
+        <source>Platform</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+35"/>
         <source>Revision number</source>
         <translation>Revisionsnummer</translation>
     </message>
@@ -173,7 +232,12 @@
         <translation>Version</translation>
     </message>
     <message>
-        <location line="+71"/>
+        <location line="+58"/>
+        <source>License...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+20"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
@@ -182,7 +246,7 @@
         <translation></translation>
     </message>
     <message>
-        <location line="-106"/>
+        <location line="-113"/>
         <source>Release date</source>
         <translation>Erscheinungsdatum</translation>
     </message>
@@ -411,7 +475,7 @@
 <context>
     <name>Gui::Dialog::DlgCustomActionsImp</name>
     <message>
-        <location filename="../DlgActionsImp.cpp" line="+63"/>
+        <location filename="../DlgActionsImp.cpp" line="-392"/>
         <source>Icons</source>
         <translation>Symbole</translation>
     </message>
@@ -441,7 +505,7 @@
         <translation>Das Makro &apos;%1&apos; konnte nicht gefunden werden.</translation>
     </message>
     <message>
-        <location line="+26"/>
+        <location line="+25"/>
         <source>Empty macro</source>
         <translation>Leeres Makrofeld</translation>
     </message>
@@ -452,13 +516,13 @@
     </message>
     <message>
         <location line="+6"/>
-        <location line="+68"/>
+        <location line="+64"/>
         <source>Empty text</source>
         <translation>Leeres Textfeld</translation>
     </message>
     <message>
-        <location line="-68"/>
-        <location line="+68"/>
+        <location line="-64"/>
+        <location line="+64"/>
         <source>Please specify the menu text first.</source>
         <translation>Geben Sie bitte den Menütext an.</translation>
     </message>
@@ -488,12 +552,13 @@
 <context>
     <name>Gui::Dialog::DlgCustomCommandsImp</name>
     <message>
-        <location filename="../DlgCommandsImp.cpp" line="+102"/>
+        <location filename="../DlgCommandsImp.cpp" line="+103"/>
+        <location line="+138"/>
         <source>Category</source>
         <translation>Kategorie</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="-129"/>
         <source>Icon</source>
         <translation>Symbol</translation>
     </message>
@@ -506,7 +571,7 @@
 <context>
     <name>Gui::Dialog::DlgCustomKeyboard</name>
     <message>
-        <location filename="../DlgKeyboard.ui" line="+16"/>
+        <location filename="../DlgKeyboard.ui" line="+14"/>
         <source>Keyboard</source>
         <translation>Tastatur</translation>
     </message>
@@ -526,7 +591,7 @@
         <translation>Be&amp;fehle:</translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+38"/>
         <source>Current shortcut:</source>
         <translation>Aktuell verwendete Tastenkombination:</translation>
     </message>
@@ -541,7 +606,7 @@
         <translation>Im Moment verwendet von:</translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+38"/>
         <source>&amp;Assign</source>
         <translation>Zu&amp;weisen</translation>
     </message>
@@ -621,7 +686,8 @@ Wählen Sie bitte eine andere Tastenkombination.</translation>
 <context>
     <name>Gui::Dialog::DlgCustomToolBoxbarsImp</name>
     <message>
-        <location filename="../DlgToolbarsImp.cpp" line="+672"/>
+        <location filename="../DlgToolbarsImp.cpp" line="+699"/>
+        <location line="+11"/>
         <source>Toolbox bars</source>
         <translation>Werkzeugleisten</translation>
     </message>
@@ -694,7 +760,7 @@ Wählen Sie bitte eine andere Tastenkombination.</translation>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="../DlgToolbarsImp.cpp" line="-555"/>
+        <location filename="../DlgToolbarsImp.cpp" line="-593"/>
         <source>Icon</source>
         <translation>Symbol</translation>
     </message>
@@ -747,16 +813,19 @@ Wählen Sie bitte eine andere Tastenkombination.</translation>
     <name>Gui::Dialog::DlgCustomizeImp</name>
     <message>
         <location filename="../DlgCustomizeImp.cpp" line="+49"/>
+        <location line="+74"/>
         <source>Customize</source>
         <translation>Benutzerdefiniert</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="-62"/>
+        <location line="+63"/>
         <source>&amp;Help</source>
         <translation>&amp;Hilfe</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="-56"/>
+        <location line="+57"/>
         <source>&amp;Close</source>
         <translation>Schl&amp;ießen</translation>
     </message>
@@ -764,12 +833,17 @@ Wählen Sie bitte eine andere Tastenkombination.</translation>
 <context>
     <name>Gui::Dialog::DlgDisplayProperties</name>
     <message>
-        <location filename="../DlgDisplayProperties.ui" line="+16"/>
+        <location filename="../DlgDisplayProperties.ui" line="+14"/>
         <source>Display properties</source>
         <translation>Anzeigeeigenschaften</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+105"/>
+        <source>Color plot:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+43"/>
         <source>Display</source>
         <translation>Anzeige</translation>
     </message>
@@ -789,27 +863,28 @@ Wählen Sie bitte eine andere Tastenkombination.</translation>
         <translation>Punktgröße:</translation>
     </message>
     <message>
-        <location line="+125"/>
+        <location line="-147"/>
         <source>Material</source>
         <translation>Material</translation>
     </message>
     <message>
-        <location line="+71"/>
+        <location line="+29"/>
+        <location line="+18"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+247"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="-353"/>
         <source>Viewing mode</source>
         <translation>Anzeigemodus</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+17"/>
         <source>Display mode:</source>
         <translation>Anzeigemodus:</translation>
     </message>
@@ -823,17 +898,17 @@ Wählen Sie bitte eine andere Tastenkombination.</translation>
         <translation></translation>
     </message>
     <message>
-        <location line="-336"/>
+        <location line="+114"/>
         <source>Line transparency:</source>
         <translation>Linientransparenz:</translation>
     </message>
     <message>
-        <location line="+197"/>
+        <location line="-27"/>
         <source>Line color:</source>
         <translation>Linienfarbe:</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="-14"/>
         <source>Shape color:</source>
         <translation>Flächenfarbe:</translation>
     </message>
@@ -963,6 +1038,34 @@ Wählen Sie bitte eine andere Tastenkombination.</translation>
         <source>Window style:</source>
         <translation>Fenster-Stil:</translation>
     </message>
+    <message>
+        <location line="+20"/>
+        <source>Size of toolbar icons:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Gui::Dialog::DlgGeneralImp</name>
+    <message>
+        <location filename="../DlgGeneralImp.cpp" line="+187"/>
+        <source>Default (%1 x %1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Small (%1 x %1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Large (%1 x %1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Extra large (%1 x %1)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgInputDialog</name>
@@ -990,6 +1093,7 @@ Wählen Sie bitte eine andere Tastenkombination.</translation>
     <name>Gui::Dialog::DlgInspector</name>
     <message>
         <location filename="../SceneInspector.cpp" line="+110"/>
+        <location line="+30"/>
         <source>Scene Inspector</source>
         <translation>Scene Inspector</translation>
     </message>
@@ -1445,6 +1549,85 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
     </message>
 </context>
 <context>
+    <name>Gui::Dialog::DlgProjectUtility</name>
+    <message>
+        <location filename="../DlgProjectUtility.cpp" line="+129"/>
+        <location line="+20"/>
+        <source>Empty source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-20"/>
+        <location line="+20"/>
+        <source>No source is defined.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-16"/>
+        <location line="+20"/>
+        <source>Empty destination</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-20"/>
+        <location line="+20"/>
+        <source>No destination is defined.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../DlgProjectUtility.ui" line="+14"/>
+        <source>Project utility</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Extract project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <location line="+50"/>
+        <source>Source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-43"/>
+        <source>Project file (*.fcstd)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <location line="+50"/>
+        <source>Destination</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-27"/>
+        <source>Extract</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Create project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Document.xml</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+30"/>
+        <source>Create</source>
+        <translation type="unfinished">Erstellen</translation>
+    </message>
+    <message>
+        <location line="+22"/>
+        <source>Load project file after creation</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Gui::Dialog::DlgReportView</name>
     <message>
         <location filename="../DlgReportView.ui" line="+16"/>
@@ -1452,7 +1635,12 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
         <translation>Ausgabefenster</translation>
     </message>
     <message>
-        <location line="+41"/>
+        <location line="+28"/>
+        <source>Redirect internal Python output to report view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+26"/>
         <source>Output</source>
         <translation>Ausgabe</translation>
     </message>
@@ -1509,14 +1697,12 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
 <context>
     <name>Gui::Dialog::DlgReportViewImp</name>
     <message>
-        <location filename="../DlgReportViewImp.cpp" line="+88"/>
         <source>Redirect Python errors</source>
-        <translation>Python-Fehler umleiten</translation>
+        <translation type="obsolete">Python-Fehler umleiten</translation>
     </message>
     <message>
-        <location line="+1"/>
         <source>In order to take effect this change you must restart the application.</source>
-        <translation>Um diese Äderungen wirksam werden zu lassen, müssen Sie die Anwendung neu starten.</translation>
+        <translation type="obsolete">Um diese Äderungen wirksam werden zu lassen, müssen Sie die Anwendung neu starten.</translation>
     </message>
 </context>
 <context>
@@ -1595,7 +1781,22 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
         <translation>Animation zulassen</translation>
     </message>
     <message>
-        <location line="+47"/>
+        <location line="+45"/>
+        <source>Orbit style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>Turntable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Trackball</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
         <source>Invert zoom</source>
         <translation>Zoom umkehren</translation>
     </message>
@@ -1629,7 +1830,7 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
         <translation></translation>
     </message>
     <message>
-        <location line="-228"/>
+        <location line="-252"/>
         <source>3D Navigation</source>
         <translation>3D-Navigation</translation>
     </message>
@@ -1639,7 +1840,7 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
         <translation>Maus...</translation>
     </message>
     <message>
-        <location line="+155"/>
+        <location line="+179"/>
         <source>Intensity of backlight</source>
         <translation>Intensität der Hintergrundbeleuchtung</translation>
     </message>
@@ -1652,7 +1853,7 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
 <context>
     <name>Gui::Dialog::DlgSettings3DViewImp</name>
     <message>
-        <location filename="../DlgSettings3DViewImp.cpp" line="+153"/>
+        <location filename="../DlgSettings3DViewImp.cpp" line="+166"/>
         <source>%1 navigation</source>
         <translation>%1 Navigation</translation>
     </message>
@@ -2207,7 +2408,7 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
         <translation>Skript-Befehle in Pythonkonsole anzeigen</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+16"/>
         <source>Log all commands issued by menus to file:</source>
         <translation>Alle Menübefehle in Datei protokollieren:</translation>
     </message>
@@ -2389,7 +2590,7 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
 <context>
     <name>Gui::Dialog::DockablePlacement</name>
     <message>
-        <location filename="../Placement.cpp" line="+319"/>
+        <location filename="../Placement.cpp" line="+375"/>
         <source>Placement</source>
         <translation>Placement</translation>
     </message>
@@ -2740,7 +2941,7 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
 <context>
     <name>Gui::Dialog::SceneModel</name>
     <message>
-        <location filename="../SceneInspector.cpp" line="-45"/>
+        <location filename="../SceneInspector.cpp" line="-75"/>
         <source>Inventor Tree</source>
         <translation>Szenengraph</translation>
     </message>
@@ -2849,11 +3050,13 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
     </message>
     <message>
         <location line="+26"/>
+        <location line="+47"/>
         <source>Project</source>
         <translation>Projekt</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="-43"/>
+        <location line="+44"/>
         <source>Tasks</source>
         <translation>Aufgaben</translation>
     </message>
@@ -2918,7 +3121,7 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
 <context>
     <name>Gui::DockWnd::ReportOutput</name>
     <message>
-        <location filename="../ReportView.cpp" line="+328"/>
+        <location filename="../ReportView.cpp" line="+381"/>
         <source>Logging</source>
         <translation>Protokoll-Meldungen</translation>
     </message>
@@ -2931,6 +3134,16 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
         <location line="+4"/>
         <source>Error</source>
         <translation>Fehlermeldungen</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Redirect Python output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Redirect Python errors</source>
+        <translation type="unfinished">Python-Fehler umleiten</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -2966,7 +3179,7 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
 <context>
     <name>Gui::DockWnd::ReportView</name>
     <message>
-        <location line="-274"/>
+        <location line="-335"/>
         <location line="+32"/>
         <source>Output</source>
         <translation>Ausgabe</translation>
@@ -3066,7 +3279,7 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
 <context>
     <name>Gui::EditorView</name>
     <message>
-        <location filename="../EditorView.cpp" line="+208"/>
+        <location filename="../EditorView.cpp" line="+148"/>
         <source>Modified file</source>
         <translation>Geänderte Datei</translation>
     </message>
@@ -3273,7 +3486,7 @@ Sollen die Änderungen gespeichert werden?</translation>
 <context>
     <name>Gui::MacroCommand</name>
     <message>
-        <location filename="../Command.cpp" line="+333"/>
+        <location filename="../Command.cpp" line="+378"/>
         <location filename="../DlgCommandsImp.cpp" line="-22"/>
         <location filename="../DlgKeyboardImp.cpp" line="-223"/>
         <location filename="../DlgToolbarsImp.cpp" line="-335"/>
@@ -3284,18 +3497,18 @@ Sollen die Änderungen gespeichert werden?</translation>
 <context>
     <name>Gui::MainWindow</name>
     <message>
-        <location filename="../MainWindow.cpp" line="+289"/>
-        <location line="+1140"/>
+        <location filename="../MainWindow.cpp" line="+291"/>
+        <location line="+1162"/>
         <source>Dimension</source>
         <translation>Abmessung</translation>
     </message>
     <message>
-        <location line="-1009"/>
+        <location line="-1031"/>
         <source>Ready</source>
         <translation>Bereit</translation>
     </message>
     <message>
-        <location line="+568"/>
+        <location line="+590"/>
         <location line="+1"/>
         <location line="+1"/>
         <source>Toggles this toolbar</source>
@@ -3391,7 +3604,7 @@ Sollen die Änderungen gespeichert werden?</translation>
 <context>
     <name>Gui::PythonConsole</name>
     <message>
-        <location filename="../PythonConsole.cpp" line="+626"/>
+        <location filename="../PythonConsole.cpp" line="+629"/>
         <source>System exit</source>
         <translation>System beenden</translation>
     </message>
@@ -3426,7 +3639,12 @@ Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
         <translation>Unbehandelte C++-Ausnahme.</translation>
     </message>
     <message>
-        <location line="+345"/>
+        <location line="+342"/>
+        <source>&amp;Copy</source>
+        <translation type="unfinished">&amp;Kopieren</translation>
+    </message>
+    <message>
+        <location line="+3"/>
         <source>&amp;Copy command</source>
         <translation>&amp;Befehle kopieren</translation>
     </message>
@@ -3441,7 +3659,17 @@ Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
         <translation>Verlauf speichern unter...</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+4"/>
+        <source>&amp;Paste</source>
+        <translation type="unfinished">Ein&amp;fügen</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Select All</source>
+        <translation type="unfinished">Alles auswählen</translation>
+    </message>
+    <message>
+        <location line="+4"/>
         <source>Insert file name...</source>
         <translation>Dateinamen einfügen...</translation>
     </message>
@@ -3485,7 +3713,7 @@ Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
 <context>
     <name>Gui::PythonEditor</name>
     <message>
-        <location filename="../PythonEditor.cpp" line="+105"/>
+        <location filename="../PythonEditor.cpp" line="+119"/>
         <source>Comment</source>
         <translation>Kommentieren</translation>
     </message>
@@ -3668,7 +3896,7 @@ Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
 <context>
     <name>Gui::Translator</name>
     <message>
-        <location filename="../DlgGeneralImp.cpp" line="+168"/>
+        <location filename="../DlgGeneralImp.cpp" line="-16"/>
         <location filename="Translator.cpp" line="+132"/>
         <source>English</source>
         <translation>Englisch</translation>
@@ -3729,7 +3957,12 @@ Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
         <translation>Finnisch</translation>
     </message>
     <message>
-        <location line="-13"/>
+        <location line="+1"/>
+        <source>Croatian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-14"/>
         <source>Spanish</source>
         <translation>Spanisch</translation>
     </message>
@@ -3752,7 +3985,7 @@ Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
 <context>
     <name>Gui::TreeDockWidget</name>
     <message>
-        <location filename="../Tree.cpp" line="+698"/>
+        <location filename="../Tree.cpp" line="+699"/>
         <source>Tree view</source>
         <translation>Baumansicht</translation>
     </message>
@@ -3760,7 +3993,7 @@ Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
 <context>
     <name>Gui::TreeWidget</name>
     <message>
-        <location line="-627"/>
+        <location line="-628"/>
         <source>Create group...</source>
         <translation>Gruppe erstellen...</translation>
     </message>
@@ -3792,11 +4025,12 @@ Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
     </message>
     <message>
         <location line="-484"/>
+        <location line="+485"/>
         <source>Application</source>
         <translation>Applikation</translation>
     </message>
     <message>
-        <location line="-18"/>
+        <location line="-503"/>
         <source>Finish editing</source>
         <translation>Bearbeitung beenden</translation>
     </message>
@@ -3819,7 +4053,7 @@ Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
 <context>
     <name>Gui::View3DInventor</name>
     <message>
-        <location filename="../View3DInventor.cpp" line="+354"/>
+        <location filename="../View3DInventor.cpp" line="+359"/>
         <source>Export PDF</source>
         <translation>PDF exportieren</translation>
     </message>
@@ -3937,9 +4171,22 @@ Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
     </message>
 </context>
 <context>
+    <name>PrintModel</name>
+    <message>
+        <location filename="../DlgCustomizeSpaceball.cpp" line="-83"/>
+        <source>Button</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Command</source>
+        <translation type="unfinished">Befehl</translation>
+    </message>
+</context>
+<context>
     <name>QDockWidget</name>
     <message>
-        <location filename="../MainWindow.cpp" line="-312"/>
+        <location filename="../MainWindow.cpp" line="-334"/>
         <source>Tree view</source>
         <translation>Baumansicht</translation>
     </message>
@@ -3980,6 +4227,7 @@ Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
         <translation>Python-Konsole</translation>
     </message>
     <message>
+        <location filename="../DlgDisplayPropertiesImp.cpp" line="+57"/>
         <source>Display properties</source>
         <translation>Anzeigeeigenschaften</translation>
     </message>
@@ -3987,8 +4235,9 @@ Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../resource.cpp" line="+59"/>
+        <location filename="../resource.cpp" line="+60"/>
         <location line="+2"/>
+        <location line="+1"/>
         <location line="+1"/>
         <location line="+1"/>
         <location line="+1"/>
@@ -3996,21 +4245,21 @@ Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
         <translation>Allgemein</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <location line="+1"/>
         <source>Display</source>
         <translation>Anzeige</translation>
     </message>
     <message>
-        <location filename="../Application.cpp" line="+468"/>
-        <location line="+42"/>
+        <location filename="../Application.cpp" line="+465"/>
+        <location line="+43"/>
         <location line="+44"/>
         <source>Unknown filetype</source>
         <translation>Unbekannter Dateityp</translation>
     </message>
     <message>
-        <location line="-85"/>
-        <location line="+42"/>
+        <location line="-86"/>
+        <location line="+43"/>
         <source>Cannot open unknown filetype: %1</source>
         <translation>Kann unbekannten Dateityp nicht öffnen: %1</translation>
     </message>
@@ -4020,7 +4269,7 @@ Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
         <translation>Kann in unbekannten Dateityp nicht speichern: %1</translation>
     </message>
     <message>
-        <location line="+416"/>
+        <location line="+448"/>
         <source>Workbench failure</source>
         <translation>Wechsel von Arbeitsbereich fehlgeschlagen</translation>
     </message>
@@ -4035,12 +4284,12 @@ Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
         <translation>Qt Assistant (%1) kann nicht gestartet werden</translation>
     </message>
     <message>
-        <location filename="../Command.cpp" line="-250"/>
+        <location filename="../Command.cpp" line="-295"/>
         <source>Exception</source>
         <translation>Ausnahme</translation>
     </message>
     <message>
-        <location filename="../CommandDoc.cpp" line="+121"/>
+        <location filename="../CommandDoc.cpp" line="+122"/>
         <source>Open document</source>
         <translation>Öffne Dokument</translation>
     </message>
@@ -4055,7 +4304,7 @@ Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
         <translation>Exportiere Datei</translation>
     </message>
     <message>
-        <location line="+220"/>
+        <location line="+248"/>
         <source>Printing...</source>
         <translation>Drucken...</translation>
     </message>
@@ -4071,7 +4320,7 @@ Wollen Sie sie beenden, ohne Ihre Daten zu speichern?</translation>
         <translation>Allgemeiner Fehler beim Laden des Arbeitsbereiches aufgetreten</translation>
     </message>
     <message>
-        <location line="+376"/>
+        <location line="+363"/>
         <source>File not found</source>
         <translation>Datei nicht gefunden</translation>
     </message>
@@ -4146,7 +4395,7 @@ Wollen Sie fortfahren?</translation>
         <translation>Kann Datei &apos;%1&apos; nicht öffnen.</translation>
     </message>
     <message>
-        <location line="+729"/>
+        <location line="+727"/>
         <source>Docked</source>
         <translation>Angedockt</translation>
     </message>
@@ -4161,7 +4410,7 @@ Wollen Sie fortfahren?</translation>
         <translation>Vollbild</translation>
     </message>
     <message>
-        <location line="+89"/>
+        <location line="+88"/>
         <source>files</source>
         <translation>Dateien</translation>
     </message>
@@ -4276,7 +4525,13 @@ Wollen Sie fortfahren?</translation>
         <translation>Speichern abgebrochen</translation>
     </message>
     <message>
-        <location line="+383"/>
+        <location line="+375"/>
+        <source>The document is in editing mode and thus cannot be closed for the moment.
+You either have to finish or cancel the editing in the task panel.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+11"/>
         <source>Unsaved document</source>
         <translation>Nicht gespeichertes Dokument</translation>
     </message>
@@ -4352,7 +4607,7 @@ Bitte starten Sie einen Browser und geben darin ein: http://localhost:%1.</trans
         <translation>Einstellungen...</translation>
     </message>
     <message>
-        <location filename="../View3DInventorViewer.cpp" line="+887"/>
+        <location filename="../View3DInventorViewer.cpp" line="+888"/>
         <source>Out of memory</source>
         <translation>Nicht genügend Speicher</translation>
     </message>
@@ -4373,7 +4628,7 @@ Bitte starten Sie einen Browser und geben darin ein: http://localhost:%1.</trans
         <translation>Kann Datei %1 weder in %2 nich in %3 finden</translation>
     </message>
     <message>
-        <location filename="../Document.cpp" line="-427"/>
+        <location filename="../Document.cpp" line="-430"/>
         <source>Save %1 Document</source>
         <translation>Dokument %1 speichern</translation>
     </message>
@@ -4402,12 +4657,11 @@ Möchten Sie sie ersetzen?</translation>
     </message>
     <message>
         <location line="-5"/>
-        <location line="+6"/>
         <source>The document is not closable for the moment.</source>
         <translation>Das Dokument kann im Moment nicht geschlossen werden.</translation>
     </message>
     <message>
-        <location filename="../Application.cpp" line="+485"/>
+        <location filename="../Application.cpp" line="+507"/>
         <source>No OpenGL</source>
         <translation>Kein OpenGL</translation>
     </message>
@@ -4487,25 +4741,22 @@ Beachten Sie, dass es auf den Punkt ankommt, auf den Sie klicken.</translation>
 <context>
     <name>QTextEdit</name>
     <message>
-        <location filename="../PythonConsole.cpp" line="-260"/>
         <source>&amp;Copy</source>
-        <translation>&amp;Kopieren</translation>
+        <translation type="obsolete">&amp;Kopieren</translation>
     </message>
     <message>
-        <location line="+13"/>
         <source>&amp;Paste</source>
-        <translation>Ein&amp;fügen</translation>
+        <translation type="obsolete">Ein&amp;fügen</translation>
     </message>
     <message>
-        <location line="+4"/>
         <source>Select All</source>
-        <translation>Alles auswählen</translation>
+        <translation type="obsolete">Alles auswählen</translation>
     </message>
 </context>
 <context>
     <name>StdCmdAbout</name>
     <message>
-        <location filename="../CommandStd.cpp" line="-408"/>
+        <location filename="../CommandStd.cpp" line="-396"/>
         <source>Help</source>
         <translation>Hilfe</translation>
     </message>
@@ -4524,7 +4775,7 @@ Beachten Sie, dass es auf den Punkt ankommt, auf den Sie klicken.</translation>
 <context>
     <name>StdCmdAboutQt</name>
     <message>
-        <location line="+65"/>
+        <location line="+78"/>
         <source>Help</source>
         <translation>Hilfe</translation>
     </message>
@@ -4543,7 +4794,7 @@ Beachten Sie, dass es auf den Punkt ankommt, auf den Sie klicken.</translation>
 <context>
     <name>StdCmdActivateNextWindow</name>
     <message>
-        <location filename="../CommandWindow.cpp" line="+191"/>
+        <location filename="../CommandWindow.cpp" line="+187"/>
         <source>Window</source>
         <translation>Fenster</translation>
     </message>
@@ -4583,7 +4834,7 @@ Beachten Sie, dass es auf den Punkt ankommt, auf den Sie klicken.</translation>
 <context>
     <name>StdCmdArrangeIcons</name>
     <message>
-        <location line="-175"/>
+        <location line="-171"/>
         <source>Window</source>
         <translation>Fenster</translation>
     </message>
@@ -4603,7 +4854,7 @@ Beachten Sie, dass es auf den Punkt ankommt, auf den Sie klicken.</translation>
 <context>
     <name>StdCmdCascadeWindows</name>
     <message>
-        <location line="+51"/>
+        <location line="+49"/>
         <source>Window</source>
         <translation>Fenster</translation>
     </message>
@@ -4623,7 +4874,7 @@ Beachten Sie, dass es auf den Punkt ankommt, auf den Sie klicken.</translation>
 <context>
     <name>StdCmdCloseActiveWindow</name>
     <message>
-        <location line="+24"/>
+        <location line="+23"/>
         <source>Window</source>
         <translation>Fenster</translation>
     </message>
@@ -4663,7 +4914,7 @@ Beachten Sie, dass es auf den Punkt ankommt, auf den Sie klicken.</translation>
 <context>
     <name>StdCmdCommandLine</name>
     <message>
-        <location filename="../CommandStd.cpp" line="+137"/>
+        <location filename="../CommandStd.cpp" line="+113"/>
         <source>Tools</source>
         <translation>Werkzeuge</translation>
     </message>
@@ -4759,7 +5010,7 @@ Beachten Sie, dass es auf den Punkt ankommt, auf den Sie klicken.</translation>
 <context>
     <name>StdCmdDemoMode</name>
     <message>
-        <location filename="../CommandView.cpp" line="+662"/>
+        <location filename="../CommandView.cpp" line="+651"/>
         <source>Standard-View</source>
         <translation>Standardansicht</translation>
     </message>
@@ -4779,7 +5030,7 @@ Beachten Sie, dass es auf den Punkt ankommt, auf den Sie klicken.</translation>
 <context>
     <name>StdCmdDlgCustomize</name>
     <message>
-        <location filename="../CommandStd.cpp" line="-31"/>
+        <location filename="../CommandStd.cpp" line="-30"/>
         <source>Tools</source>
         <translation>Werkzeuge</translation>
     </message>
@@ -4798,7 +5049,7 @@ Beachten Sie, dass es auf den Punkt ankommt, auf den Sie klicken.</translation>
 <context>
     <name>StdCmdDlgMacroExecute</name>
     <message>
-        <location filename="../CommandMacro.cpp" line="+105"/>
+        <location filename="../CommandMacro.cpp" line="+103"/>
         <source>Macros ...</source>
         <translation>Makros...</translation>
     </message>
@@ -4817,7 +5068,7 @@ Beachten Sie, dass es auf den Punkt ankommt, auf den Sie klicken.</translation>
 <context>
     <name>StdCmdDlgMacroExecuteDirect</name>
     <message>
-        <location line="+29"/>
+        <location line="+28"/>
         <source>Macro</source>
         <translation>Makro</translation>
     </message>
@@ -4836,7 +5087,7 @@ Beachten Sie, dass es auf den Punkt ankommt, auf den Sie klicken.</translation>
 <context>
     <name>StdCmdDlgMacroRecord</name>
     <message>
-        <location line="-89"/>
+        <location line="-86"/>
         <source>&amp;Macro recording ...</source>
         <translation>&amp;Makro aufzeichnen...</translation>
     </message>
@@ -4855,7 +5106,7 @@ Beachten Sie, dass es auf den Punkt ankommt, auf den Sie klicken.</translation>
 <context>
     <name>StdCmdDlgParameter</name>
     <message>
-        <location filename="../CommandStd.cpp" line="-53"/>
+        <location filename="../CommandStd.cpp" line="-51"/>
         <source>Tools</source>
         <translation>Werkzeuge</translation>
     </message>
@@ -4874,7 +5125,7 @@ Beachten Sie, dass es auf den Punkt ankommt, auf den Sie klicken.</translation>
 <context>
     <name>StdCmdDlgPreferences</name>
     <message>
-        <location line="+21"/>
+        <location line="+20"/>
         <source>Tools</source>
         <translation>Werkzeuge</translation>
     </message>
@@ -4893,7 +5144,7 @@ Beachten Sie, dass es auf den Punkt ankommt, auf den Sie klicken.</translation>
 <context>
     <name>StdCmdDockViewMenu</name>
     <message>
-        <location filename="../CommandWindow.cpp" line="+134"/>
+        <location filename="../CommandWindow.cpp" line="+131"/>
         <source>View</source>
         <translation>Ansicht</translation>
     </message>
@@ -4966,7 +5217,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdExport</name>
     <message>
-        <location filename="../CommandDoc.cpp" line="-630"/>
+        <location filename="../CommandDoc.cpp" line="-658"/>
         <source>File</source>
         <translation>Datei</translation>
     </message>
@@ -5010,7 +5261,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdFreeCADWebsite</name>
     <message>
-        <location filename="../CommandStd.cpp" line="+179"/>
+        <location filename="../CommandStd.cpp" line="+176"/>
         <source>Help</source>
         <translation>Hilfe</translation>
     </message>
@@ -5029,7 +5280,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdFreezeViews</name>
     <message>
-        <location filename="../CommandView.cpp" line="-1656"/>
+        <location filename="../CommandView.cpp" line="-1642"/>
         <source>Standard-View</source>
         <translation>Standardansicht</translation>
     </message>
@@ -5115,7 +5366,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdMacroStartDebug</name>
     <message>
-        <location filename="../CommandMacro.cpp" line="+111"/>
+        <location filename="../CommandMacro.cpp" line="+108"/>
         <source>Macro</source>
         <translation>Makro</translation>
     </message>
@@ -5168,7 +5419,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdMacroStopRecord</name>
     <message>
-        <location line="-113"/>
+        <location line="-111"/>
         <source>Macro</source>
         <translation>Makro</translation>
     </message>
@@ -5187,7 +5438,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdMeasureDistance</name>
     <message>
-        <location filename="../CommandView.cpp" line="+1091"/>
+        <location filename="../CommandView.cpp" line="+1078"/>
         <source>View</source>
         <translation>Ansicht</translation>
     </message>
@@ -5355,7 +5606,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdPaste</name>
     <message>
-        <location line="+604"/>
+        <location line="+632"/>
         <source>Edit</source>
         <translation>Bearbeiten</translation>
     </message>
@@ -5374,7 +5625,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdPlacement</name>
     <message>
-        <location line="+245"/>
+        <location line="+252"/>
         <source>Edit</source>
         <translation>Bearbeiten</translation>
     </message>
@@ -5393,7 +5644,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdPrint</name>
     <message>
-        <location line="-482"/>
+        <location line="-489"/>
         <source>File</source>
         <translation>Datei</translation>
     </message>
@@ -5431,7 +5682,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdProjectInfo</name>
     <message>
-        <location line="-63"/>
+        <location line="-91"/>
         <source>File</source>
         <translation>Datei</translation>
     </message>
@@ -5445,6 +5696,25 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
         <location line="+2"/>
         <source>Show details of the currently active project</source>
         <translation>Details des momentan aktiven Projekts anzeigen</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdProjectUtil</name>
+    <message>
+        <location line="+27"/>
+        <source>Tools</source>
+        <translation type="unfinished">Werkzeuge</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Project utility...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <location line="+1"/>
+        <source>Utility to extract or create project files</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5469,7 +5739,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdQuit</name>
     <message>
-        <location filename="../CommandDoc.cpp" line="+84"/>
+        <location filename="../CommandDoc.cpp" line="+81"/>
         <source>File</source>
         <translation>Datei</translation>
     </message>
@@ -5504,7 +5774,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdRecentFiles</name>
     <message>
-        <location filename="../CommandStd.cpp" line="-407"/>
+        <location filename="../CommandStd.cpp" line="-394"/>
         <source>File</source>
         <translation>Datei</translation>
     </message>
@@ -5542,7 +5812,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdRefresh</name>
     <message>
-        <location line="+291"/>
+        <location line="+298"/>
         <source>Edit</source>
         <translation>Bearbeiten</translation>
     </message>
@@ -5561,7 +5831,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdSave</name>
     <message>
-        <location line="-535"/>
+        <location line="-570"/>
         <source>File</source>
         <translation>Datei</translation>
     </message>
@@ -5599,7 +5869,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdSceneInspector</name>
     <message>
-        <location filename="../CommandView.cpp" line="+44"/>
+        <location filename="../CommandView.cpp" line="+43"/>
         <source>Tools</source>
         <translation>Werkzeuge</translation>
     </message>
@@ -5618,7 +5888,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdSelectAll</name>
     <message>
-        <location filename="../CommandDoc.cpp" line="+412"/>
+        <location filename="../CommandDoc.cpp" line="+440"/>
         <source>Edit</source>
         <translation>Bearbeiten</translation>
     </message>
@@ -5637,7 +5907,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdSetAppearance</name>
     <message>
-        <location filename="../CommandView.cpp" line="-1002"/>
+        <location filename="../CommandView.cpp" line="-988"/>
         <source>Standard-View</source>
         <translation>Standardansicht</translation>
     </message>
@@ -5694,7 +5964,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdStatusBar</name>
     <message>
-        <location filename="../CommandWindow.cpp" line="+68"/>
+        <location filename="../CommandWindow.cpp" line="+66"/>
         <source>View</source>
         <translation>Ansicht</translation>
     </message>
@@ -5714,7 +5984,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdTextureMapping</name>
     <message>
-        <location filename="../CommandView.cpp" line="+1206"/>
+        <location filename="../CommandView.cpp" line="+1192"/>
         <source>Tools</source>
         <translation>Werkzeuge</translation>
     </message>
@@ -5733,7 +6003,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdTileWindows</name>
     <message>
-        <location filename="../CommandWindow.cpp" line="-299"/>
+        <location filename="../CommandWindow.cpp" line="-292"/>
         <source>Window</source>
         <translation>Fenster</translation>
     </message>
@@ -5753,26 +6023,22 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdTipOfTheDay</name>
     <message>
-        <location filename="../CommandStd.cpp" line="+127"/>
         <source>Help</source>
-        <translation>Hilfe</translation>
+        <translation type="obsolete">Hilfe</translation>
     </message>
     <message>
-        <location line="+1"/>
         <source>&amp;Tip of the day...</source>
-        <translation>&amp;Tipp des Tages...</translation>
+        <translation type="obsolete">&amp;Tipp des Tages...</translation>
     </message>
     <message>
-        <location line="+1"/>
-        <location line="+2"/>
         <source>Tip of the day</source>
-        <translation>Tipp des Tages</translation>
+        <translation type="obsolete">Tipp des Tages</translation>
     </message>
 </context>
 <context>
     <name>StdCmdToggleBreakpoint</name>
     <message>
-        <location filename="../CommandMacro.cpp" line="+157"/>
+        <location filename="../CommandMacro.cpp" line="+155"/>
         <source>Macro</source>
         <translation>Makro</translation>
     </message>
@@ -5787,7 +6053,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdToggleClipPlane</name>
     <message>
-        <location filename="../CommandView.cpp" line="-1376"/>
+        <location filename="../CommandView.cpp" line="-1362"/>
         <source>Standard-View</source>
         <translation>Standardansicht</translation>
     </message>
@@ -5806,7 +6072,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdToggleNavigation</name>
     <message>
-        <location line="+837"/>
+        <location line="+834"/>
         <source>Standard-View</source>
         <translation>Standardansicht</translation>
     </message>
@@ -5825,7 +6091,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdToggleObjects</name>
     <message>
-        <location line="-611"/>
+        <location line="-608"/>
         <source>Standard-View</source>
         <translation>Standardansicht</translation>
     </message>
@@ -5882,7 +6148,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdToolBarMenu</name>
     <message>
-        <location filename="../CommandWindow.cpp" line="+255"/>
+        <location filename="../CommandWindow.cpp" line="+249"/>
         <source>View</source>
         <translation>Ansicht</translation>
     </message>
@@ -5902,7 +6168,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdTransform</name>
     <message>
-        <location filename="../CommandDoc.cpp" line="+105"/>
+        <location filename="../CommandDoc.cpp" line="+112"/>
         <source>Edit</source>
         <translation>Bearbeiten</translation>
     </message>
@@ -5921,7 +6187,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdTreeSelection</name>
     <message>
-        <location filename="../CommandView.cpp" line="+1211"/>
+        <location filename="../CommandView.cpp" line="+1199"/>
         <source>View</source>
         <translation>Ansicht</translation>
     </message>
@@ -5940,7 +6206,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdUndo</name>
     <message>
-        <location filename="../CommandDoc.cpp" line="-372"/>
+        <location filename="../CommandDoc.cpp" line="-379"/>
         <source>Edit</source>
         <translation>Bearbeiten</translation>
     </message>
@@ -5959,7 +6225,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdUserInterface</name>
     <message>
-        <location filename="../CommandWindow.cpp" line="-63"/>
+        <location filename="../CommandWindow.cpp" line="-61"/>
         <source>View</source>
         <translation>Ansicht</translation>
     </message>
@@ -5979,7 +6245,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdViewAxo</name>
     <message>
-        <location filename="../CommandView.cpp" line="-756"/>
+        <location filename="../CommandView.cpp" line="-744"/>
         <source>Standard-View</source>
         <translation>Standardansicht</translation>
     </message>
@@ -6017,7 +6283,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdViewCreate</name>
     <message>
-        <location line="+434"/>
+        <location line="+431"/>
         <source>Standard-View</source>
         <translation>Standardansicht</translation>
     </message>
@@ -6055,7 +6321,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdViewExample2</name>
     <message>
-        <location line="+23"/>
+        <location line="+22"/>
         <source>Standard-View</source>
         <translation>Standardansicht</translation>
     </message>
@@ -6074,7 +6340,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdViewExample3</name>
     <message>
-        <location line="+24"/>
+        <location line="+23"/>
         <source>Standard-View</source>
         <translation>Standardansicht</translation>
     </message>
@@ -6093,7 +6359,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdViewFitAll</name>
     <message>
-        <location line="-402"/>
+        <location line="-397"/>
         <source>Standard-View</source>
         <translation>Standardansicht</translation>
     </message>
@@ -6112,7 +6378,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdViewFitSelection</name>
     <message>
-        <location line="+26"/>
+        <location line="+25"/>
         <source>Standard-View</source>
         <translation>Standardansicht</translation>
     </message>
@@ -6131,7 +6397,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdViewFront</name>
     <message>
-        <location line="-172"/>
+        <location line="-171"/>
         <source>Standard-View</source>
         <translation>Standardansicht</translation>
     </message>
@@ -6150,7 +6416,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdViewIvIssueCamPos</name>
     <message>
-        <location line="+703"/>
+        <location line="+692"/>
         <source>Standard-View</source>
         <translation>Standardansicht</translation>
     </message>
@@ -6169,7 +6435,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdViewIvStereoInterleavedColumns</name>
     <message>
-        <location line="-33"/>
+        <location line="-32"/>
         <source>Standard-View</source>
         <translation>Standardansicht</translation>
     </message>
@@ -6188,7 +6454,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdViewIvStereoInterleavedRows</name>
     <message>
-        <location line="-32"/>
+        <location line="-31"/>
         <source>Standard-View</source>
         <translation>Standardansicht</translation>
     </message>
@@ -6207,7 +6473,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdViewIvStereoOff</name>
     <message>
-        <location line="-89"/>
+        <location line="-86"/>
         <source>Standard-View</source>
         <translation>Standardansicht</translation>
     </message>
@@ -6226,7 +6492,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdViewIvStereoQuadBuff</name>
     <message>
-        <location line="+53"/>
+        <location line="+51"/>
         <source>Standard-View</source>
         <translation>Standardansicht</translation>
     </message>
@@ -6245,7 +6511,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdViewIvStereoRedGreen</name>
     <message>
-        <location line="-32"/>
+        <location line="-31"/>
         <source>Standard-View</source>
         <translation>Standardansicht</translation>
     </message>
@@ -6264,7 +6530,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdViewLeft</name>
     <message>
-        <location line="-575"/>
+        <location line="-568"/>
         <source>Standard-View</source>
         <translation>Standardansicht</translation>
     </message>
@@ -6340,7 +6606,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdWhatsThis</name>
     <message>
-        <location filename="../CommandStd.cpp" line="+17"/>
+        <location filename="../CommandStd.cpp" line="+139"/>
         <source>Help</source>
         <translation>Hilfe</translation>
     </message>
@@ -6359,7 +6625,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdWindows</name>
     <message>
-        <location filename="../CommandWindow.cpp" line="-28"/>
+        <location filename="../CommandWindow.cpp" line="-27"/>
         <source>Window</source>
         <translation>Fenster</translation>
     </message>
@@ -6379,7 +6645,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdWindowsMenu</name>
     <message>
-        <location line="+147"/>
+        <location line="+142"/>
         <source>Window</source>
         <translation>Fenster</translation>
     </message>
@@ -6395,7 +6661,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdCmdWorkbench</name>
     <message>
-        <location filename="../CommandStd.cpp" line="-222"/>
+        <location filename="../CommandStd.cpp" line="-212"/>
         <source>View</source>
         <translation>Ansicht</translation>
     </message>
@@ -6452,7 +6718,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdViewBoxZoom</name>
     <message>
-        <location line="+1561"/>
+        <location line="+1549"/>
         <source>Standard-View</source>
         <translation>Standardansicht</translation>
     </message>
@@ -6467,7 +6733,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdViewDockUndockFullscreen</name>
     <message>
-        <location line="-640"/>
+        <location line="-630"/>
         <source>Standard-View</source>
         <translation>Standardansicht</translation>
     </message>
@@ -6505,7 +6771,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>StdViewZoomIn</name>
     <message>
-        <location line="+447"/>
+        <location line="+437"/>
         <source>Standard-View</source>
         <translation>Standardansicht</translation>
     </message>
@@ -6535,7 +6801,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
 <context>
     <name>Workbench</name>
     <message>
-        <location filename="../Workbench.cpp" line="+362"/>
+        <location filename="../Workbench.cpp" line="+365"/>
         <source>&amp;File</source>
         <translation>&amp;Datei</translation>
     </message>

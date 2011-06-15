@@ -163,34 +163,10 @@ ParameterGrp::handle ButtonModel::spaceballButtonGroup() const
 
 QString ButtonModel::getLabel(const int &number) const
 {
-    static const char *button_labels[] =
-    {
-        QT_TR_NOOP("Button 1"),
-        QT_TR_NOOP("Button 2"),
-        QT_TR_NOOP("Button 3"),
-        QT_TR_NOOP("Button 4"),
-        QT_TR_NOOP("Button 5"),
-        QT_TR_NOOP("Button 6"),
-        QT_TR_NOOP("Button 7"),
-        QT_TR_NOOP("Button 8"),
-        QT_TR_NOOP("Button 9"),
-        QT_TR_NOOP("Button 10"),
-        QT_TR_NOOP("Button 11"),
-        QT_TR_NOOP("Button 12"),
-        QT_TR_NOOP("Button 13"),
-        QT_TR_NOOP("Button 14"),
-        QT_TR_NOOP("Button 15"),
-        QT_TR_NOOP("Button 16"),
-        QT_TR_NOOP("Button 17"),
-        QT_TR_NOOP("Button 18"),
-        QT_TR_NOOP("Button 19"),
-        QT_TR_NOOP("Button 20"),
-        QT_TR_NOOP("Out Of Range")
-    };
     if (number > -1 && number < 20)
-        return tr(button_labels[number]);
+        return tr("Button %1").arg(number+1);
     else
-        return tr(button_labels[20]);
+        return tr("Out Of Range");
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

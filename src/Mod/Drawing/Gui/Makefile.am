@@ -3,7 +3,8 @@ SUBDIRS=Resources
 lib_LTLIBRARIES=libDrawingGui.la DrawingGui.la
 
 BUILT_SOURCES=\
-		moc_DrawingView.cpp
+		moc_DrawingView.cpp \
+		moc_TaskDialog.cpp
 
 libDrawingGui_la_SOURCES=\
 		AppDrawingGuiPy.cpp \
