@@ -42,10 +42,6 @@
         <translation>Zeichnung</translation>
     </message>
     <message>
-        <source>Insert a new View in the active drawing</source>
-        <translation type="obsolete">Neue Ansicht in der aktiven Zeichnung einfügen</translation>
-    </message>
-    <message>
         <location line="+1"/>
         <source>Insert view in drawing</source>
         <translation>Ansicht in Zeichnung einfügen</translation>
@@ -276,18 +272,6 @@
         <location filename="../../Workbench.cpp" line="+36"/>
         <source>Drawing</source>
         <translation>Zeichnung</translation>
-    </message>
-    <message>
-        <source>I/O</source>
-        <translation type="obsolete">E/A</translation>
-    </message>
-    <message>
-        <source>Drawing types</source>
-        <translation type="obsolete">Zeichnungstypen</translation>
-    </message>
-    <message>
-        <source>Views</source>
-        <translation type="obsolete">Ansichten</translation>
     </message>
 </context>
 </TS>
