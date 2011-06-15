@@ -587,6 +587,9 @@ SET(View3D_CPP_SRCS
     Flag.cpp
     MouseSelection.cpp
     NavigationStyle.cpp
+    InventorNavigationStyle.cpp
+    CADNavigationStyle.cpp
+    BlenderNavigationStyle.cpp
     SplitView3DInventor.cpp
     View.cpp
     View3DInventor.cpp
