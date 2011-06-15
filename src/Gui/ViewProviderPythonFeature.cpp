@@ -212,15 +212,25 @@ QIcon ViewProviderPythonFeatureImp::getIcon() const
                 Py::Tuple args(0);
                 Py::String str(method.apply(args));
                 std::string content = str.as_std_string();
-
-                // test if in XPM format
+                printf(content.c_str());
                 QByteArray ary;
-                QPixmap icon;
                 int strlen = (int)content.size();
                 ary.resize(strlen);
                 for (int j=0; j<strlen; j++)
                     ary[j]=content[j];
-                icon.loadFromData(ary, "XPM");
+                QPixmap icon;
+                // Make sure to remove crap around the XPM data
+                QList<QByteArray> lines = ary.split('\n');
+                QByteArray buffer;
+                buffer.reserve(ary.size()+lines.size());
+                for (QList<QByteArray>::iterator it = lines.begin(); it != lines.end(); ++it) {
+                    QByteArray trim = it->trimmed();
+                    if (!trim.isEmpty()) {
+                        buffer.append(trim);
+                        buffer.append('\n');
+                    }
+                }
+                icon.loadFromData(buffer, "XPM");
                 if (!icon.isNull()) {
                     return icon;
                 }
