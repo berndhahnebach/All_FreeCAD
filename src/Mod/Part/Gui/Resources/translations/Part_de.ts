@@ -157,14 +157,6 @@
         <translation>Formteil</translation>
     </message>
     <message>
-        <source>Create box...</source>
-        <translation type="obsolete">Box erstellen...</translation>
-    </message>
-    <message>
-        <source>Create a Box feature</source>
-        <translation type="obsolete">Erstellen einer Box-Funktion</translation>
-    </message>
-    <message>
         <location line="+1"/>
         <source>Box</source>
         <translation>Quader</translation>
@@ -188,10 +180,6 @@
         <translation>Box fix 1</translation>
     </message>
     <message>
-        <source>Create a box feature without dialog</source>
-        <translation type="obsolete">Erstellen eines Kubus ohne Dialog</translation>
-    </message>
-    <message>
         <location line="+1"/>
         <source>Create a box solid without dialog</source>
         <translation>Erstellt oder ändert einen Quader ohne Dialog</translation>
@@ -210,10 +198,6 @@
         <translation>Box fix 2</translation>
     </message>
     <message>
-        <source>Create a box feature without dialog</source>
-        <translation type="obsolete">Erstellen eines Kubus ohne Dialog</translation>
-    </message>
-    <message>
         <location line="+1"/>
         <source>Create a box solid without dialog</source>
         <translation>Erstellt einen Quader ohne Dialog</translation>
@@ -230,10 +214,6 @@
         <location line="+1"/>
         <source>Intersection</source>
         <translation>Überschneidung</translation>
-    </message>
-    <message>
-        <source>Intersection of two shapes</source>
-        <translation type="obsolete">Überschneidung zweier Körper</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -257,10 +237,6 @@
         <location line="+1"/>
         <source>Create a cone solid</source>
         <translation>Erstellt einen Kegel</translation>
-    </message>
-    <message>
-        <source>Create a cone feature</source>
-        <translation type="obsolete">Create a cone feature</translation>
     </message>
 </context>
 <context>
@@ -294,10 +270,6 @@
         <translation>Ausschneiden</translation>
     </message>
     <message>
-        <source>Create a Cut feature</source>
-        <translation type="obsolete">Erstellen eines Schnittes</translation>
-    </message>
-    <message>
         <location line="+1"/>
         <source>Make a cut of two shapes</source>
         <translation>Schneidet zwei Formen</translation>
@@ -309,10 +281,6 @@
         <location filename="../../CommandParametric.cpp" line="-104"/>
         <source>Part</source>
         <translation>Formteil</translation>
-    </message>
-    <message>
-        <source>Create Cylinder...</source>
-        <translation type="obsolete">Zylinder erstellen...</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -372,14 +340,6 @@
         <location line="+1"/>
         <source>Union</source>
         <translation>Vereinigung</translation>
-    </message>
-    <message>
-        <source>Make union of two shapes</source>
-        <translation type="obsolete">Zwei Formen vereinigen</translation>
-    </message>
-    <message>
-        <source>Make union of several shapes</source>
-        <translation type="obsolete">Make union of several shapes</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -566,10 +526,6 @@
         <source>Section</source>
         <translation>Ausschnitt</translation>
     </message>
-    <message>
-        <source>Make section of two shapes</source>
-        <translation type="obsolete">Ausschnitt von zwei Formen fertigen</translation>
-    </message>
 </context>
 <context>
     <name>CmdPartShapeFromMesh</name>
@@ -624,10 +580,6 @@
         <source>Sphere</source>
         <translation>Kugel</translation>
     </message>
-    <message>
-        <source>Create a sphere feature</source>
-        <translation type="obsolete">Create a sphere feature</translation>
-    </message>
 </context>
 <context>
     <name>CmdPartTorus</name>
@@ -645,10 +597,6 @@
         <location line="+1"/>
         <source>Torus</source>
         <translation>Torus</translation>
-    </message>
-    <message>
-        <source>Create a torus feature</source>
-        <translation type="obsolete">Create a torus feature</translation>
     </message>
 </context>
 <context>
@@ -746,14 +694,6 @@
         <translation>Boolesche Operation</translation>
     </message>
     <message>
-        <source>Shape</source>
-        <translation type="obsolete">Form</translation>
-    </message>
-    <message>
-        <source>No selection</source>
-        <translation type="obsolete">Keine Auswahl</translation>
-    </message>
-    <message>
         <location line="+100"/>
         <source>Second shape</source>
         <translation>Zweite Form</translation>
@@ -787,14 +727,6 @@
         <location line="+10"/>
         <source>Intersection</source>
         <translation>Überschneidung</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Verwerfen</translation>
     </message>
     <message>
         <location filename="../../DlgBooleanOperation.cpp" line="+317"/>
@@ -884,14 +816,6 @@
         <translation>Entlang der Normalen</translation>
     </message>
     <message>
-        <source>x</source>
-        <translation type="obsolete">x</translation>
-    </message>
-    <message>
-        <source>y</source>
-        <translation type="obsolete">y</translation>
-    </message>
-    <message>
         <location line="-34"/>
         <source>Length:</source>
         <translation>Länge:</translation>
@@ -912,22 +836,6 @@
         <translation>Form</translation>
     </message>
     <message>
-        <source>Sketch:</source>
-        <translation type="obsolete">Skizze:</translation>
-    </message>
-    <message>
-        <source>No selection</source>
-        <translation type="obsolete">Keine Auswahl</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Verwerfen</translation>
-    </message>
-    <message>
         <source></source>
         <translation></translation>
     </message>
@@ -945,10 +853,6 @@
         <location line="-26"/>
         <source>Y:</source>
         <translation>Y:</translation>
-    </message>
-    <message>
-        <source>Select a shape for extrusion, first.</source>
-        <translation type="obsolete">Wählen Sie zuerst eine Form zum extrudieren.</translation>
     </message>
 </context>
 <context>
@@ -982,14 +886,6 @@
         <location line="+5"/>
         <source>Variable Radius</source>
         <translation>Variabler Radius</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Verwerfen</translation>
     </message>
     <message>
         <location line="-77"/>
@@ -1126,22 +1022,6 @@ Bitte wählen Sie eine gültige Form im Dropdown-Feld.</translation>
         <translation>Position:</translation>
     </message>
     <message>
-        <source>X</source>
-        <translation type="obsolete">X</translation>
-    </message>
-    <message>
-        <source>Y</source>
-        <translation type="obsolete">Y</translation>
-    </message>
-    <message>
-        <source>Z</source>
-        <translation type="obsolete">Z</translation>
-    </message>
-    <message>
-        <source>User defined...</source>
-        <translation type="obsolete">Benutzerdefiniert...</translation>
-    </message>
-    <message>
         <location line="+49"/>
         <source>Direction:</source>
         <translation>Richtung:</translation>
@@ -1173,22 +1053,6 @@ Bitte wählen Sie eine gültige Form im Dropdown-Feld.</translation>
         <location line="+30"/>
         <source>Position:</source>
         <translation>Position:</translation>
-    </message>
-    <message>
-        <source>X</source>
-        <translation type="obsolete">X</translation>
-    </message>
-    <message>
-        <source>Y</source>
-        <translation type="obsolete">Y</translation>
-    </message>
-    <message>
-        <source>Z</source>
-        <translation type="obsolete">Z</translation>
-    </message>
-    <message>
-        <source>User defined...</source>
-        <translation type="obsolete">Benutzerdefiniert...</translation>
     </message>
     <message>
         <location line="+19"/>
@@ -1337,22 +1201,6 @@ Bitte wählen Sie eine gültige Form im Dropdown-Feld.</translation>
         <location line="+17"/>
         <source>Y:</source>
         <translation>Y:</translation>
-    </message>
-    <message>
-        <source>X</source>
-        <translation type="obsolete">X</translation>
-    </message>
-    <message>
-        <source>Y</source>
-        <translation type="obsolete">Y</translation>
-    </message>
-    <message>
-        <source>Z</source>
-        <translation type="obsolete">Z</translation>
-    </message>
-    <message>
-        <source>User defined...</source>
-        <translation type="obsolete">Benutzerdefiniert...</translation>
     </message>
     <message>
         <location line="-98"/>
@@ -1542,10 +1390,6 @@ Bitte wählen Sie eine gültige Form im Dropdown-Feld.</translation>
         <source>Shape</source>
         <translation>Form</translation>
     </message>
-    <message>
-        <source>Select a shape for revolution, first.</source>
-        <translation type="obsolete">Select a shape for revolution, first.</translation>
-    </message>
 </context>
 <context>
     <name>PartGui::DlgSettings3DViewPart</name>
@@ -1605,10 +1449,6 @@ Bitte wählen Sie eine gültige Form im Dropdown-Feld.</translation>
         <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Tessellierung&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;Setzt die maximale Abweichung der tessellierten Fläche zur CAD-Fläche. Je niedriger der Wert desto langamer die Darstellungsgeschwindigkeit und schöner die Darstellung.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>Maximum deviation of tessellated shapes</source>
-        <translation type="obsolete">Maximale Abweichung der mosaikartig Formen</translation>
-    </message>
-    <message>
         <location line="+10"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Hint&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Defining the normals per vertex is also called &lt;span style=&quot; font-style:italic;&quot;&gt;Phong shading&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;while defining the normals per face is called &lt;/span&gt;Flat shading&lt;span style=&quot; font-style:normal;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Hinweis&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Die Angabe der Normalen per Vertex wird auch &lt;span style=&quot; font-style:italic;&quot;&gt;Phong shading&lt;/span&gt; genannt,&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;während die Angabe der Normalen pro Fläche &lt;/span&gt;Flat shading&lt;span style=&quot; font-style:normal;&quot;&gt; gennant wird.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
@@ -1627,14 +1467,6 @@ Bitte wählen Sie eine gültige Form im Dropdown-Feld.</translation>
         <location line="+21"/>
         <source> %</source>
         <translation> %</translation>
-    </message>
-    <message>
-        <source>Deviation</source>
-        <translation type="obsolete">Deviation</translation>
-    </message>
-    <message>
-        <source>Setting a too small deviation causes the tessellation to take longerand thus freezes or slows down the GUI.</source>
-        <translation type="obsolete">Setting a too small deviation causes the tessellation to take longerand thus freezes or slows down the GUI.</translation>
     </message>
 </context>
 <context>
@@ -1845,14 +1677,6 @@ Bitte wählen Sie eine gültige Form im Dropdown-Feld.</translation>
         <location line="+2"/>
         <source>Part tools</source>
         <translation>Formteil-Werkzeuge</translation>
-    </message>
-    <message>
-        <source>Import</source>
-        <translation type="obsolete">Importieren</translation>
-    </message>
-    <message>
-        <source>Boolean Operators</source>
-        <translation type="obsolete">Boolesche Operatoren</translation>
     </message>
     <message>
         <location line="-1"/>

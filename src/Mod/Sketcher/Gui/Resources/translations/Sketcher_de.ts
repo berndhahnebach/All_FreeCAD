@@ -9,10 +9,6 @@
         <translation>Skizze</translation>
     </message>
     <message>
-        <source>Constrain lock</source>
-        <translation type="obsolete">Constrain lock</translation>
-    </message>
-    <message>
         <location line="+1"/>
         <source>Constrain coincident</source>
         <translation>Koinzidenz erzwingen</translation>
@@ -49,14 +45,6 @@
         <translation>Skizze</translation>
     </message>
     <message>
-        <source>Constrain orizontal</source>
-        <translation type="obsolete">Horizontal beschränken</translation>
-    </message>
-    <message>
-        <source>Create a horizontal constrain on the selcted item</source>
-        <translation type="obsolete">Erstellt eine horizontale Beschränkung auf das ausgewählte Element</translation>
-    </message>
-    <message>
         <location line="+1"/>
         <source>Constrain horizontally</source>
         <translation>Horizontal einschränken</translation>
@@ -73,18 +61,6 @@
         <location line="+146"/>
         <source>Sketcher</source>
         <translation>Skizze</translation>
-    </message>
-    <message>
-        <source>Constrain Lock</source>
-        <translation type="obsolete">gesperrte Beschränkung</translation>
-    </message>
-    <message>
-        <source>Create a Lock constrain on the selcted item</source>
-        <translation type="obsolete">Erstellt eine gesperrte Beschränkung auf das ausgewählte Element</translation>
-    </message>
-    <message>
-        <source>Create a lock constrain on the selected item</source>
-        <translation type="obsolete">Eine Sperrung für das gewählte Element setzen</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -141,14 +117,6 @@
         <translation>Skizze</translation>
     </message>
     <message>
-        <source>Constrain vertical</source>
-        <translation type="obsolete">Vertikale einschränken</translation>
-    </message>
-    <message>
-        <source>Create a vertical constrain on the selcted item</source>
-        <translation type="obsolete">Eine vertikale Beschränkung an dem ausgewählten Element erstellen</translation>
-    </message>
-    <message>
         <location line="+1"/>
         <source>Constrain vertically</source>
         <translation>Vertikal einschränken</translation>
@@ -175,21 +143,6 @@
         <location line="+1"/>
         <source>Create an arc in the sketch</source>
         <translation>Bogen in der Skizze erstellen</translation>
-    </message>
-</context>
-<context>
-    <name>CmdSketcherCreateBox</name>
-    <message>
-        <source>Sketcher</source>
-        <translation type="obsolete">Skizze</translation>
-    </message>
-    <message>
-        <source>Create box</source>
-        <translation type="obsolete">Rechteck erstellen</translation>
-    </message>
-    <message>
-        <source>Create a box in the sketch</source>
-        <translation type="obsolete">Rechteck in der Skizze erstellen</translation>
     </message>
 </context>
 <context>
@@ -311,10 +264,6 @@
         <location line="+1"/>
         <source>Create text</source>
         <translation>Text erstellen</translation>
-    </message>
-    <message>
-        <source>Create text in the scetch</source>
-        <translation type="obsolete">Text in der Skizze erstellen</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -579,10 +528,6 @@
         <source>Named</source>
         <translation>Genannt</translation>
     </message>
-    <message>
-        <source>Constraints</source>
-        <translation type="obsolete">Einschränkungen</translation>
-    </message>
 </context>
 <context>
     <name>SketcherGui::TaskSketcherGeneral</name>
@@ -685,10 +630,6 @@
         <location line="+5"/>
         <source>20 m</source>
         <translation>20 m</translation>
-    </message>
-    <message>
-        <source>Edit controls</source>
-        <translation type="obsolete">Bedienelemente bearbeiten</translation>
     </message>
     <message>
         <location line="+13"/>

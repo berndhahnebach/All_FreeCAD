@@ -536,13 +536,6 @@ Siehe Dokumentation für Details.</translation>
     </message>
 </context>
 <context>
-    <name>RobotGui::TaskEdge2TracParameter</name>
-    <message>
-        <source>TaskEdge2TracParameter</source>
-        <translation type="obsolete">TaskEdge2TracParameter</translation>
-    </message>
-</context>
-<context>
     <name>RobotGui::TaskRobot6Axis</name>
     <message>
         <location filename="../../TaskRobot6Axis.ui" line="+14"/>
@@ -593,24 +586,6 @@ Siehe Dokumentation für Details.</translation>
         <location line="+16"/>
         <source>...</source>
         <translation>...</translation>
-    </message>
-    <message>
-        <source>TaskRobot6Axis</source>
-        <translation type="obsolete">TaskRobot6Axis</translation>
-    </message>
-</context>
-<context>
-    <name>RobotGui::TaskRobotControl</name>
-    <message>
-        <source>TaskRobotControl</source>
-        <translation type="obsolete">TaskRobotControl</translation>
-    </message>
-</context>
-<context>
-    <name>RobotGui::TaskRobotMessages</name>
-    <message>
-        <source>TaskRobotMessages</source>
-        <translation type="obsolete">TaskRobotMessages</translation>
     </message>
 </context>
 <context>
@@ -709,17 +684,6 @@ Siehe Dokumentation für Details.</translation>
         <location line="+5"/>
         <source>A</source>
         <translation>A</translation>
-    </message>
-    <message>
-        <source>Trajectory</source>
-        <translation type="obsolete">Bahnverlauf</translation>
-    </message>
-</context>
-<context>
-    <name>RobotGui::TaskTrajectoryDressUpParameter</name>
-    <message>
-        <source>Dress Up Parameter</source>
-        <translation type="obsolete">Dress Up Parameter</translation>
     </message>
 </context>
 <context>

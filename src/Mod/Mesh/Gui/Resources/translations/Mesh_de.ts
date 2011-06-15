@@ -105,10 +105,6 @@
         <translation>Netz</translation>
     </message>
     <message>
-        <source>Evaluate mesh...</source>
-        <translation type="obsolete">Netz auswerten...</translation>
-    </message>
-    <message>
         <source>Opens a dialog to analyze and repair a mesh</source>
         <translation>Öffnet einen Dialog zum Analysieren und Reparieren eines Netzes</translation>
     </message>
@@ -445,10 +441,6 @@
 <context>
     <name>MeshGui::DlgEvaluateMesh</name>
     <message>
-        <source>Evaluate Mesh</source>
-        <translation type="obsolete">Netz auswerten</translation>
-    </message>
-    <message>
         <source>&amp;Help</source>
         <translation>&amp;Hilfe</translation>
     </message>
@@ -775,14 +767,6 @@ Bitte starten Sie vorher den Befehl zum Reparieren von Falten</translation>
         <translation>Netz</translation>
     </message>
     <message>
-        <source>Appearance</source>
-        <translation type="obsolete">Erscheinungsbild</translation>
-    </message>
-    <message>
-        <source>Face color</source>
-        <translation type="obsolete">Dreiecksfarbe</translation>
-    </message>
-    <message>
         <source>Two-side rendering</source>
         <translation>Doppelseitiges Rendern</translation>
     </message>
@@ -948,10 +932,6 @@ Bitte starten Sie vorher den Befehl zum Reparieren von Falten</translation>
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <source>Respect only front triangles</source>
-        <translation type="obsolete">Nur vordere Dreiecke beachten</translation>
-    </message>
-    <message>
         <source>Respect only triangles with normals facing screen</source>
         <translation>Nur Dreiecke mit Normalen beachten, die zum Bildschirm zeigen</translation>
     </message>
@@ -1003,18 +983,6 @@ Bitte starten Sie vorher den Befehl zum Reparieren von Falten</translation>
     <message>
         <source>Fill holes with maximum number of edges:</source>
         <translation>Löcher schließen mit maximaler Anzahl Kanten:</translation>
-    </message>
-    <message>
-        <source>Remove components</source>
-        <translation type="obsolete">Komponenten entfernen</translation>
-    </message>
-    <message>
-        <source>Removes components up to a maximum number of triangles:</source>
-        <translation type="obsolete">Komponenten entfernen mit bis maximal vorgegebener Anzahl Dreiecken:</translation>
-    </message>
-    <message>
-        <source>All Mesh Files (*.stl *.ast *.bms *.obj)</source>
-        <translation type="obsolete">Alle Netz-Dateien (*.stl *.ast *.bms *.obj)</translation>
     </message>
     <message>
         <source>Binary STL (*.stl)</source>
@@ -1150,10 +1118,6 @@ Max=&lt;%4,%5,%6&gt;</translation>
     <message>
         <source>Mesh tools</source>
         <translation>Netz-Werkzeuge</translation>
-    </message>
-    <message>
-        <source>Mesh test suite</source>
-        <translation type="obsolete">Netz Testumgebung</translation>
     </message>
 </context>
 </TS>
