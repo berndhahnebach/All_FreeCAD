@@ -38,6 +38,8 @@ namespace DrawingGui
  */
 class TaskProjection : public Gui::TaskView::TaskDialog
 {
+    Q_OBJECT
+
 public:
     TaskProjection();
     ~TaskProjection();

@@ -24,6 +24,7 @@ set(DrawingGui_LIBS
 
 set(DrawingGui_MOC_HDRS
     DrawingView.h
+    TaskDialog.h
 )
 
 fc_wrap_cpp(DrawingGui_MOC_SRCS ${DrawingGui_MOC_HDRS})
