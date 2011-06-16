@@ -1126,30 +1126,38 @@ static PyObject * makeLoft(PyObject *self, PyObject *args)
     return new BSplineSurfacePy(new GeomBSplineSurface(aRes));
 #else
     PyObject *pcObj;
-    if (!PyArg_ParseTuple(args, "O!", &(PyList_Type), &pcObj))     // convert args: Python->C
-        return NULL;                             // NULL triggers exception
+    PyObject *psolid=0;
+    PyObject *pruled=0;
+    if (!PyArg_ParseTuple(args, "O!|O!O!", &(PyList_Type), &pcObj,
+                                           &(PyBool_Type), &psolid,
+                                           &(PyBool_Type), &pruled))
+        return NULL;
 
     try {
-        Standard_Boolean anIsSolid = Standard_False;
-        Standard_Boolean anIsRuled = Standard_False;
+        Standard_Boolean anIsSolid = (psolid == Py_True) ? Standard_True : Standard_False;
+        Standard_Boolean anIsRuled = (pruled == Py_True) ? Standard_True : Standard_False;
         BRepOffsetAPI_ThruSections aGenerator (anIsSolid,anIsRuled);
 
-        int countWires = 0;
+        int countShapes = 0;
         Py::List list(pcObj);
         for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
             if (PyObject_TypeCheck((*it).ptr(), &(Part::TopoShapePy::Type))) {
                 const TopoDS_Shape& sh = static_cast<TopoShapePy*>((*it).ptr())->
                     getTopoShapePtr()->_Shape;
-                if (!sh.IsNull() && sh.ShapeType() == TopAbs_WIRE) {
+                if (!sh.IsNull() && sh.ShapeType() == TopAbs_VERTEX) {
+                    aGenerator.AddVertex(TopoDS::Vertex (sh));
+                    countShapes++;
+                }
+                else if (!sh.IsNull() && sh.ShapeType() == TopAbs_WIRE) {
                     aGenerator.AddWire(TopoDS::Wire (sh));
-                    countWires++;
+                    countShapes++;
                 }
             }
         }
 
-        // need at least two wires
-        if (countWires < 2) {
-            PyErr_SetString(PyExc_Exception, "Need at least two wires to create loft face");
+        // need at least two vertexes or wires
+        if (countShapes < 2) {
+            PyErr_SetString(PyExc_Exception, "Need at least two vertexes or wires to create loft face");
             return 0;
         }
 
