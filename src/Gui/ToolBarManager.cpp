@@ -179,6 +179,9 @@ void ToolBarManager::setup(ToolBarItem* toolBarItems)
 
     saveState();
     this->toolbarNames.clear();
+
+    int max_width = getMainWindow()->width();
+    int top_width = 0;
     
     ParameterGrp::handle hPref = App::GetApplication().GetUserParameter().GetGroup("BaseApp")
                                ->GetGroup("MainWindow")->GetGroup("Toolbars");
@@ -190,6 +193,7 @@ void ToolBarManager::setup(ToolBarItem* toolBarItems)
         QToolBar* toolbar = findToolBar(toolbars, QString::fromAscii((*it)->command().c_str()));
         std::string toolbarName = (*it)->command();
         bool visible = hPref->GetBool(toolbarName.c_str(), true);
+        bool toolbar_added = false;
 
         if (!toolbar) {
             toolbar = getMainWindow()->addToolBar(
@@ -198,6 +202,7 @@ void ToolBarManager::setup(ToolBarItem* toolBarItems)
                                         0, QApplication::UnicodeUTF8)); // i18n
             toolbar->setObjectName(QString::fromAscii((*it)->command().c_str()));
             toolbar->setVisible(visible);
+            toolbar_added = true;
         }
         else {
             toolbar->setVisible(visible);
@@ -208,6 +213,18 @@ void ToolBarManager::setup(ToolBarItem* toolBarItems)
 
         // setup the toolbar
         setup(*it, toolbar);
+
+        // try to add some breaks to avoid to have all toolbars in one line
+        if (toolbar_added) {
+            // the width() of a toolbar doesn't return useful results so we estimate
+            // its size by the number of buttons and the icon size
+            QList<QToolButton*> btns = toolbar->findChildren<QToolButton*>();
+            top_width += (btns.size() * toolbar->iconSize().width());
+            if (top_width > max_width) {
+                top_width = 0;
+                getMainWindow()->insertToolBarBreak(toolbar);
+            }
+        }
     }
 
     // hide all unneeded toolbars
