@@ -24,6 +24,8 @@
 #ifndef GUI_WAIT_CURSOR_H
 #define GUI_WAIT_CURSOR_H
 
+#include <qglobal.h>
+
 namespace Gui {
 
 /**
@@ -59,10 +61,20 @@ namespace Gui {
 class GuiExport WaitCursor
 {
 public:
+    enum FilterEventsFlag {
+        NoEvents = 0x00,
+        KeyEvents = 0x01,
+        MouseEvents = 0x02,
+        AllEvents = KeyEvents | MouseEvents
+    };
+    Q_DECLARE_FLAGS(FilterEventsFlags, FilterEventsFlag)
+
     WaitCursor();
     ~WaitCursor();
+
     void setWaitCursor();
     void restoreCursor();
+    void setIgnoreEvents(FilterEventsFlags flags = AllEvents);
 
 private:
     static int instances;

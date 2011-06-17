@@ -39,7 +39,9 @@ namespace Gui {
 class WaitCursorP : public QObject
 {
 public:
-    static void setBusy(bool);
+    static WaitCursorP* getInstance();
+    void setBusy(bool);
+    void setIgnoreEvents(WaitCursor::FilterEventsFlags flags);
 
 protected:
     bool eventFilter(QObject*, QEvent*);
@@ -47,34 +49,44 @@ protected:
 private:
     WaitCursorP(); // Disable constructor
     static WaitCursorP* _instance;
-    bool _isOn;
+    bool isOn;
+    WaitCursor::FilterEventsFlags flags;
 };
 } // namespace Gui
 
 WaitCursorP* WaitCursorP::_instance = 0;
 
-WaitCursorP::WaitCursorP() : QObject(0), _isOn( false )
+WaitCursorP::WaitCursorP() : QObject(0), isOn(false), flags(WaitCursor::AllEvents)
 {
+}
+
+WaitCursorP* WaitCursorP::getInstance()
+{
+    if (!_instance)
+        _instance = new WaitCursorP();
+    return _instance;
 }
 
 void WaitCursorP::setBusy(bool on)
 {
-    if (_instance == 0)
-        _instance = new WaitCursorP();
-
-    if (on == _instance->_isOn)
+    if (on == this->isOn)
         return;
 
     if (on) {
-        qApp->installEventFilter(_instance);
-        QApplication::setOverrideCursor( Qt::WaitCursor );
+        qApp->installEventFilter(this);
+        QApplication::setOverrideCursor(Qt::WaitCursor);
     }
     else {
-        qApp->removeEventFilter(_instance);
+        qApp->removeEventFilter(this);
         QApplication::restoreOverrideCursor();
     }
 
-  _instance->_isOn = on;
+    this->isOn = on;
+}
+
+void WaitCursorP::setIgnoreEvents(WaitCursor::FilterEventsFlags flags)
+{
+    this->flags = flags;
 }
 
 bool WaitCursorP::eventFilter(QObject*, QEvent* e)
@@ -82,11 +94,16 @@ bool WaitCursorP::eventFilter(QObject*, QEvent* e)
     // Note: This might cause problems when we want to open a modal dialog at the lifetime 
     // of a WaitCursor instance because the incoming events are still filtered.
     if (e->type() == QEvent::KeyPress ||
-        e->type() == QEvent::KeyRelease ||
-        e->type() == QEvent::MouseButtonPress ||
+        e->type() == QEvent::KeyRelease) {
+        if (this->flags & WaitCursor::KeyEvents)
+            return true;
+    }
+    if (e->type() == QEvent::MouseButtonPress ||
         e->type() == QEvent::MouseButtonRelease ||
-        e->type() == QEvent::MouseButtonDblClick )
-        return true;
+        e->type() == QEvent::MouseButtonDblClick) {
+        if (this->flags & WaitCursor::MouseEvents)
+            return true;
+    }
     return false;
 }
 
@@ -116,7 +133,7 @@ WaitCursor::~WaitCursor()
  */
 void WaitCursor::setWaitCursor()
 {
-    WaitCursorP::setBusy(true);
+    WaitCursorP::getInstance()->setBusy(true);
 }
 
 /**
@@ -124,5 +141,10 @@ void WaitCursor::setWaitCursor()
  */
 void WaitCursor::restoreCursor()
 {
-    WaitCursorP::setBusy(false);
+    WaitCursorP::getInstance()->setBusy(false);
+}
+
+void WaitCursor::setIgnoreEvents(FilterEventsFlags flags)
+{
+    WaitCursorP::getInstance()->setIgnoreEvents(flags);
 }
