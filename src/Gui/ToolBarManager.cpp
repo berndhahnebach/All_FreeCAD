@@ -26,6 +26,7 @@
 # include <QApplication>
 # include <QAction>
 # include <QToolBar>
+# include <QToolButton>
 #endif
 
 #include "ToolBarManager.h"
