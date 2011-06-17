@@ -111,6 +111,11 @@ If this Bezier curve is rational, it can become non-rational.</UserDocu>
 				<UserDocu>Get all poles of the Bezier curve.</UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="setPoles">
+			<Documentation>
+				<UserDocu>Set the poles of the Bezier curve.</UserDocu>
+			</Documentation>
+		</Methode>
 		<Methode Name="setWeight">
 			<Documentation>
 				<UserDocu>Set a weight of the Bezier curve.</UserDocu>
