@@ -234,6 +234,11 @@ GeomBezierCurve::~GeomBezierCurve()
 {
 }
 
+void GeomBezierCurve::setHandle(const Handle_Geom_BezierCurve& c)
+{
+    myCurve = Handle_Geom_BezierCurve::DownCast(c->Copy());
+}
+
 const Handle_Geom_Geometry& GeomBezierCurve::handle() const
 {
     return myCurve;

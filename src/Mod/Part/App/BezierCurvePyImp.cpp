@@ -268,6 +268,32 @@ PyObject* BezierCurvePy::getPoles(PyObject * args)
     }
 }
 
+PyObject* BezierCurvePy::setPoles(PyObject * args)
+{
+    PyObject* plist;
+    if (!PyArg_ParseTuple(args, "O!", &(PyList_Type), &plist))
+        return 0;
+    try {
+        Py::List list(plist);
+        TColgp_Array1OfPnt poles(1,list.size());
+        int index = poles.Lower();
+        for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+            Py::Vector v(*it);
+            Base::Vector3d pole = v.toVector();
+            poles.SetValue(index++, gp_Pnt(pole.x,pole.y,pole.z));
+        }
+
+        Handle_Geom_BezierCurve bezier = new Geom_BezierCurve(poles);
+        this->getGeomBezierCurvePtr()->setHandle(bezier);
+        Py_Return;
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
+}
+
 PyObject* BezierCurvePy::setWeight(PyObject * args)
 {
     int index;

@@ -105,6 +105,7 @@ public:
     // Base implementer ----------------------------
     virtual PyObject *getPyObject(void);
 
+    void setHandle(const Handle_Geom_BezierCurve&);
     const Handle_Geom_Geometry& handle() const;
 
 private:

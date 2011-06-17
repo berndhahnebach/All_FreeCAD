@@ -216,6 +216,8 @@ void ToolBarManager::setup(ToolBarItem* toolBarItems)
 
         // try to add some breaks to avoid to have all toolbars in one line
         if (toolbar_added) {
+            if (top_width > 0 && getMainWindow()->toolBarBreak(toolbar))
+                top_width = 0;
             // the width() of a toolbar doesn't return useful results so we estimate
             // its size by the number of buttons and the icon size
             QList<QToolButton*> btns = toolbar->findChildren<QToolButton*>();
