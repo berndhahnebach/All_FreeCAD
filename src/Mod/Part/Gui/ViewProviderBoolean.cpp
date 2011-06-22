@@ -27,6 +27,7 @@
 #endif
 
 #include "ViewProviderBoolean.h"
+#include <Gui/BitmapFactory.h>
 #include <Mod/Part/App/FeaturePartBoolean.h>
 #include <Mod/Part/App/FeaturePartFuse.h>
 #include <Mod/Part/App/FeaturePartCommon.h>
@@ -52,6 +53,24 @@ std::vector<App::DocumentObject*> ViewProviderBoolean::claimChildren(void)const
     return temp;
 }
 
+QIcon ViewProviderBoolean::getIcon(void) const
+{
+    App::DocumentObject* obj = getObject();
+    if (obj) {
+        Base::Type type = obj->getTypeId();
+        if (type == Base::Type::fromName("Part::Common"))
+            return Gui::BitmapFactory().pixmap("Part_Common");
+        else if (type == Base::Type::fromName("Part::Fuse"))
+            return Gui::BitmapFactory().pixmap("Part_Fuse");
+        else if (type == Base::Type::fromName("Part::Cut"))
+            return Gui::BitmapFactory().pixmap("Part_Cut");
+        else if (type == Base::Type::fromName("Part::Section"))
+            return Gui::BitmapFactory().pixmap("Part_Section");
+    }
+
+    return ViewProviderPart::getIcon();
+}
+
 
 PROPERTY_SOURCE(PartGui::ViewProviderMultiFuse,PartGui::ViewProviderPart)
 
@@ -68,6 +87,12 @@ std::vector<App::DocumentObject*> ViewProviderMultiFuse::claimChildren(void)cons
     return std::vector<App::DocumentObject*>(static_cast<Part::MultiFuse*>(getObject())->Shapes.getValues());
 }
 
+QIcon ViewProviderMultiFuse::getIcon(void) const
+{
+    return Gui::BitmapFactory().pixmap("Part_Fuse");
+}
+
+
 PROPERTY_SOURCE(PartGui::ViewProviderMultiCommon,PartGui::ViewProviderPart)
 
 ViewProviderMultiCommon::ViewProviderMultiCommon()
@@ -81,4 +106,9 @@ ViewProviderMultiCommon::~ViewProviderMultiCommon()
 std::vector<App::DocumentObject*> ViewProviderMultiCommon::claimChildren(void)const
 {
     return std::vector<App::DocumentObject*>(static_cast<Part::MultiCommon*>(getObject())->Shapes.getValues());
+}
+
+QIcon ViewProviderMultiCommon::getIcon(void) const
+{
+    return Gui::BitmapFactory().pixmap("Part_Common");
 }
