@@ -444,10 +444,10 @@ void ViewProviderAnnotationLabel::drawImage(const std::vector<std::string>& s)
     int h = fm.height() * s.size();
     const App::Color& b = this->BackgroundColor.getValue();
     QColor brush;
-    brush.setRgbF(255*b.r,255*b.g,255*b.b);
+    brush.setRgbF(b.r,b.g,b.b);
     const App::Color& t = this->TextColor.getValue();
     QColor front;
-    front.setRgbF(255*t.r,255*t.g,255*t.b);
+    front.setRgbF(t.r,t.g,t.b);
 
     QStringList lines;
     for (std::vector<std::string>::const_iterator it = s.begin(); it != s.end(); ++it) {
