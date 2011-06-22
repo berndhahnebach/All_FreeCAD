@@ -188,16 +188,18 @@ public:
 class MeshExport MeshEvalTopology : public MeshEvaluation
 {
 public:
-  MeshEvalTopology (const MeshKernel &rclB) : MeshEvaluation(rclB) {}
-  virtual ~MeshEvalTopology () {}
-  virtual bool Evaluate ();
+    MeshEvalTopology (const MeshKernel &rclB) : MeshEvaluation(rclB) {}
+    virtual ~MeshEvalTopology () {}
+    virtual bool Evaluate ();
 
-  void GetFacetManifolds (std::vector<unsigned long> &raclFacetIndList) const;
-  unsigned long CountManifolds() const;
-  const std::vector<std::pair<unsigned long, unsigned long> >& GetIndices() const { return _aclManifoldList; }
+    void GetFacetManifolds (std::vector<unsigned long> &raclFacetIndList) const;
+    unsigned long CountManifolds() const;
+    const std::vector<std::pair<unsigned long, unsigned long> >& GetIndices() const { return nonManifoldList; }
+    const std::list<std::vector<unsigned long> >& GetFacets() const { return nonManifoldFacets; }
 
 protected:
-  std::vector<std::pair<unsigned long, unsigned long> >   _aclManifoldList;
+    std::vector<std::pair<unsigned long, unsigned long> > nonManifoldList;
+    std::list<std::vector<unsigned long> > nonManifoldFacets;
 };
 
 /**
@@ -207,13 +209,13 @@ protected:
 class MeshExport MeshFixTopology : public MeshValidation
 {
 public:
-  MeshFixTopology (MeshKernel &rclB, const std::vector<std::pair<unsigned long, unsigned long> >& mf)
-    : MeshValidation(rclB), _raclManifoldList(mf) {}
-  virtual ~MeshFixTopology () {}
-  bool Fixup();
+    MeshFixTopology (MeshKernel &rclB, const std::list<std::vector<unsigned long> >& mf)
+      : MeshValidation(rclB), nonManifoldList(mf) {}
+    virtual ~MeshFixTopology () {}
+    bool Fixup();
 
 protected:
-  const std::vector<std::pair<unsigned long, unsigned long> >& _raclManifoldList;
+    const std::list<std::vector<unsigned long> >& nonManifoldList;
 };
 
 // ----------------------------------------------------

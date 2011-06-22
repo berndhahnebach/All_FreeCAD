@@ -355,58 +355,64 @@ bool MeshEvalTopology::Evaluate ()
 
     // search for non-manifold edges
     unsigned long p0 = ULONG_MAX, p1 = ULONG_MAX;
-    _aclManifoldList.clear();
+    nonManifoldList.clear();
+    nonManifoldFacets.clear();
+
     int count = 0;
+    std::vector<unsigned long> facets;
     std::vector<Edge_Index>::iterator pE;
     for (pE = edges.begin(); pE != edges.end(); pE++) {
         if (p0 == pE->p0 && p1 == pE->p1) {
             count++;
+            facets.push_back(pE->f);
         }
         else {
             if (count > 2) {
                 // Edge that is shared by more than 2 facets
-                _aclManifoldList.push_back(std::make_pair
+                nonManifoldList.push_back(std::make_pair
                     <unsigned long, unsigned long>(p0, p1));
+                nonManifoldFacets.push_back(facets);
             }
 
             p0 = pE->p0;
             p1 = pE->p1;
+            facets.clear();
+            facets.push_back(pE->f);
             count = 1;
         }
     }
 
-    return _aclManifoldList.empty();
+    return nonManifoldList.empty();
 }
 
 // generate indexed edge list which tangents non-manifolds
 void MeshEvalTopology::GetFacetManifolds (std::vector<unsigned long> &raclFacetIndList) const
 {
-  raclFacetIndList.clear();
-  const MeshFacetArray& rclFAry = _rclMesh.GetFacets();
-  MeshFacetArray::_TConstIterator pI;
+    raclFacetIndList.clear();
+    const MeshFacetArray& rclFAry = _rclMesh.GetFacets();
+    MeshFacetArray::_TConstIterator pI;
 
-  for (pI = rclFAry.begin(); pI != rclFAry.end(); pI++)
-  {
-    for (int i = 0; i < 3; i++)
-    {
-      unsigned long ulPt0 = std::min<unsigned long>(pI->_aulPoints[i],  pI->_aulPoints[(i+1)%3]);
-      unsigned long ulPt1 = std::max<unsigned long>(pI->_aulPoints[i],  pI->_aulPoints[(i+1)%3]);
-      std::pair<unsigned long, unsigned long> edge = std::make_pair<unsigned long, unsigned long>(ulPt0, ulPt1);
+    for (pI = rclFAry.begin(); pI != rclFAry.end(); pI++) {
+        for (int i = 0; i < 3; i++) {
+            unsigned long ulPt0 = std::min<unsigned long>(pI->_aulPoints[i],  pI->_aulPoints[(i+1)%3]);
+            unsigned long ulPt1 = std::max<unsigned long>(pI->_aulPoints[i],  pI->_aulPoints[(i+1)%3]);
+            std::pair<unsigned long, unsigned long> edge = std::make_pair<unsigned long, unsigned long>(ulPt0, ulPt1);
 
-      if ( std::find(_aclManifoldList.begin(), _aclManifoldList.end(), edge) != _aclManifoldList.end() )
-        raclFacetIndList.push_back( pI - rclFAry.begin() );
+            if (std::find(nonManifoldList.begin(), nonManifoldList.end(), edge) != nonManifoldList.end())
+                raclFacetIndList.push_back(pI - rclFAry.begin());
+        }
     }
-  }
 }
 
 unsigned long MeshEvalTopology::CountManifolds() const
 {
-  return _aclManifoldList.size();
+    return nonManifoldList.size();
 }
 
 bool MeshFixTopology::Fixup ()
 {
     std::vector<unsigned long> indices;
+#if 0
     MeshEvalTopology eval(_rclMesh);
     if (!eval.Evaluate()) {
         eval.GetFacetManifolds(indices);
@@ -417,6 +423,38 @@ bool MeshFixTopology::Fixup ()
 
         _rclMesh.DeleteFacets(indices);
     }
+#else
+    const MeshFacetArray& rFaces = _rclMesh.GetFacets();
+    indices.reserve(3 * nonManifoldList.size()); // allocate some memory
+    std::list<std::vector<unsigned long> >::const_iterator it;
+    for (it = nonManifoldList.begin(); it != nonManifoldList.end(); ++it) {
+        std::vector<unsigned long> non_mf;
+        non_mf.reserve(it->size());
+        for (std::vector<unsigned long>::const_iterator jt = it->begin(); jt != it->end(); ++jt) {
+            // fscet is only connected with one edge and there causes a non-manifold
+            unsigned short numOpenEdges = rFaces[*jt].CountOpenEdges();
+            if (numOpenEdges == 2)
+                non_mf.push_back(*jt);
+            else if (rFaces[*jt].IsDegenerated())
+                non_mf.push_back(*jt);
+        }
+
+        // are we able to repair the non-manifold edge by not removing all facets?
+        if (it->size() - non_mf.size() == 2)
+            indices.insert(indices.end(), non_mf.begin(), non_mf.end());
+        else
+            indices.insert(indices.end(), it->begin(), it->end());
+    }
+
+    if (!indices.empty()) {
+        // remove duplicates
+        std::sort(indices.begin(), indices.end());
+        indices.erase(std::unique(indices.begin(), indices.end()), indices.end());
+
+        _rclMesh.DeleteFacets(indices);
+        _rclMesh.RebuildNeighbours();
+    }
+#endif
 
     return true;
 }
@@ -482,7 +520,7 @@ bool MeshEvalSingleFacet::Evaluate ()
       _aclManifoldList.push_back(aulManifolds);
   }
 */
-  return (_aclManifoldList.size() == 0);
+  return (nonManifoldList.size() == 0);
 }
 
 bool MeshFixSingleFacet::Fixup ()
