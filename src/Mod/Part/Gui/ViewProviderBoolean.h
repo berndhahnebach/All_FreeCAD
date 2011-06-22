@@ -40,7 +40,8 @@ public:
     virtual ~ViewProviderBoolean();
 
     /// grouping handling 
-    std::vector<App::DocumentObject*> claimChildren(void)const;
+    std::vector<App::DocumentObject*> claimChildren(void) const;
+    QIcon getIcon(void) const;
 };
 
 /// ViewProvider for the MultiFuse feature
@@ -55,7 +56,8 @@ public:
     virtual ~ViewProviderMultiFuse();
 
     /// grouping handling 
-    std::vector<App::DocumentObject*> claimChildren(void)const;
+    std::vector<App::DocumentObject*> claimChildren(void) const;
+    QIcon getIcon(void) const;
 };
 
 /// ViewProvider for the MultiFuse feature
@@ -70,7 +72,8 @@ public:
     virtual ~ViewProviderMultiCommon();
 
     /// grouping handling 
-    std::vector<App::DocumentObject*> claimChildren(void)const;
+    std::vector<App::DocumentObject*> claimChildren(void) const;
+    QIcon getIcon(void) const;
 };
 
 
