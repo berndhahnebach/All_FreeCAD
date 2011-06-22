@@ -54,6 +54,11 @@
 				<UserDocu>Check if a given (u,v) pair is inside the domain of a face</UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="makeHalfSpace">
+			<Documentation>
+				<UserDocu>Make a half-space solid by this face and a reference point.</UserDocu>
+			</Documentation>
+		</Methode>
 		<Attribute Name="ParameterRange" ReadOnly="true">
 			<Documentation>
 				<UserDocu>Returns a 4 tuple with the parameter range</UserDocu>

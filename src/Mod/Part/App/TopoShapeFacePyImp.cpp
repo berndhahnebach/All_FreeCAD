@@ -50,6 +50,7 @@
 #endif
 
 #include <BRepTopAdaptor_FClass2d.hxx>
+#include <BRepPrimAPI_MakeHalfSpace.hxx>
 #include <BRepGProp.hxx>
 #include <GProp_GProps.hxx>
 #include <BRepLProp_SurfaceTool.hxx>
@@ -384,6 +385,24 @@ PyObject* TopoShapeFacePy::isPartOfDomain(PyObject *args)
             Py_INCREF(Py_False);
             return Py_False;
         }
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
+}
+
+PyObject* TopoShapeFacePy::makeHalfSpace(PyObject *args)
+{
+    PyObject* pPnt;
+    if (!PyArg_ParseTuple(args, "O!",&(Base::VectorPy::Type),&pPnt))
+        return 0;
+
+    try {
+        Base::Vector3d pt = Py::Vector(pPnt,false).toVector();
+        BRepPrimAPI_MakeHalfSpace mkHS(TopoDS::Face(this->getTopoShapePtr()->_Shape), gp_Pnt(pt.x,pt.y,pt.z));
+        return new TopoShapeSolidPy(new TopoShape(mkHS.Solid()));
     }
     catch (Standard_Failure) {
         Handle_Standard_Failure e = Standard_Failure::Caught();

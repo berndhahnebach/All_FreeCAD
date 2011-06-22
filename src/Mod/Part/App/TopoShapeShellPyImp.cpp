@@ -26,12 +26,16 @@
 # include <gp_Ax1.hxx>
 # include <BRep_Builder.hxx>
 # include <BRepCheck_Analyzer.hxx>
+# include <TopoDS.hxx>
 # include <TopoDS_Shell.hxx>
 # include <ShapeUpgrade_ShellSewing.hxx>
 # include <ShapeAnalysis_Shell.hxx>
 #endif
 
+#include <BRepPrimAPI_MakeHalfSpace.hxx>
+
 #include <Base/VectorPy.h>
+#include <Base/GeometryPyCXX.h>
 
 #include "TopoShape.h"
 #include "TopoShapeCompoundPy.h"
@@ -39,6 +43,7 @@
 #include "TopoShapeFacePy.h"
 #include "TopoShapeShellPy.h"
 #include "TopoShapeShellPy.cpp"
+#include "TopoShapeSolidPy.h"
 
 using namespace Part;
 
@@ -166,6 +171,24 @@ PyObject*  TopoShapeShellPy::getBadEdges(PyObject *args)
 #endif
     TopoDS_Compound comp = as.BadEdges();
     return new TopoShapeCompoundPy(new TopoShape(comp));
+}
+
+PyObject* TopoShapeShellPy::makeHalfSpace(PyObject *args)
+{
+    PyObject* pPnt;
+    if (!PyArg_ParseTuple(args, "O!",&(Base::VectorPy::Type),&pPnt))
+        return 0;
+
+    try {
+        Base::Vector3d pt = Py::Vector(pPnt,false).toVector();
+        BRepPrimAPI_MakeHalfSpace mkHS(TopoDS::Face(this->getTopoShapePtr()->_Shape), gp_Pnt(pt.x,pt.y,pt.z));
+        return new TopoShapeSolidPy(new TopoShape(mkHS.Solid()));
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
 }
 
 PyObject *TopoShapeShellPy::getCustomAttributes(const char* /*attr*/) const
