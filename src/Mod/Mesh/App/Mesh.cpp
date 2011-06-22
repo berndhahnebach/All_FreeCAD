@@ -995,7 +995,7 @@ void MeshObject::removeNonManifolds()
     unsigned long count = _kernel.CountFacets();
     MeshCore::MeshEvalTopology cMeshEval(_kernel);
     if (!cMeshEval.Evaluate()) {
-        MeshCore::MeshFixTopology cMeshFix(_kernel, cMeshEval.GetIndices());
+        MeshCore::MeshFixTopology cMeshFix(_kernel, cMeshEval.GetFacets());
         cMeshFix.Fixup();
     }
 
