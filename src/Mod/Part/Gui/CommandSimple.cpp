@@ -157,6 +157,46 @@ bool CmdPartShapeFromMesh::isActive(void)
     return Gui::Selection().countObjectsOfType(meshid) > 0;
 }
 
+//===========================================================================
+// Part_SimpleCopy
+//===========================================================================
+DEF_STD_CMD_A(CmdPartSimpleCopy);
+
+CmdPartSimpleCopy::CmdPartSimpleCopy()
+  : Command("Part_SimpleCopy")
+{
+    sAppModule    = "Part";
+    sGroup        = QT_TR_NOOP("Part");
+    sMenuText     = QT_TR_NOOP("Create simple copy");
+    sToolTipText  = QT_TR_NOOP("Create a simple non-parametric copy");
+    sWhatsThis    = sToolTipText;
+    sStatusTip    = sToolTipText;
+}
+
+void CmdPartSimpleCopy::activated(int iMsg)
+{
+    Base::Type partid = Base::Type::fromName("Part::Feature");
+    std::vector<App::DocumentObject*> objs = Gui::Selection().getObjectsOfType(partid);
+    openCommand("Create Copy");
+    for (std::vector<App::DocumentObject*>::iterator it = objs.begin(); it != objs.end(); ++it) {
+        doCommand(Doc,"App.ActiveDocument.addObject('Part::Feature','%s').Shape="
+                      "App.ActiveDocument.%s.Shape\n"
+                      "App.ActiveDocument.ActiveObject.Label="
+                      "App.ActiveDocument.%s.Label\n",
+                      (*it)->getNameInDocument(),
+                      (*it)->getNameInDocument(),
+                      (*it)->getNameInDocument());
+    }
+    commitCommand();
+    updateActive();
+}
+
+bool CmdPartSimpleCopy::isActive(void)
+{
+    Base::Type partid = Base::Type::fromName("Part::Feature");
+    return Gui::Selection().countObjectsOfType(partid) > 0;
+}
+
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 void CreateSimplePartCommands(void)
@@ -164,4 +204,5 @@ void CreateSimplePartCommands(void)
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
     rcCmdMgr.addCommand(new CmdPartSimpleCylinder());
     rcCmdMgr.addCommand(new CmdPartShapeFromMesh());
+    rcCmdMgr.addCommand(new CmdPartSimpleCopy());
 } 
