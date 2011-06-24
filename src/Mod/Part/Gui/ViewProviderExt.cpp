@@ -331,6 +331,17 @@ std::vector<std::string> ViewProviderPartExt::getDisplayModes(void) const
     return StrList;
 }
 
+const char* ViewProviderPartExt::getElement(const SoPickedPoint* Point)
+{
+    return 0;
+}
+
+std::vector<Base::Vector3d> ViewProviderPartExt::getSelectionShape(const char* Element)
+{
+    return std::vector<Base::Vector3d>();
+}
+
+
 void ViewProviderPartExt::shapeInfoCallback(void * ud, SoEventCallback * n)
 {
     const SoMouseButtonEvent * mbe = (SoMouseButtonEvent *)n->getEvent();

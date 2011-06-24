@@ -326,6 +326,7 @@ libFreeCADGui_la_SOURCES=\
 		SoNavigationDragger.cpp \
 		SoFCOffscreenRenderer.cpp \
 		SoFCSelection.cpp \
+		SoFCUnifiedSelection.cpp \
 		SoFCSelectionAction.cpp \
 		SoFCVectorizeSVGAction.cpp \
 		SoFCVectorizeU3DAction.cpp \
@@ -434,6 +435,7 @@ include_HEADERS=\
 		SoNavigationDragger.h \
 		SoFCOffscreenRenderer.h \
 		SoFCSelection.h \
+		SoFCUnifiedSelection.h \
 		SoFCSelectionAction.h \
 		SoFCVectorizeSVGAction.h \
 		SoFCVectorizeU3DAction.h \

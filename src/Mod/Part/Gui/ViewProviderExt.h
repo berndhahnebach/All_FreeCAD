@@ -96,6 +96,23 @@ public:
     TopoDS_Shape getShape(const SoPickedPoint*) const;
     static void shapeInfoCallback(void * ud, SoEventCallback * n);
 
+      /** @name Selection handling
+      * This group of methodes do the selection handling.
+      * Here you can define how the selection for your ViewProfider
+      * works. 
+     */
+    //@{
+
+    /// indicates if the ViewProvider use the new Selection model
+    virtual bool useNewSelectionModel(void){return true;}
+    /// return a hit element to the selection path or 0
+    virtual const char* getElement(const SoPickedPoint*);
+    /// return the higlight lines for a given element or the whole shape
+    virtual std::vector<Base::Vector3d> getSelectionShape(const char* Element);
+
+    //@}
+
+
 protected:
     /// get called by the container whenever a property has been changed
     virtual void onChanged(const App::Property* prop);
