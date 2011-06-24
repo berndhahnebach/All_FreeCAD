@@ -94,6 +94,7 @@
 #include "SoFCColorGradient.h"
 #include "SoFCOffscreenRenderer.h"
 #include "SoFCSelection.h"
+#include "SoFCUnifiedSelection.h"
 #include "SoFCInteractiveElement.h"
 #include "SoFCBoundingBox.h"
 #include "Selection.h"
@@ -208,7 +209,9 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name,
     // NOTE: For every mouse click event the SoSelection searches for the picked
     // point which causes a certain slow-down because for all objects the primitives
     // must be created. Using an SoSeparator avoids this drawback.
-    pcViewProviderRoot = new SoSeparator();
+    //pcViewProviderRoot = new SoSeparator();
+    pcViewProviderRoot = new Gui::SoFCUnifiedSelection();
+    pcViewProviderRoot->viewer = this;
 
     // increase refcount before passing it to setScenegraph(), to avoid
     // premature destruction
@@ -312,7 +315,10 @@ SbBool View3DInventorViewer::hasViewProvider(ViewProvider* pcProvider) const
 void View3DInventorViewer::addViewProvider(ViewProvider* pcProvider)
 {
     SoSeparator* root = pcProvider->getRoot();
-    if (root) pcViewProviderRoot->addChild(root);
+    if (root){
+        pcViewProviderRoot->addChild(root);
+        _ViewProviderMap[root] = pcProvider;
+    }
     SoSeparator* fore = pcProvider->getFrontRoot();
     if (fore) foregroundroot->addChild(fore);
     SoSeparator* back = pcProvider->getBackRoot ();
@@ -327,13 +333,17 @@ void View3DInventorViewer::removeViewProvider(ViewProvider* pcProvider)
         resetEditingViewProvider();
 
     SoSeparator* root = pcProvider->getRoot();
-    if (root) pcViewProviderRoot->removeChild(root);
+    if (root){
+        pcViewProviderRoot->removeChild(root);
+        _ViewProviderMap.erase(root);
+    }
     SoSeparator* fore = pcProvider->getFrontRoot();
     if (fore) foregroundroot->removeChild(fore);
     SoSeparator* back = pcProvider->getBackRoot ();
     if (back) backgroundroot->removeChild(back);
   
     _ViewProviderSet.erase(pcProvider);
+  
 }
 
 SbBool View3DInventorViewer::setEditingViewProvider(Gui::ViewProvider* p, int ModNum)
@@ -2016,17 +2026,17 @@ void View3DInventorViewer::setEditingCursor (const QCursor& cursor)
     this->editCursor = cursor;
 }
 
-void View3DInventorViewer::selectCB(void *viewer, SoPath *path)
-{
-    ViewProvider* view = static_cast<View3DInventorViewer*>(viewer)->getViewProviderByPath(path);
-    if (view) view->select(path);
-}
-
-void View3DInventorViewer::deselectCB(void *viewer, SoPath *path)
-{
-    ViewProvider* view = static_cast<View3DInventorViewer*>(viewer)->getViewProviderByPath(path);
-    if (view) view->deselect(path);
-}
+//void View3DInventorViewer::selectCB(void *viewer, SoPath *path)
+//{
+//    ViewProvider* view = static_cast<View3DInventorViewer*>(viewer)->getViewProviderByPath(path);
+//    if (view) view->select(path);
+//}
+//
+//void View3DInventorViewer::deselectCB(void *viewer, SoPath *path)
+//{
+//    ViewProvider* view = static_cast<View3DInventorViewer*>(viewer)->getViewProviderByPath(path);
+//    if (view) view->deselect(path);
+//}
 
 void View3DInventorViewer::addEventCallback(SoType eventtype, SoEventCallbackCB * cb, void* userdata)
 {
@@ -2040,6 +2050,7 @@ void View3DInventorViewer::removeEventCallback(SoType eventtype, SoEventCallback
 
 ViewProvider* View3DInventorViewer::getViewProviderByPath(SoPath * path) const
 {
+    // FIXME Use the viewprovider map introduced for the selection
     for (std::set<ViewProvider*>::const_iterator it = _ViewProviderSet.begin(); it != _ViewProviderSet.end(); it++) {
         for (int i = 0; i<path->getLength();i++) {
             SoNode *node = path->getNode(i);

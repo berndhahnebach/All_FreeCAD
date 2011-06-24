@@ -51,7 +51,7 @@ namespace Gui {
 class ViewProvider;
 class SoFCBackgroundGradient;
 class NavigationStyle;
-
+class SoFCUnifiedSelection;
 
 /** The Inventor viewer
  *
@@ -262,6 +262,8 @@ public:
     void setNavigationType(Base::Type);
     NavigationStyle* navigationStyle() const;
 
+    friend class SoFCUnifiedSelection;
+
 protected:
     virtual void actualRedraw(void);
     virtual void setSeekMode(SbBool enable);
@@ -279,12 +281,13 @@ protected:
     static void interactionFinishCB(void * data, SoQtViewer * viewer);
     static void interactionLoggerCB(void * ud, SoAction* action);
 
-private:
-    static void selectCB(void * closure, SoPath * p);
-    static void deselectCB(void * closure, SoPath * p);
+//private:
+//    static void selectCB(void * closure, SoPath * p);
+//    static void deselectCB(void * closure, SoPath * p);
 
 private:
     std::set<ViewProvider*> _ViewProviderSet;
+    std::map<SoSeparator*,ViewProvider*> _ViewProviderMap;
     ViewProvider* editViewProvider;
     SoFCBackgroundGradient *pcBackGround;
     SoSeparator * backgroundroot;
@@ -292,7 +295,7 @@ private:
     SoRotationXYZ * arrowrotation;
     SoDirectionalLight* backlight;
 
-    SoSeparator * pcViewProviderRoot;
+    SoFCUnifiedSelection * pcViewProviderRoot;
     SoEventCallback* pEventCallback;
     NavigationStyle* navigation;
 

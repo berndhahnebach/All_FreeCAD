@@ -90,8 +90,23 @@ public:
     virtual SoSeparator* getFrontRoot(void) const {return 0;}
     // returns the root node of the Provider (3D)
     virtual SoSeparator* getBackRoot(void) const {return 0;}
-    virtual void select(SoPath*) {}
-    virtual void deselect(SoPath*) {}
+
+    /** @name Selection handling
+      * This group of methodes do the selection handling.
+      * Here you can define how the selection for your ViewProfider
+      * works. 
+     */
+    //@{
+
+    /// indicates if the ViewProvider use the new Selection model
+    virtual bool useNewSelectionModel(void){return false;}
+    /// return a hit element to the selection path or 0
+    virtual const char* getElement(const SoPickedPoint *){return 0;}
+    /// return the higlight lines for a given element or the whole shape
+    virtual std::vector<Base::Vector3d> getSelectionShape(const char* Element){return std::vector<Base::Vector3d>();};
+
+    //@}
+
 
     /** @name Methods used by the Tree
       * If you want to take control over the 

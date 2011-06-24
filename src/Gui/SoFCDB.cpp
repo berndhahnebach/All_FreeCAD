@@ -34,6 +34,7 @@
 #include "SoFCBackgroundGradient.h"
 #include "SoFCBoundingBox.h"
 #include "SoFCSelection.h"
+#include "SoFCUnifiedSelection.h"
 #include "SoFCSelectionAction.h"
 #include "SoFCInteractiveElement.h"
 #include "SoFCVectorizeSVGAction.h"
@@ -71,6 +72,7 @@ void Gui::SoFCDB::init()
     SoFCBoundingBox                 ::initClass();
     SoInteraction                   ::init();
     SoFCSelection                   ::initClass();
+    SoFCUnifiedSelection            ::initClass();
     SoFCSelectionAction             ::initClass();
     SoFCDocumentAction              ::initClass();
     SoGLWidgetNode                  ::initClass();

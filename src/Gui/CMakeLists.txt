@@ -461,45 +461,6 @@ SET(Help_SRCS
 )
 SOURCE_GROUP("Help" FILES ${Help_SRCS})
 
-# The Inventor sources
-SET(Inventor_CPP_SRCS
-    Inventor/SoDrawingGrid.cpp
-    SoFCBackgroundGradient.cpp
-    SoFCBoundingBox.cpp
-    SoFCColorBar.cpp
-    SoFCColorGradient.cpp
-    SoFCColorLegend.cpp
-    SoFCDB.cpp
-    SoFCInteractiveElement.cpp
-    SoFCOffscreenRenderer.cpp
-    SoFCSelection.cpp
-    SoFCSelectionAction.cpp
-    SoFCVectorizeSVGAction.cpp
-    SoFCVectorizeU3DAction.cpp
-    SoNavigationDragger.cpp
-    SoAxisCrossKit.cpp
-    SoTextLabel.cpp
-)
-SET(Inventor_SRCS
-    ${Inventor_CPP_SRCS}
-    Inventor/SoDrawingGrid.h
-    SoFCBackgroundGradient.h
-    SoFCBoundingBox.h
-    SoFCColorBar.h
-    SoFCColorGradient.h
-    SoFCColorLegend.h
-    SoFCDB.h
-    SoFCInteractiveElement.h
-    SoFCOffscreenRenderer.h
-    SoFCSelection.h
-    SoFCSelectionAction.h
-    SoFCVectorizeSVGAction.h
-    SoFCVectorizeU3DAction.h
-    SoNavigationDragger.h
-    SoAxisCrossKit.h
-    SoTextLabel.h
-)
-SOURCE_GROUP("Inventor" FILES ${Inventor_SRCS})
 
 # The i18n sources
 SET(Language_SRCS
@@ -644,7 +605,49 @@ SET(Viewprovider_SRCS
     ViewProviderVRMLObject.h
     ViewProviderBuilder.h
 )
-SOURCE_GROUP("Viewprovider" FILES ${Viewprovider_SRCS})
+SOURCE_GROUP("View3D\\Viewprovider" FILES ${Viewprovider_SRCS})
+
+# The Inventor sources
+SET(Inventor_CPP_SRCS
+    Inventor/SoDrawingGrid.cpp
+    SoFCBackgroundGradient.cpp
+    SoFCBoundingBox.cpp
+    SoFCColorBar.cpp
+    SoFCColorGradient.cpp
+    SoFCColorLegend.cpp
+    SoFCDB.cpp
+    SoFCInteractiveElement.cpp
+    SoFCOffscreenRenderer.cpp
+    SoFCSelection.cpp
+	SoFCUnifiedSelection.cpp
+    SoFCSelectionAction.cpp
+    SoFCVectorizeSVGAction.cpp
+    SoFCVectorizeU3DAction.cpp
+    SoNavigationDragger.cpp
+    SoAxisCrossKit.cpp
+    SoTextLabel.cpp
+)
+SET(Inventor_SRCS
+    ${Inventor_CPP_SRCS}
+    Inventor/SoDrawingGrid.h
+    SoFCBackgroundGradient.h
+    SoFCBoundingBox.h
+    SoFCColorBar.h
+    SoFCColorGradient.h
+    SoFCColorLegend.h
+    SoFCDB.h
+    SoFCInteractiveElement.h
+    SoFCOffscreenRenderer.h
+    SoFCSelection.h
+	SoFCUnifiedSelection.h
+    SoFCSelectionAction.h
+    SoFCVectorizeSVGAction.h
+    SoFCVectorizeU3DAction.h
+    SoNavigationDragger.h
+    SoAxisCrossKit.h
+    SoTextLabel.h
+)
+SOURCE_GROUP("View3D\\Inventor" FILES ${Inventor_SRCS})
 
 # The widget sources
 SET(Widget_CPP_SRCS
