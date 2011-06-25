@@ -45,6 +45,7 @@
 #include <Gui/Document.h>
 #include <Gui/ViewProvider.h>
 #include <Gui/WaitCursor.h>
+#include <Gui/Utilities.h>
 
 using namespace PartGui;
 
@@ -56,6 +57,9 @@ DlgExtrusion::DlgExtrusion(QWidget* parent, Qt::WFlags fl)
     ui->viewButton->hide();
     ui->dirLen->setMinimumWidth(55); // needed to show all digits
     findShapes();
+
+    Gui::ItemViewSelection sel(ui->treeWidget);
+    sel.applyFrom(Gui::Selection().getObjectsOfType(Part::Feature::getClassTypeId()));
 }
 
 /*  
