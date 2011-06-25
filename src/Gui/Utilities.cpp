@@ -23,10 +23,13 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <algorithm>
 # include <Inventor/SbMatrix.h>
 # include <Inventor/SbTesselator.h>
 #endif
 #include "Utilities.h"
+#include <App/DocumentObject.h>
+#include <QString>
 
 using namespace Gui;
 
@@ -111,3 +114,38 @@ std::vector<int> Tessellator::tessellate() const
     return face_indices;
 }
 
+// ----------------------------------------------------------------------------
+
+class ItemViewSelection::MatchName {
+public:
+    MatchName(const QString& n) : name(n)
+    {}
+    bool operator() (const App::DocumentObject* obj) {
+        return name == QLatin1String(obj->getNameInDocument());
+    }
+private:
+    QString name;
+};
+
+ItemViewSelection::ItemViewSelection(QAbstractItemView* view)
+  : view(view)
+{
+}
+
+void ItemViewSelection::applyFrom(const std::vector<App::DocumentObject*> objs)
+{
+    QAbstractItemModel* model = view->model();
+    QItemSelection range;
+    for (int i=0; i<model->rowCount(); i++) {
+        QModelIndex item = model->index(i,0);
+        if (item.isValid()) {
+            QVariant name = model->data(item, Qt::UserRole);
+            std::vector<App::DocumentObject*>::const_iterator it;
+            it = std::find_if(objs.begin(), objs.end(), MatchName(name.toString()));
+            if (it != objs.end())
+                range.select(item, item);
+        }
+    }
+
+    view->selectionModel()->select(range, QItemSelectionModel::Select);
+}

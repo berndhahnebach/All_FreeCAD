@@ -29,7 +29,9 @@
 #include <Inventor/SbViewVolume.h>
 
 class SbViewVolume;
+class QAbstractItemView;
 
+namespace App{ class DocumentObject; }
 namespace Gui {
 
 /**
@@ -60,6 +62,17 @@ private:
 
 private:
     std::vector<SbVec2f> polygon;
+};
+
+class GuiExport ItemViewSelection
+{
+public:
+    ItemViewSelection(QAbstractItemView* view);
+    void applyFrom(const std::vector<App::DocumentObject*> objs);
+
+private:
+    QAbstractItemView* view;
+    class MatchName;
 };
 
 } // namespace Gui
