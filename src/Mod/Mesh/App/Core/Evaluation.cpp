@@ -555,7 +555,7 @@ bool MeshEvalSelfIntersection::Evaluate ()
     cMeshFacetGrid.GetCtGrids(ulGridX, ulGridY, ulGridZ);
 
     MeshFacetIterator cMFI(_rclMesh);
-    for(cMFI.Begin(); cMFI.More(); cMFI.Next()) {
+    for (cMFI.Begin(); cMFI.More(); cMFI.Next()) {
         boxes.push_back((*cMFI).GetBoundBox());
     }
 
@@ -757,14 +757,25 @@ void MeshEvalSelfIntersection::GetIntersections(std::vector<std::pair<unsigned l
 
 bool MeshFixSelfIntersection::Fixup()
 {
-    std::vector<std::pair<unsigned long, unsigned long> > intersection;
-    MeshEvalSelfIntersection(_rclMesh).GetIntersections(intersection);
-
     std::vector<unsigned long> indices;
-    for (std::vector<std::pair<unsigned long, unsigned long> >::iterator
-        it = intersection.begin(); it != intersection.end(); ++it) {
-        indices.push_back(it->first);
-        indices.push_back(it->second);
+    const MeshFacetArray& rFaces = _rclMesh.GetFacets();
+    for (std::vector<std::pair<unsigned long, unsigned long> >::const_iterator
+        it = selfIntersectons.begin(); it != selfIntersectons.end(); ++it) {
+        unsigned short numOpenEdges1 = rFaces[it->first].CountOpenEdges();
+        unsigned short numOpenEdges2 = rFaces[it->second].CountOpenEdges();
+
+        // often we have only single or border facets that intersect other facets
+        // in this case remove only these facets and keep the other one
+        if (numOpenEdges1 == 0 && numOpenEdges2 > 0) {
+            indices.push_back(it->second);
+        }
+        else if (numOpenEdges1 > 0 && numOpenEdges2 == 0) {
+            indices.push_back(it->first);
+        }
+        else {
+            indices.push_back(it->first);
+            indices.push_back(it->second);
+        }
     }
 
     // remove duplicates
