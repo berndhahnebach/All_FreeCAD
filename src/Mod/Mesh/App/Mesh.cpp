@@ -1011,11 +1011,15 @@ bool MeshObject::hasSelfIntersections() const
 
 void MeshObject::removeSelfIntersections()
 {
-    unsigned long count = _kernel.CountFacets();
-    MeshCore::MeshFixSelfIntersection cMeshFix(_kernel);
-    cMeshFix.Fixup();
-    if (_kernel.CountFacets() < count)
+    std::vector<std::pair<unsigned long, unsigned long> > selfIntersections;
+    MeshCore::MeshEvalSelfIntersection cMeshEval(_kernel);
+    cMeshEval.GetIntersections(selfIntersections);
+
+    if (!selfIntersections.empty()) {
+        MeshCore::MeshFixSelfIntersection cMeshFix(_kernel, selfIntersections);
+        cMeshFix.Fixup();
         this->_segments.clear();
+    }
 }
 
 void MeshObject::removeFoldsOnSurface()

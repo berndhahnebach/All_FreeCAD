@@ -78,6 +78,8 @@ FemMesh::FemMesh(const FemMesh& mesh)
 
 FemMesh::~FemMesh()
 {
+    TopoDS_Shape aNull;
+    myMesh->ShapeToMesh(aNull);
     myMesh->Clear();
     //myMesh->ClearLog();
     delete myMesh;

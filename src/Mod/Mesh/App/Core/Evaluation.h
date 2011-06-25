@@ -260,14 +260,14 @@ protected:
 class MeshExport MeshEvalSelfIntersection : public MeshEvaluation
 {
 public:
-  MeshEvalSelfIntersection (const MeshKernel &rclB) : MeshEvaluation(rclB) {}
-  virtual ~MeshEvalSelfIntersection () {}
-  /// Evaluate the mesh and return if true if there are self intersections
-  bool Evaluate ();
-  /// collect all intersection lines
-  void GetIntersections(std::vector<std::pair<Base::Vector3f, Base::Vector3f> >&) const;
-  /// collect the index of all facets with self intersections
-  void GetIntersections(std::vector<std::pair<unsigned long, unsigned long> >&) const;
+    MeshEvalSelfIntersection (const MeshKernel &rclB) : MeshEvaluation(rclB) {}
+    virtual ~MeshEvalSelfIntersection () {}
+    /// Evaluate the mesh and return if true if there are self intersections
+    bool Evaluate ();
+    /// collect all intersection lines
+    void GetIntersections(std::vector<std::pair<Base::Vector3f, Base::Vector3f> >&) const;
+    /// collect the index of all facets with self intersections
+    void GetIntersections(std::vector<std::pair<unsigned long, unsigned long> >&) const;
 };
 
 /**
@@ -277,10 +277,13 @@ public:
 class MeshExport MeshFixSelfIntersection : public MeshValidation
 {
 public:
-  MeshFixSelfIntersection (MeshKernel &rclB)
-    : MeshValidation(rclB) {}
-  virtual ~MeshFixSelfIntersection () {}
-  bool Fixup();
+    MeshFixSelfIntersection (MeshKernel &rclB, const std::vector<std::pair<unsigned long, unsigned long> >& si)
+        : MeshValidation(rclB), selfIntersectons(si) {}
+    virtual ~MeshFixSelfIntersection () {}
+    bool Fixup();
+
+private:
+    const std::vector<std::pair<unsigned long, unsigned long> >& selfIntersectons;
 };
 
 // ----------------------------------------------------
