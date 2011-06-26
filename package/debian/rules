@@ -4,7 +4,7 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-MODULES = Part Mesh MeshPart PartDesign Sketcher Points Raytracing Image Drawing ReverseEngineering Complete Fem Robot Import Inspection
+MODULES = Part Mesh MeshPart PartDesign Sketcher Points Raytracing Image Drawing ReverseEngineering Complete Fem Robot Import Inspection Arch
 
 # These are used for cross-compiling and for saving the configure script
 # from having to guess our platform (since we know it already)
@@ -111,6 +111,8 @@ install-stamp:
 	$(foreach MODULE,$(MODULES), \
 	dh_install -pfreecad-dev debian/tmp/freecad/usr/lib/freecad/Mod/$(MODULE)/lib*.la usr/lib/freecad/Mod/$(MODULE); \
 	dh_install -pfreecad-dev debian/tmp/freecad/usr/lib/freecad/Mod/$(MODULE)/lib*.so usr/lib/freecad/Mod/$(MODULE);)
+	# special treating of Arch module
+	dh_install -pfreecad debian/tmp/freecad/usr/lib/freecad/Mod/Arch/*.py usr/lib/freecad/Mod/Arch
 
 	# install the help system
 	dh_install -pfreecad-doc debian/tmp/freecad/usr/share/doc/* usr/share/doc/
