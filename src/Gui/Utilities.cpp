@@ -26,10 +26,13 @@
 # include <algorithm>
 # include <Inventor/SbMatrix.h>
 # include <Inventor/SbTesselator.h>
+# include <QAbstractItemModel>
+# include <QAbstractItemView>
+# include <QItemSelection>
+# include <QItemSelectionModel>
 #endif
 #include "Utilities.h"
 #include <App/DocumentObject.h>
-#include <QString>
 
 using namespace Gui;
 
