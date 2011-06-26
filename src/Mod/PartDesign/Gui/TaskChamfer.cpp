@@ -54,6 +54,7 @@
 #include <Gui/Command.h>
 #include <Gui/WaitCursor.h>
 #include <Gui/Selection.h>
+#include <Gui/SelectionFilter.h>
 
 using namespace PartDesignGui;
 
@@ -129,10 +130,29 @@ bool ChamferDistanceModel::setData (const QModelIndex & index, const QVariant & 
 // --------------------------------------------------------------
 
 namespace PartDesignGui {
+    class EdgeSelection : public Gui::SelectionFilterGate
+    {
+        App::DocumentObject*& object;
+    public:
+        EdgeSelection(App::DocumentObject*& obj)
+            : Gui::SelectionFilterGate((Gui::SelectionFilter*)0), object(obj)
+        {
+        }
+        bool allow(App::Document*pDoc, App::DocumentObject*pObj, const char*sSubName)
+        {
+            if (pObj != this->object)
+                return false;
+            if (!sSubName || sSubName[0] == '\0')
+                return false;
+            std::string element(sSubName);
+            return element.substr(0,4) == "Edge";
+        }
+    };
     class ChamferWidgetP
     {
     public:
         App::DocumentObject* object;
+        EdgeSelection* selection;
         typedef boost::signals::connection Connection;
         Connection connectApplicationDeletedObject;
         Connection connectApplicationDeletedDocument;
@@ -147,6 +167,9 @@ ChamferWidget::ChamferWidget(QWidget* parent, Qt::WFlags fl)
     ui->setupUi(this);
 
     d->object = 0;
+    d->selection = new EdgeSelection(d->object);
+    Gui::Selection().addSelectionGate(d->selection);
+
     d->connectApplicationDeletedObject = App::GetApplication().signalDeletedObject
         .connect(boost::bind(&ChamferWidget::onDeleteObject, this, _1));
     d->connectApplicationDeletedDocument = App::GetApplication().signalDeleteDocument
@@ -179,6 +202,7 @@ ChamferWidget::~ChamferWidget()
     // no need to delete child widgets, Qt does it all for us
     d->connectApplicationDeletedDocument.disconnect();
     d->connectApplicationDeletedObject.disconnect();
+    Gui::Selection().rmvSelectionGate();
 }
 
 void ChamferWidget::onSelectionChanged(const Gui::SelectionChanges& msg)

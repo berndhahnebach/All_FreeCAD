@@ -56,6 +56,7 @@
 #include <Gui/Command.h>
 #include <Gui/WaitCursor.h>
 #include <Gui/Selection.h>
+#include <Gui/SelectionFilter.h>
 #include <Gui/ViewProvider.h>
 
 using namespace PartGui;
@@ -130,10 +131,29 @@ bool FilletRadiusModel::setData (const QModelIndex & index, const QVariant & val
 // --------------------------------------------------------------
 
 namespace PartGui {
+    class EdgeSelection : public Gui::SelectionFilterGate
+    {
+        App::DocumentObject*& object;
+    public:
+        EdgeSelection(App::DocumentObject*& obj)
+            : Gui::SelectionFilterGate((Gui::SelectionFilter*)0), object(obj)
+        {
+        }
+        bool allow(App::Document*pDoc, App::DocumentObject*pObj, const char*sSubName)
+        {
+            if (pObj != this->object)
+                return false;
+            if (!sSubName || sSubName[0] == '\0')
+                return false;
+            std::string element(sSubName);
+            return element.substr(0,4) == "Edge";
+        }
+    };
     class DlgFilletEdgesP
     {
     public:
         App::DocumentObject* object;
+        EdgeSelection* selection;
         Part::Fillet* fillet;
         typedef boost::signals::connection Connection;
         Connection connectApplicationDeletedObject;
@@ -149,6 +169,9 @@ DlgFilletEdges::DlgFilletEdges(Part::Fillet* fillet, QWidget* parent, Qt::WFlags
     ui->setupUi(this);
 
     d->object = 0;
+    d->selection = new EdgeSelection(d->object);
+    Gui::Selection().addSelectionGate(d->selection);
+
     d->fillet = fillet;
     d->connectApplicationDeletedObject = App::GetApplication().signalDeletedObject
         .connect(boost::bind(&DlgFilletEdges::onDeleteObject, this, _1));
@@ -182,6 +205,7 @@ DlgFilletEdges::~DlgFilletEdges()
     // no need to delete child widgets, Qt does it all for us
     d->connectApplicationDeletedDocument.disconnect();
     d->connectApplicationDeletedObject.disconnect();
+    Gui::Selection().rmvSelectionGate();
 }
 
 void DlgFilletEdges::onSelectionChanged(const Gui::SelectionChanges& msg)

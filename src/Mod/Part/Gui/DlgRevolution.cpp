@@ -37,6 +37,7 @@
 #include <Gui/BitmapFactory.h>
 #include <Gui/Command.h>
 #include <Gui/Document.h>
+#include <Gui/Utilities.h>
 #include <Gui/ViewProvider.h>
 #include <Gui/WaitCursor.h>
 
@@ -50,6 +51,9 @@ DlgRevolution::DlgRevolution(QWidget* parent, Qt::WFlags fl)
     ui->baseY->setRange(-DBL_MAX,DBL_MAX);
     ui->baseZ->setRange(-DBL_MAX,DBL_MAX);
     findShapes();
+
+    Gui::ItemViewSelection sel(ui->treeWidget);
+    sel.applyFrom(Gui::Selection().getObjectsOfType(Part::Feature::getClassTypeId()));
 }
 
 /*  
