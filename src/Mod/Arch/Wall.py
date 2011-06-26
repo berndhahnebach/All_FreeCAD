@@ -127,8 +127,8 @@ class Wall(Component.Component):
                         norm = normal.multiply(height)
                         base = base.extrude(norm)
                 for app in obj.Additions:
-                    base = base.fuse(app.Shape)
-                    app.viewObject.hide() #to be removed
+                    base = base.oldFuse(app.Shape)
+                    app.ViewObject.hide() #to be removed
                 for hole in obj.Subtractions:
                     base = base.cut(hole.Shape)
                     hole.ViewObject.hide() # to be removed

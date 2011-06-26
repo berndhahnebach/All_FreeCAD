@@ -21,9 +21,14 @@
 #*                                                                         *
 #***************************************************************************
 
+__title__="FreeCAD Arch API"
+__author__ = "Yorik van Havre"
+__url__ = "http://free-cad.sourceforge.net"
+
 from Wall import *
 from Cell import *
 from Floor import *
 from Site import *
 from Building import *
 from Structure import *
+from Commands import *
