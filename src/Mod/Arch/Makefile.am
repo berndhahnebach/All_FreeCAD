@@ -9,6 +9,7 @@
 datadir = $(prefix)/Mod/Arch
 data_DATA = \
 		Arch_rc.py \
+		Arch.py \
 		Component.py \
 		Building.py \
 		Cell.py \
@@ -21,7 +22,8 @@ data_DATA = \
 		InitGui.py \
 		Site.py \
 		Structure.py \
-		Wall.py
+		Wall.py \
+		Commands.py
 
 CLEANFILES = $(BUILT_SOURCES)
 
@@ -36,5 +38,7 @@ EXTRA_DIST = \
         Resources/icons/Arch_Floor.svg \
         Resources/icons/Arch_Site.svg \
         Resources/icons/Arch_Structure.svg \
-        Resources/icons/Arch_Wall.svg
+        Resources/icons/Arch_Wall.svg \
+		Resources/icons/Arch_Add.svg \
+		Resources/icons/Arch_Remove.svg
 

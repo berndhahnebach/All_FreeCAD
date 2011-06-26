@@ -9,6 +9,13 @@ SET(Arch_SRCS
     ifcReader.py
     IFC2X3_TC1.exp
     Arch_rc.py
+    Arch.py
+    Building.py
+    Floor.py
+    Site.py
+    Structure.py
+    Commands.py
+    importDAE.py
 )
 SOURCE_GROUP("" FILES ${Arch_SRCS})
 
