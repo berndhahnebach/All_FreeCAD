@@ -577,12 +577,23 @@ void ViewProviderMeshSelfIntersections::attach(App::DocumentObject* pcFeat)
 
 void ViewProviderMeshSelfIntersections::showDefects(const std::vector<unsigned long>& indices)
 {
+    if (indices.size() % 2 != 0)
+        return;
     Mesh::Feature* f = dynamic_cast<Mesh::Feature*>(pcObject);
     const MeshCore::MeshKernel & rMesh = f->Mesh.getValue().getKernel();
     MeshCore::MeshEvalSelfIntersection eval(rMesh);
   
+    std::vector<std::pair<unsigned long, unsigned long> > intersection;
+    std::vector<unsigned long>::const_iterator it;
+    for (it = indices.begin(); it != indices.end(); ) {
+        unsigned long id1 = *it; ++it;
+        unsigned long id2 = *it; ++it;
+        intersection.push_back(std::make_pair
+            <unsigned long, unsigned long>(id1,id2));
+    }
+
     std::vector<std::pair<Base::Vector3f, Base::Vector3f> > lines;
-    eval.GetIntersections(lines);
+    eval.GetIntersections(intersection, lines);
 
     pcCoords->point.deleteValues(0);
     pcCoords->point.setNum(2*lines.size());

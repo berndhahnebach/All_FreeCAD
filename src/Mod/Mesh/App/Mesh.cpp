@@ -1022,6 +1022,30 @@ void MeshObject::removeSelfIntersections()
     }
 }
 
+void MeshObject::removeSelfIntersections(const std::vector<unsigned long>& indices)
+{
+    // make sure that the number of indices is even and are in range
+    if (indices.size() % 2 != 0)
+        return;
+    if (std::find_if(indices.begin(), indices.end(), 
+        std::bind2nd(std::greater_equal<unsigned long>(), _kernel.CountFacets())) < indices.end())
+        return;
+    std::vector<std::pair<unsigned long, unsigned long> > selfIntersections;
+    std::vector<unsigned long>::const_iterator it;
+    for (it = indices.begin(); it != indices.end(); ) {
+        unsigned long id1 = *it; ++it;
+        unsigned long id2 = *it; ++it;
+        selfIntersections.push_back(std::make_pair
+            <unsigned long, unsigned long>(id1,id2));
+    }
+
+    if (!selfIntersections.empty()) {
+        MeshCore::MeshFixSelfIntersection cMeshFix(_kernel, selfIntersections);
+        cMeshFix.Fixup();
+        this->_segments.clear();
+    }
+}
+
 void MeshObject::removeFoldsOnSurface()
 {
     std::vector<unsigned long> indices;

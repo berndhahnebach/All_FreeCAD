@@ -132,9 +132,8 @@ protected:
     void changeEvent(QEvent *e);
 
 private:
-    std::map<std::string, ViewProviderMeshDefects*> _vp;
-    Mesh::Feature* _meshFeature;
-    QPointer<Gui::View3DInventor> _view;
+    class Private;
+    Private* d;
 };
 
 /**

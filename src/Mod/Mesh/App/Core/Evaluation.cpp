@@ -614,71 +614,25 @@ bool MeshEvalSelfIntersection::Evaluate ()
     return true;
 }
 
-void MeshEvalSelfIntersection::GetIntersections(std::vector<std::pair<Base::Vector3f, Base::Vector3f> >& intersection) const
+void MeshEvalSelfIntersection::GetIntersections(const std::vector<std::pair<unsigned long, unsigned long> >& indices,
+                                                std::vector<std::pair<Base::Vector3f, Base::Vector3f> >& intersection) const
 {
-    // Contains bounding boxes for every facet 
-    std::vector<Base::BoundBox3f> boxes;
-    intersection.clear();
+    intersection.reserve(indices.size());
+    MeshFacetIterator cMF1(_rclMesh);
+    MeshFacetIterator cMF2(_rclMesh);
 
-    // Splits the mesh using grid for speeding up the calculation
-    MeshFacetGrid cMeshFacetGrid(_rclMesh);
-    const MeshFacetArray& rFaces = _rclMesh.GetFacets();
-    MeshGridIterator clGridIter(cMeshFacetGrid);
-    unsigned long ulGridX, ulGridY, ulGridZ;
-    cMeshFacetGrid.GetCtGrids(ulGridX, ulGridY, ulGridZ);
+    Base::Vector3f pt1, pt2;
+    std::vector<std::pair<unsigned long, unsigned long> >::const_iterator it;
+    for (it = indices.begin(); it != indices.end(); ++it) {
+        cMF1.Set(it->first);
+        cMF2.Set(it->second);
 
-    MeshFacetIterator cMFI(_rclMesh);
-    for(cMFI.Begin(); cMFI.More(); cMFI.Next()) {
-        boxes.push_back((*cMFI).GetBoundBox());
-    }
-
-    // Calculates the intersections
-    Base::SequencerLauncher seq("Checking for self-intersections...", ulGridX*ulGridY*ulGridZ);
-    for (clGridIter.Init(); clGridIter.More(); clGridIter.Next()) {
-        //Get the facet indices, belonging to the current grid unit
-        std::vector<unsigned long> aulGridElements;
-        clGridIter.GetElements(aulGridElements);
-
-        seq.next();
-        if (aulGridElements.size()==0)
-            continue;
-
-        MeshGeomFacet facet1, facet2;
-        Base::Vector3f pt1, pt2;
-        for (std::vector<unsigned long>::iterator it = aulGridElements.begin(); it != aulGridElements.end(); ++it) {
-            const Base::BoundBox3f& box1 = boxes[*it];
-            cMFI.Set(*it);
-            facet1 = *cMFI;
-            const MeshFacet& rface1 = rFaces[*it];
-            for (std::vector<unsigned long>::iterator jt = it; jt != aulGridElements.end(); ++jt) {
-                if (jt == it) // the identical facet
-                    continue;
-                // If the facets share a common vertex we do not check for self-intersections because they 
-                // could but usually do not intersect each other and the algorithm below would detect false-positives,
-                // otherwise
-                const MeshFacet& rface2 = rFaces[*jt];
-                if (rface1._aulPoints[0] == rface2._aulPoints[0] || 
-                    rface1._aulPoints[0] == rface2._aulPoints[1] ||
-                    rface1._aulPoints[0] == rface2._aulPoints[2])
-                    continue; // ignore facets sharing a common vertex
-                if (rface1._aulPoints[1] == rface2._aulPoints[0] || 
-                    rface1._aulPoints[1] == rface2._aulPoints[1] ||
-                    rface1._aulPoints[1] == rface2._aulPoints[2])
-                    continue; // ignore facets sharing a common vertex
-                if (rface1._aulPoints[2] == rface2._aulPoints[0] || 
-                    rface1._aulPoints[2] == rface2._aulPoints[1] ||
-                    rface1._aulPoints[2] == rface2._aulPoints[2])
-                    continue; // ignore facets sharing a common vertex
-
-                const Base::BoundBox3f& box2 = boxes[*jt];
-                if (box1 && box2) {
-                    cMFI.Set(*jt);
-                    facet2 = *cMFI;
-                    int ret = facet1.IntersectWithFacet(facet2, pt1, pt2);
-                    if (ret == 2) {
-                        intersection.push_back(std::make_pair(pt1, pt2));
-                    }
-                }
+        Base::BoundBox3f box1 = cMF1->GetBoundBox();
+        Base::BoundBox3f box2 = cMF2->GetBoundBox();
+        if (box1 && box2) {
+            int ret = cMF1->IntersectWithFacet(*cMF2, pt1, pt2);
+            if (ret == 2) {
+                intersection.push_back(std::make_pair(pt1, pt2));
             }
         }
     }
@@ -709,7 +663,7 @@ void MeshEvalSelfIntersection::GetIntersections(std::vector<std::pair<unsigned l
         std::vector<unsigned long> aulGridElements;
         clGridIter.GetElements(aulGridElements);
 
-        seq.next();
+        seq.next(true);
         if (aulGridElements.size()==0)
             continue;
 
