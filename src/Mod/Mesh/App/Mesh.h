@@ -239,6 +239,7 @@ public:
     void removeNonManifolds();
     bool hasSelfIntersections() const;
     void removeSelfIntersections();
+    void removeSelfIntersections(const std::vector<unsigned long>&);
     void removeFoldsOnSurface();
     void removeFullBoundaryFacets();
     //@}
