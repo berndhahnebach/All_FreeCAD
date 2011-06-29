@@ -200,7 +200,7 @@ float PlaneFit::Fit()
     // Covariance matrix
     Wm4::Matrix3<double> akMat(sxx,sxy,sxz,sxy,syy,syz,sxz,syz,szz);
     double det = akMat.Determinant();
-    if (det < FLOAT_EPS)
+    if (fabs(det) < DBL_EPSILON)
         return FLOAT_MAX; // non-invertable matrix
     Wm4::Matrix3<double> rkRot, rkDiag;
     try {
