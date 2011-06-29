@@ -1369,6 +1369,13 @@ void Document::breakDependency(DocumentObject* pcObject, bool clear)
                 else if (link->getContainer() == pcObject && clear)
                     link->setValue(0);
             }
+            else if (pt->second->getTypeId().isDerivedFrom(PropertyLinkSub::getClassTypeId())) {
+                PropertyLinkSub* link = static_cast<PropertyLinkSub*>(pt->second);
+                if (link->getValue() == pcObject)
+                    link->setValue(0);
+                else if (link->getContainer() == pcObject && clear)
+                    link->setValue(0);
+            }
             else if (pt->second->getTypeId().isDerivedFrom(PropertyLinkList::getClassTypeId())) {
                 PropertyLinkList* link = static_cast<PropertyLinkList*>(pt->second);
                 if (link->getContainer() == pcObject && clear) {
