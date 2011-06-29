@@ -36,6 +36,7 @@
 #include "ui_DlgExtrusion.h"
 #include "DlgExtrusion.h"
 #include "../App/PartFeature.h"
+#include <Base/Console.h>
 #include <App/Application.h>
 #include <App/Document.h>
 #include <App/DocumentObject.h>
@@ -201,7 +202,18 @@ void DlgExtrusion::apply()
     }
 
     activeDoc->commitTransaction();
-    activeDoc->recompute();
+    try {
+        activeDoc->recompute();
+    }
+    catch (const std::exception& e) {
+        Base::Console().Error("%s\n", e.what());
+    }
+    catch (const Base::Exception& e) {
+        Base::Console().Error("%s\n", e.what());
+    }
+    catch (...) {
+        Base::Console().Error("General error while extruding\n");
+    }
 }
 
 void DlgExtrusion::on_checkNormal_toggled(bool b)

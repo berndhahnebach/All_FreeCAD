@@ -261,7 +261,12 @@ void PropertyLinkSub::setPyObject(PyObject *value)
 
 void PropertyLinkSub::Save (Base::Writer &writer) const
 {
-    writer.Stream() << writer.ind() << "<LinkSub value=\"" <<  (_pcLinkSub?_pcLinkSub->getNameInDocument():"") <<"\" count=\"" <<  _cSubList.size() <<"\">" << std::endl;
+    const char* internal_name = "";
+    // it can happen that the object is still alive but is not part of the document anymore and thus
+    // returns 0
+    if (_pcLinkSub && _pcLinkSub->getNameInDocument())
+        internal_name = _pcLinkSub->getNameInDocument();
+    writer.Stream() << writer.ind() << "<LinkSub value=\"" <<  internal_name <<"\" count=\"" <<  _cSubList.size() <<"\">" << std::endl;
     writer.incInd();
     for(unsigned int i = 0;i<_cSubList.size(); i++)
         writer.Stream() << writer.ind() << "<Sub value=\"" <<  _cSubList[i]<<"\"/>" << endl; ;
