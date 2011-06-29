@@ -26,6 +26,8 @@
 # include <queue>
 #endif
 
+#include <Base/Console.h>
+#include <Base/Exception.h>
 #include "Triangulation.h"
 #include "Approximation.h"
 #include "MeshKernel.h"
@@ -90,7 +92,7 @@ Base::Matrix4D AbstractPolygonTriangulator::GetTransformToFitPlane() const
         planeFit.AddPoint(*it);
 
     if (planeFit.Fit() == FLOAT_MAX)
-        return Base::Matrix4D(); // unity matrix
+        throw Base::Exception("Plane fit failed");
 
     Base::Vector3f bs = planeFit.GetBase();
     Base::Vector3f ex = planeFit.GetDirU();
@@ -144,9 +146,22 @@ void AbstractPolygonTriangulator::ProjectOntoSurface(const std::vector<Base::Vec
 
 bool AbstractPolygonTriangulator::TriangulatePolygon()
 {
-    bool ok = Triangulate();
-    if (ok) Done();
-    return ok;
+    try {
+        bool ok = Triangulate();
+        if (ok) Done();
+        return ok;
+    }
+    catch (const Base::Exception& e) {
+        Base::Console().Log("Triangulation: %s\n", e.what());
+        return false;
+    }
+    catch (const std::exception& e) {
+        Base::Console().Log("Triangulation: %s\n", e.what());
+        return false;
+    }
+    catch (...) {
+        return false;
+    }
 }
 
 std::vector<unsigned long> AbstractPolygonTriangulator::GetInfo() const
