@@ -637,10 +637,8 @@ inline bool MeshPoint::operator < (const MeshPoint &rclPt) const
 
 inline float MeshGeomFacet::DistancePlaneToPoint (const Base::Vector3f &rclPoint) const
 {
-    // force internal normal to be computed if not done yet
-    Base::Vector3f clNorm(GetNormal());
-    clNorm.Normalize();
-    return float(fabs(rclPoint.DistanceToPlane(_aclPoints[0], clNorm)));
+    // internal normal is forced to have length equal to 1
+    return float(fabs(rclPoint.DistanceToPlane(_aclPoints[0], GetNormal())));
 }
 
 inline void MeshGeomFacet::CalcNormal (void)
@@ -659,7 +657,10 @@ inline Base::Vector3f MeshGeomFacet::GetNormal (void) const
 
 inline void MeshGeomFacet::SetNormal (const Base::Vector3f &rclNormal)
 {
+    if (rclNormal.Sqr() == 0.0f)
+        return;
     _clNormal = rclNormal;
+    _clNormal.Normalize();
     _bNormalCalculated = true;
 }
 
