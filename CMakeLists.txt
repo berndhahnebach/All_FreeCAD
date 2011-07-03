@@ -159,11 +159,32 @@ MARK_AS_ADVANCED(FORCE FREECAD_LIBPACK_CHECKFILE6X FREECAD_LIBPACK_CHECKFILE7X)
 
 # -------------------------------- OpenCasCade --------------------------------
 
-    find_package(OpenCasCade)
-
-    IF(NOT OCC_FOUND)
-        MESSAGE("OpenCasCade was not found, build no CAD modules!")
-    ENDIF(NOT OCC_FOUND)
+#first, look for OpenCASCADE Community Edition (OCE)
+#if OCE is installed in a nonstandard location, add -DOCE_DIR=/path/to/dir/containing/OCEConfig.cmake
+# when configuring with cmake, i.e. cmake .. -DOCE_DIR=/usr/share/cmake
+	if( NOT DEFINED OCE_DIR ) 
+		if( UNIX )
+			set( OCE_DIR "/usr/local/share/cmake/" )
+		else()
+			set( OCE_DIR "c:/OCE-0.4.0/share/cmake" )
+		endif()
+	endif()
+	find_package ( OCE )
+	if( ${OCE_FOUND} )
+		message("-- OpenCASCADE Community Edition has been found.")
+		add_definitions ( -DHAVE_CONFIG_H )
+		set( OCC_LIBRARIES "TKFillet;TKMesh;TKernel;TKG2d;TKG3d;TKMath;TKIGES;TKSTL;TKShHealing;TKXSBase;TKBool;TKBO;TKBRep;TKTopAlgo;TKGeomAlgo;TKGeomBase;TKOffset;TKPrim;TKSTEP;TKSTEPBase;TKSTEPAttr;TKHLR" ) #lib list copied from FreeCAD's FindOpenCasCade.cmake
+		set( OCC_INCLUDE_DIR ${OCE_INCLUDE_DIRS} )
+		set( OCC_FOUND ${OCE_FOUND} )
+	else() #look for OpenCASCADE
+		find_package(OpenCasCade)
+		IF(NOT OCC_FOUND)
+			MESSAGE("Neither OpenCASCADE Community Edition nor OpenCasCade were found: will not build CAD modules!")
+		ELSE()
+			MESSAGE("-- OpenCASCADE include directory: ${OCC_INCLUDE_PATH}")
+			MESSAGE("-- OpenCASCADE shared libraries directory: ${OCC_LIB_PATH}")
+		ENDIF()
+	endif()
 
 # -------------------------------- Salome SMESH --------------------------
 
@@ -356,12 +377,26 @@ if(FREECAD_MAINTAINERS_BUILD AND NOT WIN32)
 	set(CPACK_PACKAGE_VERSION_MINOR ${PACKAGE_VERSION_MINOR})
 	set(CPACK_PACKAGE_VERSION_PATCH ${PACKAGE_VERSION_PATCH})
 	set(CPACK_SOURCE_PACKAGE_FILE_NAME ${PACKAGE_NAME}-${PACKAGE_VERSION})
+
+	#for debian: 'cmake .. -DFREECAD_MAINTAINERS_BUILD=TRUE -DCPACK_GENERATOR="DEB"'
+	IF( CMAKE_SIZEOF_VOID_P EQUAL 4 )
+		set(PKG_ARCH i386)
+	ELSE( CMAKE_SIZEOF_VOID_P EQUAL 4 )
+		set(PKG_ARCH amd64)
+	ENDIF( CMAKE_SIZEOF_VOID_P EQUAL 4 )
+	set(CPACK_DEBIAN_PACKAGE_SECTION "science")
+	set(CPACK_DEBIAN_PACKAGE_DEPENDS "python, oce | opencascade, libqtgui4, libcoin60, libode1, libsoqt4-20, libxerces-c3.1, libgts-0.7-5, zlib1g, libboost-dev, libeigen2-dev")
+	set(CPACK_PACKAGE_CONTACT "<root@localhost>")
+	set(CPACK_PACKAGE_FILE_NAME "${PACKAGE_NAME}-${PACKAGE_VERSION}_${PKG_ARCH}")
+	
 	if(WIN32)
 		set(CPACK_GENERATOR "ZIP")
 		set(CPACK_SOURCE_GENERATOR "ZIP")
 	else(WIN32)
-		set(CPACK_GENERATOR "TGZ")
-		set(CPACK_SOURCE_GENERATOR "TGZ")
+		if( CPACK_GENERATOR STREQUAL "" )
+			set(CPACK_GENERATOR "TGZ")
+			set(CPACK_SOURCE_GENERATOR "TGZ")
+		endif()
 	endif(WIN32)
 	file(GLOB DOT ".*")
 	file(GLOB TILD "*~")
