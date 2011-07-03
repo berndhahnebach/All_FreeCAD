@@ -32,26 +32,8 @@ INCLUDE(CMakeDetermineFortranCompiler)
 # OpenCASCADE include and lib location #
 ########################################
 # Find OpenCASCADE library, set include and lib path
-IF(WIN32)
-    # Under Windows, check the CASROOT env variable
-    #FIND_PATH(OCC_INCLUDE_PATH Standard_Real.hxx 
-    #          $ENV{CASROOT}\\inc)
-    #SET(OCC_LIB_PATH "$ENV{CASROOT}\\win32\\lib")
-    # Find the Standard_Real.hxx header in this path
-    SET(OCC_INCLUDE_PATH ${OCC_INCLUDE_DIR})
-    SET(OCC_LIB_PATH ${OCC_LIBRARY_DIR})
-ELSE(WIN32) #Unix
-    #FIND_PATH(OCC_INCLUDE_PATH Standard_Real.hxx $ENV{CASROOT}/inc)
-    #SET(OCC_LIB_PATH "$ENV{CASROOT}/lib")
-    #FIND_LIBRARY(OCC_LIB_PATH TKernel PATHS $ENV{CASROOT}/lib)
-    #MESSAGE(${OCC_LIB_PATH})
-    SET(OCC_INCLUDE_PATH ${OCC_INCLUDE_DIR})
-    SET(OCC_LIB_PATH ${OCC_LIBRARY_DIR})
-ENDIF(WIN32)
-
-# Check that these paths are ok
-MESSAGE("-- OpenCASCADE include directory: ${OCC_INCLUDE_PATH}")
-MESSAGE("-- OpenCASCADE shared libraries directory: ${OCC_LIB_PATH}")
+SET(OCC_INCLUDE_PATH ${OCC_INCLUDE_DIR})
+SET(OCC_LIB_PATH ${OCC_LIBRARY_DIR})
 
 # Tells CMake where are the required headers
 INCLUDE_DIRECTORIES(${OCC_INCLUDE_PATH})
