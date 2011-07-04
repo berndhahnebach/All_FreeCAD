@@ -143,6 +143,8 @@ public:
         Standard_Real offset, Standard_Real tolerance) const;
     TopoDS_Shape makeSweep(const TopoDS_Shape& profile, double, int) const;
     TopoDS_Shape makeTube(double radius, double tol) const;
+    TopoDS_Shape makeTube() const;
+    TopoDS_Shape makeLoft(const TopTools_ListOfShape& profiles, Standard_Boolean isSolid, Standard_Boolean isRuled) const;
     //@}
 
     /** @name Manipulation*/
