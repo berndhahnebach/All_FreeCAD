@@ -80,8 +80,8 @@
     </message>
     <message>
       <location/>
-      <source>Export camera to povray</source>
-      <translation>Exportar cámara a povray</translation>
+      <source>Export camera to povray...</source>
+      <translation>Exportar cámara a povray...</translation>
     </message>
     <message>
       <location/>

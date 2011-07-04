@@ -64,8 +64,8 @@
     </message>
     <message>
         <location line="+1"/>
-        <source>Export camera to povray</source>
-        <translation>Kamera nach Povray exportieren</translation>
+        <source>Export camera to povray...</source>
+        <translation>Kamera nach Povray exportieren...</translation>
     </message>
     <message>
         <location line="+1"/>
