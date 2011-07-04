@@ -141,6 +141,8 @@ public:
     TopoDS_Shape revolve(const gp_Ax1&, double d) const;
     TopoDS_Shape makeThickSolid(const TopTools_ListOfShape& remFace,
         Standard_Real offset, Standard_Real tolerance) const;
+    TopoDS_Shape makeSweep(const TopoDS_Shape& profile, double, int) const;
+    TopoDS_Shape makeTube(double radius, double tol) const;
     //@}
 
     /** @name Manipulation*/
