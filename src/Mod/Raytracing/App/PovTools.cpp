@@ -143,7 +143,7 @@ void PovTools::writeCameraVec(const char* FileName, const std::vector<CamDef>& C
 
 
     // open the file and write
-    std::ofstream fout(FileName);
+    Base::ofstream fout(FileName);
     fout <<  out.str() << endl;
     fout.close();
 }
@@ -152,7 +152,7 @@ void PovTools::writeShape(const char *FileName, const char *PartName,
                           const TopoDS_Shape& Shape, float fMeshDeviation)
 {
     // open the file and write
-    std::ofstream fout(FileName);
+    Base::ofstream fout(FileName);
     writeShape(fout,PartName,Shape,fMeshDeviation);
     fout.close();
 }
