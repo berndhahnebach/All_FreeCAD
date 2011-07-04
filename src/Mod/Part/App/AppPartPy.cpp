@@ -524,23 +524,31 @@ static PyObject * makeBox(PyObject *self, PyObject *args)
 
 static PyObject * makeWedge(PyObject *self, PyObject *args)
 {
-    double dx, dy, dz;
+    double xmin, ymin, zmin, z2min, x2min, xmax, ymax, zmax, z2max, x2max;
     PyObject *pPnt=0, *pDir=0;
-    if (!PyArg_ParseTuple(args, "ddd|O!O!", &dx, &dy, &dz,
-                                            &(Base::VectorPy::Type), &pPnt,
-                                            &(Base::VectorPy::Type), &pDir))
+    if (!PyArg_ParseTuple(args, "dddddddddd|O!O!",
+        &xmin, &ymin, &zmin, &z2min, &x2min, &xmax, &ymax, &zmax, &z2max, &x2max,
+        &(Base::VectorPy::Type), &pPnt, &(Base::VectorPy::Type), &pDir))
         return NULL;
 
+    double dx = xmax-xmin;
+    double dy = ymax-ymin;
+    double dz = zmax-zmin;
+    double dd = z2max-z2min;
     if (dx < Precision::Confusion()) {
-        PyErr_SetString(PyExc_Exception, "length of box too small");
+        PyErr_SetString(PyExc_Exception, "delta x of wedge too small");
         return NULL;
     }
     if (dy < Precision::Confusion()) {
-        PyErr_SetString(PyExc_Exception, "width of box too small");
+        PyErr_SetString(PyExc_Exception, "delta y of wedge too small");
         return NULL;
     }
     if (dz < Precision::Confusion()) {
-        PyErr_SetString(PyExc_Exception, "height of box too small");
+        PyErr_SetString(PyExc_Exception, "delta z of wedge too small");
+        return NULL;
+    }
+    if (dd < 0) {
+        PyErr_SetString(PyExc_Exception, "delta z2 of wedge is negative");
         return NULL;
     }
 
@@ -555,7 +563,7 @@ static PyObject * makeWedge(PyObject *self, PyObject *args)
             Base::Vector3d vec = static_cast<Base::VectorPy*>(pDir)->value();
             d.SetCoord(vec.x, vec.y, vec.z);
         }
-        BRepPrim_Wedge mkWedge(gp_Ax2(p,d), dx, dy, dz);
+        BRepPrim_Wedge mkWedge(gp_Ax2(p,d), xmin, ymin, zmin, z2min, x2min, xmax, ymax, zmax, z2max, x2max);
         TopoDS_Shape resultShape = mkWedge.Shell();
         return new TopoShapeShellPy(new TopoShape(resultShape)); 
     }
@@ -1409,8 +1417,9 @@ struct PyMethodDef Part_methods[] = {
      "By default pnt=Vector(0,0,0) and dir=Vector(0,0,1)"},
 
     {"makeWedge"    ,makeWedge ,METH_VARARGS,
-     "makeWedge(dx,dy,dz,[pnt,dir]) -- Make a wedge located\n"
-     "in pnt with the dimensions (dx,dy,dz)\n"
+     "makeWedge(xmin, ymin, zmin, z2min, x2min,\n"
+     "xmax, ymax, zmax, z2max, x2max,[pnt,dir])\n"
+     " -- Make a wedge located in pnt\n"
      "By default pnt=Vector(0,0,0) and dir=Vector(0,0,1)"},
 
     {"makeLine"   ,makeLine  ,METH_VARARGS,
