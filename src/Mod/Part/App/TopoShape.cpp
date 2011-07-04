@@ -26,6 +26,7 @@
 #ifndef _PreComp_
 # include <cstdlib>
 # include <sstream>
+# include <BSplCLib.hxx>
 # include <Bnd_Box.hxx>
 # include <BRep_Builder.hxx>
 # include <BRep_Tool.hxx>
@@ -62,6 +63,7 @@
 # include <BRepTools.hxx>
 # include <BRepTools_ReShape.hxx>
 # include <BRepTools_ShapeSet.hxx>
+# include <GeomFill_Pipe.hxx>
 # include <Handle_TopTools_HSequenceOfShape.hxx>
 # include <TopTools_HSequenceOfShape.hxx>
 # include <Interface_Static.hxx>
@@ -121,6 +123,7 @@
 #include <Base/Builder3D.h>
 #include <Base/FileInfo.h>
 #include <Base/Exception.h>
+#include <Base/Tools.h>
 
 #include "TopoShape.h"
 #include "CrossSection.h"
@@ -1126,6 +1129,85 @@ TopoDS_Shape TopoShape::makePipeShell(const TopTools_ListOfShape& profiles, cons
     if (make_solid)	mkPipeShell.MakeSolid();
 
     return mkPipeShell.Shape();
+}
+
+TopoDS_Shape TopoShape::makeTube(double radius, double tol) const
+{
+    if (this->_Shape.IsNull())
+        Standard_Failure::Raise("Cannot sweep along empty spine");
+    if (this->_Shape.ShapeType() != TopAbs_EDGE)
+        Standard_Failure::Raise("Spine shape is not an edge");
+
+    const TopoDS_Edge& path_edge = TopoDS::Edge(this->_Shape);
+    BRepAdaptor_Curve path_adapt(path_edge);
+    double umin = path_adapt.FirstParameter();
+    double umax = path_adapt.LastParameter();
+    Handle_Geom_Curve hPath = path_adapt.Curve().Curve();
+
+    // Apply placement of the shape to the curve
+    TopLoc_Location loc1 = path_edge.Location();
+    hPath = Handle_Geom_Curve::DownCast(hPath->Transformed(loc1.Transformation()));
+
+    if (hPath.IsNull())
+        Standard_Failure::Raise("Invalid curve in path edge");
+
+    GeomFill_Pipe mkTube(hPath, radius);
+    mkTube.Perform(tol, Standard_False, GeomAbs_C1, BSplCLib::MaxDegree(), 1000);
+
+    const Handle_Geom_Surface& surf = mkTube.Surface();
+    double u1,u2,v1,v2;
+    surf->Bounds(u1,u2,v1,v2);
+
+    BRepBuilderAPI_MakeFace mkBuilder(surf, umin, umax, v1, v2);
+    return mkBuilder.Face();
+}
+
+TopoDS_Shape TopoShape::makeSweep(const TopoDS_Shape& profile, double tol, int fillMode) const
+{
+    if (this->_Shape.IsNull())
+        Standard_Failure::Raise("Cannot sweep along empty spine");
+    if (this->_Shape.ShapeType() != TopAbs_EDGE)
+        Standard_Failure::Raise("Spine shape is not an edge");
+
+    if (profile.IsNull())
+        Standard_Failure::Raise("Cannot sweep with empty profile");
+    if (profile.ShapeType() != TopAbs_EDGE)
+        Standard_Failure::Raise("Profile shape is not an edge");
+
+    const TopoDS_Edge& path_edge = TopoDS::Edge(this->_Shape);
+    const TopoDS_Edge& prof_edge = TopoDS::Edge(profile);
+
+    BRepAdaptor_Curve path_adapt(path_edge);
+    double umin = path_adapt.FirstParameter();
+    double umax = path_adapt.LastParameter();
+    Handle_Geom_Curve hPath = path_adapt.Curve().Curve();
+
+    // Apply placement of the shape to the curve
+    TopLoc_Location loc1 = path_edge.Location();
+    hPath = Handle_Geom_Curve::DownCast(hPath->Transformed(loc1.Transformation()));
+
+    if (hPath.IsNull())
+        Standard_Failure::Raise("invalid curve in path edge");
+
+    BRepAdaptor_Curve prof_adapt(prof_edge);
+    double vmin = prof_adapt.FirstParameter();
+    double vmax = prof_adapt.LastParameter();
+    Handle_Geom_Curve hProfile = prof_adapt.Curve().Curve();
+
+    // Apply placement of the shape to the curve
+    TopLoc_Location loc2 = prof_edge.Location();
+    hProfile = Handle_Geom_Curve::DownCast(hProfile->Transformed(loc2.Transformation()));
+
+    if (hProfile.IsNull())
+        Standard_Failure::Raise("invalid curve in profile edge");
+
+    GeomFill_Pipe mkSweep(hPath, hProfile, (GeomFill_Trihedron)fillMode);
+    mkSweep.GenerateParticularCase(Standard_True);
+    mkSweep.Perform(tol, Standard_False, GeomAbs_C1, BSplCLib::MaxDegree(), 1000);
+
+    const Handle_Geom_Surface& surf = mkSweep.Surface();
+    BRepBuilderAPI_MakeFace mkBuilder(surf, umin, umax, vmin, vmax);
+    return mkBuilder.Face();
 }
 
 TopoDS_Shape TopoShape::makePrism(const gp_Vec& vec) const
