@@ -30,6 +30,7 @@
 # include <BRepPrimAPI_MakeCylinder.hxx>
 # include <BRepPrimAPI_MakeSphere.hxx>
 # include <BRepPrimAPI_MakeRevolution.hxx>
+# include <BRepPrim_Wedge.hxx>
 # include <BRep_Builder.hxx>
 # include <BRep_Tool.hxx>
 # include <BRepBuilderAPI_MakeFace.hxx>
@@ -517,6 +518,49 @@ static PyObject * makeBox(PyObject *self, PyObject *args)
     }
     catch (Standard_DomainError) {
         PyErr_SetString(PyExc_Exception, "creation of box failed");
+        return NULL;
+    }
+}
+
+static PyObject * makeWedge(PyObject *self, PyObject *args)
+{
+    double dx, dy, dz;
+    PyObject *pPnt=0, *pDir=0;
+    if (!PyArg_ParseTuple(args, "ddd|O!O!", &dx, &dy, &dz,
+                                            &(Base::VectorPy::Type), &pPnt,
+                                            &(Base::VectorPy::Type), &pDir))
+        return NULL;
+
+    if (dx < Precision::Confusion()) {
+        PyErr_SetString(PyExc_Exception, "length of box too small");
+        return NULL;
+    }
+    if (dy < Precision::Confusion()) {
+        PyErr_SetString(PyExc_Exception, "width of box too small");
+        return NULL;
+    }
+    if (dz < Precision::Confusion()) {
+        PyErr_SetString(PyExc_Exception, "height of box too small");
+        return NULL;
+    }
+
+    try {
+        gp_Pnt p(0,0,0);
+        gp_Dir d(0,0,1);
+        if (pPnt) {
+            Base::Vector3d pnt = static_cast<Base::VectorPy*>(pPnt)->value();
+            p.SetCoord(pnt.x, pnt.y, pnt.z);
+        }
+        if (pDir) {
+            Base::Vector3d vec = static_cast<Base::VectorPy*>(pDir)->value();
+            d.SetCoord(vec.x, vec.y, vec.z);
+        }
+        BRepPrim_Wedge mkWedge(gp_Ax2(p,d), dx, dy, dz);
+        TopoDS_Shape resultShape = mkWedge.Shell();
+        return new TopoShapeShellPy(new TopoShape(resultShape)); 
+    }
+    catch (Standard_DomainError) {
+        PyErr_SetString(PyExc_Exception, "creation of wedge failed");
         return NULL;
     }
 }
@@ -1362,6 +1406,11 @@ struct PyMethodDef Part_methods[] = {
     {"makeBox"    ,makeBox ,METH_VARARGS,
      "makeBox(length,width,height,[pnt,dir]) -- Make a box located\n"
      "in pnt with the dimensions (length,width,height)\n"
+     "By default pnt=Vector(0,0,0) and dir=Vector(0,0,1)"},
+
+    {"makeWedge"    ,makeWedge ,METH_VARARGS,
+     "makeWedge(dx,dy,dz,[pnt,dir]) -- Make a wedge located\n"
+     "in pnt with the dimensions (dx,dy,dz)\n"
      "By default pnt=Vector(0,0,0) and dir=Vector(0,0,1)"},
 
     {"makeLine"   ,makeLine  ,METH_VARARGS,
