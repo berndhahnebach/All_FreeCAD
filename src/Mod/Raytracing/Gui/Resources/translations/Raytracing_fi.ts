@@ -80,8 +80,8 @@
     </message>
     <message>
       <location/>
-      <source>Export camera to povray</source>
-      <translation>Vie kamera povray-muotoon</translation>
+      <source>Export camera to povray...</source>
+      <translation>Vie kamera povray-muotoon...</translation>
     </message>
     <message>
       <location/>
