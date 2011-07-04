@@ -31,6 +31,7 @@
 # include <BRep_Builder.hxx>
 # include <BRep_Tool.hxx>
 # include <BRepAdaptor_Curve.hxx>
+# include <BRepAdaptor_HCurve.hxx>
 # include <BRepAdaptor_Surface.hxx>
 # include <BRepAlgoAPI_Common.hxx>
 # include <BRepAlgoAPI_Cut.hxx>
@@ -58,13 +59,24 @@
 # include <BRepOffsetAPI_MakePipe.hxx>
 # include <BRepOffsetAPI_MakePipeShell.hxx>
 # include <BRepOffsetAPI_Sewing.hxx>
+# include <BRepOffsetAPI_ThruSections.hxx>
 # include <BRepPrimAPI_MakePrism.hxx>
 # include <BRepPrimAPI_MakeRevol.hxx>
 # include <BRepTools.hxx>
 # include <BRepTools_ReShape.hxx>
 # include <BRepTools_ShapeSet.hxx>
+# include <GeomFill_CorrectedFrenet.hxx>
+# include <GeomFill_CurveAndTrihedron.hxx>
+# include <GeomFill_EvolvedSection.hxx>
 # include <GeomFill_Pipe.hxx>
+# include <GeomFill_SectionLaw.hxx>
+# include <GeomFill_Sweep.hxx>
+# include <Handle_Law_BSpFunc.hxx>
+# include <Handle_Law_BSpline.hxx>
 # include <Handle_TopTools_HSequenceOfShape.hxx>
+# include <Law_BSpFunc.hxx>
+# include <Law_Linear.hxx>
+# include <Law_S.hxx>
 # include <TopTools_HSequenceOfShape.hxx>
 # include <Interface_Static.hxx>
 # include <IGESControl_Controller.hxx>
@@ -1133,6 +1145,7 @@ TopoDS_Shape TopoShape::makePipeShell(const TopTools_ListOfShape& profiles, cons
 
 TopoDS_Shape TopoShape::makeTube(double radius, double tol) const
 {
+    // http://opencascade.blogspot.com/2009/11/surface-modeling-part3.html
     if (this->_Shape.IsNull())
         Standard_Failure::Raise("Cannot sweep along empty spine");
     if (this->_Shape.ShapeType() != TopAbs_EDGE)
@@ -1162,8 +1175,65 @@ TopoDS_Shape TopoShape::makeTube(double radius, double tol) const
     return mkBuilder.Face();
 }
 
+// for testing
+static Handle(Law_Function) CreateBsFunction (const Standard_Real theFirst, const Standard_Real theLast)
+{
+    //Handle_Law_BSpline aBs;
+    //Handle_Law_BSpFunc aFunc = new Law_BSpFunc (aBs, theFirst, theLast);
+    Handle_Law_Linear aFunc = new Law_Linear();
+    aFunc->Set(theFirst, 2.0, theLast, 3.0);
+    return aFunc;
+}
+
+// for testing
+TopoDS_Shape TopoShape::makeTube() const
+{
+    // http://opencascade.blogspot.com/2009/11/surface-modeling-part3.html
+    Standard_Real theTol = 0.001;
+    Standard_Boolean theIsPolynomial = Standard_True;
+    Standard_Boolean myIsElem = Standard_True;
+    GeomAbs_Shape theContinuity = GeomAbs_G1;
+    Standard_Integer theMaxDegree = 3;
+    Standard_Integer theMaxSegment = 1000;
+
+    if (this->_Shape.IsNull())
+        Standard_Failure::Raise("Cannot sweep along empty spine");
+    if (this->_Shape.ShapeType() != TopAbs_EDGE)
+        Standard_Failure::Raise("Spine shape is not an edge");
+
+    const TopoDS_Edge& path_edge = TopoDS::Edge(this->_Shape);
+    BRepAdaptor_Curve path_adapt(path_edge);
+
+    //circular profile
+    Handle(Geom_Circle) aCirc = new Geom_Circle (gp::XOY(), 1.0);
+    aCirc->Rotate (gp::OZ(), Standard_PI/2.);
+
+    //perpendicular section
+    Handle(BRepAdaptor_HCurve) myPath = new BRepAdaptor_HCurve(path_adapt);
+    Handle(Law_Function) myEvol = ::CreateBsFunction (myPath->FirstParameter(), myPath->LastParameter());
+    Handle(GeomFill_SectionLaw) aSec = new GeomFill_EvolvedSection(aCirc, myEvol);
+    Handle(GeomFill_LocationLaw) aLoc = new GeomFill_CurveAndTrihedron(new GeomFill_CorrectedFrenet);
+    aLoc->SetCurve (myPath);
+
+    GeomFill_Sweep mkSweep (aLoc, myIsElem);
+    mkSweep.SetTolerance (theTol);
+    mkSweep.Build (aSec, GeomFill_Location, theContinuity, theMaxDegree, theMaxSegment);
+    if (mkSweep.IsDone()) {
+        Handle_Geom_Surface mySurface = mkSweep.Surface();
+        Standard_Real myError = mkSweep.ErrorOnSurface();
+
+        Standard_Real u1,u2,v1,v2;
+        mySurface->Bounds(u1,u2,v1,v2);
+        BRepBuilderAPI_MakeFace mkBuilder(mySurface, u1, u2, v1, v2);
+        return mkBuilder.Shape();
+    }
+
+    return TopoDS_Shape();
+}
+
 TopoDS_Shape TopoShape::makeSweep(const TopoDS_Shape& profile, double tol, int fillMode) const
 {
+    // http://opencascade.blogspot.com/2009/10/surface-modeling-part2.html
     if (this->_Shape.IsNull())
         Standard_Failure::Raise("Cannot sweep along empty spine");
     if (this->_Shape.ShapeType() != TopAbs_EDGE)
@@ -1208,6 +1278,39 @@ TopoDS_Shape TopoShape::makeSweep(const TopoDS_Shape& profile, double tol, int f
     const Handle_Geom_Surface& surf = mkSweep.Surface();
     BRepBuilderAPI_MakeFace mkBuilder(surf, umin, umax, vmin, vmax);
     return mkBuilder.Face();
+}
+
+TopoDS_Shape TopoShape::makeLoft(const TopTools_ListOfShape& profiles, 
+                                 Standard_Boolean isSolid,
+                                 Standard_Boolean isRuled) const
+{
+    // http://opencascade.blogspot.com/2010/01/surface-modeling-part5.html
+    BRepOffsetAPI_ThruSections aGenerator (isSolid,isRuled);
+
+    int countShapes = 0;
+    TopTools_ListIteratorOfListOfShape it;
+    for (it.Initialize(profiles); it.More(); it.Next()) {
+        const TopoDS_Shape& item = it.Value();
+        if (!item.IsNull() && item.ShapeType() == TopAbs_VERTEX) {
+            aGenerator.AddVertex(TopoDS::Vertex (item));
+            countShapes++;
+        }
+        else if (!item.IsNull() && item.ShapeType() == TopAbs_WIRE) {
+            aGenerator.AddWire(TopoDS::Wire (item));
+            countShapes++;
+        }
+    }
+
+    if (countShapes < 2)
+        Standard_Failure::Raise("Need at least two vertexes or wires to create loft face");
+
+    Standard_Boolean anIsCheck = Standard_True;
+    aGenerator.CheckCompatibility (anIsCheck);
+    aGenerator.Build();
+    if (!aGenerator.IsDone())
+        Standard_Failure::Raise("Failed to create loft face");
+
+    return aGenerator.Shape();
 }
 
 TopoDS_Shape TopoShape::makePrism(const gp_Vec& vec) const

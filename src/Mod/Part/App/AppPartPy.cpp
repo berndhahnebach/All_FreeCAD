@@ -332,6 +332,8 @@ makeCompound(PyObject *self, PyObject *args)
 
 static PyObject * makeFilledFace(PyObject *self, PyObject *args)
 {
+    // http://opencascade.blogspot.com/2010/03/surface-modeling-part6.html
+    // TODO: GeomPlate_BuildPlateSurface
     PyObject *obj;
     if (!PyArg_ParseTuple(args, "O!", &(PyList_Type), &obj))
         return NULL;
@@ -346,7 +348,7 @@ static PyObject * makeFilledFace(PyObject *self, PyObject *args)
                     const TopoDS_Shape& sh = static_cast<TopoShapeEdgePy*>((*it).ptr())->
                         getTopoShapePtr()->_Shape;
                     if (!sh.IsNull())
-                        builder.Add(TopoDS::Edge(sh), GeomAbs_G1);
+                        builder.Add(TopoDS::Edge(sh), GeomAbs_C0);
                 }
             }
 
@@ -925,6 +927,7 @@ static PyObject * makeRevolution(PyObject *self, PyObject *args)
 
 static PyObject * makeRuledSurface(PyObject *self, PyObject *args)
 {
+    // http://opencascade.blogspot.com/2009/10/surface-modeling-part1.html
     PyObject *sh1, *sh2;
     if (!PyArg_ParseTuple(args, "O!O!", &(TopoShapePy::Type), &sh1,
                                         &(TopoShapePy::Type), &sh2))
@@ -1057,42 +1060,20 @@ static PyObject * makeLoft(PyObject *self, PyObject *args)
         return NULL;
 
     try {
-        Standard_Boolean anIsSolid = (psolid == Py_True) ? Standard_True : Standard_False;
-        Standard_Boolean anIsRuled = (pruled == Py_True) ? Standard_True : Standard_False;
-        BRepOffsetAPI_ThruSections aGenerator (anIsSolid,anIsRuled);
-
-        int countShapes = 0;
+        TopTools_ListOfShape profiles;
         Py::List list(pcObj);
         for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
             if (PyObject_TypeCheck((*it).ptr(), &(Part::TopoShapePy::Type))) {
                 const TopoDS_Shape& sh = static_cast<TopoShapePy*>((*it).ptr())->
                     getTopoShapePtr()->_Shape;
-                if (!sh.IsNull() && sh.ShapeType() == TopAbs_VERTEX) {
-                    aGenerator.AddVertex(TopoDS::Vertex (sh));
-                    countShapes++;
-                }
-                else if (!sh.IsNull() && sh.ShapeType() == TopAbs_WIRE) {
-                    aGenerator.AddWire(TopoDS::Wire (sh));
-                    countShapes++;
-                }
+                profiles.Append(sh);
             }
         }
 
-        // need at least two vertexes or wires
-        if (countShapes < 2) {
-            PyErr_SetString(PyExc_Exception, "Need at least two vertexes or wires to create loft face");
-            return 0;
-        }
-
-        Standard_Boolean anIsCheck = Standard_True;
-        aGenerator.CheckCompatibility (anIsCheck);
-        aGenerator.Build();
-        if (!aGenerator.IsDone()) {
-            PyErr_SetString(PyExc_Exception, "Failed to create loft face");
-            return 0;
-        }
-
-        const TopoDS_Shape& aResult = aGenerator.Shape();
+        TopoShape myShape;
+        Standard_Boolean anIsSolid = (psolid == Py_True) ? Standard_True : Standard_False;
+        Standard_Boolean anIsRuled = (pruled == Py_True) ? Standard_True : Standard_False;
+        TopoDS_Shape aResult = myShape.makeLoft(profiles, anIsSolid, anIsRuled);
         return new TopoShapePy(new TopoShape(aResult));
     }
     catch (Standard_Failure) {
