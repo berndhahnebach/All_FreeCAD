@@ -149,7 +149,7 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
         }
     }
 
-    PyErr_SetString(PyExc_TypeError, "Line constructor accepts:\n"
+    PyErr_SetString(PyExc_TypeError, "Constraint constructor accepts:\n"
     "-- empty parameter list\n"
     "-- Constraint type and index\n");
     return -1;

@@ -38,6 +38,7 @@
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
+#include <App/Application.h>
 #include <App/Document.h>
 #include <App/DocumentObject.h>
 #include <App/Material.h>
@@ -72,7 +73,7 @@ CmdRaytracingWriteCamera::CmdRaytracingWriteCamera()
 {
     sAppModule    = "Raytracing";
     sGroup        = QT_TR_NOOP("Raytracing");
-    sMenuText     = QT_TR_NOOP("Export camera to povray");
+    sMenuText     = QT_TR_NOOP("Export camera to povray...");
     sToolTipText  = QT_TR_NOOP("Export the camera positon of the active 3D view in PovRay format to a file");
     sWhatsThis    = sToolTipText;
     sStatusTip    = sToolTipText;
@@ -122,7 +123,7 @@ void CmdRaytracingWriteCamera::activated(int iMsg)
     QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), QObject::tr("Export page"), QString(), filter.join(QLatin1String(";;")));
     if (fn.isEmpty()) 
         return;
-    std::string cFullName = (const char*)fn.toAscii();
+    std::string cFullName = (const char*)fn.toUtf8();
 
     // building up the python string
     std::stringstream out;
@@ -170,17 +171,20 @@ void CmdRaytracingWritePart::activated(int iMsg)
     QStringList filter;
     filter << QObject::tr("Povray(*.pov)");
     filter << QObject::tr("All Files (*.*)");
-	QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), QObject::tr("Export page"), QString(), filter.join(QLatin1String(";;")));
+    QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), QObject::tr("Export page"), QString(), filter.join(QLatin1String(";;")));
     if (fn.isEmpty()) 
-		return;
-    std::string cFullName = (const char*)fn.toAscii();
+        return;
+    std::string cFullName = (const char*)fn.toUtf8();
 
     // name of the objects in the pov file
     std::string Name = "Part";
+    std::vector<App::DocumentObject*> obj = Gui::Selection().getObjectsOfType(Part::Feature::getClassTypeId());
+    if (obj.empty()) return;
 
     std::stringstream out;
     //Raytracing.writePartFile(App.document().GetActiveFeature().getShape())
-    out << "Raytracing.writePartFile(\"" << strToPython(cFullName) << "\",\"" << Name << "\",App.ActiveDocument.ActiveObject.Shape)";
+    out << "Raytracing.writePartFile(\"" << strToPython(cFullName) << "\",\""
+        << Name << "\",App.ActiveDocument." << obj.front()->getNameInDocument() << ".Shape)";
 
     doCommand(Doc,"import Raytracing");
     doCommand(Doc,out.str().c_str());
@@ -188,13 +192,7 @@ void CmdRaytracingWritePart::activated(int iMsg)
 
 bool CmdRaytracingWritePart::isActive(void)
 {
-    if (getActiveGuiDocument()) {
-        App::DocumentObject* obj = getActiveGuiDocument()->getDocument()->getActiveObject();
-        if (obj && obj->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
-            return true;
-    }
-
-    return false;
+    return Gui::Selection().countObjectsOfType(Part::Feature::getClassTypeId()) == 1;
 }
 
 //===========================================================================
@@ -219,28 +217,29 @@ void CmdRaytracingWriteView::activated(int iMsg)
     QStringList filter;
     filter << QObject::tr("Povray(*.pov)");
     filter << QObject::tr("All Files (*.*)");
-	QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), QObject::tr("Export page"), QString(), filter.join(QLatin1String(";;")));
+    QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), QObject::tr("Export page"), QString(), filter.join(QLatin1String(";;")));
     if (fn.isEmpty()) 
-		return;
-    std::string cFullName = (const char*)fn.toAscii();
+        return;
+    std::string cFullName = (const char*)fn.toUtf8();
 
 
-	// get all objects of the active document
-	std::vector<App::DocumentObject*> DocObjects = getActiveGuiDocument()->getDocument()->getObjects();
-	
+    // get all objects of the active document
+    std::vector<Part::Feature*> DocObjects = getActiveGuiDocument()->getDocument()->
+        getObjectsOfType<Part::Feature>();
+
     openCommand("Write view");
-	doCommand(Doc,"import Raytracing,RaytracingGui");
-    doCommand(Doc,"OutFile = open('%s','w')",cFullName.c_str());
+    doCommand(Doc,"import Raytracing,RaytracingGui");
+    doCommand(Doc,"OutFile = open(unicode('%s','utf-8'),'w')",cFullName.c_str());
     doCommand(Doc,"OutFile.write(open(App.getResourceDir()+'Mod/Raytracing/Templates/ProjectStd.pov').read())");
     doCommand(Doc,"OutFile.write(RaytracingGui.povViewCamera())");
-	// go through all document objects
-	for(std::vector<App::DocumentObject*>::const_iterator it=DocObjects.begin();it!=DocObjects.end();++it)
-		if((*it)->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId())){
-			App::PropertyColor *pcColor = dynamic_cast<App::PropertyColor *>(getActiveGuiDocument()->getViewProvider(*it)->getPropertyByName("ShapeColor"));
-			App::Color col = pcColor->getValue();
-			doCommand(Doc,"OutFile.write(Raytracing.getPartAsPovray('%s',App.activeDocument().%s.Shape,%f,%f,%f))",
-			         (*it)->getNameInDocument(),(*it)->getNameInDocument(),col.r,col.g,col.b);
-		}
+    // go through all document objects
+    for (std::vector<Part::Feature*>::const_iterator it=DocObjects.begin();it!=DocObjects.end();++it) {
+        App::PropertyColor *pcColor = dynamic_cast<App::PropertyColor *>(getActiveGuiDocument()->getViewProvider(*it)->getPropertyByName("ShapeColor"));
+        App::Color col = pcColor->getValue();
+        doCommand(Doc,"OutFile.write(Raytracing.getPartAsPovray('%s',App.activeDocument().%s.Shape,%f,%f,%f))",
+                 (*it)->getNameInDocument(),(*it)->getNameInDocument(),col.r,col.g,col.b);
+    }
+
     doCommand(Doc,"OutFile.close()");
     doCommand(Doc,"del OutFile");
 
@@ -250,10 +249,9 @@ void CmdRaytracingWriteView::activated(int iMsg)
 
 bool CmdRaytracingWriteView::isActive(void)
 {
-    if (getActiveGuiDocument()) {
-        App::DocumentObject* obj = getActiveGuiDocument()->getDocument()->getActiveObject();
-        if (obj && obj->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
-            return true;
+    App::Document* doc = App::GetApplication().getActiveDocument();
+    if (doc) {
+        return doc->countObjectsOfType(Part::Feature::getClassTypeId()) > 0;
     }
 
     return false;
@@ -411,8 +409,8 @@ CmdRaytracingNewPartSegment::CmdRaytracingNewPartSegment()
 
 void CmdRaytracingNewPartSegment::activated(int iMsg)
 {
-    unsigned int n = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
-    if (n != 1) {
+    std::vector<Part::Feature*> parts = Gui::Selection().getObjectsOfType<Part::Feature>();
+    if (parts.empty()) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
             QObject::tr("Select a Part object."));
         return;
@@ -426,14 +424,17 @@ void CmdRaytracingNewPartSegment::activated(int iMsg)
         return;
     }
 
-    std::string FeatName = getUniqueObjectName("View");
     std::string ProjName = pages.front()->getNameInDocument();
-    std::vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
 
     openCommand("Create view");
-    doCommand(Doc,"App.activeDocument().addObject('Raytracing::RayFeature','%s')",FeatName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",FeatName.c_str(),Sel[0].FeatName);
-    doCommand(Doc,"App.activeDocument().%s.addObject(App.activeDocument().%s)",ProjName.c_str(), FeatName.c_str());
+    for (std::vector<Part::Feature*>::iterator it = parts.begin(); it != parts.end(); ++it) {
+        std::string FeatName = (*it)->getNameInDocument();
+        FeatName += "_View";
+        FeatName = getUniqueObjectName(FeatName.c_str());
+        doCommand(Doc,"App.activeDocument().addObject('Raytracing::RayFeature','%s')",FeatName.c_str());
+        doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",FeatName.c_str(),(*it)->getNameInDocument());
+        doCommand(Doc,"App.activeDocument().%s.addObject(App.activeDocument().%s)",ProjName.c_str(), FeatName.c_str());
+    }
     updateActive();
     commitCommand();
 }
@@ -475,8 +476,8 @@ void CmdRaytracingExportProject::activated(int iMsg)
         openCommand("Raytracing export project");
 
         doCommand(Doc,"PageFile = open(App.activeDocument().%s.PageResult,'r')",Sel[0].FeatName);
-        std::string fname = (const char*)fn.toAscii();
-        doCommand(Doc,"OutFile = open('%s','w')",fname.c_str());
+        std::string fname = (const char*)fn.toUtf8();
+        doCommand(Doc,"OutFile = open(unicode('%s','utf-8'),'w')",fname.c_str());
         doCommand(Doc,"OutFile.write(PageFile.read())");
         doCommand(Doc,"del OutFile,PageFile");
 
@@ -488,7 +489,6 @@ bool CmdRaytracingExportProject::isActive(void)
 {
     return (getActiveGuiDocument() ? true : false);
 }
-
 
 
 void CreateRaytracingCommands(void)

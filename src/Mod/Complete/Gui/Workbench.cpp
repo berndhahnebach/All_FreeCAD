@@ -306,7 +306,11 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     *raytracing 
         << "Raytracing_WriteView" 
         << "Raytracing_WriteCamera" 
-        << "Raytracing_WritePart"; 
+        << "Raytracing_WritePart"
+        << "Separator"
+        << "Raytracing_NewPovrayProject"
+        << "Raytracing_NewPartSegment"
+        << "Raytracing_ExportProject"; 
     ;
 
     // Drafting ****************************************************************************************************
