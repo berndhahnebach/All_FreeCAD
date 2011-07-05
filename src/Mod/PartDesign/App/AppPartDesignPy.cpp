@@ -28,6 +28,7 @@
 
 #include <Base/GeometryPyCXX.h>
 #include <Base/VectorPy.h>
+#include <Base/Tools.h>
 
 static PyObject * makeFilletArc(PyObject *self, PyObject *args)
 {
@@ -62,6 +63,9 @@ static PyObject * makeFilletArc(PyObject *self, PyObject *args)
     double uu = u * u;
     double uv = u * v;
     double r1 = v.Length();
+
+    // distinguish between internal and external fillets
+    r2 *= Base::sgn(uv);
 
     double cc = 2.0 * r2 * (b * v - r1);
     double d = uv * uv - uu * cc;
