@@ -77,6 +77,27 @@ DlgPrimitives::DlgPrimitives(QWidget* parent, Qt::WFlags fl)
     // torus
     ui.torusRadius1->setMaximum(INT_MAX);
     ui.torusRadius2->setMaximum(INT_MAX);
+    // wedge
+    ui.wedgeXmin->setMinimum(INT_MIN);
+    ui.wedgeXmin->setMaximum(INT_MAX);
+    ui.wedgeYmin->setMinimum(INT_MIN);
+    ui.wedgeYmin->setMaximum(INT_MAX);
+    ui.wedgeZmin->setMinimum(INT_MIN);
+    ui.wedgeZmin->setMaximum(INT_MAX);
+    ui.wedgeX2min->setMinimum(INT_MIN);
+    ui.wedgeX2min->setMaximum(INT_MAX);
+    ui.wedgeZ2min->setMinimum(INT_MIN);
+    ui.wedgeZ2min->setMaximum(INT_MAX);
+    ui.wedgeXmax->setMinimum(INT_MIN);
+    ui.wedgeXmax->setMaximum(INT_MAX);
+    ui.wedgeYmax->setMinimum(INT_MIN);
+    ui.wedgeYmax->setMaximum(INT_MAX);
+    ui.wedgeZmax->setMinimum(INT_MIN);
+    ui.wedgeZmax->setMaximum(INT_MAX);
+    ui.wedgeX2max->setMinimum(INT_MIN);
+    ui.wedgeX2max->setMaximum(INT_MAX);
+    ui.wedgeZ2max->setMinimum(INT_MIN);
+    ui.wedgeZ2max->setMaximum(INT_MAX);
     // helix
     ui.helixPitch->setMaximum(INT_MAX);
     ui.helixHeight->setMaximum(INT_MAX);
@@ -284,7 +305,35 @@ void DlgPrimitives::accept()
                 .arg(ui.torusAngle3->value(),0,'f',2)
                 .arg(this->toPlacement());
         }
-        else if (ui.comboBox1->currentIndex() == 7) {  // helix
+        else if (ui.comboBox1->currentIndex() == 7) {  // wedge
+            name = QString::fromAscii(doc->getUniqueObjectName("Wedge").c_str());
+            cmd = QString::fromAscii(
+                "App.ActiveDocument.addObject(\"Part::Wedge\",\"%1\")\n"
+                "App.ActiveDocument.%1.Xmin=%2\n"
+                "App.ActiveDocument.%1.Ymin=%3\n"
+                "App.ActiveDocument.%1.Zmin=%4\n"
+                "App.ActiveDocument.%1.X2min=%5\n"
+                "App.ActiveDocument.%1.Z2min=%6\n"
+                "App.ActiveDocument.%1.Xmax=%7\n"
+                "App.ActiveDocument.%1.Ymax=%8\n"
+                "App.ActiveDocument.%1.Zmax=%9\n"
+                "App.ActiveDocument.%1.X2max=%10\n"
+                "App.ActiveDocument.%1.Z2max=%11\n"
+                "App.ActiveDocument.%1.Placement=%12\n")
+                .arg(name)
+                .arg(ui.wedgeXmin->value(),0,'f',2)
+                .arg(ui.wedgeYmin->value(),0,'f',2)
+                .arg(ui.wedgeZmin->value(),0,'f',2)
+                .arg(ui.wedgeX2min->value(),0,'f',2)
+                .arg(ui.wedgeZ2min->value(),0,'f',2)
+                .arg(ui.wedgeXmax->value(),0,'f',2)
+                .arg(ui.wedgeYmax->value(),0,'f',2)
+                .arg(ui.wedgeZmax->value(),0,'f',2)
+                .arg(ui.wedgeX2max->value(),0,'f',2)
+                .arg(ui.wedgeZ2max->value(),0,'f',2)
+                .arg(this->toPlacement());
+        }
+        else if (ui.comboBox1->currentIndex() == 8) {  // helix
             name = QString::fromAscii(doc->getUniqueObjectName("Helix").c_str());
             cmd = QString::fromAscii(
                 "App.ActiveDocument.addObject(\"Part::Helix\",\"%1\")\n"

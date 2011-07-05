@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>466</width>
+    <width>480</width>
     <height>312</height>
    </rect>
   </property>
@@ -102,7 +102,7 @@
          <property name="spacing">
           <number>6</number>
          </property>
-         <item row="0" column="0">
+         <item row="1" column="0">
           <widget class="QStackedWidget" name="widgetStack2">
            <property name="currentIndex">
             <number>0</number>
@@ -946,6 +946,138 @@
              </item>
             </layout>
            </widget>
+           <widget class="QWidget" name="page_3">
+            <layout class="QGridLayout" name="gridLayout_2">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_10">
+               <property name="text">
+                <string>X min</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QDoubleSpinBox" name="wedgeXmin"/>
+             </item>
+             <item row="0" column="2">
+              <widget class="QLabel" name="label_15">
+               <property name="text">
+                <string>x max</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <widget class="QDoubleSpinBox" name="wedgeXmax">
+               <property name="value">
+                <double>10.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_11">
+               <property name="text">
+                <string>Y min</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QDoubleSpinBox" name="wedgeYmin"/>
+             </item>
+             <item row="1" column="2">
+              <widget class="QLabel" name="label_16">
+               <property name="text">
+                <string>Y max</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="3">
+              <widget class="QDoubleSpinBox" name="wedgeYmax">
+               <property name="value">
+                <double>10.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_12">
+               <property name="text">
+                <string>Z min</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QDoubleSpinBox" name="wedgeZmin"/>
+             </item>
+             <item row="2" column="2">
+              <widget class="QLabel" name="label_17">
+               <property name="text">
+                <string>Z max</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="3">
+              <widget class="QDoubleSpinBox" name="wedgeZmax">
+               <property name="value">
+                <double>10.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="label_13">
+               <property name="text">
+                <string>X2 min</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QDoubleSpinBox" name="wedgeX2min">
+               <property name="value">
+                <double>2.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="2">
+              <widget class="QLabel" name="label_18">
+               <property name="text">
+                <string>X2 max</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="3">
+              <widget class="QDoubleSpinBox" name="wedgeX2max">
+               <property name="value">
+                <double>8.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0">
+              <widget class="QLabel" name="label_14">
+               <property name="text">
+                <string>Z2 min</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1">
+              <widget class="QDoubleSpinBox" name="wedgeZ2min">
+               <property name="value">
+                <double>2.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="2">
+              <widget class="QLabel" name="label_19">
+               <property name="text">
+                <string>Z2 max</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="3">
+              <widget class="QDoubleSpinBox" name="wedgeZ2max">
+               <property name="value">
+                <double>8.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
            <widget class="QWidget" name="page_2">
             <layout class="QGridLayout">
              <property name="margin">
@@ -1083,6 +1215,11 @@
         <item>
          <property name="text">
           <string>Torus</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Wedge</string>
          </property>
         </item>
         <item>
