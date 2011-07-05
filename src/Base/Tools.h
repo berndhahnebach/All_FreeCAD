@@ -95,6 +95,15 @@ inline T clamp (T num, T lower, T upper)
     return std::max<T>(std::min<T>(upper,num),lower);
 }
 
+template<class T>
+inline T sgn (T t)
+{
+    if (t == 0)
+        return T(0);
+    else
+        return (t > 0) ? T(1) : T(-1);
+}
+
 #ifndef M_PI
 #define M_PI       3.14159265358979323846
 #endif
