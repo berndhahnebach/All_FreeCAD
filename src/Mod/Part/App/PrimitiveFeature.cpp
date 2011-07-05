@@ -23,11 +23,13 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <cfloat>
 # include <BRepLib.hxx>
 # include <BRepPrimAPI_MakeCone.hxx>
 # include <BRepPrimAPI_MakeCylinder.hxx>
 # include <BRepPrimAPI_MakeSphere.hxx>
 # include <BRepPrimAPI_MakeTorus.hxx>
+# include <BRepPrim_Wedge.hxx>
 # include <BRepBuilderAPI_MakeEdge.hxx>
 # include <BRepBuilderAPI_MakeFace.hxx>
 # include <BRepBuilderAPI_MakeWire.hxx>
@@ -58,7 +60,7 @@
 
 
 namespace Part {
-    const App::PropertyFloatConstraint::Constraints floatRange  = {0.0f,1000.0f,0.1f};
+    const App::PropertyFloatConstraint::Constraints floatRange  = {0.0f,FLT_MAX,0.1f};
     const App::PropertyFloatConstraint::Constraints apexRange   = {0.0f,90.0f,0.1f};
     const App::PropertyFloatConstraint::Constraints angleRangeU = {0.0f,360.0f,1.0f};
     const App::PropertyFloatConstraint::Constraints angleRangeV = {-90.0f,90.0f,1.0f};
@@ -72,6 +74,7 @@ PROPERTY_SOURCE_ABSTRACT(Part::Primitive, Part::Feature)
 
 Primitive::Primitive(void) 
 {
+    touch();
 }
 
 Primitive::~Primitive()
@@ -489,4 +492,102 @@ App::DocumentObjectExecReturn *Helix::execute(void)
     }
 
     return App::DocumentObject::StdReturn;
+}
+
+PROPERTY_SOURCE(Part::Wedge, Part::Primitive)
+
+Wedge::Wedge()
+{
+    ADD_PROPERTY_TYPE(Xmin,(0.0f),"Wedge",App::Prop_None,"Xmin of the wedge");
+    ADD_PROPERTY_TYPE(Ymin,(0.0f),"Wedge",App::Prop_None,"Ymin of the wedge");
+    ADD_PROPERTY_TYPE(Zmin,(0.0f),"Wedge",App::Prop_None,"Zmin of the wedge");
+    ADD_PROPERTY_TYPE(X2min,(2.0f),"Wedge",App::Prop_None,"X2min of the wedge");
+    ADD_PROPERTY_TYPE(Z2min,(2.0f),"Wedge",App::Prop_None,"Z2min of the wedge");
+    ADD_PROPERTY_TYPE(Xmax,(10.0f),"Wedge",App::Prop_None,"Xmax of the wedge");
+    ADD_PROPERTY_TYPE(Ymax,(10.0f),"Wedge",App::Prop_None,"Ymax of the wedge");
+    ADD_PROPERTY_TYPE(Zmax,(10.0f),"Wedge",App::Prop_None,"Zmax of the wedge");
+    ADD_PROPERTY_TYPE(X2max,(8.0f),"Wedge",App::Prop_None,"X2max of the wedge");
+    ADD_PROPERTY_TYPE(Z2max,(8.0f),"Wedge",App::Prop_None,"Z2max of the wedge");
+}
+
+short Wedge::mustExecute() const
+{
+    if (Xmin.isTouched() ||
+        Ymin.isTouched() ||
+        Zmin.isTouched() ||
+        X2min.isTouched() ||
+        Z2min.isTouched() ||
+        Xmax.isTouched() ||
+        Ymax.isTouched() ||
+        Zmax.isTouched() ||
+        X2max.isTouched() ||
+        Z2max.isTouched())
+        return 1;
+    return Primitive::mustExecute();
+}
+
+App::DocumentObjectExecReturn *Wedge::execute(void)
+{
+    double xmin = Xmin.getValue();
+    double ymin = Ymin.getValue();
+    double zmin = Zmin.getValue();
+    double z2min = Z2min.getValue();
+    double x2min = X2min.getValue();
+    double xmax = Xmax.getValue();
+    double ymax = Ymax.getValue();
+    double zmax = Zmax.getValue();
+    double z2max = Z2max.getValue();
+    double x2max = X2max.getValue();
+
+
+    double dx = xmax-xmin;
+    double dy = ymax-ymin;
+    double dz = zmax-zmin;
+    double dz2 = z2max-z2min;
+    double dx2 = x2max-x2min;
+
+    if (dx < Precision::Confusion())
+        return new App::DocumentObjectExecReturn("delta x of wedge too small");
+
+    if (dy < Precision::Confusion())
+        return new App::DocumentObjectExecReturn("delta y of wedge too small");
+
+    if (dz < Precision::Confusion())
+        return new App::DocumentObjectExecReturn("delta z of wedge too small");
+
+    if (dz2 < 0)
+        return new App::DocumentObjectExecReturn("delta z2 of wedge is negative");
+
+    if (dx2 < 0)
+        return new App::DocumentObjectExecReturn("delta x2 of wedge is negative");
+
+    try {
+        gp_Pnt pnt(0.0,0.0,0.0);
+        gp_Dir dir(0.0,0.0,1.0);
+        BRepPrim_Wedge mkWedge(gp_Ax2(pnt,dir),
+            xmin, ymin, zmin, z2min, x2min,
+            xmax, ymax, zmax, z2max, x2max);
+        TopoDS_Shape resultShape = mkWedge.Shell();
+        this->Shape.setValue(resultShape);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        return new App::DocumentObjectExecReturn(e->GetMessageString());
+    }
+
+    return App::DocumentObject::StdReturn;
+}
+
+void Wedge::onChanged(const App::Property* prop)
+{
+    if (prop == &Xmin || prop == &Ymin || prop == &Zmin ||
+        prop == &X2min || prop == &Z2min ||
+        prop == &Xmax || prop == &Ymax || prop == &Zmax ||
+        prop == &X2max || prop == &Z2max) {
+        if (!isRestoring()) {
+            App::DocumentObjectExecReturn *ret = recompute();
+            delete ret;
+        }
+    }
+    Part::Primitive::onChanged(prop);
 }
