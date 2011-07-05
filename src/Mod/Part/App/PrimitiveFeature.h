@@ -191,6 +191,35 @@ public:
     //@}
 };
 
+class PartExport Wedge : public Primitive
+{
+    PROPERTY_HEADER(Part::Wedge);
+
+public:
+    Wedge();
+
+    App::PropertyFloat Xmin;
+    App::PropertyFloat Ymin;
+    App::PropertyFloat Zmin;
+    App::PropertyFloat Z2min;
+    App::PropertyFloat X2min;
+    App::PropertyFloat Xmax;
+    App::PropertyFloat Ymax;
+    App::PropertyFloat Zmax;
+    App::PropertyFloat Z2max;
+    App::PropertyFloat X2max;
+
+    /** @name methods override feature */
+    //@{
+    /// recalculate the feature
+    App::DocumentObjectExecReturn *execute(void);
+    short mustExecute() const;
+    //@}
+
+protected:
+    void onChanged(const App::Property* prop);
+};
+
 } //namespace Part
 
 

@@ -534,7 +534,8 @@ static PyObject * makeWedge(PyObject *self, PyObject *args)
     double dx = xmax-xmin;
     double dy = ymax-ymin;
     double dz = zmax-zmin;
-    double dd = z2max-z2min;
+    double dz2 = z2max-z2min;
+    double dx2 = x2max-x2min;
     if (dx < Precision::Confusion()) {
         PyErr_SetString(PyExc_Exception, "delta x of wedge too small");
         return NULL;
@@ -547,8 +548,12 @@ static PyObject * makeWedge(PyObject *self, PyObject *args)
         PyErr_SetString(PyExc_Exception, "delta z of wedge too small");
         return NULL;
     }
-    if (dd < 0) {
+    if (dz2 < 0) {
         PyErr_SetString(PyExc_Exception, "delta z2 of wedge is negative");
+        return NULL;
+    }
+    if (dx2 < 0) {
+        PyErr_SetString(PyExc_Exception, "delta x2 of wedge is negative");
         return NULL;
     }
 
