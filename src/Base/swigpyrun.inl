@@ -32,7 +32,7 @@ int createSWIGPointerObj_T(const char* TypeName, void* obj, PyObject** ptr, int 
     if (!swig_type)
         throw Base::Exception("Cannot find type information for requested type");
     
-    *ptr = SWIG_Python_NewPointerObj(obj,swig_type,own);
+    *ptr = SWIG_NewPointerObj(obj,swig_type,own);
     if (*ptr == 0)
         throw Base::Exception("Cannot convert into requested type");
 
