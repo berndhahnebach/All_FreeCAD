@@ -410,11 +410,17 @@ void PyResource::load( const char* name )
     }
 
     QWidget* w=0;
-    try{
-        // TODO needs to be replaced
-        //w = QWidgetFactory::create( fn, 0, QApplication::activeWindow() );
+    try {
+        UiLoader loader;
+#if QT_VERSION >= 0x040500
+        loader.setLanguageChangeEnabled(true);
+#endif
+        QFile file(fn);
+        if (file.open(QFile::ReadOnly))
+            w = loader.load(&file, QApplication::activeWindow());
+        file.close();
     }
-    catch(...){
+    catch (...) {
         throw Base::Exception("Cannot create resource");
     }
 
