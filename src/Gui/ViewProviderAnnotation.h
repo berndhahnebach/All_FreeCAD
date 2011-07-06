@@ -99,6 +99,7 @@ public:
     App::PropertyEnumeration    Justification;
     App::PropertyFloat          FontSize;
     App::PropertyFont           FontName;
+    App::PropertyBool           Frame;
 
     void attach(App::DocumentObject *);
     void updateData(const App::Property*);
