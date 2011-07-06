@@ -31,6 +31,7 @@
 # include <QLocale>
 # include <QPixmap>
 # include <QSpinBox>
+# include <QTextStream>
 #endif
 
 #include <Base/Tools.h>
@@ -228,7 +229,7 @@ void PropertyItem::setPropertyValue(const QString& value)
         App::PropertyContainer* parent = (*it)->getContainer();
         if (parent && !parent->isReadOnly(*it)) {
             QString cmd = QString::fromAscii("%1 = %2").arg(pythonIdentifier(*it)).arg(value);
-            Gui::Application::Instance->runPythonCode((const char*)cmd.toAscii());
+            Gui::Application::Instance->runPythonCode((const char*)cmd.toUtf8());
         }
     }
 }
@@ -1402,7 +1403,7 @@ QVariant PropertyStringListItem::editorData(QWidget *editor) const
 QVariant PropertyStringListItem::toString(const QVariant& prop) const
 {
     QStringList list = prop.toStringList();
-    QString text = QString::fromAscii("[%1]").arg(list.join(QLatin1String(",")));
+    QString text = QString::fromUtf8("[%1]").arg(list.join(QLatin1String(",")));
 
     return QVariant(text);
 }
@@ -1414,7 +1415,7 @@ QVariant PropertyStringListItem::value(const App::Property* prop) const
     QStringList list;
     const std::vector<std::string>& value = ((App::PropertyStringList*)prop)->getValues();
     for ( std::vector<std::string>::const_iterator jt = value.begin(); jt != value.end(); ++jt ) {
-        list << QString::fromAscii(jt->c_str());
+        list << QString::fromUtf8(jt->c_str());
     }
 
     return QVariant(list);
@@ -1425,11 +1426,13 @@ void PropertyStringListItem::setValue(const QVariant& value)
     if (!value.canConvert(QVariant::StringList))
         return;
     QStringList values = value.toStringList();
-    QString data = QString::fromAscii("[");
+    QString data;
+    QTextStream str(&data);
+    str << "[";
     for (QStringList::Iterator it = values.begin(); it != values.end(); ++it) {
-        data += QString::fromAscii("\"%1\",").arg(*it);
+        str << "unicode('" << *it << "', 'utf-8'),";
     }
-    data += QString::fromAscii("]");
+    str << "]";
     setPropertyValue(data);
 }
 

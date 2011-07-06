@@ -248,6 +248,7 @@ ViewProviderAnnotationLabel::ViewProviderAnnotationLabel()
     QFont fn;
     ADD_PROPERTY(FontSize,(fn.pointSize()));
     ADD_PROPERTY(FontName,((const char*)fn.family().toAscii()));
+    ADD_PROPERTY(Frame,(true));
 
     pColor = new SoBaseColor();
     pColor->ref();
@@ -281,7 +282,8 @@ void ViewProviderAnnotationLabel::onChanged(const App::Property* prop)
         pColor->rgb.setValue(c.r,c.g,c.b);
     }
     if (prop == &TextColor || prop == &BackgroundColor ||
-        prop == &Justification || prop == &FontSize || prop == &FontName) {
+        prop == &Justification || prop == &FontSize ||
+        prop == &FontName || prop == &Frame) {
         if (getObject()) {
             App::Property* label = getObject()->getPropertyByName("LabelText");
             if (label && label->getTypeId() == App::PropertyStringList::getClassTypeId())
@@ -461,11 +463,15 @@ void ViewProviderAnnotationLabel::drawImage(const std::vector<std::string>& s)
     QPainter painter(&image);
     painter.setRenderHint(QPainter::Antialiasing);
 
-    painter.setPen(QPen(QColor(0,0,127), 2, Qt::SolidLine, Qt::RoundCap,
-                        Qt::RoundJoin));
-    painter.setBrush(QBrush(brush, Qt::SolidPattern));
-    QRectF rectangle(0.0, 0.0, w+10, h+10);
-    painter.drawRoundedRect(rectangle, 5, 5);
+    bool drawFrame = this->Frame.getValue();
+    if (drawFrame) {
+        painter.setPen(QPen(QColor(0,0,127), 2, Qt::SolidLine, Qt::RoundCap,
+                            Qt::RoundJoin));
+        painter.setBrush(QBrush(brush, Qt::SolidPattern));
+        QRectF rectangle(0.0, 0.0, w+10, h+10);
+        painter.drawRoundedRect(rectangle, 5, 5);
+    }
+
     painter.setPen(front);
 
     Qt::Alignment align = Qt::AlignVCenter;
