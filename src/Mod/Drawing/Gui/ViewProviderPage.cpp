@@ -27,6 +27,7 @@
 # ifdef FC_OS_WIN32
 #  include <windows.h>
 # endif
+# include <QAction>
 # include <QTimer>
 #endif
 
@@ -103,9 +104,27 @@ void ViewProviderDrawingPage::updateData(const App::Property* prop)
     }
 }
 
+void ViewProviderDrawingPage::setupContextMenu(QMenu* menu, QObject* receiver, const char* member)
+{
+    QAction* act;
+    act = menu->addAction(QObject::tr("Show drawing"), receiver, member);
+    act->setData(QVariant((int)ViewProvider::Default));
+}
+
+bool ViewProviderDrawingPage::setEdit(int ModNum)
+{
+    doubleClicked();
+    return false;
+}
+
 bool ViewProviderDrawingPage::doubleClicked(void)
 {
-    Gui::getMainWindow()->setActiveWindow(showDrawingView());
+    if (!this->view) {
+        showDrawingView();
+        this->view->load(QString::fromUtf8(getPageObject()->PageResult.getValue()));
+        view->viewAll();
+    }
+    Gui::getMainWindow()->setActiveWindow(this->view);
     return true;
 }
 

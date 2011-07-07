@@ -77,6 +77,7 @@ public:
     /// print function of the view
     virtual void print();
     virtual void printPdf();
+    virtual void printPreview();
 
     QSize minimumSizeHint () const;
 

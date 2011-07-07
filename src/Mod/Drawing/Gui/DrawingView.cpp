@@ -32,6 +32,9 @@
 # include <QGLWidget>
 # include <QGraphicsRectItem>
 # include <QGraphicsSvgItem>
+# include <QGridLayout>
+# include <QGroupBox>
+# include <QListWidget>
 # include <QMenu>
 # include <QMessageBox>
 # include <QMouseEvent>
@@ -39,6 +42,8 @@
 # include <QPaintEvent>
 # include <QPrinter>
 # include <QPrintDialog>
+# include <QPrintPreviewDialog>
+# include <QPrintPreviewWidget>
 # include <QScrollArea>
 # include <QSlider>
 # include <QStatusBar>
@@ -52,6 +57,7 @@
 #include "DrawingView.h"
 #include <Base/Stream.h>
 #include <Base/gzstream.h>
+#include <Gui/FileDialog.h>
 #include <Gui/WaitCursor.h>
 
 using namespace DrawingGui;
@@ -314,6 +320,8 @@ bool DrawingView::onHasMsg(const char* pMsg) const
         return true;
     else if (strcmp("Print",pMsg) == 0)
         return true; 
+    else if (strcmp("PrintPreview",pMsg) == 0)
+        return true; 
     else if (strcmp("PrintPdf",pMsg) == 0)
         return true; 
     return false;
@@ -321,13 +329,54 @@ bool DrawingView::onHasMsg(const char* pMsg) const
 
 void DrawingView::printPdf()
 {
-    QString filename = QFileDialog::getSaveFileName(this, tr("Export PDF"), QString(), tr("PDF file (*.pdf)"));
-    if (!filename.isEmpty()) {
+    Gui::FileOptionsDialog dlg(this, 0);
+    dlg.setFileMode(QFileDialog::AnyFile);
+    dlg.setAcceptMode(QFileDialog::AcceptSave);
+    dlg.setWindowTitle(tr("Export PDF"));
+    dlg.setFilters(QStringList() << tr("PDF file (*.pdf)"));
+
+    QGridLayout *gridLayout;
+    QGridLayout *formLayout;
+    QGroupBox *groupBox;
+    QListWidget *listWidget;
+    QListWidgetItem* item;
+    QWidget *form = new QWidget(&dlg);
+    form->resize(40, 300);
+    formLayout = new QGridLayout(form);
+    groupBox = new QGroupBox(form);
+    gridLayout = new QGridLayout(groupBox);
+    listWidget = new QListWidget(groupBox);
+    gridLayout->addWidget(listWidget, 0, 0, 1, 1);
+    formLayout->addWidget(groupBox, 0, 0, 1, 1);
+
+    groupBox->setTitle(tr("Page sizes"));
+    item = new QListWidgetItem(tr("A0"), listWidget);
+    item->setData(Qt::UserRole, QVariant(QPrinter::A0));
+    item = new QListWidgetItem(tr("A1"), listWidget);
+    item->setData(Qt::UserRole, QVariant(QPrinter::A1));
+    item = new QListWidgetItem(tr("A2"), listWidget);
+    item->setData(Qt::UserRole, QVariant(QPrinter::A2));
+    item = new QListWidgetItem(tr("A3"), listWidget);
+    item->setData(Qt::UserRole, QVariant(QPrinter::A3));
+    item = new QListWidgetItem(tr("A4"), listWidget);
+    item->setData(Qt::UserRole, QVariant(QPrinter::A4));
+    item = new QListWidgetItem(tr("A5"), listWidget);
+    item->setData(Qt::UserRole, QVariant(QPrinter::A5));
+    listWidget->item(4)->setSelected(true); // by default A4
+    dlg.setOptionsWidget(Gui::FileOptionsDialog::ExtensionRight, form, false);
+
+    if (dlg.exec() == QDialog::Accepted) {
         Gui::WaitCursor wc;
+        QString filename = dlg.selectedFiles().front();
         QPrinter printer(QPrinter::HighResolution);
         printer.setOutputFormat(QPrinter::PdfFormat);
         printer.setOutputFileName(filename);
         printer.setOrientation(QPrinter::Landscape);
+        QList<QListWidgetItem*> items = listWidget->selectedItems();
+        if (items.size() == 1) {
+            int AX = items.front()->data(Qt::UserRole).toInt();
+            printer.setPaperSize(QPrinter::PageSize(AX));
+        }
         print(&printer);
     }
 }
@@ -341,6 +390,18 @@ void DrawingView::print()
     if (dlg.exec() == QDialog::Accepted) {
         print(&printer);
     }
+}
+
+void DrawingView::printPreview()
+{
+    QPrinter printer(QPrinter::HighResolution);
+    printer.setFullPage(true);
+    printer.setOrientation(QPrinter::Landscape);
+
+    QPrintPreviewDialog dlg(&printer, this);
+    connect(&dlg, SIGNAL(paintRequested (QPrinter *)),
+            this, SLOT(print(QPrinter *)));
+    dlg.exec();
 }
 
 void DrawingView::print(QPrinter* printer)

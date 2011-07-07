@@ -100,6 +100,8 @@
 #include <QPlainTextEdit>
 #include <QPrinter>
 #include <QPrintDialog>
+#include <QPrintPreviewDialog>
+#include <QPrintPreviewWidget>
 #include <QProgressBar>
 #include <QProgressDialog>
 #include <qpushbutton.h>

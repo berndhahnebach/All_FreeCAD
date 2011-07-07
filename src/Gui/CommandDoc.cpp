@@ -506,6 +506,33 @@ bool StdCmdPrint::isActive(void)
 }
 
 //===========================================================================
+// Std_PrintPreview
+//===========================================================================
+DEF_STD_CMD_A(StdCmdPrintPreview);
+
+StdCmdPrintPreview::StdCmdPrintPreview()
+  :Command("Std_PrintPreview")
+{
+    sGroup        = QT_TR_NOOP("File");
+    sMenuText     = QT_TR_NOOP("&Print preview...");
+    sToolTipText  = QT_TR_NOOP("Print the document");
+    sWhatsThis    = "Std_PrintPreview";
+    sStatusTip    = QT_TR_NOOP("Print preview");
+}
+
+void StdCmdPrintPreview::activated(int iMsg)
+{
+    if (getMainWindow()->activeWindow()) {
+        getMainWindow()->activeWindow()->printPreview();
+    }
+}
+
+bool StdCmdPrintPreview::isActive(void)
+{
+    return getGuiApplication()->sendHasMsgToActiveView("PrintPreview");
+}
+
+//===========================================================================
 // Std_PrintPdf
 //===========================================================================
 DEF_STD_CMD_A(StdCmdPrintPdf);
@@ -1013,6 +1040,7 @@ void CreateDocCommands(void)
     rcCmdMgr.addCommand(new StdCmdUndo());
     rcCmdMgr.addCommand(new StdCmdRedo());
     rcCmdMgr.addCommand(new StdCmdPrint());
+    rcCmdMgr.addCommand(new StdCmdPrintPreview());
     rcCmdMgr.addCommand(new StdCmdPrintPdf());
     rcCmdMgr.addCommand(new StdCmdQuit());
     rcCmdMgr.addCommand(new StdCmdCut());
