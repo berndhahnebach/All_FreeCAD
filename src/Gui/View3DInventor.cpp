@@ -35,6 +35,7 @@
 # include <QPainter>
 # include <QPrinter>
 # include <QPrintDialog>
+# include <QPrintPreviewDialog>
 # include <QStackedWidget>
 # include <QTimer>
 # include <QUrl>
@@ -54,6 +55,7 @@
 
 #include <Base/Exception.h>
 #include <Base/Console.h>
+#include <Base/FileInfo.h>
 
 #include <App/DocumentObject.h>
 
@@ -65,6 +67,7 @@
 #include "MainWindow.h"
 #include "MenuManager.h"
 #include "WaitCursor.h"
+#include "SoFCVectorizeSVGAction.h"
 
 // build in Inventor
 #include "Inventor/Qt/viewers/SoQtExaminerViewer.h"
@@ -366,14 +369,80 @@ void View3DInventor::printPdf()
     }
 }
 
+void View3DInventor::printPreview()
+{
+    QPrinter printer(QPrinter::HighResolution);
+    printer.setFullPage(true);
+    //printer.setPageSize(QPrinter::A3);
+    printer.setOrientation(QPrinter::Landscape);
+
+    QPrintPreviewDialog dlg(&printer, this);
+    connect(&dlg, SIGNAL(paintRequested (QPrinter *)),
+            this, SLOT(print(QPrinter *)));
+    dlg.exec();
+}
+
 void View3DInventor::print(QPrinter* printer)
 {
+    // The SVG output needs to be improved
+#if 0
+    SoFCVectorizeSVGAction action;
+    SoSVGVectorOutput* out = action.getSVGOutput();
+    std::string tmp = Base::FileInfo::getTempFileName();
+    if (!out || !out->openFile(tmp.c_str()))
+        return;
+    SoVectorizeAction::PageSize ps;
+    switch (printer->pageSize()) {
+    case QPrinter::A0:
+        ps = SoVectorizeAction::A0;
+        break;
+    case QPrinter::A1:
+        ps = SoVectorizeAction::A1;
+        break;
+    case QPrinter::A2:
+        ps = SoVectorizeAction::A2;
+        break;
+    case QPrinter::A3:
+        ps = SoVectorizeAction::A3;
+        break;
+    case QPrinter::A4:
+        ps = SoVectorizeAction::A4;
+        break;
+    case QPrinter::A5:
+        ps = SoVectorizeAction::A5;
+        break;
+    case QPrinter::A6:
+        ps = SoVectorizeAction::A6;
+        break;
+    case QPrinter::A7:
+        ps = SoVectorizeAction::A7;
+        break;
+    case QPrinter::A8:
+        ps = SoVectorizeAction::A8;
+        break;
+    case QPrinter::A9:
+        ps = SoVectorizeAction::A9;
+        break;
+    default:
+        ps = SoVectorizeAction::A4;
+        break;
+    }
+    _viewer->saveGraphic(ps,View3DInventorViewer::White,&action);
+    out->closeFile();
+    QSvgRenderer svg;
+    if (svg.load(QString::fromUtf8(tmp.c_str()))) {
+        QPainter p(printer);
+        svg.render(&p);
+        p.end();
+    }
+#else
     QImage img;
     QPainter p(printer);
     QRect rect = printer->pageRect();
     _viewer->savePicture(rect.width(), rect.height(), View3DInventorViewer::White, img);
     p.drawImage(0,0,img);
     p.end();
+#endif
 }
 
 // **********************************************************************************
@@ -540,6 +609,8 @@ bool View3DInventor::onHasMsg(const char* pMsg) const
     else if (strcmp("Redo",pMsg) == 0)
         return getAppDocument()->getAvailableRedos() > 0; 
     else if (strcmp("Print",pMsg) == 0)
+        return true; 
+    else if (strcmp("PrintPreview",pMsg) == 0)
         return true; 
     else if (strcmp("PrintPdf",pMsg) == 0)
         return true; 
