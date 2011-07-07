@@ -91,9 +91,12 @@ public:
     bool onHasMsg(const char* pMsg) const;
     void print();
     void printPdf();
+    void printPreview();
+
+protected Q_SLOTS:
+    void print(QPrinter* printer);
 
 protected:
-    void print(QPrinter* printer);
     void contextMenuEvent(QContextMenuEvent *event);
 
 private:

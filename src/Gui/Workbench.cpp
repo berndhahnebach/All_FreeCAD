@@ -434,7 +434,7 @@ MenuItem* StdWorkbench::setupMenuBar() const
           << "Std_CloseAllWindows" << "Separator" << "Std_Save" << "Std_SaveAs"
           << "Separator" << "Std_Import" << "Std_Export" 
           << "Std_MergeProjects" << "Std_ProjectInfo" 
-          << "Separator" << "Std_Print" << "Std_PrintPdf"
+          << "Separator" << "Std_Print" << "Std_PrintPreview" << "Std_PrintPdf"
           << "Separator" << "Std_RecentFiles" << "Separator" << "Std_Quit";
 
     // Edit
