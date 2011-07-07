@@ -84,6 +84,7 @@ public:
     /// print function of the view
     virtual void print();
     virtual void printPdf();
+    virtual void printPreview();
 
     virtual PyObject *getPyObject(void);
     /**
@@ -112,6 +113,7 @@ public Q_SLOTS:
 
 protected Q_SLOTS:
     void stopAnimating();
+    void print(QPrinter*);
 
 public:
     bool eventFilter(QObject*, QEvent* );
@@ -128,9 +130,6 @@ protected:
 
     /// handle to the viewer parameter group
     ParameterGrp::handle hGrp;
-
-private:
-    void print(QPrinter*);
 
 private:
     View3DInventorViewer * _viewer;

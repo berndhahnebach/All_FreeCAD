@@ -34,6 +34,7 @@
 # include <QPrintDialog>
 # include <QScrollBar>
 # include <QPlainTextEdit>
+# include <QPrintPreviewDialog>
 # include <QTextBlock>
 # include <QTextCodec>
 # include <QTextStream>
@@ -208,6 +209,7 @@ bool EditorView::onHasMsg(const char* pMsg) const
     if (strcmp(pMsg,"DebugStop")==0)  return true;
     if (strcmp(pMsg,"SaveAs")==0)  return true;
     if (strcmp(pMsg,"Print")==0) return true;
+    if (strcmp(pMsg,"PrintPreview")==0) return true;
     if (strcmp(pMsg,"PrintPdf")==0) return true;
     if (strcmp(pMsg,"Save")==0) { 
         return d->textEdit->document()->isModified();
@@ -364,6 +366,20 @@ void EditorView::print()
     if (dlg.exec() == QDialog::Accepted) {
         d->textEdit->document()->print(&printer);
     }
+}
+
+void EditorView::printPreview()
+{
+    QPrinter printer(QPrinter::HighResolution);
+    QPrintPreviewDialog dlg(&printer, this);
+    connect(&dlg, SIGNAL(paintRequested (QPrinter *)),
+            this, SLOT(print(QPrinter *)));
+    dlg.exec();
+}
+
+void EditorView::print(QPrinter* printer)
+{
+    d->textEdit->document()->print(printer);
 }
 
 /**

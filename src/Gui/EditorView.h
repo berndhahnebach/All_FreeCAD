@@ -27,7 +27,10 @@
 #include "MDIView.h"
 #include "Window.h"
 
+QT_BEGIN_NAMESPACE
 class QPlainTextEdit;
+class QPrinter;
+QT_END_NAMESPACE
 
 namespace Gui {
 
@@ -70,6 +73,7 @@ public:
     void redo   ();
     void print  ();
     void printPdf();
+    void printPreview();
     //@}
 
     QStringList undoActions() const;
@@ -84,6 +88,7 @@ private Q_SLOTS:
     void contentsChange(int position, int charsRemoved, int charsAdded);
     void undoAvailable(bool);
     void redoAvailable(bool);
+    void print(QPrinter*);
 
 private:
     void setCurrentFileName(const QString &fileName);
