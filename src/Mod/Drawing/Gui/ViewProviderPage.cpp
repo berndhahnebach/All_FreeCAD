@@ -28,6 +28,7 @@
 #  include <windows.h>
 # endif
 # include <QAction>
+# include <QMenu>
 # include <QTimer>
 #endif
 
