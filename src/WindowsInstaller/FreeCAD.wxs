@@ -147,6 +147,7 @@
             <ComponentRef Id="CompModTest" />
             <ComponentRef Id="CompModInspection" />
             <ComponentRef Id="CompModImport" />
+            <ComponentRef Id="CompModArch" />
 			<!-- No CAM at the moment 
             <ComponentRef Id="CompModCam" />
 			-->
