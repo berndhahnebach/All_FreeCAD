@@ -213,6 +213,8 @@ public:
     static void updateActive(void);
     /// Updates the (all or listed) documents (propagate changes)
     static void updateAll(std::list<Gui::Document*> cList);
+    /// Checks if the active object of the active document is valid
+    static bool isActiveObjectValid(void);
     /// Translate command
     void languageChange();
     //@}

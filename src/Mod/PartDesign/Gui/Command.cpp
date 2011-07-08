@@ -136,15 +136,16 @@ void CmdPartDesignPad::activated(int iMsg)
 
     App::DocumentObject* support = sketch->Support.getValue();
 
-
     openCommand("Make Pad");
     doCommand(Doc,"App.activeDocument().addObject(\"PartDesign::Pad\",\"%s\")",FeatName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Sketch = App.activeDocument().%s",FeatName.c_str(),sketch->getNameInDocument());
     doCommand(Doc,"App.activeDocument().%s.Length = 10.0",FeatName.c_str());
-    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",sketch->getNameInDocument());
-    if(support)
-        doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",support->getNameInDocument());
     updateActive();
+    if (isActiveObjectValid()) {
+        doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",sketch->getNameInDocument());
+        if (support)
+            doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",support->getNameInDocument());
+    }
     commitCommand();
     adjustCameraPosition();
 }
@@ -213,9 +214,11 @@ void CmdPartDesignPocket::activated(int iMsg)
     doCommand(Doc,"App.activeDocument().addObject(\"PartDesign::Pocket\",\"%s\")",FeatName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Sketch = App.activeDocument().%s",FeatName.c_str(),sketch->getNameInDocument());
     doCommand(Doc,"App.activeDocument().%s.Length = 5.0",FeatName.c_str());
-    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",sketch->getNameInDocument());
-    doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",support->getNameInDocument());
     updateActive();
+    if (isActiveObjectValid()) {
+        doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",sketch->getNameInDocument());
+        doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",support->getNameInDocument());
+    }
     commitCommand();
 }
 
