@@ -16,7 +16,9 @@
 
 #include <vector>
 
+#include <Gui/Action.h>
 #include <Gui/Application.h>
+#include <Gui/BitmapFactory.h>
 #include <Gui/Command.h>
 #include <Gui/Control.h>
 #include <Gui/Selection.h>
@@ -64,6 +66,122 @@ void CmdDrawingOpen::activated(int iMsg)
         Command::doCommand(Command::Gui, "import Drawing, DrawingGui");
         Command::doCommand(Command::Gui, "DrawingGui.open(\"%s\")", (const char*)filename.toUtf8());
     }
+}
+
+//===========================================================================
+// Drawing_NewPage
+//===========================================================================
+
+DEF_STD_CMD_ACL(CmdDrawingNewPage);
+
+CmdDrawingNewPage::CmdDrawingNewPage()
+  : Command("Drawing_NewPage")
+{
+    sAppModule      = "Drawing";
+    sGroup          = QT_TR_NOOP("Drawing");
+    sMenuText       = QT_TR_NOOP("Insert new drawing");
+    sToolTipText    = QT_TR_NOOP("Insert new drawing");
+    sWhatsThis      = "Drawing_NewPage";
+    sStatusTip      = sToolTipText;
+}
+
+void CmdDrawingNewPage::activated(int iMsg)
+{
+    std::string FeatName = getUniqueObjectName("Page");
+
+    if (iMsg == 3) {
+        openCommand("Drawing create page");
+        doCommand(Doc,"App.activeDocument().addObject('Drawing::FeaturePage','%s')",FeatName.c_str());
+        doCommand(Doc,"App.activeDocument().%s.Template = 'A3_Landscape.svg'",FeatName.c_str());
+        commitCommand();
+    }
+    else {
+        QMessageBox::critical(Gui::getMainWindow(),
+            QLatin1String("No template"),
+            QLatin1String("No template available for this page size"));
+    }
+}
+
+Gui::Action * CmdDrawingNewPage::createAction(void)
+{
+    Gui::ActionGroup* pcAction = new Gui::ActionGroup(this, Gui::getMainWindow());
+    pcAction->setDropDownMenu(true);
+    applyCommandData(pcAction);
+
+    QAction* a0 = pcAction->addAction(QString());
+    a0->setIcon(Gui::BitmapFactory().pixmap("actions/drawing-landscape-A0"));
+
+    QAction* a1 = pcAction->addAction(QString());
+    a1->setIcon(Gui::BitmapFactory().pixmap("actions/drawing-landscape-A1"));
+
+    QAction* a2 = pcAction->addAction(QString());
+    a2->setIcon(Gui::BitmapFactory().pixmap("actions/drawing-landscape-A2"));
+
+    QAction* a3 = pcAction->addAction(QString());
+    a3->setIcon(Gui::BitmapFactory().pixmap("actions/drawing-landscape-A3"));
+
+    QAction* a4 = pcAction->addAction(QString());
+    a4->setIcon(Gui::BitmapFactory().pixmap("actions/drawing-landscape-A4"));
+
+    _pcAction = pcAction;
+    languageChange();
+    pcAction->setIcon(a3->icon());
+    pcAction->setProperty("defaultAction", QVariant(3));
+
+    return pcAction;
+}
+
+void CmdDrawingNewPage::languageChange()
+{
+    Command::languageChange();
+
+    if (!_pcAction)
+        return;
+    Gui::ActionGroup* pcAction = qobject_cast<Gui::ActionGroup*>(_pcAction);
+    QList<QAction*> a = pcAction->actions();
+
+    a[0]->setText(QCoreApplication::translate(
+        "Drawing_NewPage", "A0 landscape", 0,
+        QCoreApplication::CodecForTr));
+    a[0]->setToolTip(QCoreApplication::translate(
+        "Drawing_NewPage", "Insert new A0 landscape drawing", 0,
+        QCoreApplication::CodecForTr));
+
+    a[1]->setText(QCoreApplication::translate(
+        "Drawing_NewPage", "A1 landscape", 0,
+        QCoreApplication::CodecForTr));
+    a[1]->setToolTip(QCoreApplication::translate(
+        "Drawing_NewPage", "Insert new A1 landscape drawing", 0,
+        QCoreApplication::CodecForTr));
+
+    a[2]->setText(QCoreApplication::translate(
+        "Drawing_NewPage", "A2 landscape", 0,
+        QCoreApplication::CodecForTr));
+    a[2]->setToolTip(QCoreApplication::translate(
+        "Drawing_NewPage", "Insert new A2 landscape drawing", 0,
+        QCoreApplication::CodecForTr));
+
+    a[3]->setText(QCoreApplication::translate(
+        "Drawing_NewPage", "A3 landscape", 0,
+        QCoreApplication::CodecForTr));
+    a[3]->setToolTip(QCoreApplication::translate(
+        "Drawing_NewPage", "Insert new A3 landscape drawing", 0,
+        QCoreApplication::CodecForTr));
+
+    a[4]->setText(QCoreApplication::translate(
+        "Drawing_NewPage", "A4 landscape", 0,
+        QCoreApplication::CodecForTr));
+    a[4]->setToolTip(QCoreApplication::translate(
+        "Drawing_NewPage", "Insert new A4 landscape drawing", 0,
+        QCoreApplication::CodecForTr));
+}
+
+bool CmdDrawingNewPage::isActive(void)
+{
+    if (getActiveGuiDocument())
+        return true;
+    else
+        return false;
 }
 
 //===========================================================================
@@ -245,6 +363,7 @@ void CreateDrawingCommands(void)
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
 
     rcCmdMgr.addCommand(new CmdDrawingOpen());
+    rcCmdMgr.addCommand(new CmdDrawingNewPage());
     rcCmdMgr.addCommand(new CmdDrawingNewA3Landscape());
     rcCmdMgr.addCommand(new CmdDrawingNewView());
     rcCmdMgr.addCommand(new CmdDrawingExportPage());
