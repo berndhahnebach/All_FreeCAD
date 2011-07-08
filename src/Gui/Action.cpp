@@ -218,7 +218,11 @@ void ActionGroup::addTo(QWidget *w)
             w->addAction(_action);
             QToolButton* tb = w->findChildren<QToolButton*>().last();
             tb->setPopupMode(QToolButton::MenuButtonPopup);
-            tb->addActions(_group->actions());
+            QList<QAction*> acts = _group->actions();
+            QMenu* menu = new QMenu(tb);
+            menu->addActions(acts);
+            tb->setMenu(menu);
+            //tb->addActions(_group->actions());
         }
         else {
             w->addActions(_group->actions()); // no drop-down 
@@ -279,10 +283,31 @@ void ActionGroup::setCheckedAction(int i)
 /**
  * Activates the command.
  */
+void ActionGroup::onActivated () 
+{
+    _pcCmd->invoke(this->property("defaultAction").toInt());
+}
+
+/**
+ * Activates the command.
+ */
 void ActionGroup::onActivated (QAction* a) 
 {
     int index = _group->actions().indexOf(a);
-    _pcCmd->invoke(index/*a->data().toInt()*/);
+
+    QList<QWidget*> widgets = a->associatedWidgets();
+    for (QList<QWidget*>::iterator it = widgets.begin(); it != widgets.end(); ++it) {
+        QMenu* menu = qobject_cast<QMenu*>(*it);
+        if (menu) {
+            QToolButton* button = qobject_cast<QToolButton*>(menu->parent());
+            if (button) {
+                button->setIcon(a->icon());
+                this->setProperty("defaultAction", QVariant(index));
+            }
+        }
+    }
+
+    _pcCmd->invoke(index);
 }
 
 // --------------------------------------------------------------------

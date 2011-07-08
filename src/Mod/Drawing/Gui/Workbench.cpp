@@ -28,6 +28,7 @@
 #endif
 
 #include "Workbench.h"
+#include <Gui/MenuManager.h>
 #include <Gui/ToolBarManager.h>
 
 using namespace DrawingGui;
@@ -47,13 +48,31 @@ Workbench::~Workbench()
 {
 }
 
+Gui::MenuItem* Workbench::setupMenuBar() const
+{
+    Gui::MenuItem* root = StdWorkbench::setupMenuBar();
+    Gui::MenuItem* item = root->findItem("&Windows");
+
+    Gui::MenuItem* part = new Gui::MenuItem;
+    root->insertItem(item, part);
+    part->setCommand("Drawing");
+    *part << "Drawing_Open";
+    //*part << "Drawing_NewA3Landscape";
+    *part << "Drawing_NewPage";
+    *part << "Drawing_NewView";
+    *part << "Drawing_ExportPage";
+
+    return root;
+}
+
 Gui::ToolBarItem* Workbench::setupToolBars() const
 {
     Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
     Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
     part->setCommand("Drawing");
     *part << "Drawing_Open";
-    *part << "Drawing_NewA3Landscape";
+    //*part << "Drawing_NewA3Landscape";
+    *part << "Drawing_NewPage";
     *part << "Drawing_NewView";
     *part << "Drawing_ExportPage";
     return root;
@@ -68,7 +87,8 @@ Gui::ToolBarItem* Workbench::setupCommandBars() const
     *img << "Drawing_Open";
     img = new Gui::ToolBarItem(root);
     img->setCommand("Drawing types");
-    *img << "Drawing_NewA3Landscape";
+  //*img << "Drawing_NewA3Landscape";
+    *img << "Drawing_NewPage";
     img = new Gui::ToolBarItem(root);
     img->setCommand("Views");
     *img << "Drawing_NewView";

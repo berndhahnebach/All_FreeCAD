@@ -68,8 +68,8 @@ public:
     QString whatsThis() const;
 
 public Q_SLOTS:
-    void onActivated ();
-    void onToggled   (bool); 
+    virtual void onActivated ();
+    virtual void onToggled   (bool); 
 
 protected:
     QAction* _action;
@@ -106,6 +106,7 @@ public:
     void setCheckedAction(int);
 
 public Q_SLOTS:
+    void onActivated ();
     void onActivated (QAction*);
 
 protected:
