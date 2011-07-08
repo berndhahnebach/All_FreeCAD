@@ -158,18 +158,21 @@ App::DocumentObjectExecReturn *Pad::execute(void)
     gp_Vec vec(SketchOrientationVector.x,SketchOrientationVector.y,SketchOrientationVector.z);
     BRepPrimAPI_MakePrism PrismMaker(aFace,vec,0,1);
     if (PrismMaker.IsDone()) {
+        TopoDS_Shape result = PrismMaker.Shape();
         // if the sketch has a support fuse them to get one result object (PAD!)
         if (SupportObject) {
-            // Let's call algorithm computing a fuse operation:
-            BRepAlgoAPI_Fuse mkFuse(SupportObject->Shape.getShape()._Shape, PrismMaker.Shape());
-            // Let's check if the fusion has been successful
-            if (!mkFuse.IsDone()) 
-                throw Base::Exception("Fusion with support failed");
-            this->Shape.setValue(mkFuse.Shape());
+            const TopoDS_Shape& support = SupportObject->Shape.getValue();
+            if (!support.IsNull() && support.ShapeType() == TopAbs_SOLID) {
+                // Let's call algorithm computing a fuse operation:
+                BRepAlgoAPI_Fuse mkFuse(support, result);
+                // Let's check if the fusion has been successful
+                if (!mkFuse.IsDone()) 
+                    throw Base::Exception("Fusion with support failed");
+                result = mkFuse.Shape();
+            }
         }
-        else{
-            this->Shape.setValue(PrismMaker.Shape());
-        }
+
+        this->Shape.setValue(result);
     }
     else
         return new App::DocumentObjectExecReturn("Could not extrude the sketch!");

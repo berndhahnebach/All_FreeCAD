@@ -434,9 +434,17 @@ const std::string Command::strToPython(const char* Str)
 void Command::updateActive(void)
 {
     WaitCursor wc;
-
     Gui::Application::Instance->activeDocument()->getDocument()->recompute();
-    //getGuiApplication()->UpdateActive();
+}
+
+bool Command::isActiveObjectValid(void)
+{
+    Gui::Document* active = Gui::Application::Instance->activeDocument();
+    assert(active);
+    App::Document* document = active->getDocument();
+    App::DocumentObject* object = document->getActiveObject();
+    assert(object);
+    return object->isValid();
 }
 
 /// Updates the (all or listed) documents (propagate changes)

@@ -134,15 +134,20 @@ App::DocumentObjectExecReturn *Pocket::execute(void)
     if (PrismMaker.IsDone()) {
         // if the sketch has a support fuse them to get one result object (PAD!)
         if (SupportObject) {
+            const TopoDS_Shape& support = SupportObject->Shape.getValue();
+            if (support.IsNull())
+                return new App::DocumentObjectExecReturn("Support shape is invalid");
+            if (support.ShapeType() != TopAbs_SOLID)
+                return new App::DocumentObjectExecReturn("Support shape is not a solid");
             // Let's call algorithm computing a fuse operation:
-            BRepAlgoAPI_Cut mkCut(SupportObject->Shape.getShape()._Shape, PrismMaker.Shape());
+            BRepAlgoAPI_Cut mkCut(support, PrismMaker.Shape());
             // Let's check if the fusion has been successful
             if (!mkCut.IsDone()) 
-                throw Base::Exception("cut with support failed");
+                return new App::DocumentObjectExecReturn("Cut with support failed");
             this->Shape.setValue(mkCut.Shape());
         }
         else{
-            return new App::DocumentObjectExecReturn("Cannot create a tool out of Sketch!");
+            return new App::DocumentObjectExecReturn("Cannot create a tool out of sketch with no support");
         }
     }
     else
