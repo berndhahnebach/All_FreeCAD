@@ -46,6 +46,13 @@
 				<File Id="StartPage13" Name="PartDesign.png"   />
 				<File Id="StartPage14" Name="PartDesignExample.png"   />
 				<File Id="StartPage15" Name="web.png"   />
+				<File Id="StartPage16" Name="__init__.py"   />
+				<File Id="StartPage17" Name="ArchDesign.png"   />
+				<File Id="StartPage18" Name="ArchDesign.py"   />
+				<File Id="StartPage19" Name="DefaultWorkbench.py"   />
+				<File Id="StartPage20" Name="LoadMRU0.py"   />
+				<File Id="StartPage21" Name="LoadMRU1.py"   />
+				<File Id="StartPage22" Name="LoadMRU2.py"   />
 			</Component>			
 		</Directory>
     </Directory>
