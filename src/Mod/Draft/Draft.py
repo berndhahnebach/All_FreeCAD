@@ -674,6 +674,7 @@ def rotate(objectslist,angle,center=Vector(0,0,0),axis=Vector(0,0,1),copy=False)
                         newobj.Shape = shape
                 elif hasattr(obj,"Placement"):
                         shape = Part.Shape()
+                        shape.Placement = obj.Placement
                         shape.rotate(fcvec.tup(center), fcvec.tup(axis), angle)
                         newobj.Placement = shape.Placement
                 if copy:
