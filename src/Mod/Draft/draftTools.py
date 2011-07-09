@@ -154,7 +154,10 @@ def snapPoint(target,point,cursor,ctrl=False):
                 # return gp[fcgeo.findClosest(point,gp)]
 
 	# checking if alwaySnap setting is on
-	if Draft.getParam("alwaysSnap"): ctrl = True
+        extractrl = False
+	if Draft.getParam("alwaysSnap"):
+                extractrl = ctrl
+                ctrl = True                
 
         # setting Radius
         radius =  getScreenDist(Draft.getParam("snapRange"),cursor)
@@ -227,6 +230,9 @@ def snapPoint(target,point,cursor,ctrl=False):
                         elif Draft.getType(obj) == "Dimension":
                                 for pt in [obj.Start,obj.End,obj.Dimline]:
                                         snapArray.append([pt,0,pt])
+                        elif Draft.getType(obj) == "Mesh":
+                                for v in obj.Mesh.Points:
+                                        snapArray.append([v.Vector,0,v.Vector])
                 if not lastObj[0]:
 			lastObj[0] = obj.Name
 			lastObj[1] = obj.Name
@@ -246,7 +252,7 @@ def snapPoint(target,point,cursor,ctrl=False):
 				newpoint = pt
                 if radius != 0:
                         dv = point.sub(newpoint[2])
-                        if dv.Length > radius:
+                        if (not extractrl) and (dv.Length > radius):
                                 newpoint = getPassivePoint(snapped)
 		target.snap.coords.point.setValue((newpoint[2].x,newpoint[2].y,newpoint[2].z))
 		if (newpoint[1] == 1):
