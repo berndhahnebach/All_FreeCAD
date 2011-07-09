@@ -672,6 +672,10 @@ def rotate(objectslist,angle,center=Vector(0,0,0),axis=Vector(0,0,1),copy=False)
                         shape = obj.Shape.copy()
                         shape.rotate(fcvec.tup(center), fcvec.tup(axis), angle)
                         newobj.Shape = shape
+                elif hasattr(obj,"Placement"):
+                        shape = Part.Shape()
+                        shape.rotate(fcvec.tup(center), fcvec.tup(axis), angle)
+                        newobj.Placement = shape.Placement
                 if copy:
                         formatObject(newobj,obj)
                 newobjlist.append(newobj)
@@ -823,6 +827,9 @@ def offset(obj,delta,copy=False,bind=False,sym=False):
                         newobj.Radius = getRadius(obj,delta)
                         newobj.DrawMode = obj.DrawMode
                         newobj.Placement = pl
+                elif getType(obj) == "Part":
+                        newobj = makeWire(p)
+                        newobj.Closed = obj.Shape.isClosed()                      
                 formatObject(newobj,obj)
         else:
                 if sym: return None
@@ -837,6 +844,8 @@ def offset(obj,delta,copy=False,bind=False,sym=False):
                         obj.Radius = delta
                 elif getType(obj) == "Polygon":
                         obj.Radius = getRadius(obj,delta)
+                elif getType(obj) == 'Part':
+                        print "unsupported object" # TODO
                 newobj = obj
         if copy and getParam("selectBaseObjects"):
                 select(newobj)
