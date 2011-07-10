@@ -54,8 +54,10 @@ class CommandWall:
     def Activated(self):
         sel = FreeCADGui.Selection.getSelection()
         if sel:
+            FreeCAD.ActiveDocument.openTransaction("Wall")
             for obj in sel:
                 makeWall(obj)
+            FreeCAD.ActiveDocument.commitTransaction()
         else:
             FreeCADGui.runCommand("Draft_Wire")
        

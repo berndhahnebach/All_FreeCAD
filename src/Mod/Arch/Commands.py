@@ -94,7 +94,7 @@ def splitMesh(obj,mark=True):
     '''splitMesh(object,[mark]): splits the given mesh object into separated components.
     If mark is False, nothing else is done. If True (default), non-manifold components
     will be painted in red.'''
-    if not obj.isDerivedFrom("Mesh::Feature"): return
+    if not obj.isDerivedFrom("Mesh::Feature"): return []
     basemesh = obj.Mesh
     comps = basemesh.getSeparateComponents()
     nlist = []
@@ -146,6 +146,7 @@ def meshToShape(obj):
         newobj = FreeCAD.ActiveDocument.addObject("Part::Feature",name)
         newobj.Shape = solid
         return newobj
+    return None
 
 # command definitions ###############################################
                        
@@ -165,8 +166,11 @@ class CommandAdd:
     def Activated(self):
         sel = FreeCADGui.Selection.getSelection()
         host = sel.pop()
+        FreeCAD.ActiveDocument.openTransaction("Grouping")
         addComponents(sel,host)
+        FreeCAD.ActiveDocument.commitTransaction()
 
+        
 class CommandRemove:
     "the Arch Add command definition"
     def GetResources(self):
@@ -182,11 +186,13 @@ class CommandRemove:
         
     def Activated(self):
         sel = FreeCADGui.Selection.getSelection()
+        FreeCAD.ActiveDocument.openTransaction("Ungrouping")
         if Draft.getType(sel[-1]) in ["Wall","Structure"]:
             host = sel.pop()
             removeComponents(sel,host)
         else:
             removeComponents(sel)
+        FreeCAD.ActiveDocument.commitTransaction()
 
 
 class CommandSplitMesh:
@@ -204,9 +210,17 @@ class CommandSplitMesh:
         
     def Activated(self):
         if FreeCADGui.Selection.getSelection():
+            FreeCAD.ActiveDocument.openTransaction("Split Mesh")
             for obj in FreeCADGui.Selection.getSelection():
+                n = obj.Name
                 nobjs = splitMesh(obj)
+                if len(nobjs) > 1:
+                    g = FreeCAD.ActiveDocument.addObject("App::DocumentObjectGroup",n)
+                    for o in nobjs:
+                        g.addObject(o)
+            FreeCAD.ActiveDocument.commitTransaction()
 
+            
 class CommandMeshToShape:
     "the Arch MeshToShape command definition"
     def GetResources(self):
@@ -222,8 +236,17 @@ class CommandMeshToShape:
         
     def Activated(self):
         if FreeCADGui.Selection.getSelection():
+            f = FreeCADGui.Selection.getSelection()[0]
+            g = None
+            if f.InList:
+                if f.InList[0].isDerivedFrom("App::DocumentObjectGroup"):
+                            g = f.InList[0]
+            FreeCAD.ActiveDocument.openTransaction("Mesh to Shape")
             for obj in FreeCADGui.Selection.getSelection():
-                nobjs = meshToShape(obj)
+                newobj = meshToShape(obj)
+                if g and newobj:
+                    g.addObject(newobj)
+            FreeCAD.ActiveDocument.commitTransaction()
             
 FreeCADGui.addCommand('Arch_Add',CommandAdd())
 FreeCADGui.addCommand('Arch_Remove',CommandRemove())

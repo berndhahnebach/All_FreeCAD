@@ -51,7 +51,9 @@ class CommandCell:
                 'ToolTip': QtCore.QT_TRANSLATE_NOOP("Arch_Cell","Creates a cell object including selected objects")}
         
     def Activated(self):
+        FreeCAD.ActiveDocument.openTransaction("Cell")
         makeCell(FreeCADGui.Selection.getSelection())
+        FreeCAD.ActiveDocument.commitTransaction()
 
 class Cell:
     "The Cell object"

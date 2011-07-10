@@ -50,7 +50,9 @@ class CommandFloor:
                 'ToolTip': QtCore.QT_TRANSLATE_NOOP("Arch_Floor","Creates a floor object including selected objects")}
         
     def Activated(self):
+        FreeCAD.ActiveDocument.openTransaction("Floor")
         makeFloor(FreeCADGui.Selection.getSelection())
+        FreeCAD.ActiveDocument.commitTransaction()
 
 class Floor(Cell.Cell):
     "The Cell object"
