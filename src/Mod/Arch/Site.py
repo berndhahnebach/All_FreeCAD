@@ -47,7 +47,9 @@ class CommandSite:
                 'ToolTip': QtCore.QT_TRANSLATE_NOOP("Arch_Site","Creates a site object including selected objects.")}
         
     def Activated(self):
+        FreeCAD.ActiveDocument.openTransaction("Site")
         makeSite(FreeCADGui.Selection.getSelection())
+        FreeCAD.ActiveDocument.commitTransaction()
 
 class Site(Cell.Cell):
     "The Site object"

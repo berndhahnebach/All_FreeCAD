@@ -52,8 +52,10 @@ class CommandStructure:
     def Activated(self):
         sel = FreeCADGui.Selection.getSelection()
         if sel:
+            FreeCAD.ActiveDocument.openTransaction("Structure")
             for obj in sel:
                 makeStructure(obj)
+            FreeCAD.ActiveDocument.commitTransaction()
         else:
             FreeCADGui.runCommand("Draft_Wire")
        

@@ -49,7 +49,9 @@ class CommandBuilding:
                 'ToolTip': QtCore.QT_TRANSLATE_NOOP("Arch_Building","Creates a building object including selected objects.")}
         
     def Activated(self):
+        FreeCAD.ActiveDocument.openTransaction("Building")
         makeBuilding(FreeCADGui.Selection.getSelection())
+        FreeCAD.ActiveDocument.commitTransaction()
 
 class Building(Cell.Cell):
     "The Building object"
