@@ -60,6 +60,7 @@ class ArchWorkbench(Workbench):
 Gui.addIconPath(":/icons")
 Gui.addLanguagePath(":/translations")
 Gui.addWorkbench(ArchWorkbench)
+Gui.updateLocale()
 App.addImportType("Industry Foundation Classes (*.ifc)","importIFC")
 try:
         import collada
