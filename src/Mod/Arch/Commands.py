@@ -21,7 +21,7 @@
 #*                                                                         *
 #***************************************************************************
 
-import FreeCAD,FreeCADGui,Part,Draft
+import FreeCAD,FreeCADGui,Part,Draft,MeshPart
 from draftlibs import fcgeo,fcvec
 from FreeCAD import Vector
 from PyQt4 import QtCore
@@ -29,6 +29,8 @@ from PyQt4 import QtCore
 __title__="FreeCAD Arch Commands"
 __author__ = "Yorik van Havre"
 __url__ = "http://free-cad.sourceforge.net"
+
+# module functions ###############################################
 
 def addComponents(objectsList,host):
     '''addComponents(objectsList,hostObject): adds the given object or the objects
@@ -87,6 +89,65 @@ def removeComponents(objectsList,host=None):
                        s.remove(o)
                        h.Subtractions = s
                        o.ViewObject.show()
+
+def splitMesh(obj,mark=True):
+    '''splitMesh(object,[mark]): splits the given mesh object into separated components.
+    If mark is False, nothing else is done. If True (default), non-manifold components
+    will be painted in red.'''
+    if not obj.isDerivedFrom("Mesh::Feature"): return
+    basemesh = obj.Mesh
+    comps = basemesh.getSeparateComponents()
+    nlist = []
+    if comps:
+        basename = obj.Name
+        FreeCAD.ActiveDocument.removeObject(basename)
+        for c in comps:
+            newobj = FreeCAD.ActiveDocument.addObject("Mesh::Feature",basename)
+            newobj.Mesh = c
+            if mark and (not c.isSolid()) and c.hasNonManifolds():
+                newobj.ViewObject.ShapeColor = (1.0,0.0,0.0,1.0)
+            nlist.append(newobj)
+        return nlist
+    return [obj]
+
+def meshToShape(obj):
+    '''meshToShape(object): turns a mesh into a shape, joining coplanar facets'''
+    if "Mesh" in obj.PropertiesList:
+        faces = []	
+        mesh = obj.Mesh
+        segments = mesh.getPlanes(0.01) # use rather strict tolerance here
+
+        for i in segments:
+            if len(i) > 0:
+                # a segment can have inner holes
+                wires = MeshPart.wireFromSegment(mesh, i)
+                # we assume that the exterior boundary is that one with
+                # the biggest bounding box
+                if len(wires) > 0:
+                    ext = None
+                    max_length = 0
+                    for i in wires:		
+                        if i.BoundBox.DiagonalLength > max_length:
+                            max_length = i.BoundBox.DiagonalLength
+                            ext = i
+                    wires.remove(ext)
+                    # all interior wires mark a hole and must reverse
+                    # their orientation, otherwise Part.Face fails
+                    for i in wires:
+                        i.reverse()
+                    # make sure that the exterior wires comes as first in the lsit
+                    wires.insert(0, ext)
+                    faces.append(Part.Face(wires))
+
+        shell=Part.Compound(faces)
+        solid = Part.Solid(Part.Shell(faces))
+        name = obj.Name
+        FreeCAD.ActiveDocument.removeObject(name)
+        newobj = FreeCAD.ActiveDocument.addObject("Part::Feature",name)
+        newobj.Shape = solid
+        return newobj
+
+# command definitions ###############################################
                        
 class CommandAdd:
     "the Arch Add command definition"
@@ -127,5 +188,44 @@ class CommandRemove:
         else:
             removeComponents(sel)
 
+
+class CommandSplitMesh:
+    "the Arch SplitMesh command definition"
+    def GetResources(self):
+        return {'Pixmap'  : 'Arch_SplitMesh',
+                'MenuText': QtCore.QT_TRANSLATE_NOOP("Arch_SplitMesh","Split Mesh"),
+                'ToolTip': QtCore.QT_TRANSLATE_NOOP("Arch_SplitMesh","Splits selected meshes into independent components")}
+
+    def IsActive(self):
+        if len(FreeCADGui.Selection.getSelection()):
+            return True
+        else:
+            return False
+        
+    def Activated(self):
+        if FreeCADGui.Selection.getSelection():
+            for obj in FreeCADGui.Selection.getSelection():
+                nobjs = splitMesh(obj)
+
+class CommandMeshToShape:
+    "the Arch MeshToShape command definition"
+    def GetResources(self):
+        return {'Pixmap'  : 'Arch_MeshToShape',
+                'MenuText': QtCore.QT_TRANSLATE_NOOP("Arch_MeshToShape","Mesh to Shape"),
+                'ToolTip': QtCore.QT_TRANSLATE_NOOP("Arch_MeshToPart","Turns selected meshes into Part Shape objects")}
+
+    def IsActive(self):
+        if len(FreeCADGui.Selection.getSelection()):
+            return True
+        else:
+            return False
+        
+    def Activated(self):
+        if FreeCADGui.Selection.getSelection():
+            for obj in FreeCADGui.Selection.getSelection():
+                nobjs = meshToShape(obj)
+            
 FreeCADGui.addCommand('Arch_Add',CommandAdd())
 FreeCADGui.addCommand('Arch_Remove',CommandRemove())
+FreeCADGui.addCommand('Arch_SplitMesh',CommandSplitMesh())
+FreeCADGui.addCommand('Arch_MeshToShape',CommandMeshToShape())

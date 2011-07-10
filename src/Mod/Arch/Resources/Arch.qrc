@@ -8,6 +8,8 @@
         <file>icons/Arch_Structure.svg</file>
         <file>icons/Arch_Add.svg</file>
         <file>icons/Arch_Remove.svg</file>
+        <file>icons/Arch_MeshToShape.svg</file>
+        <file>icons/Arch_SplitMesh.svg</file>
         <file>icons/preferences-arch.svg</file>
     </qresource>
 </RCC> 
