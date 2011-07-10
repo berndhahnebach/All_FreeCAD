@@ -45,8 +45,10 @@ class ArchWorkbench(Workbench):
                               "Draft_Move","Draft_Rotate",
                               "Draft_Offset","Draft_Upgrade",
                               "Draft_Downgrade"]
+                meshtools = ["Arch_SplitMesh","Arch_MeshToShape"]
                 self.appendToolbar("Arch tools",archtools)
                 self.appendToolbar("Draft tools",drafttools)
+                self.appendMenu(["Architecture","Mesh tools"],meshtools)
                 self.appendMenu("Architecture",archtools)
                 self.appendMenu("Drafting",drafttools)
 		Log ('Loading Arch module... done\n')
