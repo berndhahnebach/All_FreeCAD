@@ -1181,79 +1181,80 @@ static PyObject * fromPythonOCC(PyObject *self, PyObject *args)
 }
 
 namespace Part {
-struct HashEdge {
-    int v1, v2;
+struct EdgePoints {
+    gp_Pnt v1, v2;
     TopoDS_Edge edge;
 };
 
-static std::list<TopoDS_Edge> sort_Edges(const std::vector<TopoDS_Edge>& edges)
+static std::list<TopoDS_Edge> sort_Edges(double tol3d, const std::vector<TopoDS_Edge>& edges)
 {
-    std::list<HashEdge>  hash_edge;
+    tol3d = tol3d * tol3d;
+    std::list<EdgePoints>  edge_points;
     TopExp_Explorer xp;
     for (std::vector<TopoDS_Edge>::const_iterator it = edges.begin(); it != edges.end(); ++it) {
-        HashEdge he;
+        EdgePoints ep;
         xp.Init(*it,TopAbs_VERTEX);
-        he.v1 = xp.Current().HashCode(IntegerLast());
+        ep.v1 = BRep_Tool::Pnt(TopoDS::Vertex(xp.Current()));
         xp.Next();
-        he.v2 = xp.Current().HashCode(IntegerLast());
-        he.edge = *it;
-        hash_edge.push_back(he);
+        ep.v2 = BRep_Tool::Pnt(TopoDS::Vertex(xp.Current()));
+        ep.edge = *it;
+        edge_points.push_back(ep);
     }
 
-    if (hash_edge.empty())
+    if (edge_points.empty())
         return std::list<TopoDS_Edge>();
 
     std::list<TopoDS_Edge> sorted;
-    int first, last;
-    first = hash_edge.front().v1;
-    last  = hash_edge.front().v2;
+    gp_Pnt first, last;
+    first = edge_points.front().v1;
+    last  = edge_points.front().v2;
 
-    sorted.push_back(hash_edge.front().edge);
-    hash_edge.erase(hash_edge.begin());
+    sorted.push_back(edge_points.front().edge);
+    edge_points.erase(edge_points.begin());
 
-    while (!hash_edge.empty()) {
+    while (!edge_points.empty()) {
         // search for adjacent edge
-        std::list<HashEdge>::iterator pEI;
-        for (pEI = hash_edge.begin(); pEI != hash_edge.end(); ++pEI) {
-            if (pEI->v1 == last) {
+        std::list<EdgePoints>::iterator pEI;
+        for (pEI = edge_points.begin(); pEI != edge_points.end(); ++pEI) {
+            if (pEI->v1.SquareDistance(last) <= tol3d) {
                 last = pEI->v2;
                 sorted.push_back(pEI->edge);
-                hash_edge.erase(pEI);
+                edge_points.erase(pEI);
                 break;
             }
-            else if (pEI->v2 == first) {
+            else if (pEI->v2.SquareDistance(first) <= tol3d) {
                 first = pEI->v1;
                 sorted.push_front(pEI->edge);
-                hash_edge.erase(pEI);
+                edge_points.erase(pEI);
                 break;
             }
-            else if (pEI->v2 == last) {
+            else if (pEI->v2.SquareDistance(last) <= tol3d) {
                 last = pEI->v1;
                 sorted.push_back(pEI->edge);
-                hash_edge.erase(pEI);
+                edge_points.erase(pEI);
                 break;
             }
-            else if (pEI->v1 == first) {
+            else if (pEI->v1.SquareDistance(first) <= tol3d) {
                 first = pEI->v2;
                 sorted.push_front(pEI->edge);
-                hash_edge.erase(pEI);
+                edge_points.erase(pEI);
                 break;
             }
         }
 
-        if ((pEI == hash_edge.end()) || (last == first)) {
+        if ((pEI == edge_points.end()) || (last.SquareDistance(first) <= tol3d)) {
             // no adjacent edge found or polyline is closed
             return sorted;
             /*
             rclBorders.push_back(std::vector<TopoDS_Edge>(sorted.begin(), sorted.end()));
             sorted.clear();
 
-            if (!hash_edge.empty()) {
+            if (!edge_points.empty()) {
                 // new wire
-                first = hash_edge.front()->v1;
-                last  = hash_edge.front()->v2;
-                sorted.push_back(hash_edge.front().edge);
-                hash_edge.erase(hash_edge.begin());
+                first = edge_points.front()->v1;
+                last  = edge_points.front()->v2;
+                sorted.push_back(edge_points.front().edge);
+                edge_points.erase(edge_points.begin());
             }*/
         }
     }
@@ -1333,7 +1334,7 @@ static PyObject * sortEdges(PyObject *self, PyObject *args)
         }
     }
 
-    std::list<TopoDS_Edge> sorted = sort_Edges(edges);
+    std::list<TopoDS_Edge> sorted = sort_Edges(Precision::Confusion(), edges);
 
     Py::List sorted_list;
     for (std::list<TopoDS_Edge>::iterator it = sorted.begin(); it != sorted.end(); ++it) {
