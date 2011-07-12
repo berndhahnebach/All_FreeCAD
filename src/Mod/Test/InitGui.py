@@ -93,11 +93,4 @@ class TestWorkbench ( Workbench ):
 		list = ["Std_ViewExample1", "Std_ViewExample2", "Std_ViewExample3"]
 		self.appendMenu("Inventor View",list)
 
-		try:
-			import Mesh, MeshGui
-			list = ["Mesh_ExMakeMesh", "Mesh_ExMakeTool", "Mesh_ExMakeUnion"]
-			self.appendMenu("Mesh",list)
-		except:
-			Err('Cannot load Mesh module\n')
-
 Gui.addWorkbench(TestWorkbench())

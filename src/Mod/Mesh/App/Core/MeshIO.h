@@ -26,6 +26,7 @@
 
 #include "MeshKernel.h"
 #include <Base/Vector3D.h>
+#include <Base/Matrix.h>
 #include <App/Material.h>
 
 namespace Base {
@@ -112,10 +113,12 @@ protected:
 class MeshExport MeshOutput
 {
 public:
-    MeshOutput (const MeshKernel &rclM) : _rclMesh(rclM), _material(0){}
+    MeshOutput (const MeshKernel &rclM)
+        : _rclMesh(rclM), _material(0), apply_transform(false){}
     MeshOutput (const MeshKernel &rclM, const Material* m)
-        : _rclMesh(rclM), _material(m){}
+        : _rclMesh(rclM), _material(m), apply_transform(false){}
     virtual ~MeshOutput (void) { }
+    void Transform(const Base::Matrix4D&);
     /** Set custom data to the header of a binary STL.
      * If the data exceeds 80 characters the the characters too much
      * are ignored. If the data has less than 80 characters they are
@@ -153,6 +156,8 @@ public:
 protected:
     const MeshKernel &_rclMesh;   /**< reference to mesh data structure */
     const Material* _material;
+    Base::Matrix4D _transform;
+    bool apply_transform;
     static std::string stl_header;
 };
 
