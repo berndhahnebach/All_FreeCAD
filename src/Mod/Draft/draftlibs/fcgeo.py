@@ -348,12 +348,14 @@ def getBoundary(shape):
 	return bound
 
 def sortEdges(lEdges, aVertex=None):
-	"an alternative, more accurate version of Part.__sortEdges__"
+        "an alternative, more accurate version of Part.__sortEdges__"
 
-        for e in lEdges:
-                if not isinstance(e.Curve,Part.Line):
-                        print "Warning: sortedges cannot treat wired containing curves yet."
-                        return lEdges
+        #There is no reason to limit this to lines only because every non-closed edge always
+        #has exactly two vertices (wmayer)
+        #for e in lEdges:
+        #        if not isinstance(e.Curve,Part.Line):
+        #                print "Warning: sortedges cannot treat wired containing curves yet."
+        #                return lEdges
 	
 	def isSameVertex(V1, V2):
 		''' Test if vertexes have same coordinates with precision 10E(-precision)'''
