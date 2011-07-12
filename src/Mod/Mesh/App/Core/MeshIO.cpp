@@ -1211,6 +1211,13 @@ void MeshOutput::SetSTLHeaderData(const std::string& header)
     }
 }
 
+void MeshOutput::Transform(const Base::Matrix4D& mat)
+{
+    _transform = mat;
+    if (mat != Base::Matrix4D())
+        apply_transform = true;
+}
+
 /// Save in a file, format is decided by the extension if not explicitly given
 bool MeshOutput::SaveAny(const char* FileName, MeshIO::Format format) const
 {
@@ -1264,6 +1271,7 @@ bool MeshOutput::SaveAny(const char* FileName, MeshIO::Format format) const
     }
     else if (fileformat == MeshIO::BSTL) {
         MeshOutput aWriter(_rclMesh);
+        aWriter.Transform(this->_transform);
 
         // write file
         bool ok = false;
@@ -1274,6 +1282,7 @@ bool MeshOutput::SaveAny(const char* FileName, MeshIO::Format format) const
     }
     else if (fileformat == MeshIO::ASTL) {
         MeshOutput aWriter(_rclMesh);
+        aWriter.Transform(this->_transform);
 
         // write file
         bool ok = false;
@@ -1341,7 +1350,8 @@ bool MeshOutput::SaveAny(const char* FileName, MeshIO::Format format) const
 /** Saves the mesh object into an ASCII file. */
 bool MeshOutput::SaveAsciiSTL (std::ostream &rstrOut) const
 {
-    MeshFacetIterator clIter(_rclMesh), clEnd(_rclMesh);  
+    MeshFacetIterator clIter(_rclMesh), clEnd(_rclMesh);
+    clIter.Transform(this->_transform);
     const MeshGeomFacet *pclFacet;
     unsigned long i;
 
@@ -1387,7 +1397,8 @@ bool MeshOutput::SaveAsciiSTL (std::ostream &rstrOut) const
 /** Saves the mesh object into a binary file. */
 bool MeshOutput::SaveBinarySTL (std::ostream &rstrOut) const
 {
-    MeshFacetIterator clIter(_rclMesh), clEnd(_rclMesh);  
+    MeshFacetIterator clIter(_rclMesh), clEnd(_rclMesh);
+    clIter.Transform(this->_transform);
     const MeshGeomFacet *pclFacet;
     uint32_t i;
     uint16_t usAtt;
@@ -1444,11 +1455,20 @@ bool MeshOutput::SaveOBJ (std::ostream &rstrOut) const
     Base::SequencerLauncher seq("saving...", _rclMesh.CountPoints() + _rclMesh.CountFacets());  
 
     // vertices
-    for (MeshPointArray::_TConstIterator it = rPoints.begin(); it != rPoints.end(); ++it) {
-        rstrOut << "v " << it->x << " " << it->y << " " << it->z << std::endl;
-        seq.next(true); // allow to cancel
+    if (this->apply_transform) {
+        Base::Vector3f pt;
+        for (MeshPointArray::_TConstIterator it = rPoints.begin(); it != rPoints.end(); ++it) {
+            pt = this->_transform * *it;
+            rstrOut << "v " << pt.x << " " << pt.y << " " << pt.z << std::endl;
+            seq.next(true); // allow to cancel
+        }
     }
-
+    else {
+        for (MeshPointArray::_TConstIterator it = rPoints.begin(); it != rPoints.end(); ++it) {
+            rstrOut << "v " << it->x << " " << it->y << " " << it->z << std::endl;
+            seq.next(true); // allow to cancel
+        }
+    }
     // facet indices (no texture and normal indices)
     for (MeshFacetArray::_TConstIterator it = rFacets.begin(); it != rFacets.end(); ++it) {
         rstrOut << "f " << it->_aulPoints[0]+1 << " "
@@ -1475,9 +1495,19 @@ bool MeshOutput::SaveOFF (std::ostream &out) const
     out << rPoints.size() << " " << rFacets.size() << " 0" << std::endl;
 
     // vertices
-    for (MeshPointArray::_TConstIterator it = rPoints.begin(); it != rPoints.end(); ++it) {
-        out << it->x << " " << it->y << " " << it->z << std::endl;
-        seq.next(true); // allow to cancel
+    if (this->apply_transform) {
+        Base::Vector3f pt;
+        for (MeshPointArray::_TConstIterator it = rPoints.begin(); it != rPoints.end(); ++it) {
+            pt = this->_transform * *it;
+            out << pt.x << " " << pt.y << " " << pt.z << std::endl;
+            seq.next(true); // allow to cancel
+        }
+    }
+    else {
+        for (MeshPointArray::_TConstIterator it = rPoints.begin(); it != rPoints.end(); ++it) {
+            out << it->x << " " << it->y << " " << it->z << std::endl;
+            seq.next(true); // allow to cancel
+        }
     }
 
     // facet indices (no texture and normal indices)
@@ -1522,7 +1552,13 @@ bool MeshOutput::SavePLY (std::ostream &out) const
     Base::Vector3f pt;
     for (std::size_t i = 0; i < v_count; i++) {
         const MeshPoint& p = rPoints[i];
-        os << p.x << p.y << p.z;
+        if (this->apply_transform) {
+            Base::Vector3f pt = this->_transform * p;
+            os << pt.x << pt.y << pt.z;
+        }
+        else {
+            os << p.x << p.y << p.z;
+        }
         if (saveVertexColor) {
             const App::Color& c = _material->diffuseColor[i];
             int r = (int)(255.0f * c.r);
@@ -1555,10 +1591,18 @@ bool MeshOutput::SaveMeshNode (std::ostream &rstrOut)
 
     // vertices
     rstrOut << "[" << std::endl;
-    for (MeshPointArray::_TConstIterator it = rPoints.begin(); it != rPoints.end(); ++it) {
-        rstrOut << "v " << it->x << " " << it->y << " " << it->z << std::endl;
+    if (this->apply_transform) {
+        Base::Vector3f pt;
+        for (MeshPointArray::_TConstIterator it = rPoints.begin(); it != rPoints.end(); ++it) {
+            pt = this->_transform * *it;
+            rstrOut << "v " << pt.x << " " << pt.y << " " << pt.z << std::endl;
+        }
     }
-
+    else {
+        for (MeshPointArray::_TConstIterator it = rPoints.begin(); it != rPoints.end(); ++it) {
+            rstrOut << "v " << it->x << " " << it->y << " " << it->z << std::endl;
+        }
+    }
     // facet indices (no texture and normal indices)
     for (MeshFacetArray::_TConstIterator it = rFacets.begin(); it != rFacets.end(); ++it) {
         rstrOut << "f " << it->_aulPoints[0]+1 << " "
@@ -1582,18 +1626,31 @@ void MeshOutput::SaveXML (Base::Writer &writer) const
     writer.Stream() << writer.ind() << "<Points Count=\"" << _rclMesh.CountPoints() << "\">" << std::endl;
 
     writer.incInd();
-    for (MeshPointArray::_TConstIterator itp = rPoints.begin(); itp != rPoints.end(); itp++) {
-        writer.Stream() <<  writer.ind() << "<P "
-                        << "x=\"" <<  itp->x << "\" "
-                        << "y=\"" <<  itp->y << "\" "
-                        << "z=\"" <<  itp->z << "\"/>"
-                        << std::endl;
+    if (this->apply_transform) {
+        Base::Vector3f pt;
+        for (MeshPointArray::_TConstIterator itp = rPoints.begin(); itp != rPoints.end(); itp++) {
+            pt = this->_transform * *itp;
+            writer.Stream() <<  writer.ind() << "<P "
+                            << "x=\"" <<  pt.x << "\" "
+                            << "y=\"" <<  pt.y << "\" "
+                            << "z=\"" <<  pt.z << "\"/>"
+                            << std::endl;
+        }
+    }
+    else {
+        for (MeshPointArray::_TConstIterator itp = rPoints.begin(); itp != rPoints.end(); itp++) {
+            writer.Stream() <<  writer.ind() << "<P "
+                            << "x=\"" <<  itp->x << "\" "
+                            << "y=\"" <<  itp->y << "\" "
+                            << "z=\"" <<  itp->z << "\"/>"
+                            << std::endl;
+        }
     }
     writer.decInd();
     writer.Stream() << writer.ind() << "</Points>" << std::endl;
 
     // write the faces
-    writer.Stream() <<writer.ind() << "<Faces Count=\"" << _rclMesh.CountFacets() << "\">" << std::endl;
+    writer.Stream() << writer.ind() << "<Faces Count=\"" << _rclMesh.CountFacets() << "\">" << std::endl;
 
     writer.incInd();
     for (MeshFacetArray::_TConstIterator it = rFacets.begin(); it != rFacets.end(); it++) {
@@ -1620,7 +1677,9 @@ bool MeshOutput::SaveInventor (std::ostream &rstrOut) const
         return false;
 
     MeshFacetIterator clIter(_rclMesh), clEnd(_rclMesh);
+    clIter.Transform(this->_transform);
     MeshPointIterator clPtIter(_rclMesh), clPtEnd(_rclMesh);
+    clPtIter.Transform(this->_transform);
     const MeshGeomFacet* pclFacet;
     unsigned long ulAllFacets = _rclMesh.CountFacets();
 
@@ -1726,6 +1785,7 @@ bool MeshOutput::SaveNastran (std::ostream &rstrOut) const
         return false;
 
     MeshPointIterator clPIter(_rclMesh);
+    clPIter.Transform(this->_transform);
     MeshFacetIterator clTIter(_rclMesh);
     int iIndx = 1;
 
@@ -1783,6 +1843,7 @@ bool MeshOutput::SavePython (std::ostream &str) const
         return false;
 
     MeshFacetIterator clIter(_rclMesh);
+    clIter.Transform(this->_transform);
     str.precision(4);
     str.setf(std::ios::fixed | std::ios::showpoint);
 
@@ -1808,8 +1869,8 @@ bool MeshOutput::SavePython (std::ostream &str) const
 class MeshVRML
 {
 public:
-    MeshVRML (const MeshKernel &rclM);
-    MeshVRML (const MeshKernel &rclM, VRMLInfo* pclVRMLInfo);
+    MeshVRML (const MeshKernel &rclM, const Base::Matrix4D&);
+    MeshVRML (const MeshKernel &rclM, const Base::Matrix4D&,VRMLInfo* pclVRMLInfo);
     ~MeshVRML (void){}
 
     bool Save (std::ostream &rstrOut, const App::Material &rclMat) const;
@@ -1822,22 +1883,23 @@ protected:
     void WriteVRMLViewpoints(std::ostream &rstrOut) const;
 
     const MeshKernel &_rclMesh;   // reference to mesh data structure
+    Base::Matrix4D _transform;
     VRMLInfo* _pclVRMLInfo;
 };
 
 /** Writes a VRML file. */
 bool MeshOutput::SaveVRML (std::ostream &rstrOut, const App::Material &rclMat) const
 {
-    return MeshVRML(_rclMesh).Save(rstrOut, rclMat);
+    return MeshVRML(_rclMesh, this->_transform).Save(rstrOut, rclMat);
 }
 
-MeshVRML::MeshVRML (const MeshKernel &rclM)
-  : _rclMesh(rclM), _pclVRMLInfo(0)
+MeshVRML::MeshVRML (const MeshKernel &rclM, const Base::Matrix4D& trf)
+  : _rclMesh(rclM), _transform(trf), _pclVRMLInfo(0)
 {
 }
 
-MeshVRML::MeshVRML (const MeshKernel &rclM, VRMLInfo* pclVRMLInfo)
-  : _rclMesh(rclM), _pclVRMLInfo(pclVRMLInfo)
+MeshVRML::MeshVRML (const MeshKernel &rclM, const Base::Matrix4D& trf, VRMLInfo* pclVRMLInfo)
+  : _rclMesh(rclM), _transform(trf), _pclVRMLInfo(pclVRMLInfo)
 {
 }
 
@@ -1900,9 +1962,9 @@ bool MeshVRML::Save (std::ostream &rstrOut, const std::vector<App::Color> &raclC
             << 0.0f << "  "
             << 0.0f << std::endl;
     rstrOut << "translation  "
-            << -clCenter.x << "  "
-            << -clCenter.y << "  "
-            << -clCenter.z << std::endl;
+            << 0.0f << "  "
+            << 0.0f << "  "
+            << 0.0f << std::endl;
 
     rstrOut << "children\n[\n";
     rstrOut << "Shape\n{" << std::endl;
@@ -1949,6 +2011,7 @@ bool MeshVRML::Save (std::ostream &rstrOut, const std::vector<App::Color> &raclC
     // write coords
     rstrOut << "    coord Coordinate\n    {\n      point\n      [\n";
     MeshPointIterator pPIter(_rclMesh);
+    pPIter.Transform(this->_transform);
     unsigned long i = 0, k = _rclMesh.CountPoints();
     rstrOut.precision(3);
     rstrOut.setf(std::ios::fixed | std::ios::showpoint);
@@ -1994,6 +2057,7 @@ bool MeshVRML::Save (std::ostream &rstrOut, const std::vector<App::Color> &raclC
     // write face index
     rstrOut << "    coordIndex\n    [\n";
     MeshFacetIterator pFIter(_rclMesh);
+    pFIter.Transform(this->_transform);
     i = 0, k = _rclMesh.CountFacets();
     for (pFIter.Init(); pFIter.More(); pFIter.Next()) {
         MeshFacet clFacet = pFIter.GetIndices();

@@ -151,183 +151,42 @@ bool CmdMeshDemolding::isActive(void)
 
 //--------------------------------------------------------------------------------------
 
-DEF_STD_CMD_A(CmdMeshExMakeMesh);
-
-CmdMeshExMakeMesh::CmdMeshExMakeMesh()
-  :Command("Mesh_ExMakeMesh")
-{
-  sAppModule    = "Mesh";
-  sGroup        = QT_TR_NOOP("Mesh");
-  sMenuText     = QT_TR_NOOP("Make a Box");
-  sToolTipText  = sMenuText;
-  sWhatsThis    = "Mesh_ExMakeMesh";
-  sStatusTip    = sMenuText;
-  sPixmap       = "Std_Tool1";
-}
-
-void CmdMeshExMakeMesh::activated(int iMsg)
-{
-  openCommand("Mesh Mesh Create");
-  doCommand(Doc,
-    "import Mesh\n"
-    "mb = Mesh.mesh()\n"
-    "mb.addFacet(0.0,0.0,0.0, 0.0,0.0,1.0, 0.0,1.0,1.0)\n"
-    "mb.addFacet(0.0,0.0,0.0, 0.0,1.0,1.0, 0.0,1.0,0.0)\n"
-    "mb.addFacet(0.0,0.0,0.0, 1.0,0.0,0.0, 1.0,0.0,1.0)\n"
-    "mb.addFacet(0.0,0.0,0.0, 1.0,0.0,1.0, 0.0,0.0,1.0)\n"
-    "mb.addFacet(0.0,0.0,0.0, 0.0,1.0,0.0, 1.0,1.0,0.0)\n"
-    "mb.addFacet(0.0,0.0,0.0, 1.0,1.0,0.0, 1.0,0.0,0.0)\n"
-    "mb.addFacet(0.0,1.0,0.0, 0.0,1.0,1.0, 1.0,1.0,1.0)\n"
-    "mb.addFacet(0.0,1.0,0.0, 1.0,1.0,1.0, 1.0,1.0,0.0)\n"
-    "mb.addFacet(0.0,1.0,1.0, 0.0,0.0,1.0, 1.0,0.0,1.0)\n"
-    "mb.addFacet(0.0,1.0,1.0, 1.0,0.0,1.0, 1.0,1.0,1.0)\n"
-    "mb.addFacet(1.0,1.0,0.0, 1.0,1.0,1.0, 1.0,0.0,1.0)\n"
-    "mb.addFacet(1.0,1.0,0.0, 1.0,0.0,1.0, 1.0,0.0,0.0)\n"
-    "mb.scale(100.0)\n"
-    "App.activeDocument().addObject(\"Mesh::Feature\",\"MeshBox\")\n"
-    "App.activeDocument().MeshBox.Mesh=mb\n"
-    "App.activeDocument().recompute()" );
-
-  doCommand(Gui,"Gui.activeDocument().activeView().fitAll()");
-  commitCommand();
-
-  updateActive();
-}
-
-bool CmdMeshExMakeMesh::isActive(void)
-{
-  return hasActiveDocument() && !hasObject("MeshBox");
-}
-
-
-//--------------------------------------------------------------------------------------
-
-DEF_STD_CMD_A(CmdMeshExMakeTool);
-
-CmdMeshExMakeTool::CmdMeshExMakeTool()
-  :Command("Mesh_ExMakeTool")
-{
-  sAppModule    = "Mesh";
-  sGroup        = QT_TR_NOOP("Mesh");
-  sMenuText     = QT_TR_NOOP("Make a Tool");
-  sToolTipText  = sMenuText;
-  sWhatsThis    = "Mesh_ExMakeTool";
-  sStatusTip    = sMenuText;
-  sPixmap       = "Std_Tool2";
-}
-
-void CmdMeshExMakeTool::activated(int iMsg)
-{
-  openCommand("Mesh Mesh Create");
-  doCommand(Doc,
-    "import Mesh,MeshGui\n"
-    "mt = Mesh.mesh()\n"
-    "mt.addFacet(0.0,0.0,0.0, 0.0,0.0,1.0, 0.0,1.0,1.0)\n"
-    "mt.addFacet(0.0,0.0,0.0, 0.0,1.0,1.0, 0.0,1.0,0.0)\n"
-    "mt.addFacet(0.0,0.0,0.0, 1.0,0.0,0.0, 1.0,0.0,1.0)\n"
-    "mt.addFacet(0.0,0.0,0.0, 1.0,0.0,1.0, 0.0,0.0,1.0)\n"
-    "mt.addFacet(0.0,0.0,0.0, 0.0,1.0,0.0, 1.0,1.0,0.0)\n"
-    "mt.addFacet(0.0,0.0,0.0, 1.0,1.0,0.0, 1.0,0.0,0.0)\n"
-    "mt.addFacet(0.0,1.0,0.0, 0.0,1.0,1.0, 1.0,1.0,1.0)\n"
-    "mt.addFacet(0.0,1.0,0.0, 1.0,1.0,1.0, 1.0,1.0,0.0)\n"
-    "mt.addFacet(0.0,1.0,1.0, 0.0,0.0,1.0, 1.0,0.0,1.0)\n"
-    "mt.addFacet(0.0,1.0,1.0, 1.0,0.0,1.0, 1.0,1.0,1.0)\n"
-    "mt.addFacet(1.0,1.0,0.0, 1.0,1.0,1.0, 1.0,0.0,1.0)\n"
-    "mt.addFacet(1.0,1.0,0.0, 1.0,0.0,1.0, 1.0,0.0,0.0)\n"
-    "mt.scale(100.0)\n"
-    "mt.translate(50.0,50.0,50.0)\n"
-    "App.activeDocument().addObject(\"Mesh::Feature\",\"MeshTool\")\n"
-    "App.activeDocument().MeshTool.Mesh=mt\n");
-
-  commitCommand();
- 
-  updateActive();
-}
-
-bool CmdMeshExMakeTool::isActive(void)
-{
-  return hasObject("MeshBox") && !hasObject("MeshTool");
-}
-
-//--------------------------------------------------------------------------------------
-
-DEF_STD_CMD_A(CmdMeshExMakeUnion);
-
-CmdMeshExMakeUnion::CmdMeshExMakeUnion()
-  :Command("Mesh_ExMakeUnion")
-{
-  sAppModule    = "Mesh";
-  sGroup        = QT_TR_NOOP("Mesh");
-  sMenuText     = QT_TR_NOOP("Make Union");
-  sToolTipText  = sMenuText;
-  sWhatsThis    = "Mesh_ExMakeUnion";
-  sStatusTip    = sMenuText;
-  sPixmap       = "Std_Tool3";
-}
-
-void CmdMeshExMakeUnion::activated(int iMsg)
-{
-  openCommand("Mesh Mesh Create");
-  doCommand(Doc,
-    "import Mesh,MeshGui\n"
-    "m1 = App.activeDocument().MeshBox.Mesh\n"
-    "m2 = App.activeDocument().MeshTool.Mesh\n"
-    "m3 = m1.copy()\n"
-    "m3.unite(m2)\n"
-    "App.activeDocument().addObject(\"Mesh::Feature\",\"MeshUnion\")\n"
-    "App.activeDocument().MeshUnion.Mesh=m3\n");
- 
-  updateActive();
-
-  doCommand(Gui,"Gui.hide(\"MeshBox\")");
-  doCommand(Gui,"Gui.hide(\"MeshTool\")");
-
-  commitCommand();
-}
-
-bool CmdMeshExMakeUnion::isActive(void)
-{
-  return hasObject("MeshTool") && !hasObject("MeshUnion");
-}
-
-//--------------------------------------------------------------------------------------
-
 DEF_STD_CMD_A(CmdMeshUnion);
 
 CmdMeshUnion::CmdMeshUnion()
   :Command("Mesh_Union")
 {
-  sAppModule    = "Mesh";
-  sGroup        = QT_TR_NOOP("Mesh");
-  sMenuText     = QT_TR_NOOP("Union");
-  sToolTipText  = sMenuText;
-  sWhatsThis    = "Mesh_Union";
-  sStatusTip    = sMenuText;
+    sAppModule    = "Mesh";
+    sGroup        = QT_TR_NOOP("Mesh");
+    sMenuText     = QT_TR_NOOP("Union");
+    sToolTipText  = sMenuText;
+    sWhatsThis    = "Mesh_Union";
+    sStatusTip    = sMenuText;
 }
 
 void CmdMeshUnion::activated(int iMsg)
 {
-  std::vector<App::DocumentObject*> obj = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-  std::string name1 = obj.front()->getNameInDocument();
-  std::string name2 = obj.back()->getNameInDocument();
-  std::string name3 = getUniqueObjectName("Union");
-  openCommand("Mesh Union");
-  doCommand(Doc,
-    "import Mesh,MeshGui\n"
-    "mesh = App.ActiveDocument.%s.Mesh."
-    "unite(App.ActiveDocument.%s.Mesh)\n"
-    "App.activeDocument().addObject(\"Mesh::Feature\",\"%s\")\n"
-    "App.activeDocument().%s.Mesh = mesh\n",
-    name1.c_str(), name2.c_str(),
-    name3.c_str(), name3.c_str());
+    std::vector<App::DocumentObject*> obj = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+    std::string name1 = obj.front()->getNameInDocument();
+    std::string name2 = obj.back()->getNameInDocument();
+    std::string name3 = getUniqueObjectName("Union");
+    openCommand("Mesh Union");
+    doCommand(Doc,
+        "import Mesh,MeshGui\n"
+        "mesh = App.ActiveDocument.%s.Mesh."
+        "unite(App.ActiveDocument.%s.Mesh)\n"
+        "App.activeDocument().addObject(\"Mesh::Feature\",\"%s\")\n"
+        "App.activeDocument().%s.Mesh = mesh\n",
+        name1.c_str(), name2.c_str(),
+        name3.c_str(), name3.c_str());
  
-  updateActive();
-  commitCommand();
+    updateActive();
+    commitCommand();
 }
 
 bool CmdMeshUnion::isActive(void)
 {
-  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 2;
+    return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 2;
 }
 
 //--------------------------------------------------------------------------------------
@@ -337,37 +196,37 @@ DEF_STD_CMD_A(CmdMeshDifference);
 CmdMeshDifference::CmdMeshDifference()
   :Command("Mesh_Difference")
 {
-  sAppModule    = "Mesh";
-  sGroup        = QT_TR_NOOP("Mesh");
-  sMenuText     = QT_TR_NOOP("Difference");
-  sToolTipText  = sMenuText;
-  sWhatsThis    = "Mesh_Difference";
-  sStatusTip    = sMenuText;
+    sAppModule    = "Mesh";
+    sGroup        = QT_TR_NOOP("Mesh");
+    sMenuText     = QT_TR_NOOP("Difference");
+    sToolTipText  = sMenuText;
+    sWhatsThis    = "Mesh_Difference";
+    sStatusTip    = sMenuText;
 }
 
 void CmdMeshDifference::activated(int iMsg)
 {
-  std::vector<App::DocumentObject*> obj = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-  std::string name1 = obj.front()->getNameInDocument();
-  std::string name2 = obj.back()->getNameInDocument();
-  std::string name3 = getUniqueObjectName("Difference");
-  openCommand("Mesh Union");
-  doCommand(Doc,
-    "import Mesh,MeshGui\n"
-    "mesh = App.ActiveDocument.%s.Mesh."
-    "difference(App.ActiveDocument.%s.Mesh)\n"
-    "App.activeDocument().addObject(\"Mesh::Feature\",\"%s\")\n"
-    "App.activeDocument().%s.Mesh = mesh\n",
-    name1.c_str(), name2.c_str(),
-    name3.c_str(), name3.c_str());
- 
-  updateActive();
-  commitCommand();
+    std::vector<App::DocumentObject*> obj = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+    std::string name1 = obj.front()->getNameInDocument();
+    std::string name2 = obj.back()->getNameInDocument();
+    std::string name3 = getUniqueObjectName("Difference");
+    openCommand("Mesh Union");
+    doCommand(Doc,
+        "import Mesh,MeshGui\n"
+        "mesh = App.ActiveDocument.%s.Mesh."
+        "difference(App.ActiveDocument.%s.Mesh)\n"
+        "App.activeDocument().addObject(\"Mesh::Feature\",\"%s\")\n"
+        "App.activeDocument().%s.Mesh = mesh\n",
+        name1.c_str(), name2.c_str(),
+        name3.c_str(), name3.c_str());
+
+    updateActive();
+    commitCommand();
 }
 
 bool CmdMeshDifference::isActive(void)
 {
-  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 2;
+    return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 2;
 }
 
 //--------------------------------------------------------------------------------------
@@ -377,37 +236,37 @@ DEF_STD_CMD_A(CmdMeshIntersection);
 CmdMeshIntersection::CmdMeshIntersection()
   :Command("Mesh_Intersection")
 {
-  sAppModule    = "Mesh";
-  sGroup        = QT_TR_NOOP("Mesh");
-  sMenuText     = QT_TR_NOOP("Intersection");
-  sToolTipText  = sMenuText;
-  sWhatsThis    = "Mesh_Intersection";
-  sStatusTip    = sMenuText;
+    sAppModule    = "Mesh";
+    sGroup        = QT_TR_NOOP("Mesh");
+    sMenuText     = QT_TR_NOOP("Intersection");
+    sToolTipText  = sMenuText;
+    sWhatsThis    = "Mesh_Intersection";
+    sStatusTip    = sMenuText;
 }
 
 void CmdMeshIntersection::activated(int iMsg)
 {
-  std::vector<App::DocumentObject*> obj = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-  std::string name1 = obj.front()->getNameInDocument();
-  std::string name2 = obj.back()->getNameInDocument();
-  std::string name3 = getUniqueObjectName("Intersection");
-  openCommand("Mesh Union");
-  doCommand(Doc,
-    "import Mesh,MeshGui\n"
-    "mesh = App.ActiveDocument.%s.Mesh."
-    "intersect(App.ActiveDocument.%s.Mesh)\n"
-    "App.activeDocument().addObject(\"Mesh::Feature\",\"%s\")\n"
-    "App.activeDocument().%s.Mesh = mesh\n",
-    name1.c_str(), name2.c_str(),
-    name3.c_str(), name3.c_str());
- 
-  updateActive();
-  commitCommand();
+    std::vector<App::DocumentObject*> obj = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+    std::string name1 = obj.front()->getNameInDocument();
+    std::string name2 = obj.back()->getNameInDocument();
+    std::string name3 = getUniqueObjectName("Intersection");
+    openCommand("Mesh Union");
+    doCommand(Doc,
+        "import Mesh,MeshGui\n"
+        "mesh = App.ActiveDocument.%s.Mesh."
+        "intersect(App.ActiveDocument.%s.Mesh)\n"
+        "App.activeDocument().addObject(\"Mesh::Feature\",\"%s\")\n"
+        "App.activeDocument().%s.Mesh = mesh\n",
+        name1.c_str(), name2.c_str(),
+        name3.c_str(), name3.c_str());
+
+    updateActive();
+    commitCommand();
 }
 
 bool CmdMeshIntersection::isActive(void)
 {
-  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 2;
+    return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 2;
 }
 
 //--------------------------------------------------------------------------------------
@@ -591,43 +450,42 @@ bool CmdMeshFromGeometry::isActive(void)
 DEF_STD_CMD_A(CmdMeshVertexCurvature);
 
 CmdMeshVertexCurvature::CmdMeshVertexCurvature()
-  :Command("Mesh_VertexCurvature")
+  : Command("Mesh_VertexCurvature")
 {
-  sAppModule    = "Mesh";
-  sGroup        = QT_TR_NOOP("Mesh");
-  sMenuText     = QT_TR_NOOP("Curvature plot");
-  sToolTipText  = QT_TR_NOOP("Calculates the curvature of the vertices of a mesh");
-  sWhatsThis    = "Mesh_VertexCurvature";
-  sStatusTip    = QT_TR_NOOP("Calculates the curvature of the vertices of a mesh");
-  sPixmap       = "curv_info";
+    sAppModule    = "Mesh";
+    sGroup        = QT_TR_NOOP("Mesh");
+    sMenuText     = QT_TR_NOOP("Curvature plot");
+    sToolTipText  = QT_TR_NOOP("Calculates the curvature of the vertices of a mesh");
+    sWhatsThis    = "Mesh_VertexCurvature";
+    sStatusTip    = QT_TR_NOOP("Calculates the curvature of the vertices of a mesh");
+    sPixmap       = "curv_info";
 }
 
 void CmdMeshVertexCurvature::activated(int iMsg)
 {
-  std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-  for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
-  {
-    std::string fName = (*it)->getNameInDocument();
-    fName += "_Curvature";
-    fName = getUniqueObjectName(fName.c_str());
+    std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+    for (std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it) {
+        std::string fName = (*it)->getNameInDocument();
+        fName += "_Curvature";
+        fName = getUniqueObjectName(fName.c_str());
 
-    openCommand("Mesh VertexCurvature");
-    App::DocumentObjectGroup* grp = App::DocumentObjectGroup::getGroupOfObject( *it );
-    if (grp)
-      doCommand(Doc,"App.activeDocument().getObject(\"%s\").newObject(\"Mesh::Curvature\",\"%s\")",grp->getNameInDocument(), fName.c_str());
-    else
-      doCommand(Doc,"App.activeDocument().addObject(\"Mesh::Curvature\",\"%s\")",fName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->getNameInDocument());
-  }
+        openCommand("Mesh VertexCurvature");
+        App::DocumentObjectGroup* grp = App::DocumentObjectGroup::getGroupOfObject( *it );
+        if (grp)
+            doCommand(Doc,"App.activeDocument().getObject(\"%s\").newObject(\"Mesh::Curvature\",\"%s\")",grp->getNameInDocument(), fName.c_str());
+        else
+            doCommand(Doc,"App.activeDocument().addObject(\"Mesh::Curvature\",\"%s\")",fName.c_str());
+        doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->getNameInDocument());
+    }
 
-  commitCommand();
-  updateActive();
+    commitCommand();
+    updateActive();
 }
 
 bool CmdMeshVertexCurvature::isActive(void)
 {
-  // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
+    // Check for the selected mesh feature (all Mesh types)
+    return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
 }
 
 //--------------------------------------------------------------------------------------
@@ -709,7 +567,8 @@ void CmdMeshPolySegm::activated(int iMsg)
         }
 
         Gui::ViewProvider* pVP = getActiveGuiDocument()->getViewProvider(*it);
-        pVP->startEditing();
+        if (pVP->isVisible())
+            pVP->startEditing();
     }
 }
 
@@ -948,7 +807,6 @@ CmdMeshToolMesh::CmdMeshToolMesh()
   sToolTipText  = QT_TR_NOOP("Creates a segment from a given tool mesh");
   sWhatsThis    = "Mesh_ToolMesh";
   sStatusTip    = QT_TR_NOOP("Creates a segment from a given tool mesh");
-  sPixmap       = "Std_Tool4";
 }
 
 void CmdMeshToolMesh::activated(int iMsg)
@@ -1456,36 +1314,33 @@ bool CmdMeshFillInteractiveHole::isActive(void)
 
 void CreateMeshCommands(void)
 {
-  Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
-  rcCmdMgr.addCommand(new CmdMeshImport());
-  rcCmdMgr.addCommand(new CmdMeshExport());
-  rcCmdMgr.addCommand(new CmdMeshVertexCurvature());
-  rcCmdMgr.addCommand(new CmdMeshVertexCurvatureInfo());
-  rcCmdMgr.addCommand(new CmdMeshExMakeMesh());
-  rcCmdMgr.addCommand(new CmdMeshExMakeTool());
-  rcCmdMgr.addCommand(new CmdMeshExMakeUnion());
-  rcCmdMgr.addCommand(new CmdMeshUnion());
-  rcCmdMgr.addCommand(new CmdMeshDifference());
-  rcCmdMgr.addCommand(new CmdMeshIntersection());
-  rcCmdMgr.addCommand(new CmdMeshDemolding());
-  rcCmdMgr.addCommand(new CmdMeshPolySegm());
-  rcCmdMgr.addCommand(new CmdMeshPolySelect());
-  rcCmdMgr.addCommand(new CmdMeshAddFacet());
-  rcCmdMgr.addCommand(new CmdMeshPolyCut());
-  rcCmdMgr.addCommand(new CmdMeshPolySplit());
-  rcCmdMgr.addCommand(new CmdMeshToolMesh());
-  rcCmdMgr.addCommand(new CmdMeshTransform());
-  rcCmdMgr.addCommand(new CmdMeshEvaluation());
-  rcCmdMgr.addCommand(new CmdMeshEvaluateFacet());
-  rcCmdMgr.addCommand(new CmdMeshEvaluateSolid());
-  rcCmdMgr.addCommand(new CmdMeshHarmonizeNormals());
-  rcCmdMgr.addCommand(new CmdMeshFlipNormals());
-  rcCmdMgr.addCommand(new CmdMeshSmoothing());
-  rcCmdMgr.addCommand(new CmdMeshBoundingBox());
-  rcCmdMgr.addCommand(new CmdMeshBuildRegularSolid());
-  rcCmdMgr.addCommand(new CmdMeshFillupHoles());
-  rcCmdMgr.addCommand(new CmdMeshRemoveComponents());
-  rcCmdMgr.addCommand(new CmdMeshFillInteractiveHole());
-  rcCmdMgr.addCommand(new CmdMeshRemoveCompByHand());
-  rcCmdMgr.addCommand(new CmdMeshFromGeometry());
+    Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
+    rcCmdMgr.addCommand(new CmdMeshImport());
+    rcCmdMgr.addCommand(new CmdMeshExport());
+    rcCmdMgr.addCommand(new CmdMeshVertexCurvature());
+    rcCmdMgr.addCommand(new CmdMeshVertexCurvatureInfo());
+    rcCmdMgr.addCommand(new CmdMeshUnion());
+    rcCmdMgr.addCommand(new CmdMeshDifference());
+    rcCmdMgr.addCommand(new CmdMeshIntersection());
+    rcCmdMgr.addCommand(new CmdMeshDemolding());
+    rcCmdMgr.addCommand(new CmdMeshPolySegm());
+    rcCmdMgr.addCommand(new CmdMeshPolySelect());
+    rcCmdMgr.addCommand(new CmdMeshAddFacet());
+    rcCmdMgr.addCommand(new CmdMeshPolyCut());
+    rcCmdMgr.addCommand(new CmdMeshPolySplit());
+    rcCmdMgr.addCommand(new CmdMeshToolMesh());
+    rcCmdMgr.addCommand(new CmdMeshTransform());
+    rcCmdMgr.addCommand(new CmdMeshEvaluation());
+    rcCmdMgr.addCommand(new CmdMeshEvaluateFacet());
+    rcCmdMgr.addCommand(new CmdMeshEvaluateSolid());
+    rcCmdMgr.addCommand(new CmdMeshHarmonizeNormals());
+    rcCmdMgr.addCommand(new CmdMeshFlipNormals());
+    rcCmdMgr.addCommand(new CmdMeshSmoothing());
+    rcCmdMgr.addCommand(new CmdMeshBoundingBox());
+    rcCmdMgr.addCommand(new CmdMeshBuildRegularSolid());
+    rcCmdMgr.addCommand(new CmdMeshFillupHoles());
+    rcCmdMgr.addCommand(new CmdMeshRemoveComponents());
+    rcCmdMgr.addCommand(new CmdMeshFillInteractiveHole());
+    rcCmdMgr.addCommand(new CmdMeshRemoveCompByHand());
+    rcCmdMgr.addCommand(new CmdMeshFromGeometry());
 }
