@@ -53,6 +53,9 @@ using namespace CompleteGui;
     qApp->translate("Workbench", "Parametric");
     qApp->translate("Workbench", "Object appearence");
     qApp->translate("Workbench", "Wire Tools");
+    // taken from TestGui.py
+    qApp->translate("Test_Test", "Self-test...");
+    qApp->translate("Test_Test", "Runs a self-test to check if the application works properly");
 #endif
 
 /// @namespace CompleteGui @class Workbench

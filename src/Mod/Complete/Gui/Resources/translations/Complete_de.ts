@@ -62,4 +62,15 @@
         <translation>Linien-Werkzeuge</translation>
     </message>
 </context>
+<context>
+    <name>Test_Test</name>
+    <message>
+        <source>Self-test...</source>
+        <translation>Selbsttest...</translation>
+    </message>
+    <message>
+        <source>Runs a self-test to check if the application works properly</source>
+        <translation>Führt einen Selbsttest durch, um zu prüfen, ob die Anwendung richtig funktioniert</translation>
+    </message>
+</context>
 </TS>
