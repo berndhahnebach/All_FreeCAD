@@ -162,6 +162,16 @@ for c in mesh.getSeparatecomponents():
 				</UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="getFacetSelection" Const="true">
+			<Documentation>
+				<UserDocu>Get a list of the indices of selected facets</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="getPointSelection" Const="true">
+			<Documentation>
+				<UserDocu>Get a list of the indices of selected points</UserDocu>
+			</Documentation>
+		</Methode>
 		<Methode Name="meshFromSegment" Const="true">
 			<Documentation>
 				<UserDocu>Create a mesh from segment</UserDocu>
