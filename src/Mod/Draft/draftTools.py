@@ -2911,6 +2911,12 @@ class Upgrade(Modifier):
                                 msg(translate("draft", "Found 2 objects: fusing them\n"))
                                 newob = Draft.fuse(self.sel[0],self.sel[1])
                                 self.nodelete = True
+                        elif (len(self.sel) > 2) and (len(faces) > 10):
+                                # we have many separate faces: we try to make a shell
+                                sh = Part.makeShell(faces)
+                                newob = self.doc.addObject("Part::Feature","Shell")
+                                newob.Shape = sh
+                                Draft.formatObject(newob,lastob)
                         elif (len(self.sel) > 2) or (len(faces) > 1):
                                 # more than 2 objects or faces: we try the draft way: make one face out of them
                                 u = faces.pop(0)
