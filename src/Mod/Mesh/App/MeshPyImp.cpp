@@ -653,6 +653,36 @@ PyObject* MeshPy::getSeparateComponents(PyObject *args)
     return Py::new_reference_to(meshesList);
 }
 
+PyObject* MeshPy::getFacetSelection(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+
+    Py::List ary;
+    std::vector<unsigned long> facets;
+    getMeshObjectPtr()->getFacetsFromSelection(facets);
+    for (std::vector<unsigned long>::const_iterator it = facets.begin(); it != facets.end(); ++it) {
+        ary.append(Py::Int((int)*it));
+    }
+
+    return Py::new_reference_to(ary);
+}
+
+PyObject* MeshPy::getPointSelection(PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+        return 0;
+
+    Py::List ary;
+    std::vector<unsigned long> points;
+    getMeshObjectPtr()->getPointsFromSelection(points);
+    for (std::vector<unsigned long>::const_iterator it = points.begin(); it != points.end(); ++it) {
+        ary.append(Py::Int((int)*it));
+    }
+
+    return Py::new_reference_to(ary);
+}
+
 PyObject* MeshPy::meshFromSegment(PyObject *args)
 {
     PyObject* list;
