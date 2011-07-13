@@ -51,7 +51,7 @@ class TestCmd:
         QtUnitGui.addTest("Menu.MenuCreateCases")
 
     def GetResources(self):
-        return {'Pixmap'  : 'Std_Tool1', 'MenuText': 'Self-test...', 'ToolTip': 'Runs a self-test to check if the application works properly'}
+        return {'MenuText': 'Self-test...', 'ToolTip': 'Runs a self-test to check if the application works properly'}
 
 class TestAllCmd:
     "Test all commando object"
