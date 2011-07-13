@@ -1,7 +1,7 @@
 
 SET(Test_SRCS
     Init.py
-    Base.py
+    BaseTests.py
     Document.py
     Menu.py
     TestApp.py
