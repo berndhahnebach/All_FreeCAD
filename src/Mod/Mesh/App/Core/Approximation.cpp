@@ -29,6 +29,7 @@
 
 #include "Approximation.h"
 
+#include <boost/math/special_functions/fpclassify.hpp>
 #include <Mod/Mesh/App/WildMagic4/Wm4ApprQuadraticFit3.h>
 #include <Mod/Mesh/App/WildMagic4/Wm4ApprPlaneFit3.h>
 #include <Mod/Mesh/App/WildMagic4/Wm4DistVector3Plane3.h>
@@ -210,6 +211,14 @@ float PlaneFit::Fit()
     Wm4::Vector3<double> U = rkRot.GetColumn(1);
     Wm4::Vector3<double> V = rkRot.GetColumn(2);
     Wm4::Vector3<double> W = rkRot.GetColumn(0);
+
+    // It may happen that the result have nan values
+    for (int i=0; i<3; i++) {
+        if (boost::math::isnan(U[i]) || 
+            boost::math::isnan(V[i]) ||
+            boost::math::isnan(W[i]))
+            return FLOAT_MAX;
+    }
 
     _vDirU.Set((float)U.X(), (float)U.Y(), (float)U.Z());
     _vDirV.Set((float)V.X(), (float)V.Y(), (float)V.Z());

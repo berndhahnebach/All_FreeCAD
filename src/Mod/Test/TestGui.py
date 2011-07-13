@@ -41,7 +41,7 @@ class TestCmd:
         import QtUnitGui
         QtUnitGui.addTest("TestApp.All")
         QtUnitGui.setTest("TestApp.All")
-        QtUnitGui.addTest("Base")
+        QtUnitGui.addTest("BaseTests")
         QtUnitGui.addTest("Document")
         QtUnitGui.addTest("UnicodeTests")
         QtUnitGui.addTest("MeshTestsApp")
@@ -79,8 +79,8 @@ class TestBaseCmd:
     "Base test commando object"
     def Activated(self):
         import QtUnitGui
-        QtUnitGui.addTest("Base")
-        QtUnitGui.setTest("Base")
+        QtUnitGui.addTest("BaseTests")
+        QtUnitGui.setTest("BaseTests")
 
     def GetResources(self):
         return {
@@ -111,7 +111,7 @@ class TestDocTextCmd:
 class TestBaseTextCmd:
     "Base test commando object"
     def Activated(self):
-        TestApp.TestText("Base")
+        TestApp.TestText("BaseTests")
 
     def GetResources(self):
         return {'Pixmap'  : 'Std_Tool1',
