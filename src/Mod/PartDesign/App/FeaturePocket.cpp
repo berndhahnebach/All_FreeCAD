@@ -100,13 +100,13 @@ App::DocumentObjectExecReturn *Pocket::execute(void)
     // get the Sketch plane
     Base::Placement SketchPos = static_cast<Part::Part2DObject*>(link)->Placement.getValue();
     Base::Rotation SketchOrientation = SketchPos.getRotation();
-    Base::Vector3d SketchOrientationVector(0,0,1);
-    SketchOrientation.multVec(SketchOrientationVector,SketchOrientationVector);
+    Base::Vector3d SketchVector(0,0,1);
+    SketchOrientation.multVec(SketchVector,SketchVector);
 
     // get the support of the Sketch if any
     App::DocumentObject* SupportLink = static_cast<Part::Part2DObject*>(link)->Support.getValue();
     Part::Feature *SupportObject = 0;
-    if(SupportLink && SupportLink->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
+    if (SupportLink && SupportLink->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
         SupportObject = static_cast<Part::Feature*>(SupportLink);
 
     if (!SupportObject)
@@ -117,19 +117,13 @@ App::DocumentObjectExecReturn *Pocket::execute(void)
         return new App::DocumentObjectExecReturn("Creating a face from sketch failed");
 
     // lengthen the vector
-    SketchOrientationVector *= Length.getValue();
+    SketchVector *= Length.getValue();
 
-    // turn around for pockets if needed
-    BRepAdaptor_Surface adapt(TopoDS::Face(aFace));
-    if (adapt.GetType() != GeomAbs_Plane)
-        return new App::DocumentObjectExecReturn("Support shape is not a plane");
-    gp_Dir axis = adapt.Plane().Axis().Direction();
-    gp_Dir dir(SketchOrientationVector.x,SketchOrientationVector.y,SketchOrientationVector.z);
-    if (axis.Dot(dir) > 0)
-        SketchOrientationVector *= -1;
+    // turn around for pockets
+    SketchVector *= -1;
 
     // extrude the face to a solid
-    gp_Vec vec(SketchOrientationVector.x,SketchOrientationVector.y,SketchOrientationVector.z);
+    gp_Vec vec(SketchVector.x,SketchVector.y,SketchVector.z);
     BRepPrimAPI_MakePrism PrismMaker(aFace,vec,0,1);
     if (PrismMaker.IsDone()) {
         // if the sketch has a support fuse them to get one result object (PAD!)
@@ -137,7 +131,8 @@ App::DocumentObjectExecReturn *Pocket::execute(void)
             const TopoDS_Shape& support = SupportObject->Shape.getValue();
             if (support.IsNull())
                 return new App::DocumentObjectExecReturn("Support shape is invalid");
-            if (support.ShapeType() != TopAbs_SOLID)
+            TopExp_Explorer xp (support, TopAbs_SOLID);
+            if (!xp.More())
                 return new App::DocumentObjectExecReturn("Support shape is not a solid");
             // Let's call algorithm computing a fuse operation:
             BRepAlgoAPI_Cut mkCut(support, PrismMaker.Shape());
