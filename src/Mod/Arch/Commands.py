@@ -104,7 +104,7 @@ def splitMesh(obj,mark=True):
         for c in comps:
             newobj = FreeCAD.ActiveDocument.addObject("Mesh::Feature",basename)
             newobj.Mesh = c
-            if mark and (not c.isSolid()) and c.hasNonManifolds():
+            if mark and (not(c.isSolid()) or c.hasNonManifolds()):
                 newobj.ViewObject.ShapeColor = (1.0,0.0,0.0,1.0)
             nlist.append(newobj)
         return nlist
@@ -210,8 +210,9 @@ class CommandSplitMesh:
         
     def Activated(self):
         if FreeCADGui.Selection.getSelection():
+            sel = FreeCADGui.Selection.getSelection()
             FreeCAD.ActiveDocument.openTransaction("Split Mesh")
-            for obj in FreeCADGui.Selection.getSelection():
+            for obj in sel:
                 n = obj.Name
                 nobjs = splitMesh(obj)
                 if len(nobjs) > 1:
@@ -247,8 +248,34 @@ class CommandMeshToShape:
                 if g and newobj:
                     g.addObject(newobj)
             FreeCAD.ActiveDocument.commitTransaction()
+
+class CommandSelectNonSolidMeshes:
+    "the Arch SelectNonSolidMeshes command definition"
+    def GetResources(self):
+        return {'MenuText': QtCore.QT_TRANSLATE_NOOP("Arch_SelectNonSolidMeshes","Select non-manifold meshes"),
+                'ToolTip': QtCore.QT_TRANSLATE_NOOP("Arch_SelectNonSolidMeshes","Selects all non-manifold meshes from the document or from the selected groups")}
+        
+    def Activated(self):
+        msel = []
+        if FreeCADGui.Selection.getSelection():
+            for o in FreeCADGui.Selection.getSelection():
+                if o.isDerivedFrom("App::DocumentObjectGroup"):
+                    msel.extend(o.OutList)
+        if not msel:
+            msel = FreeCAD.ActiveDocument.Objects
+        sel = []
+        for o in msel:
+            if o.isDerivedFrom("Mesh::Feature"):
+                if (not o.Mesh.isSolid()) or o.Mesh.hasNonManifolds():
+                    sel.append(o)
+        if sel:
+            FreeCADGui.Selection.clearSelection()
+            for o in sel:
+                FreeCADGui.Selection.addSelection(o)
+
             
 FreeCADGui.addCommand('Arch_Add',CommandAdd())
 FreeCADGui.addCommand('Arch_Remove',CommandRemove())
 FreeCADGui.addCommand('Arch_SplitMesh',CommandSplitMesh())
 FreeCADGui.addCommand('Arch_MeshToShape',CommandMeshToShape())
+FreeCADGui.addCommand('Arch_SelectNonSolidMeshes',CommandSelectNonSolidMeshes())
