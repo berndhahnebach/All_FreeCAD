@@ -266,7 +266,7 @@ def snapPoint(target,point,cursor,ctrl=False):
 		target.snap.switch.whichChild = 0                                
 		return newpoint[2]
 
-def constrainPoint (target,point,mobile=False,sym=False):
+def constrainPoint (target,pt,mobile=False,sym=False):
 	'''
 	Constrain function used by the Draft tools
 	On commands that need to enter several points (currently only line/wire),
@@ -275,6 +275,7 @@ def constrainPoint (target,point,mobile=False,sym=False):
 	position of your mouse in relation to last point at the moment you press
 	SHIFT. if mobile=True, mobile behaviour applies. If sym=True, x alway = y
 	'''
+        point = Vector(pt)
 	if len(target.node) > 0:
 		last = target.node[-1]
 		maxx = abs(point.x - last.x)
@@ -3323,17 +3324,17 @@ class Trimex(Modifier):
 			self.newpoint=Vector.add(center,fcvec.rotate(Vector(rad,0,0),-ang2))
 			self.ui.labelRadius.setText("Angle")
 			dist = math.degrees(-ang2)
-			if ang1 > ang2: ang1,ang2 = ang2,ang1
-			ghost.update(ang1-ang2)
-			ghost.startangle(ang1)
-			ghost.center(center)
-			ghost.radius(rad)
+			#if ang1 > ang2: ang1,ang2 = ang2,ang1
+			ghost.setEndAngle(-ang2)
+			ghost.setStartAngle(-ang1)
+			ghost.setCenter(center)
+			ghost.setRadius(rad)
 			if real:
 				if self.force:
 					angle = math.radians(self.force)
-					newray = fcvec.rotate(Vector(rad,0,0),angle)
+					newray = fcvec.rotate(Vector(rad,0,0),-angle)
 					self.newpoint = Vector.add(center,newray)
-				chord = v2.sub(self.newpoint)
+				chord = self.newpoint.sub(v2)
 				perp = chord.cross(Vector(0,0,1))
 				scaledperp = fcvec.scaleTo(perp,rad)
 				midpoint = Vector.add(center,scaledperp)
@@ -3353,10 +3354,10 @@ class Trimex(Modifier):
 				ang1 = fcvec.angle(edge.Vertexes[0].Point.sub(center))
 				ang2 = fcvec.angle(edge.Vertexes[-1].Point.sub(center))
 				if ang1 > ang2: ang1,ang2 = ang2,ang1
-				ghost.update(ang1-ang2)
-				ghost.startangle(ang1)
-				ghost.center(edge.Curve.Center)
-				ghost.radius(edge.Curve.Radius)
+				ghost.setEndAngle(-ang2)
+				ghost.setStartAngle(-ang1)
+				ghost.setCenter(edge.Curve.Center)
+				ghost.setRadius(edge.Curve.Radius)
 			if real: newedges.append(edge)
 			ghost.on()
 			
@@ -3377,7 +3378,7 @@ class Trimex(Modifier):
 			edges = self.redraw(self.point,self.snapped,self.shift,self.alt,real=True)
 			newshape = Part.Wire(edges)
                         self.doc.openTransaction("Trim/extend")
-                        if 'Points' in self.sel.PropertiesList:
+                        if Draft.getType(self.sel) in ["Wire","BSpline"]:
                                 p = []
                                 if self.placement: invpl = self.placement.inverse()
                                 for v in newshape.Vertexes:
@@ -3385,6 +3386,10 @@ class Trimex(Modifier):
                                         if self.placement: np = invpl.multVec(np)
                                         p.append(np)
                                 self.sel.Points = p
+                        elif Draft.getType(self.sel) == "Circle":
+                                angles = self.ghost[0].getAngles()
+                                self.sel.FirstAngle = angles[0]
+                                self.sel.LastAngle = angles[1]
                         else:
                                 self.sel.Shape = newshape
                         self.doc.commitTransaction()
