@@ -608,6 +608,8 @@ def move(objectslist,vector,copy=False):
                         newobj.End = obj.End.add(vector)
                         newobj.Dimline = obj.Dimline.add(vector)
                 else:
+                        if copy: print "Mesh copy not supported at the moment" # TODO
+                        newobj = obj
                         if "Placement" in obj.PropertiesList:
                                 pla = obj.Placement
                                 pla.move(vector)
