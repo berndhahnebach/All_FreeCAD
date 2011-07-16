@@ -3134,16 +3134,18 @@ class Trimex(Modifier):
 		return {'Pixmap' : 'Draft_Trimex',
                         'Accel' : "T, R",
 			'MenuText' : QtCore.QT_TRANSLATE_NOOP("Draft_Trimex", "Trimex"),
-			'ToolTip' : QtCore.QT_TRANSLATE_NOOP("Draft_Trimex", "Trims or Extends the selected object, or extrudes single faces. CTRL snaps, SHIFT constrains to current segment or to normal, ALT inverts")}
+			'ToolTip' : QtCore.QT_TRANSLATE_NOOP("Draft_Trimex", "Trims or extends the selected object, or extrudes single faces. CTRL snaps, SHIFT constrains to current segment or to normal, ALT inverts")}
 
 	def Activated(self):
 		Modifier.Activated(self,"Trimex")
+		self.edges = []
+                self.placement = None
+                self.ghost = None
+                self.snap = None
+                self.linetrack = None
+                self.constraintrack = None
 		if self.ui:
 			if not Draft.getSelection():
-				self.ghost = None
-				self.snap = None
-				self.linetrack = None
-				self.constraintrack = None
 				self.ui.selectUi()
 				msg(translate("draft", "Select an object to trim/extend\n"))
 				self.call = self.view.addEventCallback("SoEvent",selectObject)
@@ -3152,7 +3154,7 @@ class Trimex(Modifier):
 
 	def proceed(self):
 		if self.call: self.view.removeEventCallback("SoEvent",self.call)
-		self.sel = Draft.getSelection()[0]
+		self.obj = Draft.getSelection()[0]
 		self.ui.radiusUi()
 		self.ui.labelRadius.setText("Distance")
 		self.ui.radiusValue.setFocus()
@@ -3160,40 +3162,41 @@ class Trimex(Modifier):
 		self.snap = snapTracker()
 		self.linetrack = lineTracker()
 		self.constraintrack = lineTracker(dotted=True)
-		self.edges = []
-                self.ghost = None
-                self.placement = None
-                if "Placement" in self.sel.PropertiesList:
-                        self.placement = self.sel.Placement
-                if len(self.sel.Shape.Faces) == 1:
+                if not "Shape" in self.obj.PropertiesList: return
+                if "Placement" in self.obj.PropertiesList:
+                        self.placement = self.obj.Placement
+                if len(self.obj.Shape.Faces) == 1:
+                        # simple extrude mode, the object itself is extruded
                         self.extrudeMode = True
-                        self.ghost = [ghostTracker([self.sel])]
-                        self.normal = self.sel.Shape.Faces[0].normalAt(.5,.5)
-                        for v in self.sel.Shape.Vertexes:
+                        self.ghost = [ghostTracker([self.obj])]
+                        self.normal = self.obj.Shape.Faces[0].normalAt(.5,.5)
+                        for v in self.obj.Shape.Vertexes:
                                 self.ghost.append(lineTracker())
-                elif len(self.sel.Shape.Faces) > 1:
+                elif len(self.obj.Shape.Faces) > 1:
+                        # face extrude mode, a new object is created
                         ss =  FreeCADGui.Selection.getSelectionEx()[0]
                         if len(ss.SubObjects) == 1:
                                 if ss.SubObjects[0].ShapeType == "Face":
-                                        self.sel = self.doc.addObject("Part::Feature","Face")
-                                        self.sel.Shape = ss.SubObjects[0]
+                                        self.obj = self.doc.addObject("Part::Feature","Face")
+                                        self.obj.Shape = ss.SubObjects[0]
                                         self.extrudeMode = True
-                                        self.ghost = [ghostTracker([self.sel])]
-                                        self.normal = self.sel.Shape.Faces[0].normalAt(.5,.5)
-                                        for v in self.sel.Shape.Vertexes:
+                                        self.ghost = [ghostTracker([self.obj])]
+                                        self.normal = self.obj.Shape.Faces[0].normalAt(.5,.5)
+                                        for v in self.obj.Shape.Vertexes:
                                                 self.ghost.append(lineTracker())
                 else:
-                        self.sel.ViewObject.Visibility = False
+                        # normal wire trimex mode
+                        self.obj.ViewObject.Visibility = False
                         self.extrudeMode = False
-                        if self.sel.Shape.Wires:
-                                self.edges = self.sel.Shape.Wires[0].Edges
+                        if self.obj.Shape.Wires:
+                                self.edges = self.obj.Shape.Wires[0].Edges
                                 self.edges = fcgeo.sortEdges(self.edges)
                         else:
-                                self.edges = self.sel.Shape.Edges	
+                                self.edges = self.obj.Shape.Edges	
                         self.ghost = []
-                        lc = self.sel.ViewObject.LineColor
+                        lc = self.obj.ViewObject.LineColor
                         sc = (lc[0],lc[1],lc[2])
-                        sw = self.sel.ViewObject.LineWidth
+                        sw = self.obj.ViewObject.LineWidth
                         for e in self.edges:
                                 if isinstance(e.Curve,Part.Line):
                                         self.ghost.append(lineTracker(scolor=sc,swidth=sw))
@@ -3206,6 +3209,7 @@ class Trimex(Modifier):
                 self.shift = False
                 self.alt = False
                 self.force = None
+                self.cv = None
                 self.call = self.view.addEventCallback("SoEvent",self.action)
                 msg(translate("draft", "Pick distance:\n"))
                 self.ui.cross(True)
@@ -3243,7 +3247,7 @@ class Trimex(Modifier):
 
 	def extrude(self,shift=False,real=False):
 		"redraws the ghost in extrude mode"
-		self.newpoint = self.sel.Shape.Faces[0].CenterOfMass
+		self.newpoint = self.obj.Shape.Faces[0].CenterOfMass
 		dvec = self.point.sub(self.newpoint)
 		if shift: delta = fcvec.project(dvec,self.normal)
 		else: delta = dvec
@@ -3253,11 +3257,11 @@ class Trimex(Modifier):
 		if real: return delta
 		self.ghost[0].trans.translation.setValue([delta.x,delta.y,delta.z])
 		for i in range(1,len(self.ghost)):
-			base = self.sel.Shape.Vertexes[i-1].Point
+			base = self.obj.Shape.Vertexes[i-1].Point
 			self.ghost[i].p1(base)
 			self.ghost[i].p2(base.add(delta))
 		return delta.Length
-
+        
 	def redraw(self,point,snapped=None,shift=False,alt=False,real=None):
 		"redraws the ghost"
 		#initializing
@@ -3289,7 +3293,7 @@ class Trimex(Modifier):
 		else:
 			v1 = edge.Vertexes[0].Point
 			v2 = edge.Vertexes[-1].Point
-
+                        
 		# snapping
 		if snapped:
 			snapped = self.doc.getObject(snapped['Object'])
@@ -3324,7 +3328,8 @@ class Trimex(Modifier):
 			self.newpoint=Vector.add(center,fcvec.rotate(Vector(rad,0,0),-ang2))
 			self.ui.labelRadius.setText("Angle")
 			dist = math.degrees(-ang2)
-			#if ang1 > ang2: ang1,ang2 = ang2,ang1
+			# if ang1 > ang2: ang1,ang2 = ang2,ang1
+                        print "last calculated:",math.degrees(-ang1),math.degrees(-ang2)
 			ghost.setEndAngle(-ang2)
 			ghost.setStartAngle(-ang1)
 			ghost.setCenter(center)
@@ -3353,7 +3358,7 @@ class Trimex(Modifier):
 			else:
 				ang1 = fcvec.angle(edge.Vertexes[0].Point.sub(center))
 				ang2 = fcvec.angle(edge.Vertexes[-1].Point.sub(center))
-				if ang1 > ang2: ang1,ang2 = ang2,ang1
+				#if ang1 > ang2: ang1,ang2 = ang2,ang1
 				ghost.setEndAngle(-ang2)
 				ghost.setStartAngle(-ang1)
 				ghost.setCenter(edge.Curve.Center)
@@ -3371,27 +3376,30 @@ class Trimex(Modifier):
 			delta = self.extrude(self.shift,real=True)
                         print "delta",delta
                         self.doc.openTransaction("Extrude")
-                        obj = Draft.extrude(self.sel,delta)
+                        obj = Draft.extrude(self.obj,delta)
                         self.doc.commitTransaction()
-                        self.sel = obj
+                        self.obj = obj
 		else:
 			edges = self.redraw(self.point,self.snapped,self.shift,self.alt,real=True)
 			newshape = Part.Wire(edges)
                         self.doc.openTransaction("Trim/extend")
-                        if Draft.getType(self.sel) in ["Wire","BSpline"]:
+                        if Draft.getType(self.obj) in ["Wire","BSpline"]:
                                 p = []
                                 if self.placement: invpl = self.placement.inverse()
                                 for v in newshape.Vertexes:
                                         np = v.Point
                                         if self.placement: np = invpl.multVec(np)
                                         p.append(np)
-                                self.sel.Points = p
-                        elif Draft.getType(self.sel) == "Circle":
+                                self.obj.Points = p
+                        elif Draft.getType(self.obj) == "Circle":
                                 angles = self.ghost[0].getAngles()
-                                self.sel.FirstAngle = angles[0]
-                                self.sel.LastAngle = angles[1]
+                                print "original",self.obj.FirstAngle," ",self.obj.LastAngle
+                                print "new",angles
+                                if angles[0] > angles[1]: angles = (angles[1],angles[0])
+                                self.obj.FirstAngle = angles[0]
+                                self.obj.LastAngle = angles[1]
                         else:
-                                self.sel.Shape = newshape
+                                self.obj.Shape = newshape
                         self.doc.commitTransaction()
 		for g in self.ghost: g.off()
 
@@ -3406,8 +3414,8 @@ class Trimex(Modifier):
 			if self.ghost:
                                 for g in self.ghost:
                                         g.finalize()
-                        self.sel.ViewObject.Visibility = True
-			Draft.select(self.sel)
+                        self.obj.ViewObject.Visibility = True
+			Draft.select(self.obj)
 
 	def numericRadius(self,dist):
 		"this function gets called by the toolbar when valid distance have been entered there"
