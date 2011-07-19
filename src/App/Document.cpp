@@ -1063,8 +1063,15 @@ void Document::recompute()
 
     std::list<Vertex> make_order;
     DependencyList::out_edge_iterator j, jend;
-    // this sort gives the execute
-    boost::topological_sort(DepList, std::front_inserter(make_order));
+
+    try {
+        // this sort gives the execute
+        boost::topological_sort(DepList, std::front_inserter(make_order));
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Document::recompute: " << e.what() << std::endl;
+        return;
+    }
 
     // caching vertex to DocObject
     for (std::map<DocumentObject*,Vertex>::const_iterator It1= VertexObjectList.begin();It1 != VertexObjectList.end(); ++It1)
