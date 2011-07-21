@@ -29,7 +29,7 @@
             <File Id="TestApp" 			Name="TestApp.py" DiskId="1" />
             <File Id="TestGui" 			Name="TestGui.py" DiskId="1" />
             <File Id="TestGuipyd" 		Name="QtUnitGui.pyd" DiskId="1" />
-            <File Id="TestBase" 		Name="Base.py" DiskId="1" />
+            <File Id="TestBase" 		Name="BaseTests.py" DiskId="1" />
             <File Id="TestDocument" 	Name="Document.py" DiskId="1" />
             <File Id="TestMenu" 		Name="Menu.py" DiskId="1" />
             <File Id="TestWorkbench" 	Name="Workbench.py" DiskId="1" />
