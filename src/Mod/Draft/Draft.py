@@ -1080,9 +1080,9 @@ class ViewProviderDraft:
         
 	def __init__(self, obj):
                 obj.Proxy = self
-                self.Object = obj.Object
 
 	def attach(self, obj):
+                self.Object = obj.Object
 		return
 
 	def updateData(self, fp, prop):
@@ -1141,7 +1141,6 @@ class ViewProviderDimension:
                 obj.addProperty("App::PropertyVector","Position","Base","The position of the text. Leave (0,0,0) for automatic position")
                 obj.addProperty("App::PropertyString","Override","Base","Text override. Use 'dim' to insert the dimension length")
 		obj.Proxy = self
-		self.Object = obj.Object
                 obj.FontSize=getParam("textheight")
                 obj.FontName=getParam("textfont")
                 obj.ExtLines=0.3
@@ -1184,6 +1183,7 @@ class ViewProviderDimension:
 		return p1,p2,p3,p4,tbase,angle,norm
 
 	def attach(self, obj):
+                self.Object = obj.Object
 		p1,p2,p3,p4,tbase,angle,norm = self.calcGeom(obj.Object)
 		self.color = coin.SoBaseColor()
 		self.color.rgb.setValue(obj.LineColor[0],
@@ -1248,7 +1248,6 @@ class ViewProviderDimension:
                 obj.addDisplayMode(self.node3d,"3D")
 		self.onChanged(obj,"FontSize")
 		self.onChanged(obj,"FontName")
-                self.Object = obj.Object
 
 	def updateData(self, obj, prop):
                 text = None
@@ -1419,12 +1418,12 @@ class ViewProviderAngularDimension:
                 obj.addProperty("App::PropertyVector","Position","Base","The position of the text. Leave (0,0,0) for automatic position")
                 obj.addProperty("App::PropertyString","Override","Base","Text override. Use 'dim' to insert the dimension length")
 		obj.Proxy = self
-		self.Object = obj.Object
                 obj.FontSize=getParam("textheight")
                 obj.FontName=getParam("textfont")
                 obj.Override = ''
 
         def attach(self, vobj):
+                self.Object = vobj.Object
                 self.arc = None
                 c,tbase,trot,p2,p3 = self.calcGeom(vobj.Object)
 		self.color = coin.SoBaseColor()
@@ -1803,9 +1802,9 @@ class ViewProviderWire(ViewProviderDraft):
                 ViewProviderDraft.__init__(self,obj)
                 obj.addProperty("App::PropertyBool","EndArrow","Base",
                 "Displays a dim symbol at the end of the wire")
-                self.Object = obj.Object
 
         def attach(self, obj):
+                self.Object = obj.Object
                 col = coin.SoBaseColor()
                 col.rgb.setValue(obj.LineColor[0],
                                  obj.LineColor[1],
