@@ -932,6 +932,29 @@ def getCubicDimensions(shape):
     mat.rotateZ(rotZ)
     mat.move(basepoint)
     return [FreeCAD.Placement(mat),vx.Length,vy.Length,vz.Length]
+
+def removeInterVertices(wire):
+        '''removeInterVertices(wire) - remove unneeded vertices (those that
+        are in the middle of a straight line) from a wire, returns a new wire.'''
+        edges = sortEdges(wire.Edges)
+        nverts = []
+        def getvec(v1,v2):
+                if not abs(round(v1.getAngle(v2),precision) in [0,round(math.pi,precision)]):
+                        nverts.append(edges[i].Vertexes[-1].Point)
+        for i in range(len(edges)-1):
+                vA = vec(edges[i])
+                vB = vec(edges[i+1])
+                getvec(vA,vB)
+        vA = vec(edges[-1])
+        vB = vec(edges[0])
+        getvec(vA,vB)
+        if nverts:
+                if wire.isClosed():
+                        nverts.append(nverts[0])
+                w = Part.makePolygon(nverts)
+                return w
+        else:
+                return wire
    
 # circle functions *********************************************************
 
