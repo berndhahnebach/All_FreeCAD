@@ -30,6 +30,7 @@ __url__ = "http://free-cad.sourceforge.net"
 #---------------------------------------------------------------------------
 
 import os, FreeCAD, FreeCADGui, Part, WorkingPlane, math, re, importSVG, Draft, Draft_rc
+from functools import partial
 from draftlibs import fcvec,fcgeo
 from FreeCAD import Vector
 from draftGui import todo,QtCore,QtGui
@@ -1045,6 +1046,9 @@ class SelectPlane:
 
 class Creator:
 	"A generic Draft Creator Tool used by creation tools such as line or arc"
+        def __init__(self):
+                self.commitList = []
+        
 	def Activated(self,name="None"):
 		if FreeCAD.activeDraftCommand:
 			FreeCAD.activeDraftCommand.finish()
@@ -1052,6 +1056,7 @@ class Creator:
 		self.call = None
 		self.doc = None
                 self.support = None
+                self.commitList = []
 		self.doc = FreeCAD.ActiveDocument
 		self.view = FreeCADGui.ActiveDocument.ActiveView
                 self.featureName = name
@@ -1098,8 +1103,19 @@ class Creator:
                 msg("")
 		if self.call:
 			self.view.removeEventCallback("SoEvent",self.call)
+                        print "stopping callback"
                         self.call = None
+                if self.commitList:
+                        for name,func in self.commitList:
+                                name = str(name)
+                                FreeCAD.ActiveDocument.openTransaction(name)
+                                func()
+                                FreeCAD.ActiveDocument.commitTransaction()
+                self.commitList = []
 
+        def commit(self,name,func):
+                "stores partial actions to be committed to the FreeCAD document"
+                self.commitList.append((name,func))
 
 class Line(Creator):
 	"The Line FreeCAD command definition"
@@ -1123,6 +1139,7 @@ class Line(Creator):
 			self.constraintrack = lineTracker(dotted=True)
                         self.obj=self.doc.addObject("Part::Feature",self.featureName)
                         Draft.formatObject(self.obj)
+                        print "starting callback"
 			self.call = self.view.addEventCallback("SoEvent",self.action)
 			msg(translate("draft", "Pick first point:\n"))
 
@@ -1133,9 +1150,7 @@ class Line(Creator):
                         self.doc.removeObject(old)
                 self.obj = None
 		if (len(self.node) > 1):
-                        self.doc.openTransaction("Create "+self.featureName)
-                        Draft.makeWire(self.node,closed,face=self.ui.hasFill.isChecked(),support=self.support)
-                        self.doc.commitTransaction()
+                        self.commit(translate("draft","Create Wire"),partial(Draft.makeWire,self.node,closed,face=self.ui.hasFill.isChecked(),support=self.support))
 		if self.ui:
 			self.linetrack.finalize()
 			self.constraintrack.finalize()
@@ -1322,9 +1337,7 @@ class BSpline(Line):
 		if (len(self.node) > 1):
                         old = self.obj.Name
                         self.doc.removeObject(old)
-                        self.doc.openTransaction("Create "+self.featureName)
-                        Draft.makeBSpline(self.node,closed,face=self.ui.hasFill.isChecked(),support=self.support)
-                        self.doc.commitTransaction()
+                        self.commit(translate("draft","Create BSpline"),partial(Draft.makeBSpline,self.node,closed,face=self.ui.hasFill.isChecked(),support=self.support))
 		if self.ui:
 			self.bsplinetrack.finalize()
 			self.constraintrack.finalize()
@@ -1427,9 +1440,7 @@ class Rectangle(Creator):
                 if abs(fcvec.angle(p2.sub(p1),plane.v,plane.axis)) > 1: height = -height
                 p = plane.getRotation()
                 p.move(p1)
-                self.doc.openTransaction("Create "+self.featureName)
-                Draft.makeRectangle(length,height,p,self.ui.hasFill.isChecked(),support=self.support)
-                self.doc.commitTransaction()
+                self.commit(translate("draft","Create Rectangle"),partial(Draft.makeRectangle,length,height,p,self.ui.hasFill.isChecked(),support=self.support))
                 self.finish(cont=True)
 
 	def action(self,arg):
@@ -1697,16 +1708,14 @@ class Arc(Creator):
 		"actually draws the FreeCAD object"
                 p = plane.getRotation()
                 p.move(self.center)
-                self.doc.openTransaction("Create "+self.featureName)
-		if self.closedCircle:                       
-			Draft.makeCircle(self.rad,p,self.ui.hasFill.isChecked(),support=self.support)
+		if self.closedCircle:
+                        self.commit(translate("draft","Create Circle"),partial(Draft.makeCircle,self.rad,p,self.ui.hasFill.isChecked(),support=self.support))
 		else:
                         sta = math.degrees(self.firstangle)
                         end = math.degrees(self.firstangle+self.angle)
                         print "debug:",sta, end
                         if end < sta: sta,end = end,sta
-                        Draft.makeCircle(self.rad,p,self.ui.hasFill.isChecked(),sta,end,support=self.support)
-                self.doc.commitTransaction()
+                        self.commit(translate("draft","Create Arc"),partial(Draft.makeCircle,self.rad,p,self.ui.hasFill.isChecked(),sta,end,support=self.support))
                 self.finish(cont=True)
 
 	def numericInput(self,numx,numy,numz):
@@ -1935,9 +1944,7 @@ class Polygon(Creator):
 		"actually draws the FreeCAD object"
                 p = plane.getRotation()
                 p.move(self.center)
-                self.doc.openTransaction("Create Polygon")                     
-                Draft.makePolygon(self.ui.numFaces.value(),self.rad,True,p,face=self.ui.hasFill.isChecked(),support=self.support)
-                self.doc.commitTransaction()
+                self.commit(translate("draft","Create Polygon"),partial(Draft.makePolygon,self.ui.numFaces.value(),self.rad,True,p,face=self.ui.hasFill.isChecked(),support=self.support))
                 self.finish(cont=True)
 
 	def numericInput(self,numx,numy,numz):
@@ -2005,9 +2012,7 @@ class Text(Creator):
 
 	def createObject(self):
 		"creates an object in the current doc"
-		self.doc.openTransaction("Create "+self.featureName)
-                Draft.makeText(self.text,self.node[0])
-		self.doc.commitTransaction()
+                self.commit(translate("draft","Create Text"),partial(Draft.makeText,self.text,self.node[0]))
 		self.finish(cont=True)
 
 	def action(self,arg):
@@ -2082,16 +2087,14 @@ class Dimension(Creator):
 
 	def createObject(self):
 		"creates an object in the current doc"
-		self.doc.openTransaction("Create "+self.featureName)
                 if self.angledata:
-                        Draft.makeAngularDimension(self.center,self.angledata,self.node[-1])
+                        self.commit(translate("draft","Create Dimension"),partial(Draft.makeAngularDimension,self.center,self.angledata,self.node[-1]))
                 elif self.link and (not self.arcmode):
-                        Draft.makeDimension(self.link[0],self.link[1],self.link[2],self.node[2])
+                        self.commit(translate("draft","Create Dimension"),partial(Draft.makeDimension,self.link[0],self.link[1],self.link[2],self.node[2]))
                 elif self.arcmode:
-                        Draft.makeDimension(self.link[0],self.link[1],self.arcmode,self.node[2])
+                        self.commit(translate("draft","Create Dimension"),partial(Draft.makeDimension,self.link[0],self.link[1],self.arcmode,self.node[2]))
                 else:
-                        Draft.makeDimension(self.node[0],self.node[1],self.node[2])
-		self.doc.commitTransaction()
+                        self.commit(translate("draft","Create Dimension"),partial(Draft.makeDimension,self.node[0],self.node[1],self.node[2]))
                 if self.ui.continueCmd.isChecked():
                         self.cont = self.node[2]
                         if not self.dir:
@@ -2285,12 +2288,15 @@ class Dimension(Creator):
 
 class Modifier:
 	"A generic Modifier Tool, used by modification tools such as move"
+        def __init__(self):
+                self.commitList = []
 
 	def Activated(self,name="None"):
                 if FreeCAD.activeDraftCommand:
                         FreeCAD.activeDraftCommand.finish()
 		self.ui = None
 		self.call = None
+                self.commitList = []
 		self.doc = FreeCAD.ActiveDocument
 		if not self.doc:
 			self.finish()
@@ -2335,6 +2341,17 @@ class Modifier:
 		if self.call:
 			self.view.removeEventCallback("SoEvent",self.call)
                         self.call = None
+                if self.commitList:
+                        for name,func in self.commitList:
+                                name = str(name)
+                                FreeCAD.ActiveDocument.openTransaction(name)
+                                func()
+                                FreeCAD.ActiveDocument.commitTransaction()
+                self.commitList = []
+
+        def commit(self,name,func):
+                "stores partial actions to be committed to the FreeCAD document"
+                self.commitList.append((name,func))
 			
 class Move(Modifier):
 	"The Draft_Move FreeCAD command definition"
@@ -2389,10 +2406,10 @@ class Move(Modifier):
 
 	def move(self,delta,copy=False):
 		"moving the real shapes"
-		if copy: self.doc.openTransaction("Copy")
-		else: self.doc.openTransaction("Move")
-		Draft.move(self.sel,delta,copy)
-		self.doc.commitTransaction()
+		if copy:
+                        self.commit(translate("draft","Copy"),partial(Draft.move,self.sel,delta,copy))
+		else:
+                        self.commit(translate("draft","Move"),partial(Draft.move,self.sel,delta,copy))
                 self.doc.recompute()
 
 	def action(self,arg):
@@ -2474,16 +2491,18 @@ class ApplyStyle(Modifier):
 		if self.ui:
 			self.sel = Draft.getSelection()
 			if (len(self.sel)>0):
-				self.doc.openTransaction("Change style")
 				for ob in self.sel:
-					if (ob.Type == "App::DocumentObjectGroup"): self.formatGroup(ob)
-					else: Draft.formatObject(ob)
-				self.doc.commitTransaction()
+					if (ob.Type == "App::DocumentObjectGroup"):
+                                            self.formatGroup(ob)
+					else:
+                                            self.commit(translate("draft","Change Style"),partial(Draft.formatObject,ob))
 
 	def formatGroup(self,grpob):
 		for ob in grpob.Group:
-			if (ob.Type == "App::DocumentObjectGroup"): self.formatGroup(ob)
-			else: Draft.formatObject(ob)
+			if (ob.Type == "App::DocumentObjectGroup"):
+                                self.formatGroup(ob)
+			else:
+                                self.commit(translate("draft","Change Style"),partial(Draft.formatObject,ob))
 
 			
 class Rotate(Modifier):
@@ -2545,10 +2564,10 @@ class Rotate(Modifier):
 
 	def rot (self,angle,copy=False):
 		"rotating the real shapes"
-		if copy: self.doc.openTransaction("Copy")
-		else: self.doc.openTransaction("Rotate")
-                Draft.rotate(self.sel,math.degrees(angle),self.center,plane.axis,copy)
-		self.doc.commitTransaction()
+		if copy:
+                        self.commit(translate("draft","Copy"),partial(Draft.rotate,self.sel,math.degrees(angle),self.center,plane.axis,copy))
+		else:
+                        self.commit(translate("draft","Rotate"),partial(Draft.rotate,self.sel,math.degrees(angle),self.center,plane.axis,copy))
 
 	def action(self,arg):
 		"scene event handler"
@@ -2790,9 +2809,7 @@ class Offset(Modifier):
                                 copymode = False
                                 if arg["AltDown"] or self.ui.isCopy.isChecked(): copymode = True
                                 if self.dvec:
-                                        self.doc.openTransaction("Offset")
-                                        nwire = Draft.offset(self.sel,self.dvec,copymode)
-                                        self.doc.commitTransaction()
+                                        self.commit(translate("draft","Offset"),partial(Draft.offset,self.sel,self.dvec,copymode))
 				if arg["AltDown"]:
 					self.extendedCopy = True
 				else:
@@ -2813,9 +2830,7 @@ class Offset(Modifier):
                         self.dvec.multiply(rad)
                         copymode = False
                         if self.ui.isCopy.isChecked(): copymode = True
-                        self.doc.openTransaction("Offset")
-                        nwire = Draft.offset(self.sel,self.dvec,copymode)
-                        self.doc.commitTransaction()
+                        self.commit(translate("draft","Copy"),partial(Draft.rotate,self.sel,math.degrees(angle),self.center,plane.axis,copy))
                         self.finish()
 
 class Upgrade(Modifier):
@@ -3477,10 +3492,10 @@ class Scale(Modifier):
 
 	def scale(self,delta,copy=False):
 		"moving the real shapes"
-		if copy: self.doc.openTransaction("Copy")
-		else: self.doc.openTransaction("Move")
-                Draft.scale(self.sel,delta,self.node[0],copy)
-		self.doc.commitTransaction()
+		if copy:
+                        self.commit(translate("draft","Copy"),partial(Draft.scale,self.sel,delta,self.node[0],copy))
+		else:
+                        self.commit(translate("draft","Scale"),partial(Draft.scale,self.sel,delta,self.node[0],copy))
 
 	def action(self,arg):
 		"scene event handler"
