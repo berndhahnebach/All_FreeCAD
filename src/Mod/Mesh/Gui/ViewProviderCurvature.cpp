@@ -35,6 +35,7 @@
 # include <Inventor/nodes/SoMaterial.h>
 # include <Inventor/nodes/SoMaterialBinding.h>
 # include <Inventor/nodes/SoShapeHints.h>
+# include <Inventor/sensors/SoIdleSensor.h>
 # include <algorithm>
 # include <sstream>
 # include <QEvent>
@@ -444,30 +445,30 @@ void ViewProviderMeshCurvature::OnChange(Base::Subject<int> &rCaller,int rcReaso
 }
 
 namespace MeshGui {
-class AnnotationEvent : public QEvent
+
+class Annotation
 {
 public:
-    AnnotationEvent(Gui::ViewProviderDocumentObject* vp, const QString& s,const SbVec3f& p, const SbVec3f& n)
-        : QEvent(QEvent::User), vp(vp), s(s), p(p), n(n)
+    Annotation(Gui::ViewProviderDocumentObject* vp,
+        const QString& s,const SbVec3f& p, const SbVec3f& n)
+        : vp(vp), s(s), p(p), n(n)
+    {
+    }
+    ~Annotation()
     {
     }
 
-    Gui::ViewProviderDocumentObject* vp;
-    QString s;
-    SbVec3f p;
-    SbVec3f n;
-};
-
-// Proxy class that receives an asynchronous custom event
-class ViewProviderProxyObject : public QObject
-{
-public:
-    ViewProviderProxyObject(QWidget* w) : QObject(0), widget(w) {}
-    ~ViewProviderProxyObject() {}
-    void customEvent(QEvent * e)
+    static void run(void * data, SoSensor * sensor)
     {
-        AnnotationEvent* ae = static_cast<AnnotationEvent*>(e);
-        App::Document* doc = ae->vp->getObject()->getDocument();
+        Annotation* self = reinterpret_cast<Annotation*>(data);
+        self->show();
+        delete self;
+        delete sensor;
+    }
+
+    void show()
+    {
+        App::Document* doc = vp->getObject()->getDocument();
 
         std::vector<App::DocumentObject*> groups = doc->getObjectsOfType
             (App::DocumentObjectGroup::getClassTypeId());
@@ -486,7 +487,7 @@ public:
 
         App::AnnotationLabel* anno = static_cast<App::AnnotationLabel*>
             (group->addObject("App::AnnotationLabel", internalname.c_str()));
-        QStringList lines = ae->s.split(QLatin1String("\n"));
+        QStringList lines = s.split(QLatin1String("\n"));
         std::vector<std::string> text;
         for (QStringList::Iterator it = lines.begin(); it != lines.end(); ++it)
             text.push_back((const char*)it->toAscii());
@@ -494,14 +495,17 @@ public:
         std::stringstream str;
         str << "Curvature info (" << group->Group.getSize() << ")";
         anno->Label.setValue(str.str());
-        anno->BasePosition.setValue(ae->p[0],ae->p[1],ae->p[2]);
-        anno->TextPosition.setValue(ae->n[0],ae->n[1],ae->n[2]);
-        this->deleteLater();
+        anno->BasePosition.setValue(p[0],p[1],p[2]);
+        anno->TextPosition.setValue(n[0],n[1],n[2]);
     }
 
 private:
-    QPointer<QWidget> widget;
+    Gui::ViewProviderDocumentObject* vp;
+    QString s;
+    SbVec3f p;
+    SbVec3f n;
 };
+
 }
 
 void ViewProviderMeshCurvature::curvatureInfoCallback(void * ud, SoEventCallback * n)
@@ -546,7 +550,7 @@ void ViewProviderMeshCurvature::curvatureInfoCallback(void * ud, SoEventCallback
             Gui::ViewProvider* vp = static_cast<Gui::ViewProvider*>(view->getViewProviderByPath(point->getPath()));
             if (!vp || !vp->getTypeId().isDerivedFrom(ViewProviderMeshCurvature::getClassTypeId()))
                 return;
-            ViewProviderMeshCurvature* that = static_cast<ViewProviderMeshCurvature*>(vp);
+            ViewProviderMeshCurvature* self = static_cast<ViewProviderMeshCurvature*>(vp);
             const SoDetail* detail = point->getDetail(point->getPath()->getTail());
             if (detail && detail->getTypeId() == SoFaceDetail::getClassTypeId()) {
                 // safe downward cast, know the type
@@ -555,14 +559,14 @@ void ViewProviderMeshCurvature::curvatureInfoCallback(void * ud, SoEventCallback
                 int index1 = facedetail->getPoint(0)->getCoordinateIndex();
                 int index2 = facedetail->getPoint(1)->getCoordinateIndex();
                 int index3 = facedetail->getPoint(2)->getCoordinateIndex();
-                std::string info = that->curvatureInfo(true, index1, index2, index3);
+                std::string info = self->curvatureInfo(true, index1, index2, index3);
                 QString text = QString::fromAscii(info.c_str());
                 if (addflag) {
                     SbVec3f pt = point->getPoint();
                     SbVec3f nl = point->getNormal();
-                    QApplication::postEvent(
-                        new ViewProviderProxyObject(view->getGLWidget()),
-                        new AnnotationEvent(that, text, pt, nl));
+                    Annotation* anno = new Annotation(self, text, pt, nl);
+                    SoIdleSensor* sensor = new SoIdleSensor(Annotation::run, anno);
+                    sensor->schedule();
                 }
                 else {
                     Gui::ToolTip::showText(QCursor::pos(), text);
