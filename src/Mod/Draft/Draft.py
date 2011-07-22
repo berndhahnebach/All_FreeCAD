@@ -387,7 +387,6 @@ def makeWire(pointslist,closed=False,placement=None,face=True,support=None):
         and last points are identical, the wire is closed. If face is
         true (and wire is closed), the wire will appear filled. Instead of
         a pointslist, you can also pass a Part Wire.'''
-        print "making wire"
         if not isinstance(pointslist,list):
                 nlist = []
                 for v in pointslist.Vertexes:

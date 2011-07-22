@@ -1103,14 +1103,9 @@ class Creator:
                 msg("")
 		if self.call:
 			self.view.removeEventCallback("SoEvent",self.call)
-                        print "stopping callback"
                         self.call = None
                 if self.commitList:
-                        for name,func in self.commitList:
-                                name = str(name)
-                                FreeCAD.ActiveDocument.openTransaction(name)
-                                func()
-                                FreeCAD.ActiveDocument.commitTransaction()
+                        todo.delayCommit(self.commitList)
                 self.commitList = []
 
         def commit(self,name,func):
@@ -1139,7 +1134,6 @@ class Line(Creator):
 			self.constraintrack = lineTracker(dotted=True)
                         self.obj=self.doc.addObject("Part::Feature",self.featureName)
                         Draft.formatObject(self.obj)
-                        print "starting callback"
 			self.call = self.view.addEventCallback("SoEvent",self.action)
 			msg(translate("draft", "Pick first point:\n"))
 
@@ -1147,7 +1141,7 @@ class Line(Creator):
 		"terminates the operation and closes the poly if asked"
                 if self.obj:
                         old = self.obj.Name
-                        self.doc.removeObject(old)
+                        todo.delay(self.doc.removeObject,old)
                 self.obj = None
 		if (len(self.node) > 1):
                         self.commit(translate("draft","Create Wire"),partial(Draft.makeWire,self.node,closed,face=self.ui.hasFill.isChecked(),support=self.support))
@@ -2342,11 +2336,7 @@ class Modifier:
 			self.view.removeEventCallback("SoEvent",self.call)
                         self.call = None
                 if self.commitList:
-                        for name,func in self.commitList:
-                                name = str(name)
-                                FreeCAD.ActiveDocument.openTransaction(name)
-                                func()
-                                FreeCAD.ActiveDocument.commitTransaction()
+                        todo.delayCommit(self.commitList)
                 self.commitList = []
 
         def commit(self,name,func):
