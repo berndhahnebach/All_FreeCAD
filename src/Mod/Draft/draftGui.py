@@ -54,26 +54,39 @@ class todo:
 	event callback'''
 
 	'''List of (function, argument) pairs to be executed by
-	QTcore.QTimer.singleShot(0,doTodo).'''
+	QtCore.QTimer.singleShot(0,doTodo).'''
 	itinerary = []
+	commitlist = []
 
 	@staticmethod
 	def doTasks():
 		for f, arg in todo.itinerary:
 			try:
-                                # print "debug: executing",f
-                                f(arg)
+				# print "debug: executing",f
+				f(arg)
 			except:
 				wrn = "[Draft.todo] Unexpected error:" + sys.exc_info()[0]
 				FreeCAD.Console.PrintWarning (wrn)
 		todo.itinerary = []
+		if todo.commitlist:
+			for name,func in todo.commitlist:
+				name = str(name)
+				FreeCAD.ActiveDocument.openTransaction(name)
+				func()
+				FreeCAD.ActiveDocument.commitTransaction()
+			todo.commitlist = []
 
 	@staticmethod
 	def delay (f, arg):
-                # print "debug: delaying",f
+		# print "debug: delaying",f
 		if todo.itinerary == []:
 			QtCore.QTimer.singleShot(0, todo.doTasks)
 		todo.itinerary.append((f,arg))
+
+	@staticmethod
+	def delayCommit (cl):
+		QtCore.QTimer.singleShot(0, todo.doTasks)
+		todo.commitlist = cl
 
 def translate(context,text):
         "convenience function for Qt translator"
