@@ -45,9 +45,9 @@ Constraint::Constraint()
   Name(""),
   Value(0.0),
   First(-1),
-  FirstPos(start),
+  FirstPos(none),
   Second(-1),
-  SecondPos(start),
+  SecondPos(none),
   Extern(-1)
 {
 }
@@ -80,16 +80,16 @@ PyObject *Constraint::getPyObject(void)
 
 unsigned int Constraint::getMemSize (void) const
 {
-	return 0;
+    return 0;
 }
 
 void Constraint::Save (Writer &writer) const
 {
-	writer.Stream() << writer.ind() << "<Constrain "
+    writer.Stream() << writer.ind() << "<Constrain "
                     << "Name=\""        <<  Name            << "\" " 
                     << "Type=\""        <<  (int)Type       << "\" "
                     << "Value=\""       <<  Value           << "\" "
-				    << "First=\""       <<  First           << "\" "
+                    << "First=\""       <<  First           << "\" "
                     << "FirstPos=\""    <<  (int)  FirstPos << "\" "
                     << "Second=\""      <<  Second          << "\" "
                     << "SecondPos=\""   <<  (int) SecondPos << "\" "
