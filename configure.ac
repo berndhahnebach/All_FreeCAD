@@ -401,6 +401,37 @@ fi
 AM_CONDITIONAL(HAVE_EIGEN2, test x"$fc_cv_lib_eig_avail" = xyes)
 
 
+dnl checking for eigen3
+dnl **************************************************************************
+AC_MSG_CHECKING([for eigen3])
+AC_ARG_WITH(eigen3-include,
+	AC_HELP_STRING([--with-eigen3-include=DIR], [Path to the eigen3 header files]),
+	[fc_eig_incs=$withval],
+	[fc_eig_incs=/usr/include/eigen3])
+
+AC_CHECK_FILE($fc_eig_incs/Eigen,,
+	[AC_CHECK_FILE(/usr/local/include/eigen3,[fc_eig_incs=/usr/local/include/eigen3])])
+
+fc_eig_ac_save_cppflags=$CPPFLAGS
+CPPFLAGS="$CPPFLAGS -I$fc_eig_incs"
+
+fc_cv_lib_eig_avail=no
+AC_CHECK_HEADER(Eigen/Core,
+	fc_cv_lib_eig_avail=yes,)
+
+CPPFLAGS=$fc_eig_ac_save_cppflags
+
+if test x"$fc_cv_lib_eig_avail" = xyes; then
+	AC_SUBST([EIGEN3_INC], [$fc_eig_incs])
+else
+	AC_MSG_WARN([
+	**** Cannot find eigen3 devel files.
+	Modules that depend on this library cannot be built. ****
+   ])
+fi
+
+AM_CONDITIONAL(HAVE_EIGEN3, test x"$fc_cv_lib_eig_avail" = xyes)
+
 dnl checking for boost
 dnl ******************
 
@@ -937,6 +968,7 @@ src/Mod/PartDesign/Scripts/Makefile
 src/Mod/Sketcher/Makefile
 src/Mod/Sketcher/App/Makefile
 src/Mod/Sketcher/App/sketchsolve_cp/Makefile
+src/Mod/Sketcher/App/freegcs/Makefile
 src/Mod/Sketcher/App/sketchflat/Makefile
 src/Mod/Sketcher/Gui/Makefile
 src/Mod/Sketcher/Gui/Resources/Makefile

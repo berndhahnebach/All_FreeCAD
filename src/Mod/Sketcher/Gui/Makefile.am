@@ -119,7 +119,7 @@ qrc_%.cpp: %.qrc
 
 # set the include path found by configure
 AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS) -I$(OCC_INC) \
-		-I$(sim_ac_coin_includedir) -I$(sim_ac_soqt_includedir)
+		-I$(sim_ac_coin_includedir) -I$(sim_ac_soqt_includedir) -I$(EIGEN3_INC)
 
 
 libdir = $(prefix)/Mod/Sketcher
