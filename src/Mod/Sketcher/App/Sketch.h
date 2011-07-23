@@ -29,24 +29,13 @@
 #include <Mod/Part/App/TopoShape.h>
 #include "Constraint.h"
 
-#include "sketchsolve_cp/solve.h"
+#include "freegcs/GCS.h"
 
 #include <Base/Persistence.h>
 
 namespace Sketcher
 {
-/*
- class GeometryList: public std::vector<Part::Geometry *>{
- public:
-     explicit GeometryList(size_type _Count):std::vector<Part::Geometry *>(_Count){}
-     explicit GeometryList(){}
-     virtual ~GeometryList(){
-         for(const_iterator it=begin();it!=end();++it)
-             if(*it)
-                 delete(*it);
-     }
- };
-*/
+
 class AppSketcherExport Sketch :public Base::Persistence
 {
     TYPESYSTEM_HEADER();
@@ -60,12 +49,7 @@ public:
     virtual void Save(Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);
 
-    /** solve the actual set up sketch
-      * If the n fixed pointers are non null the corresponding
-      * parameters are left out from the solving. It's like a fixed
-      * constraint on a point for example
-      */
-    int solve(double ** fixed, int n);
+    /// solve the actual set up sketch
     int solve(void);
     /// delete all geometry and constraints, leave an empty sketch
     void clear(void);
@@ -86,17 +70,21 @@ public:
     bool getConstruction(int geoIndex) const;
 
     /** set the datum of a distance or angle constraint to a certain value and solve
-      * This can cause
-      * the solving to fail!
+      * This can cause the solving to fail!
       */
     int setDatum(int constraintIndex, double value);
+
+    /** initializes a point (or curve) drag by setting the current
+      * sketch status as a reference
+      */
+    int initMove(int geoIndex, PointPos pos1);
 
     /** move this point to a new location and solve
       * this will introduce a fix constraint on the moved point
       * to ensure its stay on the right position. But this can cause
       * the solving to fail!
       */
-    int movePoint(int geoIndex1, PointPos pos1, Base::Vector3d toPoint);
+    int movePoint(int geoIndex, PointPos pos, Base::Vector3d toPoint);
 
     /// add dedicated geometry
     //@{
@@ -126,18 +114,25 @@ public:
     int addCoordinateYConstraint(int geoIndex, PointPos pos, double value);
     /// add a horizontal constraint to a geometry
     int addHorizontalConstraint(int geoIndex);
+    int addHorizontalConstraint(int geoIndex1, PointPos pos1, int geoIndex2, PointPos pos2);
     /// add a vertical constraint to a geometry
     int addVerticalConstraint(int geoIndex);
+    int addVerticalConstraint(int geoIndex1, PointPos pos1, int geoIndex2, PointPos pos2);
     /// add a coincident constraint to two points of two geometries
     int addPointCoincidentConstraint(int geoIndex1, PointPos pos1, int geoIndex2, PointPos pos2);
-    /// add a length constraint to a line
+    /// add a length or distance constraint
     int addDistanceConstraint(int geoIndex1, double Value);
-    /// add a distance between two lines (basically a point to line distance)
     int addDistanceConstraint(int geoIndex1, int geoIndex2, double Value);
+    int addDistanceConstraint(int geoIndex1, PointPos pos1, int geoIndex2, double Value);
+    int addDistanceConstraint(int geoIndex1, PointPos pos1, int geoIndex2, PointPos pos2, double Value);
     /// add a parallel constraint between two lines
     int addParallelConstraint(int geoIndex1, int geoIndex2);
+    /// add a perpendicular constraint between two lines
+    int addPerpendicularConstraint(int geoIndex1, int geoIndex2);
     /// add a tangency constraint between two geometries
     int addTangentConstraint(int geoIndex1, int geoIndex2);
+    int addTangentConstraint(int geoIndex1, PointPos pos1, int geoIndex2);
+    int addTangentConstraint(int geoIndex1, PointPos pos1, int geoIndex2, PointPos pos2);
     //@}
 
     enum GeoType {
@@ -166,29 +161,18 @@ protected:
     };
 
     std::vector<GeoDef> Geoms;
-    std::vector<constraint> Const;
+    GCS::System GCSsys;
 
     // solving parameters
-    std::vector<double*> Parameters;
-    std::vector<double*> FixParameters;
-    std::vector<point>  Points;
-    std::vector<line>   Lines;
-    std::vector<arc>    Arcs;
-    std::vector<circle> Circles;
+    std::vector<double*> Parameters;    // with memory allocation
+    std::vector<double*> FixParameters; // with memory allocation
+    std::vector<double> MoveParameters;
+    std::vector<GCS::Point>  Points;
+    std::vector<GCS::Line>   Lines;
+    std::vector<GCS::Arc>    Arcs;
+    std::vector<GCS::Circle> Circles;
 
-    // parameters involved in a fixed constraint
-    std::set<double*> FixedParameters;
-
-    // helper for the PointOnPoint constraint optimization
-    struct PoPConst {
-        PoPConst():startParamId(-1),endParamId(-1),midParamId(-1){}
-        int startParamId;
-        int endParamId;
-        int midParamId;
-    };
-
-    std::map<int,PoPConst> PoPMap;
-
+    bool isInitMove;
 };
 
 } //namespace Part

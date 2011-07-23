@@ -40,7 +40,8 @@ enum ConstraintType {
     Parallel,
     Tangent,
     Distance,
-    Angle
+    Angle,
+    Perpendicular
 };
 
 /// define if you want to use the end or start point

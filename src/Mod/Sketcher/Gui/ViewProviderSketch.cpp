@@ -338,7 +338,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
 
                         Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.movePoint(%i,%i,App.Vector(%f,%f,0))"
                                                ,getObject()->getNameInDocument()
-                                               ,GeoId, PosId ,x , y
+                                               ,GeoId, PosId, x, y
                                                );
                         edit->PreselectPoint = edit->DragPoint;
                         edit->DragPoint = -1;
@@ -420,6 +420,10 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
             edit->PreselectCurve = -1;
             edit->PreselectPoint = -1;
             edit->PreselectConstraint = -1;
+            int GeoId;
+            Sketcher::PointPos PosId;
+            getSketchObject()->getGeoVertexIndex(edit->DragPoint, GeoId, PosId);
+            edit->ActSketch.initMove(GeoId, PosId);
 
             return true;
         case STATUS_SELECT_Edge:
@@ -428,6 +432,7 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
             edit->PreselectCurve = -1;
             edit->PreselectPoint = -1;
             edit->PreselectConstraint = -1;
+            edit->ActSketch.initMove(edit->DragCurve, none);
 
             return true;
         case STATUS_SELECT_Constraint:
@@ -1204,8 +1209,8 @@ void ViewProviderSketch::updateData(const App::Property* prop)
     ViewProvider2DObject::updateData(prop);
 
     if (edit && (prop == &(getSketchObject()->Geometry) || &(getSketchObject()->Constraints))) {
-        edit->ActSketch.setUpSketch(getSketchObject()->Geometry.getValues()
-                                   ,getSketchObject()->Constraints.getValues());
+        edit->ActSketch.setUpSketch(getSketchObject()->Geometry.getValues(),
+                                    getSketchObject()->Constraints.getValues());
         if (edit->ActSketch.solve() == 0)
             signalSolved(0,edit->ActSketch.SolveTime);
         else
