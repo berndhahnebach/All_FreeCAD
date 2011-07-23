@@ -110,6 +110,21 @@ SET(SketchSolver_SRCS
 )
 SOURCE_GROUP("Sketchsolve" FILES ${SketchSolver_SRCS})
 
+SET(FreeGCS_SRCS
+    freegcs/qp_eq.h
+    freegcs/GCS.cpp
+    freegcs/GCS.h
+    freegcs/Util.h
+    freegcs/Geo.h
+    freegcs/Constraints.cpp
+    freegcs/Constraints.h
+    freegcs/SubSystem.cpp
+    freegcs/SubSystem.h
+    freegcs/qp_eq.cpp
+    freegcs/qp_eq.h
+)
+SOURCE_GROUP("FreeGCS" FILES ${FreeGCS_SRCS})
+
 SET(SketchModule_SRCS
     AppSketcher.cpp
     AppSketcherPy.cpp
@@ -124,6 +139,7 @@ SET(Sketcher_SRCS
     ${Features_SRCS}
     ${Sketchflat_SRCS}
     ${SketchSolver_SRCS}
+    ${FreeGCS_SRCS}
     ${SketchModule_SRCS}
     ${Python_SRCS}
     ${Properties_SRCS}
