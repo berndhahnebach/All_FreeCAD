@@ -9,7 +9,11 @@ BUILT_SOURCES=\
 		moc_TaskView.cpp \
 		ui_TaskAppearance.h \
 		ui_TaskSelectLinkProperty.h \
-		ui_TaskEditControl.h
+		ui_TaskEditControl.h \
+		TaskDialogPy.cpp
+		
+libTaskView_la_BUILT=\
+		TaskDialogPy.h
 
 libTaskView_la_UI=\
 		TaskAppearance.ui \
@@ -20,6 +24,8 @@ libTaskView_la_SOURCES=\
 		TaskAppearance.cpp \
 		TaskSelectLinkProperty.cpp \
 		TaskDialog.cpp \
+		TaskDialogPython.cpp \
+		TaskDialogPyImp.cpp \
 		TaskWatcher.cpp \
 		TaskEditControl.cpp \
 		TaskView.cpp
@@ -30,12 +36,17 @@ include_HEADERS=\
 		TaskAppearance.h \
 		TaskSelectLinkProperty.h \
 		TaskDialog.h \
+		TaskDialogPython.h \
 		TaskWatcher.h \
 		TaskEditControl.h \
 		TaskView.h
 
 EXTRA_DIST = \
-		$(libTaskView_la_UI)
+		$(libTaskView_la_UI) \
+		TaskDialogPy.xml
+
+%.cpp: %.xml $(top_srcdir)/src/Tools/generateTemplates/templateClassPyExport.py
+	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $<
 
 # rule for Qt MetaObject Compiler:
 moc_%.cpp: %.h
