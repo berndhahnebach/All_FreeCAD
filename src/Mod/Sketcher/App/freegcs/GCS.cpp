@@ -104,6 +104,11 @@ System::System(std::vector<Constraint *> clist_)
                 newconstr = new ConstraintP2LDistance(*oldconstr);
                 break;
             }
+            case PointOnLine: {
+                ConstraintPointOnLine *oldconstr = static_cast<ConstraintPointOnLine *>(*constr);
+                newconstr = new ConstraintPointOnLine(*oldconstr);
+                break;
+            }
             case Parallel: {
                 ConstraintParallel *oldconstr = static_cast<ConstraintParallel *>(*constr);
                 newconstr = new ConstraintParallel(*oldconstr);
@@ -548,7 +553,9 @@ int System::solve(SubSystem *subsysA, SubSystem *subsysB, int isFine)
     double mu = 0;
     lambda.setZero();
     for (int iter=1; iter < maxIterNumber; iter++) {
-        qp_eq(B, grad, JA, resA, xdir, Y, Z);
+        int status = qp_eq(B, grad, JA, resA, xdir, Y, Z);
+        if (status)
+            break;
 
         x0 = x;
         lambda0 = lambda;
@@ -767,6 +774,9 @@ void free(std::vector<Constraint *> &constrvec)
                     break;
                 case P2LDistance:
                     delete static_cast<ConstraintP2LDistance *>(*constr);
+                    break;
+                case PointOnLine:
+                    delete static_cast<ConstraintPointOnLine *>(*constr);
                     break;
                 case Parallel:
                     delete static_cast<ConstraintParallel *>(*constr);
