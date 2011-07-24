@@ -10,12 +10,18 @@ SUBDIRS += Mesh
 #endif
 
 if HAVE_OPENCASCADE
-SUBDIRS += Part Import PartDesign Raytracing Drawing Sketcher
+SUBDIRS += Part Import PartDesign Raytracing Drawing
 endif
 
 if HAVE_EIGEN2
 if HAVE_OPENCASCADE
 SUBDIRS += Robot
+endif
+endif
+
+if HAVE_EIGEN3
+if HAVE_OPENCASCADE
+SUBDIRS += Sketcher
 endif
 endif
 

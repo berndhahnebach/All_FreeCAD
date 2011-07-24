@@ -383,8 +383,9 @@ AC_CHECK_FILE($fc_eig_incs/Eigen,,
 fc_eig_ac_save_cppflags=$CPPFLAGS
 CPPFLAGS="$CPPFLAGS -I$fc_eig_incs"
 
+# Check a file which is present in Eigen2 but not in Eigen3
 fc_cv_lib_eig_avail=no
-AC_CHECK_HEADER(Eigen/Core,
+AC_CHECK_HEADER(Eigen/NewStdVector,
 	fc_cv_lib_eig_avail=yes,)
 
 CPPFLAGS=$fc_eig_ac_save_cppflags
@@ -415,8 +416,9 @@ AC_CHECK_FILE($fc_eig_incs/Eigen,,
 fc_eig_ac_save_cppflags=$CPPFLAGS
 CPPFLAGS="$CPPFLAGS -I$fc_eig_incs"
 
+# Check a file which is present in Eigen3 but not in Eigen2
 fc_cv_lib_eig_avail=no
-AC_CHECK_HEADER(Eigen/Core,
+AC_CHECK_HEADER(Eigen/Eigenvalues,
 	fc_cv_lib_eig_avail=yes,)
 
 CPPFLAGS=$fc_eig_ac_save_cppflags
