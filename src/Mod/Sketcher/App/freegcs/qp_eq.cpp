@@ -26,7 +26,7 @@ using namespace Eigen;
 
 // minimizes ( 0.5 * x^T * H * x + g^T * x ) under the condition ( A*x + c = 0 )
 // it returns the solution in x, the row-space of A in Y, and the null space of A in Z
-void qp_eq(MatrixXd &H, VectorXd &g, MatrixXd &A, VectorXd &c,
+int qp_eq(MatrixXd &H, VectorXd &g, MatrixXd &A, VectorXd &c,
            VectorXd &x, MatrixXd &Y, MatrixXd &Z)
 {
     FullPivHouseholderQR<MatrixXd> qrAT(A.transpose());
@@ -37,7 +37,8 @@ void qp_eq(MatrixXd &H, VectorXd &g, MatrixXd &A, VectorXd &c,
     size_t r = qrAT.rank();
 
     assert(rows >= cols);
-    assert(r == cols);
+    if (r != cols)
+        return -1;
 
     // A^T = Q*R*P^T = Q1*R1*P^T
     // Q = [Q1,Q2], R=[R1;0]
@@ -57,4 +58,5 @@ void qp_eq(MatrixXd &H, VectorXd &g, MatrixXd &A, VectorXd &c,
 
     x = - Y * c + Z * y;
 
+    return 0;
 }
