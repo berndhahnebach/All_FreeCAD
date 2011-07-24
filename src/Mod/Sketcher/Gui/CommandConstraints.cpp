@@ -558,6 +558,80 @@ bool CmdSketcherConstrainParallel::isActive(void)
 }
 
 
+DEF_STD_CMD_A(CmdSketcherConstrainPerpendicular);
+
+CmdSketcherConstrainPerpendicular::CmdSketcherConstrainPerpendicular()
+    :Command("Sketcher_ConstrainPerpendicular")
+{
+    sAppModule      = "Sketcher";
+    sGroup          = QT_TR_NOOP("Sketcher");
+    sMenuText       = QT_TR_NOOP("Constrain perpendicular");
+    sToolTipText    = QT_TR_NOOP("Create a Perpendicular constraint between two lines");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Constraint_Perpendicular";
+    sAccel          = "N";
+    eType           = ForEdit;
+}
+
+void CmdSketcherConstrainPerpendicular::activated(int iMsg)
+{
+    // get the selection 
+    std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
+
+    // only one sketch with its subelements are allowed to be selected
+    if (selection.size() != 1) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select two lines from the sketch."));
+        return;
+    }
+
+    // get the needed lists and objects
+    const std::vector<std::string> &SubNames = selection[0].getSubNames();
+
+    // only one sketch with its subelements are allowed to be selected
+    if (SubNames.size() != 2) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select exactly two lines from the sketch."));
+        return;
+    }
+
+    int GeoId1,GeoId2;
+    if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge") 
+        GeoId1 = std::atoi(SubNames[0].substr(4,4000).c_str());
+    else {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select exactly two lines from the sketch."));
+        return;
+    }
+
+    if (SubNames[1].size() > 4 && SubNames[1].substr(0,4) == "Edge") 
+        GeoId2 = std::atoi(SubNames[1].substr(4,4000).c_str());
+    else {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select exactly two lines from the sketch."));
+        return;
+    }
+
+    // undo command open
+    openCommand("add perpendicular constraint");
+    Gui::Command::doCommand(
+        Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Perpendicular',%i,%i)) ",
+        selection[0].getFeatName(),GeoId1,GeoId2);
+
+    // finish the transaction and update
+    commitCommand();
+    updateActive();
+
+    // clear the selction (convenience)
+    getSelection().clearSelection();
+}
+
+bool CmdSketcherConstrainPerpendicular::isActive(void)
+{
+    return isCreateConstraintActive( getActiveGuiDocument() );
+}
+
 DEF_STD_CMD_A(CmdSketcherConstrainTangent);
 
 CmdSketcherConstrainTangent::CmdSketcherConstrainTangent()
@@ -670,6 +744,7 @@ void CreateSketcherCommandsConstraints(void)
     rcCmdMgr.addCommand(new CmdSketcherConstrainLock());
     rcCmdMgr.addCommand(new CmdSketcherConstrainCoincident());
     rcCmdMgr.addCommand(new CmdSketcherConstrainParallel());
+    rcCmdMgr.addCommand(new CmdSketcherConstrainPerpendicular());
     rcCmdMgr.addCommand(new CmdSketcherConstrainTangent());
     rcCmdMgr.addCommand(new CmdSketcherConstrainDistance());
  }

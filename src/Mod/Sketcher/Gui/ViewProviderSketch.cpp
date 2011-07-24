@@ -352,8 +352,9 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                         const std::vector<Part::Geometry *> *geomlist;
                         geomlist = &getSketchObject()->Geometry.getValues();
                         Part::Geometry *geo = (*geomlist)[edit->DragCurve];
-                        if (geo->getTypeId()== Part::GeomCircle::getClassTypeId() ||
-                            geo->getTypeId()== Part::GeomArcOfCircle::getClassTypeId()) {
+                        if (geo->getTypeId() == Part::GeomLineSegment::getClassTypeId() ||
+                            geo->getTypeId() == Part::GeomArcOfCircle::getClassTypeId() ||
+                            geo->getTypeId() == Part::GeomCircle::getClassTypeId()) {
                             Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.movePoint(%i,%i,App.Vector(%f,%f,0))"
                                                    ,getObject()->getNameInDocument()
                                                    ,edit->DragCurve, none, x, y
@@ -749,7 +750,7 @@ void ViewProviderSketch::draw(bool temp)
         geomlist = &getSketchObject()->Geometry.getValues();
 
     for (std::vector<Part::Geometry *>::const_iterator it = geomlist->begin(); it != geomlist->end(); ++it) {
-        if ((*it)->getTypeId()== Part::GeomLineSegment::getClassTypeId()) { // add a line
+        if ((*it)->getTypeId() == Part::GeomLineSegment::getClassTypeId()) { // add a line
             const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(*it);
             // create the definition struct for that geom
             Coords.push_back(lineSeg->getStartPoint());
@@ -761,7 +762,7 @@ void ViewProviderSketch::draw(bool temp)
             PtColor.push_back(0);
             PtColor.push_back(0);
         }
-        else if ((*it)->getTypeId()== Part::GeomCircle::getClassTypeId()) { // add a circle
+        else if ((*it)->getTypeId() == Part::GeomCircle::getClassTypeId()) { // add a circle
             const Part::GeomCircle *circle = dynamic_cast<const Part::GeomCircle*>(*it);
             Handle_Geom_Circle curve = Handle_Geom_Circle::DownCast(circle->handle());
 
@@ -781,7 +782,7 @@ void ViewProviderSketch::draw(bool temp)
             Points.push_back(center);
             PtColor.push_back(0);
         }
-        else if ((*it)->getTypeId()== Part::GeomArcOfCircle::getClassTypeId()) { // add an arc
+        else if ((*it)->getTypeId() == Part::GeomArcOfCircle::getClassTypeId()) { // add an arc
             const Part::GeomArcOfCircle *arc = dynamic_cast<const Part::GeomArcOfCircle*>(*it);
             Handle_Geom_TrimmedCurve curve = Handle_Geom_TrimmedCurve::DownCast(arc->handle());
 
@@ -818,7 +819,7 @@ void ViewProviderSketch::draw(bool temp)
             PtColor.push_back(0);
             PtColor.push_back(0);
         }
-        else if ((*it)->getTypeId()== Part::GeomBSplineCurve::getClassTypeId()) { // add a circle
+        else if ((*it)->getTypeId() == Part::GeomBSplineCurve::getClassTypeId()) { // add a circle
             const Part::GeomBSplineCurve *spline = dynamic_cast<const Part::GeomBSplineCurve*>(*it);
             Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast(spline->handle());
 
@@ -903,8 +904,8 @@ Restart:
     // check if a new constraint arrived
     if (ConStr.size() != edit->vConstrType.size())
         rebuildConstraintsVisual();
-    assert((int)ConStr.size()==edit->constrGroup->getNumChildren());
-    assert((int)edit->vConstrType.size()==edit->constrGroup->getNumChildren());
+    assert((int)ConStr.size() == edit->constrGroup->getNumChildren());
+    assert((int)edit->vConstrType.size() == edit->constrGroup->getNumChildren());
     // go through the constraints and update the position 
     i = 0;
     for (std::vector<Sketcher::Constraint*>::const_iterator it = ConStr.begin(); it != ConStr.end(); ++it,i++) {
@@ -987,7 +988,7 @@ Restart:
                     // get the geometry
                     const Part::Geometry *geo = (*geomlist)[Constr->First];
                     // Horizontal can only be a GeomLineSegment
-                    assert(geo->getTypeId()== Part::GeomLineSegment::getClassTypeId());
+                    assert(geo->getTypeId() == Part::GeomLineSegment::getClassTypeId());
                     const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geo);
                     // calculate the half distance between the start and endpoint
                     Base::Vector3d pos = lineSeg->getStartPoint() + ((lineSeg->getEndPoint()-lineSeg->getStartPoint())/2);
@@ -1000,7 +1001,7 @@ Restart:
                     // get the geometry
                     const Part::Geometry *geo = (*geomlist)[Constr->First];
                     // Vertical can only be a GeomLineSegment
-                    assert(geo->getTypeId()== Part::GeomLineSegment::getClassTypeId());
+                    assert(geo->getTypeId() == Part::GeomLineSegment::getClassTypeId());
                     const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geo);
                     // calculate the half distance between the start and endpoint
                     Base::Vector3d pos = lineSeg->getStartPoint() + ((lineSeg->getEndPoint()-lineSeg->getStartPoint())/2);
@@ -1015,13 +1016,34 @@ Restart:
                     const Part::Geometry *geo1 = (*geomlist)[Constr->First];
                     const Part::Geometry *geo2 = (*geomlist)[Constr->Second];
                     // Parallel can only apply to a GeomLineSegment
-                    assert(geo1->getTypeId()== Part::GeomLineSegment::getClassTypeId());
-                    assert(geo2->getTypeId()== Part::GeomLineSegment::getClassTypeId());
+                    assert(geo1->getTypeId() == Part::GeomLineSegment::getClassTypeId());
+                    assert(geo2->getTypeId() == Part::GeomLineSegment::getClassTypeId());
                     const Part::GeomLineSegment *lineSeg1 = dynamic_cast<const Part::GeomLineSegment*>(geo1);
                     const Part::GeomLineSegment *lineSeg2 = dynamic_cast<const Part::GeomLineSegment*>(geo2);
                     // calculate the half-distance between the start and endpoint
-                    Base::Vector3d pos1 = lineSeg1->getStartPoint() + ((lineSeg1->getEndPoint()-lineSeg1->getStartPoint())/2);
-                    Base::Vector3d pos2 = lineSeg2->getStartPoint() + ((lineSeg2->getEndPoint()-lineSeg2->getStartPoint())/2);
+                    Base::Vector3d pos1 = (lineSeg1->getStartPoint()+lineSeg1->getEndPoint())/2;
+                    Base::Vector3d pos2 = (lineSeg2->getStartPoint()+lineSeg2->getEndPoint())/2;
+                    // move the second point because of two translations in a row. 
+                    pos2 = pos2 - pos1;
+                    dynamic_cast<SoTranslation *>(sep->getChild(1))->translation = SbVec3f(pos1.x,pos1.y,0.0f);
+                    dynamic_cast<SoTranslation *>(sep->getChild(3))->translation = SbVec3f(pos2.x,pos2.y,0.0f);
+                }
+                break;
+            case Perpendicular:
+                {
+                    assert(Constr->First < (int)geomlist->size());
+                    assert(Constr->Second < (int)geomlist->size());
+                    // get the geometry
+                    const Part::Geometry *geo1 = (*geomlist)[Constr->First];
+                    const Part::Geometry *geo2 = (*geomlist)[Constr->Second];
+                    // Perpendicular can only apply to a GeomLineSegment
+                    assert(geo1->getTypeId() == Part::GeomLineSegment::getClassTypeId());
+                    assert(geo2->getTypeId() == Part::GeomLineSegment::getClassTypeId());
+                    const Part::GeomLineSegment *lineSeg1 = dynamic_cast<const Part::GeomLineSegment*>(geo1);
+                    const Part::GeomLineSegment *lineSeg2 = dynamic_cast<const Part::GeomLineSegment*>(geo2);
+                    // calculate the half-distance between the start and endpoint
+                    Base::Vector3d pos1 = (lineSeg1->getStartPoint()+lineSeg1->getEndPoint())/2;
+                    Base::Vector3d pos2 = (lineSeg2->getStartPoint()+lineSeg2->getEndPoint())/2;
                     // move the second point because of two translations in a row. 
                     pos2 = pos2 - pos1;
                     dynamic_cast<SoTranslation *>(sep->getChild(1))->translation = SbVec3f(pos1.x,pos1.y,0.0f);
@@ -1034,7 +1056,7 @@ Restart:
                     // get the geometry
                     const Part::Geometry *geo = (*geomlist)[Constr->First];
                     // Distance can only apply to a GeomLineSegment
-                    assert(geo->getTypeId()== Part::GeomLineSegment::getClassTypeId());
+                    assert(geo->getTypeId() == Part::GeomLineSegment::getClassTypeId());
                     const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geo);
                     // calculate the half distance between the start and endpoint
                     SbVec3f p1(lineSeg->getStartPoint().x,lineSeg->getStartPoint().y,0);
@@ -1140,7 +1162,7 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
             case Coincident: // no visual for coincident so far
                 edit->vConstrType.push_back(Coincident);
                 break;
-            case Parallel: 
+            case Parallel:
                 {
                     sep->addChild(new SoTranslation());
                     SoText2 *text = new SoText2();
@@ -1155,6 +1177,22 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
                     // remember the type of this constraint node
                     edit->vConstrType.push_back(Parallel);
                 }                break;
+            case Perpendicular:
+                {
+                    sep->addChild(new SoTranslation());
+                    SoText2 *text = new SoText2();
+                    text->justification = SoText2::LEFT;
+                    text->string = "N";
+                    sep->addChild(text); 
+                    sep->addChild(new SoTranslation());
+                    text = new SoText2();
+                    text->justification = SoText2::LEFT;
+                    text->string = "N";
+                    sep->addChild(text); 
+                    // remember the type of this constraint node
+                    edit->vConstrType.push_back(Perpendicular);
+                }
+                break;
             case Tangent: // no visual for tangent so far
                 edit->vConstrType.push_back(Tangent);
                 break;
