@@ -225,6 +225,7 @@ MARK_AS_ADVANCED(FORCE FREECAD_LIBPACK_CHECKFILE6X FREECAD_LIBPACK_CHECKFILE7X)
 # -------------------------------- Eigen --------------------------------
 
     find_package(Eigen2)
+    find_package(Eigen3)
 
 # -------------------------------- ODE ----------------------------------
 
