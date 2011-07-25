@@ -179,17 +179,19 @@ macro(generate_from_xml BASE_NAME)
     file(TO_NATIVE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/${BASE_NAME}.xml SOURCE_PATH)
 
     file(TO_NATIVE_PATH ${CMAKE_CURRENT_BINARY_DIR}/${BASE_NAME}.cpp SOURCE_CPP_PATH)
+    # BASE_NAME may include also a path name
+    GET_FILENAME_COMPONENT(OUTPUT_PATH ${SOURCE_CPP_PATH} PATH)
     if (NOT EXISTS ${SOURCE_CPP_PATH})
         # assures the source files are generated at least once
         message(STATUS "${SOURCE_CPP_PATH}")
-        execute_process(COMMAND ${PYTHON_EXECUTABLE} ${TOOL_PATH} --outputPath ${CMAKE_CURRENT_BINARY_DIR} ${SOURCE_PATH}
+        execute_process(COMMAND ${PYTHON_EXECUTABLE} ${TOOL_PATH} --outputPath ${OUTPUT_PATH} ${SOURCE_PATH}
                         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         )
     endif (NOT EXISTS ${SOURCE_CPP_PATH})
 
     add_custom_command(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${BASE_NAME}.h ${CMAKE_CURRENT_BINARY_DIR}/${BASE_NAME}.cpp
-        COMMAND ${PYTHON_EXECUTABLE} ${TOOL_PATH} --outputPath ${CMAKE_CURRENT_BINARY_DIR} ${BASE_NAME}.xml
+        COMMAND ${PYTHON_EXECUTABLE} ${TOOL_PATH} --outputPath ${OUTPUT_PATH} ${BASE_NAME}.xml
         MAIN_DEPENDENCY ${BASE_NAME}.xml
         DEPENDS ${CMAKE_SOURCE_DIR}/src/Tools/generateTemplates/templateClassPyExport.py
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
