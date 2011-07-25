@@ -91,6 +91,7 @@
 #include "ViewProviderMeasureDistance.h"
 
 #include "Language/Translator.h"
+#include "TaskView/TaskDialogPython.h"
 #include "GuiInitScript.h"
 
 
@@ -346,6 +347,9 @@ Application::Application(bool GUIenabled)
         SelectionFilterPy::init_type();
         Base::Interpreter().addType(SelectionFilterPy::type_object(),
             pSelectionModule,"Filter");
+
+        ControlPy::init_type();
+        Py::Module(module).setAttr(std::string("Control"),Py::Object(ControlPy::getInstance(), true));
     }
 
     Base::PyGILStateLocker lock;

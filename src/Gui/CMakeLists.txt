@@ -57,8 +57,7 @@ generate_from_xml(ViewProviderPy)
 generate_from_xml(ViewProviderDocumentObjectPy)
 generate_from_xml(ViewProviderPythonFeaturePy)
 generate_from_xml(WorkbenchPy)
-generate_from_xml(SelectionObjectPy) 
-generate_from_xml(TaskView/TaskDialogPy)
+generate_from_xml(SelectionObjectPy)
 
 generate_from_py(FreeCADGuiInit GuiInitScript.h)
 
@@ -71,7 +70,6 @@ SET(FreeCADGui_XML_SRCS
     WorkbenchPy.xml
     SelectionObjectPy.xml
     DocumentPy.xml
-    TaskView/TaskDialogPy.xml
 )
 SOURCE_GROUP("XML" FILES ${FreeCADApp_XML_SRCS})
 
@@ -501,7 +499,6 @@ SET(Task_View_SRCS
     TaskView/TaskDialog.h
     TaskView/TaskDialogPython.cpp
     TaskView/TaskDialogPython.h
-    TaskView/TaskDialogPyImp.cpp
     TaskView/TaskWatcher.cpp
     TaskView/TaskWatcher.h
 )

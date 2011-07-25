@@ -25,13 +25,35 @@
 #define GUI_TASKVIEW_TASKDIALOGPYTHON_H
 
 #include "TaskDialog.h"
+#include <CXX/Extensions.hxx>
 
 namespace Gui {
+class ControlPy : public Py::PythonExtension<ControlPy> 
+{
+public:
+    static void init_type(void);    // announce properties and methods
+    static ControlPy* getInstance();
+
+    ControlPy();
+    ~ControlPy();
+
+    Py::Object repr();
+    Py::Object showDialog(const Py::Tuple&);
+    Py::Object activeDialog(const Py::Tuple&);
+    Py::Object closeDialog(const Py::Tuple&);
+    Py::Object isAllowedAlterDocument(const Py::Tuple&);
+    Py::Object isAllowedAlterView(const Py::Tuple&);
+    Py::Object isAllowedAlterSelection(const Py::Tuple&);
+
+private:
+    static ControlPy* instance;
+};
+
 class TaskDialogPy;
 class GuiExport TaskDialogPython : public TaskView::TaskDialog
 {
 public:
-    TaskDialogPython();
+    TaskDialogPython(const Py::Object&);
     ~TaskDialogPython();
 
     virtual QDialogButtonBox::StandardButtons getStandardButtons(void) const;
@@ -50,7 +72,7 @@ public:
     virtual void helpRequested();
     
 private:
-    TaskDialogPy* py;
+    Py::Object dlg;
 };
 
 } //namespace Gui
