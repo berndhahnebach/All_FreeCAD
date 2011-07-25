@@ -385,6 +385,7 @@ class GuiExport PropertyPlacementItem: public PropertyItem
 
 protected:
     PropertyPlacementItem();
+    ~PropertyPlacementItem();
     virtual QVariant toolTip(const App::Property*) const;
     virtual QVariant toString(const QVariant&) const;
     virtual QVariant value(const App::Property*) const;
@@ -392,6 +393,7 @@ protected:
 
 private:
     bool init_axis;
+    bool changed_value;
     Base::Vector3d rot_axis;
     PropertyAngleItem * m_a;
     PropertyDoubleVectorItem* m_d;
