@@ -23,6 +23,9 @@
 #ifndef FREEGCS_SUBSYSTEM_H
 #define FREEGCS_SUBSYSTEM_H
 
+#undef min
+#undef max
+
 #include <Eigen/Core>
 #include "Constraints.h"
 
