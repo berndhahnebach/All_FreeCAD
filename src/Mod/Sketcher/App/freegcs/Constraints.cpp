@@ -73,6 +73,7 @@ double Constraint::grad(double *param)
 
 double Constraint::maxStep(MAP_pD_D &dir, double lim)
 {
+    return 0.;
 }
 
 // Equal
