@@ -1067,8 +1067,11 @@ protected:
         }
         if (!_task) {
             _task = task;
-            connect(task, SIGNAL(placementChanged(const QVariant &, bool, bool)),
-                    this, SLOT(setValue(const QVariant&)));
+            //NOTE: The placemnt task dialog applies relative placements while this editor
+            //sets absolute values which causes problems when caneling the dialog because
+            //then it sets the default placement.
+            //connect(task, SIGNAL(placementChanged(const QVariant &, bool, bool)),
+            //        this, SLOT(setValue(const QVariant&)));
         }
         task->setPlacement(value().value<Base::Placement>());
         task->setPropertyName(propertyname);
@@ -1100,7 +1103,7 @@ protected:
 
 TYPESYSTEM_SOURCE(Gui::PropertyEditor::PropertyPlacementItem, Gui::PropertyEditor::PropertyItem);
 
-PropertyPlacementItem::PropertyPlacementItem() : init_axis(false), rot_axis(0,0,1)
+PropertyPlacementItem::PropertyPlacementItem() : init_axis(false), changed_value(false), rot_axis(0,0,1)
 {
     m_a = static_cast<PropertyAngleItem*>(PropertyAngleItem::create());
     m_a->setParent(this);
@@ -1116,6 +1119,10 @@ PropertyPlacementItem::PropertyPlacementItem() : init_axis(false), rot_axis(0,0,
     m_p->setPropertyName(QLatin1String("Position"));
     m_p->setReadOnly(true);
     this->appendChild(m_p);
+}
+
+PropertyPlacementItem::~PropertyPlacementItem()
+{
 }
 
 double PropertyPlacementItem::getAngle() const
@@ -1142,6 +1149,7 @@ void PropertyPlacementItem::setAngle(double angle)
     Base::Rotation rot;
     rot.setValue(this->rot_axis, Base::radians<double>(angle));
     val.setRotation(rot);
+    changed_value = true;
     setValue(QVariant::fromValue(val));
 }
 
@@ -1168,6 +1176,7 @@ void PropertyPlacementItem::setAxis(const Base::Vector3d& axis)
         angle = -angle;
     rot.setValue(axis, angle);
     val.setRotation(rot);
+    changed_value = true;
     setValue(QVariant::fromValue(val));
 }
 
@@ -1187,6 +1196,7 @@ void PropertyPlacementItem::setPosition(const Base::Vector3d& pos)
         return;
     Base::Placement val = value.value<Base::Placement>();
     val.setPosition(pos);
+    changed_value = true;
     setValue(QVariant::fromValue(val));
 }
 
@@ -1249,6 +1259,11 @@ void PropertyPlacementItem::setValue(const QVariant& value)
 {
     if (!value.canConvert<Base::Placement>())
         return;
+    // Accept this only if the user changed the axis, angle or position but
+    // not if >this< item looses focus
+    if (!changed_value)
+        return;
+    changed_value = false;
     const Base::Placement& val = value.value<Base::Placement>();
     Base::Vector3d pos = val.getPosition();
     const Base::Rotation& rt = val.getRotation();
