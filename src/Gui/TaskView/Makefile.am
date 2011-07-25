@@ -9,11 +9,8 @@ BUILT_SOURCES=\
 		moc_TaskView.cpp \
 		ui_TaskAppearance.h \
 		ui_TaskSelectLinkProperty.h \
-		ui_TaskEditControl.h \
-		TaskDialogPy.cpp
-		
-libTaskView_la_BUILT=\
-		TaskDialogPy.h
+		ui_TaskEditControl.h
+
 
 libTaskView_la_UI=\
 		TaskAppearance.ui \
@@ -25,7 +22,6 @@ libTaskView_la_SOURCES=\
 		TaskSelectLinkProperty.cpp \
 		TaskDialog.cpp \
 		TaskDialogPython.cpp \
-		TaskDialogPyImp.cpp \
 		TaskWatcher.cpp \
 		TaskEditControl.cpp \
 		TaskView.cpp
@@ -42,8 +38,7 @@ include_HEADERS=\
 		TaskView.h
 
 EXTRA_DIST = \
-		$(libTaskView_la_UI) \
-		TaskDialogPy.xml
+		$(libTaskView_la_UI)
 
 %.cpp: %.xml $(top_srcdir)/src/Tools/generateTemplates/templateClassPyExport.py
 	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $<
