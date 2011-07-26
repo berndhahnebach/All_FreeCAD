@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <QRegExp>
 # include <QString>
 #endif
 
@@ -67,6 +68,7 @@ TaskSketcherConstrains::TaskSketcherConstrains(ViewProviderSketch *sketchView)
     proxy = new QWidget(this);
     ui = new Ui_TaskSketcherConstrains();
     ui->setupUi(proxy);
+    ui->listWidgetConstraints->setSelectionMode(QAbstractItemView::ExtendedSelection);
     //QMetaObject::connectSlotsByName(this);
 
     // connecting the needed signals
@@ -90,45 +92,57 @@ TaskSketcherConstrains::TaskSketcherConstrains(ViewProviderSketch *sketchView)
     connectionConstraintsChanged = sketchView->signalConstraintsChanged.connect(boost::bind(&SketcherGui::TaskSketcherConstrains::slotConstraintsChanged, this));
 
     this->groupLayout()->addWidget(proxy);
- 
-    Gui::Selection().Attach(this);
 
     slotConstraintsChanged();
 }
 
 TaskSketcherConstrains::~TaskSketcherConstrains()
 {
-    Gui::Selection().Detach(this);
     connectionConstraintsChanged.disconnect();
     delete ui;
 }
 
-/// @cond DOXERR
-void TaskSketcherConstrains::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
-                              Gui::SelectionSingleton::MessageType msg)
+void TaskSketcherConstrains::onSelectionChanged(const Gui::SelectionChanges& msg)
 {
     std::string temp;
     if (msg.Type == Gui::SelectionChanges::ClrSelection) {
+        ui->listWidgetConstraints->blockSignals(true);
         ui->listWidgetConstraints->clearSelection ();
+        ui->listWidgetConstraints->blockSignals(false);
     }
-    else if (msg.Type == Gui::SelectionChanges::AddSelection) {
+    else if (msg.Type == Gui::SelectionChanges::AddSelection ||
+             msg.Type == Gui::SelectionChanges::RmvSelection) {
+        bool select = (msg.Type == Gui::SelectionChanges::AddSelection);
         // is it this object??
-        if(strcmp(msg.pDocName,sketchView->getSketchObject()->getDocument()->getName())==0
-            &&strcmp(msg.pObjectName,sketchView->getSketchObject()->getNameInDocument())== 0) {
-                if(msg.pSubName){
-                    std::string shapetype(msg.pSubName);
-                    if (shapetype.size() > 10 && shapetype.substr(0,10) == "Constraint") {
-                        //int index=std::atoi(&shapetype[10]);
-                        //ui->listWidgetConstraints->setCurrentIndex(QModelIndex(0));
+        if (strcmp(msg.pDocName,sketchView->getSketchObject()->getDocument()->getName())==0 &&
+            strcmp(msg.pObjectName,sketchView->getSketchObject()->getNameInDocument())== 0) {
+            if (msg.pSubName) {
+                QRegExp rx(QString::fromAscii("^Constraint(\\d+)$"));
+                QString expr = QString::fromAscii(msg.pSubName);
+                int pos = expr.indexOf(rx);
+                if (pos > -1) {
+                    bool ok;
+                    int index = rx.cap(1).toInt(&ok);
+                    if (ok) {
+                        int countItems = ui->listWidgetConstraints->count();
+                        if (index < countItems) {
+                            ConstraintItem* item = static_cast<ConstraintItem*>
+                                (ui->listWidgetConstraints->item(index));
+                            if (item->ConstraintNbr == index) {
+                                ui->listWidgetConstraints->blockSignals(true);
+                                item->setSelected(select);
+                                ui->listWidgetConstraints->blockSignals(false);
+                            }
+                        }
                     }
-
                 }
-        }        
+            }
+        }
     }
-    else if (msg.Type == Gui::SelectionChanges::RmvSelection) {}
-    else if (msg.Type == Gui::SelectionChanges::SetSelection) {}       
+    else if (msg.Type == Gui::SelectionChanges::SetSelection) {
+        // do nothing here
+    }
 }
-/// @endcond DOXERR
 
 void TaskSketcherConstrains::on_comboBoxFilter_currentIndexChanged(int)
 {
@@ -137,7 +151,18 @@ void TaskSketcherConstrains::on_comboBoxFilter_currentIndexChanged(int)
 
 void TaskSketcherConstrains::on_listWidgetConstraints_itemSelectionChanged(void)
 {
-    
+    std::string doc_name = sketchView->getSketchObject()->getDocument()->getName();
+    std::string obj_name = sketchView->getSketchObject()->getNameInDocument();
+
+    bool block = this->blockConnection(true); // avoid to be notified by itself
+    Gui::Selection().clearSelection();
+    QList<QListWidgetItem *> items = ui->listWidgetConstraints->selectedItems();
+    for (QList<QListWidgetItem *>::iterator it = items.begin(); it != items.end(); ++it) {
+        std::stringstream ss;
+        ss << "Constraint" << static_cast<ConstraintItem*>(*it)->ConstraintNbr;
+        Gui::Selection().addSelection(doc_name.c_str(), obj_name.c_str(), ss.str().c_str());
+    }
+    this->blockConnection(block);
 }
 
 void TaskSketcherConstrains::on_listWidgetConstraints_itemActivated(QListWidgetItem *item)
