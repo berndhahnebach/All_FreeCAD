@@ -83,6 +83,9 @@ Py::Object ControlPy::repr()
 
 Py::Object ControlPy::showDialog(const Py::Tuple& args)
 {
+    Gui::TaskView::TaskDialog* act = Gui::Control().activeDialog();
+    if (act)
+        throw Py::Exception("Active task dialog found");
     TaskDialogPython* dlg = new TaskDialogPython(args[0]);
     Gui::Control().showDialog(dlg);
     return Py::None();
