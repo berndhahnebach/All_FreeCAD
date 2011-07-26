@@ -1013,7 +1013,7 @@ int Sketch::solve() {
 
 int Sketch::initMove(int geoId, PointPos pos)
 {
-    assert(geoId < int(Geoms.size()));
+    assert(geoId >= 0 && geoId < int(Geoms.size()));
 
     GCSsys.clearLevel(-1);
 
