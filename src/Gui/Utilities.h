@@ -31,6 +31,34 @@
 class SbViewVolume;
 class QAbstractItemView;
 
+namespace Base {
+// Specialization for SbVec3f
+template <>
+struct vec_traits<SbVec3f> {
+    typedef SbVec3f vec_type;
+    typedef float float_type;
+    vec_traits(const vec_type& v) : v(v){}
+    inline float_type x() { return v[0]; }
+    inline float_type y() { return v[1]; }
+    inline float_type z() { return v[2]; }
+private:
+    const vec_type& v;
+};
+
+// Specialization for SbVec3d
+template <>
+struct vec_traits<SbVec3d> {
+    typedef SbVec3d vec_type;
+    typedef float float_type;
+    vec_traits(const vec_type& v) : v(v){}
+    inline float_type x() { return v[0]; }
+    inline float_type y() { return v[1]; }
+    inline float_type z() { return v[2]; }
+private:
+    const vec_type& v;
+};
+}
+
 namespace App{ class DocumentObject; }
 namespace Gui {
 
