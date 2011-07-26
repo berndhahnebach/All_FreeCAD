@@ -421,10 +421,12 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
             edit->PreselectCurve = -1;
             edit->PreselectPoint = -1;
             edit->PreselectConstraint = -1;
-            int GeoId;
-            Sketcher::PointPos PosId;
-            getSketchObject()->getGeoVertexIndex(edit->DragPoint, GeoId, PosId);
-            edit->ActSketch.initMove(GeoId, PosId);
+            if (edit->DragPoint != -1) {
+                int GeoId;
+                Sketcher::PointPos PosId;
+                getSketchObject()->getGeoVertexIndex(edit->DragPoint, GeoId, PosId);
+                edit->ActSketch.initMove(GeoId, PosId);
+            }
 
             return true;
         case STATUS_SELECT_Edge:

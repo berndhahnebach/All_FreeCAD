@@ -151,6 +151,8 @@ TaskDialogPython::TaskDialogPython(const Py::Object& o) : dlg(o)
 
 TaskDialogPython::~TaskDialogPython()
 {
+    Base::PyGILStateLocker lock;
+    this->dlg = Py::None();
 }
 
 void TaskDialogPython::open()

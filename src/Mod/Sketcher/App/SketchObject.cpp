@@ -344,7 +344,7 @@ void SketchObject::Restore(XMLReader &reader)
 
 void SketchObject::getGeoVertexIndex(int VertexId, int &GeoId, PointPos &PosId)
 {
-    if (VertexId >= (int)VertexId2GeoId.size()) {
+    if (VertexId < 0 || VertexId >= (int)VertexId2GeoId.size()) {
         GeoId = -1;
         PosId = none;
         return;
