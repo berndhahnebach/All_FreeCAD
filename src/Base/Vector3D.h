@@ -249,7 +249,7 @@ inline _Vec1 convertTo(const _Vec2& v)
 {
     typedef _Vec2 vec_type;
     typedef vec_traits<vec_type> traits_type;
-    typedef traits_type::float_type float_type;
+    typedef typename traits_type::float_type float_type;
     traits_type t(v);
     return _Vec1((float_type)t.x(),(float_type)t.y(),(float_type)t.z());
 };
