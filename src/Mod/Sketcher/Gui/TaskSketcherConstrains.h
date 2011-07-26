@@ -37,10 +37,9 @@ class Property;
 
 namespace SketcherGui {
 
-typedef boost::signals::connection Connection;
 class ViewProviderSketch;
 
-class TaskSketcherConstrains : public Gui::TaskView::TaskBox, public Gui::SelectionSingleton::ObserverType
+class TaskSketcherConstrains : public Gui::TaskView::TaskBox, public Gui::SelectionObserver
 {
     Q_OBJECT
 
@@ -49,8 +48,7 @@ public:
     ~TaskSketcherConstrains();
 
     /// Observer message from the Selection
-    void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
-                  Gui::SelectionSingleton::MessageType Reason);
+    void onSelectionChanged(const Gui::SelectionChanges& msg);
 
     void slotConstraintsChanged(void);
 
@@ -63,6 +61,7 @@ public Q_SLOTS:
 protected:
     void changeEvent(QEvent *e);
     ViewProviderSketch *sketchView;
+    typedef boost::BOOST_SIGNALS_NAMESPACE::connection Connection;
     Connection connectionConstraintsChanged;
 
 private:
