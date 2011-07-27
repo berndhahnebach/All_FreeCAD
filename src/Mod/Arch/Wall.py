@@ -59,7 +59,8 @@ class CommandWall:
                 makeWall(obj)
             FreeCAD.ActiveDocument.commitTransaction()
         else:
-            FreeCADGui.runCommand("Draft_Wire")
+            line = Draft.makeWire([Vector(0,0,0),Vector(0,1,0)])
+            wall = makeWall(line)
        
 class Wall(Component.Component):
     "The Wall object"
@@ -69,8 +70,6 @@ class Wall(Component.Component):
                         "The width of this wall")
         obj.addProperty("App::PropertyLength","Height","Base",
                         "The height of this wall. Keep 0 for automatic")
-        obj.addProperty("App::PropertyVector","Normal","Base",
-                        "The normal extrusion direction of this wall (keep (0,0,0) for automatic normal)")
         obj.addProperty("App::PropertyEnumeration","Align","Base",
                         "The alignment of this wall on its base object, if applicable")
         obj.Align = ['Left','Right','Center']

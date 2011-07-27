@@ -110,41 +110,60 @@ def splitMesh(obj,mark=True):
         return nlist
     return [obj]
 
-def meshToShape(obj):
-    '''meshToShape(object): turns a mesh into a shape, joining coplanar facets'''
+def meshToShape(obj,mark=True):
+    '''meshToShape(object,[mark]): turns a mesh into a shape, joining coplanar facets. If
+    mark is True (default), non-solid objects will be marked in red'''
     if "Mesh" in obj.PropertiesList:
         faces = []	
         mesh = obj.Mesh
-        segments = mesh.getPlanes(0.01) # use rather strict tolerance here
-
+        plac = obj.Placement
+        segments = mesh.getPlanes(0.001) # use rather strict tolerance here
+        print len(segments)," segments ",segments
         for i in segments:
+            print "treating",segments.index(i),i
             if len(i) > 0:
-                # a segment can have inner holes
                 wires = MeshPart.wireFromSegment(mesh, i)
-                # we assume that the exterior boundary is that one with
-                # the biggest bounding box
-                if len(wires) > 0:
+                print "wire done"
+                print wires
+                if len(wires) > 1:
+                    # a segment can have inner holes
+                    print "inner wires found"
                     ext = None
                     max_length = 0
-                    for i in wires:		
-                        if i.BoundBox.DiagonalLength > max_length:
-                            max_length = i.BoundBox.DiagonalLength
-                            ext = i
+                    # cleaning up rubbish in wires
+                    for i in range(len(wires)):
+                        wires[i] = fcgeo.removeInterVertices(wires[i])
+                    for w in wires:
+                        # we assume that the exterior boundary is that one with
+                        # the biggest bounding box
+                        if w.BoundBox.DiagonalLength > max_length:
+                            max_length = w.BoundBox.DiagonalLength
+                            ext = w
+                    print "exterior wire",ext
                     wires.remove(ext)
                     # all interior wires mark a hole and must reverse
                     # their orientation, otherwise Part.Face fails
-                    for i in wires:
-                        i.reverse()
-                    # make sure that the exterior wires comes as first in the lsit
+                    for w in wires:
+                        print "reversing",w
+                        #w.reverse()
+                        print "reversed"
+                    # make sure that the exterior wires comes as first in the list
                     wires.insert(0, ext)
-                    faces.append(Part.Face(wires))
+                    print "done sorting", wires
+                faces.append(Part.Face(wires))
+                print "done facing"
+            print "faces",faces
 
         shell=Part.Compound(faces)
         solid = Part.Solid(Part.Shell(faces))
         name = obj.Name
-        FreeCAD.ActiveDocument.removeObject(name)
+        if solid.isClosed():
+            FreeCAD.ActiveDocument.removeObject(name)
         newobj = FreeCAD.ActiveDocument.addObject("Part::Feature",name)
         newobj.Shape = solid
+        newobj.Placement = plac
+        if not solid.isClosed():
+            newobj.ViewObject.ShapeColor = (1.0,0.0,0.0,1.0)
         return newobj
     return None
 
@@ -230,7 +249,7 @@ class CommandMeshToShape:
                 'ToolTip': QtCore.QT_TRANSLATE_NOOP("Arch_MeshToPart","Turns selected meshes into Part Shape objects")}
 
     def IsActive(self):
-        if len(FreeCADGui.Selection.getSelection()):
+        if FreeCADGui.Selection.getSelection():
             return True
         else:
             return False
@@ -239,9 +258,15 @@ class CommandMeshToShape:
         if FreeCADGui.Selection.getSelection():
             f = FreeCADGui.Selection.getSelection()[0]
             g = None
-            if f.InList:
-                if f.InList[0].isDerivedFrom("App::DocumentObjectGroup"):
-                            g = f.InList[0]
+            if f.isDerivedFrom("App::DocumentObjectGroup"):
+                g = f
+                FreeCADGui.Selection.clearSelection()
+                for o in f.OutList:
+                    FreeCADGui.Selection.addSelection(o)
+            else:
+                if f.InList:
+                    if f.InList[0].isDerivedFrom("App::DocumentObjectGroup"):
+                        g = f.InList[0]
             FreeCAD.ActiveDocument.openTransaction("Mesh to Shape")
             for obj in FreeCADGui.Selection.getSelection():
                 newobj = meshToShape(obj)
