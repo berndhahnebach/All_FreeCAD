@@ -68,7 +68,7 @@
         <item>
          <widget class="QLabel" name="textLabel1_2">
           <property name="text">
-           <string>Undo Redo Size (in Megabyte)</string>
+           <string>Maximum Undo/Redo steps</string>
           </property>
          </widget>
         </item>
@@ -132,7 +132,7 @@
       <item row="4" column="0">
        <widget class="Gui::PrefCheckBox" name="prefUndoRedo">
         <property name="text">
-         <string>Using Undo/Redo on documents (can be very memory consuming)</string>
+         <string>Using Undo/Redo on documents</string>
         </property>
          <property name="checked">
            <bool>true</bool>

@@ -602,6 +602,7 @@ StdCmdUndo::StdCmdUndo()
   sStatusTip    = QT_TR_NOOP("Undo exactly one action");
   sPixmap       = "edit-undo";
   sAccel        = keySequenceToAccel(QKeySequence::Undo);
+  eType         = ForEdit;
 }
 
 void StdCmdUndo::activated(int iMsg)
@@ -644,6 +645,7 @@ StdCmdRedo::StdCmdRedo()
   sStatusTip    = QT_TR_NOOP("Redoes a previously undone action");
   sPixmap       = "edit-redo";
   sAccel        = keySequenceToAccel(QKeySequence::Redo);
+  eType         = ForEdit;
 }
 
 void StdCmdRedo::activated(int iMsg)

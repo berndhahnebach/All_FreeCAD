@@ -139,6 +139,8 @@ struct DocumentP
     bool rollback;
     bool closable;
     int iUndoMode;
+    unsigned int UndoMemSize;
+    unsigned int UndoMaxStackSize;
 
     DocumentP() {
         activeObject = 0;
@@ -149,6 +151,8 @@ struct DocumentP
         rollback = false;
         closable = true;
         iUndoMode = 0;
+        UndoMemSize = 0;
+        UndoMaxStackSize = 20;
     }
 };
 
@@ -306,6 +310,11 @@ void Document::commitTransaction()
     if (d->activeUndoTransaction) {
         mUndoTransactions.push_back(d->activeUndoTransaction);
         d->activeUndoTransaction = 0;
+        // check the stack for the limits
+        if(mUndoTransactions.size() > d->UndoMaxStackSize){
+            delete mUndoTransactions.front();
+            mUndoTransactions.pop_front();
+        }
     }
 }
 
@@ -374,7 +383,22 @@ int Document::getUndoMode(void) const
 
 unsigned int Document::getUndoMemSize (void) const
 {
-    return 0;
+    return d->UndoMemSize;
+}
+
+void Document::setUndoLimit(unsigned int UndoMemSize)
+{
+    d->UndoMemSize = UndoMemSize;
+}
+
+void Document::setMaxUndoStackSize(unsigned int UndoMaxStackSize)
+{
+     d->UndoMaxStackSize = UndoMaxStackSize;
+}
+
+unsigned int Document::getMaxUndoStackSize(void)const
+{
+    return d->UndoMaxStackSize;
 }
 
 void Document::onChanged(const Property* prop)

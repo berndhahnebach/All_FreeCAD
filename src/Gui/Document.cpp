@@ -137,8 +137,11 @@ Document::Document(App::Document* pcDocument,Application * app)
     _pcDocPy = new Gui::DocumentPy(this);
 
     if (App::GetApplication().GetParameterGroupByPath
-        ("User parameter:BaseApp/Preferences/Document")->GetBool("UsingUndo",true))
+        ("User parameter:BaseApp/Preferences/Document")->GetBool("UsingUndo",true)){
         d->_pcDocument->setUndoMode(1);
+        // set the maximum stack size
+        d->_pcDocument->setMaxUndoStackSize(App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Document")->GetInt("MaxUndoSize",20));
+    }
 }
 
 Document::~Document()

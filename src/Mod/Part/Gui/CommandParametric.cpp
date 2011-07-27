@@ -120,7 +120,7 @@ CmdPartSphere::CmdPartSphere()
 
 void CmdPartSphere::activated(int iMsg)
 {
-    openCommand("Create box");
+    openCommand("Create sphere");
     doCommand(Doc,"App.ActiveDocument.addObject(\"Part::Sphere\",\"Sphere\")");
     commitCommand();
     updateActive();
