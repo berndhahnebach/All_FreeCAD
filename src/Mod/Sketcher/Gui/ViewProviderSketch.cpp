@@ -29,25 +29,33 @@
 # include <Geom_BSplineCurve.hxx>
 # include <Geom_Circle.hxx>
 # include <Geom_TrimmedCurve.hxx>
+# include <Inventor/actions/SoGetBoundingBoxAction.h>
 # include <Inventor/SoPath.h>
+# include <Inventor/SbBox3f.h>
 # include <Inventor/SoPickedPoint.h>
 # include <Inventor/details/SoLineDetail.h>
 # include <Inventor/details/SoPointDetail.h>
 # include <Inventor/nodes/SoBaseColor.h>
 # include <Inventor/nodes/SoCoordinate3.h>
 # include <Inventor/nodes/SoDrawStyle.h>
+# include <Inventor/nodes/SoImage.h>
 # include <Inventor/nodes/SoLineSet.h>
 # include <Inventor/nodes/SoPointSet.h>
 # include <Inventor/nodes/SoMarkerSet.h>
 # include <Inventor/nodes/SoMaterial.h>
+# include <Inventor/nodes/SoAsciiText.h>
+# include <Inventor/nodes/SoTransform.h>
 # include <Inventor/nodes/SoSeparator.h>
 # include <Inventor/nodes/SoVertexProperty.h>
 # include <Inventor/nodes/SoTranslation.h>
 # include <Inventor/nodes/SoText2.h>
 # include <Inventor/nodes/SoFont.h>
+
+/// Qt Include Files
 # include <QAction>
 # include <QMenu>
 # include <QMessageBox>
+# include <QImage>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
@@ -55,11 +63,13 @@
 #include <Base/Console.h>
 #include <Base/Vector3D.h>
 #include <Gui/Application.h>
+#include <Gui/BitmapFactory.h>
 #include <Gui/Document.h>
 #include <Gui/Command.h>
 #include <Gui/Control.h>
 #include <Gui/Selection.h>
 #include <Gui/MainWindow.h>
+#include <Gui/MenuManager.h>
 #include <Gui/View3DInventor.h>
 #include <Gui/View3DInventorViewer.h>
 #include <Gui/DlgEditFileIncludeProptertyExternal.h>
@@ -93,6 +103,7 @@ struct EditData {
     sketchHandler(0),
     DragPoint(-1),
     DragCurve(-1),
+    DragConstraint(-1),
     PreselectPoint(-1),
     PreselectCurve(-1),
     //ActSketch(0),
@@ -112,7 +123,9 @@ struct EditData {
     int DragPoint;
     // dragged curve
     int DragCurve;
-
+    // dragged constraint
+    int DragConstraint;
+    
     SbColor PreselectOldColor;
     int PreselectPoint;
     int PreselectCurve;
@@ -191,14 +204,17 @@ void ViewProviderSketch::purgeHandler(void)
 
 bool ViewProviderSketch::keyPressed(bool pressed, int key)
 {
-    if (key == SoKeyboardEvent::ESCAPE) {
-        // make the handler quit but not the edit mode
-        if (edit && edit->sketchHandler) {
-            if (!pressed)
-                edit->sketchHandler->quit();
-            return true;
-        }
-        return false;
+    switch (key)
+    {
+	  case SoKeyboardEvent::ESCAPE: {
+		  // make the handler quit but not the edit mode
+		  if (edit && edit->sketchHandler) {
+			  if (!pressed)
+				  edit->sketchHandler->quit();
+			  return true;
+		  }
+		  return false;
+	  }
     }
 
     return true; // handle all other key events
@@ -264,6 +280,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                         //Base::Console().Log("start dragging, point:%d\n",this->DragPoint);
                         Mode = STATUS_SELECT_Constraint;
                         return true;
+			
                     } else
                         return false;
 
@@ -283,14 +300,26 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                         // Do selection
                         std::stringstream ss;
                         ss << "Vertex" << edit->PreselectPoint;
-                        Gui::Selection().addSelection(getSketchObject()->getDocument()->getName()
-                                                     ,getSketchObject()->getNameInDocument()
-                                                     ,ss.str().c_str()
-                                                     ,pp->getPoint()[0]
-                                                     ,pp->getPoint()[1]
-                                                     ,pp->getPoint()[2]);
-                        this->edit->DragPoint = -1;
-                        this->edit->DragCurve = -1;
+			
+                        if (Gui::Selection().isSelected(getSketchObject()->getDocument()->getName()
+							,getSketchObject()->getNameInDocument(),ss.str().c_str()) )
+			{
+			    Gui::Selection().rmvSelection(getSketchObject()->getDocument()->getName()
+							  ,getSketchObject()->getNameInDocument(), ss.str().c_str());
+			}
+			else
+			{
+
+			    Gui::Selection().addSelection(getSketchObject()->getDocument()->getName()
+							  ,getSketchObject()->getNameInDocument()
+							  ,ss.str().c_str()
+							  ,pp->getPoint()[0]
+							  ,pp->getPoint()[1]
+							  ,pp->getPoint()[2]);
+			    this->edit->DragPoint = -1;
+			    this->edit->DragCurve = -1;
+			    this->edit->DragConstraint = -1;
+			}
                     }
 
                     Mode = STATUS_NONE;
@@ -298,26 +327,50 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                 case STATUS_SELECT_Edge:{
                     if (pp) {
                         //Base::Console().Log("Select Point:%d\n",this->DragPoint);
-                        // Do selection
-                        std::stringstream ss;
-                        ss << "Edge" << edit->PreselectCurve;
-                        Gui::Selection().addSelection(getSketchObject()->getDocument()->getName()
-                                                     ,getSketchObject()->getNameInDocument()
-                                                     ,ss.str().c_str()
-                                                     ,pp->getPoint()[0]
-                                                     ,pp->getPoint()[1]
-                                                     ,pp->getPoint()[2]);
-                        this->edit->DragPoint = -1;
-                        this->edit->DragCurve = -1;
+			std::stringstream ss;
+			ss << "Edge" << edit->PreselectCurve;
+			
+			// If edge already selected move from selection
+			if (Gui::Selection().isSelected(getSketchObject()->getDocument()->getName()
+							,getSketchObject()->getNameInDocument(),ss.str().c_str()) )
+			{
+			    Gui::Selection().rmvSelection(getSketchObject()->getDocument()->getName()
+							  ,getSketchObject()->getNameInDocument(), ss.str().c_str());
+			}
+			else
+			{
+			  // Add edge to the selection			  
+			  Gui::Selection().addSelection(getSketchObject()->getDocument()->getName()
+						      ,getSketchObject()->getNameInDocument()
+						      ,ss.str().c_str()
+						      ,pp->getPoint()[0]
+						      ,pp->getPoint()[1]
+						      ,pp->getPoint()[2]);
+			  this->edit->DragPoint = -1;
+			  this->edit->DragCurve = -1;
+			  this->edit->DragConstraint = -1;
+			}
                     }
 
                     Mode = STATUS_NONE;
                     return true;}
                 case STATUS_SELECT_Constraint:{
                     if (pp) {
-                         // Do selection
-                        std::stringstream ss;
+			 
+			std::stringstream ss;
                         ss << "Constraint" << edit->PreselectConstraint;
+		      
+                        // If the constraint already selected remove
+                        if (Gui::Selection().isSelected(getSketchObject()->getDocument()->getName()
+							,getSketchObject()->getNameInDocument(),ss.str().c_str()) )
+			{
+			    Gui::Selection().rmvSelection(getSketchObject()->getDocument()->getName()
+							  ,getSketchObject()->getNameInDocument(), ss.str().c_str());
+			}
+			else
+			{
+			// Add constraint to current selection
+                        
                         Gui::Selection().addSelection(getSketchObject()->getDocument()->getName()
                                                      ,getSketchObject()->getNameInDocument()
                                                      ,ss.str().c_str()
@@ -326,6 +379,8 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                                                      ,pp->getPoint()[2]);
                         this->edit->DragPoint = -1;
                         this->edit->DragCurve = -1;
+			this->edit->DragConstraint = -1;
+			}
                     }
 
                     Mode = STATUS_NONE;
@@ -367,6 +422,17 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                     resetPositionText();
                     Mode = STATUS_NONE;
                     return true;
+		case STATUS_SKETCH_DragConstraint:
+                if (edit->DragConstraint != -1 && pp) {
+			
+			moveConstraint(edit->DragConstraint, Base::Vector2D(x, y));
+                        edit->PreselectConstraint = edit->DragConstraint;
+                        edit->DragConstraint = -1;
+                        //updateColor();
+                    }
+
+                Mode = STATUS_NONE;
+                return true;
                 case STATUS_SKETCH_UseHandler:
                     return edit->sketchHandler->releaseButton(Base::Vector2D(x,y));
                 
@@ -379,18 +445,128 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
     // Right mouse button ****************************************************
     else if (Button == 2) {
         if (pressed) {
+	    
             switch(Mode){
                 case STATUS_SKETCH_UseHandler:
                     // make the handler quit
                     edit->sketchHandler->quit();
                     return true;
-                case STATUS_NONE:
+                case STATUS_NONE: {
+		    // A right click shouldn't change the Edit Mode
+		    if (edit->PreselectPoint >=0) {                      
+                        return true;
+                    } else if (edit->PreselectCurve >=0) {
+                      
+                        return true;
+                    } else if (edit->PreselectConstraint >=0) {
+                       
+		      
+                        return true;
+			
+                    } else {
+                       
+		      //Get Viewer
+		    Gui::MDIView* mdi = Gui::Application::Instance->activeDocument()->getActiveView();
+		    Gui::View3DInventorViewer * viewer ;
+		    viewer = static_cast<Gui::View3DInventor*>(mdi)->getViewer();
+
+		    Gui::MenuItem* geom = new Gui::MenuItem();
+		    geom->setCommand("Sketcher geoms");
+		    *geom /*<< "Sketcher_CreatePoint"*/
+		    << "Sketcher_CreateArc"
+		    << "Sketcher_CreateCircle"
+		    << "Sketcher_CreateLine"
+		    << "Sketcher_CreatePolyline"
+		    << "Sketcher_CreateRectangle"
+		    /*<< "Sketcher_CreateText"*/
+		    /*<< "Sketcher_CreateDraftLine"*/;
+
+		    Gui::Application::Instance->setupContextMenu("View", geom);
+
+		    //Create the Context Menu using the Main View Qt Widget
+		    QMenu contextMenu(viewer->getGLWidget());
+
+		    Gui::MenuManager::getInstance()->setupContextMenu(geom, contextMenu);
+
+		    QAction* used = contextMenu.exec(QCursor::pos());
+
+		    return true;
+		    }
+		}
+	  
                 case STATUS_SELECT_Point:
-                case STATUS_SELECT_Edge:
+		  break;
+                case STATUS_SELECT_Edge: {
+		    //Get Viewer
+		  Gui::MDIView* mdi = Gui::Application::Instance->activeDocument()->getActiveView();
+		  Gui::View3DInventorViewer * viewer ;
+		  viewer = static_cast<Gui::View3DInventor*>(mdi)->getViewer();
+
+		  Gui::MenuItem* geom = new Gui::MenuItem();
+		  geom->setCommand("Sketcher constraints");
+		  *geom << "Sketcher_ConstrainVertical"
+		  << "Sketcher_ConstrainHorizontal";
+		  
+		   // Gets a selection vector
+		  std::vector<Gui::SelectionObject> selection = Gui::Selection().getSelectionEx();
+		  
+		  bool rightClickOnSelectedLine = false;
+		  
+		  /*
+		   * Add Multiple Line Constraints to the menu
+		   */ 
+		  // only one sketch with its subelements are allowed to be selected
+		  if (selection.size() == 1) {
+		      // get the needed lists and objects
+		      const std::vector<std::string> &SubNames = selection[0].getSubNames();
+		      
+		      // Two Objects are selected
+		      if (SubNames.size() == 2) {
+			
+			  
+			  // go through the selected subelements
+			  for(std::vector<std::string>::const_iterator it=SubNames.begin();it!=SubNames.end();++it){
+			    
+			      // If the object selected is of type edge
+			      if (it->size() > 4 && it->substr(0,4) == "Edge") {
+				  // Get the index of the object selected
+				  int index=std::atoi(it->substr(4,4000).c_str());
+				  if( edit->PreselectCurve == index)
+				  {
+				    rightClickOnSelectedLine = true;
+		  
+				  }
+			      }
+			      else
+			      {
+				// The selection is not exclusivly edges
+				  rightClickOnSelectedLine = false;
+			      }
+			  } // End of Iteration
+		      }
+		  }
+		  
+		  if(rightClickOnSelectedLine)
+		  {
+		    *geom << "Sketcher_ConstrainParallel"
+		    << "Sketcher_ConstrainPerpendicular";
+		  }
+		  
+		  Gui::Application::Instance->setupContextMenu("View", geom);
+
+		  //Create the Context Menu using the Main View Qt Widget
+		  QMenu contextMenu(viewer->getGLWidget());
+
+		  Gui::MenuManager::getInstance()->setupContextMenu(geom, contextMenu);
+
+		  QAction* used = contextMenu.exec(QCursor::pos());
+
+		  return true;}
+		  
                 case STATUS_SELECT_Constraint:
                 case STATUS_SKETCH_DragPoint:
                 case STATUS_SKETCH_DragCurve:
-                    break;
+                break;
             }
         }
     }
@@ -438,13 +614,13 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
             edit->ActSketch.initMove(edit->DragCurve, none);
 
             return true;
-        case STATUS_SELECT_Constraint:
-            Mode = STATUS_NONE;
-            edit->PreselectCurve = -1;
-            edit->PreselectPoint = -1;
-            edit->PreselectConstraint = -1;
-
-            return true;
+	case STATUS_SELECT_Constraint:
+        Mode = STATUS_SKETCH_DragConstraint;
+        edit->DragConstraint = edit->PreselectConstraint;
+        edit->PreselectCurve = -1;
+        edit->PreselectPoint = -1;
+        edit->PreselectConstraint = -1;
+        return true;
         case STATUS_SKETCH_DragPoint:
             if (edit->DragPoint != -1) {
                 //Base::Console().Log("Drag Point:%d\n",edit->DragPoint);
@@ -473,6 +649,12 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
                 }
             }
             return true;
+	case STATUS_SKETCH_DragConstraint:   
+	    if (edit->DragConstraint != -1) {
+		moveConstraint(edit->DragConstraint, Base::Vector2D(x,y));
+		
+	    }        
+	    return true;
         case STATUS_SKETCH_UseHandler:
             if (preselectChanged)
                 updateColor();
@@ -483,6 +665,113 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
     }
 
     return false;
+}
+void ViewProviderSketch::moveConstraint(int constNum, const Base::Vector2D &Pos)
+{
+  
+    // are we in edit?
+    if (edit) {
+      const std::vector<Sketcher::Constraint*> &ConStr = getSketchObject()->Constraints.getValues();
+      Constraint * constr = ConStr[constNum];
+
+      
+      if(constr->Type == Distance)
+      {
+	  bool tempDraw = true;
+	     const std::vector<Part::Geometry *> *geomlist;
+	      std::vector<Part::Geometry *> tempGeo;
+	      if (tempDraw) {
+		  tempGeo = edit->ActSketch.getGeometry();
+		  geomlist = &tempGeo;
+	      }
+	      else
+	      {
+		  geomlist = &getSketchObject()->Geometry.getValues();
+	      }
+
+	  assert(constr->First < (int)geomlist->size());
+	  
+	  // get the geometry
+		
+	  const Part::Geometry *geo = (*geomlist)[constr->First];
+	  // Distance can only apply to a GeomLineSegment
+	  
+	  assert(geo->getTypeId()== Part::GeomLineSegment::getClassTypeId());
+	  const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geo);
+	  
+	  Base::Vector3d mousePosVec(Pos.fX, Pos.fY, 0);
+	  
+	  
+	  // Something wrong with these coordinates
+	  Base::Vector3d p1 = lineSeg->getStartPoint();
+	  Base::Vector3d p2 = lineSeg->getEndPoint();
+	  
+	    // calculate the half distance between the start and endpoint
+	  Base::Vector3d midpos = ((lineSeg->getEndPoint()+lineSeg->getStartPoint())/2);
+
+	  //Get a set of vectors perpendicular and tangential to these
+	  Base::Vector3d dirTmp = (lineSeg->getEndPoint()-lineSeg->getStartPoint()).Normalize();	  
+	  
+	  //Get Vector between mouse point and mid point
+	  mousePosVec = mousePosVec - midpos;
+	  
+	  Base::Vector3d temp(0, 0, 0);
+
+	  // Get Distance From Sketched Line	  
+	  double length = temp.ProjToLine(mousePosVec, dirTmp).Length();
+	  
+	  double crossProduct = ((p2.x - p1.x)*(Pos.fY - p1.y) - (p2.y - p1.y)*(Pos.fX - p1.x));
+	   
+	  // If less than zero, dimension left of Line
+	  if(crossProduct < 0)
+	  {
+	    length *= -1;
+	  }
+	  
+	  constr->LabelDistance = length;
+      }
+      draw(true);
+    }
+}
+
+bool ViewProviderSketch::isConstraintAtPosition(const Base::Vector3d &constrPos, const SoNode * constraint)
+{
+    assert(edit);
+    Gui::MDIView* mdi = Gui::Application::Instance->activeDocument()->getActiveView();
+    Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(mdi)->getViewer();
+
+    SoRayPickAction rp(viewer->getViewportRegion());
+    rp.setRadius(0.1);
+
+    rp.setRay(SbVec3f(constrPos.x, constrPos.y,constrPos.z) ,SbVec3f(0, 0, 1) );
+    //problem
+    rp.apply(edit->constrGroup); // We could narrow it down to just the SoGroup containing the constraints
+
+    // returns a copy of the point
+    SoPickedPoint* pp = rp.getPickedPoint();
+
+    if (pp)
+    {
+        SoPath * path = pp->getPath();
+        int length = path->getLength();
+        SoNode * tailFather = path->getNode(path->getLength()-2);
+        SoNode * tailFather2 = path->getNode(path->getLength()-3);
+
+        // checking if a constraint is the same as the one selected
+        if (tailFather2 == constraint || tailFather == constraint)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+
+    }
+    else
+    {
+        return false;
+    }
 }
 
 void ViewProviderSketch::onSelectionChanged(const Gui::SelectionChanges& msg)
@@ -525,20 +814,33 @@ void ViewProviderSketch::onSelectionChanged(const Gui::SelectionChanges& msg)
             }        
         }
         else if (msg.Type == Gui::SelectionChanges::RmvSelection) {
-            //// build name
-            //temp = Reason.pDocName;
-            //temp += ".";
-            //temp += Reason.pObjectName;
-            //if (Reason.pSubName[0] != 0) {
-            //    temp += ".";
-            //    temp += Reason.pSubName;
-            //}
-
-            //// remove all items
-            //QList<QListWidgetItem *> l = selectionView->findItems(QLatin1String(temp.c_str()),Qt::MatchExactly);
-            //if (l.size() == 1)
-            //    delete l[0];
-
+	  
+	    // Are there any objects selected
+            if (edit->SelPointSet.size() > 0 || edit->SelCurvSet.size() > 0 || edit->SelConstraintSet.size() > 0) {
+	      
+		  // is it this object??
+            if (strcmp(msg.pDocName,getSketchObject()->getDocument()->getName())==0
+                && strcmp(msg.pObjectName,getSketchObject()->getNameInDocument())== 0) {
+                    if (msg.pSubName) {
+                        std::string shapetype(msg.pSubName);
+                        if (shapetype.size() > 4 && shapetype.substr(0,4) == "Edge") {
+                            int index=std::atoi(&shapetype[4]);
+                            edit->SelCurvSet.erase(index);
+                            updateColor();
+                        }
+                        else if (shapetype.size() > 6 && shapetype.substr(0,6) == "Vertex") {
+                            int index=std::atoi(&shapetype[6]);
+                            edit->SelPointSet.erase(index);
+                            updateColor();
+                        }
+                        else if (shapetype.size() > 10 && shapetype.substr(0,10) == "Constraint") {
+                            int index=std::atoi(&shapetype[10]);
+                            edit->SelConstraintSet.erase(index);
+                            updateColor();
+                        }
+                    }
+            }        
+            }
         }
         else if (msg.Type == Gui::SelectionChanges::SetSelection) {
             // remove all items
@@ -984,107 +1286,348 @@ Restart:
                     dynamic_cast<SoText2 *>(sep->getChild(4))->string = SbString().sprintf("%.2f",Constr->Value);
                 }
                 break;
-            case Horizontal: // write the new position of the Horizontal constraint
-                {
-                    assert(Constr->First < (int)geomlist->size());
-                    // get the geometry
-                    const Part::Geometry *geo = (*geomlist)[Constr->First];
-                    // Horizontal can only be a GeomLineSegment
-                    assert(geo->getTypeId() == Part::GeomLineSegment::getClassTypeId());
-                    const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geo);
-                    // calculate the half distance between the start and endpoint
-                    Base::Vector3d pos = lineSeg->getStartPoint() + ((lineSeg->getEndPoint()-lineSeg->getStartPoint())/2);
-                    dynamic_cast<SoTranslation *>(sep->getChild(1))->translation = SbVec3f(pos.x,pos.y,0.0f);
-                }
-                break;
-            case Vertical: // write the new position of the Vertical constraint
-                {
-                    assert(Constr->First < (int)geomlist->size());
-                    // get the geometry
-                    const Part::Geometry *geo = (*geomlist)[Constr->First];
-                    // Vertical can only be a GeomLineSegment
-                    assert(geo->getTypeId() == Part::GeomLineSegment::getClassTypeId());
-                    const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geo);
-                    // calculate the half distance between the start and endpoint
-                    Base::Vector3d pos = lineSeg->getStartPoint() + ((lineSeg->getEndPoint()-lineSeg->getStartPoint())/2);
-                    dynamic_cast<SoTranslation *>(sep->getChild(1))->translation = SbVec3f(pos.x,pos.y,0.0f);
-                }
-                break;
-            case Parallel:
-                {
-                    assert(Constr->First < (int)geomlist->size());
-                    assert(Constr->Second < (int)geomlist->size());
-                    // get the geometry
-                    const Part::Geometry *geo1 = (*geomlist)[Constr->First];
-                    const Part::Geometry *geo2 = (*geomlist)[Constr->Second];
-                    // Parallel can only apply to a GeomLineSegment
-                    assert(geo1->getTypeId() == Part::GeomLineSegment::getClassTypeId());
-                    assert(geo2->getTypeId() == Part::GeomLineSegment::getClassTypeId());
-                    const Part::GeomLineSegment *lineSeg1 = dynamic_cast<const Part::GeomLineSegment*>(geo1);
-                    const Part::GeomLineSegment *lineSeg2 = dynamic_cast<const Part::GeomLineSegment*>(geo2);
-                    // calculate the half-distance between the start and endpoint
-                    Base::Vector3d pos1 = (lineSeg1->getStartPoint()+lineSeg1->getEndPoint())/2;
-                    Base::Vector3d pos2 = (lineSeg2->getStartPoint()+lineSeg2->getEndPoint())/2;
-                    // move the second point because of two translations in a row. 
-                    pos2 = pos2 - pos1;
-                    dynamic_cast<SoTranslation *>(sep->getChild(1))->translation = SbVec3f(pos1.x,pos1.y,0.0f);
-                    dynamic_cast<SoTranslation *>(sep->getChild(3))->translation = SbVec3f(pos2.x,pos2.y,0.0f);
-                }
-                break;
-            case Perpendicular:
-                {
-                    assert(Constr->First < (int)geomlist->size());
-                    assert(Constr->Second < (int)geomlist->size());
-                    // get the geometry
-                    const Part::Geometry *geo1 = (*geomlist)[Constr->First];
-                    const Part::Geometry *geo2 = (*geomlist)[Constr->Second];
-                    // Perpendicular can only apply to a GeomLineSegment
-                    assert(geo1->getTypeId() == Part::GeomLineSegment::getClassTypeId());
-                    assert(geo2->getTypeId() == Part::GeomLineSegment::getClassTypeId());
-                    const Part::GeomLineSegment *lineSeg1 = dynamic_cast<const Part::GeomLineSegment*>(geo1);
-                    const Part::GeomLineSegment *lineSeg2 = dynamic_cast<const Part::GeomLineSegment*>(geo2);
-                    // calculate the half-distance between the start and endpoint
-                    Base::Vector3d pos1 = (lineSeg1->getStartPoint()+lineSeg1->getEndPoint())/2;
-                    Base::Vector3d pos2 = (lineSeg2->getStartPoint()+lineSeg2->getEndPoint())/2;
-                    // move the second point because of two translations in a row. 
-                    pos2 = pos2 - pos1;
-                    dynamic_cast<SoTranslation *>(sep->getChild(1))->translation = SbVec3f(pos1.x,pos1.y,0.0f);
-                    dynamic_cast<SoTranslation *>(sep->getChild(3))->translation = SbVec3f(pos2.x,pos2.y,0.0f);
-                }
-                break;
-            case Distance:
-                {
-                    assert(Constr->First < (int)geomlist->size());
-                    // get the geometry
-                    const Part::Geometry *geo = (*geomlist)[Constr->First];
-                    // Distance can only apply to a GeomLineSegment
-                    assert(geo->getTypeId() == Part::GeomLineSegment::getClassTypeId());
-                    const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geo);
-                    // calculate the half distance between the start and endpoint
-                    SbVec3f p1(lineSeg->getStartPoint().x,lineSeg->getStartPoint().y,0);
-                    SbVec3f p2(lineSeg->getEndPoint().x,lineSeg->getEndPoint().y,0);
-                    SbVec3f dir = p2 - p1;
-                    SbVec3f pos = p1 + dir/2;
-                    dir.normalize();
-                    // rotate direction perpendicular
-                    dir = SbVec3f (-dir[1],dir[0],0); 
-                    // set the line coordinates:
-                    dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(0,p1);
-                    dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(1,p1+dir*12);
-                    dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(2,p2);
-                    dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(3,p2+dir*12);
-                    dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(4,p1+dir*10);
-                    dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(5,p2+dir*10);
-                    // set position of datum
-                    dynamic_cast<SoTranslation *>(sep->getChild(3))->translation = pos + dir*10;
-                    dynamic_cast<SoText2 *>(sep->getChild(4))->string = SbString().sprintf("%.2f",Constr->Value);
-                }
-                break;
-            case Tangent:
-            case Angle:
-            case Coincident: // nothing to do for coincident
-            case None:
-                break;
+	case Horizontal: // write the new position of the Horizontal constraint Same as vertical position.
+        case Vertical: // write the new position of the Vertical constraint
+        {
+            assert(Constr->First < (int)geomlist->size());
+            // get the geometry
+            const Part::Geometry *geo = (*geomlist)[Constr->First];
+            // Vertical can only be a GeomLineSegment
+            assert(geo->getTypeId()== Part::GeomLineSegment::getClassTypeId());
+            const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geo);
+
+            // calculate the half distance between the start and endpoint
+            Base::Vector3d midpos = ((lineSeg->getEndPoint()+lineSeg->getStartPoint())/2);
+
+            //Get a set of vectors perpendicular and tangential to these
+            Base::Vector3d dir = (lineSeg->getEndPoint()-lineSeg->getStartPoint()).Normalize();
+            Base::Vector3d norm(-dir.y,dir.x,0);
+            Base::Vector3d constrPos;
+
+
+            int multiplier = 0;
+            do
+            {
+                // Calculate new position of constraint
+                constrPos = midpos + (norm * 5) + (dir * (multiplier * 5));
+                multiplier++; // Increment the multiplier
+            }
+            while (isConstraintAtPosition(constrPos, edit->constrGroup->getChild(i)));
+
+            dynamic_cast<SoTranslation *>(sep->getChild(1))->translation = SbVec3f(constrPos.x, constrPos.y, 0.0f);
+        }
+        break;
+        case Parallel:
+        {
+            assert(Constr->First < (int)geomlist->size());
+            assert(Constr->Second < (int)geomlist->size());
+            // get the geometry
+            const Part::Geometry *geo1 = (*geomlist)[Constr->First];
+            const Part::Geometry *geo2 = (*geomlist)[Constr->Second];
+            // Parallel can only apply to a GeomLineSegment
+            assert(geo1->getTypeId()== Part::GeomLineSegment::getClassTypeId());
+            assert(geo2->getTypeId()== Part::GeomLineSegment::getClassTypeId());
+            const Part::GeomLineSegment *lineSeg1 = dynamic_cast<const Part::GeomLineSegment*>(geo1);
+            const Part::GeomLineSegment *lineSeg2 = dynamic_cast<const Part::GeomLineSegment*>(geo2);
+
+            // calculate the half distance between the start and endpoint
+            Base::Vector3d midpos1 = ((lineSeg1->getEndPoint()+lineSeg1->getStartPoint())/2);
+
+            //Get a set of vectors perpendicular and tangential to these
+            Base::Vector3d dir1 = (lineSeg1->getEndPoint()-lineSeg1->getStartPoint()).Normalize();
+	        
+            Base::Vector3d norm1(-dir1.y,dir1.x,0);
+            Base::Vector3d constrPos1;
+
+            // calculate the half distance between the start and endpoint
+            Base::Vector3d midpos2 = ((lineSeg2->getEndPoint()+lineSeg2->getStartPoint())/2);
+
+            //Get a set of vectors perpendicular and tangential to these
+            Base::Vector3d dir2 = (lineSeg2->getEndPoint()-lineSeg2->getStartPoint()).Normalize();
+            Base::Vector3d norm2(-dir2.y,dir2.x,0);
+            Base::Vector3d constrPos2;
+
+
+            int multiplier = 0;
+            do
+            {
+                // Calculate new position of constraint
+                constrPos1 = midpos1 + (norm1 * 5) + (dir1 * (multiplier * 5));
+                multiplier++; // Increment the multiplier
+            }
+            while (isConstraintAtPosition(constrPos1, edit->constrGroup->getChild(i)));
+
+            multiplier = 0;
+            do
+            {
+                // Calculate new position of constraint
+                constrPos2 = midpos2 + (norm2 * 5) + (dir2 * (multiplier * 5));
+                multiplier++; // Increment the multiplier
+            }
+            while (isConstraintAtPosition(constrPos2, edit->constrGroup->getChild(i)));
+	    
+	   
+            constrPos2 = constrPos2 - constrPos1;
+	    constrPos2 = constrPos2 - Base::Vector3d(2, -2, 0);
+	    dynamic_cast<SoText2 *>(sep->getChild(4))->string = SbString().sprintf("P%i",i);
+	    dynamic_cast<SoText2 *>(sep->getChild(8))->string = SbString().sprintf("P%i",i);
+	    
+            dynamic_cast<SoTranslation *>(sep->getChild(1))->translation =  SbVec3f(constrPos1.x, constrPos1.y, 0.0f);
+            dynamic_cast<SoTranslation *>(sep->getChild(3))->translation =  SbVec3f( 2, -2, 0.0f);
+	    dynamic_cast<SoTranslation *>(sep->getChild(5))->translation =  SbVec3f(constrPos2.x, constrPos2.y, 0.0f);
+	    dynamic_cast<SoTranslation *>(sep->getChild(7))->translation =  SbVec3f(2, -2, 0.0f);
+        }
+        break;
+        case Distance:
+        {
+            assert(Constr->First < (int)geomlist->size());
+            // get the geometry
+            const Part::Geometry *geo = (*geomlist)[Constr->First];
+            // Distance can only apply to a GeomLineSegment
+            assert(geo->getTypeId()== Part::GeomLineSegment::getClassTypeId());
+            const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geo);
+            // calculate the half distance between the start and endpoint
+	    
+	     // calculate the half distance between the start and endpoint
+            Base::Vector3d midpos = ((lineSeg->getEndPoint()+lineSeg->getStartPoint())/2);
+
+            //Get a set of vectors perpendicular and tangential to these
+            Base::Vector3d dirTmp = (lineSeg->getEndPoint()-lineSeg->getStartPoint()).Normalize();
+            Base::Vector3d norm(-dirTmp.y,dirTmp.x,0);
+            Base::Vector3d posTmp;
+	    
+            SbVec3f p1(lineSeg->getStartPoint().x,lineSeg->getStartPoint().y,0);
+            SbVec3f p2(lineSeg->getEndPoint().x,lineSeg->getEndPoint().y,0);
+            SbVec3f dir = p2 - p1;
+            SbVec3f pos = p1 + dir/2;
+            dir.normalize();
+            // rotate direction perpendicular
+	    SbVec3f normOrig = SbVec3f (-dir[1],dir[0],0);
+            // set the line coordinates:
+	    
+	    	    //Horizontal unit vector
+	    Base::Vector3d horizontal(1, 0, 0);
+	    
+	    // Get magnitude of angle between horizontal 
+	    double angle = dirTmp.GetAngle(horizontal);
+	   
+	    // Direction of y is negative angle will be negative.
+	   if (dirTmp.y < 0)
+	   {
+	     angle *= -1; 
+	   }
+	    
+	    
+            SoAsciiText *asciiText = dynamic_cast<SoAsciiText *>(sep->getChild(4));
+	    asciiText->string = SbString().sprintf("%.2f",Constr->Value);
+	    
+	     //Get Bounding box dimensions for Datum text
+	    Gui::MDIView* mdi = Gui::Application::Instance->activeDocument()->getActiveView();
+	    Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(mdi)->getViewer();
+    
+	    // [FIX ME] Its an attempt to find the height of the text using the bounding box, but is in correct.
+	    SoGetBoundingBoxAction bbAction(viewer->getViewportRegion());
+	    bbAction.apply(sep->getChild(4));	    
+	    
+	    SbVec3f textBB = bbAction.getBoundingBox().getSize();
+	   // bbAction.setCenter(, true)
+	    // This is the bounding box containing the width and height of text
+	    
+	    SbVec3f textBBCenter = bbAction.getBoundingBox().getCenter();
+	    double length = (Constr->LabelDistance) ? Constr->LabelDistance : 10;	    
+	   
+	   
+	    posTmp = midpos + norm * (length - (textBBCenter[1] / 2));
+	    
+            // set position and roation of Datus Text
+	    SoTransform *transform = dynamic_cast<SoTransform *>(sep->getChild(2));
+	    transform->translation.setValue(SbVec3f(posTmp.x, posTmp.y, 0));   
+	    transform->rotation.setValue(SbVec3f(0, 0 , 1), angle);
+	     
+	    
+	    // Get the datum nodes
+	    SoSeparator * sepDatum = dynamic_cast<SoSeparator *>(sep->getChild(1));
+	    SoCoordinate3 *datumCord = dynamic_cast<SoCoordinate3 *>(sepDatum->getChild(0));
+	    
+	    // [Fixme] This should be made neater - compute the vertical datum line length	    
+	    float datumVertical = (length < 0) ? length - 2 : length + 2;
+	    
+	    // Calculate coordinates for vertical datum lines
+	    datumCord->point.set1Value(0,p1);
+	    datumCord->point.set1Value(1,p1 + normOrig * datumVertical);
+	    datumCord->point.set1Value(2,p2);
+	    datumCord->point.set1Value(3,p2 + normOrig * datumVertical);
+	    
+	    // Calculate the coordiates for the horziontal datum lines 
+	    datumCord->point.set1Value(4,p1 + normOrig * length);
+	    datumCord->point.set1Value(5,pos + normOrig * length - dir * ((textBB[0]) / 4 ) );
+	    datumCord->point.set1Value(6,pos + normOrig * length + dir * ((textBB[0]) / 4) );
+	    datumCord->point.set1Value(7,p2 + normOrig* length);
+
+	    // Use the coordinates calculated earlier to the lineset
+	    SoLineSet *datumLineSet = dynamic_cast<SoLineSet *>(sepDatum->getChild(1));
+	    datumLineSet->numVertices.set1Value(0,2);
+	    datumLineSet->numVertices.set1Value(1,2);
+	    datumLineSet->numVertices.set1Value(2,2);
+	    datumLineSet->numVertices.set1Value(3,2);
+	}
+        break;
+
+        case Tangent:{
+	    assert(Constr->First < (int)geomlist->size());
+            assert(Constr->Second < (int)geomlist->size());
+            // get the geometry
+            const Part::Geometry *geo1 = (*geomlist)[Constr->First];
+            const Part::Geometry *geo2 = (*geomlist)[Constr->Second];
+            // Parallel can only apply to a GeomLineSegment
+	    
+	    const Part::GeomLineSegment *lineSeg = 0;
+	    const Part::GeomCircle *circle1 = 0;
+	    const Part::GeomCircle *circle2 = 0;
+	    const Part::GeomArcOfCircle *arcOfCircle1 = 0;
+	    const Part::GeomArcOfCircle *arcOfCircle2 = 0;
+	    
+	    //[Fix me] There is probably a nicer way of doing this.
+	    //Assign pointers to the first part of the geometry
+	    if(geo1->getTypeId() == Part::GeomLineSegment::getClassTypeId())
+	    {
+	      lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geo1);
+	    }
+	    else if(geo1->getTypeId()== Part::GeomArcOfCircle::getClassTypeId())
+	    {
+	      arcOfCircle1= dynamic_cast<const Part::GeomArcOfCircle*>(geo1);
+	    }
+	    else if(geo1->getTypeId()== Part::GeomCircle::getClassTypeId())
+	    {
+	      circle1 = dynamic_cast<const Part::GeomCircle*>(geo1);
+	    }
+	    // Assign the second type of geometry
+	    if(geo2->getTypeId()== Part::GeomLineSegment::getClassTypeId())
+	    {
+		lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geo2);
+	    }
+	    else if(geo2->getTypeId()== Part::GeomCircle::getClassTypeId())
+	    {
+	      if(circle1)
+	      {
+		circle2 = dynamic_cast<const Part::GeomCircle*>(geo2);
+	      }
+	      else
+	      {
+		circle1 = dynamic_cast<const Part::GeomCircle*>(geo2);
+	      }
+	    }
+	    else if(geo2->getTypeId()== Part::GeomArcOfCircle::getClassTypeId())
+	    {
+		if(arcOfCircle1)
+		{
+		  arcOfCircle2 = dynamic_cast<const Part::GeomArcOfCircle*>(geo2);
+		}
+		else
+		{
+		  arcOfCircle1 = dynamic_cast<const Part::GeomArcOfCircle*>(geo2);
+		}
+	    }
+	    
+	    // Select the pairs that we would like to show
+	     Base::Vector3d pos;
+	    if( lineSeg && circle1)
+	    {
+	      Base::Vector3d lineEndToCenter = circle1->getCenter() - lineSeg->getStartPoint();
+	      
+	      pos = lineSeg->getEndPoint() - lineSeg->getStartPoint();
+	      
+	      // Get Scalar / Inner product
+	      float length = (lineEndToCenter.x * pos.x + lineEndToCenter.y * pos.y) / pos.Length();
+	      Base::Vector3d dir = pos;
+	      dir.Normalize();
+	      Base::Vector3d norm(-dir.y, dir.x, 0);
+	      pos = lineSeg->getStartPoint() + dir * length + norm * 5;
+	    }
+	    else if( lineSeg && arcOfCircle1)
+	    {
+	      Base::Vector3d lineEndToCenter = arcOfCircle1->getCenter() - lineSeg->getStartPoint();
+	      
+	      pos = lineSeg->getEndPoint() - lineSeg->getStartPoint();
+	      
+	      // Get Scalar / Inner product
+	      float length = (lineEndToCenter.x * pos.x + lineEndToCenter.y * pos.y) / pos.Length();
+	      Base::Vector3d dir = pos;
+	      dir.Normalize();
+	      Base::Vector3d norm(-dir.y, dir.x, 0);
+	      pos = lineSeg->getStartPoint() + dir * length + norm * 5;
+	    }
+	    else
+	    {
+	      // Other Behaviour hasn't been implemented
+	    }
+	    dynamic_cast<SoTranslation *>(sep->getChild(1))->translation =  SbVec3f(pos.x, pos.y, 0.0f);
+         
+	    
+	  break; }
+        case Angle:
+	  break;
+	case Perpendicular: {
+	    assert(Constr->First < (int)geomlist->size());
+            assert(Constr->Second < (int)geomlist->size());
+            // get the geometry
+            const Part::Geometry *geo1 = (*geomlist)[Constr->First];
+            const Part::Geometry *geo2 = (*geomlist)[Constr->Second];
+            // Parallel can only apply to a GeomLineSegment
+            assert(geo1->getTypeId()== Part::GeomLineSegment::getClassTypeId());
+            assert(geo2->getTypeId()== Part::GeomLineSegment::getClassTypeId());
+            const Part::GeomLineSegment *lineSeg1 = dynamic_cast<const Part::GeomLineSegment*>(geo1);
+            const Part::GeomLineSegment *lineSeg2 = dynamic_cast<const Part::GeomLineSegment*>(geo2);
+
+            // calculate the half distance between the start and endpoint
+            Base::Vector3d midpos1 = ((lineSeg1->getEndPoint()+lineSeg1->getStartPoint())/2);
+
+            //Get a set of vectors perpendicular and tangential to these
+            Base::Vector3d dir1 = (lineSeg1->getEndPoint()-lineSeg1->getStartPoint()).Normalize();
+            Base::Vector3d norm1(-dir1.y,dir1.x,0);
+            Base::Vector3d constrPos1;
+
+            // calculate the half distance between the start and endpoint
+            Base::Vector3d midpos2 = ((lineSeg2->getEndPoint()+lineSeg2->getStartPoint())/2);
+
+            //Get a set of vectors perpendicular and tangential to these
+            Base::Vector3d dir2 = (lineSeg2->getEndPoint()-lineSeg2->getStartPoint()).Normalize();
+            Base::Vector3d norm2(-dir2.y,dir2.x,0);
+            Base::Vector3d constrPos2;
+
+
+            int multiplier = 0;
+            do
+            {
+                // Calculate new position of constraint
+                constrPos1 = midpos1 + (norm1 * 5) + (dir1 * (multiplier * 5));
+                multiplier++; // Increment the multiplier
+            }
+            while (isConstraintAtPosition(constrPos1, edit->constrGroup->getChild(i)));
+
+            multiplier = 0;
+            do
+            {
+                // Calculate new position of constraint
+                constrPos2 = midpos2 + (norm2 * 5) + (dir2 * (multiplier * 5));
+                multiplier++; // Increment the multiplier
+            }
+            while (isConstraintAtPosition(constrPos2, edit->constrGroup->getChild(i)));
+	    
+	   
+            constrPos2 = constrPos2 - constrPos1;
+	    constrPos2 = constrPos2 - Base::Vector3d(2, -2, 0);
+	    dynamic_cast<SoText2 *>(sep->getChild(4))->string = SbString().sprintf("PD%i",i);
+	    dynamic_cast<SoText2 *>(sep->getChild(8))->string = SbString().sprintf("PD%i",i);
+	    
+            dynamic_cast<SoTranslation *>(sep->getChild(1))->translation =  SbVec3f(constrPos1.x, constrPos1.y, 0.0f);
+            dynamic_cast<SoTranslation *>(sep->getChild(3))->translation =  SbVec3f( 2, -2, 0.0f);
+	    dynamic_cast<SoTranslation *>(sep->getChild(5))->translation =  SbVec3f(constrPos2.x, constrPos2.y, 0.0f);
+	    dynamic_cast<SoTranslation *>(sep->getChild(7))->translation =  SbVec3f(2, -2, 0.0f);
+	  break;}
+        case Coincident: // nothing to do for coincident
+        case None:
+            break;
         }
     }
 
@@ -1106,6 +1649,11 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
     // clean up 
     edit->constrGroup->removeAllChildren();
     edit->vConstrType.clear();
+    
+    
+    // Needs putting in better place
+    //Constraint Icons Size scaled by (width) in px
+    const int constraintImageSize = 24;
 
     for (std::vector<Sketcher::Constraint*>::const_iterator it = ConStr.begin(); it != ConStr.end(); ++it) {
         // root separator for one constraint
@@ -1140,87 +1688,218 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
                 }
                 break;
             case Horizontal: // add a Text node with the "H" for that constraint
-                {
-                    sep->addChild(new SoTranslation());
-                    SoText2 *text = new SoText2();
-                    text->justification = SoText2::LEFT;
-                    text->string = "H";
-                    sep->addChild(text); 
-                    // remember the type of this constraint node
-                    edit->vConstrType.push_back(Horizontal);
-                }
-                break;
-            case Vertical: // add a Text node with the "V" for that constraint
-                {
-                    sep->addChild(new SoTranslation());
-                    SoText2 *text = new SoText2();
-                    text->justification = SoText2::LEFT;
-                    text->string = "V";
-                    sep->addChild(text); 
-                    // remember the type of this constraint node
-                    edit->vConstrType.push_back(Vertical);
-                 }
-                break;
-            case Coincident: // no visual for coincident so far
-                edit->vConstrType.push_back(Coincident);
-                break;
-            case Parallel:
-                {
-                    sep->addChild(new SoTranslation());
-                    SoText2 *text = new SoText2();
-                    text->justification = SoText2::LEFT;
-                    text->string = "P";
-                    sep->addChild(text); 
-                    sep->addChild(new SoTranslation());
-                    text = new SoText2();
-                    text->justification = SoText2::LEFT;
-                    text->string = "P";
-                    sep->addChild(text); 
-                    // remember the type of this constraint node
-                    edit->vConstrType.push_back(Parallel);
-                }                break;
-            case Perpendicular:
-                {
-                    sep->addChild(new SoTranslation());
-                    SoText2 *text = new SoText2();
-                    text->justification = SoText2::LEFT;
-                    text->string = "N";
-                    sep->addChild(text); 
-                    sep->addChild(new SoTranslation());
-                    text = new SoText2();
-                    text->justification = SoText2::LEFT;
-                    text->string = "N";
-                    sep->addChild(text); 
-                    // remember the type of this constraint node
-                    edit->vConstrType.push_back(Perpendicular);
-                }
-                break;
-            case Tangent: // no visual for tangent so far
-                edit->vConstrType.push_back(Tangent);
-                break;
-            case Distance: 
-                {
-                    // nodes for the datum lines 
-                    sep->addChild(new SoCoordinate3);
-                    SoLineSet *lineSet = new SoLineSet;
-                    lineSet->numVertices.set1Value(0,2);
-                    lineSet->numVertices.set1Value(1,2);
-                    lineSet->numVertices.set1Value(2,2);
-                    sep->addChild(lineSet);
+		{
+		    //Create the Image Nodes
+		    SoImage *constraintIcon = new SoImage();
+		    QImage image = Gui::BitmapFactory().pixmap("Constraint_Horizontal").toImage();
 
-                    // text node for Distance Value
-                    sep->addChild(new SoTranslation());
-                    SoText2 *text = new SoText2();
-                    text->justification = SoText2::LEFT;
-                    text->string = "";
-                    sep->addChild(text); 
-                    edit->vConstrType.push_back(Distance);
-                }
-                break;
-            default:
-                edit->vConstrType.push_back(None);
-                
-        }
+		    // Scale Image
+		    image = image.scaledToWidth(constraintImageSize);
+		    SoSFImage icondata = SoSFImage();
+		    Gui::BitmapFactory().convert(image, icondata);
+
+		    int nc = 4;
+		    SbVec2s iconSize = SbVec2s(image.width(), image.height());
+
+		    constraintIcon->image.setValue(iconSize, 4, icondata.getValue(iconSize, nc));
+
+		    constraintIcon->vertAlignment = SoImage::HALF;
+		    constraintIcon->horAlignment = SoImage::CENTER;
+
+		    sep->addChild(new SoTranslation());
+		    sep->addChild(constraintIcon);
+
+		    // remember the type of this constraint node
+		    edit->vConstrType.push_back(Horizontal);
+		}
+		break;
+
+		case Vertical:
+		{
+		    //Create the Image Nodes
+		    SoImage *constraintIcon = new SoImage();
+		    QImage image = Gui::BitmapFactory().pixmap("Constraint_Vertical").toImage();
+
+		    //Scale Image
+		    image = image.scaledToWidth(constraintImageSize);
+		    SoSFImage icondata = SoSFImage();
+		    Gui::BitmapFactory().convert(image, icondata);
+
+		    int nc = 4;
+		    SbVec2s iconSize = SbVec2s(image.width(), image.height());
+
+		    constraintIcon->image.setValue(iconSize, 4, icondata.getValue(iconSize, nc));
+
+		    //Set Image Alignment to Center
+		    constraintIcon->vertAlignment = SoImage::HALF;
+		    constraintIcon->horAlignment = SoImage::CENTER;
+
+		    sep->addChild(new SoTranslation());
+		    sep->addChild(constraintIcon);
+
+		    // remember the type of this constraint node
+		    edit->vConstrType.push_back(Vertical);
+		}
+		break;
+		case Coincident: // no visual for coincident so far
+		    edit->vConstrType.push_back(Coincident);
+		    break;
+		case Parallel:
+		{
+
+		    // Create the Image Nodes
+		    SoImage *constraintIcon = new SoImage();
+		    SoImage *constraintIcon2 = new SoImage();
+
+		    QImage image = Gui::BitmapFactory().pixmap("Constraint_Parallel").toImage();
+
+		    //Scale Image
+		    image = image.scaledToWidth(constraintImageSize);
+
+		    SoSFImage icondata = SoSFImage();
+		    Gui::BitmapFactory().convert(image, icondata);
+
+		    int nc = 4;
+		    SbVec2s iconSize = SbVec2s(image.width(), image.height());
+
+		    constraintIcon->image.setValue(iconSize, 4, icondata.getValue(iconSize, nc));
+		    constraintIcon2->image.setValue(iconSize, 4, icondata.getValue(iconSize, nc));
+
+		    //Set Image Alignment to center
+		    constraintIcon->vertAlignment = SoImage::HALF;
+		    constraintIcon->horAlignment = SoImage::CENTER;
+		    constraintIcon2->vertAlignment = SoImage::HALF;
+		    constraintIcon2->horAlignment = SoImage::CENTER;
+
+		    SoText2 *indexText1 = new SoText2();
+		    SoText2 *indexText2 = new SoText2();
+		    
+		    // Add new nodes to Constraint Seperator
+		    sep->addChild(new SoTranslation());
+		    sep->addChild(constraintIcon);
+		    sep->addChild(new SoTranslation());
+		    sep->addChild(indexText1);
+		    sep->addChild(new SoTranslation());
+		    sep->addChild(constraintIcon2);
+		    sep->addChild(new SoTranslation());
+		    sep->addChild(indexText2);
+
+		    // remember the type of this constraint node
+		    edit->vConstrType.push_back(Parallel);
+		}
+		break;
+            case Tangent: {
+	      // no visual for tangent so far
+		// Create the Image Nodes
+		SoImage *constraintIcon = new SoImage();
+
+		QImage image = Gui::BitmapFactory().pixmap("Constraint_Tangent").toImage();
+
+		//Scale Image
+		image = image.scaledToWidth(constraintImageSize);
+
+		SoSFImage icondata = SoSFImage();
+		Gui::BitmapFactory().convert(image, icondata);
+
+		int nc = 4;
+		SbVec2s iconSize = SbVec2s(image.width(), image.height());
+
+		constraintIcon->image.setValue(iconSize, 4, icondata.getValue(iconSize, nc));
+	      
+		//Set Image Alignment to center
+		constraintIcon->vertAlignment = SoImage::HALF;
+		constraintIcon->horAlignment = SoImage::CENTER;
+	    
+		SoText2 *indexText1 = new SoText2();
+		
+		// Add new nodes to Constraint Seperator
+		sep->addChild(new SoTranslation());
+		sep->addChild(constraintIcon);
+		sep->addChild(new SoTranslation());
+		sep->addChild(indexText1);
+	    
+		edit->vConstrType.push_back(Tangent);
+	    break;	    }
+	    case Perpendicular:{
+	
+
+		// Create the Image Nodes
+		SoImage *constraintIcon = new SoImage();
+		SoImage *constraintIcon2 = new SoImage();
+
+		QImage image = Gui::BitmapFactory().pixmap("Constraint_Perpendicular").toImage();
+
+		//Scale Image
+		image = image.scaledToWidth(constraintImageSize);
+
+		SoSFImage icondata = SoSFImage();
+		Gui::BitmapFactory().convert(image, icondata);
+
+		int nc = 4;
+		SbVec2s iconSize = SbVec2s(image.width(), image.height());
+
+		constraintIcon->image.setValue(iconSize, 4, icondata.getValue(iconSize, nc));
+		constraintIcon2->image.setValue(iconSize, 4, icondata.getValue(iconSize, nc));
+
+		//Set Image Alignment to center
+		constraintIcon->vertAlignment = SoImage::HALF;
+		constraintIcon->horAlignment = SoImage::CENTER;
+		constraintIcon2->vertAlignment = SoImage::HALF;
+		constraintIcon2->horAlignment = SoImage::CENTER;
+
+		SoText2 *indexText1 = new SoText2();
+		SoText2 *indexText2 = new SoText2();
+		
+		// Add new nodes to Constraint Seperator
+		sep->addChild(new SoTranslation());
+		sep->addChild(constraintIcon);
+		sep->addChild(new SoTranslation());
+		sep->addChild(indexText1);
+		sep->addChild(new SoTranslation());
+		sep->addChild(constraintIcon2);
+		sep->addChild(new SoTranslation());
+		sep->addChild(indexText2);
+
+		// remember the type of this constraint node
+		edit->vConstrType.push_back(Perpendicular);
+	    }
+	    break;
+ 
+	    case Distance:
+	    {
+				
+		SoSeparator * sepDatum = new SoSeparator();
+		sepDatum->addChild(new SoCoordinate3());
+		SoLineSet *lineSet = new SoLineSet;		
+
+		// text node for Distance Value
+		sepDatum->addChild(lineSet);
+		
+		sep->addChild(sepDatum);	
+		
+		// Add the datum text	
+		sep->addChild(new SoTransform());
+		
+		// add font for the datum text
+		SoFont *font = new SoFont();
+		font->size = 5;
+		font->name = "Helvetica, Arial, FreeSans:bold";	
+	      
+		sep->addChild(font);
+		SoAsciiText *text = new SoAsciiText();
+		text->justification =  SoAsciiText::CENTER;
+		//SoText2 *text = new SoText2();
+		//text->justification = SoText2::CENTER;
+		text->string = "";
+		sep->addChild(text);
+
+		edit->vConstrType.push_back(Distance);
+	    }
+	    break;
+	    default:
+		edit->vConstrType.push_back(None);
+
+	    }
 
         edit->constrGroup->addChild(sep);
     }

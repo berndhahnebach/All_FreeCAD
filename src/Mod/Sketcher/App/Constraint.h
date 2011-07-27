@@ -75,6 +75,7 @@ public:
     int Second;
     PointPos SecondPos;
     int Extern;
+    float LabelDistance;
 };
 
 } //namespace Part
