@@ -121,8 +121,8 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     Gui::MenuItem* geom = new Gui::MenuItem();
     geom->setCommand("Sketcher geoms");
     *geom /*<< "Sketcher_CreatePoint"*/
-          /*<< "Sketcher_CreateArc"*/
-          /*<< "Sketcher_CreateCircle"*/
+          << "Sketcher_CreateArc"
+          << "Sketcher_CreateCircle"
           << "Sketcher_CreateLine"
           << "Sketcher_CreatePolyline"
           << "Sketcher_CreateRectangle"
@@ -137,7 +137,10 @@ Gui::MenuItem* Workbench::setupMenuBar() const
           << "Sketcher_ConstrainHorizontal"
           << "Sketcher_ConstrainDistance"
           << "Sketcher_ConstrainParallel"
-          << "Sketcher_ConstrainTangent";
+          << "Sketcher_ConstrainTangent"
+          << "Sketcher_ConstrainPerpendicular"
+
+          ;
 
     Gui::MenuItem* part = new Gui::MenuItem;
     root->insertItem(item, part);
@@ -185,7 +188,9 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
           << "Sketcher_ConstrainHorizontal"
           << "Sketcher_ConstrainDistance"
           << "Sketcher_ConstrainParallel"
-          << "Sketcher_ConstrainTangent";
+          << "Sketcher_ConstrainTangent"
+          << "Sketcher_ConstrainPerpendicular"
+          ;
 
      return root;
 }
