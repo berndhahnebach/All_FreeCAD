@@ -8,11 +8,11 @@ include_directories(
     ${SOQT_INCLUDE_DIR}
     ${PYTHON_INCLUDE_PATH}
     ${XERCESC_INCLUDE_DIR}
-    ${ODE_INCLUDE_DIRS}
+    #${ODE_INCLUDE_DIRS}
 )
 
 set(AssemblyGui_LIBS
-    ${ODE_LIBRARIES}
+    #${ODE_LIBRARIES}
     Assembly
     FreeCADGui
 )

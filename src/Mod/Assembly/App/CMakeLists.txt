@@ -6,11 +6,11 @@ include_directories(
     ${PYTHON_INCLUDE_PATH}
     ${ZLIB_INCLUDE_DIR}
     ${XERCESC_INCLUDE_DIR}
-    ${ODE_INCLUDE_DIRS}
+ #   ${ODE_INCLUDE_DIRS}
 )
 
 set(Assembly_LIBS
-    ${ODE_LIBRARIES}
+#    ${ODE_LIBRARIES}
     FreeCADApp
 )
 

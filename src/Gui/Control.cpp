@@ -158,6 +158,7 @@ bool ControlSingleton::isAllowedAlterDocument(void) const
     return true;
 }
 
+
 bool ControlSingleton::isAllowedAlterView(void) const
 {
     if (ActiveDialog)

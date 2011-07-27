@@ -207,15 +207,19 @@ public:
     /// Abort the  actually running transaction. 
     void abortTransaction();
     /// Set the Undo limit in Byte!
-    void SetUndoLimit(unsigned int MemSize=0);
+    void setUndoLimit(unsigned int UndoMemSize=0);
+    /// Returns the actual memory consumption of the Undo redo stuff.
+    unsigned int getUndoMemSize (void) const;
+    /// Set the Undo limit as stack size
+    void setMaxUndoStackSize(unsigned int UndoMaxStackSize=20);
+    /// Set the Undo limit as stack size
+    unsigned int getMaxUndoStackSize(void)const;
     /// Remove all stored Undos and Redos
     void clearUndos();
     /// Returns the  number  of stored Undos. If greater than 0 Undo will be effective.
     int getAvailableUndos() const;
     /// Returns a list of the Undo names
     std::vector<std::string> getAvailableUndoNames() const;
-    /// Returns the actual memory consumption of the Undo redo stuff.
-    unsigned int getUndoMemSize (void) const;
     /// Will UNDO  one step, returns  False if no undo was done (Undos == 0).
     bool undo();
     /// Returns the number of stored Redos. If greater than 0 Redo will be effective.

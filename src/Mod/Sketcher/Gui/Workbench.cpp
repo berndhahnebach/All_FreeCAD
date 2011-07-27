@@ -83,8 +83,6 @@ Gui::MenuItem* Workbench::setupMenuBar() const
         << geom
         << cons
         << "Separator" 
-        << "PartDesign_Pad" 
-        << "PartDesign_Fillet"
     ;
 
     return root;
