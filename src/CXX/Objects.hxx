@@ -529,9 +529,8 @@ namespace Py
             validate();
         }
 
-        explicit Boolean (const Object& ob)
+        explicit Boolean (const Object& ob): Object(*ob)
         {
-            set(*ob, true);
             validate();
         }
 

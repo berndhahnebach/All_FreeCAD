@@ -32,6 +32,7 @@
 #include "Application.h"
 #include "Action.h"
 #include "Command.h"
+#include "Control.h"
 #include "ToolBoxManager.h"
 #include "Window.h"
 #include "Selection.h"
@@ -342,21 +343,16 @@ PyObject* Workbench::getPyObject()
 
 void Workbench::addTaskWatcher(std::vector<Gui::TaskView::TaskWatcher*> &Watcher)
 {
-    Gui::DockWnd::CombiView* pcCombiView = qobject_cast<Gui::DockWnd::CombiView*>
-        (Gui::DockWindowManager::instance()->getDockWindow("Combo View"));
-
-    pcCombiView->getTaskPanel()->addTaskWatcher(Watcher); 
+    Gui::TaskView::TaskView* taskView = Control().taskPanel();
+    if (taskView)
+        taskView->addTaskWatcher(Watcher); 
 }
 
 void Workbench::removeTaskWatcher(void)
 {
-    Gui::DockWnd::CombiView* pcCombiView = qobject_cast<Gui::DockWnd::CombiView*>
-        (Gui::DockWindowManager::instance()->getDockWindow("Combo View"));
-
-    std::vector<Gui::TaskView::TaskWatcher*> watcher;
-    pcCombiView->getTaskPanel()->removeTaskWatcher();
-    // make sure to delete the old watchers
-    pcCombiView->getTaskPanel()->addTaskWatcher(watcher); 
+    Gui::TaskView::TaskView* taskView = Control().taskPanel();
+    if (taskView)
+        taskView->clearTaskWatcher();
 }
 
 // --------------------------------------------------------------------

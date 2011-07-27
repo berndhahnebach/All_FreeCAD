@@ -25,9 +25,12 @@
 #define GUI_TASKVIEW_TASKDIALOGPYTHON_H
 
 #include "TaskDialog.h"
+#include "TaskWatcher.h"
 #include <CXX/Extensions.hxx>
 
 namespace Gui {
+namespace TaskView {
+
 class ControlPy : public Py::PythonExtension<ControlPy> 
 {
 public:
@@ -41,6 +44,8 @@ public:
     Py::Object showDialog(const Py::Tuple&);
     Py::Object activeDialog(const Py::Tuple&);
     Py::Object closeDialog(const Py::Tuple&);
+    Py::Object addTaskWatcher(const Py::Tuple&);
+    Py::Object clearTaskWatcher(const Py::Tuple&);
     Py::Object isAllowedAlterDocument(const Py::Tuple&);
     Py::Object isAllowedAlterView(const Py::Tuple&);
     Py::Object isAllowedAlterSelection(const Py::Tuple&);
@@ -49,8 +54,18 @@ private:
     static ControlPy* instance;
 };
 
-class TaskDialogPy;
-class GuiExport TaskDialogPython : public TaskView::TaskDialog
+class GuiExport TaskWatcherPython : public TaskWatcher
+{
+public:
+    TaskWatcherPython(const Py::Object&);
+    ~TaskWatcherPython();
+    bool shouldShow();
+
+private:
+    Py::Object watcher;
+};
+
+class GuiExport TaskDialogPython : public TaskDialog
 {
 public:
     TaskDialogPython(const Py::Object&);
@@ -75,6 +90,7 @@ private:
     Py::Object dlg;
 };
 
+} //namespace TaskView
 } //namespace Gui
 
 #endif // GUI_TASKVIEW_TASKDIALOGPYTHON_H

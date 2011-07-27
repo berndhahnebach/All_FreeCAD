@@ -43,7 +43,7 @@ using namespace std;
 /* TRANSLATOR Gui::ControlSingleton */
 
 ControlSingleton* ControlSingleton::_pcSingleton = 0;
-static QPointer<Gui::TaskView::TaskView> taskPanel = 0;
+static QPointer<Gui::TaskView::TaskView> _taskPanel = 0;
 
 ControlSingleton::ControlSingleton()
   : ActiveDialog(0)
@@ -54,6 +54,31 @@ ControlSingleton::ControlSingleton()
 ControlSingleton::~ControlSingleton()
 {
 
+}
+
+Gui::TaskView::TaskView* ControlSingleton::taskPanel() const
+{
+    Gui::DockWnd::CombiView* pcCombiView = qobject_cast<Gui::DockWnd::CombiView*>
+        (Gui::DockWindowManager::instance()->getDockWindow("Combo View"));
+    // should return the pointer to combo view
+    if (pcCombiView)
+        return pcCombiView->getTaskPanel();
+    // not all workbenches have the combo view enabled
+    else if (_taskPanel)
+        return _taskPanel;
+    // no task panel available
+    else
+        return 0;
+}
+
+void ControlSingleton::showTaskView()
+{
+    Gui::DockWnd::CombiView* pcCombiView = qobject_cast<Gui::DockWnd::CombiView*>
+        (Gui::DockWindowManager::instance()->getDockWindow("Combo View"));
+    if (pcCombiView)
+        pcCombiView->showTaskView();
+    else if (_taskPanel)
+        _taskPanel->raise();
 }
 
 void ControlSingleton::showDialog(Gui::TaskView::TaskDialog *dlg)
@@ -78,13 +103,13 @@ void ControlSingleton::showDialog(Gui::TaskView::TaskDialog *dlg)
         connect(dlg, SIGNAL(destroyed()), this, SLOT(closedDialog()));
     }
     // not all workbenches have the combo view enabled
-    else if (!taskPanel) {
+    else if (!_taskPanel) {
         QDockWidget* dw = new QDockWidget();
         dw->setWindowTitle(tr("Task panel"));
         dw->setFeatures(QDockWidget::DockWidgetMovable);
-        taskPanel = new Gui::TaskView::TaskView(dw);
-        dw->setWidget(taskPanel);
-        taskPanel->showDialog(dlg);
+        _taskPanel = new Gui::TaskView::TaskView(dw);
+        dw->setWidget(_taskPanel);
+        _taskPanel->showDialog(dlg);
         getMainWindow()->addDockWidget(Qt::LeftDockWidgetArea, dw);
         connect(dlg, SIGNAL(destroyed()), dw, SLOT(deleteLater()));
 
@@ -112,8 +137,8 @@ void ControlSingleton::closeDialog()
     // should return the pointer to combo view
     if (pcCombiView)
         pcCombiView->closeDialog();
-    else if (taskPanel)
-        taskPanel->removeDialog();
+    else if (_taskPanel)
+        _taskPanel->removeDialog();
 }
 
 void ControlSingleton::closedDialog()
