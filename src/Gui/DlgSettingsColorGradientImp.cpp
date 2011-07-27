@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <QLocale>
 # include <QMessageBox>
 # include <QDoubleValidator>
 #endif
@@ -133,10 +134,10 @@ bool DlgSettingsColorGradientImp::isOutInvisible() const
 void DlgSettingsColorGradientImp::setRange( float fMin, float fMax )
 {
     floatLineEditMax->blockSignals(true);
-    floatLineEditMax->setText(QString::number(fMax));
+    floatLineEditMax->setText(QLocale::system().toString(fMax, 'f', numberOfDecimals()));
     floatLineEditMax->blockSignals(false);
     floatLineEditMin->blockSignals(true);
-    floatLineEditMin->setText(QString::number(fMin));
+    floatLineEditMin->setText(QLocale::system().toString(fMin, 'f', numberOfDecimals()));
     floatLineEditMin->blockSignals(false);
 }
 
