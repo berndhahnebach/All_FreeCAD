@@ -48,6 +48,8 @@
 #include "DlgSettingsImageImp.h"
 #include "Selection.h"
 #include "SoFCOffscreenRenderer.h"
+#include "SoFCBoundingBox.h"
+#include "SoAxisCrossKit.h"
 #include "View3DInventor.h"
 #include "View3DInventorViewer.h"
 #include "WaitCursor.h"
@@ -1325,6 +1327,88 @@ bool StdCmdToggleNavigation::isActive(void)
     return false;
 }
 
+// Command to show/hide axis cross
+class StdCmdAxisCross : public Gui::Command
+{
+private:
+    SoShapeScale* axisCross;
+    SoGroup* axisGroup;
+public:
+    StdCmdAxisCross() : Command("Std_AxisCross"), axisCross(0), axisGroup(0)
+    {
+        sGroup        = QT_TR_NOOP("Standard-View");
+        sMenuText     = QT_TR_NOOP("Toggle axis cross");
+        sToolTipText  = QT_TR_NOOP("Toggle axis cross");
+        sStatusTip    = QT_TR_NOOP("Toggle axis cross");
+        sWhatsThis    = "Std_AxisCross";
+    }
+    ~StdCmdAxisCross()
+    {
+        if (axisGroup)
+            axisGroup->unref();
+        if (axisCross)
+            axisCross->unref();
+    }
+    const char* className() const
+    { return "StdCmdAxisCross"; }
+
+    Action * createAction(void)
+    {
+        axisCross = new Gui::SoShapeScale;
+        axisCross->ref();
+        Gui::SoAxisCrossKit* axisKit = new Gui::SoAxisCrossKit();
+        axisKit->set("xAxis.appearance.drawStyle", "lineWidth 2");
+        axisKit->set("yAxis.appearance.drawStyle", "lineWidth 2");
+        axisKit->set("zAxis.appearance.drawStyle", "lineWidth 2");
+        axisCross->setPart("shape", axisKit);
+        axisGroup = new SoSkipBoundingGroup;
+        axisGroup->ref();
+        axisGroup->addChild(axisCross);
+
+        Action *pcAction = Gui::Command::createAction();
+        pcAction->setCheckable(true);
+        return pcAction;
+    }
+
+protected:
+    void activated(int iMsg)
+    {
+        float scale = 1.0f;
+
+        Gui::View3DInventor* view = qobject_cast<Gui::View3DInventor*>
+            (getMainWindow()->activeWindow());
+        if (view) {
+            SoNode* scene = view->getViewer()->getSceneGraph();
+            SoSeparator* sep = static_cast<SoSeparator*>(scene);
+            bool hasaxis = (sep->findChild(axisGroup) != -1);
+            if (iMsg > 0 && !hasaxis) {
+                axisCross->scaleFactor = scale;
+                sep->addChild(axisGroup);
+            }
+            else if (iMsg == 0 && hasaxis) {
+                sep->removeChild(axisGroup);
+            }
+        }
+    }
+
+    bool isActive(void)
+    {
+        Gui::View3DInventor* view = qobject_cast<View3DInventor*>(Gui::getMainWindow()->activeWindow());
+        if (view) {
+            SoGroup* group = static_cast<SoGroup*>(view->getViewer()->getSceneGraph());
+            bool hasaxis = group->findChild(axisGroup) != -1;
+            if (_pcAction->isChecked() != hasaxis)
+                _pcAction->setChecked(hasaxis);
+            return true;
+        }
+        else {
+            if (_pcAction->isChecked())
+                _pcAction->setChecked(false);
+            return false;
+        }
+    }
+};
+
 //===========================================================================
 // Std_ViewExample1
 //===========================================================================
@@ -1917,6 +2001,7 @@ void CreateViewStdCommands(void)
     rcCmdMgr.addCommand(new StdCmdTextureMapping());
     rcCmdMgr.addCommand(new StdCmdDemoMode());
     rcCmdMgr.addCommand(new StdCmdToggleNavigation());
+    rcCmdMgr.addCommand(new StdCmdAxisCross());
 }
 
 } // namespace Gui
