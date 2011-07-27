@@ -887,8 +887,8 @@ def isCubic(shape):
             if i < 3:
                 e2 = vec(f.Edges[i+1])
             else: e2 = vec(f.Edges[0])
-            rpi = round(math.pi/2,precision)
-            if round(e1.getAngle(e2),precision) != rpi:
+            rpi = [0.0,round(math.pi/2,precision)]
+            if not round(e1.getAngle(e2),precision) in rpi:
                 return False
     return True
 
@@ -905,6 +905,8 @@ def getCubicDimensions(shape):
     if z[0] > 5: return None
     base = shape.Faces[z[0]]
     basepoint = base.Edges[0].Vertexes[0].Point
+    plpoint = base.CenterOfMass
+    basenorm = base.normalAt(0.5,0.5)
     # getting length and width
     vx = vec(base.Edges[0])
     vy = vec(base.Edges[1])
@@ -913,7 +915,6 @@ def getCubicDimensions(shape):
     rotY = fcvec.angle(vx,FreeCAD.Vector(vx.x,vx.y,0))
     rotX = fcvec.angle(vy,FreeCAD.Vector(vy.x,vy.y,0))
     # getting height
-    print vx,vy
     vz = None
     rpi = round(math.pi/2,precision)
     for i in range(1,6):
@@ -924,14 +925,13 @@ def getCubicDimensions(shape):
                 if round(vtemp.getAngle(vx),precision) == rpi:
                     if round(vtemp.getAngle(vy),precision) == rpi:
                         vz = vtemp
-    print vz
     if not vz: return None
     mat = FreeCAD.Matrix()
+    mat.move(plpoint)
     mat.rotateX(rotX)
     mat.rotateY(rotY)
     mat.rotateZ(rotZ)
-    mat.move(basepoint)
-    return [FreeCAD.Placement(mat),vx.Length,vy.Length,vz.Length]
+    return [FreeCAD.Placement(mat),round(vx.Length,precision),round(vy.Length,precision),round(vz.Length,precision)]
 
 def removeInterVertices(wire):
         '''removeInterVertices(wire) - remove unneeded vertices (those that
