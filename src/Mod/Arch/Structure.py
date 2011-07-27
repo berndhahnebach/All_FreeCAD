@@ -30,15 +30,36 @@ __title__="FreeCAD Structure"
 __author__ = "Yorik van Havre"
 __url__ = "http://free-cad.sourceforge.net"
 
-def makeStructure(baseobj,length=None,name="Structure"):
-    '''makeStructure(obj,[length]): creates a structure element
-    based on the given object and the given length'''
+def makeStructure(baseobj=None,length=None,width=None,height=None,swap=True,name="Structure"):
+    '''makeStructure([obj],[length],[width],[heigth],[swap]): creates a
+    structure element based on the given profile object and the given
+    extrusion height. If no base object is given, you can also specify
+    length and width for a cubic object. If swap is True (default), then if
+    the given base is cubic, it will be erased and a parametric cubic element
+    will be created instead.'''
     obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython",name)
     Structure(obj)
     ViewProviderStructure(obj.ViewObject)
-    obj.Base = baseobj
+    if baseobj:
+        if baseobj.isDerivedFrom("Part::Feature"):
+            if swap and fcgeo.isCubic(baseobj.Shape):
+                dims = fcgeo.getCubicDimensions(baseobj.Shape)
+                obj.Placement = dims[0]
+                obj.Length = dims[1]
+                obj.Width = dims[2]
+                obj.Height = dims[3]
+                FreeCAD.ActiveDocument.remove(baseobj.Name)
+            else:
+                obj.Base = baseobj
     if length: obj.Length = length
-    if obj.Base: obj.Base.ViewObject.hide()
+    if width: obj.Width = width
+    if height: obj.Height = height
+    if obj.Base:
+        obj.Base.ViewObject.hide()
+    else:
+        if (not obj.Width) and (not obj.Length):
+            obj.Width = 1
+            obj.Height = 1
     return obj
 
 class CommandStructure:
@@ -57,49 +78,78 @@ class CommandStructure:
                 makeStructure(obj)
             FreeCAD.ActiveDocument.commitTransaction()
         else:
-            FreeCADGui.runCommand("Draft_Wire")
+            makeStructure()
        
 class Structure(Component.Component):
     "The Structure object"
     def __init__(self,obj):
         Component.Component.__init__(self,obj)
         obj.addProperty("App::PropertyLength","Length","Base",
-                        "The length of this element. Keep 0 for automatic")
-        obj.addProperty("App::PropertyVector","Normal","Base",
-                        "The normal extrusion direction of this wall (keep (0,0,0) for automatic normal)")
+                        "The length of this element, if not based on a profile")
+        obj.addProperty("App::PropertyLength","Width","Base",
+                        "The width of this element, if not based on a profile")
+        obj.addProperty("App::PropertyLength","Height","Base",
+                        "The height or extrusion depth of this element. Keep 0 for automatic")
         self.Type = "Structure"
         
     def execute(self,obj):
         self.createGeometry(obj)
         
     def onChanged(self,obj,prop):
-        if prop in ["Base","Length","Normal","Additions","Subtractions"]:
+        if prop in ["Base","Length","Width","Height","Normal","Additions","Subtractions"]:
             self.createGeometry(obj)
 
     def createGeometry(self,obj):
         # getting default values
-        length = normal = None
+        height = normal = None
         if obj.Length:
             length = obj.Length
         else:
+            length = 1
+        if obj.Width:
+            width = obj.Width
+        else:
+            width = 1
+        if obj.Height:
+            height = obj.Height
+        else:
             for p in obj.InList:
                 if Draft.getType(p) == "Floor":
-                    length = p.Height
-        if not length: length = 1
+                    height = p.Height
+        if not height: height = 1
         if obj.Normal == Vector(0,0,0):
             normal = Vector(0,0,1)
         else:
             normal = Vector(obj.Normal)
 
         # creating shape
+        pl = obj.Placement
+        norm = normal.multiply(height)
+        base = None
         if obj.Base:
             if obj.Base.isDerivedFrom("Part::Feature"):
-                pl = obj.Placement
-                norm = normal.multiply(length)
                 base = obj.Base.Shape.copy()
-                base = base.extrude(normal)
-                obj.Shape = base
-                obj.Placement = pl
+                if base.Solids:
+                    pass
+                elif base.Faces:
+                    base = base.extrude(normal)
+                elif (len(base.Wires) == 1) and base.Wires[0].isClosed():
+                    base = Part.Face(base.Wires[0])
+                    base = base.extrude(normal)                
+        else:
+            l2 = length/2 or 0.5
+            w2 = width/2 or 0.5
+            v1 = Vector(-l2,-w2,0)
+            v2 = Vector(l2,-w2,0)
+            v3 = Vector(l2,w2,0)
+            v4 = Vector(-l2,w2,0)
+            base = Part.makePolygon([v1,v2,v3,v4,v1])
+            base = Part.Face(base)
+            base = base.extrude(normal)
+        if base:
+            obj.Shape = base
+            obj.Placement = pl
+            
 
 class ViewProviderStructure(Component.ViewProviderComponent):
     "A View Provider for the Structure object"
