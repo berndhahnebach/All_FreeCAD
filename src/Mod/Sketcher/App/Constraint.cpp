@@ -48,7 +48,8 @@ Constraint::Constraint()
   FirstPos(none),
   Second(-1),
   SecondPos(none),
-  Extern(-1)
+  Extern(-1),
+  LabelDistance()
 {
 }
 Constraint::Constraint(const Constraint& from)
@@ -59,7 +60,8 @@ Constraint::Constraint(const Constraint& from)
   FirstPos(from.FirstPos),
   Second(from.Second),
   SecondPos(from.SecondPos),
-  Extern(from.Extern)
+  Extern(from.Extern),
+  LabelDistance(from.LabelDistance)
 {
 }
 
@@ -86,15 +88,16 @@ unsigned int Constraint::getMemSize (void) const
 void Constraint::Save (Writer &writer) const
 {
     writer.Stream() << writer.ind() << "<Constrain "
-                    << "Name=\""        <<  Name            << "\" " 
-                    << "Type=\""        <<  (int)Type       << "\" "
-                    << "Value=\""       <<  Value           << "\" "
-                    << "First=\""       <<  First           << "\" "
-                    << "FirstPos=\""    <<  (int)  FirstPos << "\" "
-                    << "Second=\""      <<  Second          << "\" "
-                    << "SecondPos=\""   <<  (int) SecondPos << "\" "
-                    << "Extern=\""      <<  Extern          << "\"/>"     
-                    << std::endl;
+    << "Name=\""        <<  Name            << "\" "
+    << "Type=\""        <<  (int)Type       << "\" "
+    << "Value=\""       <<  Value           << "\" "
+    << "First=\""       <<  First           << "\" "
+    << "FirstPos=\""    <<  (int)  FirstPos << "\" "
+    << "Second=\""      <<  Second          << "\" "
+    << "SecondPos=\""   <<  (int) SecondPos << "\" "
+    << "Extern=\""      <<  Extern          << "\" "
+    << "LabelDistance =\""	<< LabelDistance<< "\" />"
+    << std::endl;
 }
 
 void Constraint::Restore(XMLReader &reader)
@@ -108,6 +111,12 @@ void Constraint::Restore(XMLReader &reader)
     Second    = reader.getAttributeAsInteger("Second");
     SecondPos = (PointPos)  reader.getAttributeAsInteger("SecondPos");
     Extern    = reader.getAttributeAsInteger("Extern");
+
+    // Read the distance a constraint label has been moved
+    if(reader.hasAttribute("LabelDistance"))
+        LabelDistance = reader.getAttributeAsFloat("LabelDistance");
+    else
+        LabelDistance = 0.0;
 }
 
 

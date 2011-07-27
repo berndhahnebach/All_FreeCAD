@@ -102,6 +102,7 @@ public:
         STATUS_SELECT_Constraint, /**< enum value a constraint was selected. */
         STATUS_SKETCH_DragPoint,  /**< enum value while dragging a point. */
         STATUS_SKETCH_DragCurve,  /**< enum value while dragging a curve. */
+	STATUS_SKETCH_DragConstraint,  /**< enum value while dragging a compatible constraint. */
         STATUS_SKETCH_UseHandler, /**< enum value A DrawSketchHandler is in control. */
     };
     /// is called by GuiCommands to set the drawing mode
@@ -122,6 +123,11 @@ public:
     void updateColor(void);
     /// get the pointer to the sketch document object
     Sketcher::SketchObject* getSketchObject(void) const;
+    
+    // Moves a selected constraint
+    void moveConstraint(int constNum, const Base::Vector2D &Pos);
+     // Checks if there is a constraint object at position vector
+    bool isConstraintAtPosition(const Base::Vector3d &constrPos, const SoNode * constraint);
 
     int getPreselectPoint(void) const;
     int getPreselectCurve(void) const;
