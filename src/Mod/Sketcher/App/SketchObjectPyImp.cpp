@@ -68,7 +68,7 @@ PyObject* SketchObjectPy::delGeometry(PyObject *args)
         return 0;
 
     if (this->getSketchObjectPtr()->delGeometry(Index)) {
-        Base::Console().Error("Not able to delete a geometry with the given index: %i.\n", Index);
+        PyErr_Format(PyExc_ValueError, "Not able to delete a geometry with the given index: %i", Index);
         return 0;
     }
 
@@ -95,7 +95,7 @@ PyObject* SketchObjectPy::delConstraint(PyObject *args)
         return 0;
 
     if (this->getSketchObjectPtr()->delConstraint(Index)) {
-        Base::Console().Error("Not able to delete a constraint with the given index: %i.\n", Index);
+        PyErr_Format(PyExc_ValueError, "Not able to delete a constraint with the given index: %i", Index);
         return 0;
     }
 
@@ -108,7 +108,10 @@ PyObject* SketchObjectPy::delConstraintOnPoint(PyObject *args)
     if (!PyArg_ParseTuple(args, "i", &Index))
         return 0;
 
-    this->getSketchObjectPtr()->delConstraintOnPoint(Index);
+    if (this->getSketchObjectPtr()->delConstraintOnPoint(Index)) {
+        PyErr_Format(PyExc_ValueError, "Not able to delete a constraint on point with the given index: %i", Index);
+        return 0;
+    }
 
     Py_Return; 
 }
@@ -120,7 +123,10 @@ PyObject* SketchObjectPy::setDatum(PyObject *args)
     if (!PyArg_ParseTuple(args, "di", &Datum, &Index))
         return 0;
 
-    this->getSketchObjectPtr()->setDatum(Datum, Index);
+    if (this->getSketchObjectPtr()->setDatum(Datum, Index)) {
+        PyErr_Format(PyExc_ValueError, "Datum %d of constraint with index %i is invalid", Datum, Index);
+        return 0;
+    }
 
     Py_Return; 
 }
@@ -135,7 +141,10 @@ PyObject* SketchObjectPy::movePoint(PyObject *args)
 
     Base::Vector3d v1 = static_cast<Base::VectorPy*>(pcObj)->value();
 
-    this->getSketchObjectPtr()->movePoint(GeoId,(Sketcher::PointPos)PointType,v1);
+    if (this->getSketchObjectPtr()->movePoint(GeoId,(Sketcher::PointPos)PointType,v1)) {
+        PyErr_Format(PyExc_ValueError, "Not able to move point with the id and type: (%i, %i)", GeoId, PointType);
+        return 0;
+    }
 
     Py_Return; 
 
@@ -181,5 +190,3 @@ int SketchObjectPy::setCustomAttributes(const char* attr, PyObject* obj)
 
     return 0;
 }
-
-

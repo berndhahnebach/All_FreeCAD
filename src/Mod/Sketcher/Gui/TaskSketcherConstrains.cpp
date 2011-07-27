@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <QLocale>
 # include <QRegExp>
 # include <QString>
 #endif
@@ -180,15 +181,21 @@ void TaskSketcherConstrains::on_listWidgetConstraints_itemActivated(QListWidgetI
         Ui::InsertDatum ui_ins_datum;
         ui_ins_datum.setupUi(&dlg);
 
-        ui_ins_datum.lineEdit->setText(QString::number(datum));
+        ui_ins_datum.lineEdit->setText(QLocale::system().toString(datum,'g',6));
         if (dlg.exec()) {
-            double newDatum = ui_ins_datum.lineEdit->text().toDouble();
-            Gui::Command::openCommand("Add sketch constraints");
-            Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.setDatum(%f,%i)",
-                      sketchView->getObject()->getNameInDocument(),
-                      newDatum,it->ConstraintNbr);
-            // use recompute() instead of execute() to properly handle placement
-            //sketchView->getSketchObject()->recompute();
+            bool ok;
+            double newDatum = ui_ins_datum.lineEdit->text().toDouble(&ok);
+            if (ok) {
+                try {
+                    Gui::Command::openCommand("Add sketch constraints");
+                    Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.setDatum(%f,%i)",
+                              sketchView->getObject()->getNameInDocument(),
+                              newDatum,it->ConstraintNbr);
+                }
+                catch (const Base::Exception& e) {
+                    QMessageBox::critical(this, tr("Distance constraint"), QString::fromUtf8(e.what()));
+                }
+            }
         }
     }
 }
