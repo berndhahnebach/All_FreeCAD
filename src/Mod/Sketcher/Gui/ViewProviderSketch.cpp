@@ -1515,6 +1515,9 @@ Sketcher::SketchObject* ViewProviderSketch::getSketchObject(void) const
 void ViewProviderSketch::delSelected(void)
 {
     if (edit) {
+        // We must tmp. block the signaling because otherwise we empty the sets while
+        // looping through them which may cause a crash
+        this->blockConnection(true);
         std::set<int>::const_reverse_iterator rit;
         for (rit = edit->SelConstraintSet.rbegin(); rit != edit->SelConstraintSet.rend(); rit++) {
             Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.delConstraint(%i)"
@@ -1529,6 +1532,7 @@ void ViewProviderSketch::delSelected(void)
                                    ,getObject()->getNameInDocument(), *rit);
         }
 
+        this->blockConnection(false);
         Gui::Selection().clearSelection();
         edit->PreselectCurve = -1;
         edit->PreselectPoint = -1;
