@@ -30,7 +30,9 @@
 #include "TaskDialogPython.h"
 #include "TaskView.h"
 
+#include <Gui/Application.h>
 #include <Gui/BitmapFactory.h>
+#include <Gui/Command.h>
 #include <Gui/Control.h>
 #include <Gui/WidgetFactory.h>
 #include <Base/Interpreter.h>
@@ -60,6 +62,8 @@ void ControlPy::init_type()
     add_varargs_method("showDialog",&ControlPy::showDialog,"showDialog()");
     add_varargs_method("activeDialog",&ControlPy::activeDialog,"activeDialog()");
     add_varargs_method("closeDialog",&ControlPy::closeDialog,"closeDialog()");
+    add_varargs_method("addTaskWatcher",&ControlPy::addTaskWatcher,"addTaskWatcher()");
+    add_varargs_method("clearTaskWatcher",&ControlPy::clearTaskWatcher,"clearTaskWatcher()");
     add_varargs_method("isAllowedAlterDocument",&ControlPy::isAllowedAlterDocument,"isAllowedAlterDocument()");
     add_varargs_method("isAllowedAlterView",&ControlPy::isAllowedAlterView,"isAllowedAlterView()");
     add_varargs_method("isAllowedAlterSelection",&ControlPy::isAllowedAlterSelection,"isAllowedAlterSelection()");
@@ -103,6 +107,29 @@ Py::Object ControlPy::closeDialog(const Py::Tuple&)
     return Py::None();
 }
 
+Py::Object ControlPy::addTaskWatcher(const Py::Tuple& args)
+{
+    std::vector<Gui::TaskView::TaskWatcher*> watcher;
+    Py::List list(args[0]);
+    for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+        TaskWatcherPython* w = new TaskWatcherPython(*it);
+        watcher.push_back(w);
+    }
+
+    Gui::TaskView::TaskView* taskView = Gui::Control().taskPanel();
+    if (taskView)
+        taskView->addTaskWatcher(watcher);
+    return Py::None();
+}
+
+Py::Object ControlPy::clearTaskWatcher(const Py::Tuple&)
+{
+    Gui::TaskView::TaskView* taskView = Gui::Control().taskPanel();
+    if (taskView)
+        taskView->clearTaskWatcher();
+    return Py::None();
+}
+
 Py::Object ControlPy::isAllowedAlterDocument(const Py::Tuple&)
 {
     bool ok = Gui::Control().isAllowedAlterDocument();
@@ -123,6 +150,74 @@ Py::Object ControlPy::isAllowedAlterSelection(const Py::Tuple&)
 
 // ------------------------------------------------------------------
 
+TaskWatcherPython::TaskWatcherPython(const Py::Object& o)
+  : TaskWatcher(0), watcher(o)
+{
+    if (watcher.hasAttr(std::string("filter"))) {
+        Py::String name(watcher.getAttr(std::string("filter")));
+        std::string s = (std::string)name;
+        this->setFilter(s.c_str());
+    }
+
+    if (watcher.hasAttr(std::string("commands"))) {
+        QString title;
+        if (watcher.hasAttr(std::string("title"))) {
+            Py::String name(watcher.getAttr(std::string("title")));
+            std::string s = (std::string)name;
+            title = QString::fromUtf8(s.c_str());
+        }
+
+        QPixmap icon;
+        if (watcher.hasAttr(std::string("icon"))) {
+            Py::String name(watcher.getAttr(std::string("icon")));
+            std::string s = (std::string)name;
+            icon = BitmapFactory().pixmap(s.c_str());
+        }
+
+        Py::List cmds(watcher.getAttr(std::string("commands")));
+        CommandManager &mgr = Gui::Application::Instance->commandManager();
+        Gui::TaskView::TaskBox *tb = new Gui::TaskView::TaskBox(icon, title, true, 0);
+        for (Py::List::iterator it = cmds.begin(); it != cmds.end(); ++it) {
+            Py::String name(*it);
+            std::string s = (std::string)name;
+            Command *c = mgr.getCommandByName(s.c_str());
+            if (c)
+                c->addTo(tb);
+        }
+        Content.push_back(tb);
+    }
+}
+
+TaskWatcherPython::~TaskWatcherPython()
+{
+    Base::PyGILStateLocker lock;
+    this->watcher = Py::None();
+}
+
+bool TaskWatcherPython::shouldShow()
+{
+    Base::PyGILStateLocker lock;
+    try {
+        if (watcher.hasAttr(std::string("shouldShow"))) {
+            Py::Callable method(watcher.getAttr(std::string("shouldShow")));
+            Py::Tuple args(0);
+            Py::Boolean ret(method.apply(args));
+            return (bool)ret;
+        }
+    }
+    catch (Py::Exception&) {
+        Base::PyException e; // extract the Python error text
+        Base::Console().Error("TaskWatcherPython::shouldShow: %s\n", e.what());
+    }
+
+    if (!this->Filter.empty())
+        return match();
+    else
+        return TaskWatcher::shouldShow();
+}
+
+// ------------------------------------------------------------------
+
 TaskDialogPython::TaskDialogPython(const Py::Object& o) : dlg(o)
 {
     UiLoader loader;
@@ -130,9 +225,8 @@ TaskDialogPython::TaskDialogPython(const Py::Object& o) : dlg(o)
     loader.setLanguageChangeEnabled(true);
 #endif
     QString fn, icon;
-    Py::Callable method(dlg.getAttr(std::string("ui")));
-    Py::Tuple args(0);
-    std::string path = (std::string)Py::String((method.apply(args)));
+    Py::String ui(dlg.getAttr(std::string("ui")));
+    std::string path = (std::string)ui;
     fn = QString::fromUtf8(path.c_str());
 
     QFile file(fn);

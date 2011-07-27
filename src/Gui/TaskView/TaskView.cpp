@@ -212,12 +212,14 @@ TaskView::~TaskView()
 
 void TaskView::slotActiveDocument(const App::Document& doc)
 {
-    updateWatcher();
+    if (!ActiveDialog)
+        updateWatcher();
 }
 
 void TaskView::slotDeletedDocument()
 {
-    updateWatcher();
+    if (!ActiveDialog)
+        updateWatcher();
 }
 
 
@@ -232,7 +234,7 @@ void TaskView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
         Reason.Type == SelectionChanges::SetSelection ||
         Reason.Type == SelectionChanges::RmvSelection) {
 
-        if(!ActiveDialog)
+        if (!ActiveDialog)
             updateWatcher();
     }
 
@@ -321,7 +323,7 @@ void TaskView::updateWatcher(void)
         bool match = (*it)->shouldShow();
         std::vector<QWidget*> &cont = (*it)->getWatcherContent();
         for (std::vector<QWidget*>::iterator it2=cont.begin();it2!=cont.end();++it2) {
-            if(match)
+            if (match)
                 (*it2)->show();
             else
                 (*it2)->hide();
@@ -332,11 +334,19 @@ void TaskView::updateWatcher(void)
 void TaskView::addTaskWatcher(const std::vector<TaskWatcher*> &Watcher)
 {
     // remove and delete the old set of TaskWatcher
-    for(std::vector<TaskWatcher*>::iterator it=ActiveWatcher.begin();it!=ActiveWatcher.end();++it)
+    for (std::vector<TaskWatcher*>::iterator it=ActiveWatcher.begin();it!=ActiveWatcher.end();++it)
         delete *it;
 
     ActiveWatcher = Watcher;
     addTaskWatcher();
+}
+
+void TaskView::clearTaskWatcher(void)
+{
+    std::vector<TaskWatcher*> watcher;
+    removeTaskWatcher();
+    // make sure to delete the old watchers
+    addTaskWatcher(watcher);
 }
 
 void TaskView::addTaskWatcher(void)

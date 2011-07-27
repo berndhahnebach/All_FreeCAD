@@ -5,12 +5,54 @@ import FreeCAD as App
 import FreeCADGui as Gui
 from PyQt4 import QtGui,QtCore
 
+class TaskWatcher:
+    def __init__(self):
+        self.commands = ["Part_Box", "Part_Sphere", "Part_Cylinder"]
+        self.title = "Create primitives"
+        self.icon = "Part_Sphere"
+    def shouldShow(self):
+        return App.ActiveDocument is not None
+
+class TaskWatcherFilter:
+    def __init__(self):
+        self.commands = ["Sketcher_NewSketch", "PartDesign_Fillet", "PartDesign_Chamfer"]
+        self.filter = "SELECT Part::Feature SUBELEMENT Face COUNT 1"
+        self.title = "Face tools"
+        self.icon = "Part_Box"
+
 class TaskPanel:
+    def __init__(self):
+        self.ui = App.getResourceDir() + "Mod/TemplatePyMod/TaskPanel.ui"
+
     def accept(self):
         return True
 
-    def ui(self):
-        return App.getResourceDir() + "Mod/TemplatePyMod/TaskPanel.ui"
+    def reject(self):
+        return True
+
+    def clicked(self, index):
+        pass
+
+    def open(self):
+        pass
+
+    def needsFullSpace(self):
+        return False
+
+    def isAllowedAlterSelection(self):
+        return True
+
+    def isAllowedAlterView(self):
+        return True
+
+    def isAllowedAlterDocument(self):
+        return True
+
+    def getStandardButtons(self):
+        return int(QtGui.QDialogButtonBox.Ok)
+
+    def helpRequested(self):
+        pass
 
     def setupUi(self):
         mw = self.getMainWindow()
@@ -39,6 +81,7 @@ class TaskPanel:
 
 
 def createTask():
+    Gui.Control.addTaskWatcher([TaskWatcher(), TaskWatcherFilter()])
     panel = TaskPanel()
     Gui.Control.showDialog(panel)
     panel.setupUi()

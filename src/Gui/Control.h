@@ -43,6 +43,7 @@ namespace Gui
 namespace TaskView
 {
     class TaskDialog;
+    class TaskView;
 }
 
 
@@ -64,6 +65,13 @@ public:
     void showDialog(Gui::TaskView::TaskDialog *dlg);
     Gui::TaskView::TaskDialog* activeDialog() const;
     void closeDialog();
+    //@}
+
+    /** @name task view handling 
+     */
+    //@{
+    Gui::TaskView::TaskView* taskPanel() const;
+    void showTaskView();
     //@}
 
     bool isAllowedAlterDocument(void) const;

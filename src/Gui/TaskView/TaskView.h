@@ -106,8 +106,7 @@ public:
     friend class Gui::ControlSingleton;
 
     void addTaskWatcher(const std::vector<TaskWatcher*> &Watcher);
-    void addTaskWatcher(void);
-    void removeTaskWatcher(void);
+    void clearTaskWatcher(void);
 
 protected Q_SLOTS:
     void accept();
@@ -116,6 +115,8 @@ protected Q_SLOTS:
     void clicked (QAbstractButton * button);
 
 protected:
+    void addTaskWatcher(void);
+    void removeTaskWatcher(void);
     /// update the visibility of the TaskWatcher accordant to the selection
     void updateWatcher(void);
     /// used by Gui::Contol to register Dialogs

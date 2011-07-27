@@ -348,8 +348,9 @@ Application::Application(bool GUIenabled)
         Base::Interpreter().addType(SelectionFilterPy::type_object(),
             pSelectionModule,"Filter");
 
-        ControlPy::init_type();
-        Py::Module(module).setAttr(std::string("Control"),Py::Object(ControlPy::getInstance(), true));
+        Gui::TaskView::ControlPy::init_type();
+        Py::Module(module).setAttr(std::string("Control"),
+            Py::Object(Gui::TaskView::ControlPy::getInstance(), true));
     }
 
     Base::PyGILStateLocker lock;

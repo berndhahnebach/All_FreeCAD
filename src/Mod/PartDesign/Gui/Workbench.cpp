@@ -30,8 +30,7 @@
 #include "Workbench.h"
 #include <Gui/MenuManager.h>
 #include <Gui/ToolBarManager.h>
-#include <Gui/CombiView.h>
-#include <Gui/DockWindowManager.h>
+#include <Gui/Control.h>
 
 using namespace PartDesignGui;
 
@@ -104,14 +103,7 @@ void Workbench::activated()
 
     
     addTaskWatcher(Watcher);
-
-    Gui::DockWnd::CombiView* pcCombiView = qobject_cast<Gui::DockWnd::CombiView*>
-        (Gui::DockWindowManager::instance()->getDockWindow("Combo View"));
-    // should return the pointer to combo view
-    assert(pcCombiView);
-    pcCombiView->showTaskView();
-
- 
+    Gui::Control().showTaskView();
 }
 
 void Workbench::deactivated()
