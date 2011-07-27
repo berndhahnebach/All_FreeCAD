@@ -102,7 +102,7 @@ public:
         STATUS_SELECT_Constraint, /**< enum value a constraint was selected. */
         STATUS_SKETCH_DragPoint,  /**< enum value while dragging a point. */
         STATUS_SKETCH_DragCurve,  /**< enum value while dragging a curve. */
-	STATUS_SKETCH_DragConstraint,  /**< enum value while dragging a compatible constraint. */
+        STATUS_SKETCH_DragConstraint,  /**< enum value while dragging a compatible constraint. */
         STATUS_SKETCH_UseHandler, /**< enum value A DrawSketchHandler is in control. */
     };
     /// is called by GuiCommands to set the drawing mode
