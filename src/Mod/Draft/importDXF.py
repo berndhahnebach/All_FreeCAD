@@ -40,7 +40,7 @@ lines, polylines, lwpolylines, circles, arcs,
 texts, colors,layers (from groups)
 '''
 
-import FreeCAD, os, Part, math, re, string, Mesh
+import FreeCAD, os, Part, math, re, string, Mesh, Draft
 from draftlibs import fcvec, dxfColorMap, dxfLibrary, fcgeo
 from draftlibs.dxfReader import readDXF
 from Draft import Dimension, ViewProviderDimension
@@ -132,6 +132,7 @@ class fcformat:
 		self.dxflayout = params.GetBool("dxflayouts")
 		self.paramstyle = params.GetInt("dxfstyle")
                 self.join = params.GetBool("joingeometry")
+                self.makeBlocks = params.GetBool("groupLayers")
 		bparams = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View")
 
 		if self.paramstyle > 1:
@@ -274,7 +275,10 @@ def drawLine(line):
 		v2=FreeCAD.Vector(line.points[1][0],line.points[1][1],line.points[1][2])
 		if not fcvec.equals(v1,v2):
 			try:
-                                return Part.Line(v1,v2).toShape()
+                                if (fmt.paramstyle == 4) and (not fmt.makeBlocks):
+                                        return Draft.makeWire([v1,v2])
+                                else:
+                                        return Part.Line(v1,v2).toShape()
 			except:
                                 warn(line)
 	return None
@@ -283,13 +287,17 @@ def drawPolyline(polyline):
 	"returns a Part shape from a dxf polyline"
 	if (len(polyline.points) > 1):
 		edges = []
+                curves = False
+                verts = []
 		for p in range(len(polyline.points)-1):
 			p1 = polyline.points[p]
 			p2 = polyline.points[p+1]
 			v1 = FreeCAD.Vector(p1[0],p1[1],p2[2])
 			v2 = FreeCAD.Vector(p2[0],p2[1],p2[2])
+                        verts.append(v1)
 			if not fcvec.equals(v1,v2):
 				if polyline.points[p].bulge:
+                                        curves = True
 					cv = calcBulge(v1,polyline.points[p].bulge,v2)
 					if fcvec.isColinear([v1,cv,v2]):
 						try: edges.append(Part.Line(v1,v2).toShape())
@@ -300,6 +308,7 @@ def drawPolyline(polyline):
 				else:
 					try: edges.append(Part.Line(v1,v2).toShape())
 					except: warn(polyline)
+                verts.append(v2)
 		if polyline.closed:
 			p1 = polyline.points[len(polyline.points)-1]
 			p2 = polyline.points[0]
@@ -310,7 +319,16 @@ def drawPolyline(polyline):
 				except: warn(polyline)
 		if edges:
 			try:
-                                return Part.Wire(edges)
+                                if (fmt.paramstyle == 4) and (not curves) and (not fmt.makeBlocks):
+                                        ob = Draft.makeWire(verts)
+                                        ob.Closed = polyline.closed
+                                        return ob
+                                else:
+                                        if polyline.closed:
+                                                w = Part.Wire(edges)
+                                                return(Part.Face(w))
+                                        else:
+                                                return Part.Wire(edges)                          
 			except:
                                 warn(polyline)
 	return None
@@ -323,7 +341,13 @@ def drawArc(arc):
 	circle=Part.Circle()
 	circle.Center=v
 	circle.Radius=arc.radius
-	try: return circle.toShape(firstangle,lastangle)
+	try:
+                if (fmt.paramstyle == 4) and (not fmt.makeBlocks):
+                        pl = FreeCAD.Placement()
+                        pl.move(v)
+                        return Draft.makeCircle(arc.radius,pl,False,math.degrees(firstangle),math.degrees(lastangle))
+                else:
+                        return circle.toShape(firstangle,lastangle)
 	except:
                 warn(arc)
 	return None
@@ -335,7 +359,12 @@ def drawCircle(circle):
 	curve.Radius = circle.radius
 	curve.Center = v
 	try:
-                return curve.toShape()
+                if (fmt.paramstyle == 4) and (not fmt.makeBlocks):
+                        pl = FreeCAD.Placement()
+                        pl.move(v)
+                        return Draft.makeCircle(circle.radius,pl)
+                else:
+                        return curve.toShape()
 	except:
                 warn(circle)
 	return None
@@ -485,6 +514,15 @@ def drawInsert(insert):
 		return shape
 	return None
 
+def drawLayerBlock(shapeslist):
+        "draws a compound with the given shapes"
+        shape = None
+        try:
+                shape = Part.makeCompound(shapeslist)
+        except:
+                pass
+        return shape
+
 def attribs(insert):
         "checks if an insert has attributes, and returns the values if yes"
         atts = []
@@ -507,11 +545,14 @@ def attribs(insert):
 
 def addObject(shape,name="Shape",layer=None):
 	"adds a new object to the document with passed arguments"
-	newob=doc.addObject("Part::Feature",name)
+        if isinstance(shape,Part.Shape):
+                newob=doc.addObject("Part::Feature",name)
+                newob.Shape = shape
+        else:
+                newob = shape
         if layer:
                 lay=locateLayer(layer)
                 lay.addObject(newob)
-	newob.Shape = shape
 	return newob
 
 def addText(text,attrib=False):
@@ -540,6 +581,13 @@ def addText(text,attrib=False):
                         newob.ViewObject.DisplayMode = "World"
                         fmt.formatObject(newob,text,textmode=True)
 
+def addToBlock(shape,layer):
+        "adds given shape to the layer dict"
+        if layer in layerBlocks:
+                layerBlocks[layer].append(shape)
+        else:
+                layerBlocks[layer] = [shape]
+
 def processdxf(document,filename):
 	"this does the translation of the dxf contents into FreeCAD Part objects"
 	global drawing # for debugging - so drawing is still accessible to python after the script
@@ -553,6 +601,8 @@ def processdxf(document,filename):
 	blockshapes = {}
 	global badobjects
 	badobjects = []
+        global layerBlocks
+        layerBlocks = {}
 
 	# getting config parameters
 
@@ -569,7 +619,15 @@ def processdxf(document,filename):
                         shape = drawLine(line)
                         if shape:
                                 if fmt.join:
-                                        shapes.append(shape)
+                                        if isinstance(shape,Part.Shape):
+                                                shapes.append(shape)
+                                        else:                                        
+                                                shapes.append(shape.Shape)
+                                elif fmt.makeBlocks:
+                                        if isinstance(shape,Part.Shape):
+                                                addToBlock(shape,line.layer)
+                                        else:                                        
+                                                addToBlock(shape.Shape,line.layer)       
                                 else:
                                         newob = addObject(shape,"Line",line.layer)
                                         if gui: fmt.formatObject(newob,line)
@@ -594,7 +652,15 @@ def processdxf(document,filename):
                         shape = drawPolyline(polyline)
                         if shape:
                                 if fmt.join:
-                                        shapes.append(shape)
+                                        if isinstance(shape,Part.Shape):
+                                                shapes.append(shape)
+                                        else:
+                                                shapes.append(shape.Shape)
+                                elif fmt.makeBlocks:
+                                        if isinstance(shape,Part.Shape):
+                                                addToBlock(shape,polyline.layer)
+                                        else:                                        
+                                                addToBlock(shape.Shape,polyline.layer)              
                                 else:
                                         newob = addObject(shape,"Polyline",polyline.layer)
                                         if gui: fmt.formatObject(newob,polyline)
@@ -608,7 +674,15 @@ def processdxf(document,filename):
                         shape = drawArc(arc)
                         if shape:
                                 if fmt.join:
-                                        shapes.append(shape)
+                                        if isinstance(shape,Part.Shape):
+                                                shapes.append(shape)
+                                        else:
+                                                shapes.append(shape.Shape)
+                                elif fmt.makeBlocks:
+                                        if isinstance(shape,Part.Shape):
+                                                addToBlock(shape,arc.layer)
+                                        else:                                        
+                                                addToBlock(shape.Shape,arc.layer)              
                                 else:
                                         newob = addObject(shape,"Arc",arc.layer)
                                         if gui: fmt.formatObject(newob,arc)
@@ -632,19 +706,32 @@ def processdxf(document,filename):
                 if fmt.dxflayout or (not rawValue(circle,67)):
                         shape = drawCircle(circle)
                         if shape:
-                                newob = addObject(shape,"Circle",circle.layer)
-                                if gui: fmt.formatObject(newob,circle)
+                                if fmt.makeBlocks:
+                                        if isinstance(shape,Part.Shape):
+                                                addToBlock(shape,circle.layer)
+                                        else:                                        
+                                                addToBlock(shape.Shape,circle.layer)
+                                else:
+                                        newob = addObject(shape,"Circle",circle.layer)
+                                        if gui: fmt.formatObject(newob,circle)
 
         # drawing solids
 
 	solids = drawing.entities.get_type("solid")
 	if solids: FreeCAD.Console.PrintMessage("drawing "+str(len(circles))+" solids...\n")
 	for solid in solids:
+                lay = rawValue(solid,8)
                 if fmt.dxflayout or (not rawValue(solid,67)):
                         shape = drawSolid(solid)
                         if shape:
-                                newob = addObject(shape,"Solid",solid.layer)
-                                if gui: fmt.formatObject(newob,solid)
+                                if fmt.makeBlocks:
+                                        if isinstance(shape,Part.Shape):
+                                                addToBlock(shape,lay)
+                                        else:                                        
+                                                addToBlock(shape.Shape,lay)
+                                else:
+                                        newob = addObject(shape,"Solid",lay)
+                                        if gui: fmt.formatObject(newob,solid)
 
 	# drawing texts
 
@@ -747,9 +834,24 @@ def processdxf(document,filename):
 		for insert in inserts:
 			shape = drawInsert(insert)
 			if shape:
-				newob = addObject(shape,"Block."+insert.block,insert.layer)
-				if gui: fmt.formatObject(newob,insert)
+                                if fmt.makeBlocks:
+                                        if isinstance(shape,Part.Shape):
+                                                addToBlock(shape,block.layer)
+                                        else:                                        
+                                                addToBlock(shape.Shape,block.layer)
+                                else:
+                                        newob = addObject(shape,"Block."+insert.block,insert.layer)
+                                        if gui: fmt.formatObject(newob,insert)
 
+        # make blocks, if any
+
+        if fmt.makeBlocks:
+                for k,l in layerBlocks.iteritems():
+                        shape = drawLayerBlock(l)
+                        if shape:
+                                newob = addObject(shape,k)
+        del layerBlocks
+                                        
 	# finishing
 
 	doc.recompute()
