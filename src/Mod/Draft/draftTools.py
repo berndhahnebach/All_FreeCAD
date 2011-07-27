@@ -384,7 +384,8 @@ def getPoint(target,args,mobile=False,sym=False,workingplane=True):
                 # if we are not snapping to anything, project along view axis,
                 # otherwise perpendicularly
 		if view.getObjectInfo((args["Position"][0],args["Position"][1])):
-                        point = plane.projectPoint(point)
+                        pass
+                        # point = plane.projectPoint(point)
                 else:
                         point = plane.projectPoint(point, viewDirection)
 	ctrlPoint = Vector(point.x,point.y,point.z)

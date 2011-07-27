@@ -65,6 +65,22 @@ def v1(edge):
 	"v1(edge) -- returns the first point of an edge"
 	return edge.Vertexes[0].Point
 
+def isNull(something):
+        '''returns true if the given shape is null or the given placement is 0 or
+        if the given vector is (0,0,0)'''
+        if isinstance(something,Part.Shape):
+                return something.isNull()
+        elif isinstance(something,FreeCAD.Vector):
+                if something == Vector(0,0,0):
+                        return True
+                else:
+                        return False
+        elif isinstance(something,FreeCAD.Placement):
+                if (something.Base == Vector(0,0,0)) and (something.Rotation.Q == (0,0,0,1)):
+                        return True
+                else:
+                        return False
+
 def isPtOnEdge(pt,edge) :
 	'''isPtOnEdge(Vector,edge) -- Tests if a point is on an edge'''
 	if isinstance(edge.Curve,Part.Line) :
