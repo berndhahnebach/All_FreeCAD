@@ -30,7 +30,7 @@ __title__="FreeCAD Structure"
 __author__ = "Yorik van Havre"
 __url__ = "http://free-cad.sourceforge.net"
 
-def makeStructure(baseobj=None,length=None,width=None,height=None,swap=True,name="Structure"):
+def makeStructure(baseobj=None,length=None,width=None,height=None,swap=False,name="Structure"):
     '''makeStructure([obj],[length],[width],[heigth],[swap]): creates a
     structure element based on the given profile object and the given
     extrusion height. If no base object is given, you can also specify
@@ -148,8 +148,7 @@ class Structure(Component.Component):
             base = base.extrude(normal)
         if base:
             obj.Shape = base
-            obj.Placement = pl
-            
+            if not fcgeo.isNull(pl): obj.Placement = pl
 
 class ViewProviderStructure(Component.ViewProviderComponent):
     "A View Provider for the Structure object"
