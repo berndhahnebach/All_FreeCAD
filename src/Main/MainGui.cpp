@@ -39,6 +39,7 @@
 #include <QApplication>
 #include <QMessageBox>
 #include <QLocale>
+#include <QTextCodec>
 
 #include <QDomDocument>
 #include <QXmlSimpleReader>
@@ -220,12 +221,21 @@ bool ProgramOptions::error = false;
 std::string ProgramOptions::out;
 std::string ProgramOptions::err;
 
+
 int main( int argc, char ** argv )
 {
 #if defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN) || defined(FC_OS_MACOSX) || defined(FC_OS_BSD)
     // Make sure to setup the Qt locale system before setting LANG and LC_ALL to C.
     // which is needed to use the system locale settings.
     (void)QLocale::system();
+    // https://sourceforge.net/apps/mantisbt/free-cad/view.php?id=399
+    // Because of setting LANG=C the Qt automagic to use the correct encoding
+    // is broken. This is a workaround to force the use of UTF-8 encoding
+    QString lang = QString::fromAscii(getenv("LANG"));
+    if (lang.indexOf(QLatin1String("utf8")) >= 0) {
+        QTextCodec* codec = QTextCodec::codecForName ("utf-8");
+        QTextCodec::setCodecForLocale(codec);
+    }
     // Make sure that we use '.' as decimal point. See also
     // http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=559846
     putenv("LANG=C");
