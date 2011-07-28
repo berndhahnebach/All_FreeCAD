@@ -491,7 +491,7 @@ int Sketch::addConstraint(const Constraint *constraint)
 int Sketch::addConstraints(const std::vector<Constraint *> &ConstraintList)
 {
     // constraints on nothing makes no sense 
-    assert(int(Geoms.size()) > 0 || ConstraintList.size() == 0 );
+    assert(int(Geoms.size()) > 0 || ConstraintList.size() == 0);
 
     int rtn = -1;
     for (std::vector<Constraint *>::const_iterator it = ConstraintList.begin();it!=ConstraintList.end();++it)
@@ -502,14 +502,7 @@ int Sketch::addConstraints(const std::vector<Constraint *> &ConstraintList)
 
 int Sketch::addCoordinateXConstraint(int geoId, PointPos pos, double value)
 {
-    assert(geoId < int(Geoms.size()));
-    int pointId = -1;
-    switch(pos) {
-        case start: pointId = Geoms[geoId].startPointId; break;
-        case end  : pointId = Geoms[geoId].endPointId; break;
-        case mid  : pointId = Geoms[geoId].midPointId; break;
-        case none : break;
-    }
+    int pointId = getPointId(geoId, pos);
  
     if (pointId >= 0 && pointId < int(Points.size())) {
         double *val = new double(value);
@@ -522,14 +515,7 @@ int Sketch::addCoordinateXConstraint(int geoId, PointPos pos, double value)
 
 int Sketch::addCoordinateYConstraint(int geoId, PointPos pos, double value)
 {
-    assert(geoId < int(Geoms.size()));
-    int pointId = -1;
-    switch(pos) {
-        case start: pointId = Geoms[geoId].startPointId; break;
-        case end  : pointId = Geoms[geoId].endPointId; break;
-        case mid  : pointId = Geoms[geoId].midPointId; break;
-        case none : break;
-    }
+    int pointId = getPointId(geoId, pos);
  
     if (pointId >= 0 && pointId < int(Points.size())) {
         double *val = new double(value);
@@ -553,22 +539,8 @@ int Sketch::addHorizontalConstraint(int geoId)
 // two points on a horizontal line constraint
 int Sketch::addHorizontalConstraint(int geoId1, PointPos pos1, int geoId2, PointPos pos2)
 {
-    assert(geoId1 < int(Geoms.size()));
-    assert(geoId2 < int(Geoms.size()));
-
-    int pointId1 = -1, pointId2 = -2;
-    switch(pos1) {
-        case start: pointId1 = Geoms[geoId1].startPointId; break;
-        case end  : pointId1 = Geoms[geoId1].endPointId; break;
-        case mid  : pointId1 = Geoms[geoId1].midPointId; break;
-        case none : break;
-    }
-    switch(pos2) {
-        case start: pointId2 = Geoms[geoId2].startPointId; break;
-        case end  : pointId2 = Geoms[geoId2].endPointId; break;
-        case mid  : pointId2 = Geoms[geoId2].midPointId; break;
-        case none : break;
-    }
+    int pointId1 = getPointId(geoId1, pos1);
+    int pointId2 = getPointId(geoId2, pos2);
 
     if (pointId1 >= 0 && pointId1 < int(Points.size()) &&
         pointId2 >= 0 && pointId2 < int(Points.size())) {
@@ -592,22 +564,8 @@ int Sketch::addVerticalConstraint(int geoId)
 // two points on a vertical line constraint
 int Sketch::addVerticalConstraint(int geoId1, PointPos pos1, int geoId2, PointPos pos2)
 {
-    assert(geoId1 < int(Geoms.size()));
-    assert(geoId2 < int(Geoms.size()));
-
-    int pointId1 = -1, pointId2 = -2;
-    switch(pos1) {
-        case start: pointId1 = Geoms[geoId1].startPointId; break;
-        case end  : pointId1 = Geoms[geoId1].endPointId; break;
-        case mid  : pointId1 = Geoms[geoId1].midPointId; break;
-        case none : break;
-    }
-    switch(pos2) {
-        case start: pointId2 = Geoms[geoId2].startPointId; break;
-        case end  : pointId2 = Geoms[geoId2].endPointId; break;
-        case mid  : pointId2 = Geoms[geoId2].midPointId; break;
-        case none : break;
-    }
+    int pointId1 = getPointId(geoId1, pos1);
+    int pointId2 = getPointId(geoId2, pos2);
 
     if (pointId1 >= 0 && pointId1 < int(Points.size()) &&
         pointId2 >= 0 && pointId2 < int(Points.size())) {
@@ -620,21 +578,9 @@ int Sketch::addVerticalConstraint(int geoId1, PointPos pos1, int geoId2, PointPo
 
 int Sketch::addPointCoincidentConstraint(int geoId1, PointPos pos1, int geoId2, PointPos pos2)
 {
-    assert(geoId1 < int(Geoms.size()));
+    int pointId1 = getPointId(geoId1, pos1);
+    int pointId2 = getPointId(geoId2, pos2);
 
-    int pointId1 = -1, pointId2 = -2;
-    switch(pos1) {
-        case start: pointId1 = Geoms[geoId1].startPointId; break;
-        case end  : pointId1 = Geoms[geoId1].endPointId; break;
-        case mid  : pointId1 = Geoms[geoId1].midPointId; break;
-        case none : break;
-    }
-    switch(pos2) {
-        case start: pointId2 = Geoms[geoId2].startPointId; break;
-        case end  : pointId2 = Geoms[geoId2].endPointId; break;
-        case mid  : pointId2 = Geoms[geoId2].midPointId; break;
-        case none : break;
-    }
     if (pointId1 >= 0 && pointId1 < int(Points.size()) &&
         pointId2 >= 0 && pointId2 < int(Points.size())) {
         GCS::Point &p1 = Points[pointId1];
@@ -648,8 +594,8 @@ int Sketch::addParallelConstraint(int geoId1, int geoId2)
 {
     assert(geoId1 < int(Geoms.size()));
     assert(geoId2 < int(Geoms.size()));
-    assert(Geoms[geoId1].type == Line );
-    assert(Geoms[geoId2].type == Line );
+    assert(Geoms[geoId1].type == Line);
+    assert(Geoms[geoId2].type == Line);
 
     GCS::Line &l1 = Lines[Geoms[geoId1].index];
     GCS::Line &l2 = Lines[Geoms[geoId2].index];
@@ -660,8 +606,8 @@ int Sketch::addPerpendicularConstraint(int geoId1, int geoId2)
 {
     assert(geoId1 < int(Geoms.size()));
     assert(geoId2 < int(Geoms.size()));
-    assert(Geoms[geoId1].type == Line );
-    assert(Geoms[geoId2].type == Line );
+    assert(Geoms[geoId1].type == Line);
+    assert(Geoms[geoId2].type == Line);
 
     GCS::Line &l1 = Lines[Geoms[geoId1].index];
     GCS::Line &l2 = Lines[Geoms[geoId2].index];
@@ -715,16 +661,10 @@ int Sketch::addTangentConstraint(int geoId1, PointPos pos1, int geoId2)
     // 4) Arc1, start/end, Line2
     // 5) Arc1, start/end, Circle2 (not implemented yet)
     // 6) Arc1, start/end, Arc2 (not implemented yet)
-    assert(geoId1 < int(Geoms.size()));
+
+    int pointId1 = getPointId(geoId1, pos1);
     assert(geoId2 < int(Geoms.size()));
 
-    int pointId1 = -1;
-    switch(pos1) {
-        case start: pointId1 = Geoms[geoId1].startPointId; break;
-        case end  : pointId1 = Geoms[geoId1].endPointId; break;
-        case mid  : pointId1 = Geoms[geoId1].midPointId; break;
-        case none : break;
-    }
     if (pointId1 < 0 || pointId1 >= int(Points.size()))
         return addTangentConstraint(geoId1, geoId2);
 
@@ -778,22 +718,10 @@ int Sketch::addTangentConstraint(int geoId1, PointPos pos1, int geoId2, PointPos
     // 2) Line1, start/end/mid, Arc2, start/end
     // 3) Arc1, start/end, Line2, start/end/mid (converted to case #2)
     // 4) Arc1, start/end, Arc2, start/end (not implemented yet)
-    assert(geoId1 < int(Geoms.size()));
-    assert(geoId2 < int(Geoms.size()));
 
-    int pointId1 = -1, pointId2 = -1;
-    switch(pos1) {
-        case start: pointId1 = Geoms[geoId1].startPointId; break;
-        case end  : pointId1 = Geoms[geoId1].endPointId; break;
-        case mid  : pointId1 = Geoms[geoId1].midPointId; break;
-        case none : break;
-    }
-    switch(pos2) {
-        case start: pointId2 = Geoms[geoId2].startPointId; break;
-        case end  : pointId2 = Geoms[geoId2].endPointId; break;
-        case mid  : pointId2 = Geoms[geoId2].midPointId; break;
-        case none : break;
-    }
+    int pointId1 = getPointId(geoId1, pos1);
+    int pointId2 = getPointId(geoId2, pos2);
+
     if (pointId1 < 0 || pointId1 >= int(Points.size()) ||
         pointId2 < 0 || pointId2 >= int(Points.size()))
         return -1;
@@ -863,28 +791,28 @@ int Sketch::addTangentConstraint(int geoId1, PointPos pos1, int geoId2, PointPos
 }
 
 // line length constraint
-int Sketch::addDistanceConstraint(int geoId, double Value)
+int Sketch::addDistanceConstraint(int geoId, double value)
 {
     assert(geoId < int(Geoms.size()));
-    assert(Geoms[geoId].type == Line );
+    assert(Geoms[geoId].type == Line);
 
     GCS::Line &l = Lines[Geoms[geoId].index];
 
     // add the parameter for the length
-    FixParameters.push_back(new double(Value));
+    FixParameters.push_back(new double(value));
     double *distance = FixParameters[FixParameters.size()-1];
 
     return GCSsys.addConstraintP2PDistance(l.p1, l.p2, distance);
 }
 
 // line to line distance constraint
-int Sketch::addDistanceConstraint(int geoId1, int geoId2, double Value)
+int Sketch::addDistanceConstraint(int geoId1, int geoId2, double value)
 {
     assert(geoId1 < int(Geoms.size()));
     assert(geoId2 < int(Geoms.size()));
 
-    assert(Geoms[geoId1].type == Line );
-    assert(Geoms[geoId2].type == Line );
+    assert(Geoms[geoId1].type == Line);
+    assert(Geoms[geoId2].type == Line);
 
     Base::Console().Warning("Line to line distance constraints are not implemented yet.\n");
 
@@ -892,26 +820,18 @@ int Sketch::addDistanceConstraint(int geoId1, int geoId2, double Value)
 }
 
 // point to line distance constraint
-int Sketch::addDistanceConstraint(int geoId1, PointPos pos1, int geoId2, double Value)
+int Sketch::addDistanceConstraint(int geoId1, PointPos pos1, int geoId2, double value)
 {
-    assert(geoId1 < int(Geoms.size()));
+    int pointId1 = getPointId(geoId1, pos1);
     assert(geoId2 < int(Geoms.size()));
+    assert(Geoms[geoId2].type == Line);
 
-    assert(Geoms[geoId2].type == Line );
-
-    int pointId1 = -1;
-    switch(pos1) {
-        case start: pointId1 = Geoms[geoId1].startPointId; break;
-        case end  : pointId1 = Geoms[geoId1].endPointId; break;
-        case mid  : pointId1 = Geoms[geoId1].midPointId; break;
-        case none : break;
-    }
     if (pointId1 >= 0 && pointId1 < int(Points.size())) {
         GCS::Point &p1 = Points[pointId1];
         GCS::Line &l2 = Lines[Geoms[geoId2].index];
 
         // add the parameter for the distance
-        FixParameters.push_back(new double(Value));
+        FixParameters.push_back(new double(value));
         double *distance = FixParameters[FixParameters.size()-1];
 
         return GCSsys.addConstraintP2LDistance(p1, l2, distance);
@@ -920,31 +840,18 @@ int Sketch::addDistanceConstraint(int geoId1, PointPos pos1, int geoId2, double 
 }
 
 // point to point distance constraint
-int Sketch::addDistanceConstraint(int geoId1, PointPos pos1, int geoId2, PointPos pos2, double Value)
+int Sketch::addDistanceConstraint(int geoId1, PointPos pos1, int geoId2, PointPos pos2, double value)
 {
-    assert(geoId1 < int(Geoms.size()));
-    assert(geoId2 < int(Geoms.size()));
+    int pointId1 = getPointId(geoId1, pos1);
+    int pointId2 = getPointId(geoId2, pos2);
 
-    int pointId1 = -1, pointId2 = -1;
-    switch(pos1) {
-        case start: pointId1 = Geoms[geoId1].startPointId; break;
-        case end  : pointId1 = Geoms[geoId1].endPointId; break;
-        case mid  : pointId1 = Geoms[geoId1].midPointId; break;
-        case none : break;
-    }
-    switch(pos2) {
-        case start: pointId2 = Geoms[geoId2].startPointId; break;
-        case end  : pointId2 = Geoms[geoId2].endPointId; break;
-        case mid  : pointId2 = Geoms[geoId2].midPointId; break;
-        case none : break;
-    }
     if (pointId1 >= 0 && pointId1 < int(Points.size()) &&
         pointId2 >= 0 && pointId2 < int(Points.size())) {
         GCS::Point &p1 = Points[pointId1];
         GCS::Point &p2 = Points[pointId2];
 
         // add the parameter for the distance
-        FixParameters.push_back(new double(Value));
+        FixParameters.push_back(new double(value));
         double *distance = FixParameters[FixParameters.size()-1];
 
         return GCSsys.addConstraintP2PDistance(p1, p2, distance);
@@ -1166,6 +1073,22 @@ int Sketch::movePoint(int geoId, PointPos pos, Base::Vector3d toPoint)
 
 int Sketch::setDatum(int constraintIndex, double value)
 {
+    return -1;
+}
+
+int Sketch::getPointId(int geoId, PointPos pos) const
+{
+    assert(geoId < int(Geoms.size()));
+    switch(pos) {
+        case start:
+            return Geoms[geoId].startPointId;
+        case end:
+            return Geoms[geoId].endPointId;
+        case mid:
+            return Geoms[geoId].midPointId;
+        case none:
+            break;
+    }
     return -1;
 }
 
