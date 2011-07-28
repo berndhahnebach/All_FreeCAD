@@ -72,6 +72,8 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     cons->setCommand("Sketcher constraints");
     *cons /*<< "Sketcher_ConstrainLock"*/
           << "Sketcher_ConstrainCoincident"
+          << "Sketcher_ConstrainDistanceX"
+          << "Sketcher_ConstrainDistanceY"
           << "Sketcher_ConstrainVertical"
           << "Sketcher_ConstrainHorizontal"
           << "Sketcher_ConstrainDistance"
@@ -111,6 +113,8 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     part->setCommand("Sketcher constraints");
     *part << "Sketcher_ConstrainLock"
           << "Sketcher_ConstrainCoincident"
+          << "Sketcher_ConstrainDistanceX"
+          << "Sketcher_ConstrainDistanceY"
           << "Sketcher_ConstrainVertical"
           << "Sketcher_ConstrainHorizontal"
           << "Sketcher_ConstrainDistance"

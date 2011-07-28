@@ -1170,8 +1170,8 @@ Restart:
         const Constraint *Constr = *it;
         // distinquish different constraint types to build up
         switch (Constr->Type) {
-            case ConstrainX:
-            case ConstrainY:
+            case DistanceX:
+            case DistanceY:
                 {
                     assert(Constr->First < int(geomlist->size()));
                     // get the geometry
@@ -1198,7 +1198,7 @@ Restart:
                     }
 
                     SbVec3f pos;
-                    if (Constr->Type == ConstrainX) {
+                    if (Constr->Type == DistanceX) {
                         SbVec3f p1(0,pnt.y,0);
                         SbVec3f p2(pnt.x,pnt.y,0);
                         SbVec3f yvec(0,1,0);
@@ -1212,7 +1212,7 @@ Restart:
                         dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(3,p2+yvec*12);
                         dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(4,p1+yvec*10);
                         dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(5,p2+yvec*10);
-                    } else if (Constr->Type == ConstrainY) {
+                    } else if (Constr->Type == DistanceY) {
                         SbVec3f p1(pnt.x,0,0);
                         SbVec3f p2(pnt.x,pnt.y,0);
                         SbVec3f xvec(1,0,0);
@@ -1585,8 +1585,8 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
 
         // destiquish different constraint types to build up
         switch ((*it)->Type) {
-            case ConstrainX:
-            case ConstrainY:
+            case DistanceX:
+            case DistanceY:
                 {
                     // nodes for the datum lines
                     sep->addChild(new SoCoordinate3);

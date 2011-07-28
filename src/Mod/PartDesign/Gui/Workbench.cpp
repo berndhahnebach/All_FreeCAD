@@ -133,12 +133,14 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     cons->setCommand("Sketcher constraints");
     *cons /*<< "Sketcher_ConstrainLock"*/
           << "Sketcher_ConstrainCoincident"
+          << "Sketcher_ConstrainDistanceX"
+          << "Sketcher_ConstrainDistanceY"
           << "Sketcher_ConstrainVertical"
           << "Sketcher_ConstrainHorizontal"
           << "Sketcher_ConstrainDistance"
           << "Sketcher_ConstrainParallel"
-          << "Sketcher_ConstrainTangent"
           << "Sketcher_ConstrainPerpendicular"
+          << "Sketcher_ConstrainTangent"
 
           ;
 

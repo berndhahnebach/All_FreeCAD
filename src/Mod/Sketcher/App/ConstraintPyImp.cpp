@@ -146,6 +146,18 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
             this->getConstraintPtr()->Value = Value;
             return 0;
         }
+        else if (strcmp("DistanceX",ConstraintType) == 0) {
+            this->getConstraintPtr()->Type = DistanceX;
+            this->getConstraintPtr()->First    = FirstIndex;
+            this->getConstraintPtr()->Value    = Value;
+            return 0;
+        }
+        else if (strcmp("DistanceY",ConstraintType) == 0) {
+            this->getConstraintPtr()->Type = DistanceY;
+            this->getConstraintPtr()->First    = FirstIndex;
+            this->getConstraintPtr()->Value    = Value;
+            return 0;
+        }
     }
     PyErr_Clear();
 
@@ -167,19 +179,19 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
             this->getConstraintPtr()->Value  = Value;
             return 0;
         }
-        else if (strcmp("ConstrainX",ConstraintType) == 0) {
+        else if (strcmp("DistanceX",ConstraintType) == 0) {
             FirstPos = SecondIndex;
             SecondIndex = -1;
-            this->getConstraintPtr()->Type = ConstrainX;
+            this->getConstraintPtr()->Type = DistanceX;
             this->getConstraintPtr()->First    = FirstIndex;
             this->getConstraintPtr()->FirstPos = (Sketcher::PointPos) FirstPos;
             this->getConstraintPtr()->Value    = Value;
             return 0;
         }
-        else if (strcmp("ConstrainY",ConstraintType) == 0) {
+        else if (strcmp("DistanceY",ConstraintType) == 0) {
             FirstPos = SecondIndex;
             SecondIndex = -1;
-            this->getConstraintPtr()->Type = ConstrainY;
+            this->getConstraintPtr()->Type = DistanceY;
             this->getConstraintPtr()->First    = FirstIndex;
             this->getConstraintPtr()->FirstPos = (Sketcher::PointPos) FirstPos;
             this->getConstraintPtr()->Value    = Value;
@@ -203,9 +215,22 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
 
     // ConstraintType, GeoIndex1, PosIndex1, GeoIndex2, PosIndex2, Value
     if (PyArg_ParseTuple(args, "siiiid", &ConstraintType, &FirstIndex, &FirstPos, &SecondIndex, &SecondPos, &Value)) {
+        bool valid=false;
         if (strcmp("Distance",ConstraintType) == 0 ) {
             this->getConstraintPtr()->Type = Distance;
+            valid = true;
+        }
+        else if (strcmp("DistanceX",ConstraintType) == 0) {
+            this->getConstraintPtr()->Type = DistanceX;
+            valid = true;
+        }
+        else if (strcmp("DistanceY",ConstraintType) == 0) {
+            this->getConstraintPtr()->Type = DistanceY;
+            valid = true;
+        }
+        if (valid) {
             this->getConstraintPtr()->First     = FirstIndex;
+            this->getConstraintPtr()->FirstPos = (Sketcher::PointPos) FirstPos;
             this->getConstraintPtr()->Second    = SecondIndex;
             this->getConstraintPtr()->SecondPos = (Sketcher::PointPos) SecondPos;
             this->getConstraintPtr()->Value     = Value;
@@ -227,8 +252,8 @@ std::string ConstraintPy::representation(void) const
     result << "<Constraint " ;
     switch(this->getConstraintPtr()->Type) {
         case None       : result << "'None'>";break;
-        case ConstrainX : result << "'ConstrainX'>";break;
-        case ConstrainY : result << "'ConstrainY'>";break;
+        case DistanceX  : result << "'DistanceX'>";break;
+        case DistanceY  : result << "'DistanceY'>";break;
         case Coincident : result << "'Coincident'>";break;
         case Horizontal : result << "'Horizontal' (" << getConstraintPtr()->First << ")>";break;
         case Vertical   : result << "'Vertical' (" << getConstraintPtr()->First << ")>";break;

@@ -32,14 +32,14 @@ namespace Sketcher
 
 enum ConstraintType {
     None,
-    ConstrainX,
-    ConstrainY,
     Coincident,
     Horizontal,
     Vertical,
     Parallel,
     Tangent,
     Distance,
+    DistanceX,
+    DistanceY,
     Angle,
     Perpendicular
 };

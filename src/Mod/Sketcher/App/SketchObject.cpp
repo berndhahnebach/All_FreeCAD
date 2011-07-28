@@ -135,17 +135,6 @@ int SketchObject::setDatum(double Datum, int ConstrNbr)
 
 int SketchObject::movePoint(int geoIndex, PointPos pos, const Base::Vector3d& toPoint)
 {
-    // update any fixed constraints involved with the moved point
-    const std::vector<Constraint *> &constraints = this->Constraints.getValues();
-    for (std::vector<Constraint *>::const_iterator it = constraints.begin(); it != constraints.end(); ++it) {
-        if ((*it)->First == geoIndex && (*it)->FirstPos == pos) {
-            if ((*it)->Type == ConstrainX)
-                (*it)->Value = toPoint.x;
-            else if ((*it)->Type == ConstrainY)
-                (*it)->Value = toPoint.y;
-        }
-    }
-
     // set up an extra sketch
     Sketch sketch;
     // set the geometry and constraints
