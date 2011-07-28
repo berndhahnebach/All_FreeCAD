@@ -89,6 +89,11 @@ System::System(std::vector<Constraint *> clist_)
                 newconstr = new ConstraintEqual(*oldconstr);
                 break;
             }
+            case Difference: {
+                ConstraintDifference *oldconstr = static_cast<ConstraintDifference *>(*constr);
+                newconstr = new ConstraintDifference(*oldconstr);
+                break;
+            }
             case P2PDistance: {
                 ConstraintP2PDistance *oldconstr = static_cast<ConstraintP2PDistance *>(*constr);
                 newconstr = new ConstraintP2PDistance(*oldconstr);
@@ -196,6 +201,14 @@ void System::removeConstraint(Constraint *constr)
 int System::addConstraintEqual(double *param1, double *param2, int level)
 {
     Constraint *constr = new ConstraintEqual(param1, param2);
+    constr->setPriority(level);
+    return addConstraint(constr);
+}
+
+int System::addConstraintDifference(double *param1, double *param2,
+                                    double *difference, int level)
+{
+    Constraint *constr = new ConstraintDifference(param1, param2, difference);
     constr->setPriority(level);
     return addConstraint(constr);
 }
@@ -324,6 +337,16 @@ int System::addConstraintArc2Line(Arc &a, Point &p1, Point &p2, int level)
     addConstraintP2PCoincident(p1, a.end, level);
     double incr_angle = *(a.startAngle) < *(a.endAngle) ? M_PI/2 : -M_PI/2;
     return addConstraintP2PAngle(p1, p2, a.endAngle, incr_angle, level);
+}
+
+int System::addConstraintCircleRadius(Circle &c, double *radius, int level)
+{
+    return addConstraintEqual(c.rad, radius, level);
+}
+
+int System::addConstraintArcRadius(Arc &a, double *radius, int level)
+{
+    return addConstraintEqual(a.rad, radius, level);
 }
 
 void System::initSolution(VEC_pD &params)
@@ -765,6 +788,9 @@ void free(std::vector<Constraint *> &constrvec)
             switch ((*constr)->getTypeId()) {
                 case Equal:
                     delete static_cast<ConstraintEqual *>(*constr);
+                    break;
+                case Difference:
+                    delete static_cast<ConstraintDifference *>(*constr);
                     break;
                 case P2PDistance:
                     delete static_cast<ConstraintP2PDistance *>(*constr);

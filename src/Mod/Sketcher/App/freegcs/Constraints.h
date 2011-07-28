@@ -36,12 +36,13 @@ namespace GCS
     enum ConstraintType {
         None = 0,
         Equal = 1,
-        P2PDistance = 2,
-        P2PAngle = 3,
-        P2LDistance = 4,
-        PointOnLine = 5,
-        Parallel = 6,
-        Perpendicular = 7,
+        Difference = 2,
+        P2PDistance = 3,
+        P2PAngle = 4,
+        P2LDistance = 5,
+        PointOnLine = 6,
+        Parallel = 7,
+        Perpendicular = 8
     };
 
     class Constraint
@@ -77,6 +78,21 @@ namespace GCS
         inline double* param2() { return pvec[1]; }
     public:
         ConstraintEqual(double *p1, double *p2);
+        virtual ConstraintType getTypeId();
+        virtual void rescale(double coef=1.);
+        virtual double error();
+        virtual double grad(double *);
+    };
+
+    // Difference
+    class ConstraintDifference : public Constraint
+    {
+    private:
+        inline double* param1() { return pvec[0]; }
+        inline double* param2() { return pvec[1]; }
+        inline double* difference() { return pvec[2]; }
+    public:
+        ConstraintDifference(double *p1, double *p2, double *d);
         virtual ConstraintType getTypeId();
         virtual void rescale(double coef=1.);
         virtual double error();

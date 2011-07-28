@@ -91,6 +91,8 @@ namespace GCS
         void removeConstraint(Constraint *constr);
 
         int addConstraintEqual(double *param1, double *param2, int level=0);
+        int addConstraintDifference(double *param1, double *param2,
+                                    double *difference, int level=0);
         int addConstraintP2PDistance(Point &p1, Point &p2, double *distance, int level=0);
         int addConstraintP2PAngle(Point &p1, Point &p2, double *angle,
                                   double incr_angle, int level=0);
@@ -114,6 +116,8 @@ namespace GCS
         int addConstraintTangent(Line &l, Arc &a, int level=0);
         int addConstraintLine2Arc(Point &p1, Point &p2, Arc &a, int level=0);
         int addConstraintArc2Line(Arc &a, Point &p1, Point &p2, int level=0);
+        int addConstraintCircleRadius(Circle &c, double *radius, int level=0);
+        int addConstraintArcRadius(Arc &a, double *radius, int level=0);
 
         void initSolution(VEC_pD &params);
 
