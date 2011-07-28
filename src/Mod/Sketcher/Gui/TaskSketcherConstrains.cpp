@@ -236,11 +236,11 @@ void TaskSketcherConstrains::slotConstraintsChanged(void)
             name = QString(QString::fromLatin1((*it)->Name.c_str()));
 
         switch((*it)->Type){
-            case Sketcher::ConstrainX:
+            case Sketcher::DistanceX:
                 if (Filter<2 || (*it)->Name != "")
                     ui->listWidgetConstraints->addItem(new ConstraintItem(hdist,name,i-1,(*it)->Type));
                 break;
-            case Sketcher::ConstrainY:
+            case Sketcher::DistanceY:
                 if (Filter<2 || (*it)->Name != "")
                     ui->listWidgetConstraints->addItem(new ConstraintItem(vdist,name,i-1,(*it)->Type));
                 break;

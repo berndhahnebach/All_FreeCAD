@@ -77,7 +77,7 @@ public:
     /** initializes a point (or curve) drag by setting the current
       * sketch status as a reference
       */
-    int initMove(int geoIndex, PointPos pos1);
+    int initMove(int geoIndex, PointPos pos);
 
     /** move this point to a new location and solve
       * this will introduce a fix constraint on the moved point
@@ -112,6 +112,12 @@ public:
     /// add a fixed coordinate constraint to a point
     int addCoordinateXConstraint(int geoIndex, PointPos pos, double value);
     int addCoordinateYConstraint(int geoIndex, PointPos pos, double value);
+    /// add a horizontal distance constraint to two points or line ends
+    int addDistanceXConstraint(int geoId, double value);
+    int addDistanceXConstraint(int geoId1, PointPos pos1, int geoId2, PointPos pos2, double value);
+    /// add a vertical distance constraint to two points or line ends
+    int addDistanceYConstraint(int geoId, double value);
+    int addDistanceYConstraint(int geoId1, PointPos pos1, int geoId2, PointPos pos2, double value);
     /// add a horizontal constraint to a geometry
     int addHorizontalConstraint(int geoIndex);
     int addHorizontalConstraint(int geoIndex1, PointPos pos1, int geoIndex2, PointPos pos2);
@@ -173,6 +179,8 @@ protected:
     std::vector<GCS::Circle> Circles;
 
     bool isInitMove;
+
+    int getPointId(int geoId, PointPos pos) const;
 };
 
 } //namespace Part

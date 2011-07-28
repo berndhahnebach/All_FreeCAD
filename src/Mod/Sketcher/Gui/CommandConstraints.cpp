@@ -261,10 +261,10 @@ void CmdSketcherConstrainLock::activated(int iMsg)
     // undo command open
     openCommand("add fixed constraint");
     Gui::Command::doCommand(
-        Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('ConstrainX',%i,%i,%f)) ",
+        Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('DistanceX',%i,%i,%f)) ",
         selection[0].getFeatName(),GeoId,PosId,pnt.x);
     Gui::Command::doCommand(
-        Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('ConstrainY',%i,%i,%f)) ",
+        Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('DistanceY',%i,%i,%f)) ",
         selection[0].getFeatName(),GeoId,PosId,pnt.y);
 
     // finish the transaction and update
@@ -396,6 +396,12 @@ void CmdSketcherConstrainDistance::activated(int iMsg)
     Sketcher::SketchObject* Obj = dynamic_cast<Sketcher::SketchObject*>(selection[0].getObject());
     const std::vector<Part::Geometry *> &geo = Obj->Geometry.getValues();
 
+    if (SubNames.size() < 1 || SubNames.size() > 2) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select exactly one line or one point and one line or two points from the sketch."));
+        return;
+    }
+
     int GeoId1=-1, VtId1=-1, GeoId2=-1, VtId2=-1;
     if (SubNames.size() >= 1) {
         if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge") 
@@ -478,6 +484,234 @@ void CmdSketcherConstrainDistance::activated(int iMsg)
 }
 
 bool CmdSketcherConstrainDistance::isActive(void)
+{
+    return isCreateConstraintActive( getActiveGuiDocument() );
+}
+
+
+DEF_STD_CMD_A(CmdSketcherConstrainDistanceX);
+
+CmdSketcherConstrainDistanceX::CmdSketcherConstrainDistanceX()
+    :Command("Sketcher_ConstrainDistanceX")
+{
+    sAppModule      = "Sketcher";
+    sGroup          = QT_TR_NOOP("Sketcher");
+    sMenuText       = QT_TR_NOOP("Constrain horizontal distance");
+    sToolTipText    = QT_TR_NOOP("Fix the horizontal distance between two points or line ends");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Constraint_HorizontalDistance";
+    sAccel          = "D";
+    eType           = ForEdit;
+}
+
+void CmdSketcherConstrainDistanceX::activated(int iMsg)
+{
+    // get the selection 
+    std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
+
+    // only one sketch with its subelements are allowed to be selected
+    if (selection.size() != 1) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select vertexes from the sketch."));
+        return;
+    }
+
+    // get the needed lists and objects
+    const std::vector<std::string> &SubNames = selection[0].getSubNames();
+    Sketcher::SketchObject* Obj = dynamic_cast<Sketcher::SketchObject*>(selection[0].getObject());
+    const std::vector<Part::Geometry *> &geo = Obj->Geometry.getValues();
+
+    if (SubNames.size() < 1 || SubNames.size() > 2) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select exactly one line or up to two points from the sketch."));
+        return;
+    }
+
+    int GeoId1=-1, VtId1=-1, GeoId2=-1, VtId2=-1;
+    if (SubNames.size() >= 1) {
+        if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge") 
+            GeoId1 = std::atoi(SubNames[0].substr(4,4000).c_str());
+        else if (SubNames[0].size() > 6 && SubNames[0].substr(0,6) == "Vertex") 
+            VtId1 = std::atoi(SubNames[0].substr(6,4000).c_str());
+    }
+    if (SubNames.size() == 2) {
+        if (SubNames[1].size() > 4 && SubNames[1].substr(0,4) == "Edge") 
+            GeoId2 = std::atoi(SubNames[1].substr(4,4000).c_str());
+        else if (SubNames[1].size() > 6 && SubNames[1].substr(0,6) == "Vertex") 
+            VtId2 = std::atoi(SubNames[1].substr(6,4000).c_str());
+    }
+
+    if (VtId1 >= 0 && VtId2 >= 0) { // point to point horizontal distance
+        Sketcher::PointPos PosId1,PosId2;
+        Obj->getGeoVertexIndex(VtId1,GeoId1,PosId1);
+        Obj->getGeoVertexIndex(VtId2,GeoId2,PosId2);
+        Base::Vector3d pnt1 = Obj->getPoint(GeoId1,PosId1);
+        Base::Vector3d pnt2 = Obj->getPoint(GeoId2,PosId2);
+        double ActLength = pnt2.x-pnt1.x;
+ 
+        openCommand("add point to point horizontal distance constraint");
+        Gui::Command::doCommand(
+            Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('DistanceX',%d,%d,%d,%d,%f)) ",
+            selection[0].getFeatName(),GeoId1,PosId1,GeoId2,PosId2,ActLength);
+        commitCommand();
+        //updateActive();
+        getSelection().clearSelection();
+        return;
+    }
+    else if (GeoId1 >= 0 && GeoId2 < 0 && VtId2 < 0)  { // horizontal length of a line
+        const Part::Geometry *geom = geo[GeoId1];
+        if (geom->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
+            const Part::GeomLineSegment *lineSeg;
+            lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geom);
+            double ActLength = lineSeg->getEndPoint().x-lineSeg->getStartPoint().x;
+
+            openCommand("add horizontal length constraint");
+            Gui::Command::doCommand(
+                Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('DistanceX',%d,%f)) ",
+                selection[0].getFeatName(),GeoId1,ActLength);
+            commitCommand();
+            //updateActive();
+            getSelection().clearSelection();
+            return;
+        }
+    }
+    else if (VtId1 >= 0) { // point on fixed x-coordinate
+        Sketcher::PointPos PosId1;
+        Obj->getGeoVertexIndex(VtId1,GeoId1,PosId1);
+        Base::Vector3d pnt = Obj->getPoint(GeoId1,PosId1);
+        double ActX = pnt.x;
+
+        openCommand("add fixed x-coordinate constraint");
+        Gui::Command::doCommand(
+            Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('DistanceX',%d,%d,%f)) ",
+            selection[0].getFeatName(),GeoId1,PosId1,ActX);
+        commitCommand();
+        //updateActive();
+        getSelection().clearSelection();
+        return;
+    }
+
+    QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+        QObject::tr("Select exactly one line or up to two points from the sketch."));
+    return;
+}
+
+bool CmdSketcherConstrainDistanceX::isActive(void)
+{
+    return isCreateConstraintActive( getActiveGuiDocument() );
+}
+
+
+DEF_STD_CMD_A(CmdSketcherConstrainDistanceY);
+
+CmdSketcherConstrainDistanceY::CmdSketcherConstrainDistanceY()
+    :Command("Sketcher_ConstrainDistanceY")
+{
+    sAppModule      = "Sketcher";
+    sGroup          = QT_TR_NOOP("Sketcher");
+    sMenuText       = QT_TR_NOOP("Constrain horizontal distance");
+    sToolTipText    = QT_TR_NOOP("Fix the vertical distance between two points or line ends");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Constraint_VerticalDistance";
+    sAccel          = "D";
+    eType           = ForEdit;
+}
+
+void CmdSketcherConstrainDistanceY::activated(int iMsg)
+{
+    // get the selection 
+    std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
+
+    // only one sketch with its subelements are allowed to be selected
+    if (selection.size() != 1) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select vertexes from the sketch."));
+        return;
+    }
+
+    // get the needed lists and objects
+    const std::vector<std::string> &SubNames = selection[0].getSubNames();
+    Sketcher::SketchObject* Obj = dynamic_cast<Sketcher::SketchObject*>(selection[0].getObject());
+    const std::vector<Part::Geometry *> &geo = Obj->Geometry.getValues();
+
+    if (SubNames.size() < 1 || SubNames.size() > 2) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select exactly one line or up to two points from the sketch."));
+        return;
+    }
+
+    int GeoId1=-1, VtId1=-1, GeoId2=-1, VtId2=-1;
+    if (SubNames.size() >= 1) {
+        if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge") 
+            GeoId1 = std::atoi(SubNames[0].substr(4,4000).c_str());
+        else if (SubNames[0].size() > 6 && SubNames[0].substr(0,6) == "Vertex") 
+            VtId1 = std::atoi(SubNames[0].substr(6,4000).c_str());
+    }
+    if (SubNames.size() == 2) {
+        if (SubNames[1].size() > 4 && SubNames[1].substr(0,4) == "Edge") 
+            GeoId2 = std::atoi(SubNames[1].substr(4,4000).c_str());
+        else if (SubNames[1].size() > 6 && SubNames[1].substr(0,6) == "Vertex") 
+            VtId2 = std::atoi(SubNames[1].substr(6,4000).c_str());
+    }
+
+    if (VtId1 >= 0 && VtId2 >= 0) { // point to point horizontal distance
+        Sketcher::PointPos PosId1,PosId2;
+        Obj->getGeoVertexIndex(VtId1,GeoId1,PosId1);
+        Obj->getGeoVertexIndex(VtId2,GeoId2,PosId2);
+        Base::Vector3d pnt1 = Obj->getPoint(GeoId1,PosId1);
+        Base::Vector3d pnt2 = Obj->getPoint(GeoId2,PosId2);
+        double ActLength = pnt2.y-pnt1.y;
+ 
+        openCommand("add point to point vertical distance constraint");
+        Gui::Command::doCommand(
+            Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('DistanceY',%d,%d,%d,%d,%f)) ",
+            selection[0].getFeatName(),GeoId1,PosId1,GeoId2,PosId2,ActLength);
+        commitCommand();
+        //updateActive();
+        getSelection().clearSelection();
+        return;
+    }
+    else if (GeoId1 >= 0 && GeoId2 < 0 && VtId2 < 0)  { // horizontal length of a line
+        const Part::Geometry *geom = geo[GeoId1];
+        if (geom->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
+            const Part::GeomLineSegment *lineSeg;
+            lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geom);
+            double ActLength = lineSeg->getEndPoint().y-lineSeg->getStartPoint().y;
+
+            openCommand("add vertical length constraint");
+            Gui::Command::doCommand(
+                Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('DistanceY',%d,%f)) ",
+                selection[0].getFeatName(),GeoId1,ActLength);
+            commitCommand();
+            //updateActive();
+            getSelection().clearSelection();
+            return;
+        }
+    }
+    else if (VtId1 >= 0) { // point on fixed y-coordinate
+        Sketcher::PointPos PosId1;
+        Obj->getGeoVertexIndex(VtId1,GeoId1,PosId1);
+        Base::Vector3d pnt = Obj->getPoint(GeoId1,PosId1);
+        double ActY = pnt.y;
+
+        openCommand("add fixed y-coordinate constraint");
+        Gui::Command::doCommand(
+            Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('DistanceY',%d,%d,%f)) ",
+            selection[0].getFeatName(),GeoId1,PosId1,ActY);
+        commitCommand();
+        //updateActive();
+        getSelection().clearSelection();
+        return;
+    }
+
+    QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+        QObject::tr("Select exactly one line or up to two points from the sketch."));
+    return;
+}
+
+bool CmdSketcherConstrainDistanceY::isActive(void)
 {
     return isCreateConstraintActive( getActiveGuiDocument() );
 }
@@ -747,4 +981,6 @@ void CreateSketcherCommandsConstraints(void)
     rcCmdMgr.addCommand(new CmdSketcherConstrainPerpendicular());
     rcCmdMgr.addCommand(new CmdSketcherConstrainTangent());
     rcCmdMgr.addCommand(new CmdSketcherConstrainDistance());
+    rcCmdMgr.addCommand(new CmdSketcherConstrainDistanceX());
+    rcCmdMgr.addCommand(new CmdSketcherConstrainDistanceY());
  }

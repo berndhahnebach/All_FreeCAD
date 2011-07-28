@@ -424,11 +424,23 @@ int Sketch::addConstraint(const Constraint *constraint)
     assert(int(Geoms.size()) > 0);
     int rtn = -1;
     switch (constraint->Type) {
-        case ConstrainX:
-            rtn = addCoordinateXConstraint(constraint->First,constraint->FirstPos,constraint->Value);
+        case DistanceX:
+            if (constraint->FirstPos == none) // horizontal length of a line
+                rtn = addDistanceXConstraint(constraint->First,constraint->Value);
+            else if (constraint->Second == -1) // point on fixed x-coordinate
+                rtn = addCoordinateXConstraint(constraint->First,constraint->FirstPos,constraint->Value);
+            else if (constraint->SecondPos != none) // point to point horizontal distance
+                rtn = addDistanceXConstraint(constraint->First,constraint->FirstPos,
+                                             constraint->Second,constraint->SecondPos,constraint->Value);
             break;
-        case ConstrainY:
-            rtn = addCoordinateYConstraint(constraint->First,constraint->FirstPos,constraint->Value);
+        case DistanceY:
+            if (constraint->FirstPos == none) // vertical length of a line
+                rtn = addDistanceYConstraint(constraint->First,constraint->Value);
+            else if (constraint->Second == -1) // point on fixed y-coordinate
+                rtn = addCoordinateYConstraint(constraint->First,constraint->FirstPos,constraint->Value);
+            else if (constraint->SecondPos != none) // point to point vertical distance
+                rtn = addDistanceYConstraint(constraint->First,constraint->FirstPos,
+                                             constraint->Second,constraint->SecondPos,constraint->Value);
             break;
         case Horizontal:
             if (constraint->Second == -1) // horizontal line
@@ -522,6 +534,68 @@ int Sketch::addCoordinateYConstraint(int geoId, PointPos pos, double value)
         FixParameters.push_back(val);
         GCS::Point &p = Points[pointId];
         return GCSsys.addConstraintCoordinateY(p, val);
+    }
+    return -1;
+}
+
+int Sketch::addDistanceXConstraint(int geoId, double value)
+{
+    assert(geoId < int(Geoms.size()));
+    assert(Geoms[geoId].type == Line);
+
+    GCS::Line &l = Lines[Geoms[geoId].index];
+
+    FixParameters.push_back(new double(value));
+    double *diff = FixParameters[FixParameters.size()-1];
+
+    return GCSsys.addConstraintDifference(l.p1.x, l.p2.x, diff);
+}
+
+int Sketch::addDistanceYConstraint(int geoId, double value)
+{
+    assert(geoId < int(Geoms.size()));
+    assert(Geoms[geoId].type == Line);
+
+    GCS::Line &l = Lines[Geoms[geoId].index];
+
+    FixParameters.push_back(new double(value));
+    double *diff = FixParameters[FixParameters.size()-1];
+
+    return GCSsys.addConstraintDifference(l.p1.y, l.p2.y, diff);
+}
+
+int Sketch::addDistanceXConstraint(int geoId1, PointPos pos1, int geoId2, PointPos pos2, double value)
+{
+    int pointId1 = getPointId(geoId1, pos1);
+    int pointId2 = getPointId(geoId2, pos2);
+
+    if (pointId1 >= 0 && pointId1 < int(Points.size()) &&
+        pointId2 >= 0 && pointId2 < int(Points.size())) {
+        GCS::Point &p1 = Points[pointId1];
+        GCS::Point &p2 = Points[pointId2];
+
+        FixParameters.push_back(new double(value));
+        double *difference = FixParameters[FixParameters.size()-1];
+
+        return GCSsys.addConstraintDifference(p1.x, p2.x, difference);
+    }
+    return -1;
+}
+
+int Sketch::addDistanceYConstraint(int geoId1, PointPos pos1, int geoId2, PointPos pos2, double value)
+{
+    int pointId1 = getPointId(geoId1, pos1);
+    int pointId2 = getPointId(geoId2, pos2);
+
+    if (pointId1 >= 0 && pointId1 < int(Points.size()) &&
+        pointId2 >= 0 && pointId2 < int(Points.size())) {
+        GCS::Point &p1 = Points[pointId1];
+        GCS::Point &p2 = Points[pointId2];
+
+        FixParameters.push_back(new double(value));
+        double *difference = FixParameters[FixParameters.size()-1];
+
+        return GCSsys.addConstraintDifference(p1.y, p2.y, difference);
     }
     return -1;
 }
