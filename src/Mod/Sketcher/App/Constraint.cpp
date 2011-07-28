@@ -88,15 +88,15 @@ unsigned int Constraint::getMemSize (void) const
 void Constraint::Save (Writer &writer) const
 {
     writer.Stream() << writer.ind() << "<Constrain "
-    << "Name=\""        <<  Name            << "\" "
-    << "Type=\""        <<  (int)Type       << "\" "
-    << "Value=\""       <<  Value           << "\" "
-    << "First=\""       <<  First           << "\" "
-    << "FirstPos=\""    <<  (int)  FirstPos << "\" "
-    << "Second=\""      <<  Second          << "\" "
-    << "SecondPos=\""   <<  (int) SecondPos << "\" "
-    << "Extern=\""      <<  Extern          << "\" "
-    << "LabelDistance =\""	<< LabelDistance<< "\" />"
+    << "Name=\""          <<  Name            << "\" "
+    << "Type=\""          <<  (int)Type       << "\" "
+    << "Value=\""         <<  Value           << "\" "
+    << "First=\""         <<  First           << "\" "
+    << "FirstPos=\""      <<  (int)  FirstPos << "\" "
+    << "Second=\""        <<  Second          << "\" "
+    << "SecondPos=\""     <<  (int) SecondPos << "\" "
+    << "Extern=\""        <<  Extern          << "\" "
+    << "LabelDistance=\"" << LabelDistance<< "\" />"
     << std::endl;
 }
 

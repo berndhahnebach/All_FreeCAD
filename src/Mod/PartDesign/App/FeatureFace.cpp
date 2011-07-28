@@ -29,6 +29,7 @@
 # include <BRepBndLib.hxx>
 # include <BRepBuilderAPI_Copy.hxx>
 # include <BRepBuilderAPI_MakeFace.hxx>
+# include <BRepAdaptor_Surface.hxx>
 # include <Geom_Plane.hxx>
 # include <Handle_Geom_Surface.hxx>
 # include <TopoDS.hxx>
@@ -37,6 +38,7 @@
 # include <TopoDS_Wire.hxx>
 # include <TopExp_Explorer.hxx>
 # include <BRepAlgoAPI_Fuse.hxx>
+# include <gp_Pln.hxx>
 #endif
 
 #include <Base/Placement.h>
@@ -125,35 +127,26 @@ struct Wire_Compare {
 TopoDS_Shape Face::makeFace(std::list<TopoDS_Wire>& wires) const
 {
     BRepBuilderAPI_MakeFace mkFace(wires.front());
-    int countOuterEdges = 0;
-    TopExp_Explorer xp;
-    for (xp.Init(wires.front(), TopAbs_EDGE); xp.More(); xp.Next()) {
-        if (++countOuterEdges > 1)
-            break;
+    const TopoDS_Face& face = mkFace.Face();
+    gp_Dir axis(0,0,1);
+    BRepAdaptor_Surface adapt(face);
+    if (adapt.GetType() == GeomAbs_Plane) {
+        axis = adapt.Plane().Axis().Direction();
     }
 
     wires.pop_front();
     for (std::list<TopoDS_Wire>::iterator it = wires.begin(); it != wires.end(); ++it) {
-        // It seems if the outer or inner wire has multiple edges the orientation should be
-        // the same but inner wires with only a single edge should be reversed.
-        // If the outer wire has only a single edge then inner wires with multiple edges
-        // must be reversed.
-        int countEdges = 0;
-        TopExp_Explorer xp;
-        for (xp.Init(*it, TopAbs_EDGE); xp.More(); xp.Next()) {
-            if (++countEdges > 1)
-                break;
+        BRepBuilderAPI_MakeFace mkInnerFace(*it);
+        const TopoDS_Face& inner_face = mkInnerFace.Face();
+        gp_Dir inner_axis(0,0,1);
+        BRepAdaptor_Surface adapt(inner_face);
+        if (adapt.GetType() == GeomAbs_Plane) {
+            inner_axis = adapt.Plane().Axis().Direction();
         }
-
-        if (countOuterEdges > 1) {
-            if (countEdges == 1)
-                it->Reverse();
-        }
-        else {
-            if (countEdges > 1)
-                it->Reverse();
-        }
-
+        // It seems that orientation is always 'Forward' and we only have to reverse
+        // if the underlying plane have opposite normals. 
+        if (axis.Dot(inner_axis) < 0)
+            it->Reverse();
         mkFace.Add(*it);
     }
     return mkFace.Face();
