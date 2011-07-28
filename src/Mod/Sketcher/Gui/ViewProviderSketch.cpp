@@ -531,6 +531,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                 case STATUS_SELECT_Constraint:
                 case STATUS_SKETCH_DragPoint:
                 case STATUS_SKETCH_DragCurve:
+                case STATUS_SKETCH_DragConstraint:
                 break;
             }
         }
@@ -708,8 +709,8 @@ bool ViewProviderSketch::isConstraintAtPosition(const Base::Vector3d &constrPos,
     if (pp) {
         SoPath * path = pp->getPath();
         int length = path->getLength();
-        SoNode * tailFather = path->getNode(path->getLength()-2);
-        SoNode * tailFather2 = path->getNode(path->getLength()-3);
+        SoNode * tailFather = path->getNode(length-2);
+        SoNode * tailFather2 = path->getNode(length-3);
 
         // checking if a constraint is the same as the one selected
         if (tailFather2 == constraint || tailFather == constraint) {
@@ -1174,35 +1175,29 @@ Restart:
             case DistanceY:
                 {
                     assert(Constr->First < int(geomlist->size()));
-                    // get the geometry
-                    const Part::Geometry *geo = (*geomlist)[Constr->First];
-                    Base::Vector3d pnt;
-                    if (geo->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
-                        const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geo);
-                        if (Constr->FirstPos == start)
-                            pnt = lineSeg->getStartPoint();
-                        else if (Constr->FirstPos == end)
-                            pnt = lineSeg->getEndPoint();
-                    } else if (geo->getTypeId() == Part::GeomCircle::getClassTypeId()) {
-                        const Part::GeomCircle *circle = dynamic_cast<const Part::GeomCircle*>(geo);
-                        if (Constr->FirstPos == mid)
-                            pnt = circle->getCenter();
-                    } else if (geo->getTypeId() == Part::GeomArcOfCircle::getClassTypeId()) {
-                        const Part::GeomArcOfCircle *aoc = dynamic_cast<const Part::GeomArcOfCircle*>(geo);
-                        if (Constr->FirstPos == start)
-                            pnt = aoc->getStartPoint();
-                        else if (Constr->FirstPos == end)
-                            pnt = aoc->getEndPoint();
-                        else if (Constr->FirstPos == mid)
-                            pnt = aoc->getCenter();
+
+                    Base::Vector3d pnt1(0.,0.,0.), pnt2(0.,0.,0.);
+                    if (Constr->First != -1 && Constr->Second !=-1 &&
+                        Constr->FirstPos != none && Constr->SecondPos != none) {
+                        pnt1 = getSketchObject()->getPoint(Constr->First, Constr->FirstPos);
+                        pnt2 = getSketchObject()->getPoint(Constr->Second, Constr->SecondPos);
+                    } else if (Constr->First != -1 && Constr->FirstPos != none) {
+                        pnt2 = getSketchObject()->getPoint(Constr->First, Constr->FirstPos);
+                    } else if (Constr->First != -1) {
+                        const Part::Geometry *geo = (*geomlist)[Constr->First];
+                        if (geo->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
+                            const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geo);
+                            pnt1 = lineSeg->getStartPoint();
+                            pnt2 = lineSeg->getEndPoint();
+                        }
                     }
 
                     SbVec3f pos;
                     if (Constr->Type == DistanceX) {
-                        SbVec3f p1(0,pnt.y,0);
-                        SbVec3f p2(pnt.x,pnt.y,0);
+                        SbVec3f p1(pnt1.x,(pnt1.y+pnt2.y)/2,0);
+                        SbVec3f p2(pnt2.x,(pnt1.y+pnt2.y)/2,0);
                         SbVec3f yvec(0,1,0);
-                        if (pnt.y < 0)
+                        if ((pnt1.y+pnt2.y)/2 < 0)
                             yvec *= -1;
                         pos = (p1 + p2)/2 + 10*yvec;
                         // set the line coordinates:
@@ -1213,10 +1208,10 @@ Restart:
                         dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(4,p1+yvec*10);
                         dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(5,p2+yvec*10);
                     } else if (Constr->Type == DistanceY) {
-                        SbVec3f p1(pnt.x,0,0);
-                        SbVec3f p2(pnt.x,pnt.y,0);
+                        SbVec3f p1((pnt1.x+pnt2.x)/2,pnt1.y,0);
+                        SbVec3f p2((pnt1.x+pnt2.x)/2,pnt2.y,0);
                         SbVec3f xvec(1,0,0);
-                        if (pnt.x < 0)
+                        if ((pnt1.x+pnt2.x)/2 < 0)
                             xvec *= -1;
                         pos = (p1 + p2)/2 + 10*xvec;
                         // set the line coordinates:
