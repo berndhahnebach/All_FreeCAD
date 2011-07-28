@@ -267,7 +267,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
     if (Button == 1) {
         if (pressed) {
             // Do things depending on the mode of the user interaction
-            switch(Mode){
+            switch (Mode) {
                 case STATUS_NONE:
                     if (edit->PreselectPoint >=0) {
                         //Base::Console().Log("start dragging, point:%d\n",this->DragPoint);
@@ -428,7 +428,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
     // Right mouse button ****************************************************
     else if (Button == 2) {
         if (pressed) {
-            switch(Mode){
+            switch (Mode) {
                 case STATUS_SKETCH_UseHandler:
                     // make the handler quit
                     edit->sketchHandler->quit();
@@ -498,7 +498,8 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                             // Two Objects are selected
                             if (SubNames.size() == 2) {
                                 // go through the selected subelements
-                                for (std::vector<std::string>::const_iterator it=SubNames.begin();it!=SubNames.end();++it){
+                                for (std::vector<std::string>::const_iterator it=SubNames.begin();
+                                     it!=SubNames.end();++it) {
 
                                     // If the object selected is of type edge
                                     if (it->size() > 4 && it->substr(0,4) == "Edge") {
@@ -1168,7 +1169,7 @@ Restart:
         SoSeparator *sep = dynamic_cast<SoSeparator *>(edit->constrGroup->getChild(i));
         const Constraint *Constr = *it;
         // distinquish different constraint types to build up
-        switch(Constr->Type) {
+        switch (Constr->Type) {
             case ConstrainX:
             case ConstrainY:
                 {
@@ -1290,7 +1291,6 @@ Restart:
                 Base::Vector3d norm2(-dir2.y,dir2.x,0);
                 Base::Vector3d constrPos2;
 
-
                 int multiplier = 0;
                 do {
                     // Calculate new position of constraint
@@ -1309,8 +1309,8 @@ Restart:
 
                 constrPos2 = constrPos2 - constrPos1;
                 constrPos2 = constrPos2 - Base::Vector3d(2, -2, 0);
-                dynamic_cast<SoText2 *>(sep->getChild(4))->string = SbString().sprintf("%i",i);
-                dynamic_cast<SoText2 *>(sep->getChild(8))->string = SbString().sprintf("%i",i);
+                dynamic_cast<SoText2 *>(sep->getChild(4))->string = SbString().sprintf("%i",i+1);
+                dynamic_cast<SoText2 *>(sep->getChild(8))->string = SbString().sprintf("%i",i+1);
 
                 dynamic_cast<SoTranslation *>(sep->getChild(1))->translation =  SbVec3f(constrPos1.x, constrPos1.y, 0.0f);
                 dynamic_cast<SoTranslation *>(sep->getChild(3))->translation =  SbVec3f( 2, -2, 0.0f);
@@ -1535,8 +1535,8 @@ Restart:
 
                 constrPos2 = constrPos2 - constrPos1;
                 constrPos2 = constrPos2 - Base::Vector3d(2, -2, 0);
-                dynamic_cast<SoText2 *>(sep->getChild(4))->string = SbString().sprintf("%i",i);
-                dynamic_cast<SoText2 *>(sep->getChild(8))->string = SbString().sprintf("%i",i);
+                dynamic_cast<SoText2 *>(sep->getChild(4))->string = SbString().sprintf("%i",i+1);
+                dynamic_cast<SoText2 *>(sep->getChild(8))->string = SbString().sprintf("%i",i+1);
 
                 dynamic_cast<SoTranslation *>(sep->getChild(1))->translation =  SbVec3f(constrPos1.x, constrPos1.y, 0.0f);
                 dynamic_cast<SoTranslation *>(sep->getChild(3))->translation =  SbVec3f( 2, -2, 0.0f);
@@ -1571,7 +1571,7 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
 
     // Needs putting in better place
     //Constraint Icons Size scaled by (width) in px
-    const int constraintImageSize = 24;
+    const int constraintImageSize = 16;
 
     for (std::vector<Sketcher::Constraint*>::const_iterator it = ConStr.begin(); it != ConStr.end(); ++it) {
         // root separator for one constraint
@@ -1584,7 +1584,7 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
         sep->addChild(Material);
 
         // destiquish different constraint types to build up
-        switch((*it)->Type) {
+        switch ((*it)->Type) {
             case ConstrainX:
             case ConstrainY:
                 {
