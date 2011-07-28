@@ -49,9 +49,10 @@ Constraint::Constraint()
   Second(-1),
   SecondPos(none),
   Extern(-1),
-  LabelDistance()
+  LabelDistance(0.0f)
 {
 }
+
 Constraint::Constraint(const Constraint& from)
 : Type(from.Type),
   Name(from.Name),
@@ -78,7 +79,6 @@ PyObject *Constraint::getPyObject(void)
 {
     return new ConstraintPy(new Constraint(*this));
 }
-
 
 unsigned int Constraint::getMemSize (void) const
 {
@@ -113,10 +113,8 @@ void Constraint::Restore(XMLReader &reader)
     Extern    = reader.getAttributeAsInteger("Extern");
 
     // Read the distance a constraint label has been moved
-    if(reader.hasAttribute("LabelDistance"))
+    if (reader.hasAttribute("LabelDistance"))
         LabelDistance = reader.getAttributeAsFloat("LabelDistance");
     else
         LabelDistance = 0.0;
 }
-
-

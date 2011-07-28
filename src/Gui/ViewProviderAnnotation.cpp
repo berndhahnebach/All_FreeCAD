@@ -189,7 +189,7 @@ void ViewProviderAnnotation::attach(App::DocumentObject* f)
     textsep->addChild(pTranslation);
     textsep->addChild(pRotationXYZ);
     textsep->addChild(pColor);
-    //textsep->addChild(pFont); // causes problems
+    textsep->addChild(pFont); // causes problems
     textsep->addChild(pLabel);
 
     SoFCSelection* textsep3d = new SoFCSelection();
