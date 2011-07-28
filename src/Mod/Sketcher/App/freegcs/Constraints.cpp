@@ -103,10 +103,42 @@ double ConstraintEqual::error()
 double ConstraintEqual::grad(double *param)
 {
     double deriv=0.;
-    if (param == param1())
-      deriv += 1;
-    if (param == param2())
-      deriv += -1;
+    if (param == param1()) deriv += 1;
+    if (param == param2()) deriv += -1;
+    return scale * deriv;
+}
+
+// Difference
+ConstraintDifference::ConstraintDifference(double *p1, double *p2, double *d)
+{
+    pvec.push_back(p1);
+    pvec.push_back(p2);
+    pvec.push_back(d);
+    origpvec = pvec;
+    rescale();
+}
+
+ConstraintType ConstraintDifference::getTypeId()
+{
+    return Difference;
+}
+
+void ConstraintDifference::rescale(double coef)
+{
+    scale = coef * 1.;
+}
+
+double ConstraintDifference::error()
+{
+    return scale * (*param2() - *param1() - *difference());
+}
+
+double ConstraintDifference::grad(double *param)
+{
+    double deriv=0.;
+    if (param == param1()) deriv += -1;
+    if (param == param2()) deriv += 1;
+    if (param == difference()) deriv += -1;
     return scale * deriv;
 }
 
@@ -319,7 +351,7 @@ double ConstraintP2LDistance::grad(double *param)
         if (param == p2x()) deriv += ((y0-y1)*d - (dx/d)*area) / d2;
         if (param == p2y()) deriv += ((x1-x0)*d - (dy/d)*area) / d2;
         if (area < 0)
-          deriv *= -1;
+            deriv *= -1;
     }
     if (param == distance())
         deriv += -1;
@@ -451,23 +483,15 @@ double ConstraintParallel::error()
 double ConstraintParallel::grad(double *param)
 {
     double deriv=0.;
-    if (param == l1p1x())
-      deriv += (*l2p1y() - *l2p2y()); // = dy2
-    if (param == l1p2x())
-      deriv += -(*l2p1y() - *l2p2y()); // = -dy2
-    if (param == l1p1y())
-      deriv += -(*l2p1x() - *l2p2x()); // = -dx2
-    if (param == l1p2y())
-      deriv += (*l2p1x() - *l2p2x()); // = dx2
+    if (param == l1p1x()) deriv += (*l2p1y() - *l2p2y()); // = dy2
+    if (param == l1p2x()) deriv += -(*l2p1y() - *l2p2y()); // = -dy2
+    if (param == l1p1y()) deriv += -(*l2p1x() - *l2p2x()); // = -dx2
+    if (param == l1p2y()) deriv += (*l2p1x() - *l2p2x()); // = dx2
 
-    if (param == l2p1x())
-      deriv += -(*l1p1y() - *l1p2y()); // = -dy1
-    if (param == l2p2x())
-      deriv += (*l1p1y() - *l1p2y()); // = dy1
-    if (param == l2p1y())
-      deriv += (*l1p1x() - *l1p2x()); // = dx1
-    if (param == l2p2y())
-      deriv += -(*l1p1x() - *l1p2x()); // = -dx1
+    if (param == l2p1x()) deriv += -(*l1p1y() - *l1p2y()); // = -dy1
+    if (param == l2p2x()) deriv += (*l1p1y() - *l1p2y()); // = dy1
+    if (param == l2p1y()) deriv += (*l1p1x() - *l1p2x()); // = dx1
+    if (param == l2p2y()) deriv += -(*l1p1x() - *l1p2x()); // = -dx1
 
     return scale * deriv;
 }
