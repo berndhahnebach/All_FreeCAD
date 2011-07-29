@@ -49,7 +49,7 @@ Constraint::Constraint()
   Second(-1),
   SecondPos(none),
   Extern(-1),
-  LabelDistance(0.0f)
+  LabelDistance(10.f)
 {
 }
 

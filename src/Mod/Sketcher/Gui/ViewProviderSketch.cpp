@@ -629,63 +629,50 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
 
     return false;
 }
-void ViewProviderSketch::moveConstraint(int constNum, const Base::Vector2D &Pos)
+void ViewProviderSketch::moveConstraint(int constNum, const Base::Vector2D &toPos)
 {
     // are we in edit?
     if (!edit)
         return;
 
-    const std::vector<Sketcher::Constraint*> &ConStr = getSketchObject()->Constraints.getValues();
-    Constraint *constr = ConStr[constNum];
+    const std::vector<Sketcher::Constraint *> &ConStr = getSketchObject()->Constraints.getValues();
+    Constraint *Constr = ConStr[constNum];
 
-    if (constr->Type == Distance) {
-        bool tempDraw = true;
-        const std::vector<Part::Geometry *> *geomlist;
-        std::vector<Part::Geometry *> tempGeo;
-        if (tempDraw) {
-            tempGeo = edit->ActSketch.getGeometry();
-            geomlist = &tempGeo;
-        } else {
-            geomlist = &getSketchObject()->Geometry.getValues();
-        }
+    if (Constr->Type == Distance || Constr->Type == DistanceX || Constr->Type == DistanceY) {
 
-        assert(constr->First < int(geomlist->size()));
+        const std::vector<Part::Geometry *> geomlist = edit->ActSketch.getGeometry();
+        assert(Constr->First < int(geomlist.size()));
 
-        // get the geometry
+        Base::Vector3d p1(0.,0.,0.), p2(0.,0.,0.);
+        if (Constr->SecondPos != none) { // point to point distance
+            p1 = edit->ActSketch.getPoint(Constr->First, Constr->FirstPos);
+            p2 = edit->ActSketch.getPoint(Constr->Second, Constr->SecondPos);
+        } else if (Constr->First != -1 && Constr->FirstPos != none) {
+            p2 = edit->ActSketch.getPoint(Constr->First, Constr->FirstPos);
+        } else if (Constr->First != -1) {
+            const Part::Geometry *geo = geomlist[Constr->First];
+            if (geo->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
+                const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment *>(geo);
+                p1 = lineSeg->getStartPoint();
+                p2 = lineSeg->getEndPoint();
+            } else
+                return;
+        } else
+            return;
 
-        const Part::Geometry *geo = (*geomlist)[constr->First];
-        // Distance can only apply to a GeomLineSegment
+        Base::Vector3d dir;
+        if (Constr->Type == Distance)
+            dir = (p2-p1).Normalize();
+        else if (Constr->Type == DistanceX)
+            dir = Base::Vector3d( (p2.x > p1.x) ? 1 : -1, 0, 0);
+        else if (Constr->Type == DistanceY)
+            dir = Base::Vector3d(0, (p2.y > p1.y) ? 1 : -1, 0);
+        Base::Vector3d norm(-dir.y,dir.x,0);
 
-        assert(geo->getTypeId()== Part::GeomLineSegment::getClassTypeId());
-        const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geo);
-
-        Base::Vector3d mousePosVec(Pos.fX, Pos.fY, 0);
-
-        // Something wrong with these coordinates
-        Base::Vector3d p1 = lineSeg->getStartPoint();
-        Base::Vector3d p2 = lineSeg->getEndPoint();
-
-        // calculate the half distance between the start and endpoint
-        Base::Vector3d midpos = ((lineSeg->getEndPoint()+lineSeg->getStartPoint())/2);
-
-        // Get a set of vectors perpendicular and tangential to these
-        Base::Vector3d dirTmp = (lineSeg->getEndPoint()-lineSeg->getStartPoint()).Normalize();
-
-        // Get Vector between mouse point and mid point
-        mousePosVec = mousePosVec - midpos;
-
-        Base::Vector3d temp(0, 0, 0);
+        Base::Vector3d vec = Base::Vector3d(toPos.fX, toPos.fY, 0) - p2;
 
         // Get Distance From Sketched Line
-        double length = temp.ProjToLine(mousePosVec, dirTmp).Length();
-
-        double crossProduct = ((p2.x - p1.x)*(Pos.fY - p1.y) - (p2.y - p1.y)*(Pos.fX - p1.x));
-
-        // If less than zero, dimension left of Line
-        if (crossProduct < 0)
-            length *= -1;
-
-        constr->LabelDistance = length;
+        Constr->LabelDistance = vec.x * norm.x + vec.y * norm.y;
     }
     draw(true);
 }
@@ -1170,377 +1157,335 @@ Restart:
         const Constraint *Constr = *it;
         // distinquish different constraint types to build up
         switch (Constr->Type) {
+            case Horizontal: // write the new position of the Horizontal constraint Same as vertical position.
+            case Vertical: // write the new position of the Vertical constraint
+                {
+                    assert(Constr->First < int(geomlist->size()));
+                    // get the geometry
+                    const Part::Geometry *geo = (*geomlist)[Constr->First];
+                    // Vertical can only be a GeomLineSegment
+                    assert(geo->getTypeId()== Part::GeomLineSegment::getClassTypeId());
+                    const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment *>(geo);
+
+                    // calculate the half distance between the start and endpoint
+                    Base::Vector3d midpos = ((lineSeg->getEndPoint()+lineSeg->getStartPoint())/2);
+
+                    //Get a set of vectors perpendicular and tangential to these
+                    Base::Vector3d dir = (lineSeg->getEndPoint()-lineSeg->getStartPoint()).Normalize();
+                    Base::Vector3d norm(-dir.y,dir.x,0);
+                    Base::Vector3d constrPos;
+
+                    int multiplier = 0;
+                    do {
+                        // Calculate new position of constraint
+                        constrPos = midpos + (norm * 5) + (dir * (multiplier * 5));
+                        multiplier++; // Increment the multiplier
+                    }
+                    while (isConstraintAtPosition(constrPos, edit->constrGroup->getChild(i)));
+
+                    dynamic_cast<SoTranslation *>(sep->getChild(1))->translation = SbVec3f(constrPos.x, constrPos.y, 0.0f);
+                }
+                break;
+            case Parallel:
+                {
+                    assert(Constr->First < int(geomlist->size()));
+                    assert(Constr->Second < int(geomlist->size()));
+                    // get the geometry
+                    const Part::Geometry *geo1 = (*geomlist)[Constr->First];
+                    const Part::Geometry *geo2 = (*geomlist)[Constr->Second];
+                    // Parallel can only apply to a GeomLineSegment
+                    assert(geo1->getTypeId()== Part::GeomLineSegment::getClassTypeId());
+                    assert(geo2->getTypeId()== Part::GeomLineSegment::getClassTypeId());
+                    const Part::GeomLineSegment *lineSeg1 = dynamic_cast<const Part::GeomLineSegment *>(geo1);
+                    const Part::GeomLineSegment *lineSeg2 = dynamic_cast<const Part::GeomLineSegment *>(geo2);
+
+                    // calculate the half distance between the start and endpoint
+                    Base::Vector3d midpos1 = ((lineSeg1->getEndPoint()+lineSeg1->getStartPoint())/2);
+
+                    //Get a set of vectors perpendicular and tangential to these
+                    Base::Vector3d dir1 = (lineSeg1->getEndPoint()-lineSeg1->getStartPoint()).Normalize();
+
+                    Base::Vector3d norm1(-dir1.y,dir1.x,0);
+                    Base::Vector3d constrPos1;
+
+                    // calculate the half distance between the start and endpoint
+                    Base::Vector3d midpos2 = ((lineSeg2->getEndPoint()+lineSeg2->getStartPoint())/2);
+
+                    //Get a set of vectors perpendicular and tangential to these
+                    Base::Vector3d dir2 = (lineSeg2->getEndPoint()-lineSeg2->getStartPoint()).Normalize();
+                    Base::Vector3d norm2(-dir2.y,dir2.x,0);
+                    Base::Vector3d constrPos2;
+
+                    int multiplier = 0;
+                    do {
+                        // Calculate new position of constraint
+                        constrPos1 = midpos1 + (norm1 * 5) + (dir1 * (multiplier * 5));
+                        multiplier++; // Increment the multiplier
+                    }
+                    while (isConstraintAtPosition(constrPos1, edit->constrGroup->getChild(i)));
+
+                    multiplier = 0;
+                    do {
+                        // Calculate new position of constraint
+                        constrPos2 = midpos2 + (norm2 * 5) + (dir2 * (multiplier * 5));
+                        multiplier++; // Increment the multiplier
+                    }
+                    while (isConstraintAtPosition(constrPos2, edit->constrGroup->getChild(i)));
+
+                    constrPos2 = constrPos2 - constrPos1;
+                    constrPos2 = constrPos2 - Base::Vector3d(2, -2, 0);
+                    dynamic_cast<SoText2 *>(sep->getChild(4))->string = SbString().sprintf("%i",i+1);
+                    dynamic_cast<SoText2 *>(sep->getChild(8))->string = SbString().sprintf("%i",i+1);
+
+                    dynamic_cast<SoTranslation *>(sep->getChild(1))->translation =  SbVec3f(constrPos1.x, constrPos1.y, 0.0f);
+                    dynamic_cast<SoTranslation *>(sep->getChild(3))->translation =  SbVec3f( 2, -2, 0.0f);
+                    dynamic_cast<SoTranslation *>(sep->getChild(5))->translation =  SbVec3f(constrPos2.x, constrPos2.y, 0.0f);
+                    dynamic_cast<SoTranslation *>(sep->getChild(7))->translation =  SbVec3f(2, -2, 0.0f);
+                }
+                break;
+            case Distance:
             case DistanceX:
             case DistanceY:
                 {
                     assert(Constr->First < int(geomlist->size()));
 
                     Base::Vector3d pnt1(0.,0.,0.), pnt2(0.,0.,0.);
-                    if (Constr->First != -1 && Constr->Second !=-1 &&
-                        Constr->FirstPos != none && Constr->SecondPos != none) {
-                        pnt1 = getSketchObject()->getPoint(Constr->First, Constr->FirstPos);
-                        pnt2 = getSketchObject()->getPoint(Constr->Second, Constr->SecondPos);
+                    if (Constr->SecondPos != none) { // point to point distance
+                        if (temp) {
+                            pnt1 = edit->ActSketch.getPoint(Constr->First, Constr->FirstPos);
+                            pnt2 = edit->ActSketch.getPoint(Constr->Second, Constr->SecondPos);
+                        } else {
+                            pnt1 = getSketchObject()->getPoint(Constr->First, Constr->FirstPos);
+                            pnt2 = getSketchObject()->getPoint(Constr->Second, Constr->SecondPos);
+                        }
                     } else if (Constr->First != -1 && Constr->FirstPos != none) {
-                        pnt2 = getSketchObject()->getPoint(Constr->First, Constr->FirstPos);
+                        if (temp) {
+                            pnt2 = edit->ActSketch.getPoint(Constr->First, Constr->FirstPos);
+                        } else {
+                            pnt2 = getSketchObject()->getPoint(Constr->First, Constr->FirstPos);
+                        }
                     } else if (Constr->First != -1) {
                         const Part::Geometry *geo = (*geomlist)[Constr->First];
                         if (geo->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
-                            const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geo);
+                            const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment *>(geo);
                             pnt1 = lineSeg->getStartPoint();
                             pnt2 = lineSeg->getEndPoint();
+                        } else
+                            break;
+                    } else
+                        break;
+
+                    SbVec3f p1(pnt1.x,pnt1.y,0);
+                    SbVec3f p2(pnt2.x,pnt2.y,0);
+
+                    SbVec3f dir, norm;
+                    if (Constr->Type == Distance)
+                        dir = (p2-p1);
+                    else if (Constr->Type == DistanceX)
+                        dir = SbVec3f( (pnt2.x > pnt1.x) ? 1 : -1, 0, 0);
+                    else if (Constr->Type == DistanceY)
+                        dir = SbVec3f(0, (pnt2.y > pnt1.y) ? 1 : -1, 0);
+                    dir.normalize();
+                    norm = SbVec3f (-dir[1],dir[0],0);
+
+                    // when the datum line is not parallel to p1-p2 the projection of
+                    // p1-p2 on norm is not zero, p2 is considered as reference and p1
+                    // is replaced by its projection p1_
+                    float normproj12 = (p2-p1).dot(norm);
+
+                    SbVec3f p1_ = p1 + normproj12 * norm;
+                    SbVec3f midpos = (p1_ + p2)/2;
+
+                    SoAsciiText *asciiText = dynamic_cast<SoAsciiText *>(sep->getChild(4));
+                    asciiText->string = SbString().sprintf("%.2f",Constr->Value);
+
+                    // Get Bounding box dimensions for Datum text
+                    Gui::MDIView *mdi = Gui::Application::Instance->activeDocument()->getActiveView();
+                    Gui::View3DInventorViewer *viewer = static_cast<Gui::View3DInventor *>(mdi)->getViewer();
+
+                    // [FIX ME] Its an attempt to find the height of the text using the bounding box, but is in correct.
+                    SoGetBoundingBoxAction bbAction(viewer->getViewportRegion());
+                    bbAction.apply(sep->getChild(4));
+
+                    float bx,by,bz;
+                    bbAction.getBoundingBox().getSize(bx,by,bz);
+                    SbVec3f textBB(bx,by,bz);
+                    // bbAction.setCenter(, true)
+                    // This is the bounding box containing the width and height of text
+
+                    SbVec3f textBBCenter = bbAction.getBoundingBox().getCenter();
+
+                    float length = Constr->LabelDistance;
+
+                    SbVec3f textpos = midpos + norm * (length + ( (dir[0] > 0 ? -1:1) * textBBCenter[1] / 4));
+
+                    // Get magnitude of angle between horizontal
+                    float angle = atanf(dir[1]/dir[0]); // atan2f(dir[1],dir[0]);
+
+                    // set position and rotation of Datums Text
+                    SoTransform *transform = dynamic_cast<SoTransform *>(sep->getChild(2));
+                    transform->translation.setValue(textpos);
+                    transform->rotation.setValue(SbVec3f(0, 0, 1), angle);
+
+                    // Get the datum nodes
+                    SoSeparator *sepDatum = dynamic_cast<SoSeparator *>(sep->getChild(1));
+                    SoCoordinate3 *datumCord = dynamic_cast<SoCoordinate3 *>(sepDatum->getChild(0));
+
+                    // [Fixme] This should be made neater - compute the vertical datum line length
+                    float offset1 = (length + normproj12 < 0) ? -2  : 2;
+                    float offset2 = (length < 0) ? -2  : 2;
+
+                    // Calculate coordinates for perpendicular datum lines
+                    datumCord->point.set1Value(0,p1);
+                    datumCord->point.set1Value(1,p1_ + norm * (length + offset1));
+                    datumCord->point.set1Value(2,p2);
+                    datumCord->point.set1Value(3,p2  + norm * (length + offset2));
+
+                    // Calculate the coordinates for the parallel datum lines
+                    datumCord->point.set1Value(4,p1_    + norm * length);
+                    datumCord->point.set1Value(5,midpos + norm * length - dir * (1+textBB[0]/4) );
+                    datumCord->point.set1Value(6,midpos + norm * length + dir * (1+textBB[0]/4) );
+                    datumCord->point.set1Value(7,p2     + norm * length);
+                }
+                break;
+            case Tangent:
+                {
+                    assert(Constr->First < int(geomlist->size()));
+                    assert(Constr->Second < int(geomlist->size()));
+                    // get the geometry
+                    const Part::Geometry *geo1 = (*geomlist)[Constr->First];
+                    const Part::Geometry *geo2 = (*geomlist)[Constr->Second];
+                    // Parallel can only apply to a GeomLineSegment
+
+                    const Part::GeomLineSegment *lineSeg = 0;
+                    const Part::GeomCircle *circle1 = 0;
+                    const Part::GeomCircle *circle2 = 0;
+                    const Part::GeomArcOfCircle *arcOfCircle1 = 0;
+                    const Part::GeomArcOfCircle *arcOfCircle2 = 0;
+
+                    //[Fix me] There is probably a nicer way of doing this.
+                    //Assign pointers to the first part of the geometry
+                    if (geo1->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
+                        lineSeg = dynamic_cast<const Part::GeomLineSegment *>(geo1);
+                    }
+                    else if (geo1->getTypeId()== Part::GeomArcOfCircle::getClassTypeId()) {
+                        arcOfCircle1= dynamic_cast<const Part::GeomArcOfCircle *>(geo1);
+                    }
+                    else if (geo1->getTypeId()== Part::GeomCircle::getClassTypeId()) {
+                        circle1 = dynamic_cast<const Part::GeomCircle *>(geo1);
+                    }
+                    // Assign the second type of geometry
+                    if (geo2->getTypeId()== Part::GeomLineSegment::getClassTypeId()) {
+                        lineSeg = dynamic_cast<const Part::GeomLineSegment *>(geo2);
+                    }
+                    else if (geo2->getTypeId()== Part::GeomCircle::getClassTypeId()) {
+                        if (circle1) {
+                            circle2 = dynamic_cast<const Part::GeomCircle *>(geo2);
+                        } else {
+                            circle1 = dynamic_cast<const Part::GeomCircle *>(geo2);
+                        }
+                    }
+                    else if (geo2->getTypeId()== Part::GeomArcOfCircle::getClassTypeId()) {
+                        if (arcOfCircle1) {
+                            arcOfCircle2 = dynamic_cast<const Part::GeomArcOfCircle *>(geo2);
+                        } else {
+                            arcOfCircle1 = dynamic_cast<const Part::GeomArcOfCircle *>(geo2);
                         }
                     }
 
-                    SbVec3f pos;
-                    if (Constr->Type == DistanceX) {
-                        SbVec3f p1(pnt1.x,(pnt1.y+pnt2.y)/2,0);
-                        SbVec3f p2(pnt2.x,(pnt1.y+pnt2.y)/2,0);
-                        SbVec3f yvec(0,1,0);
-                        if ((pnt1.y+pnt2.y)/2 < 0)
-                            yvec *= -1;
-                        pos = (p1 + p2)/2 + 10*yvec;
-                        // set the line coordinates:
-                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(0,p1+yvec*8);
-                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(1,p1+yvec*12);
-                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(2,p2);
-                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(3,p2+yvec*12);
-                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(4,p1+yvec*10);
-                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(5,p2+yvec*10);
-                    } else if (Constr->Type == DistanceY) {
-                        SbVec3f p1((pnt1.x+pnt2.x)/2,pnt1.y,0);
-                        SbVec3f p2((pnt1.x+pnt2.x)/2,pnt2.y,0);
-                        SbVec3f xvec(1,0,0);
-                        if ((pnt1.x+pnt2.x)/2 < 0)
-                            xvec *= -1;
-                        pos = (p1 + p2)/2 + 10*xvec;
-                        // set the line coordinates:
-                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(0,p1+xvec*8);
-                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(1,p1+xvec*12);
-                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(2,p2);
-                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(3,p2+xvec*12);
-                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(4,p1+xvec*10);
-                        dynamic_cast<SoCoordinate3 *>(sep->getChild(1))->point.set1Value(5,p2+xvec*10);
+                    // Select the pairs that we would like to show
+                    Base::Vector3d pos;
+                    if (lineSeg && circle1) {
+                        Base::Vector3d lineEndToCenter = circle1->getCenter() - lineSeg->getStartPoint();
+
+                        pos = lineSeg->getEndPoint() - lineSeg->getStartPoint();
+
+                        // Get Scalar / Inner product
+                        float length = (lineEndToCenter.x * pos.x + lineEndToCenter.y * pos.y) / pos.Length();
+                        Base::Vector3d dir = pos;
+                        dir.Normalize();
+                        Base::Vector3d norm(-dir.y, dir.x, 0);
+                        pos = lineSeg->getStartPoint() + dir * length + norm * 5;
                     }
-                    // set position of datum
-                    dynamic_cast<SoTranslation *>(sep->getChild(3))->translation = pos;
-                    dynamic_cast<SoText2 *>(sep->getChild(4))->string = SbString().sprintf("%.2f",Constr->Value);
+                    else if (lineSeg && arcOfCircle1) {
+                        Base::Vector3d lineEndToCenter = arcOfCircle1->getCenter() - lineSeg->getStartPoint();
+
+                        pos = lineSeg->getEndPoint() - lineSeg->getStartPoint();
+
+                        // Get Scalar / Inner product
+                        float length = (lineEndToCenter.x * pos.x + lineEndToCenter.y * pos.y) / pos.Length();
+                        Base::Vector3d dir = pos;
+                        dir.Normalize();
+                        Base::Vector3d norm(-dir.y, dir.x, 0);
+                        pos = lineSeg->getStartPoint() + dir * length + norm * 5;
+                    }
+                    else {
+                        // Other Behaviour hasn't been implemented
+                    }
+                    dynamic_cast<SoTranslation *>(sep->getChild(1))->translation =  SbVec3f(pos.x, pos.y, 0.0f);
                 }
                 break;
-        case Horizontal: // write the new position of the Horizontal constraint Same as vertical position.
-        case Vertical: // write the new position of the Vertical constraint
-            {
-                assert(Constr->First < int(geomlist->size()));
-                // get the geometry
-                const Part::Geometry *geo = (*geomlist)[Constr->First];
-                // Vertical can only be a GeomLineSegment
-                assert(geo->getTypeId()== Part::GeomLineSegment::getClassTypeId());
-                const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geo);
+            case Angle:
+                break;
+            case Perpendicular:
+                {
+                    assert(Constr->First < int(geomlist->size()));
+                    assert(Constr->Second < int(geomlist->size()));
+                    // get the geometry
+                    const Part::Geometry *geo1 = (*geomlist)[Constr->First];
+                    const Part::Geometry *geo2 = (*geomlist)[Constr->Second];
+                    // Parallel can only apply to a GeomLineSegment
+                    assert(geo1->getTypeId()== Part::GeomLineSegment::getClassTypeId());
+                    assert(geo2->getTypeId()== Part::GeomLineSegment::getClassTypeId());
+                    const Part::GeomLineSegment *lineSeg1 = dynamic_cast<const Part::GeomLineSegment *>(geo1);
+                    const Part::GeomLineSegment *lineSeg2 = dynamic_cast<const Part::GeomLineSegment *>(geo2);
 
-                // calculate the half distance between the start and endpoint
-                Base::Vector3d midpos = ((lineSeg->getEndPoint()+lineSeg->getStartPoint())/2);
+                    // calculate the half distance between the start and endpoint
+                    Base::Vector3d midpos1 = ((lineSeg1->getEndPoint()+lineSeg1->getStartPoint())/2);
 
-                //Get a set of vectors perpendicular and tangential to these
-                Base::Vector3d dir = (lineSeg->getEndPoint()-lineSeg->getStartPoint()).Normalize();
-                Base::Vector3d norm(-dir.y,dir.x,0);
-                Base::Vector3d constrPos;
+                    //Get a set of vectors perpendicular and tangential to these
+                    Base::Vector3d dir1 = (lineSeg1->getEndPoint()-lineSeg1->getStartPoint()).Normalize();
+                    Base::Vector3d norm1(-dir1.y,dir1.x,0);
+                    Base::Vector3d constrPos1;
 
-                int multiplier = 0;
-                do {
-                    // Calculate new position of constraint
-                    constrPos = midpos + (norm * 5) + (dir * (multiplier * 5));
-                    multiplier++; // Increment the multiplier
-                }
-                while (isConstraintAtPosition(constrPos, edit->constrGroup->getChild(i)));
+                    // calculate the half distance between the start and endpoint
+                    Base::Vector3d midpos2 = ((lineSeg2->getEndPoint()+lineSeg2->getStartPoint())/2);
 
-                dynamic_cast<SoTranslation *>(sep->getChild(1))->translation = SbVec3f(constrPos.x, constrPos.y, 0.0f);
-            }
-            break;
-        case Parallel:
-            {
-                assert(Constr->First < int(geomlist->size()));
-                assert(Constr->Second < int(geomlist->size()));
-                // get the geometry
-                const Part::Geometry *geo1 = (*geomlist)[Constr->First];
-                const Part::Geometry *geo2 = (*geomlist)[Constr->Second];
-                // Parallel can only apply to a GeomLineSegment
-                assert(geo1->getTypeId()== Part::GeomLineSegment::getClassTypeId());
-                assert(geo2->getTypeId()== Part::GeomLineSegment::getClassTypeId());
-                const Part::GeomLineSegment *lineSeg1 = dynamic_cast<const Part::GeomLineSegment*>(geo1);
-                const Part::GeomLineSegment *lineSeg2 = dynamic_cast<const Part::GeomLineSegment*>(geo2);
+                    //Get a set of vectors perpendicular and tangential to these
+                    Base::Vector3d dir2 = (lineSeg2->getEndPoint()-lineSeg2->getStartPoint()).Normalize();
+                    Base::Vector3d norm2(-dir2.y,dir2.x,0);
+                    Base::Vector3d constrPos2;
 
-                // calculate the half distance between the start and endpoint
-                Base::Vector3d midpos1 = ((lineSeg1->getEndPoint()+lineSeg1->getStartPoint())/2);
-
-                //Get a set of vectors perpendicular and tangential to these
-                Base::Vector3d dir1 = (lineSeg1->getEndPoint()-lineSeg1->getStartPoint()).Normalize();
-
-                Base::Vector3d norm1(-dir1.y,dir1.x,0);
-                Base::Vector3d constrPos1;
-
-                // calculate the half distance between the start and endpoint
-                Base::Vector3d midpos2 = ((lineSeg2->getEndPoint()+lineSeg2->getStartPoint())/2);
-
-                //Get a set of vectors perpendicular and tangential to these
-                Base::Vector3d dir2 = (lineSeg2->getEndPoint()-lineSeg2->getStartPoint()).Normalize();
-                Base::Vector3d norm2(-dir2.y,dir2.x,0);
-                Base::Vector3d constrPos2;
-
-                int multiplier = 0;
-                do {
-                    // Calculate new position of constraint
-                    constrPos1 = midpos1 + (norm1 * 5) + (dir1 * (multiplier * 5));
-                    multiplier++; // Increment the multiplier
-                }
-                while (isConstraintAtPosition(constrPos1, edit->constrGroup->getChild(i)));
-
-                multiplier = 0;
-                do {
-                    // Calculate new position of constraint
-                    constrPos2 = midpos2 + (norm2 * 5) + (dir2 * (multiplier * 5));
-                    multiplier++; // Increment the multiplier
-                }
-                while (isConstraintAtPosition(constrPos2, edit->constrGroup->getChild(i)));
-
-                constrPos2 = constrPos2 - constrPos1;
-                constrPos2 = constrPos2 - Base::Vector3d(2, -2, 0);
-                dynamic_cast<SoText2 *>(sep->getChild(4))->string = SbString().sprintf("%i",i+1);
-                dynamic_cast<SoText2 *>(sep->getChild(8))->string = SbString().sprintf("%i",i+1);
-
-                dynamic_cast<SoTranslation *>(sep->getChild(1))->translation =  SbVec3f(constrPos1.x, constrPos1.y, 0.0f);
-                dynamic_cast<SoTranslation *>(sep->getChild(3))->translation =  SbVec3f( 2, -2, 0.0f);
-                dynamic_cast<SoTranslation *>(sep->getChild(5))->translation =  SbVec3f(constrPos2.x, constrPos2.y, 0.0f);
-                dynamic_cast<SoTranslation *>(sep->getChild(7))->translation =  SbVec3f(2, -2, 0.0f);
-            }
-            break;
-        case Distance:
-            {
-                assert(Constr->First < int(geomlist->size()));
-                // get the geometry
-                const Part::Geometry *geo = (*geomlist)[Constr->First];
-                // Distance can only apply to a GeomLineSegment
-                assert(geo->getTypeId()== Part::GeomLineSegment::getClassTypeId());
-                const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geo);
-                // calculate the half distance between the start and endpoint
-
-                // calculate the half distance between the start and endpoint
-                Base::Vector3d midpos = ((lineSeg->getEndPoint()+lineSeg->getStartPoint())/2);
-
-                //Get a set of vectors perpendicular and tangential to these
-                Base::Vector3d dirTmp = (lineSeg->getEndPoint()-lineSeg->getStartPoint()).Normalize();
-                Base::Vector3d norm(-dirTmp.y,dirTmp.x,0);
-                Base::Vector3d posTmp;
-
-                SbVec3f p1(lineSeg->getStartPoint().x,lineSeg->getStartPoint().y,0);
-                SbVec3f p2(lineSeg->getEndPoint().x,lineSeg->getEndPoint().y,0);
-                SbVec3f dir = p2 - p1;
-                SbVec3f pos = p1 + dir/2;
-                dir.normalize();
-                // rotate direction perpendicular
-                SbVec3f normOrig = SbVec3f (-dir[1],dir[0],0);
-                // set the line coordinates:
-
-                // Horizontal unit vector
-                Base::Vector3d horizontal(1, 0, 0);
-
-                // Get magnitude of angle between horizontal
-                double angle = dirTmp.GetAngle(horizontal);
-
-                // Direction of y is negative angle will be negative.
-                if (dirTmp.y < 0)
-                    angle *= -1;
-
-                SoAsciiText *asciiText = dynamic_cast<SoAsciiText *>(sep->getChild(4));
-                asciiText->string = SbString().sprintf("%.2f",Constr->Value);
-
-                // Get Bounding box dimensions for Datum text
-                Gui::MDIView* mdi = Gui::Application::Instance->activeDocument()->getActiveView();
-                Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(mdi)->getViewer();
-
-                // [FIX ME] Its an attempt to find the height of the text using the bounding box, but is in correct.
-                SoGetBoundingBoxAction bbAction(viewer->getViewportRegion());
-                bbAction.apply(sep->getChild(4));
-
-                float bx,by,bz;
-                bbAction.getBoundingBox().getSize(bx,by,bz);
-                SbVec3f textBB(bx,by,bz);
-                // bbAction.setCenter(, true)
-                // This is the bounding box containing the width and height of text
-
-                SbVec3f textBBCenter = bbAction.getBoundingBox().getCenter();
-                double length = (Constr->LabelDistance) ? Constr->LabelDistance : 10;
-
-                posTmp = midpos + norm * (length - (textBBCenter[1] / 2));
-
-                // set position and roation of Datus Text
-                SoTransform *transform = dynamic_cast<SoTransform *>(sep->getChild(2));
-                transform->translation.setValue(SbVec3f(posTmp.x, posTmp.y, 0));
-                transform->rotation.setValue(SbVec3f(0, 0 , 1), angle);
-
-                // Get the datum nodes
-                SoSeparator * sepDatum = dynamic_cast<SoSeparator *>(sep->getChild(1));
-                SoCoordinate3 *datumCord = dynamic_cast<SoCoordinate3 *>(sepDatum->getChild(0));
-
-                // [Fixme] This should be made neater - compute the vertical datum line length
-                float datumVertical = (length < 0) ? length - 2 : length + 2;
-
-                // Calculate coordinates for vertical datum lines
-                datumCord->point.set1Value(0,p1);
-                datumCord->point.set1Value(1,p1 + normOrig * datumVertical);
-                datumCord->point.set1Value(2,p2);
-                datumCord->point.set1Value(3,p2 + normOrig * datumVertical);
-
-                // Calculate the coordiates for the horziontal datum lines
-                datumCord->point.set1Value(4,p1  + normOrig * (float)length);
-                datumCord->point.set1Value(5,pos + normOrig * (float)length - dir * ((textBB[0]) / 4 ) );
-                datumCord->point.set1Value(6,pos + normOrig * (float)length + dir * ((textBB[0]) / 4) );
-                datumCord->point.set1Value(7,p2  + normOrig * (float)length);
-
-                // Use the coordinates calculated earlier to the lineset
-                SoLineSet *datumLineSet = dynamic_cast<SoLineSet *>(sepDatum->getChild(1));
-                datumLineSet->numVertices.set1Value(0,2);
-                datumLineSet->numVertices.set1Value(1,2);
-                datumLineSet->numVertices.set1Value(2,2);
-                datumLineSet->numVertices.set1Value(3,2);
-            }
-            break;
-        case Tangent:
-            {
-                assert(Constr->First < int(geomlist->size()));
-                assert(Constr->Second < int(geomlist->size()));
-                // get the geometry
-                const Part::Geometry *geo1 = (*geomlist)[Constr->First];
-                const Part::Geometry *geo2 = (*geomlist)[Constr->Second];
-                // Parallel can only apply to a GeomLineSegment
-
-                const Part::GeomLineSegment *lineSeg = 0;
-                const Part::GeomCircle *circle1 = 0;
-                const Part::GeomCircle *circle2 = 0;
-                const Part::GeomArcOfCircle *arcOfCircle1 = 0;
-                const Part::GeomArcOfCircle *arcOfCircle2 = 0;
-
-                //[Fix me] There is probably a nicer way of doing this.
-                //Assign pointers to the first part of the geometry
-                if (geo1->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
-                    lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geo1);
-                }
-                else if (geo1->getTypeId()== Part::GeomArcOfCircle::getClassTypeId()) {
-                    arcOfCircle1= dynamic_cast<const Part::GeomArcOfCircle*>(geo1);
-                }
-                else if (geo1->getTypeId()== Part::GeomCircle::getClassTypeId()) {
-                    circle1 = dynamic_cast<const Part::GeomCircle*>(geo1);
-                }
-                // Assign the second type of geometry
-                if (geo2->getTypeId()== Part::GeomLineSegment::getClassTypeId()) {
-                    lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geo2);
-                }
-                else if (geo2->getTypeId()== Part::GeomCircle::getClassTypeId()) {
-                    if (circle1) {
-                        circle2 = dynamic_cast<const Part::GeomCircle*>(geo2);
-                    } else {
-                        circle1 = dynamic_cast<const Part::GeomCircle*>(geo2);
+                    int multiplier = 0;
+                    do {
+                        // Calculate new position of constraint
+                        constrPos1 = midpos1 + (norm1 * 5) + (dir1 * (multiplier * 5));
+                        multiplier++; // Increment the multiplier
                     }
-                }
-                else if (geo2->getTypeId()== Part::GeomArcOfCircle::getClassTypeId()) {
-                    if (arcOfCircle1) {
-                        arcOfCircle2 = dynamic_cast<const Part::GeomArcOfCircle*>(geo2);
-                    } else {
-                        arcOfCircle1 = dynamic_cast<const Part::GeomArcOfCircle*>(geo2);
+                    while (isConstraintAtPosition(constrPos1, edit->constrGroup->getChild(i)));
+
+                    multiplier = 0;
+                    do {
+                        // Calculate new position of constraint
+                        constrPos2 = midpos2 + (norm2 * 5) + (dir2 * (multiplier * 5));
+                        multiplier++; // Increment the multiplier
                     }
+                    while (isConstraintAtPosition(constrPos2, edit->constrGroup->getChild(i)));
+
+                    constrPos2 = constrPos2 - constrPos1;
+                    constrPos2 = constrPos2 - Base::Vector3d(2, -2, 0);
+                    dynamic_cast<SoText2 *>(sep->getChild(4))->string = SbString().sprintf("%i",i+1);
+                    dynamic_cast<SoText2 *>(sep->getChild(8))->string = SbString().sprintf("%i",i+1);
+
+                    dynamic_cast<SoTranslation *>(sep->getChild(1))->translation =  SbVec3f(constrPos1.x, constrPos1.y, 0.0f);
+                    dynamic_cast<SoTranslation *>(sep->getChild(3))->translation =  SbVec3f( 2, -2, 0.0f);
+                    dynamic_cast<SoTranslation *>(sep->getChild(5))->translation =  SbVec3f(constrPos2.x, constrPos2.y, 0.0f);
+                    dynamic_cast<SoTranslation *>(sep->getChild(7))->translation =  SbVec3f(2, -2, 0.0f);
                 }
-
-                // Select the pairs that we would like to show
-                Base::Vector3d pos;
-                if (lineSeg && circle1) {
-                    Base::Vector3d lineEndToCenter = circle1->getCenter() - lineSeg->getStartPoint();
-
-                    pos = lineSeg->getEndPoint() - lineSeg->getStartPoint();
-
-                    // Get Scalar / Inner product
-                    float length = (lineEndToCenter.x * pos.x + lineEndToCenter.y * pos.y) / pos.Length();
-                    Base::Vector3d dir = pos;
-                    dir.Normalize();
-                    Base::Vector3d norm(-dir.y, dir.x, 0);
-                    pos = lineSeg->getStartPoint() + dir * length + norm * 5;
-                }
-                else if (lineSeg && arcOfCircle1) {
-                    Base::Vector3d lineEndToCenter = arcOfCircle1->getCenter() - lineSeg->getStartPoint();
-
-                    pos = lineSeg->getEndPoint() - lineSeg->getStartPoint();
-
-                    // Get Scalar / Inner product
-                    float length = (lineEndToCenter.x * pos.x + lineEndToCenter.y * pos.y) / pos.Length();
-                    Base::Vector3d dir = pos;
-                    dir.Normalize();
-                    Base::Vector3d norm(-dir.y, dir.x, 0);
-                    pos = lineSeg->getStartPoint() + dir * length + norm * 5;
-                }
-                else {
-                    // Other Behaviour hasn't been implemented
-                }
-                dynamic_cast<SoTranslation *>(sep->getChild(1))->translation =  SbVec3f(pos.x, pos.y, 0.0f);
-            }
-            break;
-        case Angle:
-            break;
-        case Perpendicular:
-            {
-                assert(Constr->First < int(geomlist->size()));
-                assert(Constr->Second < int(geomlist->size()));
-                // get the geometry
-                const Part::Geometry *geo1 = (*geomlist)[Constr->First];
-                const Part::Geometry *geo2 = (*geomlist)[Constr->Second];
-                // Parallel can only apply to a GeomLineSegment
-                assert(geo1->getTypeId()== Part::GeomLineSegment::getClassTypeId());
-                assert(geo2->getTypeId()== Part::GeomLineSegment::getClassTypeId());
-                const Part::GeomLineSegment *lineSeg1 = dynamic_cast<const Part::GeomLineSegment*>(geo1);
-                const Part::GeomLineSegment *lineSeg2 = dynamic_cast<const Part::GeomLineSegment*>(geo2);
-
-                // calculate the half distance between the start and endpoint
-                Base::Vector3d midpos1 = ((lineSeg1->getEndPoint()+lineSeg1->getStartPoint())/2);
-
-                //Get a set of vectors perpendicular and tangential to these
-                Base::Vector3d dir1 = (lineSeg1->getEndPoint()-lineSeg1->getStartPoint()).Normalize();
-                Base::Vector3d norm1(-dir1.y,dir1.x,0);
-                Base::Vector3d constrPos1;
-
-                // calculate the half distance between the start and endpoint
-                Base::Vector3d midpos2 = ((lineSeg2->getEndPoint()+lineSeg2->getStartPoint())/2);
-
-                //Get a set of vectors perpendicular and tangential to these
-                Base::Vector3d dir2 = (lineSeg2->getEndPoint()-lineSeg2->getStartPoint()).Normalize();
-                Base::Vector3d norm2(-dir2.y,dir2.x,0);
-                Base::Vector3d constrPos2;
-
-                int multiplier = 0;
-                do {
-                    // Calculate new position of constraint
-                    constrPos1 = midpos1 + (norm1 * 5) + (dir1 * (multiplier * 5));
-                    multiplier++; // Increment the multiplier
-                }
-                while (isConstraintAtPosition(constrPos1, edit->constrGroup->getChild(i)));
-
-                multiplier = 0;
-                do {
-                    // Calculate new position of constraint
-                    constrPos2 = midpos2 + (norm2 * 5) + (dir2 * (multiplier * 5));
-                    multiplier++; // Increment the multiplier
-                }
-                while (isConstraintAtPosition(constrPos2, edit->constrGroup->getChild(i)));
-
-                constrPos2 = constrPos2 - constrPos1;
-                constrPos2 = constrPos2 - Base::Vector3d(2, -2, 0);
-                dynamic_cast<SoText2 *>(sep->getChild(4))->string = SbString().sprintf("%i",i+1);
-                dynamic_cast<SoText2 *>(sep->getChild(8))->string = SbString().sprintf("%i",i+1);
-
-                dynamic_cast<SoTranslation *>(sep->getChild(1))->translation =  SbVec3f(constrPos1.x, constrPos1.y, 0.0f);
-                dynamic_cast<SoTranslation *>(sep->getChild(3))->translation =  SbVec3f( 2, -2, 0.0f);
-                dynamic_cast<SoTranslation *>(sep->getChild(5))->translation =  SbVec3f(constrPos2.x, constrPos2.y, 0.0f);
-                dynamic_cast<SoTranslation *>(sep->getChild(7))->translation =  SbVec3f(2, -2, 0.0f);
-            }
-            break;
-        case Coincident: // nothing to do for coincident
-        case None:
-            break;
+                break;
+            case Coincident: // nothing to do for coincident
+            case None:
+                break;
         }
     }
 
@@ -1579,23 +1524,36 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
 
         // destiquish different constraint types to build up
         switch ((*it)->Type) {
+            case Distance:
             case DistanceX:
             case DistanceY:
                 {
-                    // nodes for the datum lines
-                    sep->addChild(new SoCoordinate3);
+                    SoSeparator *sepDatum = new SoSeparator();
+                    sepDatum->addChild(new SoCoordinate3());
                     SoLineSet *lineSet = new SoLineSet;
+
                     lineSet->numVertices.set1Value(0,2);
                     lineSet->numVertices.set1Value(1,2);
                     lineSet->numVertices.set1Value(2,2);
-                    sep->addChild(lineSet);
+                    lineSet->numVertices.set1Value(3,2);
+                    sepDatum->addChild(lineSet);
 
-                    // text node for Coordinate Value
-                    sep->addChild(new SoTranslation());
-                    SoText2 *text = new SoText2();
-                    text->justification = SoText2::LEFT;
+                    sep->addChild(sepDatum);
+
+                    // Add the datum text
+                    sep->addChild(new SoTransform());
+
+                    // add font for the datum text
+                    SoFont *font = new SoFont();
+                    font->size = 5;
+                    font->name = "Helvetica, Arial, FreeSans:bold";
+
+                    sep->addChild(font);
+                    SoAsciiText *text = new SoAsciiText();
+                    text->justification =  SoAsciiText::CENTER;
                     text->string = "";
                     sep->addChild(text);
+
                     edit->vConstrType.push_back((*it)->Type);
                 }
                 break;
@@ -1773,36 +1731,6 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
 
                     // remember the type of this constraint node
                     edit->vConstrType.push_back(Perpendicular);
-                }
-                break;
-            case Distance:
-                {
-                    SoSeparator * sepDatum = new SoSeparator();
-                    sepDatum->addChild(new SoCoordinate3());
-                    SoLineSet *lineSet = new SoLineSet;
-
-                    // text node for Distance Value
-                    sepDatum->addChild(lineSet);
-
-                    sep->addChild(sepDatum);
-
-                    // Add the datum text
-                    sep->addChild(new SoTransform());
-
-                    // add font for the datum text
-                    SoFont *font = new SoFont();
-                    font->size = 5;
-                    font->name = "Helvetica, Arial, FreeSans:bold";
-
-                    sep->addChild(font);
-                    SoAsciiText *text = new SoAsciiText();
-                    text->justification =  SoAsciiText::CENTER;
-                    //SoText2 *text = new SoText2();
-                    //text->justification = SoText2::CENTER;
-                    text->string = "";
-                    sep->addChild(text);
-
-                    edit->vConstrType.push_back(Distance);
                 }
                 break;
             default:

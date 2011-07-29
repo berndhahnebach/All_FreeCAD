@@ -1166,6 +1166,15 @@ int Sketch::getPointId(int geoId, PointPos pos) const
     return -1;
 }
 
+Base::Vector3d Sketch::getPoint(int geoId, PointPos pos)
+{
+    int pointId = getPointId(geoId, pos);
+    if (pointId != -1)
+        return Base::Vector3d(*Points[pointId].x, *Points[pointId].y, 0);
+
+    return Base::Vector3d();
+}
+
 
 
 TopoShape Sketch::toShape(void) const

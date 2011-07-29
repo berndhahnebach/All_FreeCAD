@@ -69,6 +69,11 @@ public:
     void setConstruction(int geoIndex,bool isConstruction=true);
     bool getConstruction(int geoIndex) const;
 
+    /// retrieves the index of a point
+    int getPointId(int geoId, PointPos pos) const;
+    /// retrieves a point
+    Base::Vector3d getPoint(int geoId, PointPos pos);
+
     /** set the datum of a distance or angle constraint to a certain value and solve
       * This can cause the solving to fail!
       */
@@ -179,8 +184,6 @@ protected:
     std::vector<GCS::Circle> Circles;
 
     bool isInitMove;
-
-    int getPointId(int geoId, PointPos pos) const;
 };
 
 } //namespace Part
