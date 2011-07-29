@@ -647,7 +647,19 @@ void ViewProviderSketch::moveConstraint(int constNum, const Base::Vector2D &toPo
         if (Constr->SecondPos != none) { // point to point distance
             p1 = edit->ActSketch.getPoint(Constr->First, Constr->FirstPos);
             p2 = edit->ActSketch.getPoint(Constr->Second, Constr->SecondPos);
-        } else if (Constr->First != -1 && Constr->FirstPos != none) {
+        } else if (Constr->Second != -1) { // point to line distance
+            p1 = edit->ActSketch.getPoint(Constr->First, Constr->FirstPos);
+            const Part::Geometry *geo = geomlist[Constr->Second];
+            if (geo->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
+                const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment *>(geo);
+                Base::Vector3d l2p1 = lineSeg->getStartPoint();
+                Base::Vector3d l2p2 = lineSeg->getEndPoint();
+                // calculate the projection of p1 onto line2
+                p2.ProjToLine(p1-l2p1, l2p2-l2p1);
+                p2 += p1;
+            } else
+                return;
+        } else if (Constr->FirstPos != none) {
             p2 = edit->ActSketch.getPoint(Constr->First, Constr->FirstPos);
         } else if (Constr->First != -1) {
             const Part::Geometry *geo = geomlist[Constr->First];
@@ -1258,7 +1270,23 @@ Restart:
                             pnt1 = getSketchObject()->getPoint(Constr->First, Constr->FirstPos);
                             pnt2 = getSketchObject()->getPoint(Constr->Second, Constr->SecondPos);
                         }
-                    } else if (Constr->First != -1 && Constr->FirstPos != none) {
+                    } else if (Constr->Second != -1) { // point to line distance
+                        if (temp) {
+                            pnt1 = edit->ActSketch.getPoint(Constr->First, Constr->FirstPos);
+                        } else {
+                            pnt1 = getSketchObject()->getPoint(Constr->First, Constr->FirstPos);
+                        }
+                        const Part::Geometry *geo = (*geomlist)[Constr->Second];
+                        if (geo->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
+                            const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment *>(geo);
+                            Base::Vector3d l2p1 = lineSeg->getStartPoint();
+                            Base::Vector3d l2p2 = lineSeg->getEndPoint();
+                            // calculate the projection of p1 onto line2
+                            pnt2.ProjToLine(pnt1-l2p1, l2p2-l2p1);
+                            pnt2 += pnt1;
+                        } else
+                            break;
+                    } else if (Constr->FirstPos != none) {
                         if (temp) {
                             pnt2 = edit->ActSketch.getPoint(Constr->First, Constr->FirstPos);
                         } else {
