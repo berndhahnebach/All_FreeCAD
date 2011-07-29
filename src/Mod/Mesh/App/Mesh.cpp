@@ -85,6 +85,7 @@ MeshObject::~MeshObject()
 std::vector<const char*> MeshObject::getElementTypes(void) const
 {
     std::vector<const char*> temp;
+    temp.push_back("Face"); // that's the mesh itself
     temp.push_back("Segment");
 
     return temp;
@@ -92,20 +93,32 @@ std::vector<const char*> MeshObject::getElementTypes(void) const
 
 unsigned long MeshObject::countSubElements(const char* Type) const
 {
+    std::string element(Type);
+    if (element == "Face")
+        return 1;
+    else if (element == "Segment")
+        return countSegments();
     return 0;
 }
 
 Data::Segment* MeshObject::getSubElement(const char* Type, unsigned long n) const
 {
-    //unsigned long i = 1;
-
-    if (strcmp(Type,"Segment") == 0) {
-        // not implemented
-        assert(0);
+    //TODO
+    std::string element(Type);
+    if (element == "Face")
         return 0;
-    }
-
+    else if (element == "Segment")
+        return 0;
     return 0;
+}
+
+void MeshObject::getFacesFromSubelement(const Data::Segment* segm,
+                                        std::vector<Base::Vector3d> &Points,
+                                        std::vector<Base::Vector3d> &PointNormals,
+                                        std::vector<Facet> &faces) const
+{
+    //TODO
+    this->getFaces(Points, faces, 0.0f);
 }
 
 void MeshObject::transformGeometry(const Base::Matrix4D &rclMat)

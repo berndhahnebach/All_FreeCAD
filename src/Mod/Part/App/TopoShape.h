@@ -59,12 +59,24 @@ struct vec_traits<gp_Vec> {
 private:
     const vec_type& v;
 };
+// Specialization for gp_Dir
+template <>
+struct vec_traits<gp_Dir> {
+    typedef gp_Dir vec_type;
+    typedef double float_type;
+    vec_traits(const vec_type& v) : v(v){}
+    inline float_type x() { return v.X(); }
+    inline float_type y() { return v.Y(); }
+    inline float_type z() { return v.Z(); }
+private:
+    const vec_type& v;
+};
 }
 
 namespace Part
 {
 
-class AppPartExport ShapeSegment:public Data::Segment
+class AppPartExport ShapeSegment : public Data::Segment
 {
     TYPESYSTEM_HEADER();
 
