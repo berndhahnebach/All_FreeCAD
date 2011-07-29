@@ -966,6 +966,87 @@ bool CmdSketcherConstrainTangent::isActive(void)
     return isCreateConstraintActive( getActiveGuiDocument() );
 }
 
+DEF_STD_CMD_A(CmdSketcherConstrainRadius);
+
+CmdSketcherConstrainRadius::CmdSketcherConstrainRadius()
+    :Command("Sketcher_ConstrainRadius")
+{
+    sAppModule      = "Sketcher";
+    sGroup          = QT_TR_NOOP("Sketcher");
+    sMenuText       = QT_TR_NOOP("Constrain radius");
+    sToolTipText    = QT_TR_NOOP("Fix the radius of a circle or an arc");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Constraint_Radius";
+    sAccel          = "R";
+    eType           = ForEdit;
+}
+
+void CmdSketcherConstrainRadius::activated(int iMsg)
+{
+    // get the selection 
+    std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
+
+    // only one sketch with its subelements are allowed to be selected
+    if (selection.size() != 1) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select exactly one arc or circle from the sketch."));
+        return;
+    }
+
+    // get the needed lists and objects
+    const std::vector<std::string> &SubNames = selection[0].getSubNames();
+    Sketcher::SketchObject* Obj = dynamic_cast<Sketcher::SketchObject*>(selection[0].getObject());
+    const std::vector<Part::Geometry *> &geo = Obj->Geometry.getValues();
+
+    if (SubNames.size() != 1) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select exactly one arc or circle from the sketch."));
+        return;
+    }
+
+    if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge") {
+        int GeoId = std::atoi(SubNames[0].substr(4,4000).c_str());
+
+        const Part::Geometry *geom = geo[GeoId];
+        if (geom->getTypeId() == Part::GeomArcOfCircle::getClassTypeId()) {
+            const Part::GeomArcOfCircle *arc = dynamic_cast<const Part::GeomArcOfCircle *>(geom);
+            double ActRadius = arc->getRadius();
+
+            openCommand("add radius constraint");
+            Gui::Command::doCommand(
+                Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Radius',%d,%f)) ",
+                selection[0].getFeatName(),GeoId,ActRadius);
+            commitCommand();
+            //updateActive();
+            getSelection().clearSelection();
+            return;
+        }
+        else if (geom->getTypeId() == Part::GeomCircle::getClassTypeId()) {
+            const Part::GeomCircle *circle = dynamic_cast<const Part::GeomCircle *>(geom);
+            double ActRadius = circle->getRadius();
+
+            openCommand("add radius constraint");
+            Gui::Command::doCommand(
+                Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Radius',%d,%f)) ",
+                selection[0].getFeatName(),GeoId,ActRadius);
+            commitCommand();
+            //updateActive();
+            getSelection().clearSelection();
+            return;
+        }
+    }
+
+    QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+        QObject::tr("Select exactly one arc or circle from the sketch."));
+    return;
+}
+
+bool CmdSketcherConstrainRadius::isActive(void)
+{
+    return isCreateConstraintActive( getActiveGuiDocument() );
+}
+
 
 
 
@@ -983,4 +1064,5 @@ void CreateSketcherCommandsConstraints(void)
     rcCmdMgr.addCommand(new CmdSketcherConstrainDistance());
     rcCmdMgr.addCommand(new CmdSketcherConstrainDistanceX());
     rcCmdMgr.addCommand(new CmdSketcherConstrainDistanceY());
+    rcCmdMgr.addCommand(new CmdSketcherConstrainRadius());
  }

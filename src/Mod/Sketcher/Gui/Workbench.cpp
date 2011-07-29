@@ -77,6 +77,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
           << "Sketcher_ConstrainVertical"
           << "Sketcher_ConstrainHorizontal"
           << "Sketcher_ConstrainDistance"
+          << "Sketcher_ConstrainRadius"
           << "Sketcher_ConstrainParallel"
           << "Sketcher_ConstrainPerpendicular"
           << "Sketcher_ConstrainTangent";
@@ -118,6 +119,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
           << "Sketcher_ConstrainVertical"
           << "Sketcher_ConstrainHorizontal"
           << "Sketcher_ConstrainDistance"
+          << "Sketcher_ConstrainRadius"
           << "Sketcher_ConstrainParallel"
           << "Sketcher_ConstrainPerpendicular"
           << "Sketcher_ConstrainTangent";

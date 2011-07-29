@@ -218,6 +218,7 @@ void TaskSketcherConstrains::slotConstraintsChanged(void)
     QIcon perp ( Gui::BitmapFactory().pixmap("Constraint_Perpendicular") );
     QIcon tang ( Gui::BitmapFactory().pixmap("Constraint_Tangent") );
     QIcon dist ( Gui::BitmapFactory().pixmap("Constraint_Length") );
+    QIcon radi ( Gui::BitmapFactory().pixmap("Constraint_Radius") );
 
     assert(sketchView);
     // Build up ListView with the constraints
@@ -236,14 +237,6 @@ void TaskSketcherConstrains::slotConstraintsChanged(void)
             name = QString(QString::fromLatin1((*it)->Name.c_str()));
 
         switch((*it)->Type){
-            case Sketcher::DistanceX:
-                if (Filter<2 || (*it)->Name != "")
-                    ui->listWidgetConstraints->addItem(new ConstraintItem(hdist,name,i-1,(*it)->Type));
-                break;
-            case Sketcher::DistanceY:
-                if (Filter<2 || (*it)->Name != "")
-                    ui->listWidgetConstraints->addItem(new ConstraintItem(vdist,name,i-1,(*it)->Type));
-                break;
             case Sketcher::Horizontal:
                 if(Filter<2 || (*it)->Name != "")
                     ui->listWidgetConstraints->addItem(new ConstraintItem(horiz,name,i-1,(*it)->Type));
@@ -272,6 +265,24 @@ void TaskSketcherConstrains::slotConstraintsChanged(void)
                 if(Filter<3 || (*it)->Name != ""){
                     name = QString(QString::fromLatin1("%1 (%2)")).arg(name,14).arg((*it)->Value);
                     ui->listWidgetConstraints->addItem(new ConstraintItem(dist,name,i-1,(*it)->Type));
+                }
+                break;
+            case Sketcher::DistanceX:
+                if(Filter<3 || (*it)->Name != ""){
+                    name = QString(QString::fromLatin1("%1 (%2)")).arg(name,14).arg((*it)->Value);
+                    ui->listWidgetConstraints->addItem(new ConstraintItem(hdist,name,i-1,(*it)->Type));
+                }
+                break;
+            case Sketcher::DistanceY:
+                if(Filter<3 || (*it)->Name != ""){
+                    name = QString(QString::fromLatin1("%1 (%2)")).arg(name,14).arg((*it)->Value);
+                    ui->listWidgetConstraints->addItem(new ConstraintItem(vdist,name,i-1,(*it)->Type));
+                }
+                break;
+            case Sketcher::Radius:
+                if(Filter<3 || (*it)->Name != ""){
+                    name = QString(QString::fromLatin1("%1 (%2)")).arg(name,14).arg((*it)->Value);
+                    ui->listWidgetConstraints->addItem(new ConstraintItem(radi,name,i-1,(*it)->Type));
                 }
                 break;
             default:

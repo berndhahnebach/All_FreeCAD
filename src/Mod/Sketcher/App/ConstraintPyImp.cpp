@@ -52,7 +52,6 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     int  SecondPos  =-1;
     double Value    = 0;
 
-
     // ConstraintType, GeoIndex
     if (PyArg_ParseTuple(args, "si", &ConstraintType, &FirstIndex)) {
         if (strcmp("Horizontal",ConstraintType) == 0) {
@@ -134,26 +133,28 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
 
     // ConstraintType, GeoIndex, Value
     if (PyArg_ParseTuple(args, "sid", &ConstraintType, &FirstIndex, &Value)) {
+        bool valid = false;
         if (strcmp("Distance",ConstraintType) == 0 ) {
             this->getConstraintPtr()->Type = Distance;
-            this->getConstraintPtr()->First = FirstIndex;
-            this->getConstraintPtr()->Value = Value;
-            return 0;
+            valid = true;
         }
         else if (strcmp("Angle",ConstraintType) == 0 ) {
             this->getConstraintPtr()->Type = Angle;
-            this->getConstraintPtr()->First = FirstIndex;
-            this->getConstraintPtr()->Value = Value;
-            return 0;
+            valid = true;
         }
         else if (strcmp("DistanceX",ConstraintType) == 0) {
             this->getConstraintPtr()->Type = DistanceX;
-            this->getConstraintPtr()->First    = FirstIndex;
-            this->getConstraintPtr()->Value    = Value;
-            return 0;
+            valid = true;
         }
         else if (strcmp("DistanceY",ConstraintType) == 0) {
             this->getConstraintPtr()->Type = DistanceY;
+            valid = true;
+        }
+        else if (strcmp("Radius",ConstraintType) == 0) {
+            this->getConstraintPtr()->Type = Radius;
+            valid = true;
+        }
+        if (valid) {
             this->getConstraintPtr()->First    = FirstIndex;
             this->getConstraintPtr()->Value    = Value;
             return 0;
