@@ -49,7 +49,7 @@ private:
 template <>
 struct vec_traits<SbVec3d> {
     typedef SbVec3d vec_type;
-    typedef float float_type;
+    typedef double float_type;
     vec_traits(const vec_type& v) : v(v){}
     inline float_type x() { return v[0]; }
     inline float_type y() { return v[1]; }
