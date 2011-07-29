@@ -171,7 +171,9 @@ void TaskSketcherConstrains::on_listWidgetConstraints_itemActivated(QListWidgetI
     ConstraintItem *it = dynamic_cast<ConstraintItem*>(item);
 
     // if its the right constraint
-    if (it->Type == Sketcher::Distance) {
+    if (it->Type == Sketcher::Distance ||
+        it->Type == Sketcher::DistanceX || it->Type == Sketcher::DistanceY ||
+        it->Type == Sketcher::Radius) {
         const std::vector< Sketcher::Constraint * > &vals = sketchView->getSketchObject()->Constraints.getValues();
         Sketcher::Constraint *Const = vals[it->ConstraintNbr];
         assert(Const->Type == it->Type);

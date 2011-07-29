@@ -103,7 +103,9 @@ int SketchObject::setDatum(double Datum, int ConstrNbr)
     assert(ConstrNbr >= 0); 
     const std::vector< Constraint * > &vals = this->Constraints.getValues();
     assert(ConstrNbr < (int)vals.size());
-    assert(vals[ConstrNbr]->Type == Distance);
+    assert(vals[ConstrNbr]->Type == Distance ||
+           vals[ConstrNbr]->Type == DistanceX || vals[ConstrNbr]->Type == DistanceY ||
+           vals[ConstrNbr]->Type == Radius);
 
     // copy the list
     std::vector< Constraint * > newVals(vals);
