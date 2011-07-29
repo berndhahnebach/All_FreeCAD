@@ -116,18 +116,18 @@ public:
     /// give the coordinates of a line on the sketch plane in sketcher (2D) coordinates
     void getCoordsOnSketchPlane(double &u, double &v,const SbVec3f &point, const SbVec3f &normal);
     /// helper to detect preselection
-    //bool handlePreselection(const SoPickedPoint* pp);
+    //bool handlePreselection(const SoPickedPoint *pp);
     /// helper to detect preselection
-    bool detectPreselection(const SoPickedPoint* Point, int &PtIndex,int &CurvIndex, int &ConstrIndex);
+    bool detectPreselection(const SoPickedPoint *Point, int &PtIndex,int &CurvIndex, int &ConstrIndex);
     /// helper change the color of the sketch according to selection and solver status
     void updateColor(void);
     /// get the pointer to the sketch document object
-    Sketcher::SketchObject* getSketchObject(void) const;
+    Sketcher::SketchObject *getSketchObject(void) const;
     
     // Moves a selected constraint
     void moveConstraint(int constNum, const Base::Vector2D &Pos);
      // Checks if there is a constraint object at position vector
-    bool isConstraintAtPosition(const Base::Vector3d &constrPos, const SoNode * constraint);
+    bool isConstraintAtPosition(const Base::Vector3d &constrPos, const SoNode *constraint);
 
     int getPreselectPoint(void) const;
     int getPreselectCurve(void) const;
@@ -137,20 +137,20 @@ public:
     /** @name base class implementer */
     //@{
     virtual void attach(App::DocumentObject *);
-    virtual void updateData(const App::Property*);
+    virtual void updateData(const App::Property *);
 
-    virtual void setupContextMenu(QMenu* menu, QObject* receiver, const char* member);
+    virtual void setupContextMenu(QMenu *menu, QObject *receiver, const char *member);
     /// is called when the Provider is in edit and a deletion request occurs
     void delSelected(void);
     /// is called by the tree if the user double click on the object
     virtual bool doubleClicked(void);
     /// is called when the Provider is in edit and the mouse is moved
-    virtual bool mouseMove(const SbVec3f &pNear, const SbVec3f &pFar, const SoPickedPoint* pp);
+    virtual bool mouseMove(const SbVec3f &pNear, const SbVec3f &pFar, const SoPickedPoint *pp);
     /// is called when the Provider is in edit and a key event ocours. Only ESC ends edit.
     virtual bool keyPressed(bool pressed, int key);
     /// is called when the Provider is in edit and the mouse is clicked 
     virtual bool mouseButtonPressed(int Button, bool pressed, const SbVec3f &point,
-        const SbVec3f &normal, const SoPickedPoint* pp);
+        const SbVec3f &normal, const SoPickedPoint *pp);
     //@}
 
 
@@ -167,9 +167,9 @@ protected:
     virtual bool setEdit(int ModNum);
     virtual void unsetEdit(int ModNum);
     /// helper to detect whether the picked point lies on the sketch
-    bool isPointOnSketch(const SoPickedPoint* pp) const;
+    bool isPointOnSketch(const SoPickedPoint *pp) const;
     /// get called by the container whenever a property has been changed
-    virtual void onChanged(const App::Property* prop);
+    virtual void onChanged(const App::Property *prop);
 
     /// set up the edition data structure EditData
     void createEditInventorNodes(void);

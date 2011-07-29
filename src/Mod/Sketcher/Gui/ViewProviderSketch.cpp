@@ -152,10 +152,10 @@ struct EditData {
     SoLineSet     *EditCurveSet;
     SoMarkerSet   *PointSet;
 
-    SoText2       * textX;
-    SoTranslation * textPos;
+    SoText2       *textX;
+    SoTranslation *textPos;
 
-    SoGroup       * constrGroup;
+    SoGroup       *constrGroup;
 };
 
 
@@ -248,14 +248,14 @@ void ViewProviderSketch::getCoordsOnSketchPlane(double &u, double &v,const SbVec
 }
 
 bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVec3f &point,
-                                            const SbVec3f &normal, const SoPickedPoint* pp)
+                                            const SbVec3f &normal, const SoPickedPoint *pp)
 {
     assert(edit);
 
     double x,y;
     SbVec3f pos = point;
     if (pp) {
-        const SoDetail* detail = pp->getDetail();
+        const SoDetail *detail = pp->getDetail();
         if (detail && detail->getTypeId() == SoPointDetail::getClassTypeId()) {
             pos = pp->getPoint();
         }
@@ -444,11 +444,11 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                             return true;
                         } else {
                             //Get Viewer
-                            Gui::MDIView* mdi = Gui::Application::Instance->activeDocument()->getActiveView();
-                            Gui::View3DInventorViewer * viewer ;
-                            viewer = static_cast<Gui::View3DInventor*>(mdi)->getViewer();
+                            Gui::MDIView *mdi = Gui::Application::Instance->activeDocument()->getActiveView();
+                            Gui::View3DInventorViewer *viewer ;
+                            viewer = static_cast<Gui::View3DInventor *>(mdi)->getViewer();
 
-                            Gui::MenuItem* geom = new Gui::MenuItem();
+                            Gui::MenuItem *geom = new Gui::MenuItem();
                             geom->setCommand("Sketcher geoms");
                             *geom /*<< "Sketcher_CreatePoint"*/
                                 << "Sketcher_CreateArc"
@@ -463,7 +463,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                             //Create the Context Menu using the Main View Qt Widget
                             QMenu contextMenu(viewer->getGLWidget());
                             Gui::MenuManager::getInstance()->setupContextMenu(geom, contextMenu);
-                            QAction* used = contextMenu.exec(QCursor::pos());
+                            QAction *used = contextMenu.exec(QCursor::pos());
 
                             return true;
                         }
@@ -473,11 +473,11 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                 case STATUS_SELECT_Edge:
                     {
                         //Get Viewer
-                        Gui::MDIView* mdi = Gui::Application::Instance->activeDocument()->getActiveView();
-                        Gui::View3DInventorViewer * viewer ;
-                        viewer = static_cast<Gui::View3DInventor*>(mdi)->getViewer();
+                        Gui::MDIView *mdi = Gui::Application::Instance->activeDocument()->getActiveView();
+                        Gui::View3DInventorViewer *viewer ;
+                        viewer = static_cast<Gui::View3DInventor *>(mdi)->getViewer();
 
-                        Gui::MenuItem* geom = new Gui::MenuItem();
+                        Gui::MenuItem *geom = new Gui::MenuItem();
                         geom->setCommand("Sketcher constraints");
                         *geom << "Sketcher_ConstrainVertical"
                         << "Sketcher_ConstrainHorizontal";
@@ -524,7 +524,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                         //Create the Context Menu using the Main View Qt Widget
                         QMenu contextMenu(viewer->getGLWidget());
                         Gui::MenuManager::getInstance()->setupContextMenu(geom, contextMenu);
-                        QAction* used = contextMenu.exec(QCursor::pos());
+                        QAction *used = contextMenu.exec(QCursor::pos());
 
                         return true;
                     }
@@ -540,7 +540,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
     return false;
 }
 
-bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, const SoPickedPoint* pp)
+bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, const SoPickedPoint *pp)
 {
     if (!edit)
         return false;
@@ -636,7 +636,7 @@ void ViewProviderSketch::moveConstraint(int constNum, const Base::Vector2D &Pos)
         return;
 
     const std::vector<Sketcher::Constraint*> &ConStr = getSketchObject()->Constraints.getValues();
-    Constraint * constr = ConStr[constNum];
+    Constraint *constr = ConStr[constNum];
 
     if (constr->Type == Distance) {
         bool tempDraw = true;
@@ -690,27 +690,27 @@ void ViewProviderSketch::moveConstraint(int constNum, const Base::Vector2D &Pos)
     draw(true);
 }
 
-bool ViewProviderSketch::isConstraintAtPosition(const Base::Vector3d &constrPos, const SoNode * constraint)
+bool ViewProviderSketch::isConstraintAtPosition(const Base::Vector3d &constrPos, const SoNode *constraint)
 {
     assert(edit);
-    Gui::MDIView* mdi = Gui::Application::Instance->activeDocument()->getActiveView();
-    Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(mdi)->getViewer();
+    Gui::MDIView *mdi = Gui::Application::Instance->activeDocument()->getActiveView();
+    Gui::View3DInventorViewer *viewer = static_cast<Gui::View3DInventor *>(mdi)->getViewer();
 
     SoRayPickAction rp(viewer->getViewportRegion());
     rp.setRadius(0.1f);
 
-    rp.setRay(SbVec3f(constrPos.x, constrPos.y,constrPos.z) ,SbVec3f(0, 0, 1) );
+    rp.setRay(SbVec3f(constrPos.x, constrPos.y,constrPos.z), SbVec3f(0, 0, 1) );
     //problem
     rp.apply(edit->constrGroup); // We could narrow it down to just the SoGroup containing the constraints
 
     // returns a copy of the point
-    SoPickedPoint* pp = rp.getPickedPoint();
+    SoPickedPoint *pp = rp.getPickedPoint();
 
     if (pp) {
-        SoPath * path = pp->getPath();
+        SoPath *path = pp->getPath();
         int length = path->getLength();
-        SoNode * tailFather = path->getNode(length-2);
-        SoNode * tailFather2 = path->getNode(length-3);
+        SoNode *tailFather = path->getNode(length-2);
+        SoNode *tailFather2 = path->getNode(length-3);
 
         // checking if a constraint is the same as the one selected
         if (tailFather2 == constraint || tailFather == constraint) {
@@ -809,7 +809,7 @@ void ViewProviderSketch::onSelectionChanged(const Gui::SelectionChanges& msg)
     }
 }
 
-bool ViewProviderSketch::detectPreselection(const SoPickedPoint* Point, int &PtIndex, int &CurvIndex, int &ConstrIndex)
+bool ViewProviderSketch::detectPreselection(const SoPickedPoint *Point, int &PtIndex, int &CurvIndex, int &ConstrIndex)
 {
     assert(edit);
 
@@ -819,25 +819,25 @@ bool ViewProviderSketch::detectPreselection(const SoPickedPoint* Point, int &PtI
 
     if (Point) {
         //Base::Console().Log("Point pick\n");
-        SoPath * path = Point->getPath();
-        SoNode * tail = path->getTail();
-        SoNode * tailFather = path->getNode(path->getLength()-2);
-        SoNode * tailFather2 = path->getNode(path->getLength()-3);
+        SoPath *path = Point->getPath();
+        SoNode *tail = path->getTail();
+        SoNode *tailFather = path->getNode(path->getLength()-2);
+        SoNode *tailFather2 = path->getNode(path->getLength()-3);
 
         // checking for a hit in the points
         if (tail == edit->PointSet) {
-            const SoDetail* point_detail = Point->getDetail(edit->PointSet);
+            const SoDetail *point_detail = Point->getDetail(edit->PointSet);
             if (point_detail && point_detail->getTypeId() == SoPointDetail::getClassTypeId()) {
                 // get the index
-                PtIndex = static_cast<const SoPointDetail*>(point_detail)->getCoordinateIndex();
+                PtIndex = static_cast<const SoPointDetail *>(point_detail)->getCoordinateIndex();
             }
         } else {
             // checking for a hit in the Curves
             if (tail == edit->CurveSet) {
-                const SoDetail* curve_detail = Point->getDetail(edit->CurveSet);
+                const SoDetail *curve_detail = Point->getDetail(edit->CurveSet);
                 if (curve_detail && curve_detail->getTypeId() == SoLineDetail::getClassTypeId()) {
                     // get the index
-                    CurvIndex = static_cast<const SoLineDetail*>(curve_detail)->getLineIndex();
+                    CurvIndex = static_cast<const SoLineDetail *>(curve_detail)->getLineIndex();
                 }
             } else {
                 // checking if a constraint is hit
@@ -927,9 +927,9 @@ void ViewProviderSketch::updateColor(void)
     //Base::Console().Log("Draw preseletion\n");
 
     int PtNum = edit->PointsMaterials->diffuseColor.getNum();
-    SbColor* pcolor = edit->PointsMaterials->diffuseColor.startEditing();
+    SbColor *pcolor = edit->PointsMaterials->diffuseColor.startEditing();
     int CurvNum = edit->CurvesMaterials->diffuseColor.getNum();
-    SbColor* color = edit->CurvesMaterials->diffuseColor.startEditing();
+    SbColor *color = edit->CurvesMaterials->diffuseColor.startEditing();
 
     // colors of the point set
     for (int  i=0;i<PtNum;i++) {
@@ -967,10 +967,10 @@ void ViewProviderSketch::updateColor(void)
     edit->PointsMaterials->diffuseColor.finishEditing();
 }
 
-bool ViewProviderSketch::isPointOnSketch(const SoPickedPoint* pp) const
+bool ViewProviderSketch::isPointOnSketch(const SoPickedPoint *pp) const
 {
     // checks if we picked a point on the sketch or any other nodes like the grid
-    SoPath* path = pp->getPath();
+    SoPath *path = pp->getPath();
     return path->containsNode(edit->EditRoot);
 }
 
@@ -996,13 +996,12 @@ void ViewProviderSketch::draw(bool temp)
     if (temp) {
         tempGeo = edit->ActSketch.getGeometry();
         geomlist = &tempGeo;
-    }
-    else
+    } else
         geomlist = &getSketchObject()->Geometry.getValues();
 
     for (std::vector<Part::Geometry *>::const_iterator it = geomlist->begin(); it != geomlist->end(); ++it) {
         if ((*it)->getTypeId() == Part::GeomLineSegment::getClassTypeId()) { // add a line
-            const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(*it);
+            const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment *>(*it);
             // create the definition struct for that geom
             Coords.push_back(lineSeg->getStartPoint());
             Coords.push_back(lineSeg->getEndPoint());
@@ -1014,7 +1013,7 @@ void ViewProviderSketch::draw(bool temp)
             PtColor.push_back(0);
         }
         else if ((*it)->getTypeId() == Part::GeomCircle::getClassTypeId()) { // add a circle
-            const Part::GeomCircle *circle = dynamic_cast<const Part::GeomCircle*>(*it);
+            const Part::GeomCircle *circle = dynamic_cast<const Part::GeomCircle *>(*it);
             Handle_Geom_Circle curve = Handle_Geom_Circle::DownCast(circle->handle());
 
             int countSegments = 50;
@@ -1034,7 +1033,7 @@ void ViewProviderSketch::draw(bool temp)
             PtColor.push_back(0);
         }
         else if ((*it)->getTypeId() == Part::GeomArcOfCircle::getClassTypeId()) { // add an arc
-            const Part::GeomArcOfCircle *arc = dynamic_cast<const Part::GeomArcOfCircle*>(*it);
+            const Part::GeomArcOfCircle *arc = dynamic_cast<const Part::GeomArcOfCircle *>(*it);
             Handle_Geom_TrimmedCurve curve = Handle_Geom_TrimmedCurve::DownCast(arc->handle());
 
             double startangle, endangle;
@@ -1071,7 +1070,7 @@ void ViewProviderSketch::draw(bool temp)
             PtColor.push_back(0);
         }
         else if ((*it)->getTypeId() == Part::GeomBSplineCurve::getClassTypeId()) { // add a circle
-            const Part::GeomBSplineCurve *spline = dynamic_cast<const Part::GeomBSplineCurve*>(*it);
+            const Part::GeomBSplineCurve *spline = dynamic_cast<const Part::GeomBSplineCurve *>(*it);
             Handle_Geom_BSplineCurve curve = Handle_Geom_BSplineCurve::DownCast(spline->handle());
 
             double first = curve->FirstParameter();
@@ -1113,11 +1112,11 @@ void ViewProviderSketch::draw(bool temp)
     edit->PointsCoordinate->point.setNum(Points.size());
     edit->PointsMaterials->diffuseColor.setNum(PtColor.size());
 
-    SbVec3f* verts = edit->CurvesCoordinate->point.startEditing();
-    int32_t* index = edit->CurveSet->numVertices.startEditing();
-    SbColor* color = edit->CurvesMaterials->diffuseColor.startEditing();
-    SbVec3f* pverts = edit->PointsCoordinate->point.startEditing();
-    SbColor* pcolor = edit->PointsMaterials->diffuseColor.startEditing();
+    SbVec3f *verts = edit->CurvesCoordinate->point.startEditing();
+    int32_t *index = edit->CurveSet->numVertices.startEditing();
+    SbColor *color = edit->CurvesMaterials->diffuseColor.startEditing();
+    SbVec3f *pverts = edit->PointsCoordinate->point.startEditing();
+    SbColor *pcolor = edit->PointsMaterials->diffuseColor.startEditing();
 
     int i=0; // setting up the line set
     for (std::vector<Base::Vector3d>::const_iterator it = Coords.begin(); it != Coords.end(); ++it,i++)
@@ -1149,7 +1148,7 @@ void ViewProviderSketch::draw(bool temp)
     edit->PointsMaterials->diffuseColor.finishEditing();
 
     // Render Constraints ===================================================
-    const std::vector<Sketcher::Constraint*> &ConStr = getSketchObject()->Constraints.getValues();
+    const std::vector<Sketcher::Constraint *> &ConStr = getSketchObject()->Constraints.getValues();
     // reset point if the constraint type has changed
 Restart:
     // check if a new constraint arrived
@@ -1159,7 +1158,7 @@ Restart:
     assert(int(edit->vConstrType.size()) == edit->constrGroup->getNumChildren());
     // go through the constraints and update the position
     i = 0;
-    for (std::vector<Sketcher::Constraint*>::const_iterator it = ConStr.begin(); it != ConStr.end(); ++it,i++) {
+    for (std::vector<Sketcher::Constraint *>::const_iterator it = ConStr.begin(); it != ConStr.end(); ++it,i++) {
         // check if the type has changed
         if ((*it)->Type != edit->vConstrType[i]) {
             // clearing the type vector will force a rebuild of the visual nodes
@@ -1551,15 +1550,15 @@ Restart:
     for (std::vector<Part::Geometry *>::iterator it = tempGeo.begin(); it != tempGeo.end(); ++it)
         if (*it) delete *it;
 
-    Gui::MDIView* mdi = Gui::Application::Instance->activeDocument()->getActiveView();
+    Gui::MDIView *mdi = Gui::Application::Instance->activeDocument()->getActiveView();
     if (mdi && mdi->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
-        static_cast<Gui::View3DInventor*>(mdi)->getViewer()->render();
+        static_cast<Gui::View3DInventor *>(mdi)->getViewer()->render();
     }
 }
 
 void ViewProviderSketch::rebuildConstraintsVisual(void)
 {
-    const std::vector<Sketcher::Constraint*> &ConStr = getSketchObject()->Constraints.getValues();
+    const std::vector<Sketcher::Constraint *> &ConStr = getSketchObject()->Constraints.getValues();
     // clean up
     edit->constrGroup->removeAllChildren();
     edit->vConstrType.clear();
@@ -1568,7 +1567,7 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
     //Constraint Icons Size scaled by (width) in px
     const int constraintImageSize = 16;
 
-    for (std::vector<Sketcher::Constraint*>::const_iterator it = ConStr.begin(); it != ConStr.end(); ++it) {
+    for (std::vector<Sketcher::Constraint *>::const_iterator it = ConStr.begin(); it != ConStr.end(); ++it) {
         // root separator for one constraint
         SoSeparator *sep = new SoSeparator();
         // no caching for fluctuand data structures
@@ -1820,8 +1819,8 @@ void ViewProviderSketch::drawEdit(const std::vector<Base::Vector2D> &EditCurve)
 
     edit->EditCurveSet->numVertices.setNum(1);
     edit->EditCurvesCoordinate->point.setNum(EditCurve.size());
-    SbVec3f* verts = edit->EditCurvesCoordinate->point.startEditing();
-    int32_t* index = edit->EditCurveSet->numVertices.startEditing();
+    SbVec3f *verts = edit->EditCurvesCoordinate->point.startEditing();
+    int32_t *index = edit->EditCurveSet->numVertices.startEditing();
 
     int i=0; // setting up the line set
     for (std::vector<Base::Vector2D>::const_iterator it = EditCurve.begin(); it != EditCurve.end(); ++it,i++)
@@ -1832,7 +1831,7 @@ void ViewProviderSketch::drawEdit(const std::vector<Base::Vector2D> &EditCurve)
     edit->EditCurveSet->numVertices.finishEditing();
 }
 
-void ViewProviderSketch::updateData(const App::Property* prop)
+void ViewProviderSketch::updateData(const App::Property *prop)
 {
     ViewProvider2DObject::updateData(prop);
 
@@ -1851,7 +1850,7 @@ void ViewProviderSketch::updateData(const App::Property* prop)
     }
 }
 
-void ViewProviderSketch::onChanged(const App::Property* prop)
+void ViewProviderSketch::onChanged(const App::Property *prop)
 {
     // call father
     PartGui::ViewProvider2DObject::onChanged(prop);
@@ -1862,9 +1861,9 @@ void ViewProviderSketch::attach(App::DocumentObject *pcFeat)
     ViewProviderPart::attach(pcFeat);
 }
 
-void ViewProviderSketch::setupContextMenu(QMenu* menu, QObject* receiver, const char* member)
+void ViewProviderSketch::setupContextMenu(QMenu *menu, QObject *receiver, const char *member)
 {
-    QAction* act = menu->addAction(QObject::tr("Edit sketch"), receiver, member);
+    QAction *act = menu->addAction(QObject::tr("Edit sketch"), receiver, member);
     act->setData(QVariant((int)ViewProvider::Default));
 }
 
@@ -1873,8 +1872,8 @@ bool ViewProviderSketch::setEdit(int ModNum)
     // When double-clicking on the item for this sketch the
     // object unsets and sets its edit mode without closing
     // the task panel
-    Gui::TaskView::TaskDialog* dlg = Gui::Control().activeDialog();
-    TaskDlgEditSketch* sketchDlg = qobject_cast<TaskDlgEditSketch*>(dlg);
+    Gui::TaskView::TaskDialog *dlg = Gui::Control().activeDialog();
+    TaskDlgEditSketch *sketchDlg = qobject_cast<TaskDlgEditSketch *>(dlg);
     if (sketchDlg && sketchDlg->getSketchView() != this)
         sketchDlg = 0; // another sketch left open its task panel
     if (dlg && !sketchDlg) {
@@ -2095,9 +2094,9 @@ void ViewProviderSketch::setGridSnap(int Type)
     assert(edit);
 }
 
-Sketcher::SketchObject* ViewProviderSketch::getSketchObject(void) const
+Sketcher::SketchObject *ViewProviderSketch::getSketchObject(void) const
 {
-    return dynamic_cast<Sketcher::SketchObject*>(pcObject);
+    return dynamic_cast<Sketcher::SketchObject *>(pcObject);
 }
 
 void ViewProviderSketch::delSelected(void)
