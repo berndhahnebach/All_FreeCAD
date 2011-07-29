@@ -168,6 +168,7 @@ const char* BRepBuilderAPI_FaceErrorText(BRepBuilderAPI_FaceError et)
         return "Unknown creation error";
     }
 }
+
 // ------------------------------------------------
 
 TYPESYSTEM_SOURCE(Part::ShapeSegment , Data::Segment);
@@ -209,12 +210,30 @@ std::vector<const char*> TopoShape::getElementTypes(void) const
     return temp;
 }
 
+unsigned long TopoShape::countSubElements(const char* Type) const
+{
+    return countSubShapes(Type);
+}
+
 Data::Segment* TopoShape::getSubElement(const char* Type, unsigned long n) const
 {
     std::stringstream str;
     str << Type << n;
     std::string temp = str.str();
     return new ShapeSegment(getSubShape(temp.c_str()));
+}
+
+void TopoShape::getLinesFromSubelement(const Data::Segment* element,
+                                       std::vector<Base::Vector3d> &Points,
+                                       std::vector<Line> &lines) const
+{
+}
+
+void TopoShape::getFacesFromSubelement(const Data::Segment* element,
+                                       std::vector<Base::Vector3d> &Points,
+                                       std::vector<Base::Vector3d> &PointNormals,
+                                       std::vector<Facet> &faces) const
+{
 }
 
 TopoDS_Shape TopoShape::getSubShape(const char* Type) const
@@ -241,6 +260,28 @@ TopoDS_Shape TopoShape::getSubShape(const char* Type) const
     }
 
     return TopoDS_Shape();
+}
+
+unsigned long TopoShape::countSubShapes(const char* Type) const
+{
+    std::string shapetype(Type);
+    if (shapetype == "Face") {
+        TopTools_IndexedMapOfShape anIndices;
+        TopExp::MapShapes(this->_Shape, TopAbs_FACE, anIndices);
+        return anIndices.Extent();
+    }
+    else if (shapetype == "Edge") {
+        TopTools_IndexedMapOfShape anIndices;
+        TopExp::MapShapes(this->_Shape, TopAbs_EDGE, anIndices);
+        return anIndices.Extent();
+    }
+    else if (shapetype == "Vertex") {
+        TopTools_IndexedMapOfShape anIndices;
+        TopExp::MapShapes(this->_Shape, TopAbs_VERTEX, anIndices);
+        return anIndices.Extent();
+    }
+
+    return 0;
 }
 
 PyObject * TopoShape::getPySubShape(const char* Type) const
@@ -1547,7 +1588,7 @@ const double Vertex::MESH_MIN_PT_DIST = gp::Resolution();
 #include <StlMesh_MeshExplorer.hxx>
 
 void TopoShape::getFaces(std::vector<Base::Vector3d> &aPoints,
-                         std::vector<FacetTopo> &aTopo,
+                         std::vector<Facet> &aTopo,
                          float accuracy, uint16_t flags) const
 {
 #if 1
@@ -1564,7 +1605,7 @@ void TopoShape::getFaces(std::vector<Base::Vector3d> &aPoints,
     for (Standard_Integer nbd=1;nbd<=aMesh->NbDomains();nbd++) {
         for (xp.InitTriangle (nbd); xp.MoreTriangle (); xp.NextTriangle ()) {
             xp.TriangleVertices (x1,y1,z1,x2,y2,z2,x3,y3,z3);
-            Data::ComplexGeoData::FacetTopo face;
+            Data::ComplexGeoData::Facet face;
             std::set<Vertex>::iterator it;
 
             // 1st vertex
@@ -1659,7 +1700,7 @@ void TopoShape::getFaces(std::vector<Base::Vector3d> &aPoints,
                 if (reversed)
                     std::swap(V1,V2);
                 gp_Pnt P1, P2, P3;
-                Data::ComplexGeoData::FacetTopo face;
+                Data::ComplexGeoData::Facet face;
                 std::set<Vertex>::iterator it;
 
                 // 1st vertex
@@ -1724,7 +1765,7 @@ void TopoShape::getFaces(std::vector<Base::Vector3d> &aPoints,
 }
 
 void TopoShape::setFaces(const std::vector<Base::Vector3d> &Points,
-                         const std::vector<FacetTopo> &Topo, float Accuracy)
+                         const std::vector<Facet> &Topo, float Accuracy)
 {
     gp_XYZ p1, p2, p3;
     TopoDS_Vertex Vertex1, Vertex2, Vertex3;
@@ -1742,7 +1783,7 @@ void TopoShape::setFaces(const std::vector<Base::Vector3d> &Points,
     BuildTool.MakeCompound(aComp);
 
     unsigned int ctPoints = Points.size();
-    for (std::vector<FacetTopo>::const_iterator it = Topo.begin(); it != Topo.end(); ++it) {
+    for (std::vector<Facet>::const_iterator it = Topo.begin(); it != Topo.end(); ++it) {
         if (it->I1 >= ctPoints || it->I2 >= ctPoints || it->I3 >= ctPoints)
             continue;
         x1 = Points[it->I1].x; y1 = Points[it->I1].y; z1 = Points[it->I1].z;

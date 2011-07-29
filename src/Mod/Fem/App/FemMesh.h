@@ -74,6 +74,7 @@ public:
      *  it is NOT a list of the subelements itself
      */
     virtual std::vector<const char*> getElementTypes(void) const;
+    virtual unsigned long countSubElements(const char* Type) const;
     /// get the subelement by type and number
     virtual Data::Segment* getSubElement(const char* Type, unsigned long) const;
     //@}

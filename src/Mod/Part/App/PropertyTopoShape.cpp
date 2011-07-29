@@ -132,7 +132,7 @@ Base::BoundBox3d PropertyPartShape::getBoundingBox() const
 }
 
 void PropertyPartShape::getFaces(std::vector<Base::Vector3d> &aPoints,
-                                 std::vector<Data::ComplexGeoData::FacetTopo> &aTopo,
+                                 std::vector<Data::ComplexGeoData::Facet> &aTopo,
                                  float accuracy, uint16_t flags) const
 {
     _Shape.getFaces(aPoints, aTopo, accuracy, flags);

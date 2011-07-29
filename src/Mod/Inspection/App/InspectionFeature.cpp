@@ -106,7 +106,7 @@ InspectActualShape::InspectActualShape(const Part::TopoShape& shape) : _rShape(s
     Base::BoundBox3d bbox = _rShape.getBoundBox();
     Standard_Real deflection = (bbox.LengthX() + bbox.LengthY() + bbox.LengthZ())/300.0 * deviation;
 
-    std::vector<Data::ComplexGeoData::FacetTopo> f;
+    std::vector<Data::ComplexGeoData::Facet> f;
     _rShape.getFaces(points, f, (float)deflection);
 }
 

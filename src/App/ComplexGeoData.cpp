@@ -46,19 +46,17 @@ ComplexGeoData::~ComplexGeoData(void)
 {
 }
 
-Data::Segment* ComplexGeoData::getSubElementByName(const char* Name) const
+Data::Segment* ComplexGeoData::getSubElementByName(const char* name) const
 {
-    int i=0;
-    std::string temp;
-    while (Name[i] != 0)
-    {
-        if (Name[i]>=48 && Name[i]<=57)
-            break;
-        temp.push_back(Name[i]);
-        i++;
+    int index = 0;
+    std::string element(name);
+    std::string::size_type pos = element.find_first_of("0123456789");
+    if (pos != std::string::npos) {
+        index = std::atoi(element.substr(pos).c_str());
+        element = element.substr(0,pos);
     }
-    int n = atoi(&(Name[i]));
-    return getSubElement(temp.c_str(),n);
+
+    return getSubElement(element.c_str(),index);
 }
 
 void ComplexGeoData::applyTransform(const Base::Matrix4D& rclTrf)

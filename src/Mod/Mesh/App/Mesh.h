@@ -87,6 +87,7 @@ public:
      *  its NOT a list of the subelements itself
      */
     virtual std::vector<const char*> getElementTypes(void) const;
+    virtual unsigned long countSubElements(const char* Type) const;
     /// get the subelement by type and number
     virtual Data::Segment* getSubElement(const char* Type, unsigned long) const;
     //@}
@@ -112,10 +113,10 @@ public:
     unsigned long countSegments() const;
     bool isSolid() const;
     MeshPoint getPoint(unsigned long) const;
-    Facet getFacet(unsigned long) const;
+    Mesh::Facet getFacet(unsigned long) const;
     double getSurface() const;
     double getVolume() const;
-    void getFaces(std::vector<Base::Vector3d> &Points,std::vector<FacetTopo> &Topo,
+    void getFaces(std::vector<Base::Vector3d> &Points,std::vector<Facet> &Topo,
         float Accuracy, uint16_t flags=0) const;
     //@}
 
@@ -149,10 +150,10 @@ public:
     void addFacets(const std::vector<MeshCore::MeshFacet> &facets);
     void addFacets(const std::vector<MeshCore::MeshFacet> &facets,
                    const std::vector<Base::Vector3f>& points);
-    void addFacets(const std::vector<Data::ComplexGeoData::FacetTopo> &facets,
+    void addFacets(const std::vector<Data::ComplexGeoData::Facet> &facets,
                    const std::vector<Base::Vector3d>& points);
     void setFacets(const std::vector<MeshCore::MeshGeomFacet>& facets);
-    void setFacets(const std::vector<Data::ComplexGeoData::FacetTopo> &facets,
+    void setFacets(const std::vector<Data::ComplexGeoData::Facet> &facets,
                    const std::vector<Base::Vector3d>& points);
     /**
      * Combines two independent mesh objects.
@@ -296,8 +297,8 @@ public:
         ~const_facet_iterator();
 
         const_facet_iterator& operator=(const const_facet_iterator& fi);
-        Facet& operator*();
-        Facet* operator->();
+        Mesh::Facet& operator*();
+        Mesh::Facet* operator->();
         bool operator==(const const_facet_iterator& fi) const;
         bool operator!=(const const_facet_iterator& fi) const;
         const_facet_iterator& operator++();
@@ -305,7 +306,7 @@ public:
     private:
         void dereference();
         const MeshObject* _mesh;
-        Facet _facet;
+        Mesh::Facet _facet;
         MeshCore::MeshFacetIterator _f_it;
     };
 

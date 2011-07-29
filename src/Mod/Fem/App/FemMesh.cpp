@@ -724,6 +724,11 @@ std::vector<const char*> FemMesh::getElementTypes(void) const
     return temp;
 }
 
+unsigned long FemMesh::countSubElements(const char* Type) const
+{
+    return 0;
+}
+
 Data::Segment* FemMesh::getSubElement(const char* Type, unsigned long n) const
 {
     // FIXME implement subelement interface 

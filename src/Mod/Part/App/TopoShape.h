@@ -109,11 +109,24 @@ public:
      *  it is NOT a list of the subelements itself
      */
     virtual std::vector<const char*> getElementTypes(void) const;
+    virtual unsigned long countSubElements(const char* Type) const;
     /// get the subelement by type and number
     virtual Data::Segment* getSubElement(const char* Type, unsigned long) const;
+    /** Get lines from segment */
+    virtual void getLinesFromSubelement(
+        const Data::Segment*,
+        std::vector<Base::Vector3d> &Points,
+        std::vector<Line> &lines) const;
+    /** Get faces from segment */
+    virtual void getFacesFromSubelement(
+        const Data::Segment*,
+        std::vector<Base::Vector3d> &Points,
+        std::vector<Base::Vector3d> &PointNormals,
+        std::vector<Facet> &faces) const;
     //@}
     /// get the Topo"sub"Shape with the given name
     TopoDS_Shape getSubShape(const char* Type) const;
+    unsigned long countSubShapes(const char* Type) const;
     /// get the Topo"sub"Shape with the given name
     PyObject * getPySubShape(const char* Type) const;
 
@@ -191,10 +204,10 @@ public:
 
     /** @name Getting basic geometric entities */
     //@{
-    void getFaces(std::vector<Base::Vector3d> &Points,std::vector<FacetTopo> &Topo,
+    void getFaces(std::vector<Base::Vector3d> &Points,std::vector<Facet> &faces,
         float Accuracy, uint16_t flags=0) const;
     void setFaces(const std::vector<Base::Vector3d> &Points,
-                  const std::vector<FacetTopo> &Topo, float Accuracy=1.0e-06);
+                  const std::vector<Facet> &faces, float Accuracy=1.0e-06);
     //@}
 
     TopoDS_Shape _Shape;

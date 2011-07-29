@@ -222,7 +222,7 @@ void ViewProviderInspection::updateData(const App::Property* prop)
             if (data) {
                 this->pcLinkRoot->removeAllChildren();
                 std::vector<Base::Vector3d> points;
-                std::vector<Data::ComplexGeoData::FacetTopo> faces;
+                std::vector<Data::ComplexGeoData::Facet> faces;
                 data->getFaces(points, faces, accuracy);
 
                 this->pcLinkRoot->addChild(this->pcCoords);
@@ -240,7 +240,7 @@ void ViewProviderInspection::updateData(const App::Property* prop)
                     face->coordIndex.setNum(4*faces.size());
                     int32_t* indices = face->coordIndex.startEditing();
                     unsigned long j=0;
-                    std::vector<Data::ComplexGeoData::FacetTopo>::iterator it;
+                    std::vector<Data::ComplexGeoData::Facet>::iterator it;
                     for (it = faces.begin(); it != faces.end(); ++it,j++) {
                         indices[4*j+0] = it->I1;
                         indices[4*j+1] = it->I2;
