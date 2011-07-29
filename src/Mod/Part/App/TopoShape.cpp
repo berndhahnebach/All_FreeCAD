@@ -65,6 +65,8 @@
 # include <BRepTools.hxx>
 # include <BRepTools_ReShape.hxx>
 # include <BRepTools_ShapeSet.hxx>
+# include <GeomLProp_SLProps.hxx>
+#include <GeomAPI_ProjectPointOnSurf.hxx>
 # include <GeomFill_CorrectedFrenet.hxx>
 # include <GeomFill_CurveAndTrihedron.hxx>
 # include <GeomFill_EvolvedSection.hxx>
@@ -234,6 +236,110 @@ void TopoShape::getFacesFromSubelement(const Data::Segment* element,
                                        std::vector<Base::Vector3d> &PointNormals,
                                        std::vector<Facet> &faces) const
 {
+    if (element->getTypeId() == ShapeSegment::getClassTypeId()) {
+        const TopoDS_Shape& shape = static_cast<const ShapeSegment*>(element)->Shape;
+        if (shape.IsNull() || shape.ShapeType() != TopAbs_FACE)
+            return;
+    
+        TopLoc_Location aLoc;
+        // doing the meshing and checking the result
+        Handle(Poly_Triangulation) aPoly = BRep_Tool::Triangulation(TopoDS::Face(shape),aLoc);
+        if (aPoly.IsNull())
+            return;
+
+        // geting the transformation of the shape/face
+        gp_Trsf myTransf;
+        Standard_Boolean identity = true;
+        if (!aLoc.IsIdentity())  {
+            identity = false;
+            myTransf = aLoc.Transformation();
+        }
+
+        Standard_Integer i;
+        // geting size and create the array
+        int nbNodesInFace = aPoly->NbNodes();
+        int nbTriInFace = aPoly->NbTriangles();
+        Points.resize(nbNodesInFace);
+        PointNormals.resize(nbNodesInFace); // fills up already the array
+        faces.resize(nbTriInFace);
+
+        // check orientation
+        TopAbs_Orientation orient = shape.Orientation();
+
+        // cycling through the poly mesh
+        const Poly_Array1OfTriangle& Triangles = aPoly->Triangles();
+        const TColgp_Array1OfPnt& Nodes = aPoly->Nodes();
+        for (i=1; i<=nbTriInFace; i++) {
+            // Get the triangle
+            Standard_Integer N1,N2,N3;
+            Triangles(i).Get(N1,N2,N3);
+
+            // change orientation of the triangles
+            if (orient != TopAbs_FORWARD) {
+                Standard_Integer tmp = N1;
+                N1 = N2;
+                N2 = tmp;
+            }
+
+            gp_Pnt V1 = Nodes(N1);
+            gp_Pnt V2 = Nodes(N2);
+            gp_Pnt V3 = Nodes(N3);
+
+            // transform the vertices to the place of the face
+            if (!identity) {
+                V1.Transform(myTransf);
+                V2.Transform(myTransf);
+                V3.Transform(myTransf);
+            }
+
+            // Calculate triangle normal
+            gp_Vec v1(V1.X(),V1.Y(),V1.Z()),v2(V2.X(),V2.Y(),V2.Z()),v3(V3.X(),V3.Y(),V3.Z());
+            gp_Vec Normal = (v2-v1)^(v3-v1);
+
+            //Standard_Real Area = 0.5 * Normal.Magnitude();
+
+            // add the triangle normal to the vertex normal for all points of this triangle
+            PointNormals[N1-1] += Base::Vector3d(Normal.X(),Normal.Y(),Normal.Z());
+            PointNormals[N2-1] += Base::Vector3d(Normal.X(),Normal.Y(),Normal.Z());
+            PointNormals[N3-1] += Base::Vector3d(Normal.X(),Normal.Y(),Normal.Z());
+
+            Points[N1-1].Set(V1.X(),V1.Y(),V1.Z());
+            Points[N2-1].Set(V2.X(),V2.Y(),V2.Z());
+            Points[N3-1].Set(V3.X(),V3.Y(),V3.Z());
+
+            int j = i - 1;
+            N1--;
+            N2--;
+            N3--;
+            faces[j].I1 = N1;
+            faces[j].I2 = N2;
+            faces[j].I3 = N3;
+        }
+
+        // normalize all vertex normals
+        for (i=0; i < nbNodesInFace; i++) {
+            gp_Dir clNormal;
+            try {
+                Handle_Geom_Surface Surface = BRep_Tool::Surface(TopoDS::Face(shape));
+
+                gp_Pnt vertex(Base::convertTo<gp_Pnt>(Points[i]));
+                GeomAPI_ProjectPointOnSurf ProPntSrf(vertex, Surface);
+                Standard_Real fU, fV;
+                ProPntSrf.Parameters(1, fU, fV);
+
+                GeomLProp_SLProps clPropOfFace(Surface, fU, fV, 2, gp::Resolution());
+
+                clNormal = clPropOfFace.Normal();
+                Base::Vector3d temp = Base::convertTo<Base::Vector3d>(clNormal);
+                if (temp * Points[i] < 0)
+                    temp = -temp;
+                Points[i] = temp;
+            }
+            catch (...) {
+            }
+            Points[i].Normalize();
+        }
+    }
 }
 
 TopoDS_Shape TopoShape::getSubShape(const char* Type) const

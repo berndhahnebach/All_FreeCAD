@@ -30,6 +30,8 @@
 class TopoDS_Shape;
 class TopoDS_Face;
 
+namespace Data { class ComplexGeoData; }
+
 namespace Raytracing
 {
 
@@ -83,6 +85,11 @@ public:
     static void writeCameraVec(const char*                FileName,
                                const std::vector<CamDef>& CamVec);
 
+    /// write a given shape as povray file to disk
+    static void writeData(const char *FileName,
+                          const char *PartName,
+                          const Data::ComplexGeoData*,
+                          float fMeshDeviation=0.1);
 
     /// write a given shape as povray file to disk
     static void writeShape(const char *FileName,

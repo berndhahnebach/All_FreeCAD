@@ -37,6 +37,7 @@
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include <Base/Sequencer.h>
+#include <App/ComplexGeoData.h>
 
 
 #include "PovTools.h"
@@ -145,6 +146,73 @@ void PovTools::writeCameraVec(const char* FileName, const std::vector<CamDef>& C
     // open the file and write
     Base::ofstream fout(FileName);
     fout <<  out.str() << endl;
+    fout.close();
+}
+
+void PovTools::writeData(const char *FileName, const char *PartName,
+                         const Data::ComplexGeoData* data, float fMeshDeviation)
+{
+    // open the file and write
+    Base::ofstream fout(FileName);
+    // write the file
+    fout <<  "// Written by FreeCAD http://free-cad.sf.net/" << endl;
+
+    unsigned long count = data->countSubElements("Face");
+    for (unsigned long i=0; i<count; i++) {
+        std::vector<Base::Vector3d> points;
+        std::vector<Base::Vector3d> normals;
+        std::vector<Data::ComplexGeoData::Facet> facets;
+        Data::Segment* segm = data->getSubElement("Face", i);
+        data->getFacesFromSubelement(segm, points, normals, facets);
+        delete segm;
+
+        // writing per face header
+        fout << "// element number" << i << " +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl
+             << "#declare " << PartName << i << " = mesh2{" << endl
+             << "  vertex_vectors {" << endl
+             << "    " << points.size() << "," << endl;
+
+        // writing vertices
+        for (std::vector<Base::Vector3d>::iterator it = points.begin(); it != points.end(); ++it) {
+            fout << "    <"
+                 << it->x << ","
+                 << it->y << ","
+                 << it->z << ">,"
+                 << endl;
+        }
+
+        // writing per vertex normals
+        fout << "  }" << endl
+             << "  normal_vectors {" << endl
+             << "    " << normals.size() << "," << endl;
+
+        for (std::vector<Base::Vector3d>::iterator it = normals.begin(); it != normals.end(); ++it) {
+            fout << "    <" 
+                 << it->x << ","
+                 << it->y << ","
+                 << it->z << ">,"
+                 << endl;
+        }
+
+        // writing triangle indices
+        fout << "  }" << endl
+             << "  face_indices {" << endl
+             << "    " << facets.size() << "," << endl;
+        for (std::vector<Data::ComplexGeoData::Facet>::iterator it = facets.begin(); it != facets.end(); ++it) {
+            fout << "    <" << it->I1 << ","<< it->I3 << ","<< it->I2 << ">," << endl;
+        }
+
+        // end of face
+        fout << "  }" << endl
+             << "} // end of element" << i << endl << endl;
+    }
+
+    fout << endl << endl << "// Declare all together +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl
+         << "#declare " << PartName << " = union {" << endl;
+    for (unsigned long i=1; i < count; i++) {
+        fout << "mesh2{ " << PartName << i << "}" << endl;
+    }
+    fout << "}" << endl;
     fout.close();
 }
 

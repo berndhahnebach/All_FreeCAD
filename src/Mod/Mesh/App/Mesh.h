@@ -90,8 +90,13 @@ public:
     virtual unsigned long countSubElements(const char* Type) const;
     /// get the subelement by type and number
     virtual Data::Segment* getSubElement(const char* Type, unsigned long) const;
+    /** Get faces from segment */
+    virtual void getFacesFromSubelement(
+        const Data::Segment*,
+        std::vector<Base::Vector3d> &Points,
+        std::vector<Base::Vector3d> &PointNormals,
+        std::vector<Facet> &faces) const;
     //@}
-
 
     void setTransform(const Base::Matrix4D& rclTrf);
     Base::Matrix4D getTransform(void) const;

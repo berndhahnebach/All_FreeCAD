@@ -109,6 +109,24 @@ writePartFile(PyObject *self, PyObject *args)
     Py_Return;
 }
 
+/// write part file
+static PyObject *
+writeDataFile(PyObject *self, PyObject *args)
+{
+    PyObject *dataObject;
+    const char *FileName,*PartName;
+    if (! PyArg_ParseTuple(args, "ssO!",&FileName,&PartName,
+        &(Data::ComplexGeoDataPy::Type), &dataObject)) 
+        return 0;
+
+    const Data::ComplexGeoData* aData = static_cast<Data::ComplexGeoDataPy *>
+        (dataObject)->getComplexGeoDataPtr();
+    
+    PovTools::writeData(FileName,PartName,aData,0.1f);
+
+    Py_Return;
+}
+
 /// write part file as CSV
 static PyObject *
 writePartFileCSV(PyObject *self, PyObject *args)
@@ -200,6 +218,7 @@ struct PyMethodDef Raytracing_methods[] = {
     {"writePartFile",    writePartFile   , 1},
     {"writePartFileCSV", writePartFileCSV, 1},
     {"getPartAsPovray",  getPartAsPovray , 1},
+    {"writeDataFile",    writeDataFile , 1},
     {"writeCameraFile",  writeCameraFile , 1},
     {"copyResource",     copyResource    , 1},
     {NULL, NULL}
