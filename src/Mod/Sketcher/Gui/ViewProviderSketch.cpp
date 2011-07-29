@@ -638,7 +638,8 @@ void ViewProviderSketch::moveConstraint(int constNum, const Base::Vector2D &toPo
     const std::vector<Sketcher::Constraint *> &ConStr = getSketchObject()->Constraints.getValues();
     Constraint *Constr = ConStr[constNum];
 
-    if (Constr->Type == Distance || Constr->Type == DistanceX || Constr->Type == DistanceY) {
+    if (Constr->Type == Distance || Constr->Type == DistanceX || Constr->Type == DistanceY ||
+        Constr->Type == Radius) {
 
         const std::vector<Part::Geometry *> geomlist = edit->ActSketch.getGeometry();
         assert(Constr->First < int(geomlist.size()));
@@ -667,24 +668,42 @@ void ViewProviderSketch::moveConstraint(int constNum, const Base::Vector2D &toPo
                 const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment *>(geo);
                 p1 = lineSeg->getStartPoint();
                 p2 = lineSeg->getEndPoint();
+            } else if (geo->getTypeId() == Part::GeomArcOfCircle::getClassTypeId()) {
+                const Part::GeomArcOfCircle *arc = dynamic_cast<const Part::GeomArcOfCircle *>(geo);
+                double radius = arc->getRadius();
+                double startangle, endangle;
+                arc->getRange(startangle, endangle);
+                double angle = (startangle + endangle)/2;
+                p1 = arc->getCenter();
+                p2 = p1 + radius * Base::Vector3d(cos(angle),sin(angle),0.);
+            }
+            else if (geo->getTypeId() == Part::GeomCircle::getClassTypeId()) {
+                const Part::GeomCircle *circle = dynamic_cast<const Part::GeomCircle *>(geo);
+                double radius = circle->getRadius();
+                double angle = M_PI/4;
+                p1 = circle->getCenter();
+                p2 = p1 + radius * Base::Vector3d(cos(angle),sin(angle),0.);
             } else
                 return;
         } else
             return;
 
+        Base::Vector3d vec = Base::Vector3d(toPos.fX, toPos.fY, 0) - p2;
+
         Base::Vector3d dir;
-        if (Constr->Type == Distance)
+        if (Constr->Type == Distance || Constr->Type == Radius)
             dir = (p2-p1).Normalize();
         else if (Constr->Type == DistanceX)
             dir = Base::Vector3d( (p2.x > p1.x) ? 1 : -1, 0, 0);
         else if (Constr->Type == DistanceY)
             dir = Base::Vector3d(0, (p2.y > p1.y) ? 1 : -1, 0);
-        Base::Vector3d norm(-dir.y,dir.x,0);
 
-        Base::Vector3d vec = Base::Vector3d(toPos.fX, toPos.fY, 0) - p2;
-
-        // Get Distance From Sketched Line
-        Constr->LabelDistance = vec.x * norm.x + vec.y * norm.y;
+        if (Constr->Type == Radius)
+            Constr->LabelDistance = vec.x * dir.x + vec.y * dir.y;
+        else {
+            Base::Vector3d norm(-dir.y,dir.x,0);
+            Constr->LabelDistance = vec.x * norm.x + vec.y * norm.y;
+        }
     }
     draw(true);
 }
@@ -1518,6 +1537,91 @@ Restart:
                     dynamic_cast<SoTranslation *>(sep->getChild(7))->translation =  SbVec3f(2, -2, 0.0f);
                 }
                 break;
+            case Radius:
+                {
+                    assert(Constr->First < int(geomlist->size()));
+
+                    Base::Vector3d pnt1(0.,0.,0.), pnt2(0.,0.,0.);
+                    if (Constr->First != -1) {
+                        const Part::Geometry *geo = (*geomlist)[Constr->First];
+
+                        if (geo->getTypeId() == Part::GeomArcOfCircle::getClassTypeId()) {
+                            const Part::GeomArcOfCircle *arc = dynamic_cast<const Part::GeomArcOfCircle *>(geo);
+                            double radius = arc->getRadius();
+                            double startangle, endangle;
+                            arc->getRange(startangle, endangle);
+                            double angle = (startangle + endangle)/2;
+                            pnt1 = arc->getCenter();
+                            pnt2 = pnt1 + radius * Base::Vector3d(cos(angle),sin(angle),0.);
+                        }
+                        else if (geo->getTypeId() == Part::GeomCircle::getClassTypeId()) {
+                            const Part::GeomCircle *circle = dynamic_cast<const Part::GeomCircle *>(geo);
+                            double radius = circle->getRadius();
+                            double angle = M_PI/4;
+                            pnt1 = circle->getCenter();
+                            pnt2 = pnt1 + radius * Base::Vector3d(cos(angle),sin(angle),0.);
+                        } else
+                            break;
+                    } else
+                        break;
+
+                    SbVec3f p1(pnt1.x,pnt1.y,0);
+                    SbVec3f p2(pnt2.x,pnt2.y,0);
+
+                    SbVec3f dir = (p2-p1);
+                    dir.normalize();
+                    SbVec3f norm (-dir[1],dir[0],0);
+
+                    float length = Constr->LabelDistance;
+                    SbVec3f pos = p2 + length*dir;
+
+                    SoAsciiText *asciiText = dynamic_cast<SoAsciiText *>(sep->getChild(4));
+                    asciiText->string = SbString().sprintf("%.2f",Constr->Value);
+
+                    // Get Bounding box dimensions for Datum text
+                    Gui::MDIView *mdi = Gui::Application::Instance->activeDocument()->getActiveView();
+                    Gui::View3DInventorViewer *viewer = static_cast<Gui::View3DInventor *>(mdi)->getViewer();
+
+                    // [FIX ME] Its an attempt to find the height of the text using the bounding box, but is in correct.
+                    SoGetBoundingBoxAction bbAction(viewer->getViewportRegion());
+                    bbAction.apply(sep->getChild(4));
+
+                    float bx,by,bz;
+                    bbAction.getBoundingBox().getSize(bx,by,bz);
+                    SbVec3f textBB(bx,by,bz);
+
+                    SbVec3f textBBCenter = bbAction.getBoundingBox().getCenter();
+
+                    SbVec3f textpos = pos + norm * ( (dir[0] > 0 ? -1:1) * textBBCenter[1] / 4);
+
+                    // Get magnitude of angle between horizontal
+                    float angle = atanf(dir[1]/dir[0]); // atan2f(dir[1],dir[0]);
+
+                    // set position and rotation of Datums Text
+                    SoTransform *transform = dynamic_cast<SoTransform *>(sep->getChild(2));
+                    transform->translation.setValue(textpos);
+                    transform->rotation.setValue(SbVec3f(0, 0, 1), angle);
+
+                    // Get the datum nodes
+                    SoSeparator *sepDatum = dynamic_cast<SoSeparator *>(sep->getChild(1));
+                    SoCoordinate3 *datumCord = dynamic_cast<SoCoordinate3 *>(sepDatum->getChild(0));
+
+                    SbVec3f p3 = pos + dir * (6+textBB[0]/4);
+                    if ((p3-p1).length() > (p2-p1).length())
+                        p2 = p3;
+
+                    // Calculate the coordinates for the parallel datum lines
+                    datumCord->point.set1Value(0,p1);
+                    datumCord->point.set1Value(1,pos - dir * (1+textBB[0]/4) );
+                    datumCord->point.set1Value(2,pos + dir * (1+textBB[0]/4) );
+                    datumCord->point.set1Value(3,p2);
+
+                    // Use the coordinates calculated earlier to the lineset
+                    SoLineSet *datumLineSet = dynamic_cast<SoLineSet *>(sepDatum->getChild(1));
+                    datumLineSet->numVertices.set1Value(0,2);
+                    datumLineSet->numVertices.set1Value(1,2);
+                }
+                break;
             case Coincident: // nothing to do for coincident
             case None:
                 break;
@@ -1562,11 +1666,11 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
             case Distance:
             case DistanceX:
             case DistanceY:
+            case Radius:
                 {
                     SoSeparator *sepDatum = new SoSeparator();
                     sepDatum->addChild(new SoCoordinate3());
                     SoLineSet *lineSet = new SoLineSet;
-
                     sepDatum->addChild(lineSet);
 
                     sep->addChild(sepDatum);

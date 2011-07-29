@@ -494,6 +494,9 @@ int Sketch::addConstraint(const Constraint *constraint)
             break;
         case Angle:
             break;
+        case Radius:
+            rtn = addRadiusConstraint(constraint->First, constraint->Value);
+            break;
         case None:
             break;
     }
@@ -929,6 +932,28 @@ int Sketch::addDistanceConstraint(int geoId1, PointPos pos1, int geoId2, PointPo
         double *distance = FixParameters[FixParameters.size()-1];
 
         return GCSsys.addConstraintP2PDistance(p1, p2, distance);
+    }
+    return -1;
+}
+
+int Sketch::addRadiusConstraint(int geoId, double value)
+{
+    assert(geoId < int(Geoms.size()));
+    assert(Geoms[geoId].type == Circle || Geoms[geoId].type == Arc);
+
+    if (Geoms[geoId].type == Circle) {
+        GCS::Circle &c = Circles[Geoms[geoId].index];
+        // add the parameter for the radius
+        FixParameters.push_back(new double(value));
+        double *radius = FixParameters[FixParameters.size()-1];
+        return GCSsys.addConstraintCircleRadius(c, radius);
+    }
+    else if (Geoms[geoId].type == Arc) {
+        GCS::Arc &a = Arcs[Geoms[geoId].index];
+        // add the parameter for the radius
+        FixParameters.push_back(new double(value));
+        double *radius = FixParameters[FixParameters.size()-1];
+        return GCSsys.addConstraintArcRadius(a, radius);
     }
     return -1;
 }

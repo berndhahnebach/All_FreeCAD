@@ -132,10 +132,10 @@ public:
     /// add a coincident constraint to two points of two geometries
     int addPointCoincidentConstraint(int geoIndex1, PointPos pos1, int geoIndex2, PointPos pos2);
     /// add a length or distance constraint
-    int addDistanceConstraint(int geoIndex1, double Value);
-    int addDistanceConstraint(int geoIndex1, int geoIndex2, double Value);
-    int addDistanceConstraint(int geoIndex1, PointPos pos1, int geoIndex2, double Value);
-    int addDistanceConstraint(int geoIndex1, PointPos pos1, int geoIndex2, PointPos pos2, double Value);
+    int addDistanceConstraint(int geoIndex1, double value);
+    int addDistanceConstraint(int geoIndex1, int geoIndex2, double value);
+    int addDistanceConstraint(int geoIndex1, PointPos pos1, int geoIndex2, double value);
+    int addDistanceConstraint(int geoIndex1, PointPos pos1, int geoIndex2, PointPos pos2, double value);
     /// add a parallel constraint between two lines
     int addParallelConstraint(int geoIndex1, int geoIndex2);
     /// add a perpendicular constraint between two lines
@@ -144,6 +144,8 @@ public:
     int addTangentConstraint(int geoIndex1, int geoIndex2);
     int addTangentConstraint(int geoIndex1, PointPos pos1, int geoIndex2);
     int addTangentConstraint(int geoIndex1, PointPos pos1, int geoIndex2, PointPos pos2);
+    /// add a radius constraint on a circle or an arc
+    int addRadiusConstraint(int geoIndex, double value);
     //@}
 
     enum GeoType {
