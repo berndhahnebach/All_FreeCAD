@@ -1374,6 +1374,13 @@ Restart:
                     datumCord->point.set1Value(5,midpos + norm * length - dir * (1+textBB[0]/4) );
                     datumCord->point.set1Value(6,midpos + norm * length + dir * (1+textBB[0]/4) );
                     datumCord->point.set1Value(7,p2     + norm * length);
+
+                    // Use the coordinates calculated earlier to the lineset
+                    SoLineSet *datumLineSet = dynamic_cast<SoLineSet *>(sepDatum->getChild(1));
+                    datumLineSet->numVertices.set1Value(0,2);
+                    datumLineSet->numVertices.set1Value(1,2);
+                    datumLineSet->numVertices.set1Value(2,2);
+                    datumLineSet->numVertices.set1Value(3,2);
                 }
                 break;
             case Tangent:
@@ -1560,10 +1567,6 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
                     sepDatum->addChild(new SoCoordinate3());
                     SoLineSet *lineSet = new SoLineSet;
 
-                    lineSet->numVertices.set1Value(0,2);
-                    lineSet->numVertices.set1Value(1,2);
-                    lineSet->numVertices.set1Value(2,2);
-                    lineSet->numVertices.set1Value(3,2);
                     sepDatum->addChild(lineSet);
 
                     sep->addChild(sepDatum);
