@@ -931,8 +931,8 @@ PyObject* BSplineSurfacePy::movePoint(PyObject *args)
     int uindex1, uindex2;
     int vindex1, vindex2;
     PyObject* pnt;
-    if (!PyArg_ParseTuple(args, "ddO!ii", &U, &V, &(Base::VectorPy::Type),&pnt,
-                                          &uindex1, &uindex2,&vindex1, &vindex2))
+    if (!PyArg_ParseTuple(args, "ddO!iiii", &U, &V, &(Base::VectorPy::Type),&pnt,
+                                            &uindex1, &uindex2,&vindex1, &vindex2))
         return 0;
     try {
         Base::Vector3d p = static_cast<Base::VectorPy*>(pnt)->value();
