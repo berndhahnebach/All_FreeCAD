@@ -1006,7 +1006,7 @@ PyObject* TopoShapePy::tessellate(PyObject *args)
         if (!PyArg_ParseTuple(args, "f",&tolerance))
             return 0;
         std::vector<Base::Vector3d> Points;
-        std::vector<Data::ComplexGeoData::FacetTopo> Facets;
+        std::vector<Data::ComplexGeoData::Facet> Facets;
         getTopoShapePtr()->getFaces(Points, Facets,tolerance);
         Py::Tuple tuple(2);
         Py::List vertex;
@@ -1015,7 +1015,7 @@ PyObject* TopoShapePy::tessellate(PyObject *args)
             vertex.append(Py::Object(new Base::VectorPy(*it)));
         tuple.setItem(0, vertex);
         Py::List facet;
-        for (std::vector<Data::ComplexGeoData::FacetTopo>::const_iterator
+        for (std::vector<Data::ComplexGeoData::Facet>::const_iterator
             it = Facets.begin(); it != Facets.end(); ++it) {
             Py::Tuple f(3);
             f.setItem(0,Py::Int((int)it->I1));
@@ -1082,9 +1082,9 @@ PyObject* TopoShapePy::makeShapeFromMesh(PyObject *args)
             Py::Vector vec(*it);
             Points.push_back(vec.toVector());
         }
-        std::vector<Data::ComplexGeoData::FacetTopo> Facets;
+        std::vector<Data::ComplexGeoData::Facet> Facets;
         for (Py::List::iterator it = facets.begin(); it != facets.end(); ++it) {
-            Data::ComplexGeoData::FacetTopo face;
+            Data::ComplexGeoData::Facet face;
             Py::Tuple f(*it);
             face.I1 = (int)Py::Int(f[0]);
             face.I2 = (int)Py::Int(f[1]);

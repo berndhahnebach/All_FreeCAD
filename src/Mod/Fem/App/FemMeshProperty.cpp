@@ -91,7 +91,7 @@ void PropertyFemMesh::transformGeometry(const Base::Matrix4D &rclMat)
 }
 
 void PropertyFemMesh::getFaces(std::vector<Base::Vector3d> &aPoints,
-                               std::vector<Data::ComplexGeoData::FacetTopo> &aTopo,
+                               std::vector<Data::ComplexGeoData::Facet> &aTopo,
                                float accuracy, uint16_t flags) const
 {
     _FemMesh->getFaces(aPoints, aTopo, accuracy, flags);

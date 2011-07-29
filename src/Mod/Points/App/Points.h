@@ -66,6 +66,7 @@ public:
      *  its NOT a list of the subelements itself
      */
     virtual std::vector<const char*> getElementTypes(void) const;
+    virtual unsigned long countSubElements(const char* Type) const;
     /// get the subelement by type and number
     virtual Data::Segment* getSubElement(const char* Type, unsigned long) const;
     //@}
@@ -76,7 +77,7 @@ public:
     { return this->_Points; }
     const std::vector<Base::Vector3f>& getBasicPoints() const
     { return this->_Points; }
-    void getFaces(std::vector<Base::Vector3d> &Points,std::vector<FacetTopo> &Topo,
+    void getFaces(std::vector<Base::Vector3d> &Points,std::vector<Facet> &Topo,
         float Accuracy, uint16_t flags=0) const;
 
     virtual void transformGeometry(const Base::Matrix4D &rclMat);

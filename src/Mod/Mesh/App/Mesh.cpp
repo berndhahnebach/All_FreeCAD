@@ -90,6 +90,11 @@ std::vector<const char*> MeshObject::getElementTypes(void) const
     return temp;
 }
 
+unsigned long MeshObject::countSubElements(const char* Type) const
+{
+    return 0;
+}
+
 Data::Segment* MeshObject::getSubElement(const char* Type, unsigned long n) const
 {
     //unsigned long i = 1;
@@ -227,13 +232,13 @@ MeshPoint MeshObject::getPoint(unsigned long index) const
     return point;
 }
 
-Facet MeshObject::getFacet(unsigned long index) const
+Mesh::Facet MeshObject::getFacet(unsigned long index) const
 {
-    Facet face(_kernel.GetFacets()[index], const_cast<MeshObject*>(this), index);
+    Mesh::Facet face(_kernel.GetFacets()[index], const_cast<MeshObject*>(this), index);
     return face;
 }
 
-void MeshObject::getFaces(std::vector<Base::Vector3d> &Points,std::vector<FacetTopo> &Topo,
+void MeshObject::getFaces(std::vector<Base::Vector3d> &Points,std::vector<Facet> &Topo,
                           float Accuracy, uint16_t flags) const
 {
     unsigned long ctpoints = _kernel.CountPoints();
@@ -246,7 +251,7 @@ void MeshObject::getFaces(std::vector<Base::Vector3d> &Points,std::vector<FacetT
     const MeshCore::MeshFacetArray& ary = _kernel.GetFacets();
     Topo.reserve(ctfacets);
     for (unsigned long i=0; i<ctfacets; i++) {
-        FacetTopo face;
+        Facet face;
         face.I1 = (unsigned int)ary[i]._aulPoints[0];
         face.I2 = (unsigned int)ary[i]._aulPoints[1];
         face.I3 = (unsigned int)ary[i]._aulPoints[2];
@@ -397,12 +402,12 @@ void MeshObject::addFacets(const std::vector<MeshCore::MeshFacet> &facets,
     _kernel.AddFacets(facets, points);
 }
 
-void MeshObject::addFacets(const std::vector<Data::ComplexGeoData::FacetTopo> &facets,
+void MeshObject::addFacets(const std::vector<Data::ComplexGeoData::Facet> &facets,
                            const std::vector<Base::Vector3d>& points)
 {
     std::vector<MeshCore::MeshFacet> facet_v;
     facet_v.reserve(facets.size());
-    for (std::vector<Data::ComplexGeoData::FacetTopo>::const_iterator it = facets.begin(); it != facets.end(); ++it) {
+    for (std::vector<Data::ComplexGeoData::Facet>::const_iterator it = facets.begin(); it != facets.end(); ++it) {
         MeshCore::MeshFacet f;
         f._aulPoints[0] = it->I1;
         f._aulPoints[1] = it->I2;
@@ -425,12 +430,12 @@ void MeshObject::setFacets(const std::vector<MeshCore::MeshGeomFacet>& facets)
     _kernel = facets;
 }
 
-void MeshObject::setFacets(const std::vector<Data::ComplexGeoData::FacetTopo> &facets,
+void MeshObject::setFacets(const std::vector<Data::ComplexGeoData::Facet> &facets,
                            const std::vector<Base::Vector3d>& points)
 {
     MeshCore::MeshFacetArray facet_v;
     facet_v.reserve(facets.size());
-    for (std::vector<Data::ComplexGeoData::FacetTopo>::const_iterator it = facets.begin(); it != facets.end(); ++it) {
+    for (std::vector<Data::ComplexGeoData::Facet>::const_iterator it = facets.begin(); it != facets.end(); ++it) {
         MeshCore::MeshFacet f;
         f._aulPoints[0] = it->I1;
         f._aulPoints[1] = it->I2;

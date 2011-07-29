@@ -175,7 +175,7 @@ static PyObject * exporter(PyObject *self, PyObject *args)
                     Base::Reference<MeshObject> mesh(new MeshObject());
                     if (shape && shape->getTypeId().isDerivedFrom(App::PropertyComplexGeoData::getClassTypeId())) {
                         std::vector<Base::Vector3d> aPoints;
-                        std::vector<Data::ComplexGeoData::FacetTopo> aTopo;
+                        std::vector<Data::ComplexGeoData::Facet> aTopo;
                         static_cast<App::PropertyComplexGeoData*>(shape)->getFaces(aPoints, aTopo,fTolerance);
                         mesh->addFacets(aTopo, aPoints);
                         if (global_mesh.countFacets() == 0)

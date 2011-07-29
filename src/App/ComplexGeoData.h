@@ -59,6 +59,9 @@ class AppExport ComplexGeoData: public Base::Persistence, public Base::Handled
     TYPESYSTEM_HEADER();
  
 public:
+    struct Line  {uint32_t I1; uint32_t I2;};
+    struct Facet {uint32_t I1; uint32_t I2; uint32_t I3;};
+
     /// Constructor
     ComplexGeoData(void);
     /// Destructor
@@ -71,10 +74,22 @@ public:
      *  its NOT a list of the subelements itself
      */
     virtual std::vector<const char*> getElementTypes(void) const=0;
+    virtual unsigned long countSubElements(const char* Type) const=0;
     /// get the subelement by type and number
     virtual Segment* getSubElement(const char* Type, unsigned long) const=0;
     /// get subelement by combined name
     virtual Segment* getSubElementByName(const char* Name) const;
+    /** Get lines from segment */
+    virtual void getLinesFromSubelement(
+        const Segment*,
+        std::vector<Base::Vector3d> &Points,
+        std::vector<Line> &lines) const {}
+    /** Get faces from segment */
+    virtual void getFacesFromSubelement(
+        const Segment*,
+        std::vector<Base::Vector3d> &Points,
+        std::vector<Base::Vector3d> &PointNormals,
+        std::vector<Facet> &faces) const {}
     //@}
 
     /** @name Placement control */
@@ -113,8 +128,6 @@ public:
 
     /** @name Getting basic geometric entities */
     //@{
-    struct LineTopo {uint32_t I1; uint32_t I2;};
-    struct FacetTopo {uint32_t I1; uint32_t I2; uint32_t I3;};
     /// Get the bound box
     virtual Base::BoundBox3d getBoundBox(void)const=0;
     /** Get point from line object intersection  */
@@ -126,10 +139,10 @@ public:
     virtual void getPoints(std::vector<Base::Vector3d> &Points,
         float Accuracy, uint16_t flags=0) const {};
     /** Get lines from object with given accuracy */
-    virtual void getLines(std::vector<Base::Vector3d> &Points,std::vector<LineTopo> &Topo,
+    virtual void getLines(std::vector<Base::Vector3d> &Points,std::vector<Line> &lines,
         float Accuracy, uint16_t flags=0) const {};
     /** Get faces from object with given accuracy */
-    virtual void getFaces(std::vector<Base::Vector3d> &Points,std::vector<FacetTopo> &Topo,
+    virtual void getFaces(std::vector<Base::Vector3d> &Points,std::vector<Facet> &faces,
         float Accuracy, uint16_t flags=0) const {};
     //@}
 
