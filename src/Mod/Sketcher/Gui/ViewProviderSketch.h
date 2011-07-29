@@ -125,7 +125,7 @@ public:
     Sketcher::SketchObject *getSketchObject(void) const;
     
     // Moves a selected constraint
-    void moveConstraint(int constNum, const Base::Vector2D &Pos);
+    void moveConstraint(int constNum, const Base::Vector2D &toPos);
      // Checks if there is a constraint object at position vector
     bool isConstraintAtPosition(const Base::Vector3d &constrPos, const SoNode *constraint);
 
