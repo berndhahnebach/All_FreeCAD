@@ -111,7 +111,7 @@ void CmdSketcherConstrainHorizontal::activated(int iMsg)
                 }
             }
             // issue the actual commands to create the constraint
-            doCommand(Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Horizontal',%i)) "
+            doCommand(Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Horizontal',%d)) "
                          ,selection[0].getFeatName(),index);
         }
     }
@@ -261,10 +261,10 @@ void CmdSketcherConstrainLock::activated(int iMsg)
     // undo command open
     openCommand("add fixed constraint");
     Gui::Command::doCommand(
-        Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('DistanceX',%i,%i,%f)) ",
+        Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('DistanceX',%d,%d,%f)) ",
         selection[0].getFeatName(),GeoId,PosId,pnt.x);
     Gui::Command::doCommand(
-        Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('DistanceY',%i,%i,%f)) ",
+        Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('DistanceY',%d,%d,%f)) ",
         selection[0].getFeatName(),GeoId,PosId,pnt.y);
 
     // finish the transaction and update
@@ -346,7 +346,7 @@ void CmdSketcherConstrainCoincident::activated(int iMsg)
     // undo command open
     openCommand("add coincident constraint");
     Gui::Command::doCommand(
-        Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Coincident',%i,%i,%i,%i)) ",
+        Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Coincident',%d,%d,%d,%d)) ",
         selection[0].getFeatName(),GeoId1,Pt1,GeoId2,Pt2);
 
     // finish the transaction and update
@@ -775,7 +775,7 @@ void CmdSketcherConstrainParallel::activated(int iMsg)
     // undo command open
     openCommand("add parallel constraint");
     Gui::Command::doCommand(
-        Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Parallel',%i,%i)) ",
+        Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Parallel',%d,%d)) ",
         selection[0].getFeatName(),GeoId1,GeoId2);
 
     // finish the transaction and update
@@ -850,7 +850,7 @@ void CmdSketcherConstrainPerpendicular::activated(int iMsg)
     // undo command open
     openCommand("add perpendicular constraint");
     Gui::Command::doCommand(
-        Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Perpendicular',%i,%i)) ",
+        Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Perpendicular',%d,%d)) ",
         selection[0].getFeatName(),GeoId1,GeoId2);
 
     // finish the transaction and update
@@ -923,7 +923,7 @@ void CmdSketcherConstrainTangent::activated(int iMsg)
         Obj->getGeoVertexIndex(VtId2,GeoId2,PosId2);
         openCommand("add tangent constraint");
         Gui::Command::doCommand(
-            Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Tangent',%i,%i,%i,%i)) ",
+            Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Tangent',%d,%d,%d,%d)) ",
             selection[0].getFeatName(),GeoId1,PosId1,GeoId2,PosId2);
         commitCommand();
         updateActive();
@@ -940,7 +940,7 @@ void CmdSketcherConstrainTangent::activated(int iMsg)
         Obj->getGeoVertexIndex(VtId1,GeoId1,PosId1);
         openCommand("add tangent constraint");
         Gui::Command::doCommand(
-            Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Tangent',%i,%i,%i)) ",
+            Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Tangent',%d,%d,%d)) ",
             selection[0].getFeatName(),GeoId1,PosId1,GeoId2);
         commitCommand();
         updateActive();
@@ -950,7 +950,7 @@ void CmdSketcherConstrainTangent::activated(int iMsg)
     else if (GeoId1 >= 0 && GeoId2 >= 0) { // simple tangency between GeoId1 and GeoId2
         openCommand("add tangent constraint");
         Gui::Command::doCommand(
-            Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Tangent',%i,%i)) ",
+            Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Tangent',%d,%d)) ",
             selection[0].getFeatName(),GeoId1,GeoId2);
         commitCommand();
         updateActive();
