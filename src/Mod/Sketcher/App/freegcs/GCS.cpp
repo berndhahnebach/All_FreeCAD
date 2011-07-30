@@ -124,6 +124,11 @@ System::System(std::vector<Constraint *> clist_)
                 newconstr = new ConstraintPerpendicular(*oldconstr);
                 break;
             }
+            case L2LAngle: {
+                ConstraintL2LAngle *oldconstr = static_cast<ConstraintL2LAngle *>(*constr);
+                newconstr = new ConstraintL2LAngle(*oldconstr);
+                break;
+            }
             case None:
                 break;
         }
@@ -198,6 +203,8 @@ void System::removeConstraint(Constraint *constr)
     free(constrvec);
 }
 
+// basic constraints
+
 int System::addConstraintEqual(double *param1, double *param2, int level)
 {
     Constraint *constr = new ConstraintEqual(param1, param2);
@@ -260,6 +267,23 @@ int System::addConstraintPerpendicular(Line &l1, Line &l2, int level)
     constr->setPriority(level);
     return addConstraint(constr);
 }
+
+int System::addConstraintL2LAngle(Line &l1, Line &l2, double *angle, int level)
+{
+    Constraint *constr = new ConstraintL2LAngle(l1, l2, angle);
+    constr->setPriority(level);
+    return addConstraint(constr);
+}
+
+int System::addConstraintL2LAngle(Point &l1p1, Point &l1p2,
+                                  Point &l2p1, Point &l2p2, double *angle, int level)
+{
+    Constraint *constr = new ConstraintL2LAngle(l1p1, l1p2, l2p1, l2p2, angle);
+    constr->setPriority(level);
+    return addConstraint(constr);
+}
+
+// derived constraints
 
 int System::addConstraintP2PCoincident(Point &p1, Point &p2, int level)
 {
@@ -809,6 +833,9 @@ void free(std::vector<Constraint *> &constrvec)
                     break;
                 case Perpendicular:
                     delete static_cast<ConstraintPerpendicular *>(*constr);
+                    break;
+                case L2LAngle:
+                    delete static_cast<ConstraintL2LAngle *>(*constr);
                     break;
                 case None:
                 default:

@@ -260,7 +260,7 @@ double ConstraintP2PAngle::grad(double *param)
 {
     double deriv=0.;
     if (param == p1x() || param == p1y() ||
-        param == p2x() || param == p2y() || param == angle()) {
+        param == p2x() || param == p2y()) {
         double dx = (*p2x() - *p1x());
         double dy = (*p2y() - *p1y());
         double a = *angle() + da;
@@ -275,8 +275,8 @@ double ConstraintP2PAngle::grad(double *param)
         if (param == p1y()) deriv += (-sa*dx - ca*dy);
         if (param == p2x()) deriv += ( ca*dx - sa*dy);
         if (param == p2y()) deriv += ( sa*dx + ca*dy);
-        if (param == angle()) deriv += -1;
     }
+    if (param == angle()) deriv += -1;
     return scale * deriv;
 }
 
@@ -555,6 +555,110 @@ double ConstraintPerpendicular::grad(double *param)
         if (param == l2p2y()) deriv += -(d2*dy1 - dp*dy2/d2) / (dd2*d1);
     }
     return scale * deriv;
+}
+
+// L2LAngle
+ConstraintL2LAngle::ConstraintL2LAngle(Line &l1, Line &l2, double *a)
+{
+    pvec.push_back(l1.p1.x);
+    pvec.push_back(l1.p1.y);
+    pvec.push_back(l1.p2.x);
+    pvec.push_back(l1.p2.y);
+    pvec.push_back(l2.p1.x);
+    pvec.push_back(l2.p1.y);
+    pvec.push_back(l2.p2.x);
+    pvec.push_back(l2.p2.y);
+    pvec.push_back(a);
+    origpvec = pvec;
+    rescale();
+}
+
+ConstraintL2LAngle::ConstraintL2LAngle(Point &l1p1, Point &l1p2,
+                                       Point &l2p1, Point &l2p2, double *a)
+{
+    pvec.push_back(l1p1.x);
+    pvec.push_back(l1p1.y);
+    pvec.push_back(l1p2.x);
+    pvec.push_back(l1p2.y);
+    pvec.push_back(l2p1.x);
+    pvec.push_back(l2p1.y);
+    pvec.push_back(l2p2.x);
+    pvec.push_back(l2p2.y);
+    pvec.push_back(a);
+    origpvec = pvec;
+    rescale();
+}
+
+ConstraintType ConstraintL2LAngle::getTypeId()
+{
+    return L2LAngle;
+}
+
+void ConstraintL2LAngle::rescale(double coef)
+{
+    scale = coef * 1.;
+}
+
+double ConstraintL2LAngle::error()
+{
+    double dx1 = (*l1p2x() - *l1p1x());
+    double dy1 = (*l1p2y() - *l1p1y());
+    double dx2 = (*l2p2x() - *l2p1x());
+    double dy2 = (*l2p2y() - *l2p1y());
+    double a = atan2(dy1,dx1) + *angle();
+    double ca = cos(a);
+    double sa = sin(a);
+    double x2 = dx2*ca + dy2*sa;
+    double y2 = -dx2*sa + dy2*ca;
+    return scale * atan2(y2,x2);
+}
+
+double ConstraintL2LAngle::grad(double *param)
+{
+    double deriv=0.;
+    if (param == l1p1x() || param == l1p1y() ||
+        param == l1p2x() || param == l1p2y()) {
+        double dx1 = (*l1p2x() - *l1p1x());
+        double dy1 = (*l1p2y() - *l1p1y());
+        double r2 = dx1*dx1+dy1*dy1;
+        if (param == l1p1x()) deriv += -dy1/r2;
+        if (param == l1p1y()) deriv += dx1/r2;
+        if (param == l1p2x()) deriv += dy1/r2;
+        if (param == l1p2y()) deriv += -dx1/r2;
+    }
+    if (param == l2p1x() || param == l2p1y() ||
+        param == l2p2x() || param == l2p2y()) {
+        double dx1 = (*l1p2x() - *l1p1x());
+        double dy1 = (*l1p2y() - *l1p1y());
+        double dx2 = (*l2p2x() - *l2p1x());
+        double dy2 = (*l2p2y() - *l2p1y());
+        double a = atan2(dy1,dx1) + *angle();
+        double ca = cos(a);
+        double sa = sin(a);
+        double x2 = dx2*ca + dy2*sa;
+        double y2 = -dx2*sa + dy2*ca;
+        double r2 = dx2*dx2+dy2*dy2;
+        dx2 = -y2/r2;
+        dy2 = x2/r2;
+        if (param == l2p1x()) deriv += (-ca*dx2 + sa*dy2);
+        if (param == l2p1y()) deriv += (-sa*dx2 - ca*dy2);
+        if (param == l2p2x()) deriv += ( ca*dx2 - sa*dy2);
+        if (param == l2p2y()) deriv += ( sa*dx2 + ca*dy2);
+    }
+    if (param == angle()) deriv += -1;
+    return scale * deriv;
+}
+
+double ConstraintL2LAngle::maxStep(MAP_pD_D &dir, double lim)
+{
+    // step(angle()) <= pi/18 = 10°
+    MAP_pD_D::iterator it = dir.find(angle());
+    if (it != dir.end()) {
+        double step = std::abs(it->second);
+        if (step > M_PI/18.)
+            lim = std::min(lim, (M_PI/18.) / step);
+    }
+    return lim;
 }
 
 
