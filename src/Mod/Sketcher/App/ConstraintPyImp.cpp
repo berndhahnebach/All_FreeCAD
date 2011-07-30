@@ -229,9 +229,13 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
             this->getConstraintPtr()->Type = DistanceY;
             valid = true;
         }
+        else if (strcmp("Angle",ConstraintType) == 0 ) {
+            this->getConstraintPtr()->Type = Angle;
+            valid = true;
+        }
         if (valid) {
             this->getConstraintPtr()->First     = FirstIndex;
-            this->getConstraintPtr()->FirstPos = (Sketcher::PointPos) FirstPos;
+            this->getConstraintPtr()->FirstPos  = (Sketcher::PointPos) FirstPos;
             this->getConstraintPtr()->Second    = SecondIndex;
             this->getConstraintPtr()->SecondPos = (Sketcher::PointPos) SecondPos;
             this->getConstraintPtr()->Value     = Value;
