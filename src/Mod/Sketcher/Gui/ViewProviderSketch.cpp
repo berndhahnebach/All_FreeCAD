@@ -705,6 +705,50 @@ void ViewProviderSketch::moveConstraint(int constNum, const Base::Vector2D &toPo
             Constr->LabelDistance = vec.x * norm.x + vec.y * norm.y;
         }
     }
+    else if (Constr->Type == Angle) {
+        const std::vector<Part::Geometry *> geomlist = edit->ActSketch.getGeometry();
+        assert(Constr->First < int(geomlist.size()));
+
+        Base::Vector3d p0(0.,0.,0.);
+        if (Constr->Second != -1) { // line to line angle
+            const Part::Geometry *geo1 = geomlist[Constr->First];
+            const Part::Geometry *geo2 = geomlist[Constr->Second];
+            if (geo1->getTypeId() != Part::GeomLineSegment::getClassTypeId() ||
+                geo2->getTypeId() != Part::GeomLineSegment::getClassTypeId())
+                return;
+            const Part::GeomLineSegment *lineSeg1 = dynamic_cast<const Part::GeomLineSegment *>(geo1);
+            const Part::GeomLineSegment *lineSeg2 = dynamic_cast<const Part::GeomLineSegment *>(geo2);
+
+            bool flip1 = (Constr->FirstPos == end);
+            bool flip2 = (Constr->SecondPos == end);
+            Base::Vector3d dir1 = (flip1 ? -1. : 1.) * (lineSeg1->getEndPoint()-lineSeg1->getStartPoint());
+            Base::Vector3d dir2 = (flip2 ? -1. : 1.) * (lineSeg2->getEndPoint()-lineSeg2->getStartPoint());
+            Base::Vector3d pnt1 = flip1 ? lineSeg1->getEndPoint() : lineSeg1->getStartPoint();
+            Base::Vector3d pnt2 = flip2 ? lineSeg2->getEndPoint() : lineSeg2->getStartPoint();
+
+            // line-line intersection
+            {
+                double det = dir1.x*dir2.y - dir1.y*dir2.x;
+                if ((det > 0 ? det : -det) < 1e-10)
+                    return;
+                double c1 = dir1.y*pnt1.x - dir1.x*pnt1.y;
+                double c2 = dir2.y*pnt2.x - dir2.x*pnt2.y;
+                double x = (dir1.x*c2 - dir2.x*c1)/det;
+                double y = (dir1.y*c2 - dir2.y*c1)/det;
+                p0 = Base::Vector3d(x,y,0);
+            }
+        } else if (Constr->First != -1) { // line angle
+            const Part::Geometry *geo = geomlist[Constr->First];
+            if (geo->getTypeId() != Part::GeomLineSegment::getClassTypeId())
+                return;
+            const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment *>(geo);
+            p0 = (lineSeg->getEndPoint()+lineSeg->getStartPoint())/2;
+        } else
+            return;
+
+        Base::Vector3d vec = Base::Vector3d(toPos.fX, toPos.fY, 0) - p0;
+        Constr->LabelDistance = vec.Length()/2;
+    }
     draw(true);
 }
 
@@ -1489,6 +1533,120 @@ Restart:
                 }
                 break;
             case Angle:
+                {
+                    assert(Constr->First < int(geomlist->size()));
+                    assert(Constr->Second < int(geomlist->size()));
+
+                    SbVec3f p0;
+                    double startangle,range,endangle;
+                    if (Constr->Second != -1) {
+                        const Part::Geometry *geo1 = (*geomlist)[Constr->First];
+                        const Part::Geometry *geo2 = (*geomlist)[Constr->Second];
+                        if (geo1->getTypeId() != Part::GeomLineSegment::getClassTypeId() ||
+                            geo2->getTypeId() != Part::GeomLineSegment::getClassTypeId())
+                            break;
+                        const Part::GeomLineSegment *lineSeg1 = dynamic_cast<const Part::GeomLineSegment *>(geo1);
+                        const Part::GeomLineSegment *lineSeg2 = dynamic_cast<const Part::GeomLineSegment *>(geo2);
+
+                        bool flip1 = (Constr->FirstPos == end);
+                        bool flip2 = (Constr->SecondPos == end);
+                        Base::Vector3d dir1 = (flip1 ? -1. : 1.) * (lineSeg1->getEndPoint()-lineSeg1->getStartPoint());
+                        Base::Vector3d dir2 = (flip2 ? -1. : 1.) * (lineSeg2->getEndPoint()-lineSeg2->getStartPoint());
+                        Base::Vector3d pnt1 = flip1 ? lineSeg1->getEndPoint() : lineSeg1->getStartPoint();
+                        Base::Vector3d pnt2 = flip2 ? lineSeg2->getEndPoint() : lineSeg2->getStartPoint();
+
+                        // line-line intersection
+                        {
+                            double det = dir1.x*dir2.y - dir1.y*dir2.x;
+                            if ((det > 0 ? det : -det) < 1e-10)
+                                break;
+                            double c1 = dir1.y*pnt1.x - dir1.x*pnt1.y;
+                            double c2 = dir2.y*pnt2.x - dir2.x*pnt2.y;
+                            double x = (dir1.x*c2 - dir2.x*c1)/det;
+                            double y = (dir1.y*c2 - dir2.y*c1)/det;
+                            p0 = SbVec3f(x,y,0);
+                        }
+
+                        startangle = atan2(dir1.y,dir1.x);
+                        range = atan2(-dir1.y*dir2.x+dir1.x*dir2.y,
+                                      dir1.x*dir2.x+dir1.y*dir2.y);
+                        endangle = startangle + range;
+
+                    } else if (Constr->First != -1) {
+                        const Part::Geometry *geo = (*geomlist)[Constr->First];
+                        if (geo->getTypeId() != Part::GeomLineSegment::getClassTypeId())
+                            break;
+                        const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment *>(geo);
+
+                        p0 = Base::convertTo<SbVec3f>((lineSeg->getEndPoint()+lineSeg->getStartPoint())/2);
+
+                        Base::Vector3d dir = lineSeg->getEndPoint()-lineSeg->getStartPoint();
+                        startangle = 0.;
+                        range = atan2(dir.y,dir.x);
+                        endangle = startangle + range;
+                    } else
+                        break;
+
+                    SoAsciiText *asciiText = dynamic_cast<SoAsciiText *>(sep->getChild(4));
+                    asciiText->string = SbString().sprintf("%.2f",Constr->Value * 180./M_PI);
+
+                    // Get Bounding box dimensions for Datum text
+                    Gui::MDIView *mdi = Gui::Application::Instance->activeDocument()->getActiveView();
+                    Gui::View3DInventorViewer *viewer = static_cast<Gui::View3DInventor *>(mdi)->getViewer();
+
+                    // [FIX ME] Its an attempt to find the height of the text using the bounding box, but is in correct.
+                    SoGetBoundingBoxAction bbAction(viewer->getViewportRegion());
+                    bbAction.apply(sep->getChild(4));
+
+                    float bx,by,bz;
+                    bbAction.getBoundingBox().getSize(bx,by,bz);
+                    SbVec3f textBB(bx,by,bz);
+
+                    SbVec3f textBBCenter = bbAction.getBoundingBox().getCenter();
+
+                    float length = Constr->LabelDistance;
+                    float r = 2*length;
+
+                    SbVec3f v0(cos(startangle+range/2),sin(startangle+range/2),0);
+                    SbVec3f textpos = p0 + v0 * r - SbVec3f(0,1,0) * textBBCenter[1]/4;
+
+                    // leave some space for the text
+                    range = std::max(0.2*range, range - textBB[0]/(2*r));
+
+                    int countSegments = std::max(4,abs(int(25.0 * range / (2 * M_PI))));
+                    double segment = range / (2*countSegments-2);
+
+                    // set position and rotation of Datums Text
+                    SoTransform *transform = dynamic_cast<SoTransform *>(sep->getChild(2));
+                    transform->translation.setValue(textpos);
+
+                    // Get the datum nodes
+                    SoSeparator *sepDatum = dynamic_cast<SoSeparator *>(sep->getChild(1));
+                    SoCoordinate3 *datumCord = dynamic_cast<SoCoordinate3 *>(sepDatum->getChild(0));
+
+                    datumCord->point.setNum(2*countSegments+4);
+                    int i=0;
+                    int j=2*countSegments-1;
+                    for (; i < countSegments; i++, j--) {
+                        double angle = startangle + segment*i;
+                        datumCord->point.set1Value(i,p0+SbVec3f(r*cos(angle),r*sin(angle),0));
+                        angle = endangle - segment*i;
+                        datumCord->point.set1Value(j,p0+SbVec3f(r*cos(angle),r*sin(angle),0));
+                    }
+                    SbVec3f v1(cos(startangle),sin(startangle),0);
+                    SbVec3f v2(cos(endangle),sin(endangle),0);
+                    datumCord->point.set1Value(2*countSegments  ,p0+(r-2)*v1);
+                    datumCord->point.set1Value(2*countSegments+1,p0+(r+2)*v1);
+                    datumCord->point.set1Value(2*countSegments+2,p0+(r-2)*v2);
+                    datumCord->point.set1Value(2*countSegments+3,p0+(r+2)*v2);
+
+                    // Use the coordinates calculated earlier to the lineset
+                    SoLineSet *datumLineSet = dynamic_cast<SoLineSet *>(sepDatum->getChild(1));
+                    datumLineSet->numVertices.set1Value(0,countSegments);
+                    datumLineSet->numVertices.set1Value(1,countSegments);
+                    datumLineSet->numVertices.set1Value(2,2);
+                    datumLineSet->numVertices.set1Value(3,2);
+                }
                 break;
             case Radius:
                 {
@@ -1628,6 +1786,7 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
             case DistanceX:
             case DistanceY:
             case Radius:
+            case Angle:
                 {
                     SoSeparator *sepDatum = new SoSeparator();
                     sepDatum->addChild(new SoCoordinate3());

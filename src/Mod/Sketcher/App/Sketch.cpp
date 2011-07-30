@@ -496,6 +496,13 @@ int Sketch::addConstraint(const Constraint *constraint)
                 rtn = addDistanceConstraint(constraint->First,constraint->Value);
             break;
         case Angle:
+            if (constraint->SecondPos != none) // angle between two lines (with explicit start points)
+                rtn = addAngleConstraint(constraint->First,constraint->FirstPos,
+                                         constraint->Second,constraint->SecondPos,constraint->Value);
+            else if (constraint->Second != -1) // angle between two lines
+                rtn = addAngleConstraint(constraint->First,constraint->Second,constraint->Value);
+            else if (constraint->First != -1) // orientation angle of a line
+                rtn = addAngleConstraint(constraint->First,constraint->Value);
             break;
         case Radius:
             rtn = addRadiusConstraint(constraint->First, constraint->Value);
@@ -1007,6 +1014,80 @@ int Sketch::addRadiusConstraint(int geoId, double value)
         return GCSsys.addConstraintArcRadius(a, radius);
     }
     return -1;
+}
+
+// line orientation angle constraint
+int Sketch::addAngleConstraint(int geoId, double value)
+{
+    assert(geoId < int(Geoms.size()));
+    if (Geoms[geoId].type != Line)
+        return -1;
+
+    GCS::Line &l = Lines[Geoms[geoId].index];
+
+    // add the parameter for the angle
+    FixParameters.push_back(new double(value));
+    double *angle = FixParameters[FixParameters.size()-1];
+
+    return GCSsys.addConstraintP2PAngle(l.p1, l.p2, angle);
+}
+
+// line to line angle constraint
+int Sketch::addAngleConstraint(int geoId1, int geoId2, double value)
+{
+    assert(geoId1 < int(Geoms.size()));
+    assert(geoId2 < int(Geoms.size()));
+
+    if (Geoms[geoId1].type != Line ||
+        Geoms[geoId2].type != Line)
+        return -1;
+
+    GCS::Line &l1 = Lines[Geoms[geoId1].index];
+    GCS::Line &l2 = Lines[Geoms[geoId2].index];
+
+    // add the parameter for the angle
+    FixParameters.push_back(new double(value));
+    double *angle = FixParameters[FixParameters.size()-1];
+
+    return GCSsys.addConstraintL2LAngle(l1, l2, angle);
+}
+
+// line to line angle constraint (with explicitly given start points)
+int Sketch::addAngleConstraint(int geoId1, PointPos pos1, int geoId2, PointPos pos2, double value)
+{
+    assert(geoId1 < int(Geoms.size()));
+    assert(geoId2 < int(Geoms.size()));
+
+    if (Geoms[geoId1].type != Line ||
+        Geoms[geoId2].type != Line)
+        return -1;
+
+    GCS::Point *l1p1=0, *l1p2=0;
+    if (pos1 == start) {
+       l1p1 = &Points[Geoms[geoId1].startPointId];
+       l1p2 = &Points[Geoms[geoId1].endPointId];
+    } else if (pos1 == end) {
+       l1p1 = &Points[Geoms[geoId1].endPointId];
+       l1p2 = &Points[Geoms[geoId1].startPointId];
+    }
+ 
+    GCS::Point *l2p1=0, *l2p2=0;
+    if (pos2 == start) {
+       l2p1 = &Points[Geoms[geoId2].startPointId];
+       l2p2 = &Points[Geoms[geoId2].endPointId];
+    } else if (pos2 == end) {
+       l2p1 = &Points[Geoms[geoId2].endPointId];
+       l2p2 = &Points[Geoms[geoId2].startPointId];
+    }
+
+    if (l1p1 == 0 || l2p1 == 0)
+        return -1;
+
+    // add the parameter for the angle
+    FixParameters.push_back(new double(value));
+    double *angle = FixParameters[FixParameters.size()-1];
+
+    return GCSsys.addConstraintL2LAngle(*l1p1, *l1p2, *l2p1, *l2p2, angle);
 }
 
 // solving ==========================================================

@@ -173,11 +173,13 @@ void TaskSketcherConstrains::on_listWidgetConstraints_itemActivated(QListWidgetI
     // if its the right constraint
     if (it->Type == Sketcher::Distance ||
         it->Type == Sketcher::DistanceX || it->Type == Sketcher::DistanceY ||
-        it->Type == Sketcher::Radius) {
+        it->Type == Sketcher::Radius || it->Type == Sketcher::Angle) {
         const std::vector< Sketcher::Constraint * > &vals = sketchView->getSketchObject()->Constraints.getValues();
         Sketcher::Constraint *Const = vals[it->ConstraintNbr];
         assert(Const->Type == it->Type);
         double datum = Const->Value;
+        if (it->Type == Sketcher::Angle)
+            datum = datum * 180./M_PI;
 
         QDialog dlg(this);
         Ui::InsertDatum ui_ins_datum;
@@ -188,6 +190,8 @@ void TaskSketcherConstrains::on_listWidgetConstraints_itemActivated(QListWidgetI
             bool ok;
             double newDatum = ui_ins_datum.lineEdit->text().toDouble(&ok);
             if (ok) {
+                if (it->Type == Sketcher::Angle)
+                    newDatum = newDatum * M_PI/180.;
                 try {
                     Gui::Command::openCommand("Add sketch constraints");
                     Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.setDatum(%f,%i)",
@@ -221,6 +225,7 @@ void TaskSketcherConstrains::slotConstraintsChanged(void)
     QIcon tang ( Gui::BitmapFactory().pixmap("Constraint_Tangent") );
     QIcon dist ( Gui::BitmapFactory().pixmap("Constraint_Length") );
     QIcon radi ( Gui::BitmapFactory().pixmap("Constraint_Radius") );
+    QIcon angl ( Gui::BitmapFactory().pixmap("Constraint_InternalAngle") );
 
     assert(sketchView);
     // Build up ListView with the constraints
@@ -285,6 +290,12 @@ void TaskSketcherConstrains::slotConstraintsChanged(void)
                 if(Filter<3 || (*it)->Name != ""){
                     name = QString(QString::fromLatin1("%1 (%2)")).arg(name,14).arg((*it)->Value);
                     ui->listWidgetConstraints->addItem(new ConstraintItem(radi,name,i-1,(*it)->Type));
+                }
+                break;
+            case Sketcher::Angle:
+                if(Filter<3 || (*it)->Name != ""){
+                    name = QString(QString::fromLatin1("%1 (%2)")).arg(name,14).arg((*it)->Value * 180./M_PI);
+                    ui->listWidgetConstraints->addItem(new ConstraintItem(angl,name,i-1,(*it)->Type));
                 }
                 break;
             default:

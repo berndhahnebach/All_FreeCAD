@@ -146,6 +146,10 @@ public:
     int addTangentConstraint(int geoIndex1, PointPos pos1, int geoIndex2, PointPos pos2);
     /// add a radius constraint on a circle or an arc
     int addRadiusConstraint(int geoIndex, double value);
+    /// add an angle constraint on a line or between two lines
+    int addAngleConstraint(int geoIndex, double value);
+    int addAngleConstraint(int geoIndex1, int geoIndex2, double value);
+    int addAngleConstraint(int geoIndex1, PointPos pos1, int geoIndex2, PointPos pos2, double value);
     //@}
 
     enum GeoType {
