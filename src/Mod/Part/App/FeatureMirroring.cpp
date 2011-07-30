@@ -85,14 +85,7 @@ App::DocumentObjectExecReturn *Mirroring::execute(void)
 
     try {
         gp_Ax2 ax2(gp_Pnt(base.x,base.y,base.z), gp_Dir(norm.x,norm.y,norm.z));
-        gp_Trsf mat;
-        mat.SetMirror(ax2);
-        const TopoDS_Shape& shape = source->Shape.getValue();
-        TopLoc_Location loc = shape.Location();
-        gp_Trsf placement = loc.Transformation();
-        mat = placement * mat;
-        BRepBuilderAPI_Transform mkTrf(shape, mat);
-        this->Shape.setValue(mkTrf.Shape());
+        this->Shape.setValue(source->Shape.getShape().mirror(ax2));
         return App::DocumentObject::StdReturn;
     }
     catch (Standard_Failure) {

@@ -30,6 +30,7 @@
 # include <Inventor/nodes/SoMaterial.h>
 # include <Inventor/nodes/SoLineSet.h>
 # include <Inventor/nodes/SoPickStyle.h>
+# include <Inventor/nodes/SoResetTransform.h>
 # include <Inventor/nodes/SoSeparator.h>
 # include <Inventor/nodes/SoVertexProperty.h>
 #endif
@@ -97,6 +98,7 @@ SoSeparator* ViewProvider2DObject::createGrid(void)
 
     SoSeparator *parent = GridRoot;
     GridRoot->removeAllChildren();
+    GridRoot->addChild(new SoResetTransform());
     SoBaseColor *mycolor;
     SoVertexProperty *vts;
 
