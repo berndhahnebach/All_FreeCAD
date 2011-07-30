@@ -344,7 +344,7 @@ void CmdSketcherConstrainCoincident::activated(int iMsg)
     Obj->getGeoVertexIndex(index2,GeoId2,Pt2);
 
     // undo command open
-    openCommand("add coinsident constraint");
+    openCommand("add coincident constraint");
     Gui::Command::doCommand(
         Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Coincident',%i,%i,%i,%i)) ",
         selection[0].getFeatName(),GeoId1,Pt1,GeoId2,Pt2);
@@ -423,7 +423,7 @@ void CmdSketcherConstrainDistance::activated(int iMsg)
         Base::Vector3d pnt1 = Obj->getPoint(GeoId1,PosId1);
         Base::Vector3d pnt2 = Obj->getPoint(GeoId2,PosId2);
  
-        openCommand("add Point to Line Distance constraint");
+        openCommand("add point to point distance constraint");
         Gui::Command::doCommand(
             Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Distance',%d,%d,%d,%d,%f)) ",
             selection[0].getFeatName(),GeoId1,PosId1,GeoId2,PosId2,(pnt2-pnt1).Length());
@@ -450,7 +450,7 @@ void CmdSketcherConstrainDistance::activated(int iMsg)
             double ActDist = (-pnt.x*d.y+pnt.y*d.x+pnt1.x*pnt2.y-pnt2.x*pnt1.y)
                             / (2*d.Length());
 
-            openCommand("add Point to Line Distance constraint");
+            openCommand("add point to line Distance constraint");
             Gui::Command::doCommand(
                 Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Distance',%d,%d,%d,%f)) ",
                 selection[0].getFeatName(),GeoId1,PosId1,GeoId2,ActDist);
@@ -467,7 +467,7 @@ void CmdSketcherConstrainDistance::activated(int iMsg)
             lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geom);
             double ActLength = (lineSeg->getEndPoint()-lineSeg->getStartPoint()).Length();
 
-            openCommand("add Length constraint");
+            openCommand("add length constraint");
             Gui::Command::doCommand(
                 Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Distance',%d,%f)) ",
                 selection[0].getFeatName(),GeoId1,ActLength);
@@ -866,6 +866,7 @@ bool CmdSketcherConstrainPerpendicular::isActive(void)
     return isCreateConstraintActive( getActiveGuiDocument() );
 }
 
+
 DEF_STD_CMD_A(CmdSketcherConstrainTangent);
 
 CmdSketcherConstrainTangent::CmdSketcherConstrainTangent()
@@ -965,6 +966,7 @@ bool CmdSketcherConstrainTangent::isActive(void)
 {
     return isCreateConstraintActive( getActiveGuiDocument() );
 }
+
 
 DEF_STD_CMD_A(CmdSketcherConstrainRadius);
 

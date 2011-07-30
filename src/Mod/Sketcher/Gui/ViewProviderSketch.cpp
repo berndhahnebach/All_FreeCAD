@@ -1218,15 +1218,17 @@ Restart:
                 }
                 break;
             case Parallel:
+            case Perpendicular:
                 {
                     assert(Constr->First < int(geomlist->size()));
                     assert(Constr->Second < int(geomlist->size()));
                     // get the geometry
                     const Part::Geometry *geo1 = (*geomlist)[Constr->First];
                     const Part::Geometry *geo2 = (*geomlist)[Constr->Second];
-                    // Parallel can only apply to a GeomLineSegment
-                    assert(geo1->getTypeId()== Part::GeomLineSegment::getClassTypeId());
-                    assert(geo2->getTypeId()== Part::GeomLineSegment::getClassTypeId());
+                    // Parallel or Perpendicular can only apply to a GeomLineSegment
+                    if (geo1->getTypeId() != Part::GeomLineSegment::getClassTypeId() ||
+                        geo2->getTypeId() != Part::GeomLineSegment::getClassTypeId())
+                        break;
                     const Part::GeomLineSegment *lineSeg1 = dynamic_cast<const Part::GeomLineSegment *>(geo1);
                     const Part::GeomLineSegment *lineSeg2 = dynamic_cast<const Part::GeomLineSegment *>(geo2);
 
@@ -1235,9 +1237,7 @@ Restart:
 
                     //Get a set of vectors perpendicular and tangential to these
                     Base::Vector3d dir1 = (lineSeg1->getEndPoint()-lineSeg1->getStartPoint()).Normalize();
-
                     Base::Vector3d norm1(-dir1.y,dir1.x,0);
-                    Base::Vector3d constrPos1;
 
                     // calculate the half distance between the start and endpoint
                     Base::Vector3d midpos2 = ((lineSeg2->getEndPoint()+lineSeg2->getStartPoint())/2);
@@ -1245,8 +1245,8 @@ Restart:
                     //Get a set of vectors perpendicular and tangential to these
                     Base::Vector3d dir2 = (lineSeg2->getEndPoint()-lineSeg2->getStartPoint()).Normalize();
                     Base::Vector3d norm2(-dir2.y,dir2.x,0);
-                    Base::Vector3d constrPos2;
 
+                    Base::Vector3d constrPos1;
                     int multiplier = 0;
                     do {
                         // Calculate new position of constraint
@@ -1255,6 +1255,7 @@ Restart:
                     }
                     while (isConstraintAtPosition(constrPos1, edit->constrGroup->getChild(i)));
 
+                    Base::Vector3d constrPos2;
                     multiplier = 0;
                     do {
                         // Calculate new position of constraint
@@ -1364,10 +1365,18 @@ Restart:
 
                     float length = Constr->LabelDistance;
 
-                    SbVec3f textpos = midpos + norm * (length + ( (dir[0] > 0 ? -1:1) * textBBCenter[1] / 4));
-
                     // Get magnitude of angle between horizontal
-                    float angle = atanf(dir[1]/dir[0]); // atan2f(dir[1],dir[0]);
+                    float angle = atan2f(dir[1],dir[0]);
+                    bool flip=false;
+                    if (angle > M_PI_2+M_PI/12) {
+                        angle -= M_PI;
+                        flip = true;
+                    } else if (angle <= -M_PI_2+M_PI/12) {
+                        angle += M_PI;
+                        flip = true;
+                    }
+
+                    SbVec3f textpos = midpos + norm * (length + ( (flip ? 1:-1) * textBBCenter[1] / 4));
 
                     // set position and rotation of Datums Text
                     SoTransform *transform = dynamic_cast<SoTransform *>(sep->getChild(2));
@@ -1481,66 +1490,6 @@ Restart:
                 break;
             case Angle:
                 break;
-            case Perpendicular:
-                {
-                    assert(Constr->First < int(geomlist->size()));
-                    assert(Constr->Second < int(geomlist->size()));
-                    // get the geometry
-                    const Part::Geometry *geo1 = (*geomlist)[Constr->First];
-                    const Part::Geometry *geo2 = (*geomlist)[Constr->Second];
-                    // Parallel can only apply to a GeomLineSegment
-                    if (geo1->getTypeId() != Part::GeomLineSegment::getClassTypeId())
-                        break;
-                    if (geo2->getTypeId() != Part::GeomLineSegment::getClassTypeId())
-                        break;
-                    assert(geo1->getTypeId()== Part::GeomLineSegment::getClassTypeId());
-                    assert(geo2->getTypeId()== Part::GeomLineSegment::getClassTypeId());
-                    const Part::GeomLineSegment *lineSeg1 = dynamic_cast<const Part::GeomLineSegment *>(geo1);
-                    const Part::GeomLineSegment *lineSeg2 = dynamic_cast<const Part::GeomLineSegment *>(geo2);
-
-                    // calculate the half distance between the start and endpoint
-                    Base::Vector3d midpos1 = ((lineSeg1->getEndPoint()+lineSeg1->getStartPoint())/2);
-
-                    //Get a set of vectors perpendicular and tangential to these
-                    Base::Vector3d dir1 = (lineSeg1->getEndPoint()-lineSeg1->getStartPoint()).Normalize();
-                    Base::Vector3d norm1(-dir1.y,dir1.x,0);
-                    Base::Vector3d constrPos1;
-
-                    // calculate the half distance between the start and endpoint
-                    Base::Vector3d midpos2 = ((lineSeg2->getEndPoint()+lineSeg2->getStartPoint())/2);
-
-                    //Get a set of vectors perpendicular and tangential to these
-                    Base::Vector3d dir2 = (lineSeg2->getEndPoint()-lineSeg2->getStartPoint()).Normalize();
-                    Base::Vector3d norm2(-dir2.y,dir2.x,0);
-                    Base::Vector3d constrPos2;
-
-                    int multiplier = 0;
-                    do {
-                        // Calculate new position of constraint
-                        constrPos1 = midpos1 + (norm1 * 5) + (dir1 * (multiplier * 5));
-                        multiplier++; // Increment the multiplier
-                    }
-                    while (isConstraintAtPosition(constrPos1, edit->constrGroup->getChild(i)));
-
-                    multiplier = 0;
-                    do {
-                        // Calculate new position of constraint
-                        constrPos2 = midpos2 + (norm2 * 5) + (dir2 * (multiplier * 5));
-                        multiplier++; // Increment the multiplier
-                    }
-                    while (isConstraintAtPosition(constrPos2, edit->constrGroup->getChild(i)));
-
-                    constrPos2 = constrPos2 - constrPos1;
-                    constrPos2 = constrPos2 - Base::Vector3d(2, -2, 0);
-                    dynamic_cast<SoText2 *>(sep->getChild(4))->string = SbString().sprintf("%i",i+1);
-                    dynamic_cast<SoText2 *>(sep->getChild(8))->string = SbString().sprintf("%i",i+1);
-
-                    dynamic_cast<SoTranslation *>(sep->getChild(1))->translation =  SbVec3f(constrPos1.x, constrPos1.y, 0.0f);
-                    dynamic_cast<SoTranslation *>(sep->getChild(3))->translation =  SbVec3f( 2, -2, 0.0f);
-                    dynamic_cast<SoTranslation *>(sep->getChild(5))->translation =  SbVec3f(constrPos2.x, constrPos2.y, 0.0f);
-                    dynamic_cast<SoTranslation *>(sep->getChild(7))->translation =  SbVec3f(2, -2, 0.0f);
-                }
-                break;
             case Radius:
                 {
                     assert(Constr->First < int(geomlist->size()));
@@ -1596,10 +1545,18 @@ Restart:
 
                     SbVec3f textBBCenter = bbAction.getBoundingBox().getCenter();
 
-                    SbVec3f textpos = pos + norm * ( (dir[0] > 0 ? -1:1) * textBBCenter[1] / 4);
-
                     // Get magnitude of angle between horizontal
-                    float angle = atanf(dir[1]/dir[0]); // atan2f(dir[1],dir[0]);
+                    float angle = atan2f(dir[1],dir[0]);
+                    bool flip=false;
+                    if (angle > M_PI_2+M_PI/12) {
+                        angle -= M_PI;
+                        flip = true;
+                    } else if (angle <= -M_PI_2+M_PI/12) {
+                        angle += M_PI;
+                        flip = true;
+                    }
+
+                    SbVec3f textpos = pos + norm * ( (flip ? 1:-1) * textBBCenter[1] / 4);
 
                     // set position and rotation of Datums Text
                     SoTransform *transform = dynamic_cast<SoTransform *>(sep->getChild(2));
@@ -1696,39 +1653,18 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
                     edit->vConstrType.push_back((*it)->Type);
                 }
                 break;
-            case Horizontal: // add a Text node with the "H" for that constraint
-                {
-                    //Create the Image Nodes
-                    SoImage *constraintIcon = new SoImage();
-                    QImage image = Gui::BitmapFactory().pixmap("Constraint_Horizontal").toImage();
-
-                    // Scale Image
-                    image = image.scaledToWidth(constraintImageSize);
-                    SoSFImage icondata = SoSFImage();
-                    Gui::BitmapFactory().convert(image, icondata);
-
-                    int nc = 4;
-                    SbVec2s iconSize = SbVec2s(image.width(), image.height());
-
-                    constraintIcon->image.setValue(iconSize, 4, icondata.getValue(iconSize, nc));
-
-                    constraintIcon->vertAlignment = SoImage::HALF;
-                    constraintIcon->horAlignment = SoImage::CENTER;
-
-                    sep->addChild(new SoTranslation());
-                    sep->addChild(constraintIcon);
-
-                    // remember the type of this constraint node
-                    edit->vConstrType.push_back(Horizontal);
-                }
-                break;
+            case Horizontal:
             case Vertical:
                 {
                     //Create the Image Nodes
                     SoImage *constraintIcon = new SoImage();
-                    QImage image = Gui::BitmapFactory().pixmap("Constraint_Vertical").toImage();
+                    QImage image;
+                    if ((*it)->Type == Horizontal)
+                        image = Gui::BitmapFactory().pixmap("Constraint_Horizontal").toImage();
+                    else if ((*it)->Type == Vertical)
+                        image = Gui::BitmapFactory().pixmap("Constraint_Vertical").toImage();
 
-                    //Scale Image
+                    // Scale Image
                     image = image.scaledToWidth(constraintImageSize);
                     SoSFImage icondata = SoSFImage();
                     Gui::BitmapFactory().convert(image, icondata);
@@ -1746,19 +1682,24 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
                     sep->addChild(constraintIcon);
 
                     // remember the type of this constraint node
-                    edit->vConstrType.push_back(Vertical);
+                    edit->vConstrType.push_back((*it)->Type);
                 }
                 break;
             case Coincident: // no visual for coincident so far
                 edit->vConstrType.push_back(Coincident);
                 break;
             case Parallel:
+            case Perpendicular:
                 {
                     // Create the Image Nodes
                     SoImage *constraintIcon = new SoImage();
                     SoImage *constraintIcon2 = new SoImage();
 
-                    QImage image = Gui::BitmapFactory().pixmap("Constraint_Parallel").toImage();
+                    QImage image;
+                    if ((*it)->Type == Parallel)
+                        image = Gui::BitmapFactory().pixmap("Constraint_Parallel").toImage();
+                    else if ((*it)->Type == Perpendicular)
+                        image = Gui::BitmapFactory().pixmap("Constraint_Perpendicular").toImage();
 
                     //Scale Image
                     image = image.scaledToWidth(constraintImageSize);
@@ -1792,12 +1733,11 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
                     sep->addChild(indexText2);
 
                     // remember the type of this constraint node
-                    edit->vConstrType.push_back(Parallel);
+                    edit->vConstrType.push_back((*it)->Type);
                 }
                 break;
             case Tangent:
                 {
-                    // no visual for tangent so far
                     // Create the Image Nodes
                     SoImage *constraintIcon = new SoImage();
 
@@ -1827,49 +1767,6 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
                     sep->addChild(indexText1);
 
                     edit->vConstrType.push_back(Tangent);
-                }
-                break;
-            case Perpendicular:
-                {
-                    // Create the Image Nodes
-                    SoImage *constraintIcon = new SoImage();
-                    SoImage *constraintIcon2 = new SoImage();
-
-                    QImage image = Gui::BitmapFactory().pixmap("Constraint_Perpendicular").toImage();
-
-                    //Scale Image
-                    image = image.scaledToWidth(constraintImageSize);
-
-                    SoSFImage icondata = SoSFImage();
-                    Gui::BitmapFactory().convert(image, icondata);
-
-                    int nc = 4;
-                    SbVec2s iconSize = SbVec2s(image.width(), image.height());
-
-                    constraintIcon->image.setValue(iconSize, 4, icondata.getValue(iconSize, nc));
-                    constraintIcon2->image.setValue(iconSize, 4, icondata.getValue(iconSize, nc));
-
-                    //Set Image Alignment to center
-                    constraintIcon->vertAlignment = SoImage::HALF;
-                    constraintIcon->horAlignment = SoImage::CENTER;
-                    constraintIcon2->vertAlignment = SoImage::HALF;
-                    constraintIcon2->horAlignment = SoImage::CENTER;
-
-                    SoText2 *indexText1 = new SoText2();
-                    SoText2 *indexText2 = new SoText2();
-
-                    // Add new nodes to Constraint Seperator
-                    sep->addChild(new SoTranslation());
-                    sep->addChild(constraintIcon);
-                    sep->addChild(new SoTranslation());
-                    sep->addChild(indexText1);
-                    sep->addChild(new SoTranslation());
-                    sep->addChild(constraintIcon2);
-                    sep->addChild(new SoTranslation());
-                    sep->addChild(indexText2);
-
-                    // remember the type of this constraint node
-                    edit->vConstrType.push_back(Perpendicular);
                 }
                 break;
             default:
