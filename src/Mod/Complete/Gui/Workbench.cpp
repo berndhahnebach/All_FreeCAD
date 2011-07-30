@@ -257,10 +257,14 @@ Gui::MenuItem* Workbench::setupMenuBar() const
                   << "Sketcher_CreateRectangle"
                   << "Separator" 
                   << "Sketcher_ConstrainCoincident"
+                  << "Sketcher_ConstrainDistanceX"
+                  << "Sketcher_ConstrainDistanceY"
                   << "Sketcher_ConstrainVertical"
                   << "Sketcher_ConstrainHorizontal"
                   << "Sketcher_ConstrainDistance"
+                  << "Sketcher_ConstrainRadius"
                   << "Sketcher_ConstrainParallel"
+                  << "Sketcher_ConstrainPerpendicular"
                   << "Sketcher_ConstrainTangent"
                   << "Separator" 
                   << "PartDesign_Pad" 
@@ -460,27 +464,31 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     ;
 
     // Sketch based
-        Gui::ToolBarItem* sketch_based = new Gui::ToolBarItem( root );
-        sketch_based->setCommand("Sketch based");
-       *sketch_based   << "Sketcher_NewSketch"
-                  << "Separator" 
-                  << "Sketcher_CreateArc"
-                  << "Sketcher_CreateCircle"
-                  << "Sketcher_CreateLine"
-                  << "Sketcher_CreatePolyline"
-                  << "Sketcher_CreateRectangle"
-                  << "Separator" 
-                  << "Sketcher_ConstrainCoincident"
-                  << "Sketcher_ConstrainVertical"
-                  << "Sketcher_ConstrainHorizontal"
-                  << "Sketcher_ConstrainDistance"
-                  << "Sketcher_ConstrainParallel"
-                  << "Sketcher_ConstrainTangent"
-                  << "Separator" 
-                  << "PartDesign_Pad" 
-                  << "PartDesign_Pocket"
-                  << "PartDesign_Fillet"
-                  << "PartDesign_Chamfer";
+    Gui::ToolBarItem* sketch_based = new Gui::ToolBarItem( root );
+    sketch_based->setCommand("Sketch based");
+    *sketch_based   << "Sketcher_NewSketch"
+              << "Separator" 
+              << "Sketcher_CreateArc"
+              << "Sketcher_CreateCircle"
+              << "Sketcher_CreateLine"
+              << "Sketcher_CreatePolyline"
+              << "Sketcher_CreateRectangle"
+              << "Separator" 
+              << "Sketcher_ConstrainCoincident"
+              << "Sketcher_ConstrainDistanceX"
+              << "Sketcher_ConstrainDistanceY"
+              << "Sketcher_ConstrainVertical"
+              << "Sketcher_ConstrainHorizontal"
+              << "Sketcher_ConstrainDistance"
+              << "Sketcher_ConstrainRadius"
+              << "Sketcher_ConstrainParallel"
+              << "Sketcher_ConstrainPerpendicular"
+              << "Sketcher_ConstrainTangent"
+              << "Separator" 
+              << "PartDesign_Pad" 
+              << "PartDesign_Pocket"
+              << "PartDesign_Fillet"
+              << "PartDesign_Chamfer";
 
 
     // Drawing

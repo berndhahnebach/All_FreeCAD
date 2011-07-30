@@ -1489,6 +1489,10 @@ Restart:
                     const Part::Geometry *geo1 = (*geomlist)[Constr->First];
                     const Part::Geometry *geo2 = (*geomlist)[Constr->Second];
                     // Parallel can only apply to a GeomLineSegment
+                    if (geo1->getTypeId() != Part::GeomLineSegment::getClassTypeId())
+                        break;
+                    if (geo2->getTypeId() != Part::GeomLineSegment::getClassTypeId())
+                        break;
                     assert(geo1->getTypeId()== Part::GeomLineSegment::getClassTypeId());
                     assert(geo2->getTypeId()== Part::GeomLineSegment::getClassTypeId());
                     const Part::GeomLineSegment *lineSeg1 = dynamic_cast<const Part::GeomLineSegment *>(geo1);

@@ -679,16 +679,58 @@ int Sketch::addParallelConstraint(int geoId1, int geoId2)
     return GCSsys.addConstraintParallel(l1, l2);
 }
 
+const char* nameFromType(Sketch::GeoType type)
+{
+    switch(type) {
+    case Sketch::Point:
+        return "point";
+    case Sketch::Line:
+        return "line";
+    case Sketch::Arc:
+        return "arc";
+    case Sketch::Circle:
+        return "circle";
+    case Sketch::Ellipse:
+        return "ellipse";
+    case Sketch::None:
+    default:
+        return "unknown";
+    }
+}
+
 int Sketch::addPerpendicularConstraint(int geoId1, int geoId2)
 {
     assert(geoId1 < int(Geoms.size()));
     assert(geoId2 < int(Geoms.size()));
-    assert(Geoms[geoId1].type == Line);
-    assert(Geoms[geoId2].type == Line);
 
-    GCS::Line &l1 = Lines[Geoms[geoId1].index];
-    GCS::Line &l2 = Lines[Geoms[geoId2].index];
-    return GCSsys.addConstraintPerpendicular(l1, l2);
+    if (Geoms[geoId2].type == Line) {
+        if (Geoms[geoId1].type == Line) {
+            GCS::Line &l1 = Lines[Geoms[geoId1].index];
+            GCS::Line &l2 = Lines[Geoms[geoId2].index];
+            return GCSsys.addConstraintPerpendicular(l1, l2);
+        }
+        else
+            std::swap(geoId1, geoId2);
+    }
+
+    if (Geoms[geoId1].type == Line) {
+        GCS::Line &l = Lines[Geoms[geoId1].index];
+        if (Geoms[geoId2].type == Arc) {
+            GCS::Arc &a = Arcs[Geoms[geoId2].index];
+            //return GCSsys.addConstraintPerpendicular(l, a);
+            Base::Console().Warning("Perpendicular constraints between lines and arcs are not implemented yet.\n");
+            return -1;
+        } else if (Geoms[geoId2].type == Circle) {
+            GCS::Circle &c = Circles[Geoms[geoId2].index];
+            //return GCSsys.addConstraintPerpendicular(l, c);
+            Base::Console().Warning("Perpendicular constraints between lines and circles are not implemented yet.\n");
+            return -1;
+        }
+    }
+
+    Base::Console().Warning("Perpendicular constraints between %s and %s are not supported.\n",
+        nameFromType(Geoms[geoId1].type), nameFromType(Geoms[geoId2].type));
+    return -1;
 }
 
 // simple tangency constraint
