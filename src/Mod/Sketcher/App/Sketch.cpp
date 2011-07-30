@@ -161,7 +161,7 @@ void Sketch::addGeometry(const std::vector<Part::Geometry *> &geo)
         addGeometry(*it);
 }
 
-int Sketch::addPoint(const Base::Vector3d& newPoint)
+int Sketch::addPoint(const Base::Vector3d &newPoint)
 {
     // create the definition struct for that geom
     GeoDef def;
@@ -678,9 +678,8 @@ int Sketch::addParallelConstraint(int geoId1, int geoId2)
 {
     assert(geoId1 < int(Geoms.size()));
     assert(geoId2 < int(Geoms.size()));
-    if (Geoms[geoId1].type != Line)
-        return -1;
-    if (Geoms[geoId2].type != Line)
+    if (Geoms[geoId1].type != Line ||
+        Geoms[geoId2].type != Line)
         return -1;
 
     GCS::Line &l1 = Lines[Geoms[geoId1].index];
