@@ -39,6 +39,7 @@
 #include <Mod/Part/App/GeometryCurvePy.h>
 #include <Mod/Part/App/ArcOfCirclePy.h>
 #include <Mod/Part/App/CirclePy.h>
+#include <Mod/Part/App/EllipsePy.h>
 #include <Mod/Part/App/LinePy.h>
 
 #include <TopoDS.hxx>
@@ -160,7 +161,7 @@ void Sketch::addGeometry(const std::vector<Part::Geometry *> &geo)
         addGeometry(*it);
 }
 
-int Sketch::addPoint(Base::Vector3d newPoint)
+int Sketch::addPoint(const Base::Vector3d& newPoint)
 {
     // create the definition struct for that geom
     GeoDef def;
@@ -310,7 +311,7 @@ int Sketch::addArc(const Part::GeomArcOfCircle &circleSegment)
     return Geoms.size()-1;
 }
 
-int Sketch::addCircle(const GeomCircle &cir)
+int Sketch::addCircle(const Part::GeomCircle &cir)
 {
     // create our own copy
     GeomCircle *circ = static_cast<GeomCircle*>(cir.clone());
@@ -354,7 +355,6 @@ int Sketch::addCircle(const GeomCircle &cir)
 
 int Sketch::addEllipse(const Part::GeomEllipse &ellibse)
 {
-    
     // return the position of the newly added geometry
     return Geoms.size()-1;
 }
@@ -384,19 +384,22 @@ Py::Tuple Sketch::getPyGeometry(void) const
 
     for (;it!=Geoms.end();++it,i++) {
         if (it->type == Line) {
-            GeomLineSegment *lineSeg = dynamic_cast<GeomLineSegment*>(it->geo);
-            tuple[i] = Py::Object(new LinePy(lineSeg));
+            GeomLineSegment *lineSeg = dynamic_cast<GeomLineSegment*>(it->geo->clone());
+            tuple[i] = Py::asObject(new LinePy(lineSeg));
         } else if (it->type == Arc) {
-            GeomArcOfCircle *aoc = dynamic_cast<GeomArcOfCircle*>(it->geo);
-            tuple[i] = Py::Object(new ArcOfCirclePy(aoc));
+            GeomArcOfCircle *aoc = dynamic_cast<GeomArcOfCircle*>(it->geo->clone());
+            tuple[i] = Py::asObject(new ArcOfCirclePy(aoc));
         } else if (it->type == Circle) {
-            GeomCircle *circle = dynamic_cast<GeomCircle*>(it->geo);
-            tuple[i] = Py::Object(new CirclePy(circle));
+            GeomCircle *circle = dynamic_cast<GeomCircle*>(it->geo->clone());
+            tuple[i] = Py::asObject(new CirclePy(circle));
         } else if (it->type == Point) {
             Base::Vector3d temp(*(Points[Geoms[i].startPointId].x),*(Points[Geoms[i].startPointId].y),0);
-            tuple[i] = Py::Object(new VectorPy(temp));
+            tuple[i] = Py::asObject(new VectorPy(temp));
+        } else if (it->type == Ellipse) {
+            GeomEllipse *ellipse = dynamic_cast<GeomEllipse*>(it->geo->clone());
+            tuple[i] = Py::asObject(new EllipsePy(ellipse));
         } else {
-            assert(0); // not implemented type in the sketch!
+            // not implemented type in the sketch!
         }
     }
     return tuple;
@@ -544,7 +547,8 @@ int Sketch::addCoordinateYConstraint(int geoId, PointPos pos, double value)
 int Sketch::addDistanceXConstraint(int geoId, double value)
 {
     assert(geoId < int(Geoms.size()));
-    assert(Geoms[geoId].type == Line);
+    if (Geoms[geoId].type != Line)
+        return -1;
 
     GCS::Line &l = Lines[Geoms[geoId].index];
 
@@ -557,7 +561,8 @@ int Sketch::addDistanceXConstraint(int geoId, double value)
 int Sketch::addDistanceYConstraint(int geoId, double value)
 {
     assert(geoId < int(Geoms.size()));
-    assert(Geoms[geoId].type == Line);
+    if (Geoms[geoId].type != Line)
+        return -1;
 
     GCS::Line &l = Lines[Geoms[geoId].index];
 
@@ -607,7 +612,8 @@ int Sketch::addDistanceYConstraint(int geoId1, PointPos pos1, int geoId2, PointP
 int Sketch::addHorizontalConstraint(int geoId)
 {
     assert(geoId < int(Geoms.size()));
-    assert(Geoms[geoId].type == Line);
+    if (Geoms[geoId].type != Line)
+        return -1;
 
     GCS::Line &l = Lines[Geoms[geoId].index];
     return GCSsys.addConstraintHorizontal(l);
@@ -632,7 +638,8 @@ int Sketch::addHorizontalConstraint(int geoId1, PointPos pos1, int geoId2, Point
 int Sketch::addVerticalConstraint(int geoId)
 {
     assert(geoId < int(Geoms.size()));
-    assert(Geoms[geoId].type == Line);
+    if (Geoms[geoId].type != Line)
+        return -1;
 
     GCS::Line &l = Lines[Geoms[geoId].index];
     return GCSsys.addConstraintVertical(l);
@@ -671,15 +678,17 @@ int Sketch::addParallelConstraint(int geoId1, int geoId2)
 {
     assert(geoId1 < int(Geoms.size()));
     assert(geoId2 < int(Geoms.size()));
-    assert(Geoms[geoId1].type == Line);
-    assert(Geoms[geoId2].type == Line);
+    if (Geoms[geoId1].type != Line)
+        return -1;
+    if (Geoms[geoId2].type != Line)
+        return -1;
 
     GCS::Line &l1 = Lines[Geoms[geoId1].index];
     GCS::Line &l2 = Lines[Geoms[geoId2].index];
     return GCSsys.addConstraintParallel(l1, l2);
 }
 
-const char* nameFromType(Sketch::GeoType type)
+const char* nameByType(Sketch::GeoType type)
 {
     switch(type) {
     case Sketch::Point:
@@ -729,7 +738,7 @@ int Sketch::addPerpendicularConstraint(int geoId1, int geoId2)
     }
 
     Base::Console().Warning("Perpendicular constraints between %s and %s are not supported.\n",
-        nameFromType(Geoms[geoId1].type), nameFromType(Geoms[geoId2].type));
+        nameByType(Geoms[geoId1].type), nameByType(Geoms[geoId2].type));
     return -1;
 }
 
@@ -913,7 +922,8 @@ int Sketch::addTangentConstraint(int geoId1, PointPos pos1, int geoId2, PointPos
 int Sketch::addDistanceConstraint(int geoId, double value)
 {
     assert(geoId < int(Geoms.size()));
-    assert(Geoms[geoId].type == Line);
+    if (Geoms[geoId].type != Line)
+        return -1;
 
     GCS::Line &l = Lines[Geoms[geoId].index];
 
@@ -930,8 +940,8 @@ int Sketch::addDistanceConstraint(int geoId1, int geoId2, double value)
     assert(geoId1 < int(Geoms.size()));
     assert(geoId2 < int(Geoms.size()));
 
-    assert(Geoms[geoId1].type == Line);
-    assert(Geoms[geoId2].type == Line);
+    //assert(Geoms[geoId1].type == Line);
+    //assert(Geoms[geoId2].type == Line);
 
     Base::Console().Warning("Line to line distance constraints are not implemented yet.\n");
 
@@ -943,7 +953,8 @@ int Sketch::addDistanceConstraint(int geoId1, PointPos pos1, int geoId2, double 
 {
     int pointId1 = getPointId(geoId1, pos1);
     assert(geoId2 < int(Geoms.size()));
-    assert(Geoms[geoId2].type == Line);
+    if (Geoms[geoId2].type != Line)
+        return -1;
 
     if (pointId1 >= 0 && pointId1 < int(Points.size())) {
         GCS::Point &p1 = Points[pointId1];
@@ -981,7 +992,6 @@ int Sketch::addDistanceConstraint(int geoId1, PointPos pos1, int geoId2, PointPo
 int Sketch::addRadiusConstraint(int geoId, double value)
 {
     assert(geoId < int(Geoms.size()));
-    assert(Geoms[geoId].type == Circle || Geoms[geoId].type == Arc);
 
     if (Geoms[geoId].type == Circle) {
         GCS::Circle &c = Circles[Geoms[geoId].index];

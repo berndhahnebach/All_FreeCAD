@@ -94,7 +94,7 @@ public:
     /// add dedicated geometry
     //@{
     /// add a point
-    int addPoint(Base::Vector3d point);
+    int addPoint(const Base::Vector3d& point);
     /// add a infinit line
     int addLine(const Part::GeomLineSegment &line);
     /// add a line segment
