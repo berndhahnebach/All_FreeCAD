@@ -5,11 +5,15 @@ import FreeCAD as App
 import FreeCADGui as Gui
 from PyQt4 import QtGui,QtCore
 
+class MyLineEdit(QtGui.QLineEdit):
+    pass
+
 class TaskWatcher:
     def __init__(self):
         self.commands = ["Part_Box", "Part_Sphere", "Part_Cylinder"]
         self.title = "Create primitives"
         self.icon = "Part_Sphere"
+        self.widgets = [MyLineEdit()]
     def shouldShow(self):
         return App.ActiveDocument is not None
 

@@ -25,6 +25,7 @@
 
 #ifndef _PreComp_
 # include <sstream>
+# include <QPointer>
 #endif
 
 #include "TaskDialogPython.h"
@@ -153,30 +154,25 @@ Py::Object ControlPy::isAllowedAlterSelection(const Py::Tuple&)
 TaskWatcherPython::TaskWatcherPython(const Py::Object& o)
   : TaskWatcher(0), watcher(o)
 {
-    if (watcher.hasAttr(std::string("filter"))) {
-        Py::String name(watcher.getAttr(std::string("filter")));
+    QString title;
+    if (watcher.hasAttr(std::string("title"))) {
+        Py::String name(watcher.getAttr(std::string("title")));
         std::string s = (std::string)name;
-        this->setFilter(s.c_str());
+        title = QString::fromUtf8(s.c_str());
     }
 
+    QPixmap icon;
+    if (watcher.hasAttr(std::string("icon"))) {
+        Py::String name(watcher.getAttr(std::string("icon")));
+        std::string s = (std::string)name;
+        icon = BitmapFactory().pixmap(s.c_str());
+    }
+
+    Gui::TaskView::TaskBox *tb = 0;
     if (watcher.hasAttr(std::string("commands"))) {
-        QString title;
-        if (watcher.hasAttr(std::string("title"))) {
-            Py::String name(watcher.getAttr(std::string("title")));
-            std::string s = (std::string)name;
-            title = QString::fromUtf8(s.c_str());
-        }
-
-        QPixmap icon;
-        if (watcher.hasAttr(std::string("icon"))) {
-            Py::String name(watcher.getAttr(std::string("icon")));
-            std::string s = (std::string)name;
-            icon = BitmapFactory().pixmap(s.c_str());
-        }
-
+        if (!tb) tb = new Gui::TaskView::TaskBox(icon, title, true, 0);
         Py::List cmds(watcher.getAttr(std::string("commands")));
         CommandManager &mgr = Gui::Application::Instance->commandManager();
-        Gui::TaskView::TaskBox *tb = new Gui::TaskView::TaskBox(icon, title, true, 0);
         for (Py::List::iterator it = cmds.begin(); it != cmds.end(); ++it) {
             Py::String name(*it);
             std::string s = (std::string)name;
@@ -184,14 +180,42 @@ TaskWatcherPython::TaskWatcherPython(const Py::Object& o)
             if (c)
                 c->addTo(tb);
         }
-        Content.push_back(tb);
+    }
+
+    if (tb) Content.push_back(tb);
+
+    if (watcher.hasAttr(std::string("widgets"))) {
+        Py::List list(watcher.getAttr(std::string("widgets")));
+        Py::Module mainmod(PyImport_AddModule((char*)"sip"));
+        Py::Callable func = mainmod.getDict().getItem("unwrapinstance");
+        for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+            Py::Tuple arguments(1);
+            arguments[0] = *it; //PyQt pointer
+            Py::Object result = func.apply(arguments);
+            void* ptr = PyLong_AsVoidPtr(result.ptr());
+            QObject* object = reinterpret_cast<QObject*>(ptr);
+            if (object) {
+                QWidget* w = qobject_cast<QWidget*>(object);
+                if (w) Content.push_back(w);
+            }
+        }
+    }
+
+    if (watcher.hasAttr(std::string("filter"))) {
+        Py::String name(watcher.getAttr(std::string("filter")));
+        std::string s = (std::string)name;
+        this->setFilter(s.c_str());
     }
 }
 
 TaskWatcherPython::~TaskWatcherPython()
 {
+    std::vector< QPointer<QWidget> > guarded;
+    guarded.insert(guarded.begin(), Content.begin(), Content.end());
+    Content.clear();
     Base::PyGILStateLocker lock;
     this->watcher = Py::None();
+    Content.insert(Content.begin(), guarded.begin(), guarded.end());
 }
 
 bool TaskWatcherPython::shouldShow()
