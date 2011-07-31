@@ -14,8 +14,16 @@ class TaskWatcher:
         self.title = "Create primitives"
         self.icon = "Part_Sphere"
         self.widgets = [MyLineEdit()]
+        self.widgets[0].setText("Line edit inside task box")
     def shouldShow(self):
         return App.ActiveDocument is not None
+
+class TaskLineEdit:
+    def __init__(self):
+        self.widgets = [MyLineEdit()]
+        self.widgets[0].setText("Line edit with no task box")
+    def shouldShow(self):
+        return True
 
 class TaskWatcherFilter:
     def __init__(self):
@@ -83,10 +91,15 @@ class TaskPanel:
         if item[1]:
             self.form.listWidget.addItem(item[0])
 
+class TaskCalendar:
+    def __init__(self):
+        self.form = QtGui.QCalendarWidget()
+
 
 def createTask():
-    Gui.Control.addTaskWatcher([TaskWatcher(), TaskWatcherFilter()])
-    panel = TaskPanel()
+    Gui.Control.addTaskWatcher([TaskWatcher(), TaskLineEdit(), TaskWatcherFilter()])
+    panel = TaskCalendar()
+    #panel = TaskPanel()
     Gui.Control.showDialog(panel)
-    panel.setupUi()
+    #panel.setupUi()
     return panel
