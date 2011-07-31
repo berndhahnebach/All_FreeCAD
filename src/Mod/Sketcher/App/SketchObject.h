@@ -71,6 +71,12 @@ public:
     /// delete constraint
     int delConstraint(int ConstrNbr);
     int delConstraintOnPoint(int PointNbr);
+    /// add an external geometry reference
+    int addExternal(App::DocumentObject *Obj, const char* SubName);
+    /// returns a list of projected external geoms
+    std::vector<Part::Geometry *> getExternalGeometry(void);
+    /// delete external
+    int delExternal(int ConstrNbr);
 
     /// set the datum of a Distance or Angle constraint and solve 
     int setDatum(double Datum, int ConstrNbr);

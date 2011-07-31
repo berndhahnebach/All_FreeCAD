@@ -38,6 +38,16 @@
         <UserDocu>delete a constraint from the sketch</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="addExternal">
+      <Documentation>
+        <UserDocu>add a link to a external geometry to use them in a constraint</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="delExternal">
+      <Documentation>
+        <UserDocu>delete a external geometry link from the sketch</UserDocu>
+      </Documentation>
+    </Methode>
     <Methode Name="delConstraintOnPoint">
       <Documentation>
         <UserDocu>delete coincident constraints associated with a sketch point</UserDocu>

@@ -25,6 +25,8 @@
 #ifndef _PreComp_
 # include <BRepBuilderAPI_MakeEdge.hxx>
 # include <BRepBuilderAPI_MakeFace.hxx>
+# include <BRepBuilderAPI_MakeVertex.hxx>
+# include <Geom_CartesianPoint.hxx>
 # include <Geom_Circle.hxx>
 # include <Geom_Curve.hxx>
 # include <Geom_Ellipse.hxx>
@@ -58,6 +60,7 @@
 # include <gce_ErrorType.hxx>
 # include <gp_Lin.hxx>
 # include <gp_Pln.hxx>
+# include <gp_Pnt.hxx>
 # include <gp_Cylinder.hxx>
 # include <gp_Cone.hxx>
 # include <gp_Sphere.hxx>
@@ -80,6 +83,7 @@
 #endif
 
 #include "LinePy.h"
+#include <Base/VectorPy.h>
 #include "CirclePy.h"
 #include "EllipsePy.h"
 #include "ArcPy.h"
@@ -178,6 +182,97 @@ void         Geometry::Restore    (Base::XMLReader &reader)
     reader.readElement("Construction");
     // get the value of my Attribute
     Construction = (int)reader.getAttributeAsInteger("value")==0?false:true;   
+}
+
+// -------------------------------------------------
+
+TYPESYSTEM_SOURCE(Part::GeomPoint,Part::Geometry);
+
+GeomPoint::GeomPoint()
+{
+    this->myPoint = new Geom_CartesianPoint(gp_Pnt());
+}
+
+GeomPoint::GeomPoint(const Handle_Geom_CartesianPoint& p)
+{
+    this->myPoint = Handle_Geom_CartesianPoint::DownCast(p->Copy());
+}
+GeomPoint::GeomPoint(const Base::Vector3d& p)
+{
+    this->myPoint = new Geom_CartesianPoint(gp_Pnt(p.x,p.y,p.z)) ;
+}
+
+GeomPoint::~GeomPoint()
+{
+}
+
+const Handle_Geom_Geometry& GeomPoint::handle() const
+{
+    return myPoint;
+}
+
+Geometry *GeomPoint::clone(void) const
+{
+    return new GeomPoint(myPoint);
+}
+
+TopoDS_Shape GeomPoint::toShape() const
+{
+    return BRepBuilderAPI_MakeVertex(myPoint->Pnt());
+}
+
+
+Base::Vector3d GeomPoint::getPoint(void)const
+{
+    return Base::Vector3d(myPoint->X(),myPoint->Y(),myPoint->Z());
+}
+
+void GeomPoint::setPoint(const Base::Vector3d & p)
+{
+    this->myPoint = new Geom_CartesianPoint(gp_Pnt(p.x,p.y,p.z)) ;
+}
+
+// Persistence implementer 
+unsigned int GeomPoint::getMemSize (void) const               
+{
+    return sizeof(Geom_Point);
+}
+
+void GeomPoint::Save(Base::Writer &writer) const 
+{
+    // save the attributes of the father class
+    Geometry::Save(writer);
+
+    Base::Vector3d Point   =  getPoint();
+    writer.Stream() 
+         << writer.ind() 
+             << "<GeomPoint " 
+                << "X=\"" <<  Point.x << 
+                "\" Y=\"" <<  Point.y << 
+                "\" Z=\"" <<  Point.z << 
+             "\"/>" << endl;
+}
+
+void GeomPoint::Restore(Base::XMLReader &reader) 
+{
+    // read the attributes of the father class
+    Geometry::Restore(reader);
+
+    float X,Y,Z;
+    // read my Element
+    reader.readElement("GeomPoint");
+    // get the value of my Attribute
+    X = (float)reader.getAttributeAsFloat("X");
+    Y = (float)reader.getAttributeAsFloat("Y");
+    Z = (float)reader.getAttributeAsFloat("Z");
+ 
+    // set the read geometry
+    setPoint(Base::Vector3d(X,Y,Z) );
+}
+
+PyObject *GeomPoint::getPyObject(void)
+{
+    return new Base::VectorPy(getPoint());
 }
 
 // -------------------------------------------------
@@ -810,13 +905,37 @@ GeomLine::GeomLine()
     this->myCurve = c;
 }
 
-GeomLine::GeomLine(const Handle_Geom_Line& c)
+GeomLine::GeomLine(const Handle_Geom_Line& l)
 {
-    this->myCurve = Handle_Geom_Line::DownCast(c->Copy());
+    this->myCurve = Handle_Geom_Line::DownCast(l->Copy());
 }
+
+GeomLine::GeomLine(const Base::Vector3d& Pos, const Base::Vector3d& Dir)
+{
+    this->myCurve = new Geom_Line(gp_Pnt(Pos.x,Pos.y,Pos.z),gp_Dir(Dir.x,Dir.y,Dir.z));
+}
+
 
 GeomLine::~GeomLine()
 {
+}
+
+void GeomLine::setLine(const Base::Vector3d& Pos, const Base::Vector3d& Dir)
+{
+    this->myCurve = new Geom_Line(gp_Pnt(Pos.x,Pos.y,Pos.z),gp_Dir(Dir.x,Dir.y,Dir.z));
+}
+
+Base::Vector3d GeomLine::getPos(void)const
+{
+    gp_Pnt Pos = this->myCurve->Lin().Location();
+    gp_Dir Dir = this->myCurve->Lin().Direction();
+
+    return Base::Vector3d(Pos.X(),Pos.Y(),Pos.Z());
+}
+
+Base::Vector3d GeomLine::getDir(void)const
+{
+    return Base::Vector3d();
 }
 
 const Handle_Geom_Geometry& GeomLine::handle() const
@@ -830,9 +949,49 @@ Geometry *GeomLine::clone(void) const
 }
 
 // Persistence implementer 
-unsigned int GeomLine::getMemSize (void) const               {assert(0); return 0;/* not implemented yet */}
-void         GeomLine::Save       (Base::Writer &/*writer*/) const {assert(0);          /* not implemented yet */}
-void         GeomLine::Restore    (Base::XMLReader &/*reader*/)    {assert(0);          /* not implemented yet */}
+unsigned int GeomLine::getMemSize (void) const 
+{
+    return sizeof(Geom_Line);
+}
+
+void GeomLine::Save(Base::Writer &writer) const 
+{
+    // save the attributes of the father class
+    Geometry::Save(writer);
+
+    Base::Vector3d Pos   =  getPos();
+    Base::Vector3d Dir   =  getDir();
+
+    writer.Stream() 
+         << writer.ind() 
+             << "<GeomLine " 
+                << "PosX=\"" <<  Pos.x << 
+                "\" PosY=\"" <<  Pos.y << 
+                "\" PosZ=\"" <<  Pos.z << 
+                "\" DirX=\"" <<  Dir.x << 
+                "\" DirY=\"" <<  Dir.y << 
+                "\" DirZ=\"" <<  Dir.z <<
+             "\"/>" << endl;
+}
+void GeomLine::Restore(Base::XMLReader &reader)
+{
+    // read the attributes of the father class
+    Geometry::Restore(reader);
+
+    float PosX,PosY,PosZ,DirX,DirY,DirZ;
+    // read my Element
+    reader.readElement("GeomLine");
+    // get the value of my Attribute
+    PosX = (float)reader.getAttributeAsFloat("PosX");
+    PosY = (float)reader.getAttributeAsFloat("PosY");
+    PosZ = (float)reader.getAttributeAsFloat("PosZ");
+    DirX   = (float)reader.getAttributeAsFloat("DirX");
+    DirY   = (float)reader.getAttributeAsFloat("DirY");
+    DirZ   = (float)reader.getAttributeAsFloat("DirZ");
+ 
+    // set the read geometry
+    setLine(Base::Vector3d(PosX,PosY,PosZ),Base::Vector3d(DirX,DirY,DirZ) );
+}
 
 PyObject *GeomLine::getPyObject(void)
 {

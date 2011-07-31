@@ -26,6 +26,7 @@
 #include <Mod/Part/App/LinePy.h>
 #include <Mod/Part/App/Geometry.h>
 #include <Base/VectorPy.h>
+#include <App/Document.h>
 
 // inclusion of the generated files (generated out of SketchObjectSFPy.xml)
 #include "SketchObjectPy.h"
@@ -100,6 +101,33 @@ PyObject* SketchObjectPy::delConstraint(PyObject *args)
     }
 
     Py_Return; 
+}
+
+PyObject* SketchObjectPy::addExternal(PyObject *args)
+{
+    char *ObjectName;
+    char *SubName;
+    if (!PyArg_ParseTuple(args, "ss:Give a object and subelement name", &ObjectName,&SubName))
+        return 0;
+
+    // get the target object for the external link
+    App::DocumentObject * Obj = this->getSketchObjectPtr()->getDocument()->getObject(ObjectName);
+    // check if its belong to the sketch support 
+    if (this->getSketchObjectPtr()->Support.getValue() != Obj) {
+        PyErr_Format(PyExc_ValueError, "%s is not support of this sketch!", ObjectName);
+        return 0;
+    }
+
+    // add the external 
+    this->getSketchObjectPtr()->addExternal(Obj,SubName);
+
+    Py_Return; 
+}
+
+PyObject* SketchObjectPy::delExternal(PyObject *args)
+{
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return 0;
 }
 
 PyObject* SketchObjectPy::delConstraintOnPoint(PyObject *args)
