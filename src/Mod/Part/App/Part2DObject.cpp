@@ -64,22 +64,29 @@ App::DocumentObjectExecReturn *Part2DObject::execute(void)
 
 Base::Placement Part2DObject::positionBySupport(const TopoDS_Face &face,const Base::Placement &Place)
 {
-    if(face.IsNull())
+    if (face.IsNull())
         throw Base::Exception("Null Face in Part2DObject::positionBySupport()!");
 
     bool Reverse = false;
-    if(face.Orientation() == TopAbs_REVERSED) 
-        Reverse=true;
+    if (face.Orientation() == TopAbs_REVERSED) 
+        Reverse = true;
 
     BRepAdaptor_Surface adapt(face);
 
-    if(adapt.GetType() != GeomAbs_Plane)
+    if (adapt.GetType() != GeomAbs_Plane)
         throw Base::Exception("No planar Face in Part2DObject::positionBySupport()!");
 
     gp_Pnt ObjOrg(Place.getPosition().x,Place.getPosition().y,Place.getPosition().z);
     gp_Pln plane = adapt.Plane();
+    Standard_Boolean ok = plane.Direct();
+    if (!ok) {
+        // toogle if plane has a left-handed system
+        plane.UReverse();
+        Reverse = !Reverse;
+    }
+
     gp_Ax1 Normal = plane.Axis();
-    if(Reverse)
+    if (Reverse)
         Normal.Reverse();
 
     Handle (Geom_Plane) gPlane = new Geom_Plane(plane);
@@ -91,7 +98,7 @@ Base::Placement Part2DObject::positionBySupport(const TopoDS_Face &face,const Ba
     Standard_Real a = Normal.Angle(gp_Ax1(gp_Pnt(0,0,0),gp_Dir(0,1,0)));
 
     gp_Ax3 SketchPos;
-    if(fabs(a)<0.1 || fabs((fabs(a)-M_PI))< 0.1)
+    if (fabs(a)<0.1 || fabs((fabs(a)-M_PI))< 0.1)
         SketchPos = gp_Ax3(SketchBasePoint,Normal._CSFDB_Getgp_Ax1vdir(),gp_Dir(1,0,0));
     else
         SketchPos = gp_Ax3(SketchBasePoint,Normal._CSFDB_Getgp_Ax1vdir());
@@ -104,7 +111,6 @@ Base::Placement Part2DObject::positionBySupport(const TopoDS_Face &face,const Ba
 
     gp_Mat m = Trf._CSFDB_Getgp_Trsfmatrix();
     gp_XYZ p = Trf._CSFDB_Getgp_Trsfloc();
-    //Standard_Real scale = Trf._CSFDB_Getgp_Trsfscale();
     Standard_Real scale = 1.0;
 
     // set Rotation matrix
@@ -124,7 +130,6 @@ Base::Placement Part2DObject::positionBySupport(const TopoDS_Face &face,const Ba
     mtrx[0][3] = p._CSFDB_Getgp_XYZx();
     mtrx[1][3] = p._CSFDB_Getgp_XYZy();
     mtrx[2][3] = p._CSFDB_Getgp_XYZz();
-
 
     // check the angle against the Z Axis
     //Standard_Real a = Normal.Angle(gp_Ax1(gp_Pnt(0,0,0),gp_Dir(0,0,1)));

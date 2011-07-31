@@ -57,16 +57,16 @@ SketchObject::SketchObject()
 App::DocumentObjectExecReturn *SketchObject::execute(void)
 {
     // recalculate support:
-    if (Support.getValue() && Support.getValue()->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
+    Part::Feature *part = static_cast<Part::Feature*>(Support.getValue());
+    if (part && part->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
     {
-        Part::Feature *part = static_cast<Part::Feature*>(Support.getValue());
         Base::Placement ObjectPos = part->Placement.getValue();
         const std::vector<std::string> &sub = Support.getSubValues();
         assert(sub.size()==1);
         // get the selected sub shape (a Face)
-        const Part::TopoShape &shape = part->Shape.getValue();
+        const Part::TopoShape &shape = part->Shape.getShape();
         TopoDS_Shape sh = shape.getSubShape(sub[0].c_str());
-        TopoDS_Face face = TopoDS::Face(sh);
+        const TopoDS_Face& face = TopoDS::Face(sh);
         assert(!face.IsNull());
 
         BRepAdaptor_Surface adapt(face);
