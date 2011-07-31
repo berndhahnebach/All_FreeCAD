@@ -49,6 +49,13 @@ Base::Vector3f ViewVolumeProjection::operator()(const Base::Vector3f &pt) const
     return Base::Vector3f(pt3d[0],pt3d[1],pt3d[2]);
 }
 
+Base::Vector3d ViewVolumeProjection::operator()(const Base::Vector3d &pt) const
+{
+    Base::Vector3f ptf = Base::convertTo<Base::Vector3f>(pt);
+    ptf = operator()(ptf);
+    return Base::convertTo<Base::Vector3d>(ptf);
+}
+
 Base::Vector3f ViewVolumeProjection::inverse (const Base::Vector3f &pt) const
 {
 #if 1
@@ -63,6 +70,13 @@ Base::Vector3f ViewVolumeProjection::inverse (const Base::Vector3f &pt) const
     SbVec3f pt3d = viewVolume.getPlanePoint(viewVolume.getNearDist(), SbVec2f(pt.x,pt.y));
 #endif
     return Base::Vector3f(pt3d[0],pt3d[1],pt3d[2]);
+}
+
+Base::Vector3d ViewVolumeProjection::inverse (const Base::Vector3d &pt) const
+{
+    Base::Vector3f ptf = Base::convertTo<Base::Vector3f>(pt);
+    ptf = inverse(ptf);
+    return Base::convertTo<Base::Vector3d>(ptf);
 }
 
 Base::Matrix4D ViewVolumeProjection::getProjectionMatrix () const

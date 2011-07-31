@@ -1450,7 +1450,7 @@ Restart:
                     float length = Constr->LabelDistance;
 
                     // Get magnitude of angle between horizontal
-                    float angle = atan2f(dir[1],dir[0]);
+                    double angle = atan2f(dir[1],dir[0]);
                     bool flip=false;
                     if (angle > M_PI_2+M_PI/12) {
                         angle -= M_PI;
@@ -1465,7 +1465,7 @@ Restart:
                     // set position and rotation of Datums Text
                     SoTransform *transform = dynamic_cast<SoTransform *>(sep->getChild(2));
                     transform->translation.setValue(textpos);
-                    transform->rotation.setValue(SbVec3f(0, 0, 1), angle);
+                    transform->rotation.setValue(SbVec3f(0, 0, 1), (float)angle);
 
                     // Get the datum nodes
                     SoSeparator *sepDatum = dynamic_cast<SoSeparator *>(sep->getChild(1));
@@ -1747,7 +1747,7 @@ Restart:
                     SbVec3f textBBCenter = bbAction.getBoundingBox().getCenter();
 
                     // Get magnitude of angle between horizontal
-                    float angle = atan2f(dir[1],dir[0]);
+                    double angle = atan2f(dir[1],dir[0]);
                     bool flip=false;
                     if (angle > M_PI_2+M_PI/12) {
                         angle -= M_PI;
@@ -1762,7 +1762,7 @@ Restart:
                     // set position and rotation of Datums Text
                     SoTransform *transform = dynamic_cast<SoTransform *>(sep->getChild(2));
                     transform->translation.setValue(textpos);
-                    transform->rotation.setValue(SbVec3f(0, 0, 1), angle);
+                    transform->rotation.setValue(SbVec3f(0, 0, 1), (float)angle);
 
                     // Get the datum nodes
                     SoSeparator *sepDatum = dynamic_cast<SoSeparator *>(sep->getChild(1));
