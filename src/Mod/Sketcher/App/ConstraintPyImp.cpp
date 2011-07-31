@@ -82,6 +82,10 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
             this->getConstraintPtr()->Type = Perpendicular;
             valid = true;
         }
+        else if (strcmp("Equal",ConstraintType) == 0) {
+            this->getConstraintPtr()->Type = Equal;
+            valid = true;
+        }
         if (valid) {
             this->getConstraintPtr()->First = FirstIndex;
             this->getConstraintPtr()->Second = SecondIndex;

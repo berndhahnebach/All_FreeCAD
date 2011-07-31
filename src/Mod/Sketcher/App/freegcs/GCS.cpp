@@ -373,6 +373,28 @@ int System::addConstraintArcRadius(Arc &a, double *radius, int level)
     return addConstraintEqual(a.rad, radius, level);
 }
 
+int System::addConstraintEqualLength(Line &l1, Line &l2, double *length, int level)
+{
+           addConstraintP2PDistance(l1.p1, l1.p2, length, level);
+    return addConstraintP2PDistance(l2.p1, l2.p2, length, level);
+}
+
+int System::addConstraintEqualRadius(Circle &c1, Circle &c2, int level)
+{
+    return addConstraintEqual(c1.rad, c2.rad, level);
+}
+
+int System::addConstraintEqualRadius(Circle &c1, Arc &a2, int level)
+{
+    return addConstraintEqual(c1.rad, a2.rad, level);
+}
+
+int System::addConstraintEqualRadius(Arc &a1, Arc &a2, int level)
+{
+    return addConstraintEqual(a1.rad, a2.rad, level);
+}
+
+
 void System::initSolution(VEC_pD &params)
 {
     // - Stores the current parameters in the vector "reference"

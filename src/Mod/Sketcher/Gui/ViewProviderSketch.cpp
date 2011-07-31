@@ -1263,32 +1263,72 @@ Restart:
                 break;
             case Parallel:
             case Perpendicular:
+            case Equal:
                 {
                     assert(Constr->First < int(geomlist->size()));
                     assert(Constr->Second < int(geomlist->size()));
                     // get the geometry
                     const Part::Geometry *geo1 = (*geomlist)[Constr->First];
                     const Part::Geometry *geo2 = (*geomlist)[Constr->Second];
-                    // Parallel or Perpendicular can only apply to a GeomLineSegment
+
+                    Base::Vector3d midpos1, dir1, norm1;
+                    Base::Vector3d midpos2, dir2, norm2;
                     if (geo1->getTypeId() != Part::GeomLineSegment::getClassTypeId() ||
-                        geo2->getTypeId() != Part::GeomLineSegment::getClassTypeId())
-                        break;
-                    const Part::GeomLineSegment *lineSeg1 = dynamic_cast<const Part::GeomLineSegment *>(geo1);
-                    const Part::GeomLineSegment *lineSeg2 = dynamic_cast<const Part::GeomLineSegment *>(geo2);
+                        geo2->getTypeId() != Part::GeomLineSegment::getClassTypeId()) {
+                        if (Constr->Type == Equal) {
+                            double r1,r2,angle1,angle2;
+                            if (geo1->getTypeId() == Part::GeomCircle::getClassTypeId()) {
+                                const Part::GeomCircle *circle = dynamic_cast<const Part::GeomCircle *>(geo1);
+                                r1 = circle->getRadius();
+                                angle1 = M_PI/4;
+                                midpos1 = circle->getCenter();
+                            } else if (geo1->getTypeId() == Part::GeomArcOfCircle::getClassTypeId()) {
+                                const Part::GeomArcOfCircle *arc = dynamic_cast<const Part::GeomArcOfCircle *>(geo1);
+                                r1 = arc->getRadius();
+                                double startangle, endangle;
+                                arc->getRange(startangle, endangle);
+                                angle1 = (startangle + endangle)/2;
+                                midpos1 = arc->getCenter();
+                            } else
+                                break;
 
-                    // calculate the half distance between the start and endpoint
-                    Base::Vector3d midpos1 = ((lineSeg1->getEndPoint()+lineSeg1->getStartPoint())/2);
+                            if (geo2->getTypeId() == Part::GeomCircle::getClassTypeId()) {
+                                const Part::GeomCircle *circle = dynamic_cast<const Part::GeomCircle *>(geo2);
+                                r2 = circle->getRadius();
+                                angle2 = M_PI/4;
+                                midpos2 = circle->getCenter();
+                            } else if (geo2->getTypeId() == Part::GeomArcOfCircle::getClassTypeId()) {
+                                const Part::GeomArcOfCircle *arc = dynamic_cast<const Part::GeomArcOfCircle *>(geo2);
+                                r2 = arc->getRadius();
+                                double startangle, endangle;
+                                arc->getRange(startangle, endangle);
+                                angle2 = (startangle + endangle)/2;
+                                midpos2 = arc->getCenter();
+                            } else
+                                break;
 
-                    //Get a set of vectors perpendicular and tangential to these
-                    Base::Vector3d dir1 = (lineSeg1->getEndPoint()-lineSeg1->getStartPoint()).Normalize();
-                    Base::Vector3d norm1(-dir1.y,dir1.x,0);
+                            norm1 = Base::Vector3d(cos(angle1),sin(angle1),0);
+                            dir1 = Base::Vector3d(-norm1.y,norm1.x,0);
+                            midpos1 += r1*norm1;
 
-                    // calculate the half distance between the start and endpoint
-                    Base::Vector3d midpos2 = ((lineSeg2->getEndPoint()+lineSeg2->getStartPoint())/2);
+                            norm2 = Base::Vector3d(cos(angle2),sin(angle2),0);
+                            dir2 = Base::Vector3d(-norm2.y,norm2.x,0);
+                            midpos2 += r2*norm2;
+                        } else // Parallel or Perpendicular can only apply to a GeomLineSegment
+                            break;
+                    } else {
+                        const Part::GeomLineSegment *lineSeg1 = dynamic_cast<const Part::GeomLineSegment *>(geo1);
+                        const Part::GeomLineSegment *lineSeg2 = dynamic_cast<const Part::GeomLineSegment *>(geo2);
 
-                    //Get a set of vectors perpendicular and tangential to these
-                    Base::Vector3d dir2 = (lineSeg2->getEndPoint()-lineSeg2->getStartPoint()).Normalize();
-                    Base::Vector3d norm2(-dir2.y,dir2.x,0);
+                        // calculate the half distance between the start and endpoint
+                        midpos1 = ((lineSeg1->getEndPoint()+lineSeg1->getStartPoint())/2);
+                        midpos2 = ((lineSeg2->getEndPoint()+lineSeg2->getStartPoint())/2);
+                        //Get a set of vectors perpendicular and tangential to these
+                        dir1 = (lineSeg1->getEndPoint()-lineSeg1->getStartPoint()).Normalize();
+                        dir2 = (lineSeg2->getEndPoint()-lineSeg2->getStartPoint()).Normalize();
+                        norm1 = Base::Vector3d(-dir1.y,dir1.x,0.);
+                        norm2 = Base::Vector3d(-dir2.y,dir2.x,0.);
+                    }
 
                     Base::Vector3d constrPos1;
                     int multiplier = 0;
@@ -1611,7 +1651,10 @@ Restart:
                     SbVec3f textpos = p0 + v0 * r - SbVec3f(0,1,0) * textBBCenter[1]/4;
 
                     // leave some space for the text
-                    range = std::max(0.2*range, range - textBB[0]/(2*r));
+                    if (range >= 0)
+                        range = std::max(0.2*range, range - textBB[0]/(2*r));
+                    else
+                        range = std::min(0.2*range, range + textBB[0]/(2*r));
 
                     int countSegments = std::max(4,abs(int(25.0 * range / (2 * M_PI))));
                     double segment = range / (2*countSegments-2);
@@ -1849,6 +1892,7 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
                 break;
             case Parallel:
             case Perpendicular:
+            case Equal:
                 {
                     // Create the Image Nodes
                     SoImage *constraintIcon = new SoImage();
@@ -1859,6 +1903,8 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
                         image = Gui::BitmapFactory().pixmap("Constraint_Parallel").toImage();
                     else if ((*it)->Type == Perpendicular)
                         image = Gui::BitmapFactory().pixmap("Constraint_Perpendicular").toImage();
+                    else if ((*it)->Type == Equal)
+                        image = Gui::BitmapFactory().pixmap("Constraint_EqualLength").toImage();
 
                     //Scale Image
                     image = image.scaledToWidth(constraintImageSize);

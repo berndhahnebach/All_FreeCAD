@@ -42,7 +42,8 @@ enum ConstraintType {
     DistanceY,
     Angle,
     Perpendicular,
-    Radius
+    Radius,
+    Equal
 };
 
 /// define if you want to use the end or start point
