@@ -81,7 +81,8 @@ Gui::MenuItem* Workbench::setupMenuBar() const
           << "Sketcher_ConstrainParallel"
           << "Sketcher_ConstrainPerpendicular"
           << "Sketcher_ConstrainAngle"
-          << "Sketcher_ConstrainTangent";
+          << "Sketcher_ConstrainTangent"
+          << "Sketcher_ConstrainEqual";
     *sketch 
         << "Sketcher_NewSketch"
         << geom
@@ -124,7 +125,8 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
           << "Sketcher_ConstrainParallel"
           << "Sketcher_ConstrainPerpendicular"
           << "Sketcher_ConstrainAngle"
-          << "Sketcher_ConstrainTangent";
+          << "Sketcher_ConstrainTangent"
+          << "Sketcher_ConstrainEqual";
      return root;
 }
 

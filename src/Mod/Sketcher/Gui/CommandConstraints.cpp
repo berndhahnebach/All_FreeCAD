@@ -1174,6 +1174,81 @@ bool CmdSketcherConstrainAngle::isActive(void)
 }
 
 
+DEF_STD_CMD_A(CmdSketcherConstrainEqual);
+
+CmdSketcherConstrainEqual::CmdSketcherConstrainEqual()
+    :Command("Sketcher_ConstrainEqual")
+{
+    sAppModule      = "Sketcher";
+    sGroup          = QT_TR_NOOP("Sketcher");
+    sMenuText       = QT_TR_NOOP("Constrain equal");
+    sToolTipText    = QT_TR_NOOP("Create a equality constraint between two lines or between circles and arcs");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Constraint_EqualLength";
+    sAccel          = "E";
+    eType           = ForEdit;
+}
+
+void CmdSketcherConstrainEqual::activated(int iMsg)
+{
+    // get the selection 
+    std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
+
+    // only one sketch with its subelements are allowed to be selected
+    if (selection.size() != 1) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select two edges from the sketch."));
+        return;
+    }
+
+    // get the needed lists and objects
+    const std::vector<std::string> &SubNames = selection[0].getSubNames();
+
+    // only one sketch with its subelements are allowed to be selected
+    if (SubNames.size() != 2) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select exactly two edges from the sketch."));
+        return;
+    }
+
+    int GeoId1,GeoId2;
+    if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge") 
+        GeoId1 = std::atoi(SubNames[0].substr(4,4000).c_str());
+    else {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select exactly two edges from the sketch."));
+        return;
+    }
+
+    if (SubNames[1].size() > 4 && SubNames[1].substr(0,4) == "Edge") 
+        GeoId2 = std::atoi(SubNames[1].substr(4,4000).c_str());
+    else {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select exactly two edges from the sketch."));
+        return;
+    }
+
+    // undo command open
+    openCommand("add equality constraint");
+    Gui::Command::doCommand(
+        Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Equal',%d,%d)) ",
+        selection[0].getFeatName(),GeoId1,GeoId2);
+
+    // finish the transaction and update
+    commitCommand();
+    updateActive();
+
+    // clear the selction (convenience)
+    getSelection().clearSelection();
+}
+
+bool CmdSketcherConstrainEqual::isActive(void)
+{
+    return isCreateConstraintActive( getActiveGuiDocument() );
+}
+
+
 
 
 void CreateSketcherCommandsConstraints(void)
@@ -1192,4 +1267,5 @@ void CreateSketcherCommandsConstraints(void)
     rcCmdMgr.addCommand(new CmdSketcherConstrainDistanceY());
     rcCmdMgr.addCommand(new CmdSketcherConstrainRadius());
     rcCmdMgr.addCommand(new CmdSketcherConstrainAngle());
+    rcCmdMgr.addCommand(new CmdSketcherConstrainEqual());
  }

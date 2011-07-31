@@ -507,6 +507,9 @@ int Sketch::addConstraint(const Constraint *constraint)
         case Radius:
             rtn = addRadiusConstraint(constraint->First, constraint->Value);
             break;
+        case Equal:
+            rtn = addEqualConstraint(constraint->First,constraint->Second);
+            break;
         case None:
             break;
     }
@@ -1088,6 +1091,56 @@ int Sketch::addAngleConstraint(int geoId1, PointPos pos1, int geoId2, PointPos p
     double *angle = FixParameters[FixParameters.size()-1];
 
     return GCSsys.addConstraintL2LAngle(*l1p1, *l1p2, *l2p1, *l2p2, angle);
+}
+
+int Sketch::addEqualConstraint(int geoId1, int geoId2)
+{
+    assert(geoId1 < int(Geoms.size()));
+    assert(geoId2 < int(Geoms.size()));
+
+    if (Geoms[geoId1].type == Line &&
+        Geoms[geoId2].type == Line) {
+        GCS::Line &l1 = Lines[Geoms[geoId1].index];
+        GCS::Line &l2 = Lines[Geoms[geoId2].index];
+        double dx1 = (*l1.p2.x - *l1.p1.x);
+        double dy1 = (*l1.p2.y - *l1.p1.y);
+        double dx2 = (*l2.p2.x - *l2.p1.x);
+        double dy2 = (*l2.p2.y - *l2.p1.y);
+        double value = (sqrt(dx1*dx1+dy1*dy1)+sqrt(dx2*dx2+dy2*dy2))/2;
+        // add the parameter for the common length (this is added to Parameters, not FixParameters)
+        Parameters.push_back(new double(value));
+        double *length = Parameters[Parameters.size()-1];
+        return GCSsys.addConstraintEqualLength(l1, l2, length);
+    }
+
+    if (Geoms[geoId2].type == Circle) {
+        if (Geoms[geoId1].type == Circle) {
+            GCS::Circle &c1 = Circles[Geoms[geoId1].index];
+            GCS::Circle &c2 = Circles[Geoms[geoId2].index];
+            return GCSsys.addConstraintEqualRadius(c1, c2);
+        }
+        else
+            std::swap(geoId1, geoId2);
+    }
+
+    if (Geoms[geoId1].type == Circle) {
+        GCS::Circle &c1 = Circles[Geoms[geoId1].index];
+        if (Geoms[geoId2].type == Arc) {
+            GCS::Arc &a2 = Arcs[Geoms[geoId2].index];
+            return GCSsys.addConstraintEqualRadius(c1, a2);
+        }
+    }
+
+    if (Geoms[geoId1].type == Arc &&
+        Geoms[geoId2].type == Arc) {
+        GCS::Arc &a1 = Arcs[Geoms[geoId1].index];
+        GCS::Arc &a2 = Arcs[Geoms[geoId2].index];
+        return GCSsys.addConstraintEqualRadius(a1, a2);
+    }
+
+    Base::Console().Warning("Equality constraints between %s and %s are not supported.\n",
+        nameByType(Geoms[geoId1].type), nameByType(Geoms[geoId2].type));
+    return -1;
 }
 
 // solving ==========================================================

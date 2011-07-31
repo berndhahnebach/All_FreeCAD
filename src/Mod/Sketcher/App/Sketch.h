@@ -150,6 +150,8 @@ public:
     int addAngleConstraint(int geoIndex, double value);
     int addAngleConstraint(int geoIndex1, int geoIndex2, double value);
     int addAngleConstraint(int geoIndex1, PointPos pos1, int geoIndex2, PointPos pos2, double value);
+    /// add an equal length or radius constraints between two lines or between circles and arcs
+    int addEqualConstraint(int geoIndex1, int geoIndex2);
     //@}
 
     enum GeoType {

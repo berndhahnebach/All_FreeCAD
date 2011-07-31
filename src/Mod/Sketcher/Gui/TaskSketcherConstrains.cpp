@@ -226,6 +226,7 @@ void TaskSketcherConstrains::slotConstraintsChanged(void)
     QIcon dist ( Gui::BitmapFactory().pixmap("Constraint_Length") );
     QIcon radi ( Gui::BitmapFactory().pixmap("Constraint_Radius") );
     QIcon angl ( Gui::BitmapFactory().pixmap("Constraint_InternalAngle") );
+    QIcon equal( Gui::BitmapFactory().pixmap("Constraint_EqualLength") );
 
     assert(sketchView);
     // Build up ListView with the constraints
@@ -267,6 +268,10 @@ void TaskSketcherConstrains::slotConstraintsChanged(void)
             case Sketcher::Tangent:
                 if(Filter<2 || (*it)->Name != "")
                     ui->listWidgetConstraints->addItem(new ConstraintItem(tang,name,i-1,(*it)->Type));
+                break;
+            case Sketcher::Equal:
+                if(Filter<2 || (*it)->Name != "")
+                    ui->listWidgetConstraints->addItem(new ConstraintItem(equal,name,i-1,(*it)->Type));
                 break;
             case Sketcher::Distance:
                 if(Filter<3 || (*it)->Name != ""){
