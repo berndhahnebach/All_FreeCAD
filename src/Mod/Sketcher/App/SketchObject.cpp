@@ -279,6 +279,48 @@ int SketchObject::delConstraintOnPoint(int PointNbr)
     return 0;
 }
 
+int SketchObject::addExternal(App::DocumentObject *Obj, const char* SubName)
+{
+    // so far only externals to the support of the sketch
+    assert(Support.getValue() == Obj);
+
+    // get the actual lists of the externals
+    std::vector<DocumentObject*> Objects     = ExternalConstraints.getValues();
+    std::vector<std::string>     SubElements = ExternalConstraints.getSubValues();
+
+    // add the new ones
+    Objects.push_back(Obj);
+    SubElements.push_back(std::string(SubName));
+
+    // set the Link list.
+    ExternalConstraints.setValues(Objects,SubElements);
+
+    return ExternalConstraints.getValues().size()-1;
+}
+
+int SketchObject::delExternal(int ConstrNbr)
+{
+    // FIXME: still to implement
+    return 0;
+
+}
+
+std::vector<Part::Geometry *> getExternalGeometry(void)
+{
+    std::vector<Part::Geometry *> ExtGeos;
+
+    // add the root point (0,0) the the external geos(-1)
+    ExtGeos.push_back(new Part::GeomPoint(Base::Vector3d(0,0,0)));
+
+    // add the X,Y (V,H) axis (-2,-3)
+    ExtGeos.push_back(new Part::GeomLine(Base::Vector3d(0,0,0),Base::Vector3d(1,0,0)));
+    ExtGeos.push_back(new Part::GeomLine(Base::Vector3d(0,0,0),Base::Vector3d(0,1,0)));
+
+    // return the result set
+    return ExtGeos;
+}
+
+
 void SketchObject::rebuildVertexIndex(void)
 {
     VertexId2GeoId.resize(0);

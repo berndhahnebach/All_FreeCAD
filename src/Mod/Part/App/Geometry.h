@@ -24,6 +24,7 @@
 #ifndef PART_GEOMETRY_H
 #define PART_GEOMETRY_H
 
+#include <Handle_Geom_CartesianPoint.hxx>
 #include <Handle_Geom_BezierCurve.hxx>
 #include <Handle_Geom_BSplineCurve.hxx>
 #include <Handle_Geom_Circle.hxx>
@@ -76,6 +77,33 @@ protected:
 private:
     Geometry(const Geometry&);
     Geometry& operator = (const Geometry&);
+};
+
+class PartExport GeomPoint : public Geometry
+{
+    TYPESYSTEM_HEADER();
+public:
+    GeomPoint();
+    GeomPoint(const Handle_Geom_CartesianPoint&);
+    GeomPoint(const Base::Vector3d&);
+    virtual ~GeomPoint();
+    virtual Geometry *clone(void) const;
+    virtual TopoDS_Shape toShape() const;
+
+   // Persistence implementer ---------------------
+    virtual unsigned int getMemSize(void) const;
+    virtual void Save(Base::Writer &/*writer*/) const;
+    virtual void Restore(Base::XMLReader &/*reader*/);
+    // Base implementer ----------------------------
+    virtual PyObject *getPyObject(void);
+
+    const Handle_Geom_Geometry& handle() const;
+
+    Base::Vector3d getPoint(void)const;
+    void setPoint(const Base::Vector3d&);
+
+private:
+    Handle_Geom_CartesianPoint myPoint;
 };
 
 class PartExport GeomCurve : public Geometry
@@ -273,8 +301,14 @@ class PartExport GeomLine : public GeomCurve
 public:
     GeomLine();
     GeomLine(const Handle_Geom_Line&);
+    GeomLine(const Base::Vector3d& Pos, const Base::Vector3d& Dir);
     virtual ~GeomLine();
     virtual Geometry *clone(void) const;
+
+    void setLine(const Base::Vector3d& Pos, const Base::Vector3d& Dir);
+    Base::Vector3d getPos(void) const;
+    Base::Vector3d getDir(void) const;
+
 
    // Persistence implementer ---------------------
     virtual unsigned int getMemSize(void) const;

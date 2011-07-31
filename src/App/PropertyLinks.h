@@ -251,19 +251,17 @@ public:
     void setValues(const std::vector<DocumentObject*>&,const std::vector<const char*>&);
     void setValues(const std::vector<DocumentObject*>&,const std::vector<std::string>&);
 
-    /// index operator
+    // index operator
     SubSet operator[] (const int idx) const {
         return SubSet(_lValueList.operator[] (idx),_lSubList.operator [](idx));
     }
 
-
-    void  set1Value (const int idx, DocumentObject* value,const char* subName) {
-        _lValueList.operator[] (idx) = value;
-        _lSubList.operator[] (idx)   = subName;
-    }
-
     const std::vector<DocumentObject*> &getValues(void) const {
         return _lValueList;
+    }
+
+    const std::vector<std::string> &getSubValues(void) const {
+        return _lSubList;
     }
 
     virtual PyObject *getPyObject(void);
