@@ -182,9 +182,9 @@ TaskWatcherPython::TaskWatcherPython(const Py::Object& o)
         }
     }
 
-    if (tb) Content.push_back(tb);
-
     if (watcher.hasAttr(std::string("widgets"))) {
+        if (!tb && !title.isEmpty())
+            tb = new Gui::TaskView::TaskBox(icon, title, true, 0);
         Py::List list(watcher.getAttr(std::string("widgets")));
         Py::Module mainmod(PyImport_AddModule((char*)"sip"));
         Py::Callable func = mainmod.getDict().getItem("unwrapinstance");
@@ -196,10 +196,17 @@ TaskWatcherPython::TaskWatcherPython(const Py::Object& o)
             QObject* object = reinterpret_cast<QObject*>(ptr);
             if (object) {
                 QWidget* w = qobject_cast<QWidget*>(object);
-                if (w) Content.push_back(w);
+                if (w) {
+                    if (tb)
+                        tb->groupLayout()->addWidget(w);
+                    else
+                        Content.push_back(w);
+                }
             }
         }
     }
+
+    if (tb) Content.push_back(tb);
 
     if (watcher.hasAttr(std::string("filter"))) {
         Py::String name(watcher.getAttr(std::string("filter")));
@@ -244,36 +251,61 @@ bool TaskWatcherPython::shouldShow()
 
 TaskDialogPython::TaskDialogPython(const Py::Object& o) : dlg(o)
 {
-    UiLoader loader;
+    if (dlg.hasAttr(std::string("ui"))) {
+        UiLoader loader;
 #if QT_VERSION >= 0x040500
-    loader.setLanguageChangeEnabled(true);
+        loader.setLanguageChangeEnabled(true);
 #endif
-    QString fn, icon;
-    Py::String ui(dlg.getAttr(std::string("ui")));
-    std::string path = (std::string)ui;
-    fn = QString::fromUtf8(path.c_str());
+        QString fn, icon;
+        Py::String ui(dlg.getAttr(std::string("ui")));
+        std::string path = (std::string)ui;
+        fn = QString::fromUtf8(path.c_str());
 
-    QFile file(fn);
-    QWidget* form = 0;
-    if (file.open(QFile::ReadOnly))
-        form = loader.load(&file, 0);
-    file.close();
-    if (form) {
-        Gui::TaskView::TaskBox* taskbox = new Gui::TaskView::TaskBox(
-            QPixmap(icon), form->windowTitle(), true, 0);
-        taskbox->groupLayout()->addWidget(form);
-        Content.push_back(taskbox);
+        QFile file(fn);
+        QWidget* form = 0;
+        if (file.open(QFile::ReadOnly))
+            form = loader.load(&file, 0);
+        file.close();
+        if (form) {
+            Gui::TaskView::TaskBox* taskbox = new Gui::TaskView::TaskBox(
+                QPixmap(icon), form->windowTitle(), true, 0);
+            taskbox->groupLayout()->addWidget(form);
+            Content.push_back(taskbox);
+        }
+        else {
+            Base::Console().Error("Failed to load UI file from '%s'\n",
+                (const char*)fn.toUtf8());
+        }
     }
-    else {
-        Base::Console().Error("Failed to load UI file from '%s'\n",
-            (const char*)fn.toUtf8());
+    else if (dlg.hasAttr(std::string("form"))) {
+        Py::Object widget(dlg.getAttr(std::string("form")));
+        Py::Module mainmod(PyImport_AddModule((char*)"sip"));
+        Py::Callable func = mainmod.getDict().getItem("unwrapinstance");
+        Py::Tuple arguments(1);
+        arguments[0] = widget; //PyQt pointer
+        Py::Object result = func.apply(arguments);
+        void* ptr = PyLong_AsVoidPtr(result.ptr());
+        QObject* object = reinterpret_cast<QObject*>(ptr);
+        if (object) {
+            QWidget* form = qobject_cast<QWidget*>(object);
+            if (form) {
+                Gui::TaskView::TaskBox* taskbox = new Gui::TaskView::TaskBox(
+                    form->windowIcon().pixmap(32), form->windowTitle(), true, 0);
+                taskbox->groupLayout()->addWidget(form);
+                Content.push_back(taskbox);
+            }
+        }
     }
 }
 
 TaskDialogPython::~TaskDialogPython()
 {
+    std::vector< QPointer<QWidget> > guarded;
+    guarded.insert(guarded.begin(), Content.begin(), Content.end());
+    Content.clear();
     Base::PyGILStateLocker lock;
     this->dlg = Py::None();
+    Content.insert(Content.begin(), guarded.begin(), guarded.end());
 }
 
 void TaskDialogPython::open()
