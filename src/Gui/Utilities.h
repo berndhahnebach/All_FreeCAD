@@ -71,7 +71,9 @@ public:
     virtual ~ViewVolumeProjection(){};
 
     Base::Vector3f operator()(const Base::Vector3f &rclPt) const;
+    Base::Vector3d operator()(const Base::Vector3d &rclPt) const;
     Base::Vector3f inverse (const Base::Vector3f &rclPt) const;
+    Base::Vector3d inverse (const Base::Vector3d &rclPt) const;
 
     Base::Matrix4D getProjectionMatrix () const;
 

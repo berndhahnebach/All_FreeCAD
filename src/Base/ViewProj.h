@@ -40,8 +40,12 @@ public:
     virtual bool isValid() const { return true; };
     /** Convert 3D point to 2D projection plane */
     virtual Vector3f operator()(const Vector3f &rclPt) const = 0;
+    /** Convert 3D point to 2D projection plane */
+    virtual Vector3d operator()(const Vector3d &rclPt) const = 0;
     /** Convert a 2D point on the projection plane in 3D space */
     virtual Vector3f inverse (const Vector3f &rclPt) const = 0;
+    /** Convert a 2D point on the projection plane in 3D space */
+    virtual Vector3d inverse (const Vector3d &rclPt) const = 0;
     /** Calculate the projection (+ mapping) matrix */
     virtual Matrix4D getProjectionMatrix (void) const = 0; 
 
@@ -60,7 +64,9 @@ public:
     virtual ~ViewProjMatrix(){};
 
     inline Vector3f operator()(const Vector3f &rclPt) const;
+    inline Vector3d operator()(const Vector3d &rclPt) const;
     inline Vector3f inverse (const Vector3f &rclPt) const;
+    inline Vector3d inverse (const Vector3d &rclPt) const;
 
     Matrix4D getProjectionMatrix (void) const { return _clMtx; }
 
@@ -73,9 +79,19 @@ inline Vector3f ViewProjMatrix::operator()(const Vector3f &rclPt) const
     return Vector3f(_clMtx * rclPt);
 }
 
+inline Vector3d ViewProjMatrix::operator()(const Vector3d &rclPt) const
+{
+    return Vector3d(_clMtx * rclPt);
+}
+
 inline Vector3f ViewProjMatrix::inverse (const Vector3f &rclPt) const
 {
     return Vector3f(_clMtxInv * rclPt);
+}
+
+inline Vector3d ViewProjMatrix::inverse (const Vector3d &rclPt) const
+{
+    return Vector3d(_clMtxInv * rclPt);
 }
 
 } // namespace Base

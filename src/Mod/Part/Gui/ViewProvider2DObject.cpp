@@ -30,13 +30,13 @@
 # include <Inventor/nodes/SoMaterial.h>
 # include <Inventor/nodes/SoLineSet.h>
 # include <Inventor/nodes/SoPickStyle.h>
-# include <Inventor/nodes/SoResetTransform.h>
 # include <Inventor/nodes/SoSeparator.h>
 # include <Inventor/nodes/SoVertexProperty.h>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include <Base/Parameter.h>
+#include <Base/ViewProj.h>
 
 #include "ViewProvider2DObject.h"
 #include <Mod/Part/App/PartFeature.h>
@@ -98,7 +98,6 @@ SoSeparator* ViewProvider2DObject::createGrid(void)
 
     SoSeparator *parent = GridRoot;
     GridRoot->removeAllChildren();
-    GridRoot->addChild(new SoResetTransform());
     SoBaseColor *mycolor;
     SoVertexProperty *vts;
 
@@ -174,14 +173,18 @@ void ViewProvider2DObject::updateData(const App::Property* prop)
     ViewProviderPart::updateData(prop);
 
     if (prop->getTypeId() == Part::PropertyPartShape::getClassTypeId()) {
-        Base::BoundBox3d Bnd = static_cast<const Part::PropertyPartShape*>(prop)->getBoundingBox();
+        Base::BoundBox3d bbox = static_cast<const Part::PropertyPartShape*>(prop)->getBoundingBox();
         GridRoot->removeAllChildren();
-        MinX = Bnd.MinX;
-        MaxX = Bnd.MaxX;
-        MinY = Bnd.MinY;
-        MaxY = Bnd.MaxY;
-        if (ShowGrid.getValue()){
-            GridRoot->removeAllChildren();
+        if (!bbox.IsValid()) return;
+        Base::Placement place = static_cast<const Part::PropertyPartShape*>(prop)->getComplexData()->getPlacement();
+        place.invert();
+        Base::ViewProjMatrix proj(place.toMatrix());
+        Base::BoundBox2D bbox2d = bbox.ProjectBox(&proj);
+        this->MinX = bbox2d.fMinX;
+        this->MaxX = bbox2d.fMaxX;
+        this->MinY = bbox2d.fMinY;
+        this->MaxY = bbox2d.fMaxY;
+        if (ShowGrid.getValue()) {
             createGrid();
         }
     }
