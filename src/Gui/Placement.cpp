@@ -182,13 +182,10 @@ void Placement::onPlacementChanged(int)
     // automatically.
     bool incr = ui->applyIncrementalPlacement->isChecked();
     Base::Placement plm = this->getPlacement();
-    if (receivers(SIGNAL(placementChanged(QVariant, bool, bool))) > 0) {
-        QVariant data = QVariant::fromValue<Base::Placement>(plm);
-        /*emit*/ placementChanged(data, incr, false);
-    }
-    else {
-        applyPlacement(plm, incr, false);
-    }
+    applyPlacement(plm, incr, false);
+
+    QVariant data = QVariant::fromValue<Base::Placement>(plm);
+    /*emit*/ placementChanged(data, incr, false);
 }
 
 void Placement::on_applyIncrementalPlacement_toggled(bool on)
@@ -208,13 +205,11 @@ void Placement::on_applyIncrementalPlacement_toggled(bool on)
 void Placement::reject()
 {
     Base::Placement plm;
-    if (receivers(SIGNAL(placementChanged(QVariant, bool, bool))) > 0) {
-        QVariant data = QVariant::fromValue<Base::Placement>(plm);
-        /*emit*/ placementChanged(data, true, false);
-    }
-    else {
-        applyPlacement(plm, true, false);
-    }
+    applyPlacement(plm, true, false);
+
+    QVariant data = QVariant::fromValue<Base::Placement>(plm);
+    /*emit*/ placementChanged(data, true, false);
+
     QDialog::reject();
 }
 
@@ -232,13 +227,10 @@ void Placement::on_applyButton_clicked()
     // automatically.
     bool incr = ui->applyIncrementalPlacement->isChecked();
     Base::Placement plm = this->getPlacement();
-    if (receivers(SIGNAL(placementChanged(QVariant, bool, bool))) > 0) {
-        QVariant data = QVariant::fromValue<Base::Placement>(plm);
-        /*emit*/ placementChanged(data, incr, true);
-    }
-    else {
-        applyPlacement(plm, incr, true);
-    }
+    applyPlacement(plm, incr, true);
+
+    QVariant data = QVariant::fromValue<Base::Placement>(plm);
+    /*emit*/ placementChanged(data, incr, true);
 
     if (ui->applyIncrementalPlacement->isChecked()) {
         QList<QDoubleSpinBox*> sb = this->findChildren<QDoubleSpinBox*>();
@@ -439,17 +431,7 @@ void TaskPlacement::setPlacement(const Base::Placement& p)
 
 void TaskPlacement::slotPlacementChanged(const QVariant & p, bool incr, bool data)
 {
-    // If there are listeners to the 'placementChanged' signal we rely
-    // on that the listener updates any placement. If no listeners
-    // are connected the placement is applied to all selected objects
-    // automatically.
-    if (receivers(SIGNAL(placementChanged(QVariant, bool, bool))) > 0) {
-        /*emit*/ placementChanged(p, incr, data);
-    }
-    else {
-        Base::Placement plm = p.value<Base::Placement>();
-        widget->applyPlacement(plm, incr, data);
-    }
+    /*emit*/ placementChanged(p, incr, data);
 }
 
 bool TaskPlacement::accept()
