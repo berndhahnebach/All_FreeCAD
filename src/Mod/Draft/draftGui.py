@@ -867,6 +867,11 @@ class toolBar:
                                 if self.delButton.isChecked():
                                         self.addButton.setChecked(False)
 
+                        def setRadiusValue(self,val):
+                                self.radiusValue.setText("%.2f" % val)
+				self.radiusValue.setFocus()
+				self.radiusValue.selectAll()
+
 #---------------------------------------------------------------------------
 # Initialization
 #---------------------------------------------------------------------------
