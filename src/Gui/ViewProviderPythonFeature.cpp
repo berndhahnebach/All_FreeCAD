@@ -275,6 +275,70 @@ std::vector<App::DocumentObject*> ViewProviderPythonFeatureImp::claimChildren() 
     return children;
 }
 
+const char* ViewProviderPythonFeatureImp::getElement(const SoPickedPoint *pp)
+{
+    return 0;
+}
+
+std::vector<Base::Vector3d> ViewProviderPythonFeatureImp::getSelectionShape(const char* Element)
+{
+    return std::vector<Base::Vector3d>();
+}
+
+bool ViewProviderPythonFeatureImp::setEdit(int ModNum)
+{
+    // Run the onChanged method of the proxy object.
+    Base::PyGILStateLocker lock;
+    try {
+        App::Property* proxy = object->getPropertyByName("Proxy");
+        if (proxy && proxy->getTypeId() == App::PropertyPythonObject::getClassTypeId()) {
+            Py::Object vp = static_cast<App::PropertyPythonObject*>(proxy)->getValue();
+            if (vp.hasAttr(std::string("setEdit"))) {
+                Py::Callable method(vp.getAttr(std::string("setEdit")));
+                Py::Tuple args(2);
+                args.setItem(0, Py::Object(object->getPyObject(), true));
+                args.setItem(1, Py::Int(ModNum));
+                Py::Boolean ok(method.apply(args));
+                return (bool)ok;
+            }
+        }
+    }
+    catch (Py::Exception&) {
+        Base::PyException e; // extract the Python error text
+        const char* name = object->getObject()->Label.getValue();
+        Base::Console().Error("ViewProviderPythonFeature::setEdit (%s): %s\n", name, e.what());
+    }
+
+    return false;
+}
+
+bool ViewProviderPythonFeatureImp::unsetEdit(int ModNum)
+{
+    // Run the onChanged method of the proxy object.
+    Base::PyGILStateLocker lock;
+    try {
+        App::Property* proxy = object->getPropertyByName("Proxy");
+        if (proxy && proxy->getTypeId() == App::PropertyPythonObject::getClassTypeId()) {
+            Py::Object vp = static_cast<App::PropertyPythonObject*>(proxy)->getValue();
+            if (vp.hasAttr(std::string("unsetEdit"))) {
+                Py::Callable method(vp.getAttr(std::string("unsetEdit")));
+                Py::Tuple args(2);
+                args.setItem(0, Py::Object(object->getPyObject(), true));
+                args.setItem(1, Py::Int(ModNum));
+                Py::Boolean ok(method.apply(args));
+                return (bool)ok;
+            }
+        }
+    }
+    catch (Py::Exception&) {
+        Base::PyException e; // extract the Python error text
+        const char* name = object->getObject()->Label.getValue();
+        Base::Console().Error("ViewProviderPythonFeature::unsetEdit (%s): %s\n", name, e.what());
+    }
+
+    return false;
+}
+
 void ViewProviderPythonFeatureImp::attach(App::DocumentObject *pcObject)
 {
     // Run the attach method of the proxy object.

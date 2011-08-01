@@ -48,6 +48,10 @@ public:
     // Returns the icon
     QIcon getIcon() const;
     std::vector<App::DocumentObject*> claimChildren() const;
+    const char* getElement(const SoPickedPoint *pp);
+    std::vector<Base::Vector3d> getSelectionShape(const char* Element);
+    bool setEdit(int ModNum);
+    bool unsetEdit(int ModNum);
 
     /** @name Update data methods*/
     //@{
@@ -102,6 +106,33 @@ public:
         return imp->claimChildren();
     }
 
+    /** @name Nodes */
+    //@{
+    virtual SoSeparator* getRoot() {
+        return ViewProviderT::getRoot();
+    }
+    virtual SoSeparator* getFrontRoot() const {
+        return ViewProviderT::getFrontRoot();
+    }
+    // returns the root node of the Provider (3D)
+    virtual SoSeparator* getBackRoot() const {
+        return ViewProviderT::getBackRoot();
+    }
+    //@}
+
+    /** @name Selection handling */
+    //@{
+    virtual bool useNewSelectionModel() {
+        return ViewProviderT::useNewSelectionModel();
+    }
+    virtual const char* getElement(const SoPickedPoint *pp) {
+        return imp->getElement(pp);
+    }
+    virtual std::vector<Base::Vector3d> getSelectionShape(const char* Element) {
+        return imp->getSelectionShape(Element);
+    };
+    //@}
+
     /** @name Update data methods*/
     //@{
     virtual void attach(App::DocumentObject *obj) {
@@ -112,6 +143,9 @@ public:
     virtual void updateData(const App::Property* prop) {
         imp->updateData(prop);
         ViewProviderT::updateData(prop);
+    }
+    virtual void getTaskViewContent(std::vector<Gui::TaskView::TaskContent*>& c) const {
+        ViewProviderT::getTaskViewContent(c);
     }
     //@}
 
@@ -253,6 +287,19 @@ protected:
             imp->onChanged(prop);
             ViewProviderT::onChanged(prop);
         }
+    }
+    /// is called by the document when the provider goes in edit mode
+    virtual bool setEdit(int ModNum)
+    {
+        bool ok = imp->setEdit(ModNum);
+        if (!ok) ok = ViewProviderT::setEdit(ModNum);
+        return ok;
+    }
+    /// is called when you loose the edit mode
+    virtual void unsetEdit(int ModNum)
+    {
+        bool ok = imp->unsetEdit(ModNum);
+        if (!ok) ViewProviderT::unsetEdit(ModNum);
     }
 
 private:
