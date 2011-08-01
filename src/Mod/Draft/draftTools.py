@@ -510,11 +510,25 @@ class lineTracker(Tracker):
 		self.coords.point.setValues(0,2,[[0,0,0],[1,0,0]])
 		Tracker.__init__(self,dotted,scolor,swidth,[self.coords,line])
 
-	def p1(self,point):
-		self.coords.point.set1Value(0,point.x,point.y,point.z)
+	def p1(self,point=None):
+                "sets or gets the first point of the line"
+                if point:
+                        self.coords.point.set1Value(0,point.x,point.y,point.z)
+                else:
+                        return Vector(self.coords.point.getValues()[0].getValue())
 
-	def p2(self,point):
-		self.coords.point.set1Value(1,point.x,point.y,point.z)
+	def p2(self,point=None):
+                "sets or gets the second point of the line"
+                if point:
+                        self.coords.point.set1Value(1,point.x,point.y,point.z)
+                else:
+                        return Vector(self.coords.point.getValues()[-1].getValue())
+                        
+        def getLength(self):
+                "returns the length of the line"
+                p1 = Vector(self.coords.point.getValues()[0].getValue())
+                p2 = Vector(self.coords.point.getValues()[-1].getValue())
+                return (p2.sub(p1)).Length
 
 class rectangleTracker(Tracker):
 	"A Rectangle tracker, used by the rectangle tool"
@@ -525,20 +539,67 @@ class rectangleTracker(Tracker):
 		self.coords = coin.SoCoordinate3() # this is the coordinate
 		self.coords.point.setValues(0,50,[[0,0,0],[2,0,0],[2,2,0],[0,2,0],[0,0,0]])
 		Tracker.__init__(self,dotted,scolor,swidth,[self.coords,line])
+                self.u = plane.u
+                self.v = plane.v
 
 	def setorigin(self,point):
+                "sets the base point of the rectangle"
 		self.coords.point.set1Value(0,point.x,point.y,point.z)
 		self.coords.point.set1Value(4,point.x,point.y,point.z)
 		self.origin = point
 
 	def update(self,point):
+                "sets the opposite (diagonal) point of the rectangle"
 		diagonal = point.sub(self.origin)
-		inpoint1 = self.origin.add(fcvec.project(diagonal,plane.v))
-		inpoint2 = self.origin.add(fcvec.project(diagonal,plane.u))
+		inpoint1 = self.origin.add(fcvec.project(diagonal,self.v))
+		inpoint2 = self.origin.add(fcvec.project(diagonal,self.u))
 		self.coords.point.set1Value(1,inpoint1.x,inpoint1.y,inpoint1.z)
 		self.coords.point.set1Value(2,point.x,point.y,point.z)
 		self.coords.point.set1Value(3,inpoint2.x,inpoint2.y,inpoint2.z)
 
+        def setPlane(self,u,v=None):
+                '''sets given (u,v) vectors as working plane. You can give only u
+                and v will be deduced automatically given current workplane'''
+                self.u = u
+                if v:
+                        self.v = v
+                else:
+                        norm = plane.u.cross(plane.v)
+                        self.v = self.u.cross(norm)
+
+        def p1(self,point=None):
+                "sets or gets the base point of the rectangle"
+                if point:
+                        self.setorigin(point)
+                else:
+                        return Vector(self.coords.point.getValues()[0].getValue())
+
+        def p2(self):
+                "gets the second point (on u axis) of the rectangle"
+                return Vector(self.coords.point.getValues()[3].getValue())
+
+        def p3(self,point=None):
+                "sets or gets the opposite (diagonal) point of the rectangle"
+                if point:
+                        self.update(point)
+                else:
+                        return Vector(self.coords.point.getValues()[2].getValue())
+
+        def p4(self):
+                "gets the fourth point (on v axis) of the rectangle"
+                return Vector(self.coords.point.getValues()[1].getValue())
+                
+        def getSize(self):
+                "returns (length,width) of the rectangle"
+                p1 = Vector(self.coords.point.getValues()[0].getValue())
+                p2 = Vector(self.coords.point.getValues()[2].getValue())
+                diag = p2.sub(p1)
+                return ((fcvec.project(diag,self.u)).Length,(fcvec.project(diag,self.v)).Length)
+
+        def getNormal(self):
+                "returns the normal of the rectangle"
+                return (self.u.cross(self.v)).normalize()
+                
 class dimTracker(Tracker):
 	"A Dimension tracker, used by the dimension tool"
 	def __init__(self,dotted=False,scolor=None,swidth=None):
@@ -1082,6 +1143,7 @@ class Creator:
 			self.pos = []
 			self.constrain = None
 			self.obj = None
+                        self.snap = snapTracker()
                         self.planetrack = PlaneTracker()
                         if Draft.getParam("grid"):
                                 self.grid = gridTracker()
@@ -1097,6 +1159,7 @@ class Creator:
                         return False
 
 	def finish(self):
+                self.snap.finalize()
 		self.node=[]
                 self.planetrack.finalize()
                 if self.grid: self.grid.finalize()
@@ -1135,7 +1198,6 @@ class Line(Creator):
 		if self.doc:
                         self.obj = None
 			self.ui.lineUi()
-			self.snap = snapTracker()
 			self.linetrack = lineTracker()
 			self.constraintrack = lineTracker(dotted=True)
                         self.obj=self.doc.addObject("Part::Feature",self.featureName)
@@ -1154,7 +1216,6 @@ class Line(Creator):
 		if self.ui:
 			self.linetrack.finalize()
 			self.constraintrack.finalize()
-			self.snap.finalize()
 		Creator.finish(self)
                 if cont and self.ui:
                                 if self.ui.continueCmd.isChecked():
@@ -1341,7 +1402,6 @@ class BSpline(Line):
 		if self.ui:
 			self.bsplinetrack.finalize()
 			self.constraintrack.finalize()
-			self.snap.finalize()
 		Creator.finish(self)
                 if cont and self.ui:
                                 if self.ui.continueCmd.isChecked():
@@ -1412,7 +1472,6 @@ class Rectangle(Creator):
 			self.ui.pointUi()
                         self.ui.extUi()
 			self.call = self.view.addEventCallback("SoEvent",self.action)
-			self.snap = snapTracker()
 			self.rect = rectangleTracker()
 			msg(translate("draft", "Pick first point:\n"))
 
@@ -1422,7 +1481,6 @@ class Rectangle(Creator):
 		if self.ui:
 			self.rect.off()
 			self.rect.finalize()
-			self.snap.finalize()
                 if cont and self.ui:
                         if self.ui.continueCmd.isChecked():
                                 self.Activated()
@@ -1502,7 +1560,6 @@ class Arc(Creator):
 			else: self.ui.circleUi()
 			self.altdown = False
 			self.ui.sourceCmd = self
-			self.snap = snapTracker()
 			self.linetrack = lineTracker(dotted=True)
 			self.constraintrack = lineTracker(dotted=True)
 			self.arctrack = arcTracker()
@@ -1513,7 +1570,6 @@ class Arc(Creator):
 		"finishes the arc"
 		Creator.finish(self)
 		if self.ui:
-			self.snap.finalize()
 			self.linetrack.finalize()
 			self.constraintrack.finalize()
 			self.arctrack.finalize()
@@ -1597,10 +1653,8 @@ class Arc(Creator):
 						self.ui.cross(True)
 						self.altdown = False
 					self.rad = fcvec.dist(point,self.center)
-				self.ui.radiusValue.setText("%.2f" % self.rad)
+				self.ui.setRadiusValue(self.rad)
 				self.arctrack.setRadius(self.rad)
-				self.ui.radiusValue.setFocus()
-				self.ui.radiusValue.selectAll()
 				# Draw constraint tracker line.
 				if (arg["ShiftDown"]):
 					self.constraintrack.p1(point)
@@ -1622,10 +1676,8 @@ class Arc(Creator):
 					self.constraintrack.p2(ctrlPoint)
 					self.constraintrack.on()
 				else: self.constraintrack.off()
-				self.ui.radiusValue.setText("%.2f" % math.degrees(angle))
+				self.ui.setRadiusValue(math.degrees(angle))
 				self.firstangle = angle
-				self.ui.radiusValue.setFocus()
-				self.ui.radiusValue.selectAll()
 			else: # choose second angle
 				currentrad = fcvec.dist(point,self.center)
 				if currentrad != 0:
@@ -1638,11 +1690,9 @@ class Arc(Creator):
 					self.constraintrack.p2(ctrlPoint)
 					self.constraintrack.on()
 				else: self.constraintrack.off()
-				self.ui.radiusValue.setText("%.2f" % math.degrees(angle))
+				self.ui.setRadiusValue(math.degrees(angle))
 				self.updateAngle(angle)
 				self.arctrack.setApertureAngle(self.angle)
-				self.ui.radiusValue.setFocus()
-				self.ui.radiusValue.selectAll()
 
 		if (arg["Type"] == "SoMouseButtonEvent"):
 			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
@@ -1810,7 +1860,6 @@ class Polygon(Creator):
                         self.ui.numFaces.show()
 			self.altdown = False
 			self.ui.sourceCmd = self
-			self.snap = snapTracker()
 			self.linetrack = lineTracker(dotted=True)
 			self.constraintrack = lineTracker(dotted=True)
 			self.arctrack = arcTracker()
@@ -1821,7 +1870,6 @@ class Polygon(Creator):
 		"finishes the arc"
 		Creator.finish(self)
 		if self.ui:
-			self.snap.finalize()
 			self.linetrack.finalize()
 			self.constraintrack.finalize()
 			self.arctrack.finalize()
@@ -1884,10 +1932,8 @@ class Polygon(Creator):
 						self.ui.cross(True)
 						self.altdown = False
 					self.rad = fcvec.dist(point,self.center)
-				self.ui.radiusValue.setText("%.2f" % self.rad)
+				self.ui.setRadiusValue(self.rad)
 				self.arctrack.setRadius(self.rad)
-				self.ui.radiusValue.setFocus()
-				self.ui.radiusValue.selectAll()
 				# Draw constraint tracker line.
 				if (arg["ShiftDown"]):
 					self.constraintrack.p1(point)
@@ -1996,7 +2042,6 @@ class Text(Creator):
 			self.call = self.view.addEventCallback("SoEvent",self.action)
 			self.ui.xValue.setFocus()
 			self.ui.xValue.selectAll()
-			self.snap = snapTracker()
 			msg(translate("draft", "Pick location point:\n"))
 			FreeCADGui.draftToolBar.draftWidget.setVisible(True)
 
@@ -2004,7 +2049,6 @@ class Text(Creator):
 		"terminates the operation"
 		Creator.finish(self)
 		if self.ui:
-			self.snap.finalize()
 			del self.dialog
                 if cont and self.ui:
                         if self.ui.continueCmd.isChecked():
@@ -2059,7 +2103,6 @@ class Dimension(Creator):
                                 self.ui.continueCmd.show()
                                 self.altdown = False
                                 self.call = self.view.addEventCallback("SoEvent",self.action)
-                                self.snap = snapTracker()
                                 self.dimtrack = dimTracker()
                                 self.arctrack = arcTracker()
                                 self.link = None
@@ -2083,7 +2126,6 @@ class Dimension(Creator):
 			self.dimtrack.finalize()
                         self.arctrack.finalize()
 			self.constraintrack.finalize()
-			self.snap.finalize()
 
 	def createObject(self):
 		"creates an object in the current doc"
@@ -2315,6 +2357,7 @@ class Modifier:
 			self.extendedCopy = False
                         self.ui.cmdlabel.setText(name)
 			self.featureName = name
+                        self.snap = snapTracker()
                         self.planetrack = PlaneTracker()
                         if Draft.getParam("grid"):
                                 self.grid = gridTracker()
@@ -2330,6 +2373,7 @@ class Modifier:
 		
 	def finish(self):
 		self.node = []
+                self.snap.finalize()
 		FreeCAD.activeDraftCommand = None
 		if self.ui:
 			self.ui.offUi()
@@ -2363,7 +2407,6 @@ class Move(Modifier):
 		if self.ui:
 			if not Draft.getSelection():
 				self.ghost = None
-				self.snap = None
 				self.linetrack = None
 				self.constraintrack = None
 				self.ui.selectUi()
@@ -2380,7 +2423,6 @@ class Move(Modifier):
                 self.ui.modUi()
 		self.ui.xValue.setFocus()
 		self.ui.xValue.selectAll()
-		self.snap = snapTracker()
 		self.linetrack = lineTracker()
 		self.constraintrack = lineTracker(dotted=True)
 		self.ghost = ghostTracker(self.sel)
@@ -2392,7 +2434,6 @@ class Move(Modifier):
 		Modifier.finish(self)
 		if self.ui:
 			self.ghost.finalize()
-			self.snap.finalize()
 			self.linetrack.finalize()
 			self.constraintrack.finalize()
                 if cont and self.ui:
@@ -2515,7 +2556,6 @@ class Rotate(Modifier):
 		if self.ui:
 			if not Draft.getSelection():
 				self.ghost = None
-				self.snap = None
 				self.linetrack = None
 				self.arctrack = None
 				self.constraintrack = None
@@ -2534,7 +2574,6 @@ class Rotate(Modifier):
 		self.ui.arcUi()
                 self.ui.isCopy.show()
 		self.ui.cmdlabel.setText("Rotate")
-		self.snap = snapTracker()
 		self.linetrack = lineTracker()
 		self.constraintrack = lineTracker(dotted=True)
 		self.arctrack = arcTracker()
@@ -2547,7 +2586,6 @@ class Rotate(Modifier):
 		"finishes the arc"
 		Modifier.finish(self)
 		if self.ui:
-			self.snap.finalize()
 			self.linetrack.finalize()
 			self.constraintrack.finalize()
 			self.arctrack.finalize()
@@ -2709,7 +2747,6 @@ class Offset(Modifier):
 		if self.ui:
 			if not Draft.getSelection():
 				self.ghost = None
-				self.snap = None
 				self.linetrack = None
 				self.arctrack = None
 				self.constraintrack = None
@@ -2737,7 +2774,6 @@ class Offset(Modifier):
                         self.ui.cmdlabel.setText("Offset")
                         self.ui.radiusValue.setFocus()
                         self.ui.radiusValue.selectAll()
-                        self.snap = snapTracker()
                         self.linetrack = lineTracker()
                         self.constraintrack = lineTracker(dotted=True)
                         self.faces = False
@@ -2814,7 +2850,6 @@ class Offset(Modifier):
 	def finish(self,closed=False):
 		Modifier.finish(self)
 		if self.ui and self.running:
-			self.snap.finalize()
 			self.linetrack.finalize()
 			self.constraintrack.finalize()
 			self.ghost.finalize()
@@ -3152,7 +3187,6 @@ class Trimex(Modifier):
 		self.edges = []
                 self.placement = None
                 self.ghost = None
-                self.snap = None
                 self.linetrack = None
                 self.constraintrack = None
 		if self.ui:
@@ -3170,7 +3204,6 @@ class Trimex(Modifier):
 		self.ui.labelRadius.setText("Distance")
 		self.ui.radiusValue.setFocus()
 		self.ui.radiusValue.selectAll()
-		self.snap = snapTracker()
 		self.linetrack = lineTracker()
 		self.constraintrack = lineTracker(dotted=True)
                 if not "Shape" in self.obj.PropertiesList: return
@@ -3419,7 +3452,6 @@ class Trimex(Modifier):
                 self.force = None
 		if self.ui:
 			self.ui.labelRadius.setText("Distance")
-			self.snap.finalize()
 			self.linetrack.finalize()
 			self.constraintrack.finalize()
 			if self.ghost:
@@ -3449,7 +3481,6 @@ class Scale(Modifier):
 		if self.ui:
 			if not Draft.getSelection():
 				self.ghost = None
-				self.snap = None
 				self.linetrack = None
 				self.constraintrack = None
 				self.ui.selectUi()
@@ -3466,7 +3497,6 @@ class Scale(Modifier):
                 self.ui.modUi()
 		self.ui.xValue.setFocus()
 		self.ui.xValue.selectAll()
-		self.snap = snapTracker()
 		self.linetrack = lineTracker()
 		self.constraintrack = lineTracker(dotted=True)
 		self.ghost = ghostTracker(self.sel)
@@ -3478,7 +3508,6 @@ class Scale(Modifier):
 		Modifier.finish(self)
 		if self.ui:
 			self.ghost.finalize()
-			self.snap.finalize()
 			self.linetrack.finalize()
 			self.constraintrack.finalize()
                 if cont and self.ui:
@@ -3740,13 +3769,11 @@ class Edit(Modifier):
                                                 self.editpoints.append(self.obj.Dimline)
                                                 self.editpoints.append(Vector(p[0],p[1],p[2]))
                                         self.trackers = []
-                                        self.snap = None
                                         self.constraintrack = None
                                         if self.editpoints:
                                                 for ep in range(len(self.editpoints)):
                                                         self.trackers.append(editTracker(self.editpoints[ep],self.obj.Name,
                                                                                          ep,self.obj.ViewObject.LineColor))
-                                                self.snap = snapTracker()
                                                 self.constraintrack = lineTracker(dotted=True)
                                                 self.call = self.view.addEventCallback("SoEvent",self.action)
                                                 self.running = True
@@ -3767,8 +3794,6 @@ class Edit(Modifier):
                                 if not self.obj.Closed:
                                         self.obj.Closed = True
                 if self.ui:
-                        if self.snap:
-                                self.snap.finalize()
                         if self.trackers:
                                 for t in self.trackers:
                                         t.finalize()
