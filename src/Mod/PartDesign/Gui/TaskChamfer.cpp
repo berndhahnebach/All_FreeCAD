@@ -122,7 +122,7 @@ bool ChamferDistanceModel::setData (const QModelIndex & index, const QVariant & 
 {
     bool ok = QStandardItemModel::setData(index, value, role);
     if (role == Qt::CheckStateRole) {
-        toogleCheckState(index);
+        toggleCheckState(index);
     }
     return ok;
 }
@@ -176,8 +176,8 @@ ChamferWidget::ChamferWidget(QWidget* parent, Qt::WFlags fl)
         .connect(boost::bind(&ChamferWidget::onDeleteDocument, this, _1));
     // set tree view with three columns
     QStandardItemModel* model = new ChamferDistanceModel(this);
-    connect(model, SIGNAL(toogleCheckState(const QModelIndex&)),
-            this, SLOT(toogleCheckState(const QModelIndex&)));
+    connect(model, SIGNAL(toggleCheckState(const QModelIndex&)),
+            this, SLOT(toggleCheckState(const QModelIndex&)));
     model->insertColumns(0,3);
     model->setHeaderData(0, Qt::Horizontal, tr("Edges to chamfer"), Qt::DisplayRole);
     model->setHeaderData(1, Qt::Horizontal, tr("Start distance"), Qt::DisplayRole);
@@ -275,7 +275,7 @@ void ChamferWidget::onDeleteDocument(const App::Document& doc)
     }
 }
 
-void ChamferWidget::toogleCheckState(const QModelIndex& index)
+void ChamferWidget::toggleCheckState(const QModelIndex& index)
 {
     if (!d->object)
         return;

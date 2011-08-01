@@ -190,16 +190,17 @@ TYPESYSTEM_SOURCE(Part::GeomPoint,Part::Geometry);
 
 GeomPoint::GeomPoint()
 {
-    this->myPoint = new Geom_CartesianPoint(gp_Pnt());
+    this->myPoint = new Geom_CartesianPoint(0,0,0);
 }
 
 GeomPoint::GeomPoint(const Handle_Geom_CartesianPoint& p)
 {
     this->myPoint = Handle_Geom_CartesianPoint::DownCast(p->Copy());
 }
+
 GeomPoint::GeomPoint(const Base::Vector3d& p)
 {
-    this->myPoint = new Geom_CartesianPoint(gp_Pnt(p.x,p.y,p.z)) ;
+    this->myPoint = new Geom_CartesianPoint(p.x,p.y,p.z);
 }
 
 GeomPoint::~GeomPoint()
@@ -221,21 +222,20 @@ TopoDS_Shape GeomPoint::toShape() const
     return BRepBuilderAPI_MakeVertex(myPoint->Pnt());
 }
 
-
 Base::Vector3d GeomPoint::getPoint(void)const
 {
     return Base::Vector3d(myPoint->X(),myPoint->Y(),myPoint->Z());
 }
 
-void GeomPoint::setPoint(const Base::Vector3d & p)
+void GeomPoint::setPoint(const Base::Vector3d& p)
 {
-    this->myPoint = new Geom_CartesianPoint(gp_Pnt(p.x,p.y,p.z)) ;
+    this->myPoint->SetCoord(p.x,p.y,p.z);
 }
 
 // Persistence implementer 
 unsigned int GeomPoint::getMemSize (void) const               
 {
-    return sizeof(Geom_Point);
+    return sizeof(Geom_CartesianPoint);
 }
 
 void GeomPoint::Save(Base::Writer &writer) const 
@@ -258,13 +258,13 @@ void GeomPoint::Restore(Base::XMLReader &reader)
     // read the attributes of the father class
     Geometry::Restore(reader);
 
-    float X,Y,Z;
+    double X,Y,Z;
     // read my Element
     reader.readElement("GeomPoint");
     // get the value of my Attribute
-    X = (float)reader.getAttributeAsFloat("X");
-    Y = (float)reader.getAttributeAsFloat("Y");
-    Z = (float)reader.getAttributeAsFloat("Z");
+    X = reader.getAttributeAsFloat("X");
+    Y = reader.getAttributeAsFloat("Y");
+    Z = reader.getAttributeAsFloat("Z");
  
     // set the read geometry
     setPoint(Base::Vector3d(X,Y,Z) );
@@ -735,19 +735,19 @@ void GeomArcOfCircle::Restore(Base::XMLReader &reader)
     // read the attributes of the father class
     Geometry::Restore(reader);
 
-    float CenterX,CenterY,CenterZ,NormalX,NormalY,NormalZ,Radius,StartAngle,EndAngle;
+    double CenterX,CenterY,CenterZ,NormalX,NormalY,NormalZ,Radius,StartAngle,EndAngle;
     // read my Element
     reader.readElement("ArcOfCircle");
     // get the value of my Attribute
-    CenterX = (float)reader.getAttributeAsFloat("CenterX");
-    CenterY = (float)reader.getAttributeAsFloat("CenterY");
-    CenterZ = (float)reader.getAttributeAsFloat("CenterZ");
-    NormalX = (float)reader.getAttributeAsFloat("NormalX");
-    NormalY = (float)reader.getAttributeAsFloat("NormalY");
-    NormalZ = (float)reader.getAttributeAsFloat("NormalZ");
-    Radius = (float)reader.getAttributeAsFloat("Radius");
-    StartAngle = (float)reader.getAttributeAsFloat("StartAngle");
-    EndAngle = (float)reader.getAttributeAsFloat("EndAngle");
+    CenterX = reader.getAttributeAsFloat("CenterX");
+    CenterY = reader.getAttributeAsFloat("CenterY");
+    CenterZ = reader.getAttributeAsFloat("CenterZ");
+    NormalX = reader.getAttributeAsFloat("NormalX");
+    NormalY = reader.getAttributeAsFloat("NormalY");
+    NormalZ = reader.getAttributeAsFloat("NormalZ");
+    Radius = reader.getAttributeAsFloat("Radius");
+    StartAngle = reader.getAttributeAsFloat("StartAngle");
+    EndAngle = reader.getAttributeAsFloat("EndAngle");
 
     // set the read geometry
     gp_Pnt p1(CenterX,CenterY,CenterZ);
@@ -922,20 +922,20 @@ GeomLine::~GeomLine()
 
 void GeomLine::setLine(const Base::Vector3d& Pos, const Base::Vector3d& Dir)
 {
-    this->myCurve = new Geom_Line(gp_Pnt(Pos.x,Pos.y,Pos.z),gp_Dir(Dir.x,Dir.y,Dir.z));
+    this->myCurve->SetLocation(gp_Pnt(Pos.x,Pos.y,Pos.z));
+    this->myCurve->SetDirection(gp_Dir(Dir.x,Dir.y,Dir.z));
 }
 
-Base::Vector3d GeomLine::getPos(void)const
+Base::Vector3d GeomLine::getPos(void) const
 {
     gp_Pnt Pos = this->myCurve->Lin().Location();
-    gp_Dir Dir = this->myCurve->Lin().Direction();
-
     return Base::Vector3d(Pos.X(),Pos.Y(),Pos.Z());
 }
 
-Base::Vector3d GeomLine::getDir(void)const
+Base::Vector3d GeomLine::getDir(void) const
 {
-    return Base::Vector3d();
+    gp_Dir Dir = this->myCurve->Lin().Direction();
+    return Base::Vector3d(Dir.X(),Dir.Y(),Dir.Z());
 }
 
 const Handle_Geom_Geometry& GeomLine::handle() const
@@ -978,16 +978,16 @@ void GeomLine::Restore(Base::XMLReader &reader)
     // read the attributes of the father class
     Geometry::Restore(reader);
 
-    float PosX,PosY,PosZ,DirX,DirY,DirZ;
+    double PosX,PosY,PosZ,DirX,DirY,DirZ;
     // read my Element
     reader.readElement("GeomLine");
     // get the value of my Attribute
-    PosX = (float)reader.getAttributeAsFloat("PosX");
-    PosY = (float)reader.getAttributeAsFloat("PosY");
-    PosZ = (float)reader.getAttributeAsFloat("PosZ");
-    DirX   = (float)reader.getAttributeAsFloat("DirX");
-    DirY   = (float)reader.getAttributeAsFloat("DirY");
-    DirZ   = (float)reader.getAttributeAsFloat("DirZ");
+    PosX = reader.getAttributeAsFloat("PosX");
+    PosY = reader.getAttributeAsFloat("PosY");
+    PosZ = reader.getAttributeAsFloat("PosZ");
+    DirX = reader.getAttributeAsFloat("DirX");
+    DirY = reader.getAttributeAsFloat("DirY");
+    DirZ = reader.getAttributeAsFloat("DirZ");
  
     // set the read geometry
     setLine(Base::Vector3d(PosX,PosY,PosZ),Base::Vector3d(DirX,DirY,DirZ) );
@@ -1103,16 +1103,16 @@ void GeomLineSegment::Restore    (Base::XMLReader &reader)
     // read the attributes of the father class
     Geometry::Restore(reader);
 
-    float StartX,StartY,StartZ,EndX,EndY,EndZ;
+    double StartX,StartY,StartZ,EndX,EndY,EndZ;
     // read my Element
     reader.readElement("LineSegment");
     // get the value of my Attribute
-    StartX = (float)reader.getAttributeAsFloat("StartX");
-    StartY = (float)reader.getAttributeAsFloat("StartY");
-    StartZ = (float)reader.getAttributeAsFloat("StartZ");
-    EndX   = (float)reader.getAttributeAsFloat("EndX");
-    EndY   = (float)reader.getAttributeAsFloat("EndY");
-    EndZ   = (float)reader.getAttributeAsFloat("EndZ");
+    StartX = reader.getAttributeAsFloat("StartX");
+    StartY = reader.getAttributeAsFloat("StartY");
+    StartZ = reader.getAttributeAsFloat("StartZ");
+    EndX   = reader.getAttributeAsFloat("EndX");
+    EndY   = reader.getAttributeAsFloat("EndY");
+    EndZ   = reader.getAttributeAsFloat("EndZ");
  
     // set the read geometry
     setPoints(Base::Vector3d(StartX,StartY,StartZ),Base::Vector3d(EndX,EndY,EndZ) );

@@ -80,7 +80,7 @@ Base::Placement Part2DObject::positionBySupport(const TopoDS_Face &face,const Ba
     gp_Pln plane = adapt.Plane();
     Standard_Boolean ok = plane.Direct();
     if (!ok) {
-        // toogle if plane has a left-handed system
+        // toggle if plane has a left-handed coordinate system
         plane.UReverse();
         Reverse = !Reverse;
     }

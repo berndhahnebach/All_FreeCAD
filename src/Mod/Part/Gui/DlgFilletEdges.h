@@ -63,7 +63,7 @@ public:
     bool setData (const QModelIndex & index, const QVariant & value,
                   int role = Qt::EditRole);
 Q_SIGNALS:
-    void toogleCheckState(const QModelIndex&);
+    void toggleCheckState(const QModelIndex&);
 };
 
 class DlgFilletEdgesP;
@@ -93,7 +93,7 @@ private Q_SLOTS:
     void on_filletType_activated(int);
     void on_filletStartRadius_valueChanged(double);
     void on_filletEndRadius_valueChanged(double);
-    void toogleCheckState(const QModelIndex&);
+    void toggleCheckState(const QModelIndex&);
 
 private:
     std::auto_ptr<Ui_DlgFilletEdges> ui;

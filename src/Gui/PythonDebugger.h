@@ -162,7 +162,7 @@ public:
     PythonDebugger();
     ~PythonDebugger();
     Breakpoint getBreakpoint(const QString&) const;
-    bool toogleBreakpoint(int line, const QString&);
+    bool toggleBreakpoint(int line, const QString&);
     void runFile(const QString& fn);
     bool isRunning() const;
     bool start();
