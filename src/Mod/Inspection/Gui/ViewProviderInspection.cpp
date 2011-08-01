@@ -484,7 +484,7 @@ void ViewProviderInspection::inspectCallback(void * ud, SoEventCallback * n)
             }
         }
     }
-    // toogle between inspection and navigation mode
+    // toggle between inspection and navigation mode
     else if (ev->getTypeId().isDerivedFrom(SoKeyboardEvent::getClassTypeId())) {
         const SoKeyboardEvent * const ke = static_cast<const SoKeyboardEvent *>(ev);
         if (ke->getState() == SoButtonEvent::DOWN &&

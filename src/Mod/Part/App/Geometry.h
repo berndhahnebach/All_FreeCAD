@@ -309,8 +309,7 @@ public:
     Base::Vector3d getPos(void) const;
     Base::Vector3d getDir(void) const;
 
-
-   // Persistence implementer ---------------------
+    // Persistence implementer ---------------------
     virtual unsigned int getMemSize(void) const;
     virtual void Save(Base::Writer &/*writer*/) const;
     virtual void Restore(Base::XMLReader &/*reader*/);

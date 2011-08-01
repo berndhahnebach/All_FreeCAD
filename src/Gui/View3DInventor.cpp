@@ -674,7 +674,7 @@ bool View3DInventor::setCamera(const char* pCamera)
         throw Base::Exception("Camera settings failed to read");
     }
 
-    // toogle between persepective and orthographic camera
+    // toggle between persepective and orthographic camera
     if (Cam->getTypeId() != CamViewer->getTypeId())
     {
         _viewer->setCameraType(Cam->getTypeId());

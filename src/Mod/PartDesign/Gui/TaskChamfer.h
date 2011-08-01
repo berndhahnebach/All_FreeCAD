@@ -62,7 +62,7 @@ public:
     bool setData (const QModelIndex & index, const QVariant & value,
                   int role = Qt::EditRole);
 Q_SIGNALS:
-    void toogleCheckState(const QModelIndex&);
+    void toggleCheckState(const QModelIndex&);
 };
 
 class ChamferWidgetP;
@@ -91,7 +91,7 @@ private Q_SLOTS:
     void on_chamferType_activated(int);
     void on_chamferStartDistance_valueChanged(double);
     void on_chamferEndDistance_valueChanged(double);
-    void toogleCheckState(const QModelIndex&);
+    void toggleCheckState(const QModelIndex&);
 
 private:
     std::auto_ptr<Ui_TaskChamfer> ui;

@@ -564,7 +564,7 @@ void PythonEditorView::toggleBreakpoint()
 {
     QTextCursor cursor = getEditor()->textCursor();
     int line = cursor.blockNumber() + 1;
-    _dbg->toogleBreakpoint(line, fileName());
+    _dbg->toggleBreakpoint(line, fileName());
 //    getMarker()->update();
 }
 

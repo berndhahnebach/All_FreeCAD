@@ -123,7 +123,7 @@ bool FilletRadiusModel::setData (const QModelIndex & index, const QVariant & val
 {
     bool ok = QStandardItemModel::setData(index, value, role);
     if (role == Qt::CheckStateRole) {
-        toogleCheckState(index);
+        toggleCheckState(index);
     }
     return ok;
 }
@@ -179,8 +179,8 @@ DlgFilletEdges::DlgFilletEdges(Part::Fillet* fillet, QWidget* parent, Qt::WFlags
         .connect(boost::bind(&DlgFilletEdges::onDeleteDocument, this, _1));
     // set tree view with three columns
     QStandardItemModel* model = new FilletRadiusModel(this);
-    connect(model, SIGNAL(toogleCheckState(const QModelIndex&)),
-            this, SLOT(toogleCheckState(const QModelIndex&)));
+    connect(model, SIGNAL(toggleCheckState(const QModelIndex&)),
+            this, SLOT(toggleCheckState(const QModelIndex&)));
     model->insertColumns(0,3);
     model->setHeaderData(0, Qt::Horizontal, tr("Edges to fillet"), Qt::DisplayRole);
     model->setHeaderData(1, Qt::Horizontal, tr("Start radius"), Qt::DisplayRole);
@@ -287,7 +287,7 @@ void DlgFilletEdges::onDeleteDocument(const App::Document& doc)
     }
 }
 
-void DlgFilletEdges::toogleCheckState(const QModelIndex& index)
+void DlgFilletEdges::toggleCheckState(const QModelIndex& index)
 {
     if (!d->object)
         return;

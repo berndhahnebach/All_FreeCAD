@@ -388,7 +388,7 @@ Breakpoint PythonDebugger::getBreakpoint(const QString& fn) const
     return Breakpoint();
 }
 
-bool PythonDebugger::toogleBreakpoint(int line, const QString& fn)
+bool PythonDebugger::toggleBreakpoint(int line, const QString& fn)
 {
     for (std::vector<Breakpoint>::iterator it = d->bps.begin(); it != d->bps.end(); ++it) {
         if (fn == it->filename()) {
