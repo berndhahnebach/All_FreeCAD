@@ -46,7 +46,6 @@
 #include <Gui/Control.h>
 #include <Gui/Document.h>
 #include <Gui/ViewProviderDocumentObject.h>
-#include <Gui/Widgets.h>
 #include <Gui/Placement.h>
 #include <Gui/FileDialog.h>
 
@@ -1038,67 +1037,72 @@ void PropertyDoubleVectorItem::setZ(double z)
 
 // --------------------------------------------------------------------
 
-namespace Gui { namespace PropertyEditor {
-class PlacementEditor : public Gui::LabelButton
+PlacementEditor::PlacementEditor(const QString& name, QWidget * parent)
+    : LabelButton(parent), _task(0)
 {
-public:
-    PlacementEditor(const QString& name, QWidget * parent = 0)
-        : LabelButton(parent), _task(0)
-    {
-        propertyname = name;
-        propertyname.replace(QLatin1String(" "), QLatin1String(""));
-    }
-    ~PlacementEditor()
-    {
-    }
-protected:
-    void browse()
-    {
-        Gui::TaskView::TaskDialog* dlg = Gui::Control().activeDialog();
-        Gui::Dialog::TaskPlacement* task;
-        task = qobject_cast<Gui::Dialog::TaskPlacement*>(dlg);
-        if (dlg && !task) {
-            // there is already another task dialog which must be closed first
-            Gui::Control().showDialog(dlg);
-            return;
-        }
-        if (!task) {
-            task = new Gui::Dialog::TaskPlacement();
-        }
-        if (!_task) {
-            _task = task;
-            //NOTE: The placemnt task dialog applies relative placements while this editor
-            //sets absolute values which causes problems when caneling the dialog because
-            //then it sets the default placement.
-            //connect(task, SIGNAL(placementChanged(const QVariant &, bool, bool)),
-            //        this, SLOT(setValue(const QVariant&)));
-        }
-        task->setPlacement(value().value<Base::Placement>());
-        task->setPropertyName(propertyname);
-        Gui::Control().showDialog(task);
-    }
-    void showValue(const QVariant& d)
-    {
-        const Base::Placement& p = d.value<Base::Placement>();
-        double angle;
-        Base::Vector3d dir, pos;
-        p.getRotation().getValue(dir, angle);
-        pos = p.getPosition();
-        QString data = QString::fromAscii("[(%1 %2 %3);%4;(%5 %6 %7)]")
-                        .arg(QLocale::system().toString(dir.x,'f',2))
-                        .arg(QLocale::system().toString(dir.y,'f',2))
-                        .arg(QLocale::system().toString(dir.z,'f',2))
-                        .arg(QLocale::system().toString(angle,'f',2))
-                        .arg(QLocale::system().toString(pos.x,'f',2))
-                        .arg(QLocale::system().toString(pos.y,'f',2))
-                        .arg(QLocale::system().toString(pos.z,'f',2));
-        getLabel()->setText(data);
-    }
-
-    Gui::Dialog::TaskPlacement* _task;
-    QString propertyname;
-};
+    propertyname = name;
+    propertyname.replace(QLatin1String(" "), QLatin1String(""));
 }
+
+PlacementEditor::~PlacementEditor()
+{
+}
+
+void PlacementEditor::browse()
+{
+    Gui::TaskView::TaskDialog* dlg = Gui::Control().activeDialog();
+    Gui::Dialog::TaskPlacement* task;
+    task = qobject_cast<Gui::Dialog::TaskPlacement*>(dlg);
+    if (dlg && !task) {
+        // there is already another task dialog which must be closed first
+        Gui::Control().showDialog(dlg);
+        return;
+    }
+    if (!task) {
+        task = new Gui::Dialog::TaskPlacement();
+    }
+    if (!_task) {
+        _task = task;
+        connect(task, SIGNAL(placementChanged(const QVariant &, bool, bool)),
+                this, SLOT(updateValue(const QVariant&, bool, bool)));
+    }
+    task->setPlacement(value().value<Base::Placement>());
+    task->setPropertyName(propertyname);
+    Gui::Control().showDialog(task);
+}
+
+void PlacementEditor::showValue(const QVariant& d)
+{
+    const Base::Placement& p = d.value<Base::Placement>();
+    double angle;
+    Base::Vector3d dir, pos;
+    p.getRotation().getValue(dir, angle);
+    pos = p.getPosition();
+    QString data = QString::fromAscii("[(%1 %2 %3);%4;(%5 %6 %7)]")
+                    .arg(QLocale::system().toString(dir.x,'f',2))
+                    .arg(QLocale::system().toString(dir.y,'f',2))
+                    .arg(QLocale::system().toString(dir.z,'f',2))
+                    .arg(QLocale::system().toString(angle,'f',2))
+                    .arg(QLocale::system().toString(pos.x,'f',2))
+                    .arg(QLocale::system().toString(pos.y,'f',2))
+                    .arg(QLocale::system().toString(pos.z,'f',2));
+    getLabel()->setText(data);
+}
+
+void PlacementEditor::updateValue(const QVariant& v, bool incr, bool data)
+{
+    if (data) {
+        if (incr) {
+            QVariant u = value();
+            const Base::Placement& plm = u.value<Base::Placement>();
+            const Base::Placement& rel = v.value<Base::Placement>();
+            Base::Placement data = rel * plm;
+            setValue(QVariant::fromValue<Base::Placement>(data));
+        }
+        else {
+            setValue(v);
+        }
+    }
 }
 
 TYPESYSTEM_SOURCE(Gui::PropertyEditor::PropertyPlacementItem, Gui::PropertyEditor::PropertyItem);

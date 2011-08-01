@@ -25,6 +25,7 @@
 #define PROPERTYEDITORITEM_H
 
 #include <QObject>
+#include <QPointer>
 #include <QItemEditorFactory>
 #include <vector>
 
@@ -33,12 +34,14 @@
 #include <Base/Placement.h>
 #include <Base/UnitsApi.h>
 #include <App/PropertyStandard.h>
+#include <Gui/Widgets.h>
 
 Q_DECLARE_METATYPE(Base::Vector3f)
 Q_DECLARE_METATYPE(Base::Vector3d)
 Q_DECLARE_METATYPE(Base::Placement)
 
 namespace Gui {
+namespace Dialog { class TaskPlacement; }
 namespace PropertyEditor {
 
 class GuiExport PropertyItem : virtual public QObject, public Base::BaseClass
@@ -358,6 +361,26 @@ private:
     PropertyFloatItem* m_x;
     PropertyFloatItem* m_y;
     PropertyFloatItem* m_z;
+};
+
+class PlacementEditor : public Gui::LabelButton
+{
+    Q_OBJECT
+
+public:
+    PlacementEditor(const QString& name, QWidget * parent = 0);
+    ~PlacementEditor();
+
+private Q_SLOTS:
+    void updateValue(const QVariant& v, bool, bool);
+
+private:
+    void browse();
+    void showValue(const QVariant& d);
+
+private:
+    QPointer<Gui::Dialog::TaskPlacement> _task;
+    QString propertyname;
 };
 
 /**
