@@ -76,6 +76,27 @@ public:
   virtual const char* what() const throw();
 };
 
+/**
+ * The XMLParseException is thrown if parsing an XML failed.
+ * @author Werner Mayer
+ */
+class BaseExport XMLParseException : public Exception
+{
+public:
+  /// Construction
+  XMLParseException(const char * sMessage);
+  /// Construction
+  XMLParseException(const std::string& sMessage);
+  /// Construction
+  XMLParseException();
+  /// Construction
+  XMLParseException(const XMLParseException &inst);
+  /// Destruction
+  virtual ~XMLParseException() throw() {}
+  /// Description of the exception
+  virtual const char* what() const throw();
+};
+
 /** File exception handling class
  * This class is specialized to go with exception thrown in case of File IO Problems.
  * @author Juergen Riegel

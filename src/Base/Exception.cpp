@@ -96,6 +96,33 @@ const char* AbortException::what() const throw()
 
 // ---------------------------------------------------------
 
+XMLParseException::XMLParseException(const char * sMessage)
+  : Exception(sMessage)
+{
+}
+
+XMLParseException::XMLParseException(const std::string& sMessage)
+ : Exception(sMessage)
+{
+}
+
+XMLParseException::XMLParseException()
+{
+    _sErrMsg = "XML parse exception";
+}
+
+XMLParseException::XMLParseException(const XMLParseException &inst)
+ : Exception(inst)
+{
+}
+
+const char* XMLParseException::what() const throw()
+{
+    return Exception::what();
+}
+
+// ---------------------------------------------------------
+
 FileException::FileException(const char * sMessage, const char * sFileName)
   : Exception( sMessage ),file(sFileName)
 {
