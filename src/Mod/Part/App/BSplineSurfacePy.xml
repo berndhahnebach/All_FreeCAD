@@ -672,5 +672,10 @@
 				<UserDocu>Builds the V isoparametric B-Spline curve of this B-Spline surface</UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="reparametrize" Const="true">
+			<Documentation>
+				<UserDocu>Returns a reparametrized copy of this surface</UserDocu>
+			</Documentation>
+		</Methode>
 	</PythonExport>
 </GenerateModel>

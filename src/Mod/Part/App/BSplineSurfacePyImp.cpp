@@ -1183,6 +1183,59 @@ PyObject* BSplineSurfacePy::vIso(PyObject * args)
     }
 }
 
+PyObject* BSplineSurfacePy::reparametrize(PyObject * args)
+{
+    int u,v;
+    double tol = 0.000001;
+    if (!PyArg_ParseTuple(args, "ii|d", &u, &v, &tol))
+        return 0;
+
+    // u,v must be at least 2
+    u = std::max<int>(u, 2);
+    v = std::max<int>(v, 2);
+
+    try {
+        Handle_Geom_BSplineSurface surf = Handle_Geom_BSplineSurface::DownCast
+            (getGeometryPtr()->handle());
+
+        double maxU = surf->UKnot(surf->NbUKnots()); // 1.0 if normalized surface
+        double maxV = surf->VKnot(surf->NbVKnots()); // 1.0 if normalized surface
+
+        GeomBSplineSurface* geom = new GeomBSplineSurface();
+        Handle_Geom_BSplineSurface spline = Handle_Geom_BSplineSurface::DownCast
+            (geom->handle());
+        for (int i=1; i<u-1; i++) {
+            double U = i * 1.0 / (u-1.0);
+            spline->InsertUKnot(U,i,tol,Standard_True);
+        }
+
+        for (int i=1; i<v-1; i++) {
+            double V = i * 1.0 / (v-1.0);
+            spline->InsertVKnot(V,i,tol,Standard_True);
+        }
+
+        for (int j=0; j<u; j++) {
+            double U = j * maxU / (u-1.0);
+            double newU = j * 1.0 / (u-1.0);
+            for (int k=0; k<v; k++) {
+                double V = k * maxV / (v-1.0);
+                double newV = k * 1.0 / (v-1.0);
+                // Get UV point and move new surface UV point
+                gp_Pnt point = surf->Value(U,V);
+                int ufirst, ulast, vfirst, vlast;
+                spline->MovePoint(newU, newV, point, j+1, j+1, k+1, k+1, ufirst, ulast, vfirst, vlast);
+            }
+        }
+
+        return new BSplineSurfacePy(geom);
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
+}
+
 Py::Int BSplineSurfacePy::getUDegree(void) const
 {
     Handle_Geom_BSplineSurface surf = Handle_Geom_BSplineSurface::DownCast
