@@ -209,7 +209,7 @@ bool Base::XMLReader::read(void)
         char* message = XMLString::transcode(toCatch.getMessage());
         std::string what = message;
         XMLString::release(&message);
-        throw Base::Exception(what);
+        throw Base::XMLParseException(what);
 #endif
     }
     catch (...) {

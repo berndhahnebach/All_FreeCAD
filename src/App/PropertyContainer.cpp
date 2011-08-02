@@ -237,6 +237,9 @@ void PropertyContainer::Restore(Base::XMLReader &reader)
             if (prop && strcmp(prop->getTypeId().getName(), TypeName) == 0)
                 prop->Restore(reader);
         }
+        catch (const Base::XMLParseException&) {
+            throw; // re-throw
+        }
         catch (const Base::Exception &e) {
             Base::Console().Error("%s\n", e.what());
         }
