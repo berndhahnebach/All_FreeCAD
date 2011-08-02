@@ -1,6 +1,11 @@
-rem @echo off
+@echo off
 rem   Build script, uses vcbuild to completetly build FreeCAD
 
+rem start again nice (LOW)
+if "%1"=="" (
+    start /WAIT /LOW /B cmd.exe /V /C %~s0 go_ahead
+    goto:eof
+)
 rem  set the aprobiated Variables here or outside in the system
 if NOT DEFINED VCDIR set VCDIR=C:\Program Files\Microsoft Visual Studio 9.0
 
