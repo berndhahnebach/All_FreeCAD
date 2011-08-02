@@ -212,7 +212,6 @@ QIcon ViewProviderPythonFeatureImp::getIcon() const
                 Py::Tuple args(0);
                 Py::String str(method.apply(args));
                 std::string content = str.as_std_string();
-                printf(content.c_str());
                 QByteArray ary;
                 int strlen = (int)content.size();
                 ary.resize(strlen);
@@ -526,6 +525,7 @@ template class GuiExport ViewProviderPythonFeatureT<ViewProviderDocumentObject>;
 namespace Gui {
 PROPERTY_SOURCE_TEMPLATE(Gui::ViewProviderPythonGeometry, Gui::ViewProviderGeometryObject)
 // explicit template instantiation
-template class GuiExport ViewProviderPythonFeatureT<ViewProviderGeometryObject>;}
+template class GuiExport ViewProviderPythonFeatureT<ViewProviderGeometryObject>;
+}
 
 

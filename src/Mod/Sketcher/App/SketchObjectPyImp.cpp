@@ -21,6 +21,9 @@
  ***************************************************************************/
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <sstream>
+#endif
 
 #include "Mod/Sketcher/App/SketchObject.h"
 #include <Mod/Part/App/LinePy.h>
@@ -152,7 +155,9 @@ PyObject* SketchObjectPy::setDatum(PyObject *args)
         return 0;
 
     if (this->getSketchObjectPtr()->setDatum(Datum, Index)) {
-        PyErr_Format(PyExc_ValueError, "Datum %d of constraint with index %i is invalid", Datum, Index);
+        std::stringstream str;
+        str << "Datum " << Datum << " of constraint with index " << Index << " is invalid";
+        PyErr_SetString(PyExc_ValueError, str.str().c_str());
         return 0;
     }
 
