@@ -203,11 +203,14 @@ class DraftWorkbench (Workbench):
 	def Activated(self):
                 FreeCADGui.draftToolBar.draftWidget.setVisible(True)
                 FreeCADGui.draftToolBar.draftWidget.toggleViewAction().setVisible(True)
+                if FreeCADGui.draftToolBar.taskmode:
+                        FreeCADGui.draftToolBar.setWatchers()
 
 	def Deactivated(self):
                 if (FreeCAD.activeDraftCommand != None): FreeCAD.activeDraftCommand.finish()
                 FreeCADGui.draftToolBar.draftWidget.setVisible(False)
                 FreeCADGui.draftToolBar.draftWidget.toggleViewAction().setVisible(False)
+                FreeCADGui.Control.clearTaskWatcher()
 
 	def ContextMenu(self, recipient):
                 if (recipient == "View"):

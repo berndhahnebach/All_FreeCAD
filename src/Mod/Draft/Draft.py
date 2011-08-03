@@ -93,7 +93,7 @@ def typecheck (args_and_types, name="?"):
 
 def getParamType(param):
         if param in ["dimsymbol","dimPrecision","dimorientation","precision","defaultWP",
-                     "snapRange","gridEvery","lineweight"]:
+                     "snapRange","gridEvery","lineweight","UiMode"]:
                 return "int"
         elif param in ["constructiongroupname","textfont","patternFile","template"]:
 		return "string"
@@ -225,7 +225,7 @@ def formatObject(target,origin=None):
 	It also places the object in construction group if needed.
 	'''
 	obrep = target.ViewObject
-	ui = FreeCADGui.draftToolBar.ui
+	ui = FreeCADGui.draftToolBar
 	doc = FreeCAD.ActiveDocument
 	if ui.constrButton.isChecked():
 		col = fcol = ui.getDefaultColor("constr")
