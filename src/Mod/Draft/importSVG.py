@@ -38,7 +38,7 @@ from FreeCAD import Vector
 try: import FreeCADGui
 except: gui = False
 else: gui = True
-try: draftui = FreeCADGui.draftToolBar.ui
+try: draftui = FreeCADGui.draftToolBar
 except: draftui = None
 
 pythonopen = open

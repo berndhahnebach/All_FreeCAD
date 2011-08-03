@@ -368,7 +368,7 @@ def getPoint(target,args,mobile=False,sym=False,workingplane=True):
 	point. If sym=True, x and y values stay always equal. If workingplane=False,
         the point wont be projected on the Working Plane.
 	'''
-	ui = FreeCADGui.draftToolBar.ui
+	ui = FreeCADGui.draftToolBar
 	view = FreeCADGui.ActiveDocument.ActiveView
 	point = view.getPoint(args["Position"][0],args["Position"][1])
 	point = snapPoint(target,point,args["Position"],args["CtrlDown"])
@@ -432,8 +432,7 @@ class Tracker:
 	def __init__(self,dotted=False,scolor=None,swidth=None,children=[],ontop=False):
                 self.ontop = ontop
 		color = coin.SoBaseColor()
-		color.rgb = scolor or FreeCADGui.draftToolBar.\
-			ui.getDefaultColor("ui")
+		color.rgb = scolor or FreeCADGui.draftToolBar.getDefaultColor("ui")
 		drawstyle = coin.SoDrawStyle()
 		if swidth:
 			drawstyle.lineWidth = swidth
@@ -481,8 +480,7 @@ class snapTracker(Tracker):
 	"A Snap Mark tracker, used by tools that support snapping"
 	def __init__(self):
 		color = coin.SoBaseColor()
-		color.rgb = FreeCADGui.draftToolBar.\
-			ui.getDefaultColor("snap")
+		color.rgb = FreeCADGui.draftToolBar.getDefaultColor("snap")
 		self.marker = coin.SoMarkerSet() # this is the marker symbol
 		self.marker.markerIndex = coin.SoMarkerSet.CIRCLE_FILLED_9_9
 		self.coords = coin.SoCoordinate3() # this is the coordinate
@@ -809,8 +807,7 @@ class editTracker(Tracker):
                 if objcol:
                         color.rgb = objcol[:3]
                 else:
-                        color.rgb = FreeCADGui.draftToolBar.\
-                            ui.getDefaultColor("snap")
+                        color.rgb = FreeCADGui.draftToolBar.getDefaultColor("snap")
 		self.marker = coin.SoMarkerSet() # this is the marker symbol
 		self.marker.markerIndex = coin.SoMarkerSet.SQUARE_FILLED_9_9
 		self.coords = coin.SoCoordinate3() # this is the coordinate
@@ -1028,7 +1025,7 @@ class SelectPlane:
 		if self.doc:
 			FreeCAD.activeDraftCommand = self
 			self.view = FreeCADGui.ActiveDocument.ActiveView
-			self.ui = FreeCADGui.draftToolBar.ui
+			self.ui = FreeCADGui.draftToolBar
 			self.ui.selectPlaneUi()
 			msg(translate("draft", "Pick a face to define the drawing plane\n"))
 			self.ui.sourceCmd = self
@@ -1131,7 +1128,7 @@ class Creator:
 			self.finish()
 		else:
 			FreeCAD.activeDraftCommand = self
-                        self.ui = FreeCADGui.draftToolBar.ui
+                        self.ui = FreeCADGui.draftToolBar
                         self.ui.cross(True)
                         self.ui.sourceCmd = self
                         self.ui.cmdlabel.setText(name)
@@ -2345,7 +2342,7 @@ class Modifier:
 		else:
 			FreeCAD.activeDraftCommand = self
 			self.view = FreeCADGui.ActiveDocument.ActiveView
-			self.ui = FreeCADGui.draftToolBar.ui
+			self.ui = FreeCADGui.draftToolBar
 			FreeCADGui.draftToolBar.draftWidget.setVisible(True)
                         rot = self.view.getCameraNode().getField("orientation").getValue()
                         upv = Vector(rot.multVec(coin.SbVec3f(0,1,0)).getValue())
@@ -3594,7 +3591,7 @@ class ToggleConstructionMode():
 			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_ToggleConstructionMode", "Toggles the Construction Mode for next objects.")}
 
 	def Activated(self):
-		FreeCADGui.draftToolBar.ui.constrButton.toggle()
+		FreeCADGui.draftToolBar.constrButton.toggle()
 
 class ToggleContinueMode():
 	"The Draft_ToggleContinueMode FreeCAD command definition"
@@ -3604,7 +3601,7 @@ class ToggleContinueMode():
 			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_ToggleContinueMode", "Toggles the Continue Mode for next commands.")}
 
 	def Activated(self):
-		FreeCADGui.draftToolBar.ui.continueCmd.toggle()
+		FreeCADGui.draftToolBar.continueCmd.toggle()
                 
 class Drawing(Modifier):
         "The Draft Drawing command definition"
@@ -4009,7 +4006,7 @@ class AddToGroup():
                 for g in self.groups:
                         o = FreeCAD.ActiveDocument.getObject(g)
                         if o: self.labels.append(o.Label)
-                self.ui = FreeCADGui.draftToolBar.ui
+                self.ui = FreeCADGui.draftToolBar
                 self.ui.sourceCmd = self
                 self.ui.popupMenu(self.labels)
 
@@ -4050,8 +4047,8 @@ class AddPoint(Modifier):
 			return False
 
 	def Activated(self):
-                FreeCADGui.draftToolBar.ui.addButton.setChecked(True)
-                FreeCADGui.draftToolBar.ui.delButton.setChecked(False)
+                FreeCADGui.draftToolBar.addButton.setChecked(True)
+                FreeCADGui.draftToolBar.delButton.setChecked(False)
                 FreeCADGui.runCommand("Draft_Edit")
                 
 class DelPoint(Modifier):
@@ -4073,8 +4070,8 @@ class DelPoint(Modifier):
 			return False
 
 	def Activated(self):
-                FreeCADGui.draftToolBar.ui.addButton.setChecked(False)
-                FreeCADGui.draftToolBar.ui.delButton.setChecked(True)
+                FreeCADGui.draftToolBar.addButton.setChecked(False)
+                FreeCADGui.draftToolBar.delButton.setChecked(True)
                 FreeCADGui.runCommand("Draft_Edit")
 
 class WireToBSpline(Modifier):
