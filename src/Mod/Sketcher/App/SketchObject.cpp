@@ -100,12 +100,16 @@ App::DocumentObjectExecReturn *SketchObject::execute(void)
 int SketchObject::setDatum(double Datum, int ConstrNbr)
 {
     // set the changed value for the constraint
-    assert(ConstrNbr >= 0); 
     const std::vector< Constraint * > &vals = this->Constraints.getValues();
-    assert(ConstrNbr < (int)vals.size());
-    assert(vals[ConstrNbr]->Type == Distance ||
-           vals[ConstrNbr]->Type == DistanceX || vals[ConstrNbr]->Type == DistanceY ||
-           vals[ConstrNbr]->Type == Radius || vals[ConstrNbr]->Type == Angle);
+    if (ConstrNbr < 0 || ConstrNbr >= (int)vals.size())
+        return -1;
+    ConstraintType type = vals[ConstrNbr]->Type;
+    if (type != Distance && 
+        type != DistanceX &&
+        type != DistanceY &&
+        type != Radius &&
+        type != Angle)
+        return -1;
 
     // copy the list
     std::vector< Constraint * > newVals(vals);
@@ -268,15 +272,19 @@ int SketchObject::delConstraintOnPoint(int PointNbr)
 
     std::vector< Constraint * > newVals(0);
     for (std::vector<Constraint *>::const_iterator it = vals.begin(); it != vals.end(); ++it) {
-        if ((*it)->Type == Sketcher::Coincident)
-            if (((*it)->First == GeoId && (*it)->FirstPos == PosId)
-               || ((*it)->Second == GeoId && (*it)->SecondPos == PosId))
+        if ((*it)->Type == Sketcher::Coincident) {
+            if (((*it)->First == GeoId && (*it)->FirstPos == PosId) ||
+                ((*it)->Second == GeoId && (*it)->SecondPos == PosId))
                continue;
+        }
         newVals.push_back(*it);
     }
-    if (newVals.size() < vals.size())
+    if (newVals.size() < vals.size()) {
         this->Constraints.setValues(newVals);
-    return 0;
+        return 0;
+    }
+
+    return -1; // no such constraint
 }
 
 int SketchObject::addExternal(App::DocumentObject *Obj, const char* SubName)
