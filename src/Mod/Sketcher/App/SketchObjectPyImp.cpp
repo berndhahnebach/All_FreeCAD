@@ -72,7 +72,9 @@ PyObject* SketchObjectPy::delGeometry(PyObject *args)
         return 0;
 
     if (this->getSketchObjectPtr()->delGeometry(Index)) {
-        PyErr_Format(PyExc_ValueError, "Not able to delete a geometry with the given index: %i", Index);
+        std::stringstream str;
+        str << "Not able to delete a geometry with the given index: " << Index;
+        PyErr_SetString(PyExc_ValueError, str.str().c_str());
         return 0;
     }
 
@@ -99,7 +101,9 @@ PyObject* SketchObjectPy::delConstraint(PyObject *args)
         return 0;
 
     if (this->getSketchObjectPtr()->delConstraint(Index)) {
-        PyErr_Format(PyExc_ValueError, "Not able to delete a constraint with the given index: %i", Index);
+        std::stringstream str;
+        str << "Not able to delete a constraint with the given index: " << Index;
+        PyErr_SetString(PyExc_ValueError, str.str().c_str());
         return 0;
     }
 
@@ -110,19 +114,32 @@ PyObject* SketchObjectPy::addExternal(PyObject *args)
 {
     char *ObjectName;
     char *SubName;
-    if (!PyArg_ParseTuple(args, "ss:Give a object and subelement name", &ObjectName,&SubName))
+    if (!PyArg_ParseTuple(args, "ss:Give an object and subelement name", &ObjectName,&SubName))
         return 0;
 
     // get the target object for the external link
     App::DocumentObject * Obj = this->getSketchObjectPtr()->getDocument()->getObject(ObjectName);
+    if (!Obj) {
+        std::stringstream str;
+        str << ObjectName << "does not exist in the document";
+        PyErr_SetString(PyExc_ValueError, str.str().c_str());
+        return 0;
+    }
     // check if its belong to the sketch support 
     if (this->getSketchObjectPtr()->Support.getValue() != Obj) {
-        PyErr_Format(PyExc_ValueError, "%s is not support of this sketch!", ObjectName);
+        std::stringstream str;
+        str << ObjectName << "is not supported by this sketch";
+        PyErr_SetString(PyExc_ValueError, str.str().c_str());
         return 0;
     }
 
     // add the external 
-    this->getSketchObjectPtr()->addExternal(Obj,SubName);
+    if (this->getSketchObjectPtr()->addExternal(Obj,SubName)) {
+        std::stringstream str;
+        str << "Not able to add external shape element";
+        PyErr_SetString(PyExc_ValueError, str.str().c_str());
+        return 0;
+    }
 
     Py_Return; 
 }
@@ -140,7 +157,9 @@ PyObject* SketchObjectPy::delConstraintOnPoint(PyObject *args)
         return 0;
 
     if (this->getSketchObjectPtr()->delConstraintOnPoint(Index)) {
-        PyErr_Format(PyExc_ValueError, "Not able to delete a constraint on point with the given index: %i", Index);
+        std::stringstream str;
+        str << "Not able to delete a constraint on point with the given index: " << Index;
+        PyErr_SetString(PyExc_ValueError, str.str().c_str());
         return 0;
     }
 
@@ -175,7 +194,9 @@ PyObject* SketchObjectPy::movePoint(PyObject *args)
     Base::Vector3d v1 = static_cast<Base::VectorPy*>(pcObj)->value();
 
     if (this->getSketchObjectPtr()->movePoint(GeoId,(Sketcher::PointPos)PointType,v1)) {
-        PyErr_Format(PyExc_ValueError, "Not able to move point with the id and type: (%i, %i)", GeoId, PointType);
+        std::stringstream str;
+        str << "Not able to move point with the id and type: (" << GeoId << ", " << PointType << ")";
+        PyErr_SetString(PyExc_ValueError, str.str().c_str());
         return 0;
     }
 
@@ -185,14 +206,12 @@ PyObject* SketchObjectPy::movePoint(PyObject *args)
 
 Py::Int SketchObjectPy::getConstraintCount(void) const
 {
-    //return Py::Int();
-    throw Py::AttributeError("Not yet implemented");
+    return Py::Int(this->getSketchObjectPtr()->Constraints.getSize());
 }
 
 Py::Int SketchObjectPy::getGeometryCount(void) const
 {
-    //return Py::Int();
-    throw Py::AttributeError("Not yet implemented");
+    return Py::Int(this->getSketchObjectPtr()->Geometry.getSize());
 }
 
 PyObject *SketchObjectPy::getCustomAttributes(const char* /*attr*/) const
@@ -216,7 +235,7 @@ int SketchObjectPy::setCustomAttributes(const char* attr, PyObject* obj)
         prop->setPyObject(obj);
         
         if (strcmp(attr,"Geometry") == 0)
-           getSketchObjectPtr()->rebuildVertexIndex();
+            getSketchObjectPtr()->rebuildVertexIndex();
 
         return 1;
     }
