@@ -51,6 +51,10 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     int  SecondIndex=-1;
     int  SecondPos  =-1;
     double Value    = 0;
+    // Note: In Python 2.x PyArg_ParseTuple prints a warning if a float is given but an integer is expected.
+    // This means we must use a PyObject and check afterwards if it's a float or integer.
+    PyObject* index_or_value;
+    int any_index;
 
     // ConstraintType, GeoIndex
     if (PyArg_ParseTuple(args, "si", &ConstraintType, &FirstIndex)) {
@@ -67,153 +71,161 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     }
     PyErr_Clear();
 
-    // ConstraintType, GeoIndex1, GeoIndex2
-    if (PyArg_ParseTuple(args, "sii", &ConstraintType, &FirstIndex, &SecondIndex)) {
-        bool valid = false;
-        if (strcmp("Tangent",ConstraintType) == 0) {
-            this->getConstraintPtr()->Type = Tangent;
-            valid = true;
+    if (PyArg_ParseTuple(args, "siO", &ConstraintType, &FirstIndex, &index_or_value)) {
+        // ConstraintType, GeoIndex1, GeoIndex2
+        if (PyInt_Check(index_or_value)) {
+            SecondIndex = PyInt_AsLong(index_or_value);
+            bool valid = false;
+            if (strcmp("Tangent",ConstraintType) == 0) {
+                this->getConstraintPtr()->Type = Tangent;
+                valid = true;
+            }
+            else if (strcmp("Parallel",ConstraintType) == 0) {
+                this->getConstraintPtr()->Type = Parallel;
+                valid = true;
+            }
+            else if (strcmp("Perpendicular",ConstraintType) == 0) {
+                this->getConstraintPtr()->Type = Perpendicular;
+                valid = true;
+            }
+            else if (strcmp("Equal",ConstraintType) == 0) {
+                this->getConstraintPtr()->Type = Equal;
+                valid = true;
+            }
+            if (valid) {
+                this->getConstraintPtr()->First = FirstIndex;
+                this->getConstraintPtr()->Second = SecondIndex;
+                return 0;
+            }
         }
-        else if (strcmp("Parallel",ConstraintType) == 0) {
-            this->getConstraintPtr()->Type = Parallel;
-            valid = true;
-        }
-        else if (strcmp("Perpendicular",ConstraintType) == 0) {
-            this->getConstraintPtr()->Type = Perpendicular;
-            valid = true;
-        }
-        else if (strcmp("Equal",ConstraintType) == 0) {
-            this->getConstraintPtr()->Type = Equal;
-            valid = true;
-        }
-        if (valid) {
-            this->getConstraintPtr()->First = FirstIndex;
-            this->getConstraintPtr()->Second = SecondIndex;
-            return 0;
-        }
-    }
-    PyErr_Clear();
-
-    // ConstraintType, GeoIndex1, PosIndex1, GeoIndex2
-    if (PyArg_ParseTuple(args, "siii", &ConstraintType, &FirstIndex, &FirstPos, &SecondIndex)) {
-        if (strcmp("Tangent", ConstraintType) == 0) {
-            this->getConstraintPtr()->Type = Tangent;
-            this->getConstraintPtr()->First    = FirstIndex;
-            this->getConstraintPtr()->FirstPos = (Sketcher::PointPos) FirstPos;
-            this->getConstraintPtr()->Second   = SecondIndex;
-            return 0;
-        }
-    }
-    PyErr_Clear();
-
-    // Value, ConstraintType, GeoIndex1, PosIndex1, GeoIndex2, PosIndex2
-    if (PyArg_ParseTuple(args, "siiii", &ConstraintType, &FirstIndex, &FirstPos, &SecondIndex, &SecondPos)) {
-        bool valid = false;
-        if (strcmp("Coincident", ConstraintType) == 0) {
-            this->getConstraintPtr()->Type = Coincident;
-            valid = true;
-        }
-        else if (strcmp("Horizontal", ConstraintType) == 0) {
-            this->getConstraintPtr()->Type = Horizontal;
-            valid = true;
-        }
-        else if (strcmp("Vertical", ConstraintType) == 0) {
-            this->getConstraintPtr()->Type = Vertical;
-            valid = true;
-        }
-        else if (strcmp("Tangent", ConstraintType) == 0) {
-            this->getConstraintPtr()->Type = Tangent;
-            valid = true;
-        }
-        if (valid) {
-            this->getConstraintPtr()->First     = FirstIndex;
-            this->getConstraintPtr()->FirstPos  = (Sketcher::PointPos) FirstPos;
-            this->getConstraintPtr()->Second    = SecondIndex;
-            this->getConstraintPtr()->SecondPos = (Sketcher::PointPos) SecondPos;
-            return 0;
+        // ConstraintType, GeoIndex, Value
+        else if (PyFloat_Check(index_or_value)) {
+            Value = PyFloat_AsDouble(index_or_value);
+            bool valid = false;
+            if (strcmp("Distance",ConstraintType) == 0 ) {
+                this->getConstraintPtr()->Type = Distance;
+                valid = true;
+            }
+            else if (strcmp("Angle",ConstraintType) == 0 ) {
+                this->getConstraintPtr()->Type = Angle;
+                valid = true;
+            }
+            else if (strcmp("DistanceX",ConstraintType) == 0) {
+                this->getConstraintPtr()->Type = DistanceX;
+                valid = true;
+            }
+            else if (strcmp("DistanceY",ConstraintType) == 0) {
+                this->getConstraintPtr()->Type = DistanceY;
+                valid = true;
+            }
+            else if (strcmp("Radius",ConstraintType) == 0) {
+                this->getConstraintPtr()->Type = Radius;
+                valid = true;
+            }
+            if (valid) {
+                this->getConstraintPtr()->First    = FirstIndex;
+                this->getConstraintPtr()->Value    = Value;
+                return 0;
+            }
         }
     }
     PyErr_Clear();
 
-    // ConstraintType, GeoIndex, Value
-    if (PyArg_ParseTuple(args, "sid", &ConstraintType, &FirstIndex, &Value)) {
-        bool valid = false;
-        if (strcmp("Distance",ConstraintType) == 0 ) {
-            this->getConstraintPtr()->Type = Distance;
-            valid = true;
+    if (PyArg_ParseTuple(args, "siiO", &ConstraintType, &FirstIndex, &any_index, &index_or_value)) {
+        // ConstraintType, GeoIndex1, PosIndex1, GeoIndex2
+        if (PyInt_Check(index_or_value)) {
+            FirstPos = any_index;
+            SecondIndex = PyInt_AsLong(index_or_value);
+            if (strcmp("Tangent", ConstraintType) == 0) {
+                this->getConstraintPtr()->Type = Tangent;
+                this->getConstraintPtr()->First    = FirstIndex;
+                this->getConstraintPtr()->FirstPos = (Sketcher::PointPos) FirstPos;
+                this->getConstraintPtr()->Second   = SecondIndex;
+                return 0;
+            }
         }
-        else if (strcmp("Angle",ConstraintType) == 0 ) {
-            this->getConstraintPtr()->Type = Angle;
-            valid = true;
-        }
-        else if (strcmp("DistanceX",ConstraintType) == 0) {
-            this->getConstraintPtr()->Type = DistanceX;
-            valid = true;
-        }
-        else if (strcmp("DistanceY",ConstraintType) == 0) {
-            this->getConstraintPtr()->Type = DistanceY;
-            valid = true;
-        }
-        else if (strcmp("Radius",ConstraintType) == 0) {
-            this->getConstraintPtr()->Type = Radius;
-            valid = true;
-        }
-        if (valid) {
-            this->getConstraintPtr()->First    = FirstIndex;
-            this->getConstraintPtr()->Value    = Value;
-            return 0;
-        }
-    }
-    PyErr_Clear();
-
-    // ConstraintType, GeoIndex1, GeoIndex2, Value
-    // ConstraintType, GeoIndex, PosIndex, Value
-    if (PyArg_ParseTuple(args, "siid", &ConstraintType, &FirstIndex, &SecondIndex, &Value)) {
-        //if (strcmp("Distance",ConstraintType) == 0) {
-        //    this->getConstraintPtr()->Type   = Distance;
-        //    this->getConstraintPtr()->First  = FirstIndex;
-        //    this->getConstraintPtr()->Second = SecondIndex;
-        //    this->getConstraintPtr()->Value  = Value;
-        //    return 0;
-        //}
-        //else
-        if (strcmp("Angle",ConstraintType) == 0) {
-            this->getConstraintPtr()->Type   = Angle;
-            this->getConstraintPtr()->First  = FirstIndex;
-            this->getConstraintPtr()->Second = SecondIndex;
-            this->getConstraintPtr()->Value  = Value;
-            return 0;
-        }
-        else if (strcmp("DistanceX",ConstraintType) == 0) {
-            FirstPos = SecondIndex;
-            SecondIndex = -1;
-            this->getConstraintPtr()->Type = DistanceX;
-            this->getConstraintPtr()->First    = FirstIndex;
-            this->getConstraintPtr()->FirstPos = (Sketcher::PointPos) FirstPos;
-            this->getConstraintPtr()->Value    = Value;
-            return 0;
-        }
-        else if (strcmp("DistanceY",ConstraintType) == 0) {
-            FirstPos = SecondIndex;
-            SecondIndex = -1;
-            this->getConstraintPtr()->Type = DistanceY;
-            this->getConstraintPtr()->First    = FirstIndex;
-            this->getConstraintPtr()->FirstPos = (Sketcher::PointPos) FirstPos;
-            this->getConstraintPtr()->Value    = Value;
-            return 0;
+        // ConstraintType, GeoIndex1, GeoIndex2, Value
+        // ConstraintType, GeoIndex, PosIndex, Value
+        else if (PyFloat_Check(index_or_value)) {
+            SecondIndex = any_index;
+            Value = PyFloat_AsDouble(index_or_value);
+            //if (strcmp("Distance",ConstraintType) == 0) {
+            //    this->getConstraintPtr()->Type   = Distance;
+            //    this->getConstraintPtr()->First  = FirstIndex;
+            //    this->getConstraintPtr()->Second = SecondIndex;
+            //    this->getConstraintPtr()->Value  = Value;
+            //    return 0;
+            //}
+            //else
+            if (strcmp("Angle",ConstraintType) == 0) {
+                this->getConstraintPtr()->Type   = Angle;
+                this->getConstraintPtr()->First  = FirstIndex;
+                this->getConstraintPtr()->Second = SecondIndex;
+                this->getConstraintPtr()->Value  = Value;
+                return 0;
+            }
+            else if (strcmp("DistanceX",ConstraintType) == 0) {
+                FirstPos = SecondIndex;
+                SecondIndex = -1;
+                this->getConstraintPtr()->Type = DistanceX;
+                this->getConstraintPtr()->First    = FirstIndex;
+                this->getConstraintPtr()->FirstPos = (Sketcher::PointPos) FirstPos;
+                this->getConstraintPtr()->Value    = Value;
+                return 0;
+            }
+            else if (strcmp("DistanceY",ConstraintType) == 0) {
+                FirstPos = SecondIndex;
+                SecondIndex = -1;
+                this->getConstraintPtr()->Type = DistanceY;
+                this->getConstraintPtr()->First    = FirstIndex;
+                this->getConstraintPtr()->FirstPos = (Sketcher::PointPos) FirstPos;
+                this->getConstraintPtr()->Value    = Value;
+                return 0;
+            }
         }
     }
     PyErr_Clear();
 
-    // ConstraintType, GeoIndex1, PosIndex1, GeoIndex2, Value
-    if (PyArg_ParseTuple(args, "siiid", &ConstraintType, &FirstIndex, &FirstPos, &SecondIndex, &Value)) {
-        if (strcmp("Distance",ConstraintType) == 0 ) {
-            this->getConstraintPtr()->Type = Distance;
-            this->getConstraintPtr()->First    = FirstIndex;
-            this->getConstraintPtr()->FirstPos = (Sketcher::PointPos) FirstPos;
-            this->getConstraintPtr()->Second   = SecondIndex;
-            this->getConstraintPtr()->Value    = Value;
-            return 0;
+    if (PyArg_ParseTuple(args, "siiiO", &ConstraintType, &FirstIndex, &FirstPos, &SecondIndex, &index_or_value)) {
+        // Value, ConstraintType, GeoIndex1, PosIndex1, GeoIndex2, PosIndex2
+        if (PyInt_Check(index_or_value)) {
+            SecondPos = PyInt_AsLong(index_or_value);
+            bool valid = false;
+            if (strcmp("Coincident", ConstraintType) == 0) {
+                this->getConstraintPtr()->Type = Coincident;
+                valid = true;
+            }
+            else if (strcmp("Horizontal", ConstraintType) == 0) {
+                this->getConstraintPtr()->Type = Horizontal;
+                valid = true;
+            }
+            else if (strcmp("Vertical", ConstraintType) == 0) {
+                this->getConstraintPtr()->Type = Vertical;
+                valid = true;
+            }
+            else if (strcmp("Tangent", ConstraintType) == 0) {
+                this->getConstraintPtr()->Type = Tangent;
+                valid = true;
+            }
+            if (valid) {
+                this->getConstraintPtr()->First     = FirstIndex;
+                this->getConstraintPtr()->FirstPos  = (Sketcher::PointPos) FirstPos;
+                this->getConstraintPtr()->Second    = SecondIndex;
+                this->getConstraintPtr()->SecondPos = (Sketcher::PointPos) SecondPos;
+                return 0;
+            }
+        }
+        // ConstraintType, GeoIndex1, PosIndex1, GeoIndex2, Value
+        else if (PyFloat_Check(index_or_value)) {
+            Value = PyFloat_AsDouble(index_or_value);
+            if (strcmp("Distance",ConstraintType) == 0 ) {
+                this->getConstraintPtr()->Type = Distance;
+                this->getConstraintPtr()->First    = FirstIndex;
+                this->getConstraintPtr()->FirstPos = (Sketcher::PointPos) FirstPos;
+                this->getConstraintPtr()->Second   = SecondIndex;
+                this->getConstraintPtr()->Value    = Value;
+                return 0;
+            }
         }
     }
     PyErr_Clear();
@@ -251,7 +263,6 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     "-- empty parameter list\n"
     "-- Constraint type and index\n");
     return -1;
-
 }
 
 // returns a string which represents the object e.g. when printed in python
