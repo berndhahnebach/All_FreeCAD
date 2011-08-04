@@ -138,6 +138,8 @@ View3DInventorPy::View3DInventorPy(View3DInventor *vi)
 
 View3DInventorPy::~View3DInventorPy()
 {
+    for (std::list<PyObject*>::iterator it = callbacks.begin(); it != callbacks.end(); ++it)
+        Py_DECREF(*it);
 }
 
 Py::Object View3DInventorPy::repr()
@@ -1418,6 +1420,8 @@ Py::Object View3DInventorPy::addEventCallback(const Py::Tuple& args)
         }
 
         _view->getViewer()->addEventCallback(eventId, View3DInventorPy::eventCallback, method);
+        callbacks.push_back(method);
+        Py_INCREF(method);
         return Py::Callable(method, false);
     }
     catch (const Py::Exception&) {
@@ -1444,6 +1448,8 @@ Py::Object View3DInventorPy::removeEventCallback(const Py::Tuple& args)
         }
 
         _view->getViewer()->removeEventCallback(eventId, View3DInventorPy::eventCallback, method);
+        callbacks.remove(method);
+        Py_DECREF(method);
         return Py::None();
     }
     catch (const Py::Exception&) {
@@ -1830,8 +1836,9 @@ Py::Object View3DInventorPy::addEventCallbackPivy(const Py::Tuple& args)
             View3DInventorPy::eventCallbackPivyEx :
             View3DInventorPy::eventCallbackPivy);
         _view->getViewer()->addEventCallback(*eventId, callback, method);
+        callbacks.push_back(method);
         Py_INCREF(method);
-        return Py::Callable(method, true);
+        return Py::Callable(method, false);
     }
     catch (const Py::Exception&) {
         throw;
@@ -1871,6 +1878,8 @@ Py::Object View3DInventorPy::removeEventCallbackPivy(const Py::Tuple& args)
             View3DInventorPy::eventCallbackPivyEx :
             View3DInventorPy::eventCallbackPivy);
         _view->getViewer()->removeEventCallback(*eventId, callback, method);
+        callbacks.remove(method);
+        Py_DECREF(method);
         return Py::Callable(method, false);
     }
     catch (const Py::Exception&) {

@@ -101,6 +101,7 @@ private:
     static PyObject *method_varargs_ext_handler(PyObject *_self, PyObject *_args);
 
 private:
+    std::list<PyObject*> callbacks;
     View3DInventor* _view;
     friend class View3DInventor;
 };
