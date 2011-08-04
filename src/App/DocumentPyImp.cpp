@@ -95,17 +95,31 @@ PyObject*  DocumentPy::restore(PyObject * args)
 PyObject*  DocumentPy::addObject(PyObject *args)
 {
     char *sType,*sName=0;
-    if (!PyArg_ParseTuple(args, "s|s", &sType,&sName))     // convert args: Python->C
+    PyObject* obj=0;
+    PyObject* view=0;
+    if (!PyArg_ParseTuple(args, "s|sOO", &sType,&sName,&obj,&view))     // convert args: Python->C
         return NULL;                                         // NULL triggers exception 
 
     DocumentObject *pcFtr;
 
     pcFtr = getDocumentPtr()->addObject(sType,sName);
-
-    if(pcFtr)
+    if (pcFtr) {
+        // Allows to hide the handling with Proxy in client python code
+        if (obj) {
+            try {
+                Py::Object o = Py::asObject(pcFtr->getPyObject());
+                o.setAttr("Proxy", Py::Object(obj));
+                if (view) {
+                    o.getAttr("ViewObject").setAttr("Proxy", Py::Object(obj));
+                }
+            }
+            catch (Py::Exception& e) {
+                e.clear();
+            }
+        }
         return pcFtr->getPyObject();
-    else
-    {
+    }
+    else {
         std::stringstream str;
         str << "No document object found of type '" << sType << "'" << std::ends;
         throw Py::Exception(PyExc_Exception,str.str());
