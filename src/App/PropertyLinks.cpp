@@ -28,7 +28,7 @@
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
-
+#include <CXX/Objects.hxx>
 #include <Base/Exception.h>
 #include <Base/Reader.h>
 #include <Base/Writer.h>
@@ -372,28 +372,32 @@ void PropertyLinkList::setValues(const std::vector<DocumentObject*>& lValue)
 
 PyObject *PropertyLinkList::getPyObject(void)
 {
-    PyObject* list = PyList_New(	getSize() );
-    for(int i = 0;i<getSize(); i++)
-        PyList_SetItem( list, i, _lValueList[i]->getPyObject());
-    return list;
+    int count = getSize();
+    Py::Tuple tuple(count);
+    for (int i = 0;i<count; i++) {
+        tuple.setItem(i, Py::asObject(_lValueList[i]->getPyObject()));
+    }
+
+    return Py::new_reference_to(tuple);
 }
 
 void PropertyLinkList::setPyObject(PyObject *value)
 {
-    if (PyList_Check(value)) {
-        Py_ssize_t nSize = PyList_Size(value);
+    if (PyTuple_Check(value) || PyList_Check(value)) {
+        Py::Sequence list(value);
+        Py::Sequence::size_type size = list.size();
         std::vector<DocumentObject*> values;
-        values.resize(nSize);
+        values.resize(size);
 
-        for (Py_ssize_t i=0; i<nSize;++i) {
-            PyObject* item = PyList_GetItem(value, i);
-            if (!PyObject_TypeCheck(item, &(DocumentObjectPy::Type))) {
+        for (Py::Sequence::size_type i=0; i < size; i++) {
+            Py::Object item = list[i];
+            if (!PyObject_TypeCheck(*item, &(DocumentObjectPy::Type))) {
                 std::string error = std::string("type in list must be 'DocumentObject', not ");
-                error += item->ob_type->tp_name;
+                error += (*item)->ob_type->tp_name;
                 throw Py::TypeError(error);
             }
 
-            values[i] = static_cast<DocumentObjectPy*>(item)->getDocumentObjectPtr();
+            values[i] = static_cast<DocumentObjectPy*>(*item)->getDocumentObjectPtr();
         }
 
         setValues(values);
@@ -533,52 +537,52 @@ void PropertyLinkSubList::setValues(const std::vector<DocumentObject*>& lValue,c
 
 PyObject *PropertyLinkSubList::getPyObject(void)
 {
-    Py::List list(getSize());
+    Py::Tuple tuple(getSize());
     for(int i = 0;i<getSize(); i++){
         Py::Tuple tup(2);
         tup[0] = Py::Object(_lValueList[i]->getPyObject());
         tup[1] = Py::String(_lSubList[i].c_str());
-        list[i] = tup;
+        tuple[i] = tup;
     }
-    return Py::new_reference_to(list);
+    return Py::new_reference_to(tuple);
 
 }
 
 void PropertyLinkSubList::setPyObject(PyObject *value)
 {
-    if (PyList_Check(value)) {
-        Py_ssize_t nSize = PyList_Size(value);
-        std::vector<DocumentObject*> values(nSize);
-        std::vector<std::string>     SubNames(nSize);
-        values.resize(nSize);
+    if (PyTuple_Check(value) || PyList_Check(value)) {
+        Py::Sequence list(value);
+        Py::Sequence::size_type size = list.size();
 
-        for (Py_ssize_t i=0; i<nSize;++i) {
-            PyObject* item = PyList_GetItem(value, i);
-            if (Py::Object(item).isTuple()) {
+        std::vector<DocumentObject*> values;
+        values.reserve(size);
+        std::vector<std::string>     SubNames;
+        SubNames.reserve(size);
+
+        for (Py::Sequence::size_type i=0; i < size; i++) {
+            Py::Object item = list[i];
+            if (item.isTuple()) {
                 Py::Tuple tup(item);
                 if (PyObject_TypeCheck(tup[0].ptr(), &(DocumentObjectPy::Type))){
-                    DocumentObjectPy  *pcObj = (DocumentObjectPy*)tup[0].ptr();
-                    values[i]= pcObj->getDocumentObjectPtr();
+                    DocumentObjectPy  *pcObj;
+                    pcObj = static_cast<DocumentObjectPy*>(tup[0].ptr());
+                    values.push_back(pcObj->getDocumentObjectPtr());
                     if (Py::Object(tup[1].ptr()).isString()){
-                        SubNames[i] = Py::String(tup[1].ptr());
+                        SubNames.push_back(Py::String(tup[1].ptr()));
                     }
                 }
             }
-
+            else if (PyObject_TypeCheck(*item, &(DocumentObjectPy::Type))) {
+                DocumentObjectPy *pcObj;
+                pcObj = static_cast<DocumentObjectPy*>(*item);
+                values.push_back(pcObj->getDocumentObjectPtr());
+            }
+            else if (item.isString()) {
+                SubNames.push_back(Py::String(item));
+            }
         }
 
         setValues(values,SubNames);
-    }
-    else if(Py::Object(value).isTuple()) {
-        Py::Tuple tup(value);
-        DocumentObjectPy *pcObject=0;
-        std::string SubName;
-        if (PyObject_TypeCheck(tup[0].ptr(), &(DocumentObjectPy::Type)))
-            pcObject = static_cast<DocumentObjectPy*>(value);
-        if (Py::Object(tup[1].ptr()).isString())
-            SubName = Py::String(tup[1].ptr());
-        if (pcObject)
-            setValue(pcObject->getDocumentObjectPtr(),SubName.c_str());
     }
     else {
         std::string error = std::string("type must be 'DocumentObject' or list of 'DocumentObject', not ");
