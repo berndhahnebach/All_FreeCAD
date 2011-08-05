@@ -373,12 +373,16 @@ void PropertyLinkList::setValues(const std::vector<DocumentObject*>& lValue)
 PyObject *PropertyLinkList::getPyObject(void)
 {
     int count = getSize();
-    Py::Tuple tuple(count);
+#if 0//FIXME: Should switch to tuple
+    Py::Tuple sequence(count);
+#else
+    Py::List sequence(count);
+#endif
     for (int i = 0;i<count; i++) {
-        tuple.setItem(i, Py::asObject(_lValueList[i]->getPyObject()));
+        sequence.setItem(i, Py::asObject(_lValueList[i]->getPyObject()));
     }
 
-    return Py::new_reference_to(tuple);
+    return Py::new_reference_to(sequence);
 }
 
 void PropertyLinkList::setPyObject(PyObject *value)
@@ -537,14 +541,19 @@ void PropertyLinkSubList::setValues(const std::vector<DocumentObject*>& lValue,c
 
 PyObject *PropertyLinkSubList::getPyObject(void)
 {
-    Py::Tuple tuple(getSize());
-    for(int i = 0;i<getSize(); i++){
+    int count = getSize();
+#if 0//FIXME: Should switch to tuple
+    Py::Tuple sequence(count);
+#else
+    Py::List sequence(count);
+#endif
+    for(int i = 0;i<count; i++){
         Py::Tuple tup(2);
         tup[0] = Py::Object(_lValueList[i]->getPyObject());
         tup[1] = Py::String(_lSubList[i].c_str());
-        tuple[i] = tup;
+        sequence[i] = tup;
     }
-    return Py::new_reference_to(tuple);
+    return Py::new_reference_to(sequence);
 
 }
 
