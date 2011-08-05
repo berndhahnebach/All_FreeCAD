@@ -107,11 +107,19 @@ PyObject*  DocumentPy::addObject(PyObject *args)
         // Allows to hide the handling with Proxy in client python code
         if (obj) {
             try {
-                Py::Object o = Py::asObject(pcFtr->getPyObject());
-                o.setAttr("Proxy", Py::Object(obj));
-                if (view) {
-                    o.getAttr("ViewObject").setAttr("Proxy", Py::Object(obj));
+                // the python binding class to the document object
+                Py::Object pyftr = Py::asObject(pcFtr->getPyObject());
+                // this are the python classes with the implementation
+                Py::Object pyobj(obj);
+                Py::Object pyvp(view);
+                if (pyobj.hasAttr("__object__")) {
+                    pyobj.setAttr("__object__", pyftr);
                 }
+                pyftr.setAttr("Proxy", pyobj);
+                if (view) {
+                    pyftr.getAttr("ViewObject").setAttr("Proxy", pyvp);
+                }
+                return Py::new_reference_to(Py::None());
             }
             catch (Py::Exception& e) {
                 e.clear();

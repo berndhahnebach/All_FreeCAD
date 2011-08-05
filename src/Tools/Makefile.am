@@ -2,8 +2,13 @@ if BUILD_TEMPLATE
 SUBDIRS=_TEMPLATE_
 endif
 
+# Let it go to Draft module
+datadir = $(prefix)/Mod/Draft
+
+data_DATA = DocumentObject.py 
 
 EXTRA_DIST = \
+		$(data_DATA) \
 		fcbt/__init__.py \
 		fcbt/CreateModule.py \
 		fcbt/DistBin.py \
