@@ -6,6 +6,8 @@ class DocumentObject(object):
         self.__object__=None
     def execute(self):
         raise Exception("Not yet implemented")
+    #def onChanged(self,prop):
+    #    return None
     #def __getattr__(self, attr):
     #    if hasattr(self.__object__,attr):
     #        return getattr(self.__object__,attr)
@@ -67,6 +69,93 @@ class DocumentObject(object):
     @property
     def OutList(self):
         return self.__object__.OutList
+
+class ViewProvider(object):
+    def __init__(self):
+        self.__object__=None
+    #def getIcon(self):
+    #    return ""
+    #def claimChildren(self):
+    #    return []
+    #def setEdit(self,mode):
+    #    return False
+    #def unsetEdit(self,mode):
+    #    return False
+    #def attach(self):
+    #    return None
+    #def updateData(self, prop):
+    #    return None
+    #def onChanged(self, prop):
+    #    return None
+    def addDisplayMode(self,node,mode):
+        self.__object__.addDisplayMode(node,mode)
+    #def getDefaultDisplayMode(self):
+    #    return ""
+    #def getDisplayModes(self):
+    #    return []
+    #def setDisplayMode(self):
+    #    return None
+    def addProperty(self,type,name='',group='',doc='',attr=0,readonly=False,hidden=False):
+        self.__object__.addProperty(type,name,group,doc,attr,readonly,hidden)
+    def update(self):
+        self.__object__.update()
+    def show(self):
+        self.__object__.show()
+    def hide(self):
+        self.__object__.hide()
+    def isVisible(self):
+        return self.__object__.isVisible()
+    def toString(self):
+        return self.__object__.toString()
+    def startEditing(self,mode=0):
+        return self.__object__.startEditing(mode)
+    def finishEditing(self):
+        self.__object__.finishEditing()
+    def isEditing(self):
+        self.__object__.isEditing()
+    def setTransformation(self,trsf):
+        return self.__object__.setTransformation(trsf)
+    def supportedProperties(self):
+        return self.__object__.supportedProperties()
+    def isDerivedFrom(self, obj):
+        return self.__object__.isDerivedFrom(obj)
+    def getAllDerivedFrom(self):
+        return self.__object__.getAllDerivedFrom()
+    def getProperty(self,attr):
+        return self.__object__.getPropertyByName(attr)
+    def getTypeOfProperty(self,attr):
+        return self.__object__.getTypeOfProperty(attr)
+    def getGroupOfProperty(self,attr):
+        return self.__object__.getGroupOfProperty(attr)
+    def getDocumentationOfProperty(self,attr):
+        return self.__object__.getDocumentationOfProperty(attr)
+    @property
+    def Annotation(self):
+        return self.__object__.Annotation
+    @property
+    def RootNode(self):
+        return self.__object__.RootNode
+    @property
+    def DisplayModes(self):
+        return self.__object__.listDisplayModes()
+    @property
+    def PropertiesList(self):
+        return self.__object__.PropertiesList
+    @property
+    def Type(self):
+        return self.__object__.Type
+    @property
+    def Module(self):
+        return self.__object__.Module
+    @property
+    def Content(self):
+        return self.__object__.Content
+    @property
+    def MemSize(self):
+        return self.__object__.MemSize
+    @property
+    def Object(self):
+        return self.__object__.Object
 
 def testMethod():
     class MyFeature(DocumentObject):

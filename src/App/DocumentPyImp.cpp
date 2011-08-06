@@ -111,12 +111,15 @@ PyObject*  DocumentPy::addObject(PyObject *args)
                 Py::Object pyftr = Py::asObject(pcFtr->getPyObject());
                 // this are the python classes with the implementation
                 Py::Object pyobj(obj);
-                Py::Object pyvp(view);
                 if (pyobj.hasAttr("__object__")) {
                     pyobj.setAttr("__object__", pyftr);
                 }
                 pyftr.setAttr("Proxy", pyobj);
                 if (view) {
+                    Py::Object pyvp(view);
+                    if (pyvp.hasAttr("__object__")) {
+                        pyvp.setAttr("__object__", pyftr.getAttr("ViewObject"));
+                    }
                     pyftr.getAttr("ViewObject").setAttr("Proxy", pyvp);
                 }
                 return Py::new_reference_to(Py::None());
