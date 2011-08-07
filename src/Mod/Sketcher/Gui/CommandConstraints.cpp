@@ -40,6 +40,7 @@
 
 using namespace std;
 using namespace SketcherGui;
+using namespace Sketcher;
 
 bool isCreateConstraintActive(Gui::Document *doc)
 {
@@ -52,6 +53,91 @@ bool isCreateConstraintActive(Gui::Document *doc)
                     return true;
     return false;
 }
+
+namespace SketcherGui {
+
+struct SketchSelection{
+    enum GeoType {
+        Point,
+        Line,
+        Circle,
+        Arc
+    };
+    int setUp(void);
+    struct SketchSelectionItem {
+        GeoType type;
+        int GeoId;
+        bool Extern;
+    };
+    std::list<SketchSelectionItem> Items;
+    QString ErrorMsg;
+};
+
+int SketchSelection::setUp(void)
+{
+    std::vector<Gui::SelectionObject> selection = Gui::Selection().getSelectionEx();
+
+    Sketcher::SketchObject *SketchObj=0;
+    Part::Feature          *SupportObj=0;
+    std::vector<std::string> SketchSubNames;
+    std::vector<std::string> SupportSubNames;
+
+    // only one sketch with its subelements are allowed to be selected
+    if (selection.size() == 1) {
+        // if one selectetd, only sketch allowed. should be done by activity of command
+        if(!selection[0].getObject()->getTypeId().isDerivedFrom(Sketcher::SketchObject::getClassTypeId()))
+        {
+            ErrorMsg = QObject::tr("Only sketch and its support is allowed to select");
+            return -1;
+        }
+
+        SketchObj = dynamic_cast<Sketcher::SketchObject*>(selection[0].getObject());
+        SketchSubNames = selection[0].getSubNames();
+    }else if(selection.size() == 2){
+        if(selection[0].getObject()->getTypeId().isDerivedFrom(Sketcher::SketchObject::getClassTypeId())){
+            SketchObj = dynamic_cast<Sketcher::SketchObject*>(selection[0].getObject());
+            // check if the none sketch object is the support of the sketch
+            if(selection[1].getObject() != SketchObj->Support.getValue()){
+                ErrorMsg = QObject::tr("Only sketch and its support is allowed to select");
+                return-1;
+            }
+            // assume always a Part::Feature derived object as support
+            assert(selection[1].getObject()->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()));
+            SupportObj = dynamic_cast<Part::Feature*>(selection[1].getObject());
+            SketchSubNames  = selection[0].getSubNames();
+            SupportSubNames = selection[1].getSubNames();
+
+        }else if(selection[1].getObject()->getTypeId().isDerivedFrom(Sketcher::SketchObject::getClassTypeId())){
+            SketchObj = dynamic_cast<Sketcher::SketchObject*>(selection[1].getObject());
+            // check if the none sketch object is the support of the sketch
+            if(selection[0].getObject() != SketchObj->Support.getValue()){
+                ErrorMsg = QObject::tr("Only sketch and its support is allowed to select");
+                return -1;
+            }
+            // assume always a Part::Feature derived object as support
+            assert(selection[0].getObject()->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()));
+            SupportObj = dynamic_cast<Part::Feature*>(selection[0].getObject());
+            SketchSubNames  = selection[1].getSubNames();
+            SupportSubNames = selection[0].getSubNames();
+
+        }else {
+            ErrorMsg = QObject::tr("One of the selected has to be on the sketch");
+            return -1;
+        }
+    }
+
+    // colect Sketch geos
+    for ( std::vector<std::string>::const_iterator it= SketchSubNames.begin();it!=SketchSubNames.end();++it){
+
+
+    }
+
+
+    return Items.size();
+}
+
+} // namespace SketcherGui
+
 
 
 /* Constrain commands =======================================================*/
@@ -381,15 +467,24 @@ CmdSketcherConstrainDistance::CmdSketcherConstrainDistance()
 
 void CmdSketcherConstrainDistance::activated(int iMsg)
 {
+#if 0
+    
+    SketchSelection selection;
+
+    int num = selection.setUp();
+
+
+
+#else
     // get the selection 
     std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
 
     // only one sketch with its subelements are allowed to be selected
-    if (selection.size() != 1) {
-        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
-            QObject::tr("Select vertexes from the sketch."));
-        return;
-    }
+	if (selection.size() != 1) {
+	    QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+	    QObject::tr("Select vertexes from the sketch."));
+	    return;
+	}
 
     // get the needed lists and objects
     const std::vector<std::string> &SubNames = selection[0].getSubNames();
@@ -402,7 +497,7 @@ void CmdSketcherConstrainDistance::activated(int iMsg)
         return;
     }
 
-    int GeoId1=-1, VtId1=-1, GeoId2=-1, VtId2=-1;
+    int GeoId1=Constraint::GeoUndef, VtId1=-1, GeoId2=Constraint::GeoUndef, VtId2=-1;
     if (SubNames.size() >= 1) {
         if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge") 
             GeoId1 = std::atoi(SubNames[0].substr(4,4000).c_str());
@@ -481,6 +576,7 @@ void CmdSketcherConstrainDistance::activated(int iMsg)
     QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
         QObject::tr("Select exactly one line or one point and one line or two points from the sketch."));
     return;
+#endif
 }
 
 bool CmdSketcherConstrainDistance::isActive(void)

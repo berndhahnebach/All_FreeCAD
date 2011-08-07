@@ -39,16 +39,18 @@ using namespace Base;
 
 TYPESYSTEM_SOURCE(Sketcher::Constraint, Base::Persistence)
 
+const int Constraint::GeoUndef = -2000;
 
 Constraint::Constraint()
 : Type(None),
   Name(""),
   Value(0.0),
-  First(-1),
+  First(GeoUndef),
   FirstPos(none),
-  Second(-1),
+  Second(GeoUndef),
   SecondPos(none),
-  Extern(-1),
+  Third(GeoUndef),
+  ThirdPos(none),
   LabelDistance(10.f)
 {
 }
@@ -61,7 +63,8 @@ Constraint::Constraint(const Constraint& from)
   FirstPos(from.FirstPos),
   Second(from.Second),
   SecondPos(from.SecondPos),
-  Extern(from.Extern),
+  Third(from.Third),
+  ThirdPos(from.ThirdPos),
   LabelDistance(from.LabelDistance)
 {
 }
@@ -95,7 +98,8 @@ void Constraint::Save (Writer &writer) const
     << "FirstPos=\""      <<  (int)  FirstPos << "\" "
     << "Second=\""        <<  Second          << "\" "
     << "SecondPos=\""     <<  (int) SecondPos << "\" "
-    << "Extern=\""        <<  Extern          << "\" "
+    << "Third=\""         <<  Third          << "\" "
+    << "ThirdPos=\""      <<  (int) ThirdPos << "\" "
     << "LabelDistance=\"" << LabelDistance<< "\" />"
     << std::endl;
 }
@@ -110,11 +114,14 @@ void Constraint::Restore(XMLReader &reader)
     FirstPos  = (PointPos)  reader.getAttributeAsInteger("FirstPos");
     Second    = reader.getAttributeAsInteger("Second");
     SecondPos = (PointPos)  reader.getAttributeAsInteger("SecondPos");
-    Extern    = reader.getAttributeAsInteger("Extern");
+
+    // read the third geo group if present
+    if (reader.hasAttribute("Third"))
+        Second    = reader.getAttributeAsInteger("Third");
+        SecondPos = (PointPos)  reader.getAttributeAsInteger("ThirdPos");
 
     // Read the distance a constraint label has been moved
     if (reader.hasAttribute("LabelDistance"))
-        LabelDistance = reader.getAttributeAsFloat("LabelDistance");
-    else
-        LabelDistance = 0.0;
+        LabelDistance = (float)reader.getAttributeAsFloat("LabelDistance");
+
 }

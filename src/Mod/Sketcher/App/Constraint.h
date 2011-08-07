@@ -49,7 +49,7 @@ enum ConstraintType {
 /// define if you want to use the end or start point
 enum PointPos { none, start, end, mid };
 
-class Constraint :public Base::Persistence
+class AppSketcherExport Constraint :public Base::Persistence
 {
     TYPESYSTEM_HEADER();
 
@@ -58,6 +58,8 @@ public:
     Constraint();
     Constraint(const Constraint&);
     virtual Constraint *clone(void)const;
+
+    static const int GeoUndef;
 
     // from base class
     virtual unsigned int getMemSize(void) const;
@@ -76,7 +78,8 @@ public:
     PointPos FirstPos;
     int Second;
     PointPos SecondPos;
-    int Extern;
+    int Third;
+    PointPos ThirdPos;
     float LabelDistance;
 };
 

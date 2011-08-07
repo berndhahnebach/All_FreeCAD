@@ -430,7 +430,7 @@ int Sketch::addConstraint(const Constraint *constraint)
         case DistanceX:
             if (constraint->FirstPos == none) // horizontal length of a line
                 rtn = addDistanceXConstraint(constraint->First,constraint->Value);
-            else if (constraint->Second == -1) // point on fixed x-coordinate
+            else if (constraint->Second == Constraint::GeoUndef) // point on fixed x-coordinate
                 rtn = addCoordinateXConstraint(constraint->First,constraint->FirstPos,constraint->Value);
             else if (constraint->SecondPos != none) // point to point horizontal distance
                 rtn = addDistanceXConstraint(constraint->First,constraint->FirstPos,
@@ -439,21 +439,21 @@ int Sketch::addConstraint(const Constraint *constraint)
         case DistanceY:
             if (constraint->FirstPos == none) // vertical length of a line
                 rtn = addDistanceYConstraint(constraint->First,constraint->Value);
-            else if (constraint->Second == -1) // point on fixed y-coordinate
+            else if (constraint->Second == Constraint::GeoUndef) // point on fixed y-coordinate
                 rtn = addCoordinateYConstraint(constraint->First,constraint->FirstPos,constraint->Value);
             else if (constraint->SecondPos != none) // point to point vertical distance
                 rtn = addDistanceYConstraint(constraint->First,constraint->FirstPos,
                                              constraint->Second,constraint->SecondPos,constraint->Value);
             break;
         case Horizontal:
-            if (constraint->Second == -1) // horizontal line
+            if (constraint->Second == Constraint::GeoUndef) // horizontal line
                 rtn = addHorizontalConstraint(constraint->First);
             else // two points on the same horizontal line
                 rtn = addHorizontalConstraint(constraint->First,constraint->FirstPos,
                                               constraint->Second,constraint->SecondPos);
             break;
         case Vertical:
-            if (constraint->Second == -1) // vertical line
+            if (constraint->Second == Constraint::GeoUndef) // vertical line
                 rtn = addVerticalConstraint(constraint->First);
             else // two points on the same vertical line
                 rtn = addVerticalConstraint(constraint->First,constraint->FirstPos,
@@ -472,7 +472,7 @@ int Sketch::addConstraint(const Constraint *constraint)
             if (constraint->SecondPos != none) // tangency at common point
                 rtn = addTangentConstraint(constraint->First,constraint->FirstPos,
                                            constraint->Second,constraint->SecondPos);
-            else if (constraint->Second != -1) {
+            else if (constraint->Second != Constraint::GeoUndef) {
                 if (constraint->FirstPos != none) // "First" is a tangency point
                     rtn = addTangentConstraint(constraint->First,constraint->FirstPos,
                                                constraint->Second);
@@ -485,7 +485,7 @@ int Sketch::addConstraint(const Constraint *constraint)
                 rtn = addDistanceConstraint(constraint->First,constraint->FirstPos,
                                             constraint->Second,constraint->SecondPos,
                                             constraint->Value);
-            else if (constraint->Second != -1) {
+            else if (constraint->Second != Constraint::GeoUndef) {
                 if (constraint->FirstPos != none) // point to line distance
                     rtn = addDistanceConstraint(constraint->First,constraint->FirstPos,
                                                 constraint->Second,constraint->Value);
@@ -499,9 +499,9 @@ int Sketch::addConstraint(const Constraint *constraint)
             if (constraint->SecondPos != none) // angle between two lines (with explicit start points)
                 rtn = addAngleConstraint(constraint->First,constraint->FirstPos,
                                          constraint->Second,constraint->SecondPos,constraint->Value);
-            else if (constraint->Second != -1) // angle between two lines
+            else if (constraint->Second != Constraint::GeoUndef) // angle between two lines
                 rtn = addAngleConstraint(constraint->First,constraint->Second,constraint->Value);
-            else if (constraint->First != -1) // orientation angle of a line
+            else if (constraint->First != Constraint::GeoUndef) // orientation angle of a line
                 rtn = addAngleConstraint(constraint->First,constraint->Value);
             break;
         case Radius:
