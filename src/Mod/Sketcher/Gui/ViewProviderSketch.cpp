@@ -648,7 +648,7 @@ void ViewProviderSketch::moveConstraint(int constNum, const Base::Vector2D &toPo
         if (Constr->SecondPos != none) { // point to point distance
             p1 = edit->ActSketch.getPoint(Constr->First, Constr->FirstPos);
             p2 = edit->ActSketch.getPoint(Constr->Second, Constr->SecondPos);
-        } else if (Constr->Second != -1) { // point to line distance
+        } else if (Constr->Second != Constraint::GeoUndef) { // point to line distance
             p1 = edit->ActSketch.getPoint(Constr->First, Constr->FirstPos);
             const Part::Geometry *geo = geomlist[Constr->Second];
             if (geo->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
@@ -662,7 +662,7 @@ void ViewProviderSketch::moveConstraint(int constNum, const Base::Vector2D &toPo
                 return;
         } else if (Constr->FirstPos != none) {
             p2 = edit->ActSketch.getPoint(Constr->First, Constr->FirstPos);
-        } else if (Constr->First != -1) {
+        } else if (Constr->First != Constraint::GeoUndef) {
             const Part::Geometry *geo = geomlist[Constr->First];
             if (geo->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
                 const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment *>(geo);
@@ -710,7 +710,7 @@ void ViewProviderSketch::moveConstraint(int constNum, const Base::Vector2D &toPo
         assert(Constr->First < int(geomlist.size()));
 
         Base::Vector3d p0(0.,0.,0.);
-        if (Constr->Second != -1) { // line to line angle
+        if (Constr->Second != Constraint::GeoUndef) { // line to line angle
             const Part::Geometry *geo1 = geomlist[Constr->First];
             const Part::Geometry *geo2 = geomlist[Constr->Second];
             if (geo1->getTypeId() != Part::GeomLineSegment::getClassTypeId() ||
@@ -737,7 +737,7 @@ void ViewProviderSketch::moveConstraint(int constNum, const Base::Vector2D &toPo
                 double y = (dir1.y*c2 - dir2.y*c1)/det;
                 p0 = Base::Vector3d(x,y,0);
             }
-        } else if (Constr->First != -1) { // line angle
+        } else if (Constr->First != Constraint::GeoUndef) { // line angle
             const Part::Geometry *geo = geomlist[Constr->First];
             if (geo->getTypeId() != Part::GeomLineSegment::getClassTypeId())
                 return;
@@ -1374,7 +1374,7 @@ Restart:
                             pnt1 = getSketchObject()->getPoint(Constr->First, Constr->FirstPos);
                             pnt2 = getSketchObject()->getPoint(Constr->Second, Constr->SecondPos);
                         }
-                    } else if (Constr->Second != -1) { // point to line distance
+                    } else if (Constr->Second != Constraint::GeoUndef) { // point to line distance
                         if (temp) {
                             pnt1 = edit->ActSketch.getPoint(Constr->First, Constr->FirstPos);
                         } else {
@@ -1396,7 +1396,7 @@ Restart:
                         } else {
                             pnt2 = getSketchObject()->getPoint(Constr->First, Constr->FirstPos);
                         }
-                    } else if (Constr->First != -1) {
+                    } else if (Constr->First != Constraint::GeoUndef) {
                         const Part::Geometry *geo = (*geomlist)[Constr->First];
                         if (geo->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
                             const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment *>(geo);
@@ -1579,7 +1579,7 @@ Restart:
 
                     SbVec3f p0;
                     double startangle,range,endangle;
-                    if (Constr->Second != -1) {
+                    if (Constr->Second != Constraint::GeoUndef) {
                         const Part::Geometry *geo1 = (*geomlist)[Constr->First];
                         const Part::Geometry *geo2 = (*geomlist)[Constr->Second];
                         if (geo1->getTypeId() != Part::GeomLineSegment::getClassTypeId() ||
@@ -1612,7 +1612,7 @@ Restart:
                                       dir1.x*dir2.x+dir1.y*dir2.y);
                         endangle = startangle + range;
 
-                    } else if (Constr->First != -1) {
+                    } else if (Constr->First != Constraint::GeoUndef) {
                         const Part::Geometry *geo = (*geomlist)[Constr->First];
                         if (geo->getTypeId() != Part::GeomLineSegment::getClassTypeId())
                             break;
@@ -1696,7 +1696,7 @@ Restart:
                     assert(Constr->First < int(geomlist->size()));
 
                     Base::Vector3d pnt1(0.,0.,0.), pnt2(0.,0.,0.);
-                    if (Constr->First != -1) {
+                    if (Constr->First != Constraint::GeoUndef) {
                         const Part::Geometry *geo = (*geomlist)[Constr->First];
 
                         if (geo->getTypeId() == Part::GeomArcOfCircle::getClassTypeId()) {
