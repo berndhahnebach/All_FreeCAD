@@ -1,15 +1,25 @@
 #add_defintions(-D_FC_GUI_ENABLED_)
 #add_defintions(-DFREECADMAINPY)
 
-include_directories(
-    ${Boost_INCLUDE_DIRS}
-    ${COIN3D_INCLUDE_DIR}
-    ${ZLIB_INCLUDE_DIR}
-    ${SOQT_INCLUDE_DIR}
-    ${QT_INCLUDE_DIR}
-    ${PYTHON_INCLUDE_PATH}
-    ${XERCESC_INCLUDE_DIR}
-)
+if(FREECAD_BUILD_GUI)
+	include_directories(
+		${Boost_INCLUDE_DIRS}
+		${COIN3D_INCLUDE_DIR}
+		${ZLIB_INCLUDE_DIR}
+		${SOQT_INCLUDE_DIR}
+		${QT_INCLUDE_DIR}
+		${PYTHON_INCLUDE_PATH}
+		${XERCESC_INCLUDE_DIR}
+	)
+else(FREECAD_BUILD_GUI)
+	include_directories(
+		${Boost_INCLUDE_DIRS}
+		${ZLIB_INCLUDE_DIR}
+		${QT_INCLUDE_DIR}
+		${PYTHON_INCLUDE_PATH}
+		${XERCESC_INCLUDE_DIR}
+	)
+endif(FREECAD_BUILD_GUI)
 
 ######################## FreeCADMain ########################
 if(FREECAD_BUILD_GUI)
