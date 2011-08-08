@@ -480,11 +480,11 @@ void CmdSketcherConstrainDistance::activated(int iMsg)
     std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
 
     // only one sketch with its subelements are allowed to be selected
-	if (selection.size() != 1) {
-	    QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
-	    QObject::tr("Select vertexes from the sketch."));
-	    return;
-	}
+    if (selection.size() != 1) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select vertexes from the sketch."));
+        return;
+    }
 
     // get the needed lists and objects
     const std::vector<std::string> &SubNames = selection[0].getSubNames();
@@ -1278,7 +1278,7 @@ CmdSketcherConstrainEqual::CmdSketcherConstrainEqual()
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
     sMenuText       = QT_TR_NOOP("Constrain equal");
-    sToolTipText    = QT_TR_NOOP("Create a equality constraint between two lines or between circles and arcs");
+    sToolTipText    = QT_TR_NOOP("Create an equality constraint between two lines or between circles and arcs");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Constraint_EqualLength";

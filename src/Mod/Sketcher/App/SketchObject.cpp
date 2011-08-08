@@ -66,7 +66,7 @@ App::DocumentObjectExecReturn *SketchObject::execute(void)
         // get the selected sub shape (a Face)
         const Part::TopoShape &shape = part->Shape.getShape();
         TopoDS_Shape sh = shape.getSubShape(sub[0].c_str());
-        const TopoDS_Face& face = TopoDS::Face(sh);
+        const TopoDS_Face &face = TopoDS::Face(sh);
         assert(!face.IsNull());
 
         BRepAdaptor_Surface adapt(face);
