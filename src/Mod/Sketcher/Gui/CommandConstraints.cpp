@@ -159,7 +159,7 @@ CmdSketcherConstrainHorizontal::CmdSketcherConstrainHorizontal()
 
 void CmdSketcherConstrainHorizontal::activated(int iMsg)
 {
-    // get the selection 
+    // get the selection
     std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
 
     // only one sketch with its subelements are allowed to be selected
@@ -207,8 +207,8 @@ void CmdSketcherConstrainHorizontal::activated(int iMsg)
 
     // clear the selction (convenience)
     getSelection().clearSelection();
-    
-      
+
+
 }
 
 bool CmdSketcherConstrainHorizontal::isActive(void)
@@ -235,7 +235,7 @@ CmdSketcherConstrainVertical::CmdSketcherConstrainVertical()
 
 void CmdSketcherConstrainVertical::activated(int iMsg)
 {
-    // get the selection 
+    // get the selection
     std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
 
     // only one sketch with its subelements are allowed to be selected
@@ -308,7 +308,7 @@ CmdSketcherConstrainLock::CmdSketcherConstrainLock()
 
 void CmdSketcherConstrainLock::activated(int iMsg)
 {
-    // get the selection 
+    // get the selection
     std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
 
     // only one sketch with its subelements are allowed to be selected
@@ -385,7 +385,7 @@ CmdSketcherConstrainCoincident::CmdSketcherConstrainCoincident()
 
 void CmdSketcherConstrainCoincident::activated(int iMsg)
 {
-    // get the selection 
+    // get the selection
     std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
 
     // only one sketch with its subelements are allowed to be selected
@@ -408,16 +408,16 @@ void CmdSketcherConstrainCoincident::activated(int iMsg)
 
     int index1,index2;
     // get first vertex index
-    if (SubNames[0].size() > 6 && SubNames[0].substr(0,6) == "Vertex") 
+    if (SubNames[0].size() > 6 && SubNames[0].substr(0,6) == "Vertex")
         index1 = std::atoi(SubNames[0].substr(6,4000).c_str());
     else {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
             QObject::tr("Select exactly two vertexes from the sketch."));
         return;
     }
-        
+
     // get second vertex index
-    if (SubNames[1].size() > 6 && SubNames[1].substr(0,6) == "Vertex") 
+    if (SubNames[1].size() > 6 && SubNames[1].substr(0,6) == "Vertex")
         index2 = std::atoi(SubNames[1].substr(6,4000).c_str());
     else {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
@@ -468,7 +468,7 @@ CmdSketcherConstrainDistance::CmdSketcherConstrainDistance()
 void CmdSketcherConstrainDistance::activated(int iMsg)
 {
 #if 0
-    
+
     SketchSelection selection;
 
     int num = selection.setUp();
@@ -476,7 +476,7 @@ void CmdSketcherConstrainDistance::activated(int iMsg)
 
 
 #else
-    // get the selection 
+    // get the selection
     std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
 
     // only one sketch with its subelements are allowed to be selected
@@ -499,15 +499,15 @@ void CmdSketcherConstrainDistance::activated(int iMsg)
 
     int GeoId1=Constraint::GeoUndef, VtId1=-1, GeoId2=Constraint::GeoUndef, VtId2=-1;
     if (SubNames.size() >= 1) {
-        if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge") 
+        if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge")
             GeoId1 = std::atoi(SubNames[0].substr(4,4000).c_str());
-        else if (SubNames[0].size() > 6 && SubNames[0].substr(0,6) == "Vertex") 
+        else if (SubNames[0].size() > 6 && SubNames[0].substr(0,6) == "Vertex")
             VtId1 = std::atoi(SubNames[0].substr(6,4000).c_str());
     }
     if (SubNames.size() == 2) {
-        if (SubNames[1].size() > 4 && SubNames[1].substr(0,4) == "Edge") 
+        if (SubNames[1].size() > 4 && SubNames[1].substr(0,4) == "Edge")
             GeoId2 = std::atoi(SubNames[1].substr(4,4000).c_str());
-        else if (SubNames[1].size() > 6 && SubNames[1].substr(0,6) == "Vertex") 
+        else if (SubNames[1].size() > 6 && SubNames[1].substr(0,6) == "Vertex")
             VtId2 = std::atoi(SubNames[1].substr(6,4000).c_str());
     }
 
@@ -517,7 +517,7 @@ void CmdSketcherConstrainDistance::activated(int iMsg)
         Obj->getGeoVertexIndex(VtId2,GeoId2,PosId2);
         Base::Vector3d pnt1 = Obj->getPoint(GeoId1,PosId1);
         Base::Vector3d pnt2 = Obj->getPoint(GeoId2,PosId2);
- 
+
         openCommand("add point to point distance constraint");
         Gui::Command::doCommand(
             Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Distance',%d,%d,%d,%d,%f)) ",
@@ -603,7 +603,7 @@ CmdSketcherConstrainDistanceX::CmdSketcherConstrainDistanceX()
 
 void CmdSketcherConstrainDistanceX::activated(int iMsg)
 {
-    // get the selection 
+    // get the selection
     std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
 
     // only one sketch with its subelements are allowed to be selected
@@ -626,15 +626,15 @@ void CmdSketcherConstrainDistanceX::activated(int iMsg)
 
     int GeoId1=-1, VtId1=-1, GeoId2=-1, VtId2=-1;
     if (SubNames.size() >= 1) {
-        if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge") 
+        if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge")
             GeoId1 = std::atoi(SubNames[0].substr(4,4000).c_str());
-        else if (SubNames[0].size() > 6 && SubNames[0].substr(0,6) == "Vertex") 
+        else if (SubNames[0].size() > 6 && SubNames[0].substr(0,6) == "Vertex")
             VtId1 = std::atoi(SubNames[0].substr(6,4000).c_str());
     }
     if (SubNames.size() == 2) {
-        if (SubNames[1].size() > 4 && SubNames[1].substr(0,4) == "Edge") 
+        if (SubNames[1].size() > 4 && SubNames[1].substr(0,4) == "Edge")
             GeoId2 = std::atoi(SubNames[1].substr(4,4000).c_str());
-        else if (SubNames[1].size() > 6 && SubNames[1].substr(0,6) == "Vertex") 
+        else if (SubNames[1].size() > 6 && SubNames[1].substr(0,6) == "Vertex")
             VtId2 = std::atoi(SubNames[1].substr(6,4000).c_str());
     }
 
@@ -645,7 +645,7 @@ void CmdSketcherConstrainDistanceX::activated(int iMsg)
         Base::Vector3d pnt1 = Obj->getPoint(GeoId1,PosId1);
         Base::Vector3d pnt2 = Obj->getPoint(GeoId2,PosId2);
         double ActLength = pnt2.x-pnt1.x;
- 
+
         openCommand("add point to point horizontal distance constraint");
         Gui::Command::doCommand(
             Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('DistanceX',%d,%d,%d,%d,%f)) ",
@@ -717,7 +717,7 @@ CmdSketcherConstrainDistanceY::CmdSketcherConstrainDistanceY()
 
 void CmdSketcherConstrainDistanceY::activated(int iMsg)
 {
-    // get the selection 
+    // get the selection
     std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
 
     // only one sketch with its subelements are allowed to be selected
@@ -740,15 +740,15 @@ void CmdSketcherConstrainDistanceY::activated(int iMsg)
 
     int GeoId1=-1, VtId1=-1, GeoId2=-1, VtId2=-1;
     if (SubNames.size() >= 1) {
-        if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge") 
+        if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge")
             GeoId1 = std::atoi(SubNames[0].substr(4,4000).c_str());
-        else if (SubNames[0].size() > 6 && SubNames[0].substr(0,6) == "Vertex") 
+        else if (SubNames[0].size() > 6 && SubNames[0].substr(0,6) == "Vertex")
             VtId1 = std::atoi(SubNames[0].substr(6,4000).c_str());
     }
     if (SubNames.size() == 2) {
-        if (SubNames[1].size() > 4 && SubNames[1].substr(0,4) == "Edge") 
+        if (SubNames[1].size() > 4 && SubNames[1].substr(0,4) == "Edge")
             GeoId2 = std::atoi(SubNames[1].substr(4,4000).c_str());
-        else if (SubNames[1].size() > 6 && SubNames[1].substr(0,6) == "Vertex") 
+        else if (SubNames[1].size() > 6 && SubNames[1].substr(0,6) == "Vertex")
             VtId2 = std::atoi(SubNames[1].substr(6,4000).c_str());
     }
 
@@ -759,7 +759,7 @@ void CmdSketcherConstrainDistanceY::activated(int iMsg)
         Base::Vector3d pnt1 = Obj->getPoint(GeoId1,PosId1);
         Base::Vector3d pnt2 = Obj->getPoint(GeoId2,PosId2);
         double ActLength = pnt2.y-pnt1.y;
- 
+
         openCommand("add point to point vertical distance constraint");
         Gui::Command::doCommand(
             Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('DistanceY',%d,%d,%d,%d,%f)) ",
@@ -831,7 +831,7 @@ CmdSketcherConstrainParallel::CmdSketcherConstrainParallel()
 
 void CmdSketcherConstrainParallel::activated(int iMsg)
 {
-    // get the selection 
+    // get the selection
     std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
 
     // only one sketch with its subelements are allowed to be selected
@@ -852,7 +852,7 @@ void CmdSketcherConstrainParallel::activated(int iMsg)
     }
 
     int GeoId1,GeoId2;
-    if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge") 
+    if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge")
         GeoId1 = std::atoi(SubNames[0].substr(4,4000).c_str());
     else {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
@@ -860,7 +860,7 @@ void CmdSketcherConstrainParallel::activated(int iMsg)
         return;
     }
 
-    if (SubNames[1].size() > 4 && SubNames[1].substr(0,4) == "Edge") 
+    if (SubNames[1].size() > 4 && SubNames[1].substr(0,4) == "Edge")
         GeoId2 = std::atoi(SubNames[1].substr(4,4000).c_str());
     else {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
@@ -906,7 +906,7 @@ CmdSketcherConstrainPerpendicular::CmdSketcherConstrainPerpendicular()
 
 void CmdSketcherConstrainPerpendicular::activated(int iMsg)
 {
-    // get the selection 
+    // get the selection
     std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
 
     // only one sketch with its subelements are allowed to be selected
@@ -927,7 +927,7 @@ void CmdSketcherConstrainPerpendicular::activated(int iMsg)
     }
 
     int GeoId1,GeoId2;
-    if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge") 
+    if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge")
         GeoId1 = std::atoi(SubNames[0].substr(4,4000).c_str());
     else {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
@@ -935,7 +935,7 @@ void CmdSketcherConstrainPerpendicular::activated(int iMsg)
         return;
     }
 
-    if (SubNames[1].size() > 4 && SubNames[1].substr(0,4) == "Edge") 
+    if (SubNames[1].size() > 4 && SubNames[1].substr(0,4) == "Edge")
         GeoId2 = std::atoi(SubNames[1].substr(4,4000).c_str());
     else {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
@@ -981,7 +981,7 @@ CmdSketcherConstrainTangent::CmdSketcherConstrainTangent()
 
 void CmdSketcherConstrainTangent::activated(int iMsg)
 {
-    // get the selection 
+    // get the selection
     std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
 
     // only one sketch with its subelements are allowed to be selected
@@ -1082,7 +1082,7 @@ CmdSketcherConstrainRadius::CmdSketcherConstrainRadius()
 
 void CmdSketcherConstrainRadius::activated(int iMsg)
 {
-    // get the selection 
+    // get the selection
     std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
 
     // only one sketch with its subelements are allowed to be selected
@@ -1164,7 +1164,7 @@ CmdSketcherConstrainAngle::CmdSketcherConstrainAngle()
 
 void CmdSketcherConstrainAngle::activated(int iMsg)
 {
-    // get the selection 
+    // get the selection
     std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
 
     // only one sketch with its subelements are allowed to be selected
@@ -1186,10 +1186,10 @@ void CmdSketcherConstrainAngle::activated(int iMsg)
     }
 
     int GeoId1=-1, GeoId2=-1;
-    if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge") 
+    if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge")
         GeoId1 = std::atoi(SubNames[0].substr(4,4000).c_str());
     if (SubNames.size() == 2) {
-        if (SubNames[1].size() > 4 && SubNames[1].substr(0,4) == "Edge") 
+        if (SubNames[1].size() > 4 && SubNames[1].substr(0,4) == "Edge")
             GeoId2 = std::atoi(SubNames[1].substr(4,4000).c_str());
     }
 
@@ -1288,7 +1288,7 @@ CmdSketcherConstrainEqual::CmdSketcherConstrainEqual()
 
 void CmdSketcherConstrainEqual::activated(int iMsg)
 {
-    // get the selection 
+    // get the selection
     std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
 
     // only one sketch with its subelements are allowed to be selected
@@ -1309,7 +1309,7 @@ void CmdSketcherConstrainEqual::activated(int iMsg)
     }
 
     int GeoId1,GeoId2;
-    if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge") 
+    if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge")
         GeoId1 = std::atoi(SubNames[0].substr(4,4000).c_str());
     else {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
@@ -1317,7 +1317,7 @@ void CmdSketcherConstrainEqual::activated(int iMsg)
         return;
     }
 
-    if (SubNames[1].size() > 4 && SubNames[1].substr(0,4) == "Edge") 
+    if (SubNames[1].size() > 4 && SubNames[1].substr(0,4) == "Edge")
         GeoId2 = std::atoi(SubNames[1].substr(4,4000).c_str());
     else {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
