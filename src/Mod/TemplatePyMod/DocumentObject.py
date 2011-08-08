@@ -33,6 +33,10 @@ class DocumentObject(object):
         return self.__object__.touch()
     def purgeTouched(self):
         return self.__object__.purgeTouched()
+    def __setstate__(self,value):
+        return None
+    def __getstate__(self):
+        return None
     @property
     def PropertiesList(self):
         return self.__object__.PropertiesList
@@ -93,8 +97,8 @@ class ViewProvider(object):
     #    return ""
     #def getDisplayModes(self):
     #    return []
-    #def setDisplayMode(self):
-    #    return None
+    #def setDisplayMode(self,mode):
+    #    return mode
     def addProperty(self,type,name='',group='',doc='',attr=0,readonly=False,hidden=False):
         self.__vobject__.addProperty(type,name,group,doc,attr,readonly,hidden)
     def update(self):
@@ -157,12 +161,17 @@ class ViewProvider(object):
     def Object(self):
         return self.__vobject__.Object
 
+
+### Examples
+
+
+class MyFeature(DocumentObject):
+    def execute(self):
+        print "Execute my feature"
+    def onChanged(self,prop):
+        print "Property %s has changed" % (prop)
+
 def testMethod():
-    class MyFeature(DocumentObject):
-        def execute(self):
-            print "Execute my feature"
-        def onChanged(self,prop):
-            print "Property %s has changed" % (prop)
     import FreeCAD
     doc=FreeCAD.newDocument()
     obj=MyFeature()

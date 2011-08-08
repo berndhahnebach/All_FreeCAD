@@ -6,6 +6,7 @@ fc_copy_to_mod_path("TemplatePyMod"
 	Commands.py
 	PythonQt.py
 	Tests.py
+	DocumentObject.py
 )
 
 install(

@@ -176,18 +176,30 @@ void PropertyPythonObject::saveObject(Base::Writer &writer) const
 
 void PropertyPythonObject::restoreObject(Base::XMLReader &reader)
 {
-    PropertyContainer* parent = this->getContainer();
-    if (reader.hasAttribute("object")) {
-        if (strcmp(reader.getAttribute("object"),"yes") == 0) {
-            Py::Object obj = Py::asObject(parent->getPyObject());
-            this->object.setAttr("__object__", obj);
+    Base::PyGILStateLocker lock;
+    try {
+        PropertyContainer* parent = this->getContainer();
+        if (reader.hasAttribute("object")) {
+            if (strcmp(reader.getAttribute("object"),"yes") == 0) {
+                Py::Object obj = Py::asObject(parent->getPyObject());
+                this->object.setAttr("__object__", obj);
+            }
+        }
+        if (reader.hasAttribute("vobject")) {
+            if (strcmp(reader.getAttribute("vobject"),"yes") == 0) {
+                Py::Object obj = Py::asObject(parent->getPyObject());
+                this->object.setAttr("__vobject__", obj);
+            }
         }
     }
-    if (reader.hasAttribute("vobject")) {
-        if (strcmp(reader.getAttribute("vobject"),"yes") == 0) {
-            Py::Object obj = Py::asObject(parent->getPyObject());
-            this->object.setAttr("__vobject__", obj);
-        }
+    catch (Py::Exception& e) {
+        e.clear();
+    }
+    catch (const Base::Exception& e) {
+        Base::Console().Error("%s\n",e.what());
+    }
+    catch (...) {
+        Base::Console().Error("Critical error in PropertyPythonObject::restoreObject\n");
     }
 }
 
