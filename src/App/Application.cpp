@@ -1288,12 +1288,14 @@ namespace boost { namespace program_options {
 #endif
 #endif
 
+#if 0 // it seemse the SUSE has fixed the broken boost package
 // reported for SUSE in issue #0000208
 #if defined(__GNUC__)
 #if BOOST_VERSION == 104400
 namespace boost { namespace filesystem { 
     bool no_check( const std::string & ) { return true; }
 } }
+#endif
 #endif
 #endif
 
