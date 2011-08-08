@@ -27,6 +27,8 @@
 #endif
 
 #include "PropertyPythonObject.h"
+#include "DocumentObjectPy.h"
+#include "DocumentObject.h"
 #include <Base/Base64.h>
 #include <Base/Writer.h>
 #include <Base/Reader.h>
@@ -151,6 +153,44 @@ std::string PropertyPythonObject::decodeValue(const std::string& str) const
     return tmp;
 }
 
+void PropertyPythonObject::saveObject(Base::Writer &writer) const
+{
+    Base::PyGILStateLocker lock;
+    try {
+        PropertyContainer* parent = this->getContainer();
+        if (parent->isDerivedFrom(Base::Type::fromName("App::DocumentObject"))) {
+            if (this->object.hasAttr("__object__")) {
+                writer.Stream() << " object=\"yes\"";
+            }
+        }
+        if (parent->isDerivedFrom(Base::Type::fromName("Gui::ViewProvider"))) {
+            if (this->object.hasAttr("__vobject__")) {
+                writer.Stream() << " vobject=\"yes\"";
+            }
+        }
+    }
+    catch (Py::Exception& e) {
+        e.clear();
+    }
+}
+
+void PropertyPythonObject::restoreObject(Base::XMLReader &reader)
+{
+    PropertyContainer* parent = this->getContainer();
+    if (reader.hasAttribute("object")) {
+        if (strcmp(reader.getAttribute("object"),"yes") == 0) {
+            Py::Object obj = Py::asObject(parent->getPyObject());
+            this->object.setAttr("__object__", obj);
+        }
+    }
+    if (reader.hasAttribute("vobject")) {
+        if (strcmp(reader.getAttribute("vobject"),"yes") == 0) {
+            Py::Object obj = Py::asObject(parent->getPyObject());
+            this->object.setAttr("__vobject__", obj);
+        }
+    }
+}
+
 void PropertyPythonObject::Save (Base::Writer &writer) const
 {
     //if (writer.isForceXML()) {
@@ -158,7 +198,9 @@ void PropertyPythonObject::Save (Base::Writer &writer) const
         repr = Base::base64_encode((const unsigned char*)repr.c_str(), repr.size());
         std::string val = /*encodeValue*/(repr);
         writer.Stream() << writer.ind() << "<Python value=\"" << val
-                        <<"\" encoded=\"yes\"/>" << std::endl;
+                        <<"\" encoded=\"yes\"";
+        saveObject(writer);
+        writer.Stream() << "/>" << std::endl;
     //}
     //else {
     //    writer.Stream() << writer.ind() << "<Python file=\"" << 
@@ -185,6 +227,7 @@ void PropertyPythonObject::Restore(Base::XMLReader &reader)
 
         aboutToSetValue();
         this->fromString(buffer);
+        restoreObject(reader);
         hasSetValue();
     }
 }

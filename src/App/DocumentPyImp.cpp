@@ -115,14 +115,19 @@ PyObject*  DocumentPy::addObject(PyObject *args)
                     pyobj.setAttr("__object__", pyftr);
                 }
                 pyftr.setAttr("Proxy", pyobj);
-                if (view) {
-                    Py::Object pyvp(view);
-                    // 'pyvp' is the python class with the implementation for ViewProvider
-                    if (pyvp.hasAttr("__vobject__")) {
-                        pyvp.setAttr("__vobject__", pyftr.getAttr("ViewObject"));
-                    }
-                    pyftr.getAttr("ViewObject").setAttr("Proxy", pyvp);
+
+                // if a document class is set we also need a view provider defined which must be
+                // something different to None
+                Py::Object pyvp;
+                if (view)
+                    pyvp = Py::Object(view);
+                if (pyvp.isNone())
+                    pyvp = Py::Int(1);
+                // 'pyvp' is the python class with the implementation for ViewProvider
+                if (pyvp.hasAttr("__vobject__")) {
+                    pyvp.setAttr("__vobject__", pyftr.getAttr("ViewObject"));
                 }
+                pyftr.getAttr("ViewObject").setAttr("Proxy", pyvp);
                 return Py::new_reference_to(Py::None());
             }
             catch (Py::Exception& e) {
