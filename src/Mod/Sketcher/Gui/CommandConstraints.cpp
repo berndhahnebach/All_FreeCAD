@@ -542,8 +542,7 @@ void CmdSketcherConstrainDistance::activated(int iMsg)
             Base::Vector3d pnt1 = lineSeg->getStartPoint();
             Base::Vector3d pnt2 = lineSeg->getEndPoint();
             Base::Vector3d d = pnt2-pnt1;
-            double ActDist = (-pnt.x*d.y+pnt.y*d.x+pnt1.x*pnt2.y-pnt2.x*pnt1.y)
-                            / (2*d.Length());
+            double ActDist = std::abs(-pnt.x*d.y+pnt.y*d.x+pnt1.x*pnt2.y-pnt2.x*pnt1.y) / d.Length();
 
             openCommand("add point to line Distance constraint");
             Gui::Command::doCommand(
