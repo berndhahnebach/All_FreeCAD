@@ -20,7 +20,7 @@
  *                                                                         *
  ***************************************************************************/
 
- 
+
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <BRep_Builder.hxx>
@@ -59,7 +59,7 @@ using namespace Part;
 
 TYPESYSTEM_SOURCE(Sketcher::Sketch, Base::Persistence)
 
-const int IntGeoOffset(0); 
+const int IntGeoOffset(0);
 
 Sketch::Sketch()
 : GCSsys(), isInitMove(false)
@@ -151,7 +151,7 @@ int Sketch::addGeometry(const Part::Geometry *geo)
         return addArc(*aoc);
     } else {
         Base::Exception("Sketch::addGeometry(): Unknown or unsupported type added to a sketch");
-        return 0; 
+        return 0;
     }
 }
 
@@ -173,7 +173,7 @@ int Sketch::addPoint(const Base::Vector3d &newPoint)
     int paramStartIndex = Parameters.size();
     Parameters.push_back(new double(newPoint.x));
     Parameters.push_back(new double(newPoint.y));
- 
+
     // set the points for later constraints
     GCS::Point p1;
     p1.x = Parameters[paramStartIndex+0];
@@ -183,7 +183,7 @@ int Sketch::addPoint(const Base::Vector3d &newPoint)
 
     // store complete set
     Geoms.push_back(def);
-    
+
     // return the position of the newly added geometry
     return Geoms.size()-1;
 }
@@ -237,7 +237,7 @@ int Sketch::addLineSegment(const Part::GeomLineSegment &lineSegment)
 
     // store complete set
     Geoms.push_back(def);
-    
+
     // return the position of the newly added geometry
     return Geoms.size()-1;
 }
@@ -258,7 +258,7 @@ int Sketch::addArc(const Part::GeomArcOfCircle &circleSegment)
     double radius           = aoc->getRadius();
     double startAngle, endAngle;
     aoc->getRange(startAngle, endAngle);
- 
+
     GCS::Point p1, p2, p3;
 
     Parameters.push_back(new double(startPnt.x));
@@ -303,7 +303,7 @@ int Sketch::addArc(const Part::GeomArcOfCircle &circleSegment)
 
     // store complete set
     Geoms.push_back(def);
-    
+
     // arcs require an ArcRules constraint for the end points
     GCSsys.addConstraintArcRules(a);
 
@@ -323,7 +323,7 @@ int Sketch::addCircle(const Part::GeomCircle &cir)
 
     Base::Vector3d center = circ->getCenter();
     double radius         = circ->getRadius();
- 
+
     GCS::Point p1;
 
     Parameters.push_back(new double(center.x));
@@ -348,7 +348,7 @@ int Sketch::addCircle(const Part::GeomCircle &cir)
 
     // store complete set
     Geoms.push_back(def);
-    
+
     // return the position of the newly added geometry
     return Geoms.size()-1;
 }
@@ -366,7 +366,7 @@ std::vector<Part::Geometry *> Sketch::getGeometry(bool withConstrucionElements) 
     std::vector<GeoDef>::const_iterator it=Geoms.begin();
     // skip the default elements
     it += IntGeoOffset;
-         
+
     for (;it!=Geoms.end();++it,i++)
         if (!it->construction || withConstrucionElements)
             temp[i] = it->geo->clone();
@@ -423,7 +423,7 @@ bool Sketch::getConstruction(int geoId) const
 
 int Sketch::addConstraint(const Constraint *constraint)
 {
-    // constraints on nothing makes no sense 
+    // constraints on nothing makes no sense
     assert(int(Geoms.size()) > 0);
     int rtn = -1;
     switch (constraint->Type) {
@@ -518,7 +518,7 @@ int Sketch::addConstraint(const Constraint *constraint)
 
 int Sketch::addConstraints(const std::vector<Constraint *> &ConstraintList)
 {
-    // constraints on nothing makes no sense 
+    // constraints on nothing makes no sense
     assert(int(Geoms.size()) > 0 || ConstraintList.size() == 0);
 
     int rtn = -1;
@@ -531,7 +531,7 @@ int Sketch::addConstraints(const std::vector<Constraint *> &ConstraintList)
 int Sketch::addCoordinateXConstraint(int geoId, PointPos pos, double value)
 {
     int pointId = getPointId(geoId, pos);
- 
+
     if (pointId >= 0 && pointId < int(Points.size())) {
         double *val = new double(value);
         FixParameters.push_back(val);
@@ -544,7 +544,7 @@ int Sketch::addCoordinateXConstraint(int geoId, PointPos pos, double value)
 int Sketch::addCoordinateYConstraint(int geoId, PointPos pos, double value)
 {
     int pointId = getPointId(geoId, pos);
- 
+
     if (pointId >= 0 && pointId < int(Points.size())) {
         double *val = new double(value);
         FixParameters.push_back(val);
@@ -1073,7 +1073,7 @@ int Sketch::addAngleConstraint(int geoId1, PointPos pos1, int geoId2, PointPos p
        l1p1 = &Points[Geoms[geoId1].endPointId];
        l1p2 = &Points[Geoms[geoId1].startPointId];
     }
- 
+
     GCS::Point *l2p1=0, *l2p2=0;
     if (pos2 == start) {
        l2p1 = &Points[Geoms[geoId2].startPointId];
@@ -1450,11 +1450,11 @@ TopoShape Sketch::toShape(void) const
     if (wires.size() == 1)
         result = *wires.begin();
     else if (wires.size() > 1) {
-        // FIXME: The right way here would be to determine the outer and inner wires and 
+        // FIXME: The right way here would be to determine the outer and inner wires and
         // generate a face with holes (inner wires have to be taged REVERSE or INNER).
         // thats the only way to transport a somwhat more complex sketch...
         //result = *wires.begin();
-        
+
         // I think a compound can be used as container because it is just a collection of
         // shapes and doesn't need too much information about the topology.
         // The actual knowledge how to create a prism from several wires should go to the Pad
@@ -1466,8 +1466,8 @@ TopoShape Sketch::toShape(void) const
             builder.Add(comp, *wt);
         result._Shape = comp;
     }
-    // FIXME: if free edges are left over its probably better to 
-    // create a compound with the closed structures and let the 
+    // FIXME: if free edges are left over its probably better to
+    // create a compound with the closed structures and let the
     // features decide what to do with it...
     if (edge_list.size() > 0)
         Base::Console().Warning("Left over edges in Sketch. Only closed structures will be propagated at the moment!\n");
@@ -1491,6 +1491,6 @@ void Sketch::Save(Writer &writer) const
 
 void Sketch::Restore(XMLReader &reader)
 {
- 
+
 }
 
