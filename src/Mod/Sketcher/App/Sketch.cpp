@@ -699,7 +699,7 @@ int Sketch::addParallelConstraint(int geoId1, int geoId2)
 
 const char* nameByType(Sketch::GeoType type)
 {
-    switch(type) {
+    switch (type) {
     case Sketch::Point:
         return "point";
     case Sketch::Line:
@@ -747,7 +747,7 @@ int Sketch::addPerpendicularConstraint(int geoId1, int geoId2)
     }
 
     Base::Console().Warning("Perpendicular constraints between %s and %s are not supported.\n",
-        nameByType(Geoms[geoId1].type), nameByType(Geoms[geoId2].type));
+                            nameByType(Geoms[geoId1].type), nameByType(Geoms[geoId2].type));
     return -1;
 }
 
@@ -1067,20 +1067,20 @@ int Sketch::addAngleConstraint(int geoId1, PointPos pos1, int geoId2, PointPos p
 
     GCS::Point *l1p1=0, *l1p2=0;
     if (pos1 == start) {
-       l1p1 = &Points[Geoms[geoId1].startPointId];
-       l1p2 = &Points[Geoms[geoId1].endPointId];
+        l1p1 = &Points[Geoms[geoId1].startPointId];
+        l1p2 = &Points[Geoms[geoId1].endPointId];
     } else if (pos1 == end) {
-       l1p1 = &Points[Geoms[geoId1].endPointId];
-       l1p2 = &Points[Geoms[geoId1].startPointId];
+        l1p1 = &Points[Geoms[geoId1].endPointId];
+        l1p2 = &Points[Geoms[geoId1].startPointId];
     }
 
     GCS::Point *l2p1=0, *l2p2=0;
     if (pos2 == start) {
-       l2p1 = &Points[Geoms[geoId2].startPointId];
-       l2p2 = &Points[Geoms[geoId2].endPointId];
+        l2p1 = &Points[Geoms[geoId2].startPointId];
+        l2p2 = &Points[Geoms[geoId2].endPointId];
     } else if (pos2 == end) {
-       l2p1 = &Points[Geoms[geoId2].endPointId];
-       l2p2 = &Points[Geoms[geoId2].startPointId];
+        l2p1 = &Points[Geoms[geoId2].endPointId];
+        l2p2 = &Points[Geoms[geoId2].startPointId];
     }
 
     if (l1p1 == 0 || l2p1 == 0)
@@ -1139,7 +1139,7 @@ int Sketch::addEqualConstraint(int geoId1, int geoId2)
     }
 
     Base::Console().Warning("Equality constraints between %s and %s are not supported.\n",
-        nameByType(Geoms[geoId1].type), nameByType(Geoms[geoId2].type));
+                            nameByType(Geoms[geoId1].type), nameByType(Geoms[geoId2].type));
     return -1;
 }
 
@@ -1177,7 +1177,7 @@ int Sketch::solve() {
                     aoc->setCenter(Vector3d(*Points[it->midPointId].x,
                                             *Points[it->midPointId].y,
                                             0.0)
-                                   );
+                                  );
                     aoc->setRadius(*myArc.rad);
                     aoc->setRange(*myArc.startAngle, *myArc.endAngle);
                 } else if (it->type == Circle) {
@@ -1239,10 +1239,10 @@ int Sketch::initMove(int geoId, PointPos pos)
             *p1.y = *l.p1.y;
             *p2.x = *l.p2.x;
             *p2.y = *l.p2.y;
-             MoveParameters[4] = *l.p2.x - *l.p1.x;
-             MoveParameters[5] = *l.p2.y - *l.p1.y;
-             GCSsys.addConstraintP2PCoincident(p1,l.p1,-1);
-             GCSsys.addConstraintP2PCoincident(p2,l.p2,-1);
+            MoveParameters[4] = *l.p2.x - *l.p1.x;
+            MoveParameters[5] = *l.p2.y - *l.p1.y;
+            GCSsys.addConstraintP2PCoincident(p1,l.p1,-1);
+            GCSsys.addConstraintP2PCoincident(p2,l.p2,-1);
         }
     } else if (Geoms[geoId].type == Circle) {
         if (pos == mid || pos == none) {
@@ -1363,7 +1363,7 @@ int Sketch::setDatum(int constraintIndex, double value)
 int Sketch::getPointId(int geoId, PointPos pos) const
 {
     assert(geoId < int(Geoms.size()));
-    switch(pos) {
+    switch (pos) {
         case start:
             return Geoms[geoId].startPointId;
         case end:
