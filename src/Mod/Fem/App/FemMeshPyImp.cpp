@@ -22,6 +22,7 @@
 
 
 #include "PreCompiled.h"
+#include <stdexcept>
 
 #include <SMESH_Gen.hxx>
 #include <SMESH_Mesh.hxx>
@@ -157,7 +158,7 @@ PyObject* FemMeshPy::addNode(PyObject *args)
         SMESHDS_Mesh* meshDS = mesh->GetMeshDS();
         SMDS_MeshNode* node = meshDS->AddNode(x,y,z);
         if (!node)
-            throw std::exception("Failed to add node");
+            throw std::runtime_error("Failed to add node");
         return Py::new_reference_to(Py::Int(node->GetID()));
     }
     catch (const std::exception& e) {
@@ -178,10 +179,10 @@ PyObject* FemMeshPy::addEdge(PyObject *args)
         const SMDS_MeshNode* node1 = meshDS->FindNode(n1);
         const SMDS_MeshNode* node2 = meshDS->FindNode(n2);
         if (!node1 || !node2)
-            throw std::exception("Failed to get node of the given indices");
+            throw std::runtime_error("Failed to get node of the given indices");
         SMDS_MeshEdge* edge = meshDS->AddEdge(node1, node2);
         if (!edge)
-            throw std::exception("Failed to add edge");
+            throw std::runtime_error("Failed to add edge");
         return Py::new_reference_to(Py::Int(edge->GetID()));
     }
     catch (const std::exception& e) {
@@ -203,10 +204,10 @@ PyObject* FemMeshPy::addFace(PyObject *args)
         const SMDS_MeshNode* node2 = meshDS->FindNode(n2);
         const SMDS_MeshNode* node3 = meshDS->FindNode(n3);
         if (!node1 || !node2 || !node3)
-            throw std::exception("Failed to get node of the given indices");
+            throw std::runtime_error("Failed to get node of the given indices");
         SMDS_MeshFace* face = meshDS->AddFace(node1, node2, node3);
         if (!face)
-            throw std::exception("Failed to add face");
+            throw std::runtime_error("Failed to add face");
         return Py::new_reference_to(Py::Int(face->GetID()));
     }
     catch (const std::exception& e) {
@@ -229,10 +230,10 @@ PyObject* FemMeshPy::addQuad(PyObject *args)
         const SMDS_MeshNode* node3 = meshDS->FindNode(n3);
         const SMDS_MeshNode* node4 = meshDS->FindNode(n4);
         if (!node1 || !node2 || !node3 || !node4)
-            throw std::exception("Failed to get node of the given indices");
+            throw std::runtime_error("Failed to get node of the given indices");
         SMDS_MeshFace* face = meshDS->AddFace(node1, node2, node3, node4);
         if (!face)
-            throw std::exception("Failed to add quad");
+            throw std::runtime_error("Failed to add quad");
         return Py::new_reference_to(Py::Int(face->GetID()));
     }
     catch (const std::exception& e) {
@@ -255,10 +256,10 @@ PyObject* FemMeshPy::addVolume(PyObject *args)
         const SMDS_MeshNode* node3 = meshDS->FindNode(n3);
         const SMDS_MeshNode* node4 = meshDS->FindNode(n4);
         if (!node1 || !node2 || !node3 || !node4)
-            throw std::exception("Failed to get node of the given indices");
+            throw std::runtime_error("Failed to get node of the given indices");
         SMDS_MeshVolume* vol = meshDS->AddVolume(node1, node2, node3, node4);
         if (!vol)
-            throw std::exception("Failed to add volume");
+            throw std::runtime_error("Failed to add volume");
         return Py::new_reference_to(Py::Int(vol->GetID()));
     }
     catch (const std::exception& e) {
