@@ -54,11 +54,6 @@
 				<UserDocu>Add a quad by setting four node indices.</UserDocu>
 			</Documentation>
 		</Methode>
-		<Methode Name="addPolygon">
-			<Documentation>
-				<UserDocu>Add a polygon by setting an arbitrary number of node indices.</UserDocu>
-			</Documentation>
-		</Methode>
 		<Methode Name="addVolume">
 			<Documentation>
 				<UserDocu>Add a volume by setting an arbitrary number of node indices.</UserDocu>
