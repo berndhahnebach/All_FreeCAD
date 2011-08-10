@@ -241,66 +241,22 @@ PyObject* FemMeshPy::addQuad(PyObject *args)
     }
 }
 
-PyObject* FemMeshPy::addPolygon(PyObject *args)
-{
-    //FIXME: How to add a polygon
-    throw Py::Exception("Not yet implemented");
-    PyObject* pylist;
-    if (!PyArg_ParseTuple(args, "O",&pylist))
-        return 0;
-    if (!PyTuple_Check(pylist) && !PyList_Check(pylist)) {
-        PyErr_SetString(PyExc_Exception, "object must be tuple or list");
-        return 0;
-    }
-
-    try {
-        Py::Sequence list(pylist);
-        SMESH_Mesh* mesh = getFemMeshPtr()->getSMesh();
-        SMESHDS_Mesh* meshDS = mesh->GetMeshDS();
-        std::vector<const SMDS_MeshNode*> nodes;
-        for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
-            const SMDS_MeshNode* node = meshDS->FindNode((int)Py::Int(*it));
-            if (!node)
-                throw std::exception("Failed to get node of the given indices");
-            nodes.push_back(node);
-        }
-        SMDS_MeshFace* face = meshDS->AddPolygonalFace(nodes);
-        if (!face)
-            throw std::exception("Failed to add face");
-        return Py::new_reference_to(Py::Int(face->GetID()));
-    }
-    catch (const std::exception& e) {
-        PyErr_SetString(PyExc_Exception, e.what());
-        return 0;
-    }
-}
-
 PyObject* FemMeshPy::addVolume(PyObject *args)
 {
-    //FIXME: How to add a volume
-    throw Py::Exception("Not yet implemented");
-    PyObject* pylist;
-    if (!PyArg_ParseTuple(args, "O",&pylist))
+    int n1,n2,n3,n4;
+    if (!PyArg_ParseTuple(args, "iiii",&n1,&n2,&n3,&n4))
         return 0;
-    if (!PyTuple_Check(pylist) && !PyList_Check(pylist)) {
-        PyErr_SetString(PyExc_Exception, "object must be tuple or list");
-        return 0;
-    }
 
     try {
-        Py::Sequence list(pylist);
         SMESH_Mesh* mesh = getFemMeshPtr()->getSMesh();
         SMESHDS_Mesh* meshDS = mesh->GetMeshDS();
-        std::vector<const SMDS_MeshNode*> nodes;
-        std::vector<int> quantities;
-        for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
-            const SMDS_MeshNode* node = meshDS->FindNode((int)Py::Int(*it));
-            if (!node)
-                throw std::exception("Failed to get node of the given indices");
-            nodes.push_back(node);
-            quantities.push_back(1);
-        }
-        SMDS_MeshVolume* vol = meshDS->AddPolyhedralVolume(nodes, quantities);
+        const SMDS_MeshNode* node1 = meshDS->FindNode(n1);
+        const SMDS_MeshNode* node2 = meshDS->FindNode(n2);
+        const SMDS_MeshNode* node3 = meshDS->FindNode(n3);
+        const SMDS_MeshNode* node4 = meshDS->FindNode(n4);
+        if (!node1 || !node2 || !node3 || !node4)
+            throw std::exception("Failed to get node of the given indices");
+        SMDS_MeshVolume* vol = meshDS->AddVolume(node1, node2, node3, node4);
         if (!vol)
             throw std::exception("Failed to add volume");
         return Py::new_reference_to(Py::Int(vol->GetID()));

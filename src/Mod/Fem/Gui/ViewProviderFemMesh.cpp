@@ -258,7 +258,7 @@ void ViewProviderFEMMeshBuilder::createMesh(const App::Property* prop, SoCoordin
     int numQuad = info.NbQuadrangles();
     //int numPoly = info.NbPolygons();
     //int numVolu = info.NbVolumes();
-    //int numTetr = info.NbTetras();
+    int numTetr = info.NbTetras();
     //int numHexa = info.NbHexas();
     //int numPyrd = info.NbPyramids();
     //int numPris = info.NbPrisms();
@@ -281,7 +281,7 @@ void ViewProviderFEMMeshBuilder::createMesh(const App::Property* prop, SoCoordin
 
     // set the face indices
     index=0;
-    faces->coordIndex.setNum(4*numTria + 5*numQuad);
+    faces->coordIndex.setNum(4*numTria + 5*numQuad + 16*numTetr);
     int32_t* indices = faces->coordIndex.startEditing();
     SMDS_FaceIteratorPtr aFaceIter = data->facesIterator();
     for (;aFaceIter->more();) {
@@ -293,6 +293,33 @@ void ViewProviderFEMMeshBuilder::createMesh(const App::Property* prop, SoCoordin
             const SMDS_MeshNode* node = aFace->GetNode(j);
             indices[index++] = mapNodeIndex[node];
         }
+        indices[index++] = SO_END_FACE_INDEX;
+    }
+    SMDS_VolumeIteratorPtr aVolIter = data->volumesIterator();
+    for (;aVolIter->more();) {
+        const SMDS_MeshVolume* aVol = aVolIter->next();
+        int num = aVol->NbNodes();
+        if (num != 4)
+            continue;
+        int i1 = mapNodeIndex[aVol->GetNode(0)];
+        int i2 = mapNodeIndex[aVol->GetNode(1)];
+        int i3 = mapNodeIndex[aVol->GetNode(2)];
+        int i4 = mapNodeIndex[aVol->GetNode(3)];
+        indices[index++] = i1;
+        indices[index++] = i3;
+        indices[index++] = i2;
+        indices[index++] = SO_END_FACE_INDEX;
+        indices[index++] = i1;
+        indices[index++] = i2;
+        indices[index++] = i4;
+        indices[index++] = SO_END_FACE_INDEX;
+        indices[index++] = i1;
+        indices[index++] = i4;
+        indices[index++] = i3;
+        indices[index++] = SO_END_FACE_INDEX;
+        indices[index++] = i2;
+        indices[index++] = i3;
+        indices[index++] = i4;
         indices[index++] = SO_END_FACE_INDEX;
     }
     faces->coordIndex.finishEditing();
