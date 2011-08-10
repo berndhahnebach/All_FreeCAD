@@ -45,6 +45,7 @@
 
 #include <SMESH_Gen.hxx>
 #include <SMESH_Mesh.hxx>
+#include <SMDS_PolyhedralVolumeOfNodes.hxx>
 #include <SMDS_VolumeTool.hxx>
 #include <StdMeshers_MaxLength.hxx>
 #include <StdMeshers_LocalLength.hxx>
@@ -281,14 +282,15 @@ void FemMesh::copyMeshData(const FemMesh& mesh)
                 break;
             default:
                 {
-                    std::vector<int> quantities;
-                    std::vector<const SMDS_MeshNode*> aNodes;
-                    for (int i=0; aVol->NbNodes(); i++) {
-                        aNodes.push_back(aVol->GetNode(0));
-                        quantities.push_back(1);
+                    if (aVol->IsPoly()) {
+                        const SMDS_PolyhedralVolumeOfNodes* aPolyVol = dynamic_cast<const SMDS_PolyhedralVolumeOfNodes*>(aVol);
+                        if (!aPolyVol) break;
+                        std::vector<const SMDS_MeshNode*> aNodes;
+                        for (int i=0; i<aPolyVol->NbNodes(); i++)
+                            aNodes.push_back(aPolyVol->GetNode(i));
+                        meshds->AddPolyhedralVolumeWithID(aNodes,
+                            aPolyVol->GetQuanities(), aPolyVol->GetID());
                     }
-                    meshds->AddPolyhedralVolumeWithID(aNodes,
-                        quantities, aVol->GetID());
                 }
                 break;
         }

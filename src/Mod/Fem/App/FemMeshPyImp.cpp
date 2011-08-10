@@ -72,7 +72,7 @@ PyObject* FemMeshPy::setShape(PyObject *args)
 {
     PyObject *pcObj;
     if (!PyArg_ParseTuple(args, "O!", &(Part::TopoShapePy::Type), &pcObj))
-        return NULL;
+        return 0;
 
     try {
         TopoDS_Shape shape = static_cast<Part::TopoShapePy*>(pcObj)->getTopoShapePtr()->_Shape;
@@ -92,7 +92,7 @@ PyObject* FemMeshPy::addHypothesis(PyObject *args)
     // Since we have not a common base class for the Python binding of the
     // hypotheses classes we cannot pass a certain Python type
     if (!PyArg_ParseTuple(args, "O|O!",&hyp, &(Part::TopoShapePy::Type), &shp))
-        return NULL;
+        return 0;
 
     TopoDS_Shape shape;
     if (shp == 0)
@@ -119,7 +119,7 @@ PyObject* FemMeshPy::addHypothesis(PyObject *args)
 PyObject* FemMeshPy::setStanardHypotheses(PyObject *args)
 {
     if (!PyArg_ParseTuple(args, ""))
-        return NULL;
+        return 0;
 
     try {
         getFemMeshPtr()->setStanardHypotheses();
@@ -134,7 +134,7 @@ PyObject* FemMeshPy::setStanardHypotheses(PyObject *args)
 PyObject* FemMeshPy::compute(PyObject *args)
 {
     if (!PyArg_ParseTuple(args, ""))
-        return NULL;
+        return 0;
 
     try {
         getFemMeshPtr()->compute();
@@ -146,10 +146,175 @@ PyObject* FemMeshPy::compute(PyObject *args)
     Py_Return;
 }
 
+PyObject* FemMeshPy::addNode(PyObject *args)
+{
+    double x,y,z;
+    if (!PyArg_ParseTuple(args, "ddd",&x,&y,&z))
+        return 0;
+
+    try {
+        SMESH_Mesh* mesh = getFemMeshPtr()->getSMesh();
+        SMESHDS_Mesh* meshDS = mesh->GetMeshDS();
+        SMDS_MeshNode* node = meshDS->AddNode(x,y,z);
+        if (!node)
+            throw std::exception("Failed to add node");
+        return Py::new_reference_to(Py::Int(node->GetID()));
+    }
+    catch (const std::exception& e) {
+        PyErr_SetString(PyExc_Exception, e.what());
+        return 0;
+    }
+}
+
+PyObject* FemMeshPy::addEdge(PyObject *args)
+{
+    int n1,n2;
+    if (!PyArg_ParseTuple(args, "ii",&n1,&n2))
+        return 0;
+
+    try {
+        SMESH_Mesh* mesh = getFemMeshPtr()->getSMesh();
+        SMESHDS_Mesh* meshDS = mesh->GetMeshDS();
+        const SMDS_MeshNode* node1 = meshDS->FindNode(n1);
+        const SMDS_MeshNode* node2 = meshDS->FindNode(n2);
+        if (!node1 || !node2)
+            throw std::exception("Failed to get node of the given indices");
+        SMDS_MeshEdge* edge = meshDS->AddEdge(node1, node2);
+        if (!edge)
+            throw std::exception("Failed to add edge");
+        return Py::new_reference_to(Py::Int(edge->GetID()));
+    }
+    catch (const std::exception& e) {
+        PyErr_SetString(PyExc_Exception, e.what());
+        return 0;
+    }
+}
+
+PyObject* FemMeshPy::addFace(PyObject *args)
+{
+    int n1,n2,n3;
+    if (!PyArg_ParseTuple(args, "iii",&n1,&n2,&n3))
+        return 0;
+
+    try {
+        SMESH_Mesh* mesh = getFemMeshPtr()->getSMesh();
+        SMESHDS_Mesh* meshDS = mesh->GetMeshDS();
+        const SMDS_MeshNode* node1 = meshDS->FindNode(n1);
+        const SMDS_MeshNode* node2 = meshDS->FindNode(n2);
+        const SMDS_MeshNode* node3 = meshDS->FindNode(n3);
+        if (!node1 || !node2 || !node3)
+            throw std::exception("Failed to get node of the given indices");
+        SMDS_MeshFace* face = meshDS->AddFace(node1, node2, node3);
+        if (!face)
+            throw std::exception("Failed to add face");
+        return Py::new_reference_to(Py::Int(face->GetID()));
+    }
+    catch (const std::exception& e) {
+        PyErr_SetString(PyExc_Exception, e.what());
+        return 0;
+    }
+}
+
+PyObject* FemMeshPy::addQuad(PyObject *args)
+{
+    int n1,n2,n3,n4;
+    if (!PyArg_ParseTuple(args, "iiii",&n1,&n2,&n3,&n4))
+        return 0;
+
+    try {
+        SMESH_Mesh* mesh = getFemMeshPtr()->getSMesh();
+        SMESHDS_Mesh* meshDS = mesh->GetMeshDS();
+        const SMDS_MeshNode* node1 = meshDS->FindNode(n1);
+        const SMDS_MeshNode* node2 = meshDS->FindNode(n2);
+        const SMDS_MeshNode* node3 = meshDS->FindNode(n3);
+        const SMDS_MeshNode* node4 = meshDS->FindNode(n4);
+        if (!node1 || !node2 || !node3 || !node4)
+            throw std::exception("Failed to get node of the given indices");
+        SMDS_MeshFace* face = meshDS->AddFace(node1, node2, node3, node4);
+        if (!face)
+            throw std::exception("Failed to add quad");
+        return Py::new_reference_to(Py::Int(face->GetID()));
+    }
+    catch (const std::exception& e) {
+        PyErr_SetString(PyExc_Exception, e.what());
+        return 0;
+    }
+}
+
+PyObject* FemMeshPy::addPolygon(PyObject *args)
+{
+    //FIXME: How to add a polygon
+    throw Py::Exception("Not yet implemented");
+    PyObject* pylist;
+    if (!PyArg_ParseTuple(args, "O",&pylist))
+        return 0;
+    if (!PyTuple_Check(pylist) && !PyList_Check(pylist)) {
+        PyErr_SetString(PyExc_Exception, "object must be tuple or list");
+        return 0;
+    }
+
+    try {
+        Py::Sequence list(pylist);
+        SMESH_Mesh* mesh = getFemMeshPtr()->getSMesh();
+        SMESHDS_Mesh* meshDS = mesh->GetMeshDS();
+        std::vector<const SMDS_MeshNode*> nodes;
+        for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+            const SMDS_MeshNode* node = meshDS->FindNode((int)Py::Int(*it));
+            if (!node)
+                throw std::exception("Failed to get node of the given indices");
+            nodes.push_back(node);
+        }
+        SMDS_MeshFace* face = meshDS->AddPolygonalFace(nodes);
+        if (!face)
+            throw std::exception("Failed to add face");
+        return Py::new_reference_to(Py::Int(face->GetID()));
+    }
+    catch (const std::exception& e) {
+        PyErr_SetString(PyExc_Exception, e.what());
+        return 0;
+    }
+}
+
+PyObject* FemMeshPy::addVolume(PyObject *args)
+{
+    //FIXME: How to add a volume
+    throw Py::Exception("Not yet implemented");
+    PyObject* pylist;
+    if (!PyArg_ParseTuple(args, "O",&pylist))
+        return 0;
+    if (!PyTuple_Check(pylist) && !PyList_Check(pylist)) {
+        PyErr_SetString(PyExc_Exception, "object must be tuple or list");
+        return 0;
+    }
+
+    try {
+        Py::Sequence list(pylist);
+        SMESH_Mesh* mesh = getFemMeshPtr()->getSMesh();
+        SMESHDS_Mesh* meshDS = mesh->GetMeshDS();
+        std::vector<const SMDS_MeshNode*> nodes;
+        std::vector<int> quantities;
+        for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+            const SMDS_MeshNode* node = meshDS->FindNode((int)Py::Int(*it));
+            if (!node)
+                throw std::exception("Failed to get node of the given indices");
+            nodes.push_back(node);
+            quantities.push_back(1);
+        }
+        SMDS_MeshVolume* vol = meshDS->AddPolyhedralVolume(nodes, quantities);
+        if (!vol)
+            throw std::exception("Failed to add volume");
+        return Py::new_reference_to(Py::Int(vol->GetID()));
+    }
+    catch (const std::exception& e) {
+        PyErr_SetString(PyExc_Exception, e.what());
+        return 0;
+    }
+}
+
 PyObject* FemMeshPy::copy(PyObject *args)
 {
     if (!PyArg_ParseTuple(args, ""))
-        return NULL;
+        return 0;
 
     const FemMesh& mesh = *getFemMeshPtr();
     return new FemMeshPy(new FemMesh(mesh));
@@ -159,7 +324,7 @@ PyObject* FemMeshPy::read(PyObject *args)
 {
     char* filename;
     if (!PyArg_ParseTuple(args, "s", &filename))
-        return NULL;
+        return 0;
 
     try {
         getFemMeshPtr()->read(filename);
@@ -175,7 +340,7 @@ PyObject* FemMeshPy::write(PyObject *args)
 {
     char* filename;
     if (!PyArg_ParseTuple(args, "s", &filename))
-        return NULL;
+        return 0;
 
     try {
         getFemMeshPtr()->write(filename);
@@ -192,7 +357,7 @@ PyObject* FemMeshPy::writeABAQUS(PyObject *args)
     char* filename;
     PyObject* plm=0;
     if (!PyArg_ParseTuple(args, "s|O!", &filename, &(Base::PlacementPy::Type),&plm))
-        return NULL;
+        return 0;
 
     try {
         Base::Placement* placement = 0;
@@ -213,7 +378,7 @@ PyObject* FemMeshPy::setTransform(PyObject *args)
 {
     PyObject* ptr;
     if (!PyArg_ParseTuple(args, "O!", &(Base::PlacementPy::Type), &ptr))
-        return NULL;
+        return 0;
 
     try {
         Base::Placement* placement = static_cast<Base::PlacementPy*>(ptr)->getPlacementPtr();

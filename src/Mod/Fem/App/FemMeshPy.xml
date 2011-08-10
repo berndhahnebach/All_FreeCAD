@@ -34,6 +34,36 @@
 				<UserDocu>Set some standard hypotheses for the whole shape</UserDocu>
 			</Documentation>
 		</Methode>
+		<Methode Name="addNode">
+			<Documentation>
+				<UserDocu>Add a node by setting (x,y,z).</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="addEdge">
+			<Documentation>
+				<UserDocu>Add an edge by setting two node indices.</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="addFace">
+			<Documentation>
+				<UserDocu>Add a face by setting three node indices.</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="addQuad">
+			<Documentation>
+				<UserDocu>Add a quad by setting four node indices.</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="addPolygon">
+			<Documentation>
+				<UserDocu>Add a polygon by setting an arbitrary number of node indices.</UserDocu>
+			</Documentation>
+		</Methode>
+		<Methode Name="addVolume">
+			<Documentation>
+				<UserDocu>Add a volume by setting an arbitrary number of node indices.</UserDocu>
+			</Documentation>
+		</Methode>
 		<Methode Name="read">
 		  <Documentation>
 			  <UserDocu>Read in an DAT, UNV, MED or STL file.</UserDocu>
