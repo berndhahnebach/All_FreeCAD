@@ -143,6 +143,13 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
                 this->getConstraintPtr()->Second   = SecondIndex;
                 return 0;
             }
+            if (strcmp("PointOnObject", ConstraintType) == 0) {
+                this->getConstraintPtr()->Type = PointOnObject;
+                this->getConstraintPtr()->First    = FirstIndex;
+                this->getConstraintPtr()->FirstPos = (Sketcher::PointPos) FirstPos;
+                this->getConstraintPtr()->Second   = SecondIndex;
+                return 0;
+            }
         }
         // ConstraintType, GeoIndex1, GeoIndex2, Value
         // ConstraintType, GeoIndex, PosIndex, Value

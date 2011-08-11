@@ -462,6 +462,9 @@ int Sketch::addConstraint(const Constraint *constraint)
     case Coincident:
         rtn = addPointCoincidentConstraint(constraint->First,constraint->FirstPos,constraint->Second,constraint->SecondPos);
         break;
+    case PointOnObject:
+        rtn = addPointOnObjectConstraint(constraint->First,constraint->FirstPos, constraint->Second);
+        break;
     case Parallel:
         rtn = addParallelConstraint(constraint->First,constraint->Second);
         break;
@@ -863,7 +866,6 @@ int Sketch::addTangentConstraint(int geoId1, PointPos pos1, int geoId2, PointPos
         pointId2 < 0 || pointId2 >= int(Points.size()))
         return -1;
 
-
     GCS::Point &p1 = Points[pointId1];
     GCS::Point &p2 = Points[pointId2];
     if (Geoms[geoId2].type == Line) {
@@ -1140,6 +1142,27 @@ int Sketch::addEqualConstraint(int geoId1, int geoId2)
 
     Base::Console().Warning("Equality constraints between %s and %s are not supported.\n",
                             nameByType(Geoms[geoId1].type), nameByType(Geoms[geoId2].type));
+    return -1;
+}
+
+// point on object constraint
+int Sketch::addPointOnObjectConstraint(int geoId1, PointPos pos1, int geoId2)
+{
+    int pointId1 = getPointId(geoId1, pos1);
+    assert(geoId2 < int(Geoms.size()));
+
+    if (pointId1 >= 0 && pointId1 < int(Points.size())) {
+        GCS::Point &p1 = Points[pointId1];
+
+        if (Geoms[geoId2].type == Line) {
+            GCS::Line &l2 = Lines[Geoms[geoId2].index];
+            return GCSsys.addConstraintPointOnLine(p1, l2);
+        }
+        else if (Geoms[geoId2].type == Circle) {
+            GCS::Circle &c = Circles[Geoms[geoId2].index];
+            return GCSsys.addConstraintPointOnCircle(p1,c);
+        }
+    }
     return -1;
 }
 

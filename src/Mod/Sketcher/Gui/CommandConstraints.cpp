@@ -473,8 +473,6 @@ void CmdSketcherConstrainDistance::activated(int iMsg)
 
     int num = selection.setUp();
 
-
-
 #else
     // get the selection
     std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
@@ -583,6 +581,96 @@ bool CmdSketcherConstrainDistance::isActive(void)
     return isCreateConstraintActive( getActiveGuiDocument() );
 }
 
+
+DEF_STD_CMD_A(CmdSketcherConstrainPointOnObject);
+
+CmdSketcherConstrainPointOnObject::CmdSketcherConstrainPointOnObject()
+    :Command("Sketcher_ConstrainPointOnObject")
+{
+    sAppModule      = "Sketcher";
+    sGroup          = QT_TR_NOOP("Sketcher");
+    sMenuText       = QT_TR_NOOP("Constrain point onto object");
+    sToolTipText    = QT_TR_NOOP("Fix a point onto an object");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Constraint_PointOnObject";
+    sAccel          = "O";
+    eType           = ForEdit;
+}
+
+void CmdSketcherConstrainPointOnObject::activated(int iMsg)
+{
+    // get the selection
+    std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
+
+    // only one sketch with its subelements are allowed to be selected
+    if (selection.size() != 1) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select vertexes from the sketch."));
+        return;
+    }
+
+    // get the needed lists and objects
+    const std::vector<std::string> &SubNames = selection[0].getSubNames();
+    Sketcher::SketchObject* Obj = dynamic_cast<Sketcher::SketchObject*>(selection[0].getObject());
+    const std::vector<Part::Geometry *> &geo = Obj->Geometry.getValues();
+
+    if (SubNames.size() < 1 || SubNames.size() > 2) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select exactly one point and one object from the sketch."));
+        return;
+    }
+
+    int GeoId1=Constraint::GeoUndef, VtId1=-1, GeoId2=Constraint::GeoUndef, VtId2=-1;
+
+    if (SubNames.size() >= 1) {
+        if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge")
+            GeoId1 = std::atoi(SubNames[0].substr(4,4000).c_str());
+        else if (SubNames[0].size() > 6 && SubNames[0].substr(0,6) == "Vertex")
+            VtId1 = std::atoi(SubNames[0].substr(6,4000).c_str());
+    }
+    if (SubNames.size() == 2) {
+        if (SubNames[1].size() > 4 && SubNames[1].substr(0,4) == "Edge")
+            GeoId2 = std::atoi(SubNames[1].substr(4,4000).c_str());
+        else if (SubNames[1].size() > 6 && SubNames[1].substr(0,6) == "Vertex")
+            VtId2 = std::atoi(SubNames[1].substr(6,4000).c_str());
+    }
+
+    if ((VtId1 >= 0 && GeoId2 >= 0) || (VtId2 >= 0 && GeoId1 >= 0)) {
+        if (VtId2 >= 0 && GeoId1 >= 0) {
+            std::swap(VtId1,VtId2);
+            std::swap(GeoId1,GeoId2);
+        }
+
+        Sketcher::PointPos PosId1;
+        Obj->getGeoVertexIndex(VtId1,GeoId1,PosId1);
+
+        const Part::Geometry *geom = geo[GeoId2];
+
+        // Currently only accepts line segments and circles
+        if (geom->getTypeId() == Part::GeomLineSegment::getClassTypeId() ||
+            geom->getTypeId() == Part::GeomCircle::getClassTypeId() ) {
+
+            openCommand("add point on object constraint");
+            Gui::Command::doCommand(
+                Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('PointOnObject',%d,%d,%d)) ",
+                selection[0].getFeatName(),GeoId1,PosId1,GeoId2);
+            commitCommand();
+            //updateActive();
+            getSelection().clearSelection();
+            return;
+        }
+    }
+
+    QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+        QObject::tr("Select exactly one point and one object from the sketch."));
+    return;
+}
+
+bool CmdSketcherConstrainPointOnObject::isActive(void)
+{
+    return isCreateConstraintActive( getActiveGuiDocument() );
+}
 
 DEF_STD_CMD_A(CmdSketcherConstrainDistanceX);
 
@@ -1363,4 +1451,5 @@ void CreateSketcherCommandsConstraints(void)
     rcCmdMgr.addCommand(new CmdSketcherConstrainRadius());
     rcCmdMgr.addCommand(new CmdSketcherConstrainAngle());
     rcCmdMgr.addCommand(new CmdSketcherConstrainEqual());
+    rcCmdMgr.addCommand(new CmdSketcherConstrainPointOnObject());
  }

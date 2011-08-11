@@ -1495,79 +1495,78 @@ Restart:
                     datumLineSet->numVertices.set1Value(3,2);
                 }
                 break;
+            case PointOnObject:
             case Tangent:
                 {
                     assert(Constr->First < int(geomlist->size()));
                     assert(Constr->Second < int(geomlist->size()));
-                    // get the geometry
-                    const Part::Geometry *geo1 = (*geomlist)[Constr->First];
-                    const Part::Geometry *geo2 = (*geomlist)[Constr->Second];
-                    // Parallel can only apply to a GeomLineSegment
 
-                    const Part::GeomLineSegment *lineSeg = 0;
-                    const Part::GeomCircle *circle1 = 0;
-                    const Part::GeomCircle *circle2 = 0;
-                    const Part::GeomArcOfCircle *arcOfCircle1 = 0;
-                    const Part::GeomArcOfCircle *arcOfCircle2 = 0;
-
-                    //[Fix me] There is probably a nicer way of doing this.
-                    //Assign pointers to the first part of the geometry
-                    if (geo1->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
-                        lineSeg = dynamic_cast<const Part::GeomLineSegment *>(geo1);
-                    }
-                    else if (geo1->getTypeId()== Part::GeomArcOfCircle::getClassTypeId()) {
-                        arcOfCircle1= dynamic_cast<const Part::GeomArcOfCircle *>(geo1);
-                    }
-                    else if (geo1->getTypeId()== Part::GeomCircle::getClassTypeId()) {
-                        circle1 = dynamic_cast<const Part::GeomCircle *>(geo1);
-                    }
-                    // Assign the second type of geometry
-                    if (geo2->getTypeId()== Part::GeomLineSegment::getClassTypeId()) {
-                        lineSeg = dynamic_cast<const Part::GeomLineSegment *>(geo2);
-                    }
-                    else if (geo2->getTypeId()== Part::GeomCircle::getClassTypeId()) {
-                        if (circle1) {
-                            circle2 = dynamic_cast<const Part::GeomCircle *>(geo2);
-                        } else {
-                            circle1 = dynamic_cast<const Part::GeomCircle *>(geo2);
-                        }
-                    }
-                    else if (geo2->getTypeId()== Part::GeomArcOfCircle::getClassTypeId()) {
-                        if (arcOfCircle1) {
-                            arcOfCircle2 = dynamic_cast<const Part::GeomArcOfCircle *>(geo2);
-                        } else {
-                            arcOfCircle1 = dynamic_cast<const Part::GeomArcOfCircle *>(geo2);
-                        }
-                    }
-
-                    // Select the pairs that we would like to show
                     Base::Vector3d pos;
-                    if (lineSeg && circle1) {
-                        Base::Vector3d lineEndToCenter = circle1->getCenter() - lineSeg->getStartPoint();
-
-                        pos = lineSeg->getEndPoint() - lineSeg->getStartPoint();
-
-                        // Get Scalar / Inner product
-                        float length = (lineEndToCenter.x * pos.x + lineEndToCenter.y * pos.y) / pos.Length();
-                        Base::Vector3d dir = pos;
-                        dir.Normalize();
-                        Base::Vector3d norm(-dir.y, dir.x, 0);
-                        pos = lineSeg->getStartPoint() + dir * length + norm * 5;
+                    if (Constr->Type == PointOnObject) {
+                        pos = edit->ActSketch.getPoint(Constr->First, Constr->FirstPos);
+                        pos += Base::Vector3d(0,5,0);
                     }
-                    else if (lineSeg && arcOfCircle1) {
-                        Base::Vector3d lineEndToCenter = arcOfCircle1->getCenter() - lineSeg->getStartPoint();
-
-                        pos = lineSeg->getEndPoint() - lineSeg->getStartPoint();
-
-                        // Get Scalar / Inner product
-                        float length = (lineEndToCenter.x * pos.x + lineEndToCenter.y * pos.y) / pos.Length();
-                        Base::Vector3d dir = pos;
-                        dir.Normalize();
-                        Base::Vector3d norm(-dir.y, dir.x, 0);
-                        pos = lineSeg->getStartPoint() + dir * length + norm * 5;
-                    }
-                    else {
-                        // Other Behaviour hasn't been implemented
+                    else if (Constr->Type == Tangent) {
+                        // get the geometry
+                        const Part::Geometry *geo1 = (*geomlist)[Constr->First];
+                        const Part::Geometry *geo2 = (*geomlist)[Constr->Second];
+    
+                        const Part::GeomLineSegment *lineSeg = 0;
+                        const Part::GeomCircle *circle1 = 0;
+                        const Part::GeomCircle *circle2 = 0;
+                        const Part::GeomArcOfCircle *arc1 = 0;
+                        const Part::GeomArcOfCircle *arc2 = 0;
+    
+                        //[Fix me] There is probably a nicer way of doing this.
+                        //Assign pointers to the first part of the geometry
+                        if (geo1->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
+                            lineSeg = dynamic_cast<const Part::GeomLineSegment *>(geo1);
+                        }
+                        else if (geo1->getTypeId()== Part::GeomArcOfCircle::getClassTypeId()) {
+                            arc1= dynamic_cast<const Part::GeomArcOfCircle *>(geo1);
+                        }
+                        else if (geo1->getTypeId()== Part::GeomCircle::getClassTypeId()) {
+                            circle1 = dynamic_cast<const Part::GeomCircle *>(geo1);
+                        }
+                        // Assign the second type of geometry
+                        if (geo2->getTypeId()== Part::GeomLineSegment::getClassTypeId()) {
+                            lineSeg = dynamic_cast<const Part::GeomLineSegment *>(geo2);
+                        }
+                        else if (geo2->getTypeId()== Part::GeomCircle::getClassTypeId()) {
+                            if (circle1) {
+                                circle2 = dynamic_cast<const Part::GeomCircle *>(geo2);
+                            } else {
+                                circle1 = dynamic_cast<const Part::GeomCircle *>(geo2);
+                            }
+                        }
+                        else if (geo2->getTypeId()== Part::GeomArcOfCircle::getClassTypeId()) {
+                            if (arc1) {
+                                arc2 = dynamic_cast<const Part::GeomArcOfCircle *>(geo2);
+                            } else {
+                                arc1 = dynamic_cast<const Part::GeomArcOfCircle *>(geo2);
+                            }
+                        }
+    
+                        // Select the pairs that we would like to show
+                        if (lineSeg && (circle1 || arc1)) {
+                            Base::Vector3d lineEndToCenter;
+                            if (circle1)
+                                lineEndToCenter = circle1->getCenter() - lineSeg->getStartPoint();
+                            else if (arc1)
+                                lineEndToCenter = arc1->getCenter() - lineSeg->getStartPoint();
+    
+                            pos = lineSeg->getEndPoint() - lineSeg->getStartPoint();
+    
+                            // Get Scalar / Inner product
+                            float length = (lineEndToCenter.x * pos.x + lineEndToCenter.y * pos.y) / pos.Length();
+                            Base::Vector3d dir = pos;
+                            dir.Normalize();
+                            Base::Vector3d norm(-dir.y, dir.x, 0);
+                            pos = lineSeg->getStartPoint() + dir * length + norm * 5;
+                        }
+                        else {
+                            // Other Behaviour hasn't been implemented
+                        }
                     }
                     dynamic_cast<SoTranslation *>(sep->getChild(1))->translation =  SbVec3f(pos.x, pos.y, 0.0f);
                 }
@@ -1941,12 +1940,17 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
                     edit->vConstrType.push_back((*it)->Type);
                 }
                 break;
+            case PointOnObject:
             case Tangent:
                 {
                     // Create the Image Nodes
                     SoImage *constraintIcon = new SoImage();
 
-                    QImage image = Gui::BitmapFactory().pixmap("Constraint_Tangent").toImage();
+                    QImage image;
+                    if ((*it)->Type == PointOnObject)
+                        image = Gui::BitmapFactory().pixmap("Constraint_PointOnObject").toImage();
+                    if ((*it)->Type == Tangent)
+                        image = Gui::BitmapFactory().pixmap("Constraint_Tangent").toImage();
 
                     //Scale Image
                     image = image.scaledToWidth(constraintImageSize);
@@ -1971,7 +1975,7 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
                     sep->addChild(new SoTranslation());
                     sep->addChild(indexText1);
 
-                    edit->vConstrType.push_back(Tangent);
+                    edit->vConstrType.push_back((*it)->Type);
                 }
                 break;
             default:
@@ -2186,7 +2190,7 @@ void ViewProviderSketch::createEditInventorNodes(void)
     font->size = 15.0;
     edit->EditRoot->addChild(font);
 
-    // use small line with for the Constraints
+    // use small line width for the Constraints
     DrawStyle = new SoDrawStyle;
     DrawStyle->lineWidth = 1;
     edit->EditRoot->addChild(DrawStyle);
@@ -2244,6 +2248,7 @@ int ViewProviderSketch::getPreselectPoint(void)const
         return edit->PreselectPoint;
     return -1;
 }
+
 int ViewProviderSketch::getPreselectCurve(void)const
 {
     if (edit)

@@ -227,6 +227,7 @@ void TaskSketcherConstrains::slotConstraintsChanged(void)
     QIcon radi ( Gui::BitmapFactory().pixmap("Constraint_Radius") );
     QIcon angl ( Gui::BitmapFactory().pixmap("Constraint_InternalAngle") );
     QIcon equal( Gui::BitmapFactory().pixmap("Constraint_EqualLength") );
+    QIcon pntoo( Gui::BitmapFactory().pixmap("Constraint_PointOnObject") );
 
     assert(sketchView);
     // Build up ListView with the constraints
@@ -256,6 +257,10 @@ void TaskSketcherConstrains::slotConstraintsChanged(void)
             case Sketcher::Coincident:
                 if(Filter<1 || (*it)->Name != "")
                     ui->listWidgetConstraints->addItem(new ConstraintItem(coinc,name,i-1,(*it)->Type));
+                break;
+	        case Sketcher::PointOnObject:
+                if(Filter<1 || (*it)->Name != "")
+                ui->listWidgetConstraints->addItem(new ConstraintItem(pntoo,name,i-1,(*it)->Type));
                 break;
             case Sketcher::Parallel:
                 if(Filter<2 || (*it)->Name != "")
