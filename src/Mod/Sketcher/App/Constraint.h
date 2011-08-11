@@ -43,7 +43,8 @@ enum ConstraintType {
     Angle,
     Perpendicular,
     Radius,
-    Equal
+    Equal,
+    PointOnObject
 };
 
 /// define if you want to use the end or start point
