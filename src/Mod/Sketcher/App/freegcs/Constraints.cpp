@@ -427,8 +427,9 @@ double ConstraintPointOnLine::error()
     double y0=*p0y(), y1=*p1y(), y2=*p2y();
     double dx = x2-x1;
     double dy = y2-y1;
+    double d = sqrt(dx*dx+dy*dy);
     double area = -x0*dy+y0*dx+x1*y2-x2*y1; // = x1y2 - x2y1 - x0y2 + x2y0 + x0y1 - x1y0 = 2*(triangle area)
-    return scale * area;
+    return scale * area/d;
 }
 
 double ConstraintPointOnLine::grad(double *param)
@@ -437,12 +438,23 @@ double ConstraintPointOnLine::grad(double *param)
     // darea/dx0 = (y1-y2)      darea/dy0 = (x2-x1)
     // darea/dx1 = (y2-y0)      darea/dy1 = (x0-x2)
     // darea/dx2 = (y0-y1)      darea/dy2 = (x1-x0)
-    if (param == p0x()) deriv += (*p1y()-*p2y());
-    if (param == p0y()) deriv += (*p2x()-*p1x());
-    if (param == p1x()) deriv += (*p2y()-*p0y());
-    if (param == p1y()) deriv += (*p0x()-*p2x());
-    if (param == p2x()) deriv += (*p0y()-*p1y());
-    if (param == p2y()) deriv += (*p1x()-*p0x());
+    if (param == p0x() || param == p0y() ||
+        param == p1x() || param == p1y() ||
+        param == p2x() || param == p2y()) {
+        double x0=*p0x(), x1=*p1x(), x2=*p2x();
+        double y0=*p0y(), y1=*p1y(), y2=*p2y();
+        double dx = x2-x1;
+        double dy = y2-y1;
+        double d2 = dx*dx+dy*dy;
+        double d = sqrt(d2);
+        double area = -x0*dy+y0*dx+x1*y2-x2*y1;
+        if (param == p0x()) deriv += (y1-y2) / d;
+        if (param == p0y()) deriv += (x2-x1) / d ;
+        if (param == p1x()) deriv += ((y2-y0)*d + (dx/d)*area) / d2;
+        if (param == p1y()) deriv += ((x0-x2)*d + (dy/d)*area) / d2;
+        if (param == p2x()) deriv += ((y0-y1)*d - (dx/d)*area) / d2;
+        if (param == p2y()) deriv += ((x1-x0)*d - (dy/d)*area) / d2;
+    }
     return scale * deriv;
 }
 
