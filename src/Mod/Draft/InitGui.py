@@ -201,16 +201,10 @@ class DraftWorkbench (Workbench):
                 self.appendMenu(["Draft","Wire tools"],self.lineList)
                                         
 	def Activated(self):
-                FreeCADGui.draftToolBar.draftWidget.setVisible(True)
-                FreeCADGui.draftToolBar.draftWidget.toggleViewAction().setVisible(True)
-                if FreeCADGui.draftToolBar.taskmode:
-                        FreeCADGui.draftToolBar.setWatchers()
+                FreeCADGui.draftToolBar.Activated()
 
 	def Deactivated(self):
-                if (FreeCAD.activeDraftCommand != None): FreeCAD.activeDraftCommand.finish()
-                FreeCADGui.draftToolBar.draftWidget.setVisible(False)
-                FreeCADGui.draftToolBar.draftWidget.toggleViewAction().setVisible(False)
-                FreeCADGui.Control.clearTaskWatcher()
+                FreeCADGui.draftToolBar.Deactivated()
 
 	def ContextMenu(self, recipient):
                 if (recipient == "View"):

@@ -1131,8 +1131,8 @@ class Creator:
                         self.ui = FreeCADGui.draftToolBar
                         self.ui.cross(True)
                         self.ui.sourceCmd = self
-                        self.ui.cmdlabel.setText(name)
-			FreeCADGui.draftToolBar.draftWidget.setVisible(True)
+                        self.ui.setTitle(name)
+			self.ui.show()
                         rot = self.view.getCameraNode().getField("orientation").getValue()
                         upv = Vector(rot.multVec(coin.SbVec3f(0,1,0)).getValue())
 			plane.setup(fcvec.neg(self.view.getViewDirection()), Vector(0,0,0), upv)
@@ -2040,7 +2040,7 @@ class Text(Creator):
 			self.ui.xValue.setFocus()
 			self.ui.xValue.selectAll()
 			msg(translate("draft", "Pick location point:\n"))
-			FreeCADGui.draftToolBar.draftWidget.setVisible(True)
+			FreeCADGui.draftToolBar.show()
 
 	def finish(self,closed=False,cont=False):
 		"terminates the operation"
@@ -2112,7 +2112,7 @@ class Dimension(Creator):
                                 self.point2 = None
                                 self.constraintrack = lineTracker(dotted=True)
                                 msg(translate("draft", "Pick first point:\n"))
-                                FreeCADGui.draftToolBar.draftWidget.setVisible(True)
+                                FreeCADGui.draftToolBar.show()
 
 	def finish(self,closed=False):
 		"terminates the operation"
@@ -2343,7 +2343,7 @@ class Modifier:
 			FreeCAD.activeDraftCommand = self
 			self.view = FreeCADGui.ActiveDocument.ActiveView
 			self.ui = FreeCADGui.draftToolBar
-			FreeCADGui.draftToolBar.draftWidget.setVisible(True)
+			FreeCADGui.draftToolBar.show()
                         rot = self.view.getCameraNode().getField("orientation").getValue()
                         upv = Vector(rot.multVec(coin.SbVec3f(0,1,0)).getValue())
 			plane.setup(fcvec.neg(self.view.getViewDirection()), Vector(0,0,0), upv)
@@ -2352,7 +2352,7 @@ class Modifier:
 			self.constrain = None
 			self.obj = None
 			self.extendedCopy = False
-                        self.ui.cmdlabel.setText(name)
+                        self.ui.setTitle(name)
 			self.featureName = name
                         self.snap = snapTracker()
                         self.planetrack = PlaneTracker()
@@ -2570,7 +2570,7 @@ class Rotate(Modifier):
 		self.center = None
 		self.ui.arcUi()
                 self.ui.isCopy.show()
-		self.ui.cmdlabel.setText("Rotate")
+		self.ui.setTitle("Rotate")
 		self.linetrack = lineTracker()
 		self.constraintrack = lineTracker(dotted=True)
 		self.arctrack = arcTracker()
@@ -2768,7 +2768,7 @@ class Offset(Modifier):
                         self.ui.radiusUi()
                         self.ui.isCopy.show()
                         self.ui.labelRadius.setText("Distance")
-                        self.ui.cmdlabel.setText("Offset")
+                        self.ui.setTitle("Offset")
                         self.ui.radiusValue.setFocus()
                         self.ui.radiusValue.selectAll()
                         self.linetrack = lineTracker()
