@@ -30,6 +30,7 @@ EXTRA_DIST = \
 		icons/Constraint_EqualLength.svg \
 		icons/Constraint_HorizontalDistance.svg \
 		icons/Constraint_VerticalDistance.svg \
+		icons/Constraint_Symmetric.svg \
 		icons/Sketcher_ConstrainCoincident.svg \
 		icons/Sketcher_ConstrainHorizontal.svg \
 		icons/Sketcher_ConstrainLock.svg \

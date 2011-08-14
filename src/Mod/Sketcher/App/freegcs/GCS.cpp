@@ -129,6 +129,11 @@ System::System(std::vector<Constraint *> clist_)
                 newconstr = new ConstraintL2LAngle(*oldconstr);
                 break;
             }
+            case MidpointOnLine: {
+                ConstraintMidpointOnLine *oldconstr = static_cast<ConstraintMidpointOnLine *>(*constr);
+                newconstr = new ConstraintMidpointOnLine(*oldconstr);
+                break;
+            }
             case None:
                 break;
         }
@@ -291,6 +296,21 @@ int System::addConstraintL2LAngle(Point &l1p1, Point &l1p2,
     return addConstraint(constr);
 }
 
+int System::addConstraintMidpointOnLine(Line &l1, Line &l2, int level)
+{
+    Constraint *constr = new ConstraintMidpointOnLine(l1, l2);
+    constr->setPriority(level);
+    return addConstraint(constr);
+}
+
+int System::addConstraintMidpointOnLine(Point &l1p1, Point &l1p2,
+                                        Point &l2p1, Point &l2p2, int level)
+{
+    Constraint *constr = new ConstraintMidpointOnLine(l1p1, l1p2, l2p1, l2p2);
+    constr->setPriority(level);
+    return addConstraint(constr);
+}
+
 // derived constraints
 
 int System::addConstraintP2PCoincident(Point &p1, Point &p2, int level)
@@ -400,6 +420,12 @@ int System::addConstraintEqualRadius(Circle &c1, Arc &a2, int level)
 int System::addConstraintEqualRadius(Arc &a1, Arc &a2, int level)
 {
     return addConstraintEqual(a1.rad, a2.rad, level);
+}
+
+int System::addConstraintP2PSymmetric(Point &p1, Point &p2, Line &l, int level)
+{
+    addConstraintPerpendicular(p1, p2, l.p1, l.p2, level);
+    return addConstraintMidpointOnLine(p1, p2, l.p1, l.p2, level);
 }
 
 

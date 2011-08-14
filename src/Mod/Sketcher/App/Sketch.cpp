@@ -532,6 +532,10 @@ int Sketch::addConstraint(const Constraint *constraint)
     case Equal:
         rtn = addEqualConstraint(constraint->First,constraint->Second);
         break;
+    case Symmetric:
+        rtn = addSymmetricConstraint(constraint->First,constraint->FirstPos,
+                                     constraint->Second,constraint->SecondPos,constraint->Third);
+        break;
     case None:
         break;
     }
@@ -1162,6 +1166,29 @@ int Sketch::addPointOnObjectConstraint(int geoId1, PointPos pos1, int geoId2)
             GCS::Circle &c = Circles[Geoms[geoId2].index];
             return GCSsys.addConstraintPointOnCircle(p1,c);
         }
+    }
+    return -1;
+}
+
+// symmetric points constraint
+int Sketch::addSymmetricConstraint(int geoId1, PointPos pos1, int geoId2, PointPos pos2, int geoId3)
+{
+    assert(geoId1 < int(Geoms.size()));
+    assert(geoId2 < int(Geoms.size()));
+    assert(geoId3 < int(Geoms.size()));
+
+    if (Geoms[geoId3].type != Line)
+        return -1;
+
+    int pointId1 = getPointId(geoId1, pos1);
+    int pointId2 = getPointId(geoId2, pos2);
+
+    if (pointId1 >= 0 && pointId1 < int(Points.size()) &&
+        pointId2 >= 0 && pointId2 < int(Points.size())) {
+        GCS::Point &p1 = Points[pointId1];
+        GCS::Point &p2 = Points[pointId2];
+        GCS::Line &l = Lines[Geoms[geoId3].index];
+        return GCSsys.addConstraintP2PSymmetric(p1, p2, l);
     }
     return -1;
 }

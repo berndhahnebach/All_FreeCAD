@@ -44,7 +44,8 @@ enum ConstraintType {
     Perpendicular,
     Radius,
     Equal,
-    PointOnObject
+    PointOnObject,
+    Symmetric
 };
 
 /// define if you want to use the end or start point
