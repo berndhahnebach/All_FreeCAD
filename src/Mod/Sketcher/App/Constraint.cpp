@@ -116,10 +116,10 @@ void Constraint::Restore(XMLReader &reader)
     SecondPos = (PointPos)  reader.getAttributeAsInteger("SecondPos");
 
     // read the third geo group if present
-    if (reader.hasAttribute("Third"))
+    if (reader.hasAttribute("Third")){
         Second    = reader.getAttributeAsInteger("Third");
         SecondPos = (PointPos)  reader.getAttributeAsInteger("ThirdPos");
-
+    }
     // Read the distance a constraint label has been moved
     if (reader.hasAttribute("LabelDistance"))
         LabelDistance = (float)reader.getAttributeAsFloat("LabelDistance");
