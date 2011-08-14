@@ -249,6 +249,16 @@ void SoFCSelection::doAction(SoAction *action)
     inherited::doAction( action );
 }
 
+int SoFCSelection::getPriority(const SoPickedPoint* p)
+{
+    const SoDetail* detail = p->getDetail();
+    if(!detail) return 0;
+    if(detail->isOfType(SoFaceDetail::getClassTypeId())) return 1;
+    if(detail->isOfType(SoLineDetail::getClassTypeId())) return 2;
+    if(detail->isOfType(SoPointDetail::getClassTypeId())) return 3;
+    return 0;
+}
+
 const SoPickedPoint*
 SoFCSelection::getPickedPoint(SoHandleEventAction* action) const
 {
@@ -261,19 +271,38 @@ SoFCSelection::getPickedPoint(SoHandleEventAction* action) const
         return 0;
     else if (points.getLength() == 1)
         return points[0];
-    const SoPickedPoint* pp0 = points[0];
-    const SoPickedPoint* pp1 = points[1];
-    const SoDetail* det0 = pp0->getDetail();
-    const SoDetail* det1 = pp1->getDetail();
-    if (det0 && det0->isOfType(SoFaceDetail::getClassTypeId()) &&
-        det1 && det1->isOfType(SoLineDetail::getClassTypeId())) {
-        const SbVec3f& pt0 = pp0->getPoint();
-        const SbVec3f& pt1 = pp1->getPoint();
-        if (pt0.equals(pt1, 0.01f))
-            return pp1;
-    }
+    //const SoPickedPoint* pp0 = points[0];
+    //const SoPickedPoint* pp1 = points[1];
+    //const SoDetail* det0 = pp0->getDetail();
+    //const SoDetail* det1 = pp1->getDetail();
+    //if (det0 && det0->isOfType(SoFaceDetail::getClassTypeId()) &&
+    //    det1 && det1->isOfType(SoLineDetail::getClassTypeId())) {
+    //    const SbVec3f& pt0 = pp0->getPoint();
+    //    const SbVec3f& pt1 = pp1->getPoint();
+    //    if (pt0.equals(pt1, 0.01f))
+    //        return pp1;
+    //}
 
-    return pp0;
+    //return pp0;
+    
+    const SoPickedPoint* picked = points[0];
+
+    int picked_prio = getPriority(picked);
+    const SbVec3f& picked_pt = picked->getPoint();
+
+   
+    for(int i=1; i<points.getLength();i++) {
+        const SoPickedPoint* cur = points[i];
+        int cur_prio = getPriority(cur);
+        const SbVec3f& cur_pt = cur->getPoint();
+
+        if ((cur_prio > picked_prio) && picked_pt.equals(cur_pt, 0.01f)) {
+            picked = cur;
+            picked_prio = cur_prio;
+        }
+    }
+    return picked;
+
 }
 
 // doc from parent
