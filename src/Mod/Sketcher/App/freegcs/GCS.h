@@ -102,6 +102,8 @@ namespace GCS
         int addConstraintPointOnLine(Point &p, Line &l, int level=0);
         int addConstraintParallel(Line &l1, Line &l2, int level=0);
         int addConstraintPerpendicular(Line &l1, Line &l2, int level=0);
+        int addConstraintPerpendicular(Point &l1p1, Point &l1p2,
+                                       Point &l2p1, Point &l2p2, int level=0);
         int addConstraintL2LAngle(Line &l1, Line &l2, double *angle, int level=0);
         int addConstraintL2LAngle(Point &l1p1, Point &l1p2, Point &l2p1, Point &l2p2,
                                   double *angle, int level=0);

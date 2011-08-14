@@ -480,7 +480,11 @@ ConstraintType ConstraintParallel::getTypeId()
 
 void ConstraintParallel::rescale(double coef)
 {
-    scale = coef * 0.01;
+    double dx1 = (*l1p1x() - *l1p2x());
+    double dy1 = (*l1p1y() - *l1p2y());
+    double dx2 = (*l2p1x() - *l2p2x());
+    double dy2 = (*l2p1y() - *l2p2y());
+    scale = coef / sqrt((dx1*dx1+dy1*dy1)*(dx2*dx2+dy2*dy2));
 }
 
 double ConstraintParallel::error()
@@ -489,7 +493,7 @@ double ConstraintParallel::error()
     double dy1 = (*l1p1y() - *l1p2y());
     double dx2 = (*l2p1x() - *l2p2x());
     double dy2 = (*l2p1y() - *l2p2y());
-    return scale * (dx1*dy2 - dx2*dy1);
+    return scale * (dx1*dy2 - dy1*dx2);
 }
 
 double ConstraintParallel::grad(double *param)
@@ -523,6 +527,21 @@ ConstraintPerpendicular::ConstraintPerpendicular(Line &l1, Line &l2)
     rescale();
 }
 
+ConstraintPerpendicular::ConstraintPerpendicular(Point &l1p1, Point &l1p2,
+                                                 Point &l2p1, Point &l2p2)
+{
+    pvec.push_back(l1p1.x);
+    pvec.push_back(l1p1.y);
+    pvec.push_back(l1p2.x);
+    pvec.push_back(l1p2.y);
+    pvec.push_back(l2p1.x);
+    pvec.push_back(l2p1.y);
+    pvec.push_back(l2p2.x);
+    pvec.push_back(l2p2.y);
+    origpvec = pvec;
+    rescale();
+}
+
 ConstraintType ConstraintPerpendicular::getTypeId()
 {
     return Perpendicular;
@@ -530,7 +549,11 @@ ConstraintType ConstraintPerpendicular::getTypeId()
 
 void ConstraintPerpendicular::rescale(double coef)
 {
-    scale = coef * 1.;
+    double dx1 = (*l1p1x() - *l1p2x());
+    double dy1 = (*l1p1y() - *l1p2y());
+    double dx2 = (*l2p1x() - *l2p2x());
+    double dy2 = (*l2p1y() - *l2p2y());
+    scale = coef / sqrt((dx1*dx1+dy1*dy1)*(dx2*dx2+dy2*dy2));
 }
 
 double ConstraintPerpendicular::error()
@@ -539,33 +562,22 @@ double ConstraintPerpendicular::error()
     double dy1 = (*l1p1y() - *l1p2y());
     double dx2 = (*l2p1x() - *l2p2x());
     double dy2 = (*l2p1y() - *l2p2y());
-    return scale * (dx1*dx2 + dy1*dy2) / sqrt((dx1*dx1+dy1*dy1)*(dx2*dx2+dy2*dy2));
+    return scale * (dx1*dx2 + dy1*dy2);
 }
 
 double ConstraintPerpendicular::grad(double *param)
 {
     double deriv=0.;
-    if (param == l1p1x() || param == l1p2x() || param == l1p1y() || param == l1p2y() ||
-        param == l2p1x() || param == l2p2x() || param == l2p1y() || param == l2p2y()) {
-        double dx1 = (*l1p1x() - *l1p2x());
-        double dy1 = (*l1p1y() - *l1p2y());
-        double dx2 = (*l2p1x() - *l2p2x());
-        double dy2 = (*l2p1y() - *l2p2y());
-        double dd1 = dx1*dx1+dy1*dy1;
-        double dd2 = dx2*dx2+dy2*dy2;
-        double d1 = sqrt(dd1);
-        double d2 = sqrt(dd2);
-        double dp = dx1*dx2 + dy1*dy2;
-        if (param == l1p1x()) deriv += (d1*dx2 - dp*dx1/d1) / (dd1*d2);
-        if (param == l1p2x()) deriv += -(d1*dx2 - dp*dx1/d1) / (dd1*d2);
-        if (param == l1p1y()) deriv += (d1*dy2 - dp*dy1/d1) / (dd1*d2);
-        if (param == l1p2y()) deriv += -(d1*dy2 - dp*dy1/d1) / (dd1*d2);
+    if (param == l1p1x()) deriv += (*l2p1x() - *l2p2x()); // = dx2
+    if (param == l1p2x()) deriv += -(*l2p1x() - *l2p2x()); // = -dx2
+    if (param == l1p1y()) deriv += (*l2p1y() - *l2p2y()); // = dy2
+    if (param == l1p2y()) deriv += -(*l2p1y() - *l2p2y()); // = -dy2
 
-        if (param == l2p1x()) deriv += (d2*dx1 - dp*dx2/d2) / (dd2*d1);
-        if (param == l2p2x()) deriv += -(d2*dx1 - dp*dx2/d2) / (dd2*d1);
-        if (param == l2p1y()) deriv += (d2*dy1 - dp*dy2/d2) / (dd2*d1);
-        if (param == l2p2y()) deriv += -(d2*dy1 - dp*dy2/d2) / (dd2*d1);
-    }
+    if (param == l2p1x()) deriv += (*l1p1x() - *l1p2x()); // = dx1
+    if (param == l2p2x()) deriv += -(*l1p1x() - *l1p2x()); // = -dx1
+    if (param == l2p1y()) deriv += (*l1p1y() - *l1p2y()); // = dy1
+    if (param == l2p2y()) deriv += -(*l1p1y() - *l1p2y()); // = -dy1
+
     return scale * deriv;
 }
 
