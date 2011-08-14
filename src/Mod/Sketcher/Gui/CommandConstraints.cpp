@@ -93,7 +93,7 @@ int SketchSelection::setUp(void)
 
         SketchObj = dynamic_cast<Sketcher::SketchObject*>(selection[0].getObject());
         SketchSubNames = selection[0].getSubNames();
-    }else if(selection.size() == 2){
+    } else if(selection.size() == 2) {
         if(selection[0].getObject()->getTypeId().isDerivedFrom(Sketcher::SketchObject::getClassTypeId())){
             SketchObj = dynamic_cast<Sketcher::SketchObject*>(selection[0].getObject());
             // check if the none sketch object is the support of the sketch
@@ -107,7 +107,7 @@ int SketchSelection::setUp(void)
             SketchSubNames  = selection[0].getSubNames();
             SupportSubNames = selection[1].getSubNames();
 
-        }else if(selection[1].getObject()->getTypeId().isDerivedFrom(Sketcher::SketchObject::getClassTypeId())){
+        } else if (selection[1].getObject()->getTypeId().isDerivedFrom(Sketcher::SketchObject::getClassTypeId())) {
             SketchObj = dynamic_cast<Sketcher::SketchObject*>(selection[1].getObject());
             // check if the none sketch object is the support of the sketch
             if(selection[0].getObject() != SketchObj->Support.getValue()){
@@ -120,7 +120,7 @@ int SketchSelection::setUp(void)
             SketchSubNames  = selection[1].getSubNames();
             SupportSubNames = selection[0].getSubNames();
 
-        }else {
+        } else {
             ErrorMsg = QObject::tr("One of the selected has to be on the sketch");
             return -1;
         }
@@ -205,10 +205,8 @@ void CmdSketcherConstrainHorizontal::activated(int iMsg)
     commitCommand();
     updateActive();
 
-    // clear the selction (convenience)
+    // clear the selection (convenience)
     getSelection().clearSelection();
-
-
 }
 
 bool CmdSketcherConstrainHorizontal::isActive(void)
@@ -357,7 +355,7 @@ void CmdSketcherConstrainLock::activated(int iMsg)
     commitCommand();
     updateActive();
 
-    // clear the selction (convenience)
+    // clear the selection (convenience)
     getSelection().clearSelection();
 }
 
@@ -399,7 +397,6 @@ void CmdSketcherConstrainCoincident::activated(int iMsg)
     const std::vector<std::string> &SubNames = selection[0].getSubNames();
     Sketcher::SketchObject* Obj = dynamic_cast<Sketcher::SketchObject*>(selection[0].getObject());
 
-    // only one sketch with its subelements are allowed to be selected
     if (SubNames.size() != 2) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
             QObject::tr("Select exactly two vertexes from the sketch."));
@@ -439,7 +436,7 @@ void CmdSketcherConstrainCoincident::activated(int iMsg)
     commitCommand();
     updateActive();
 
-    // clear the selction (convenience)
+    // clear the selection (convenience)
     getSelection().clearSelection();
 }
 
@@ -711,7 +708,7 @@ void CmdSketcherConstrainDistanceX::activated(int iMsg)
         return;
     }
 
-    int GeoId1=-1, VtId1=-1, GeoId2=-1, VtId2=-1;
+    int GeoId1=Constraint::GeoUndef, VtId1=-1, GeoId2=Constraint::GeoUndef, VtId2=-1;
     if (SubNames.size() >= 1) {
         if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge")
             GeoId1 = std::atoi(SubNames[0].substr(4,4000).c_str());
@@ -825,7 +822,7 @@ void CmdSketcherConstrainDistanceY::activated(int iMsg)
         return;
     }
 
-    int GeoId1=-1, VtId1=-1, GeoId2=-1, VtId2=-1;
+    int GeoId1=Constraint::GeoUndef, VtId1=-1, GeoId2=Constraint::GeoUndef, VtId2=-1;
     if (SubNames.size() >= 1) {
         if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge")
             GeoId1 = std::atoi(SubNames[0].substr(4,4000).c_str());
@@ -931,7 +928,6 @@ void CmdSketcherConstrainParallel::activated(int iMsg)
     // get the needed lists and objects
     const std::vector<std::string> &SubNames = selection[0].getSubNames();
 
-    // only one sketch with its subelements are allowed to be selected
     if (SubNames.size() != 2) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
             QObject::tr("Select exactly two lines from the sketch."));
@@ -965,7 +961,7 @@ void CmdSketcherConstrainParallel::activated(int iMsg)
     commitCommand();
     updateActive();
 
-    // clear the selction (convenience)
+    // clear the selection (convenience)
     getSelection().clearSelection();
 }
 
@@ -1006,7 +1002,6 @@ void CmdSketcherConstrainPerpendicular::activated(int iMsg)
     // get the needed lists and objects
     const std::vector<std::string> &SubNames = selection[0].getSubNames();
 
-    // only one sketch with its subelements are allowed to be selected
     if (SubNames.size() != 2) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
             QObject::tr("Select exactly two lines from the sketch."));
@@ -1040,7 +1035,7 @@ void CmdSketcherConstrainPerpendicular::activated(int iMsg)
     commitCommand();
     updateActive();
 
-    // clear the selction (convenience)
+    // clear the selection (convenience)
     getSelection().clearSelection();
 }
 
@@ -1082,14 +1077,13 @@ void CmdSketcherConstrainTangent::activated(int iMsg)
     const std::vector<std::string> &SubNames = selection[0].getSubNames();
     Sketcher::SketchObject* Obj = dynamic_cast<Sketcher::SketchObject*>(selection[0].getObject());
 
-    // only one sketch with its subelements are allowed to be selected
     if (SubNames.size() != 2) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
             QObject::tr("Select exactly two entities from the sketch."));
         return;
     }
 
-    int GeoId1=-1, VtId1=-1, GeoId2=-1, VtId2=-1;
+    int GeoId1=Constraint::GeoUndef, VtId1=-1, GeoId2=Constraint::GeoUndef, VtId2=-1;
     if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge")
         GeoId1 = std::atoi(SubNames[0].substr(4,4000).c_str());
     else if (SubNames[0].size() > 6 && SubNames[0].substr(0,6) == "Vertex")
@@ -1272,7 +1266,7 @@ void CmdSketcherConstrainAngle::activated(int iMsg)
         return;
     }
 
-    int GeoId1=-1, GeoId2=-1;
+    int GeoId1=Constraint::GeoUndef, GeoId2=Constraint::GeoUndef;
     if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge")
         GeoId1 = std::atoi(SubNames[0].substr(4,4000).c_str());
     if (SubNames.size() == 2) {
@@ -1388,7 +1382,6 @@ void CmdSketcherConstrainEqual::activated(int iMsg)
     // get the needed lists and objects
     const std::vector<std::string> &SubNames = selection[0].getSubNames();
 
-    // only one sketch with its subelements are allowed to be selected
     if (SubNames.size() != 2) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
             QObject::tr("Select exactly two edges from the sketch."));
@@ -1422,7 +1415,7 @@ void CmdSketcherConstrainEqual::activated(int iMsg)
     commitCommand();
     updateActive();
 
-    // clear the selction (convenience)
+    // clear the selection (convenience)
     getSelection().clearSelection();
 }
 
