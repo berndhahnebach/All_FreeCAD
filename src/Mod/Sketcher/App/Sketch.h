@@ -95,7 +95,7 @@ public:
     //@{
     /// add a point
     int addPoint(const Base::Vector3d &point);
-    /// add a infinit line
+    /// add an infinite line
     int addLine(const Part::GeomLineSegment &line);
     /// add a line segment
     int addLineSegment(const Part::GeomLineSegment &lineSegment);

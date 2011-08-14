@@ -133,6 +133,25 @@ void Sketch::setUpSketch(const std::vector<Part::Geometry *> &geo, const std::ve
 
 }
 
+const char* nameByType(Sketch::GeoType type)
+{
+    switch (type) {
+    case Sketch::Point:
+        return "point";
+    case Sketch::Line:
+        return "line";
+    case Sketch::Arc:
+        return "arc";
+    case Sketch::Circle:
+        return "circle";
+    case Sketch::Ellipse:
+        return "ellipse";
+    case Sketch::None:
+    default:
+        return "unknown";
+    }
+}
+
 // Geometry adding ==========================================================
 
 int Sketch::addGeometry(const Part::Geometry *geo)
@@ -698,25 +717,6 @@ int Sketch::addParallelConstraint(int geoId1, int geoId2)
     GCS::Line &l1 = Lines[Geoms[geoId1].index];
     GCS::Line &l2 = Lines[Geoms[geoId2].index];
     return GCSsys.addConstraintParallel(l1, l2);
-}
-
-const char* nameByType(Sketch::GeoType type)
-{
-    switch (type) {
-    case Sketch::Point:
-        return "point";
-    case Sketch::Line:
-        return "line";
-    case Sketch::Arc:
-        return "arc";
-    case Sketch::Circle:
-        return "circle";
-    case Sketch::Ellipse:
-        return "ellipse";
-    case Sketch::None:
-    default:
-        return "unknown";
-    }
 }
 
 int Sketch::addPerpendicularConstraint(int geoId1, int geoId2)
