@@ -1571,6 +1571,50 @@ Restart:
                     dynamic_cast<SoTranslation *>(sep->getChild(1))->translation =  SbVec3f(pos.x, pos.y, 0.0f);
                 }
                 break;
+            case Symmetric:
+                {
+                    assert(Constr->First < int(geomlist->size()));
+                    assert(Constr->Second < int(geomlist->size()));
+
+                    Base::Vector3d pnt1 = edit->ActSketch.getPoint(Constr->First, Constr->FirstPos);
+                    Base::Vector3d pnt2 = edit->ActSketch.getPoint(Constr->Second, Constr->SecondPos);
+
+                    SbVec3f p1(pnt1.x,pnt1.y,0);
+                    SbVec3f p2(pnt2.x,pnt2.y,0);
+                    SbVec3f dir = (p2-p1);
+                    dir.normalize();
+                    SbVec3f norm (-dir[1],dir[0],0);
+
+                    // Get the datum nodes
+                    SoSeparator *sepArrows = dynamic_cast<SoSeparator *>(sep->getChild(1));
+                    SoCoordinate3 *arrowsCord = dynamic_cast<SoCoordinate3 *>(sepArrows->getChild(0));
+
+                    arrowsCord->point.setNum(10);
+
+                    // Calculate coordinates for the first arrow
+                    arrowsCord->point.set1Value(0,p1);
+                    arrowsCord->point.set1Value(1,p1 + dir * 5);
+                    arrowsCord->point.set1Value(2,p1 + dir * 3 + norm * 2);
+                    arrowsCord->point.set1Value(3,p1 + dir * 5);
+                    arrowsCord->point.set1Value(4,p1 + dir * 3 - norm * 2);
+
+                    // Calculate coordinates for the second arrow
+                    arrowsCord->point.set1Value(5,p2);
+                    arrowsCord->point.set1Value(6,p2 - dir * 5);
+                    arrowsCord->point.set1Value(7,p2 - dir * 3 + norm * 2);
+                    arrowsCord->point.set1Value(8,p2 - dir * 5);
+                    arrowsCord->point.set1Value(9,p2 - dir * 3 - norm * 2);
+
+                    // Use the coordinates calculated earlier to the lineset
+                    SoLineSet *arrowsLineSet = dynamic_cast<SoLineSet *>(sepArrows->getChild(1));
+                    arrowsLineSet->numVertices.set1Value(0,3);
+                    arrowsLineSet->numVertices.set1Value(1,2);
+                    arrowsLineSet->numVertices.set1Value(2,3);
+                    arrowsLineSet->numVertices.set1Value(3,2);
+
+                    dynamic_cast<SoTranslation *>(sep->getChild(2))->translation = (p1 + p2)/2;
+                }
+                break;
             case Angle:
                 {
                     assert(Constr->First < int(geomlist->size()));
@@ -1784,7 +1828,6 @@ Restart:
                 }
                 break;
             case Coincident: // nothing to do for coincident
-            case Symmetric:
             case None:
                 break;
         }
@@ -1943,6 +1986,7 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
                 break;
             case PointOnObject:
             case Tangent:
+            case Symmetric:
                 {
                     // Create the Image Nodes
                     SoImage *constraintIcon = new SoImage();
@@ -1952,6 +1996,8 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
                         image = Gui::BitmapFactory().pixmap("Constraint_PointOnObject").toImage();
                     if ((*it)->Type == Tangent)
                         image = Gui::BitmapFactory().pixmap("Constraint_Tangent").toImage();
+                    if ((*it)->Type == Symmetric)
+                        image = Gui::BitmapFactory().pixmap("Constraint_Symmetric").toImage();
 
                     //Scale Image
                     image = image.scaledToWidth(constraintImageSize);
@@ -1970,6 +2016,14 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
 
                     SoText2 *indexText1 = new SoText2();
 
+                    if ((*it)->Type == Symmetric) {
+                        SoSeparator *sepArrows = new SoSeparator();
+                        sepArrows->addChild(new SoCoordinate3());
+                        SoLineSet *lineSet = new SoLineSet;
+                        sepArrows->addChild(lineSet);
+                        sep->addChild(sepArrows);
+                    }
+
                     // Add new nodes to Constraint Seperator
                     sep->addChild(new SoTranslation());
                     sep->addChild(constraintIcon);
@@ -1978,9 +2032,6 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
 
                     edit->vConstrType.push_back((*it)->Type);
                 }
-                break;
-            case Symmetric: // no visual for symmetric so far
-                edit->vConstrType.push_back(Symmetric);
                 break;
             default:
                 edit->vConstrType.push_back(None);
