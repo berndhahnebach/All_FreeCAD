@@ -209,6 +209,7 @@ namespace GCS
         inline double* l2p2y() { return pvec[7]; }
     public:
         ConstraintPerpendicular(Line &l1, Line &l2);
+        ConstraintPerpendicular(Point &l1p1, Point &l1p2, Point &l2p1, Point &l2p2);
         virtual ConstraintType getTypeId();
         virtual void rescale(double coef=1.);
         virtual double error();

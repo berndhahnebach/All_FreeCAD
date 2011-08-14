@@ -268,6 +268,14 @@ int System::addConstraintPerpendicular(Line &l1, Line &l2, int level)
     return addConstraint(constr);
 }
 
+int System::addConstraintPerpendicular(Point &l1p1, Point &l1p2,
+                                       Point &l2p1, Point &l2p2, int level)
+{
+    Constraint *constr = new ConstraintPerpendicular(l1p1, l1p2, l2p1, l2p2);
+    constr->setPriority(level);
+    return addConstraint(constr);
+}
+
 int System::addConstraintL2LAngle(Line &l1, Line &l2, double *angle, int level)
 {
     Constraint *constr = new ConstraintL2LAngle(l1, l2, angle);
