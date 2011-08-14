@@ -103,6 +103,7 @@ protected:
     virtual SbBool readInstance(SoInput *  in, unsigned short  flags); 
 
 private:
+    static int getPriority(const SoPickedPoint*);
     static void turnoffcurrent(SoAction * action);
     void setOverride(SoGLRenderAction * action);
     SbBool isHighlighted(SoAction *action);
