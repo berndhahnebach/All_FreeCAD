@@ -50,6 +50,8 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     int  FirstPos   = none;
     int  SecondIndex= Constraint::GeoUndef;
     int  SecondPos  = none;
+    int  ThirdIndex = Constraint::GeoUndef;
+    int  ThirdPos   = none;
     double Value    = 0;
     // Note: In Python 2.x PyArg_ParseTuple prints a warning if a float is given but an integer is expected.
     // This means we must use a PyObject and check afterwards if it's a float or integer.
@@ -237,32 +239,48 @@ int ConstraintPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     }
     PyErr_Clear();
 
-    // ConstraintType, GeoIndex1, PosIndex1, GeoIndex2, PosIndex2, Value
-    if (PyArg_ParseTuple(args, "siiiid", &ConstraintType, &FirstIndex, &FirstPos, &SecondIndex, &SecondPos, &Value)) {
-        bool valid=false;
-        if (strcmp("Distance",ConstraintType) == 0 ) {
-            this->getConstraintPtr()->Type = Distance;
-            valid = true;
+    if (PyArg_ParseTuple(args, "siiiiO", &ConstraintType, &FirstIndex, &FirstPos, &SecondIndex, &SecondPos, &index_or_value)) {
+        // ConstraintType, GeoIndex1, PosIndex1, GeoIndex2, PosIndex2, GeoIndex3
+        if (PyInt_Check(index_or_value)) {
+            ThirdIndex = PyInt_AsLong(index_or_value);
+            if (strcmp("Symmetric",ConstraintType) == 0 ) {
+                this->getConstraintPtr()->Type = Symmetric;
+                this->getConstraintPtr()->First     = FirstIndex;
+                this->getConstraintPtr()->FirstPos  = (Sketcher::PointPos) FirstPos;
+                this->getConstraintPtr()->Second    = SecondIndex;
+                this->getConstraintPtr()->SecondPos = (Sketcher::PointPos) SecondPos;
+                this->getConstraintPtr()->Third     = ThirdIndex;
+                return 0;
+            }
         }
-        else if (strcmp("DistanceX",ConstraintType) == 0) {
-            this->getConstraintPtr()->Type = DistanceX;
-            valid = true;
-        }
-        else if (strcmp("DistanceY",ConstraintType) == 0) {
-            this->getConstraintPtr()->Type = DistanceY;
-            valid = true;
-        }
-        else if (strcmp("Angle",ConstraintType) == 0 ) {
-            this->getConstraintPtr()->Type = Angle;
-            valid = true;
-        }
-        if (valid) {
-            this->getConstraintPtr()->First     = FirstIndex;
-            this->getConstraintPtr()->FirstPos  = (Sketcher::PointPos) FirstPos;
-            this->getConstraintPtr()->Second    = SecondIndex;
-            this->getConstraintPtr()->SecondPos = (Sketcher::PointPos) SecondPos;
-            this->getConstraintPtr()->Value     = Value;
-            return 0;
+        // ConstraintType, GeoIndex1, PosIndex1, GeoIndex2, PosIndex2, Value
+        else if (PyFloat_Check(index_or_value)) {
+            Value = PyFloat_AsDouble(index_or_value);
+            bool valid=false;
+            if (strcmp("Distance",ConstraintType) == 0 ) {
+                this->getConstraintPtr()->Type = Distance;
+                valid = true;
+            }
+            else if (strcmp("DistanceX",ConstraintType) == 0) {
+                this->getConstraintPtr()->Type = DistanceX;
+                valid = true;
+            }
+            else if (strcmp("DistanceY",ConstraintType) == 0) {
+                this->getConstraintPtr()->Type = DistanceY;
+                valid = true;
+            }
+            else if (strcmp("Angle",ConstraintType) == 0 ) {
+                this->getConstraintPtr()->Type = Angle;
+                valid = true;
+            }
+            if (valid) {
+                this->getConstraintPtr()->First     = FirstIndex;
+                this->getConstraintPtr()->FirstPos  = (Sketcher::PointPos) FirstPos;
+                this->getConstraintPtr()->Second    = SecondIndex;
+                this->getConstraintPtr()->SecondPos = (Sketcher::PointPos) SecondPos;
+                this->getConstraintPtr()->Value     = Value;
+                return 0;
+            }
         }
     }
 

@@ -1425,6 +1425,102 @@ bool CmdSketcherConstrainEqual::isActive(void)
 }
 
 
+DEF_STD_CMD_A(CmdSketcherConstrainSymmetric);
+
+CmdSketcherConstrainSymmetric::CmdSketcherConstrainSymmetric()
+    :Command("Sketcher_ConstrainSymmetric")
+{
+    sAppModule      = "Sketcher";
+    sGroup          = QT_TR_NOOP("Sketcher");
+    sMenuText       = QT_TR_NOOP("Constrain symmetrical");
+    sToolTipText    = QT_TR_NOOP("Create an symmetry constraint between two points with respect to a line");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Constraint_Symmetric";
+    sAccel          = "S";
+    eType           = ForEdit;
+}
+
+void CmdSketcherConstrainSymmetric::activated(int iMsg)
+{
+    // get the selection
+    std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
+    Sketcher::SketchObject* Obj = dynamic_cast<Sketcher::SketchObject*>(selection[0].getObject());
+    const std::vector<Part::Geometry *> &geo = Obj->Geometry.getValues();
+
+    // only one sketch with its subelements are allowed to be selected
+    if (selection.size() != 1) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select two points and one line from the sketch."));
+        return;
+    }
+
+    // get the needed lists and objects
+    const std::vector<std::string> &SubNames = selection[0].getSubNames();
+
+    if (SubNames.size() != 3) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select two points and one line from the sketch."));
+        return;
+    }
+
+    int GeoId1=Constraint::GeoUndef, VtId1=-1,
+        GeoId2=Constraint::GeoUndef, VtId2=-1,
+        GeoId3=Constraint::GeoUndef, VtId3=-1;
+    if (SubNames.size() >= 1) {
+        if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge")
+            GeoId1 = std::atoi(SubNames[0].substr(4,4000).c_str());
+        else if (SubNames[0].size() > 6 && SubNames[0].substr(0,6) == "Vertex")
+            VtId1 = std::atoi(SubNames[0].substr(6,4000).c_str());
+        if (SubNames[1].size() > 4 && SubNames[1].substr(0,4) == "Edge")
+            GeoId2 = std::atoi(SubNames[1].substr(4,4000).c_str());
+        else if (SubNames[1].size() > 6 && SubNames[1].substr(0,6) == "Vertex")
+            VtId2 = std::atoi(SubNames[1].substr(6,4000).c_str());
+        if (SubNames[2].size() > 4 && SubNames[2].substr(0,4) == "Edge")
+            GeoId3 = std::atoi(SubNames[2].substr(4,4000).c_str());
+        else if (SubNames[2].size() > 6 && SubNames[2].substr(0,6) == "Vertex")
+            VtId3 = std::atoi(SubNames[2].substr(6,4000).c_str());
+    }
+
+    if (GeoId1 != Constraint::GeoUndef && GeoId3 == Constraint::GeoUndef) {
+        std::swap(GeoId1,GeoId3);
+        std::swap(VtId1,VtId3);
+    }
+    else if (GeoId2 != Constraint::GeoUndef && GeoId3 == Constraint::GeoUndef) {
+        std::swap(GeoId2,GeoId3);
+        std::swap(VtId2,VtId3);
+    }
+
+    if (VtId1 >= 0 && VtId2 >= 0 && GeoId3 != Constraint::GeoUndef) {
+        Sketcher::PointPos PosId1,PosId2;
+        Obj->getGeoVertexIndex(VtId1,GeoId1,PosId1);
+        Obj->getGeoVertexIndex(VtId2,GeoId2,PosId2);
+        const Part::Geometry *geom = geo[GeoId3];
+        if (geom->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
+            // undo command open
+            openCommand("add symmetric constraint");
+            Gui::Command::doCommand(
+                Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Symmetric',%d,%d,%d,%d,%d)) ",
+                selection[0].getFeatName(),GeoId1,PosId1,GeoId2,PosId2,GeoId3);
+    
+            // finish the transaction and update
+            commitCommand();
+            updateActive();
+    
+            // clear the selection (convenience)
+            getSelection().clearSelection();
+            return;
+        }
+    }
+    QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+        QObject::tr("Select two points and one line from the sketch."));
+}
+
+bool CmdSketcherConstrainSymmetric::isActive(void)
+{
+    return isCreateConstraintActive( getActiveGuiDocument() );
+}
+
 
 
 void CreateSketcherCommandsConstraints(void)
@@ -1445,4 +1541,5 @@ void CreateSketcherCommandsConstraints(void)
     rcCmdMgr.addCommand(new CmdSketcherConstrainAngle());
     rcCmdMgr.addCommand(new CmdSketcherConstrainEqual());
     rcCmdMgr.addCommand(new CmdSketcherConstrainPointOnObject());
+    rcCmdMgr.addCommand(new CmdSketcherConstrainSymmetric());
  }

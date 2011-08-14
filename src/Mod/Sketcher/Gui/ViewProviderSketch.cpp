@@ -1784,6 +1784,7 @@ Restart:
                 }
                 break;
             case Coincident: // nothing to do for coincident
+            case Symmetric:
             case None:
                 break;
         }
@@ -1977,6 +1978,9 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
 
                     edit->vConstrType.push_back((*it)->Type);
                 }
+                break;
+            case Symmetric: // no visual for symmetric so far
+                edit->vConstrType.push_back(Symmetric);
                 break;
             default:
                 edit->vConstrType.push_back(None);

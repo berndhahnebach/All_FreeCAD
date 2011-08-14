@@ -43,7 +43,8 @@ namespace GCS
         PointOnLine = 6,
         Parallel = 7,
         Perpendicular = 8,
-        L2LAngle = 9
+        L2LAngle = 9,
+        MidpointOnLine = 10
     };
 
     class Constraint
@@ -238,6 +239,27 @@ namespace GCS
         virtual double error();
         virtual double grad(double *);
         virtual double maxStep(MAP_pD_D &dir, double lim=1.);
+    };
+
+    // MidpointOnLine
+    class ConstraintMidpointOnLine : public Constraint
+    {
+    private:
+        inline double* l1p1x() { return pvec[0]; }
+        inline double* l1p1y() { return pvec[1]; }
+        inline double* l1p2x() { return pvec[2]; }
+        inline double* l1p2y() { return pvec[3]; }
+        inline double* l2p1x() { return pvec[4]; }
+        inline double* l2p1y() { return pvec[5]; }
+        inline double* l2p2x() { return pvec[6]; }
+        inline double* l2p2y() { return pvec[7]; }
+    public:
+        ConstraintMidpointOnLine(Line &l1, Line &l2);
+        ConstraintMidpointOnLine(Point &l1p1, Point &l1p2, Point &l2p1, Point &l2p2);
+        virtual ConstraintType getTypeId();
+        virtual void rescale(double coef=1.);
+        virtual double error();
+        virtual double grad(double *);
     };
 
 } //namespace GCS

@@ -154,6 +154,8 @@ public:
     int addEqualConstraint(int geoIndex1, int geoIndex2);
     /// add a point on line constraint
     int addPointOnObjectConstraint(int geoId1, PointPos pos1, int geoId2);
+    /// add a symmetric constraint between two points with respect to a line
+    int addSymmetricConstraint(int geoId1, PointPos pos1, int geoId2, PointPos pos2, int geoId3);
     //@}
 
     enum GeoType {

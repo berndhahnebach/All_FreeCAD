@@ -685,5 +685,87 @@ double ConstraintL2LAngle::maxStep(MAP_pD_D &dir, double lim)
     return lim;
 }
 
+// MidpointOnLine
+ConstraintMidpointOnLine::ConstraintMidpointOnLine(Line &l1, Line &l2)
+{
+    pvec.push_back(l1.p1.x);
+    pvec.push_back(l1.p1.y);
+    pvec.push_back(l1.p2.x);
+    pvec.push_back(l1.p2.y);
+    pvec.push_back(l2.p1.x);
+    pvec.push_back(l2.p1.y);
+    pvec.push_back(l2.p2.x);
+    pvec.push_back(l2.p2.y);
+    origpvec = pvec;
+    rescale();
+}
+
+ConstraintMidpointOnLine::ConstraintMidpointOnLine(Point &l1p1, Point &l1p2, Point &l2p1, Point &l2p2)
+{
+    pvec.push_back(l1p1.x);
+    pvec.push_back(l1p1.y);
+    pvec.push_back(l1p2.x);
+    pvec.push_back(l1p2.y);
+    pvec.push_back(l2p1.x);
+    pvec.push_back(l2p1.y);
+    pvec.push_back(l2p2.x);
+    pvec.push_back(l2p2.y);
+    origpvec = pvec;
+    rescale();
+}
+
+ConstraintType ConstraintMidpointOnLine::getTypeId()
+{
+    return MidpointOnLine;
+}
+
+void ConstraintMidpointOnLine::rescale(double coef)
+{
+    scale = coef * 1;
+}
+
+double ConstraintMidpointOnLine::error()
+{
+    double x0=((*l1p1x())+(*l1p2x()))/2;
+    double y0=((*l1p1y())+(*l1p2y()))/2;
+    double x1=*l2p1x(), x2=*l2p2x();
+    double y1=*l2p1y(), y2=*l2p2y();
+    double dx = x2-x1;
+    double dy = y2-y1;
+    double d = sqrt(dx*dx+dy*dy);
+    double area = -x0*dy+y0*dx+x1*y2-x2*y1; // = x1y2 - x2y1 - x0y2 + x2y0 + x0y1 - x1y0 = 2*(triangle area)
+    return scale * area/d;
+}
+
+double ConstraintMidpointOnLine::grad(double *param)
+{
+    double deriv=0.;
+    // darea/dx0 = (y1-y2)      darea/dy0 = (x2-x1)
+    // darea/dx1 = (y2-y0)      darea/dy1 = (x0-x2)
+    // darea/dx2 = (y0-y1)      darea/dy2 = (x1-x0)
+    if (param == l1p1x() || param == l1p1y() ||
+        param == l1p2x() || param == l1p2y()||
+        param == l2p1x() || param == l2p1y() ||
+        param == l2p2x() || param == l2p2y()) {
+        double x0=((*l1p1x())+(*l1p2x()))/2;
+        double y0=((*l1p1y())+(*l1p2y()))/2;
+        double x1=*l2p1x(), x2=*l2p2x();
+        double y1=*l2p1y(), y2=*l2p2y();
+        double dx = x2-x1;
+        double dy = y2-y1;
+        double d2 = dx*dx+dy*dy;
+        double d = sqrt(d2);
+        double area = -x0*dy+y0*dx+x1*y2-x2*y1;
+        if (param == l1p1x()) deriv += (y1-y2) / (2*d);
+        if (param == l1p1y()) deriv += (x2-x1) / (2*d);
+        if (param == l1p2x()) deriv += (y1-y2) / (2*d);
+        if (param == l1p2y()) deriv += (x2-x1) / (2*d);
+        if (param == l2p1x()) deriv += ((y2-y0)*d + (dx/d)*area) / d2;
+        if (param == l2p1y()) deriv += ((x0-x2)*d + (dy/d)*area) / d2;
+        if (param == l2p2x()) deriv += ((y0-y1)*d - (dx/d)*area) / d2;
+        if (param == l2p2y()) deriv += ((x1-x0)*d - (dy/d)*area) / d2;
+    }
+    return scale * deriv;
+}
 
 } //namespace GCS
