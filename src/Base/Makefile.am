@@ -212,7 +212,22 @@ EXTRA_DIST += \
 		$(PYCXXSRC)/Version.hxx \
 		$(PYCXXSRC)/WrapPython.h \
 		$(PYCXXSRC)/COPYRIGHT \
-		$(PYCXXSRC)/pycxx.dox
+		$(PYCXXSRC)/pycxx.dox \
+		$(PYCXXSRC)/Python2/Config.hxx \
+		$(PYCXXSRC)/Python2/CxxDebug.hxx \
+		$(PYCXXSRC)/Python2/cxxextensions.c \
+		$(PYCXXSRC)/Python2/cxx_extensions.cxx \
+		$(PYCXXSRC)/Python2/cxxsupport.cxx \
+		$(PYCXXSRC)/Python2/Exception.hxx \
+		$(PYCXXSRC)/Python2/ExtensionModule.hxx \
+		$(PYCXXSRC)/Python2/ExtensionOldType.hxx \
+		$(PYCXXSRC)/Python2/Extensions.hxx \
+		$(PYCXXSRC)/Python2/ExtensionType.hxx \
+		$(PYCXXSRC)/Python2/ExtensionTypeBase.hxx \
+		$(PYCXXSRC)/Python2/IndirectPythonInterface.cxx \
+		$(PYCXXSRC)/Python2/IndirectPythonInterface.hxx \
+		$(PYCXXSRC)/Python2/Objects.hxx \
+		$(PYCXXSRC)/Python2/PythonType.hxx
 else
 PYCXXSRC=/usr/share/@PYTHON_LIB@/CXX
 endif

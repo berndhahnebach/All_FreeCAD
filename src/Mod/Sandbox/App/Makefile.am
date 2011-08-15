@@ -19,6 +19,7 @@ libSandbox_la_CPPFLAGS = -DSandboxAppExport=
 
 libSandbox_la_LIBADD   = \
 		-l@PYTHON_LIB@ \
+		@BOOST_SYSTEM_LIB@ \
 		-lxerces-c \
 		-lQtCore \
 		-lFreeCADBase \

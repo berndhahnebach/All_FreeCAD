@@ -9,7 +9,8 @@ libSandboxGui_la_SOURCES=\
 		Workbench.h
 
 # the library search path.
-libSandboxGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../../Mesh/App -L../App \
+libSandboxGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../../Mesh/App -L../../Part/App -L../App \
+		$(sim_ac_coin_ldflags) $(sim_ac_coin_libs) $(sim_ac_soqt_ldflags) $(sim_ac_soqt_libs) \
 		$(QT_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libSandboxGui_la_CPPFLAGS = -DSandboxAppExport= -DSandboxGuiExport=
@@ -22,6 +23,7 @@ libSandboxGui_la_LIBADD   = \
 		-lFreeCADApp \
 		-lFreeCADGui \
 		-lMesh \
+		-lPart \
 		-lSandbox
 
 #--------------------------------------------------------------------------------------
@@ -59,7 +61,7 @@ qrc_%.cpp: %.qrc
 	$(QT_RCC) -name $(*F) $< -o $(@F)
 
 # set the include path found by configure
-AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS)
+AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(all_includes) $(QT_CXXFLAGS) -I$(OCC_INC)
 
 libdir = $(prefix)/Mod/Sandbox
 

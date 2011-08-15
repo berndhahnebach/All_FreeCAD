@@ -25,7 +25,7 @@
 #ifndef _PreComp_
 # include <Standard_math.hxx>
 # include <Python.h>
-# include <Inventor/nodes/SoLineset.h>
+# include <Inventor/nodes/SoLineSet.h>
 # include <Inventor/nodes/SoBaseColor.h>
 # include <Inventor/nodes/SoSeparator.h>
 # include <Inventor/nodes/SoCoordinate3.h>
