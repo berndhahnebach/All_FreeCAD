@@ -127,13 +127,15 @@ class DraftLineEdit(QtGui.QLineEdit):
 
 class DraftTaskPanel:
     def __init__(self,widget):
-        self.form = widget
-    def getStandardButtons(self):
-        return int(QtGui.QDialogButtonBox.Cancel)
+            self.form = widget
     def accept(self):
-        return True
+            if FreeCAD.activeDraftCommand:
+                    FreeCAD.activeDraftCommand.finish()
+            return True
     def reject(self):
-        return True
+            if FreeCAD.activeDraftCommand:
+                    FreeCAD.activeDraftCommand.finish()
+            return True
   
 class DraftToolBar:
 	"main draft Toolbar"
@@ -145,6 +147,7 @@ class DraftToolBar:
                 self.paramfontsize = Draft.getParam("textheight")
                 self.paramconstr = Draft.getParam("constructioncolor")>>8
                 self.constrMode = False
+                self.continueMode = False
                 self.state = None
                 self.textbuffer = []
                 self.crossedViews = []
@@ -159,7 +162,7 @@ class DraftToolBar:
                         self.toptray = QtGui.QHBoxLayout()
                         self.bottomtray = QtGui.QHBoxLayout()
                         self.tray.addLayout(self.toptray)
-                        self.tray.addLayout(self.bottomtray)                            
+                        self.tray.addLayout(self.bottomtray)
                 else:
                         # create the draft Toolbar                
                         self.draftWidget = QtGui.QDockWidget()
@@ -178,6 +181,9 @@ class DraftToolBar:
                         self.toptray = self.layout
                         self.bottomtray = self.layout
                         self.setupToolBar()
+                        self.setupTray()
+                        self.setupStyle()
+                        self.retranslateUi(self.baseWidget)
 		
 #---------------------------------------------------------------------------
 # General UI setup
@@ -300,18 +306,6 @@ class DraftToolBar:
                                                QtGui.QSizePolicy.Minimum)
                 self.layout.addItem(spacerItem)
 
-                # settings buttons
-
-                self.setupTray()
-
-                # setting styles
-
-                style = "#constrButton:Checked {background-color: "
-                style += self.getDefaultColor("constr",rgb=True)+" } "
-                style += "#addButton:Checked, #delButton:checked {"
-                style += "background-color: rgb(20,100,250) }"
-                self.baseWidget.setStyleSheet(style)
-
                 QtCore.QObject.connect(self.xValue,QtCore.SIGNAL("returnPressed()"),self.checkx)
                 QtCore.QObject.connect(self.yValue,QtCore.SIGNAL("returnPressed()"),self.checky)
                 QtCore.QObject.connect(self.xValue,QtCore.SIGNAL("textEdited(QString)"),self.checkSpecialChars)
@@ -336,6 +330,7 @@ class DraftToolBar:
                 QtCore.QObject.connect(self.xyButton,QtCore.SIGNAL("clicked()"),self.selectXY)
                 QtCore.QObject.connect(self.xzButton,QtCore.SIGNAL("clicked()"),self.selectXZ)
                 QtCore.QObject.connect(self.yzButton,QtCore.SIGNAL("clicked()"),self.selectYZ)
+                QtCore.QObject.connect(self.continueCmd,QtCore.SIGNAL("stateChanged(int)"),self.setContinue)               
                 QtCore.QObject.connect(self.currentViewButton,QtCore.SIGNAL("clicked()"),self.selectCurrentView)
                 QtCore.QObject.connect(self.resetPlaneButton,QtCore.SIGNAL("clicked()"),self.selectResetPlane)
                 QtCore.QObject.connect(self.xValue,QtCore.SIGNAL("escaped()"),self.finish)
@@ -346,9 +341,7 @@ class DraftToolBar:
                 QtCore.QObject.connect(self.zValue,QtCore.SIGNAL("undo()"),self.undoSegment)
                 QtCore.QObject.connect(self.radiusValue,QtCore.SIGNAL("escaped()"),self.finish)
                 QtCore.QObject.connect(self.baseWidget,QtCore.SIGNAL("resized()"),self.relocate)
-                QtCore.QObject.connect(self.baseWidget,QtCore.SIGNAL("retranslate()"),self.retranslateUi)                  
-
-                self.retranslateUi(self.baseWidget)
+                QtCore.QObject.connect(self.baseWidget,QtCore.SIGNAL("retranslate()"),self.retranslateUi)
 
         def setupTray(self):
                 "sets draft tray buttons up"
@@ -386,13 +379,20 @@ class DraftToolBar:
                 QtCore.QObject.connect(self.widthButton,QtCore.SIGNAL("valueChanged(int)"),self.setwidth)
                 QtCore.QObject.connect(self.fontsizeButton,QtCore.SIGNAL("valueChanged(double)"),self.setfontsize)
                 QtCore.QObject.connect(self.applyButton,QtCore.SIGNAL("pressed()"),self.apply)
-                QtCore.QObject.connect(self.constrButton,QtCore.SIGNAL("toggled(bool)"),self.toggleConstrMode)    
+                QtCore.QObject.connect(self.constrButton,QtCore.SIGNAL("toggled(bool)"),self.toggleConstrMode)
+
+        def setupStyle(self):
+                style = "#constrButton:Checked {background-color: "
+                style += self.getDefaultColor("constr",rgb=True)+" } "
+                style += "#addButton:Checked, #delButton:checked {"
+                style += "background-color: rgb(20,100,250) }"
+                self.baseWidget.setStyleSheet(style)
 
 #---------------------------------------------------------------------------
 # language tools
 #---------------------------------------------------------------------------
 				
-        def retranslateUi(self, draftToolbar=None):
+        def retranslateUi(self, widget=None):
                 self.promptlabel.setText(translate("draft", "active command:"))
                 self.cmdlabel.setText(translate("draft", "None"))
                 self.cmdlabel.setToolTip(translate("draft", "Active Draft command"))
@@ -443,8 +443,21 @@ class DraftToolBar:
 # Interface modes
 #---------------------------------------------------------------------------
 
+        def taskUi(self,title):
+                if self.taskmode:
+                        FreeCADGui.Control.closeDialog()
+                        self.baseWidget = QtGui.QWidget()
+                        self.setTitle(title)
+                        self.layout = QtGui.QVBoxLayout(self.baseWidget)
+                        self.setupToolBar(task=True)
+                        self.retranslateUi(self.baseWidget)
+                        self.panel = DraftTaskPanel(self.baseWidget)
+                        FreeCADGui.Control.showDialog(self.panel)
+                else:
+                        self.setTitle(title)  
+                
         def selectPlaneUi(self):
-                self.cmdlabel.setText(translate("draft", "Select Plane"))
+                self.taskUi(translate("draft", "Select Plane"))
                 self.xyButton.show()
                 self.xzButton.show()
                 self.yzButton.show()
@@ -455,6 +468,8 @@ class DraftToolBar:
 
         def lineUi(self):
                 self.pointUi(translate("draft", "Line"))
+                self.xValue.setEnabled(True)
+                self.yValue.setEnabled(True)
                 self.isRelative.show()
                 self.hasFill.show()
                 self.finishButton.show()
@@ -463,26 +478,18 @@ class DraftToolBar:
                 self.continueCmd.show()
 
         def circleUi(self):
-                self.setTitle(translate("draft", "Circle"))
+                self.pointUi(translate("draft", "Circle"))
                 self.continueCmd.show()
-                self.pointUi()
                 self.labelx.setText(translate("draft", "Center X"))
                 self.hasFill.show()
 
         def arcUi(self):
-                self.setTitle(translate("draft", "Arc"))
+                self.pointUi(translate("draft", "Arc"))
                 self.labelx.setText(translate("draft", "Center X"))
                 self.continueCmd.show()
-                self.pointUi()
 
         def pointUi(self,title=translate("draft","Point")):
-                if self.taskmode:
-                        self.baseWidget = QtGui.QWidget()
-                        self.setTitle(title)
-                        self.layout = QtGui.QVBoxLayout(self.baseWidget)
-                        self.setupToolBar(task=True)
-                        self.panel = DraftTaskPanel(self.baseWidget)
-                        FreeCADGui.Control.showDialog(self.panel)
+                self.taskUi(title)
                 self.xValue.setEnabled(True)
                 self.yValue.setEnabled(True)
                 self.labelx.setText(translate("draft", "X"))
@@ -590,6 +597,7 @@ class DraftToolBar:
                 self.labelx.show()
 
         def editUi(self):
+                self.taskUi(translate("draft", "Edit"))
                 self.labelx.hide()
                 self.labely.hide()
                 self.labelz.hide()
@@ -670,6 +678,9 @@ class DraftToolBar:
                 for i in FreeCADGui.Selection.getSelection():
                         if "FontSize" in i.ViewObject.PropertiesList:
                                 i.ViewObject.FontSize = float(val)
+
+        def setContinue(self,val):
+                self.continueMode = bool(val)
 
         def apply(self):
                 for i in FreeCADGui.Selection.getSelection():
@@ -777,7 +788,7 @@ class DraftToolBar:
                         elif self.continueCmd.isVisible():
                                 self.continueCmd.setChecked(not self.continueCmd.isChecked())
                         spec = True
-                if spec:
+                if spec and (not self.taskmode):
                         for i in [self.xValue,self.yValue,self.zValue]:
                                 if (i.text() == txt): i.setText("")
                                                 
@@ -956,6 +967,7 @@ class DraftToolBar:
                                 return True
 
                 self.setupTray()
+                self.setupStyle()
                 w = DraftTrayWatcher(self.traywidget)        
                 FreeCADGui.Control.addTaskWatcher([w,DraftCreateWatcher(),DraftModifyWatcher()])
                                 
