@@ -38,6 +38,7 @@ public:
     Pad();
 
     App::PropertyLength Length;
+    App::PropertyEnumeration Side;
 
     /** @name methods override feature */
     //@{
@@ -49,6 +50,8 @@ public:
         return "PartDesignGui::ViewProviderPad";
     }
     //@}
+private:
+    static const char* SideEnums[];
 };
 
 } //namespace PartDesign
