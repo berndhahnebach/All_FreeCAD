@@ -128,6 +128,8 @@ TopoDS_Shape Face::makeFace(std::list<TopoDS_Wire>& wires) const
 {
     BRepBuilderAPI_MakeFace mkFace(wires.front());
     const TopoDS_Face& face = mkFace.Face();
+    if (face.IsNull())
+        return face;
     gp_Dir axis(0,0,1);
     BRepAdaptor_Surface adapt(face);
     if (adapt.GetType() == GeomAbs_Plane) {
