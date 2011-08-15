@@ -82,7 +82,7 @@ libRobotGui_la_SOURCES=\
 libRobotGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../../Part/App -L../App \
 		$(sim_ac_coin_ldflags) $(sim_ac_coin_libs) $(sim_ac_soqt_ldflags) $(sim_ac_soqt_libs) \
 		$(QT_LIBS) $(GL_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
-libRobotGui_la_CPPFLAGS = -DRobotAppExport= -DRobotGuiExport=
+libRobotGui_la_CPPFLAGS = -DRobotAppExport= -DRobotGuiExport= -DEIGEN2_SUPPORT
 
 libRobotGui_la_LIBADD   = \
 		@BOOST_SYSTEM_LIB@ \
@@ -130,7 +130,7 @@ qrc_%.cpp: %.qrc
 	$(QT_RCC) -name $(*F) $< -o $(@F)
 
 # set the include path found by configure
-AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(QT_CXXFLAGS) $(all_includes) -I$(OCC_INC) -I$(EIGEN2_INC) \
+AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src $(QT_CXXFLAGS) $(all_includes) -I$(OCC_INC) -I$(EIGEN3_INC) \
 		-I$(sim_ac_coin_includedir) -I$(sim_ac_soqt_includedir)
 
 libdir = $(prefix)/Mod/Robot

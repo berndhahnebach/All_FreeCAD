@@ -187,7 +187,7 @@ libRobot_la_SOURCES=\
 libRobot_la_LDFLAGS = -L../../../Base -L../../../App -L../../Part/App \
 	-L$(OCC_LIB) $(QT4_CORE_LIBS) $(all_libraries) \
 	-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
-libRobot_la_CPPFLAGS = -DRobotAppExport=
+libRobot_la_CPPFLAGS = -DRobotAppExport= -DEIGEN2_SUPPORT
 #libkdl_la_CPPFLAGS = -Wno-sign-compare -Wno-reorder
 
 libRobot_la_LIBADD   = \
@@ -236,7 +236,7 @@ Robot_la_DEPENDENCIES = libRobot.la
 
 # set the include path found by configure
 AM_CXXFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src -I$(top_srcdir)/src/Mod/Robot/App \
-		$(all_includes) -I$(EIGEN2_INC) $(QT4_CORE_CXXFLAGS) -I$(OCC_INC)
+		$(all_includes) -I$(EIGEN3_INC) $(QT4_CORE_CXXFLAGS) -I$(OCC_INC)
 
 
 libdir = $(prefix)/Mod/Robot

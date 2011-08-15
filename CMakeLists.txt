@@ -185,6 +185,12 @@ MARK_AS_ADVANCED(FORCE FREECAD_LIBPACK_CHECKFILE6X FREECAD_LIBPACK_CHECKFILE7X)
 		ENDIF()
 	endif()
 
+# -------------------------------- f2c ----------------------------------
+
+    IF(OCC_FOUND)
+        find_package(F2C REQUIRED)
+    ENDIF(OCC_FOUND)
+	
 # -------------------------------- Salome SMESH --------------------------
 
     # Salome SMESH sources are under src/3rdParty now
@@ -223,7 +229,7 @@ MARK_AS_ADVANCED(FORCE FREECAD_LIBPACK_CHECKFILE6X FREECAD_LIBPACK_CHECKFILE7X)
 
 # -------------------------------- Eigen --------------------------------
 
-    find_package(Eigen2)
+    #find_package(Eigen2)
     find_package(Eigen3)
 
 # -------------------------------- ODE ----------------------------------

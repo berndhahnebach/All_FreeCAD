@@ -371,35 +371,35 @@ dnl fi
 
 dnl checking for eigen2
 dnl **************************************************************************
-AC_MSG_CHECKING([for eigen2])
-AC_ARG_WITH(eigen2-include,
-	AC_HELP_STRING([--with-eigen2-include=DIR], [Path to the eigen2 header files]),
-	[fc_eig_incs=$withval],
-	[fc_eig_incs=/usr/include/eigen2])
+dnl AC_MSG_CHECKING([for eigen2])
+dnl AC_ARG_WITH(eigen2-include,
+dnl 	AC_HELP_STRING([--with-eigen2-include=DIR], [Path to the eigen2 header files]),
+dnl 	[fc_eig_incs=$withval],
+dnl 	[fc_eig_incs=/usr/include/eigen2])
+dnl 
+dnl AC_CHECK_FILE($fc_eig_incs/Eigen,,
+dnl 	[AC_CHECK_FILE(/usr/local/include/eigen2,[fc_eig_incs=/usr/local/include/eigen2])])
+dnl 
+dnl fc_eig_ac_save_cppflags=$CPPFLAGS
+dnl CPPFLAGS="$CPPFLAGS -I$fc_eig_incs"
+dnl 
+dnl # Check a file which is present in Eigen2 but not in Eigen3
+dnl fc_cv_lib_eig_avail=no
+dnl AC_CHECK_HEADER(Eigen/NewStdVector,
+dnl 	fc_cv_lib_eig_avail=yes,)
+dnl 
+dnl CPPFLAGS=$fc_eig_ac_save_cppflags
+dnl 
+dnl if test x"$fc_cv_lib_eig_avail" = xyes; then
+dnl 	AC_SUBST([EIGEN2_INC], [$fc_eig_incs])
+dnl else
+dnl 	AC_MSG_WARN([
+dnl 	**** Cannot find eigen2 devel files.
+dnl 	Modules that depend on this library cannot be built. ****
+dnl    ])
+dnl fi
 
-AC_CHECK_FILE($fc_eig_incs/Eigen,,
-	[AC_CHECK_FILE(/usr/local/include/eigen2,[fc_eig_incs=/usr/local/include/eigen2])])
-
-fc_eig_ac_save_cppflags=$CPPFLAGS
-CPPFLAGS="$CPPFLAGS -I$fc_eig_incs"
-
-# Check a file which is present in Eigen2 but not in Eigen3
-fc_cv_lib_eig_avail=no
-AC_CHECK_HEADER(Eigen/NewStdVector,
-	fc_cv_lib_eig_avail=yes,)
-
-CPPFLAGS=$fc_eig_ac_save_cppflags
-
-if test x"$fc_cv_lib_eig_avail" = xyes; then
-	AC_SUBST([EIGEN2_INC], [$fc_eig_incs])
-else
-	AC_MSG_WARN([
-	**** Cannot find eigen2 devel files.
-	Modules that depend on this library cannot be built. ****
-   ])
-fi
-
-AM_CONDITIONAL(HAVE_EIGEN2, test x"$fc_cv_lib_eig_avail" = xyes)
+dnl AM_CONDITIONAL(HAVE_EIGEN2, test x"$fc_cv_lib_eig_avail" = xyes)
 
 
 dnl checking for eigen3
