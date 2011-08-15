@@ -18,7 +18,7 @@ Part.Line()
     Creates a default line
 
 Part.Line(Line)
-    Creates a copy og the given line
+    Creates a copy of the given line
 
 Part.Line(Point1,Point2)
     Creates a line that goes through two given points</UserDocu>
@@ -42,9 +42,9 @@ Part.Line(Point1,Point2)
     </Attribute>
     <Attribute Name="Infinite" ReadOnly="false">
       <Documentation>
-        <UserDocu>defines the line as infinite. The StartPoint and EndPoint will be ignored as boundery.</UserDocu>
+        <UserDocu>Defines the line as infinite. The StartPoint and EndPoint will be ignored as boundaries.</UserDocu>
       </Documentation>
-      <Parameter Name="EndPoint" Type="Boolean"/>
+      <Parameter Name="Infinite" Type="Boolean"/>
     </Attribute>
     <ClassDeclarations>
       public:

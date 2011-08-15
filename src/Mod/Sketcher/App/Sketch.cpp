@@ -372,7 +372,7 @@ int Sketch::addCircle(const Part::GeomCircle &cir)
     return Geoms.size()-1;
 }
 
-int Sketch::addEllipse(const Part::GeomEllipse &ellibse)
+int Sketch::addEllipse(const Part::GeomEllipse &ellipse)
 {
     // return the position of the newly added geometry
     return Geoms.size()-1;
