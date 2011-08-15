@@ -13,7 +13,7 @@ if HAVE_OPENCASCADE
 SUBDIRS += Part Import PartDesign Raytracing Drawing
 endif
 
-if HAVE_EIGEN2
+if HAVE_EIGEN3
 if HAVE_OPENCASCADE
 SUBDIRS += Robot
 endif
