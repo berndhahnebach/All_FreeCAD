@@ -1215,7 +1215,7 @@ class Line(Creator):
 			self.constraintrack.finalize()
 		Creator.finish(self)
                 if cont and self.ui:
-                                if self.ui.continueCmd.isChecked():
+                                if self.ui.continueMode:
                                         self.Activated()
 
 	def action(self,arg):
@@ -1401,7 +1401,7 @@ class BSpline(Line):
 			self.constraintrack.finalize()
 		Creator.finish(self)
                 if cont and self.ui:
-                                if self.ui.continueCmd.isChecked():
+                                if self.ui.continueMode:
                                         self.Activated()
 
 class FinishLine:
@@ -1479,7 +1479,7 @@ class Rectangle(Creator):
 			self.rect.off()
 			self.rect.finalize()
                 if cont and self.ui:
-                        if self.ui.continueCmd.isChecked():
+                        if self.ui.continueMode:
                                 self.Activated()
 
 	def createObject(self):
@@ -1572,7 +1572,7 @@ class Arc(Creator):
 			self.arctrack.finalize()
 			self.doc.recompute()
                 if cont and self.ui:
-                        if self.ui.continueCmd.isChecked():
+                        if self.ui.continueMode:
                                 self.Activated()
 
 	def updateAngle(self, angle):
@@ -1872,7 +1872,7 @@ class Polygon(Creator):
 			self.arctrack.finalize()
 			self.doc.recompute()
                 if cont and self.ui:
-                        if self.ui.continueCmd.isChecked():
+                        if self.ui.continueMode:
                                 self.Activated()
 
 	def action(self,arg):
@@ -2048,7 +2048,7 @@ class Text(Creator):
 		if self.ui:
 			del self.dialog
                 if cont and self.ui:
-                        if self.ui.continueCmd.isChecked():
+                        if self.ui.continueMode:
                                 self.Activated()
 
 	def createObject(self):
@@ -2134,7 +2134,7 @@ class Dimension(Creator):
                         self.commit(translate("draft","Create Dimension"),partial(Draft.makeDimension,self.link[0],self.link[1],self.arcmode,self.node[2]))
                 else:
                         self.commit(translate("draft","Create Dimension"),partial(Draft.makeDimension,self.node[0],self.node[1],self.node[2]))
-                if self.ui.continueCmd.isChecked():
+                if self.ui.continueMode:
                         self.cont = self.node[2]
                         if not self.dir:
                                 if self.link:
@@ -2434,7 +2434,7 @@ class Move(Modifier):
 			self.linetrack.finalize()
 			self.constraintrack.finalize()
                 if cont and self.ui:
-                        if self.ui.continueCmd.isChecked():
+                        if self.ui.continueMode:
                                 FreeCADGui.Selection.clearSelection()
                                 self.Activated()
 
@@ -2589,7 +2589,7 @@ class Rotate(Modifier):
 			self.ghost.finalize()
 			self.doc.recompute()
                 if cont and self.ui:
-                        if self.ui.continueCmd.isChecked():
+                        if self.ui.continueMode:
                                 FreeCADGui.Selection.clearSelection()
                                 self.Activated()
 
@@ -3508,7 +3508,7 @@ class Scale(Modifier):
 			self.linetrack.finalize()
 			self.constraintrack.finalize()
                 if cont and self.ui:
-                        if self.ui.continueCmd.isChecked():
+                        if self.ui.continueMode:
                                 FreeCADGui.Selection.clearSelection()
                                 self.Activated()
 
