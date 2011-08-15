@@ -31,7 +31,9 @@ SUBDIRS += ReverseEngineering MeshPart Fem Inspection
 endif
 #endif
 
-#SUBDIRS += Sandbox
+if BUILD_SANDBOX
+SUBDIRS += Sandbox
+endif
 
 EXTRA_DIST = \
 		__init__.py \

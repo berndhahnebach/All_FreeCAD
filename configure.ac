@@ -785,6 +785,16 @@ AC_ARG_ENABLE([template],
 
 AM_CONDITIONAL(BUILD_TEMPLATE, test x"$fc_set_template" = xtrue)
 
+AC_ARG_ENABLE([sandbox],
+  AC_HELP_STRING([--enable-sandbox], [Enable the build of the Sandbox module (disabled by default)]),
+  [case $enableval in
+    no | false) fc_set_sandbox=false ;;
+    *)          fc_set_sandbox=true ;;
+  esac],
+  [fc_set_sandbox=false])
+
+AM_CONDITIONAL(BUILD_SANDBOX, test x"$fc_set_sandbox" = xtrue)
+
 dnl Check if you want debug information enabled, or not
 dnl **************************************************************************
 
@@ -1016,15 +1026,15 @@ src/Mod/Start/Gui/Resources/Makefile
 src/Mod/Start/StartPage/Makefile
 src/Mod/Idf/Makefile
 src/Mod/TemplatePyMod/Makefile
+src/Mod/Sandbox/Makefile
+src/Mod/Sandbox/App/Makefile
+src/Mod/Sandbox/Gui/Makefile
 src/Tools/Makefile
 src/Tools/_TEMPLATE_/Makefile
 src/Tools/_TEMPLATE_/App/Makefile
 src/Tools/_TEMPLATE_/Gui/Makefile
 ])
 #src/3rdParty/Pivy/Makefile 
-#src/Mod/Sandbox/Makefile
-#src/Mod/Sandbox/App/Makefile
-#src/Mod/Sandbox/Gui/Makefile
 
 AC_OUTPUT
 
