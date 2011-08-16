@@ -119,7 +119,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     Gui::MenuItem* item = root->findItem("&Windows");
 
     Gui::MenuItem* geom = new Gui::MenuItem();
-    geom->setCommand("Sketcher geoms");
+    geom->setCommand("Sketcher geometries");
     *geom /*<< "Sketcher_CreatePoint"*/
           << "Sketcher_CreateArc"
           << "Sketcher_CreateCircle"
@@ -177,7 +177,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
           << "PartDesign_Chamfer";
        
     part = new Gui::ToolBarItem(root);
-    part->setCommand("Sketcher geoms");
+    part->setCommand("Sketcher geometries");
     *part /*<< "Sketcher_CreatePoint" */
 		  << "Sketcher_CreateArc"
 		  << "Sketcher_CreateCircle"

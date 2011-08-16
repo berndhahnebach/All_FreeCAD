@@ -59,9 +59,9 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     root->insertItem(item, sketch);
     sketch->setCommand("Ske&tch");
     Gui::MenuItem* geom = new Gui::MenuItem();
-    geom->setCommand("Sketcher geoms");
+    geom->setCommand("Sketcher geometries");
     *geom /*<< "Sketcher_CreatePoint"*/
-          /*<< "Sketcher_CreateArc"*/
+          << "Sketcher_CreateArc"
           << "Sketcher_CreateCircle"
           << "Sketcher_CreateLine"
           << "Sketcher_CreatePolyline"
@@ -105,7 +105,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     *part << "Sketcher_NewSketch"<< "Sketcher_LeaveSketch";
 
     part = new Gui::ToolBarItem(root);
-    part->setCommand("Sketcher geoms");
+    part->setCommand("Sketcher geometries");
     *part /*<< "Sketcher_CreatePoint" */
           << "Sketcher_CreateArc"
           << "Sketcher_CreateCircle"
