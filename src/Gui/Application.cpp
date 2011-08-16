@@ -1592,6 +1592,7 @@ void Application::runApplication(void)
     }
     catch (const Base::Exception& e) {
         Base::Console().Error("Error in FreeCADGuiInit.py: %s\n", e.what());
+        mw.stopSplasher();
         throw;
     }
 

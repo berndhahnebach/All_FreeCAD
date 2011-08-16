@@ -249,6 +249,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     PartDesign->setCommand("Part design");
 
     *PartDesign   << "Sketcher_NewSketch"
+                  << "Sketcher_MapSketch"
                   << "Separator" 
                   << "Sketcher_CreateArc"
                   << "Sketcher_CreateCircle"
