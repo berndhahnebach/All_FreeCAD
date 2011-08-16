@@ -27,6 +27,8 @@
 # include <TopoDS_Face.hxx>
 # include <TopoDS.hxx>
 # include <BRepAdaptor_Surface.hxx>
+# include <QApplication>
+# include <QInputDialog>
 # include <QMessageBox>
 #endif
 
@@ -61,7 +63,6 @@ CmdSketcherNewSketch::CmdSketcherNewSketch()
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_NewSketch";
 }
-
 
 void CmdSketcherNewSketch::activated(int iMsg)
 {
@@ -116,10 +117,6 @@ void CmdSketcherNewSketch::activated(int iMsg)
         doCommand(Gui,"App.activeDocument().%s.Support = %s",FeatName.c_str(),supportString.c_str());
         //doCommand(Gui,"Gui.activeDocument().activeView().setCamera('%s')",cam.c_str());
         doCommand(Gui,"Gui.activeDocument().setEdit('%s')",FeatName.c_str());
-
-
-
-
     }
     else {
         // do the standard Z+ new Sketch
@@ -144,6 +141,96 @@ bool CmdSketcherNewSketch::isActive(void)
         return false;
 }
 
+DEF_STD_CMD_A(CmdSketcherMapSketch);
+
+CmdSketcherMapSketch::CmdSketcherMapSketch()
+  : Command("Sketcher_MapSketch")
+{
+    sAppModule      = "Sketcher";
+    sGroup          = QT_TR_NOOP("Sketcher");
+    sMenuText       = QT_TR_NOOP("Map sketch to face...");
+    sToolTipText    = QT_TR_NOOP("Map a sketch to a face");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+}
+
+void CmdSketcherMapSketch::activated(int iMsg)
+{
+    App::Document* doc = App::GetApplication().getActiveDocument();
+    std::vector<App::DocumentObject*> sel = doc->getObjectsOfType(Sketcher::SketchObject::getClassTypeId());
+    if (sel.empty()) {
+        QMessageBox::warning(Gui::getMainWindow(),
+            qApp->translate(className(), "No sketch found"),
+            qApp->translate(className(), "The document doesn't have a sketch"));
+        return;
+    }
+
+    bool ok;
+    QStringList items;
+    for (std::vector<App::DocumentObject*>::iterator it = sel.begin(); it != sel.end(); ++it)
+        items.push_back(QString::fromUtf8((*it)->Label.getValue()));
+    QString text = QInputDialog::getItem(Gui::getMainWindow(),
+        qApp->translate(className(), "Select sketch"),
+        qApp->translate(className(), "Select a sketch from the list"),
+        items, 0, false, &ok);
+    if (!ok) return;
+    int index = items.indexOf(text);
+
+    std::string featName = sel[index]->getNameInDocument();
+    Gui::SelectionFilter FaceFilter  ("SELECT Part::Feature SUBELEMENT Face COUNT 1");
+    if (FaceFilter.match()) {
+        // get the selected object
+        Part::Feature *part = static_cast<Part::Feature*>(FaceFilter.Result[0][0].getObject());
+        Base::Placement ObjectPos = part->Placement.getValue();
+        const std::vector<std::string> &sub = FaceFilter.Result[0][0].getSubNames();
+        if (sub.size() > 1){
+            // No assert for wrong user input!
+            QMessageBox::warning(Gui::getMainWindow(),
+                qApp->translate(className(),"Several sub-elements selected"),
+                qApp->translate(className(),"You have to select a single face as support for a sketch!"));
+            return;
+        }
+        // get the selected sub shape (a Face)
+        const Part::TopoShape &shape = part->Shape.getValue();
+        TopoDS_Shape sh = shape.getSubShape(sub[0].c_str());
+        const TopoDS_Face& face = TopoDS::Face(sh);
+        if (face.IsNull()) {
+            // No assert for wrong user input!
+            QMessageBox::warning(Gui::getMainWindow(),
+                qApp->translate(className(),"No support face selected"),
+                qApp->translate(className(),"You have to select a face as support for a sketch!"));
+            return;
+        }
+
+        BRepAdaptor_Surface adapt(face);
+        if (adapt.GetType() != GeomAbs_Plane){
+            QMessageBox::warning(Gui::getMainWindow(),
+                qApp->translate(className(),"No planar support"),
+                qApp->translate(className(),"You need a planar face as support for a sketch!"));
+            return;
+        }
+        Base::Placement placement = Part2DObject::positionBySupport(face,ObjectPos);
+        double a,b,c;
+        placement.getRotation().getYawPitchRoll(a,b,c);
+
+        std::string supportString = FaceFilter.Result[0][0].getAsPropertyLinkSubString();
+
+        openCommand("Map a Sketch on Face");
+        doCommand(Gui,"App.activeDocument().%s.Placement = FreeCAD.Placement(FreeCAD.Vector(%f,%f,%f),FreeCAD.Rotation(%f,%f,%f))",featName.c_str(),placement.getPosition().x,placement.getPosition().y,placement.getPosition().z,a,b,c);
+        doCommand(Gui,"App.activeDocument().%s.Support = %s",featName.c_str(),supportString.c_str());
+        doCommand(Gui,"Gui.activeDocument().setEdit('%s')",featName.c_str());
+    }
+    else {
+        QMessageBox::warning(Gui::getMainWindow(),
+            qApp->translate(className(), "No face selected"),
+            qApp->translate(className(), "No face was selected to map the sketch to"));
+    }
+}
+
+bool CmdSketcherMapSketch::isActive(void)
+{
+    return getActiveGuiDocument() != 0;
+}
 
 
 DEF_STD_CMD_A(CmdSketcherLeaveSketch);
@@ -230,6 +317,7 @@ void CreateSketcherCommands(void)
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
 
     rcCmdMgr.addCommand(new CmdSketcherNewSketch());
+    rcCmdMgr.addCommand(new CmdSketcherMapSketch());
     rcCmdMgr.addCommand(new CmdSketcherLeaveSketch());
     rcCmdMgr.addCommand(new CmdSketcherNewSketchSF());
 

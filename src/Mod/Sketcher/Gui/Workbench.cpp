@@ -87,6 +87,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
           << "Sketcher_ConstrainSymmetric";
     *sketch 
         << "Sketcher_NewSketch"
+        << "Sketcher_MapSketch"
         << geom
         << cons
         << "Separator" 

@@ -469,7 +469,7 @@ namespace Py
 
     // TMM: 31May'01 - Added the #ifndef so I can exlude iostreams.
 #ifndef CXX_NO_IOSTREAMS
-    std::ostream& operator<< (std::ostream& os, const Object& ob);
+    PYCXX_EXPORT std::ostream& operator<< (std::ostream& os, const Object& ob);
 #endif
 
     // Class Type

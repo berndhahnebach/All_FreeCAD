@@ -152,6 +152,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     root->insertItem(item, part);
     part->setCommand("&Part Design");
     *part << "Sketcher_NewSketch" 
+          << "Sketcher_MapSketch"
           << geom
           << cons
           << "Separator" 
