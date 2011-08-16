@@ -26,25 +26,25 @@
 #ifndef _PreComp_
 #endif
 
-#include "ViewProviderPad.h"
-#include <Mod/PartDesign/App/FeaturePad.h>
+#include "ViewProviderRevolution.h"
+#include <Mod/PartDesign/App/FeatureRevolution.h>
 
 using namespace PartDesignGui;
 
-PROPERTY_SOURCE(PartDesignGui::ViewProviderPad,PartGui::ViewProviderPart)
+PROPERTY_SOURCE(PartDesignGui::ViewProviderRevolution,PartGui::ViewProviderPart)
 
-ViewProviderPad::ViewProviderPad()
+ViewProviderRevolution::ViewProviderRevolution()
 {
 }
 
-ViewProviderPad::~ViewProviderPad()
+ViewProviderRevolution::~ViewProviderRevolution()
 {
 }
 
-std::vector<App::DocumentObject*> ViewProviderPad::claimChildren(void)const
+std::vector<App::DocumentObject*> ViewProviderRevolution::claimChildren(void)const
 {
     std::vector<App::DocumentObject*> temp;
-    temp.push_back(static_cast<PartDesign::Pad*>(getObject())->Sketch.getValue());
+    temp.push_back(static_cast<PartDesign::Revolution*>(getObject())->Sketch.getValue());
 
     return temp;
 }
