@@ -56,6 +56,8 @@ SET(PartDesignGui_SRCS
     ViewProviderPad.h
     ViewProviderPocket.cpp
     ViewProviderPocket.h
+    ViewProviderRevolution.cpp
+    ViewProviderRevolution.h
     PreCompiled.cpp
     PreCompiled.h
     Workbench.cpp

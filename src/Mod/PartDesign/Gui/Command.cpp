@@ -228,6 +228,78 @@ bool CmdPartDesignPocket::isActive(void)
 }
 
 //===========================================================================
+// PartDesign_Revolution
+//===========================================================================
+DEF_STD_CMD_A(CmdPartDesignRevolution);
+
+CmdPartDesignRevolution::CmdPartDesignRevolution()
+  : Command("PartDesign_Revolution")
+{
+    sAppModule    = "PartDesign";
+    sGroup        = QT_TR_NOOP("PartDesign");
+    sMenuText     = QT_TR_NOOP("Revolution");
+    sToolTipText  = QT_TR_NOOP("Revolve a selected sketch");
+    sWhatsThis    = sToolTipText;
+    sStatusTip    = sToolTipText;
+    sPixmap       = "PartDesign_Revolution";
+}
+
+void CmdPartDesignRevolution::activated(int iMsg)
+{
+    unsigned int n = getSelection().countObjectsOfType(Part::Part2DObject::getClassTypeId());
+    if (n != 1) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select a sketch or 2D object."));
+        return;
+    }
+
+    std::string FeatName = getUniqueObjectName("Revolution");
+
+    std::vector<App::DocumentObject*> Sel = getSelection().getObjectsOfType(Part::Part2DObject::getClassTypeId());
+    Part::Part2DObject* sketch = static_cast<Part::Part2DObject*>(Sel.front());
+    const TopoDS_Shape& shape = sketch->Shape.getValue();
+    if (shape.IsNull()) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("The shape of the selected object is empty."));
+        return;
+    }
+
+    // count free wires
+    int ctWires=0;
+    TopExp_Explorer ex;
+    for (ex.Init(shape, TopAbs_WIRE); ex.More(); ex.Next()) {
+        ctWires++;
+    }
+    if (ctWires == 0) {
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("The shape of the selected object is not a wire."));
+        return;
+    }
+
+    App::DocumentObject* support = sketch->Support.getValue();
+
+    openCommand("Make Revolution");
+    doCommand(Doc,"App.activeDocument().addObject(\"PartDesign::Revolution\",\"%s\")",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Sketch = App.activeDocument().%s",FeatName.c_str(),sketch->getNameInDocument());
+    doCommand(Doc,"App.activeDocument().%s.Base = App.Vector(0,0,0)",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Axis = App.Vector(0,1,0)",FeatName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Angle = 360.0",FeatName.c_str());
+    updateActive();
+    if (isActiveObjectValid()) {
+        doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",sketch->getNameInDocument());
+        if (support)
+            doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",support->getNameInDocument());
+    }
+    commitCommand();
+    adjustCameraPosition();
+}
+
+bool CmdPartDesignRevolution::isActive(void)
+{
+    return hasActiveDocument();
+}
+
+//===========================================================================
 // PartDesign_Fillet
 //===========================================================================
 DEF_STD_CMD_A(CmdPartDesignFillet);
@@ -311,6 +383,7 @@ void CreatePartDesignCommands(void)
 
     rcCmdMgr.addCommand(new CmdPartDesignPad());
     rcCmdMgr.addCommand(new CmdPartDesignPocket());
+    rcCmdMgr.addCommand(new CmdPartDesignRevolution());
     rcCmdMgr.addCommand(new CmdPartDesignFillet());
     //rcCmdMgr.addCommand(new CmdPartDesignNewSketch());
     rcCmdMgr.addCommand(new CmdPartDesignChamfer());

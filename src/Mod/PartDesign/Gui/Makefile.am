@@ -25,6 +25,8 @@ libPartDesignGui_la_SOURCES=\
 		ViewProviderPad.h \
 		ViewProviderPocket.cpp \
 		ViewProviderPocket.h \
+		ViewProviderRevolution.cpp \
+		ViewProviderRevolution.h \
 		Workbench.cpp \
 		Workbench.h
 

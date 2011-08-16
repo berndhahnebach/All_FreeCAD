@@ -34,6 +34,7 @@
 #include "Workbench.h"
 #include "ViewProviderPocket.h"
 #include "ViewProviderPad.h"
+#include "ViewProviderRevolution.h"
 #include "TaskChamfer.h"
 
 //#include "resources/qrc_PartDesign.cpp"
@@ -76,10 +77,11 @@ void PartDesignGuiExport initPartDesignGui()
     // instantiating the commands
     CreatePartDesignCommands();
 
-    PartDesignGui::Workbench           ::init();
-    PartDesignGui::ViewProviderPocket  ::init();
-    PartDesignGui::ViewProviderPad     ::init();
-    PartDesignGui::ViewProviderChamfer ::init();
+    PartDesignGui::Workbench             ::init();
+    PartDesignGui::ViewProviderPocket    ::init();
+    PartDesignGui::ViewProviderPad       ::init();
+    PartDesignGui::ViewProviderRevolution::init();
+    PartDesignGui::ViewProviderChamfer   ::init();
 
      // add resources and reloads the translators
     loadPartDesignResource();

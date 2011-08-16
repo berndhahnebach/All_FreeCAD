@@ -275,6 +275,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
                   << "Separator" 
                   << "PartDesign_Pad" 
                   << "PartDesign_Pocket"
+                  << "PartDesign_Revolution" 
                   << "PartDesign_Fillet"
                   << "PartDesign_Chamfer";
 
@@ -498,6 +499,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
               << "Separator" 
               << "PartDesign_Pad" 
               << "PartDesign_Pocket"
+              << "PartDesign_Revolution" 
               << "PartDesign_Fillet"
               << "PartDesign_Chamfer";
 
