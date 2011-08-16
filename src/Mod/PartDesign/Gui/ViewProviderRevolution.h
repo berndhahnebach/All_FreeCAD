@@ -21,23 +21,23 @@
  ***************************************************************************/
 
 
-#ifndef PARTGUI_ViewProviderPad_H
-#define PARTGUI_ViewProviderPad_H
+#ifndef PARTGUI_ViewProviderRevolution_H
+#define PARTGUI_ViewProviderRevolution_H
 
 #include <Mod/Part/Gui/ViewProvider.h>
 
 
 namespace PartDesignGui {
 
-class PartDesignGuiExport ViewProviderPad : public PartGui::ViewProviderPart
+class PartDesignGuiExport ViewProviderRevolution : public PartGui::ViewProviderPart
 {
-    PROPERTY_HEADER(PartGui::ViewProviderPad);
+    PROPERTY_HEADER(PartGui::ViewProviderRevolution);
 
 public:
     /// constructor
-    ViewProviderPad();
+    ViewProviderRevolution();
     /// destructor
-    virtual ~ViewProviderPad();
+    virtual ~ViewProviderRevolution();
 
     /// grouping handling 
     std::vector<App::DocumentObject*> claimChildren(void)const;
@@ -47,4 +47,4 @@ public:
 } // namespace PartDesignGui
 
 
-#endif // PARTGUI_ViewProviderPad_H
+#endif // PARTGUI_ViewProviderRevolution_H

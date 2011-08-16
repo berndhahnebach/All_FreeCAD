@@ -23,14 +23,14 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <Bnd_Box.hxx>
-# include <gp_Pln.hxx>
+//# include <Bnd_Box.hxx>
+//# include <gp_Pln.hxx>
 # include <BRep_Builder.hxx>
 # include <BRepBndLib.hxx>
 # include <BRepPrimAPI_MakePrism.hxx>
 # include <BRepBuilderAPI_Copy.hxx>
 # include <BRepBuilderAPI_MakeFace.hxx>
-# include <Geom_Plane.hxx>
+//# include <Geom_Plane.hxx>
 # include <Handle_Geom_Surface.hxx>
 # include <TopoDS.hxx>
 # include <TopoDS_Face.hxx>
@@ -147,7 +147,7 @@ App::DocumentObjectExecReturn *Pad::execute(void)
 	}
 	*/
 
-    Handle(Geom_Surface) aSurf = new Geom_Plane (gp_Pln(gp_Pnt(0,0,0),gp_Dir(0,0,1)));
+    //Handle(Geom_Surface) aSurf = new Geom_Plane (gp_Pln(gp_Pnt(0,0,0),gp_Dir(0,0,1)));
     //anti-clockwise circles if too look from surface normal
 #if 0
     //TopoDS_Wire theWire = TopoDS::Wire(shape);
