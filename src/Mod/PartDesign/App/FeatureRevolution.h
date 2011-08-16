@@ -37,6 +37,8 @@ class Revolution : public SketchBased
 public:
     Revolution();
 
+    App::PropertyVector Base;
+    App::PropertyVector Axis;
     App::PropertyAngle Angle;
 
     /** @name methods override feature */
