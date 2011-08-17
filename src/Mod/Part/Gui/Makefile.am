@@ -62,6 +62,7 @@ libPartGui_la_SOURCES=\
 		Mirroring.h \
 		PreCompiled.cpp \
 		PreCompiled.h \
+		SoBrepShape.cpp \
 		SoFCShapeObject.cpp \
 		ViewProvider.cpp \
 		ViewProviderExt.cpp \
@@ -77,6 +78,7 @@ libPartGui_la_SOURCES=\
 		Workbench.cpp
 
 include_HEADERS=\
+		SoBrepShape.h \
 		SoFCShapeObject.h \
 		ViewProvider.h \
 		ViewProviderExt.h \
