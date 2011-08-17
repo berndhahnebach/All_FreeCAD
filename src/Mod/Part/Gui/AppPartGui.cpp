@@ -24,6 +24,7 @@
 
 #include <Mod/Part/App/PropertyTopoShape.h>
 
+#include "SoBrepShape.h"
 #include "SoFCShapeObject.h"
 #include "ViewProvider.h"
 #include "ViewProviderExt.h"
@@ -83,6 +84,8 @@ void AppPartGuiExport initPartGui()
     (void) Py_InitModule("PartGui", PartGui_methods);   /* mod name, table ptr */
     Base::Console().Log("Loading GUI of Part module... done\n");
 
+    PartGui::SoBrepFaceSet              ::initClass();
+    PartGui::SoBrepEdgeSet              ::initClass();
     PartGui::SoFCControlPoints          ::initClass();
     PartGui::ViewProviderPart           ::init();
     PartGui::ViewProviderPartExt        ::init();

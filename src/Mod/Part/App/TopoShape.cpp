@@ -1078,6 +1078,7 @@ bool TopoShape::analyze(std::ostream& str) const
                         switch (val)
                         {
                         case BRepCheck_NoError:
+                            str << "No error" << std::endl;
                             break;
                         case BRepCheck_InvalidPointOnCurve:
                             str << "Invalid point on curve" << std::endl;
@@ -1177,6 +1178,9 @@ bool TopoShape::analyze(std::ostream& str) const
                             break;
                         case BRepCheck_CheckFail:
                             str << "Check failed" << std::endl;
+                            break;
+                        default:
+                            str << "Undetermined error" << std::endl;
                             break;
                         }
 
