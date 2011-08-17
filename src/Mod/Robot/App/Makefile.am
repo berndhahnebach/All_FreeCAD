@@ -188,7 +188,8 @@ libRobot_la_LDFLAGS = -L../../../Base -L../../../App -L../../Part/App \
 	-L$(OCC_LIB) $(QT4_CORE_LIBS) $(all_libraries) \
 	-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libRobot_la_CPPFLAGS = -DRobotAppExport= -DEIGEN2_SUPPORT
-#libkdl_la_CPPFLAGS = -Wno-sign-compare -Wno-reorder
+libkdl_la_CPPFLAGS = -DEIGEN2_SUPPORT
+#libkdl_la_CPPFLAGS += -Wno-sign-compare -Wno-reorder
 
 libRobot_la_LIBADD   = \
 		@BOOST_REGEX_LIB@ @BOOST_SYSTEM_LIB@ \
