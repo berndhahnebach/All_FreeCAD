@@ -98,9 +98,9 @@ void Constraint::Save (Writer &writer) const
     << "FirstPos=\""      <<  (int)  FirstPos << "\" "
     << "Second=\""        <<  Second          << "\" "
     << "SecondPos=\""     <<  (int) SecondPos << "\" "
-    << "Third=\""         <<  Third          << "\" "
-    << "ThirdPos=\""      <<  (int) ThirdPos << "\" "
-    << "LabelDistance=\"" << LabelDistance<< "\" />"
+    << "Third=\""         <<  Third           << "\" "
+    << "ThirdPos=\""      <<  (int) ThirdPos  << "\" "
+    << "LabelDistance=\"" <<  LabelDistance<< "\" />"
     << std::endl;
 }
 
@@ -117,11 +117,10 @@ void Constraint::Restore(XMLReader &reader)
 
     // read the third geo group if present
     if (reader.hasAttribute("Third")) {
-        Second    = reader.getAttributeAsInteger("Third");
-        SecondPos = (PointPos)  reader.getAttributeAsInteger("ThirdPos");
+        Third    = reader.getAttributeAsInteger("Third");
+        ThirdPos = (PointPos)  reader.getAttributeAsInteger("ThirdPos");
     }
     // Read the distance a constraint label has been moved
     if (reader.hasAttribute("LabelDistance"))
         LabelDistance = (float)reader.getAttributeAsFloat("LabelDistance");
-
 }
