@@ -790,7 +790,7 @@ Action * PythonCommand::createAction(void)
         pcAction->setStatusTip(qApp->translate(getName(), getToolTipText()));
     if (strcmp(getResource("Pixmap"),"") != 0)
         pcAction->setIcon(Gui::BitmapFactory().pixmap(getResource("Pixmap")));
-      pcAction->setShortcut     (QString::fromAscii(getAccel()));
+    pcAction->setShortcut     (QString::fromAscii(getAccel()));
 
     return pcAction;
 }

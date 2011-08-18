@@ -28,7 +28,6 @@
 #include <Standard_Boolean.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Gui/ViewProviderGeometryObject.h>
-//#include <Gui/ViewProviderBuilder.h>
 #include <map>
 
 class TopoDS_Shape;
@@ -49,20 +48,13 @@ class SoCoordinate3;
 class SoIndexedFaceSet;
 class SoNormal;
 class SoNormalBinding;
+class SoMaterialBinding;
 class SoIndexedLineSet;
 
 namespace PartGui {
 
-/*
-class ViewProviderShapeBuilder : public Gui::ViewProviderBuilder
-{
-public:
-    ViewProviderShapeBuilder(){}
-    ~ViewProviderShapeBuilder(){}
-    virtual void buildNodes(const App::Property*, std::vector<SoNode*>&) const;
-    void createShape(const App::Property*, SoSeparator*) const;
-};
-*/
+class SoBrepFaceSet;
+class SoBrepEdgeSet;
 
 class AppPartGuiExport ViewProviderPartExt : public Gui::ViewProviderGeometryObject
 {
@@ -102,14 +94,12 @@ public:
       * works. 
      */
     //@{
-
     /// indicates if the ViewProvider use the new Selection model
     virtual bool useNewSelectionModel(void){return true;}
     /// return a hit element to the selection path or 0
     virtual const char* getElement(const SoPickedPoint*);
     /// return the higlight lines for a given element or the whole shape
     virtual std::vector<Base::Vector3d> getSelectionShape(const char* Element);
-
     //@}
 
 
@@ -120,21 +110,20 @@ protected:
     void updateVisual(const TopoDS_Shape &);
 
     // nodes for the data representation
-    SoGroup  *EdgeRoot;
-    SoGroup  *FaceRoot;
-    SoGroup  *VertexRoot;
-    SoMaterial   *pcLineMaterial;
-    SoMaterial   *pcPointMaterial;
-    SoDrawStyle  *pcLineStyle;
-    SoDrawStyle  *pcPointStyle;
-    //SoSwitch     *pcControlPoints;
-    SoShapeHints *pShapeHints;
+    SoMaterialBinding * pcShapeBind;
+    SoMaterial        * pcLineMaterial;
+    SoMaterial        * pcPointMaterial;
+    SoDrawStyle       * pcLineStyle;
+    SoDrawStyle       * pcPointStyle;
+    //SoSwitch        * pcControlPoints;
+    SoShapeHints      * pShapeHints;
 
-    SoCoordinate3    * coords;
-    SoIndexedFaceSet * faceset;
-    SoNormal         * norm;
-    SoNormalBinding  * normb;
-    SoIndexedLineSet * lineset;
+    SoCoordinate3     * coords;
+    SoCoordinate3     * vertex;
+    SoBrepFaceSet     * faceset;
+    SoNormal          * norm;
+    SoNormalBinding   * normb;
+    SoIndexedLineSet  * lineset;
 
     bool VisualTouched;
 private:
