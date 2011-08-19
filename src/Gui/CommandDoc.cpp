@@ -213,6 +213,7 @@ StdCmdExport::StdCmdExport()
     sStatusTip    = QT_TR_NOOP("Export an object in the active document");
     //sPixmap       = "Open";
     sAccel        = "Ctrl+E";
+    eType         = 0;
 }
 
 void StdCmdExport::activated(int iMsg)
@@ -353,6 +354,7 @@ StdCmdSave::StdCmdSave()
   sStatusTip    = QT_TR_NOOP("Save the active document");
   sPixmap       = "document-save";
   sAccel        = keySequenceToAccel(QKeySequence::Save);
+  eType         = 0;
 }
 
 void StdCmdSave::activated(int iMsg)

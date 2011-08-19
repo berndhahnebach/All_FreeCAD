@@ -1475,7 +1475,7 @@ TopoShape Sketch::toShape(void) const
         BRepBuilderAPI_MakeWire mkWire;
         // add and erase first edge
         mkWire.Add(edge_list.front());
-        edge_list.erase(edge_list.begin());
+        edge_list.pop_front();
 
         TopoDS_Wire new_wire = mkWire.Wire(); // current new wire
 

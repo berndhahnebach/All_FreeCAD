@@ -576,7 +576,8 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
             edit->PreselectCurve = -1;
             edit->PreselectPoint = -1;
             edit->PreselectConstraint = -1;
-            edit->ActSketch.initMove(edit->DragCurve, none);
+            if (edit->DragCurve != -1)
+                edit->ActSketch.initMove(edit->DragCurve, none);
             return true;
         case STATUS_SELECT_Constraint:
             Mode = STATUS_SKETCH_DragConstraint;
@@ -629,6 +630,7 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
 
     return false;
 }
+
 void ViewProviderSketch::moveConstraint(int constNum, const Base::Vector2D &toPos)
 {
     // are we in edit?

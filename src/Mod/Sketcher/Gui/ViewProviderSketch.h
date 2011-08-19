@@ -108,7 +108,7 @@ public:
     /// is called by GuiCommands to set the drawing mode
     void setSketchMode(SketchMode mode) {Mode = mode;}
     /// get the sketch mode
-    SketchMode getSketchMode(void) {return Mode;}
+    SketchMode getSketchMode(void) const {return Mode;}
     //@}
 
     /** @name helper functions */

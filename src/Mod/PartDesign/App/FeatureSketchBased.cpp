@@ -28,11 +28,17 @@
 # include <BRepBndLib.hxx>
 # include <BRepBuilderAPI_MakeFace.hxx>
 # include <BRepAdaptor_Surface.hxx>
+# include <BRepCheck_Analyzer.hxx>
+# include <TopoDS.hxx>
 # include <TopoDS_Compound.hxx>
 # include <TopoDS_Face.hxx>
 # include <TopoDS_Wire.hxx>
 # include <TopExp_Explorer.hxx>
 # include <gp_Pln.hxx>
+# include <ShapeFix_Face.hxx>
+# include <ShapeFix_Wire.hxx>
+# include <ShapeAnalysis.hxx>
+# include <TopTools_IndexedMapOfShape.hxx>
 #endif
 
 
@@ -65,6 +71,35 @@ SketchBased::SketchBased()
     ADD_PROPERTY(Sketch,(0));
 }
 
+TopoDS_Face SketchBased::validateFace(const TopoDS_Face& face) const
+{
+    BRepCheck_Analyzer aChecker(face);
+    if (!aChecker.IsValid()) {
+        TopoDS_Wire outerwire = ShapeAnalysis::OuterWire(face);
+        TopTools_IndexedMapOfShape myMap;
+        myMap.Add(outerwire);
+
+        TopExp_Explorer xp(face,TopAbs_WIRE);
+        ShapeFix_Wire fix;
+        fix.SetFace(face);
+        fix.Load(outerwire);
+        fix.Perform();
+        BRepBuilderAPI_MakeFace mkFace(fix.WireAPIMake());
+        while (xp.More()) {
+            if (!myMap.Contains(xp.Current())) {
+                fix.Load(TopoDS::Wire(xp.Current()));
+                fix.Perform();
+                mkFace.Add(fix.WireAPIMake());
+            }
+            xp.Next();
+        }
+
+        return mkFace.Face();
+    }
+
+    return face;
+}
+
 TopoDS_Shape SketchBased::makeFace(std::list<TopoDS_Wire>& wires) const
 {
     BRepBuilderAPI_MakeFace mkFace(wires.front());
@@ -92,7 +127,7 @@ TopoDS_Shape SketchBased::makeFace(std::list<TopoDS_Wire>& wires) const
             it->Reverse();
         mkFace.Add(*it);
     }
-    return mkFace.Face();
+    return validateFace(mkFace.Face());
 }
 
 TopoDS_Shape SketchBased::makeFace(const std::vector<TopoDS_Wire>& w) const
