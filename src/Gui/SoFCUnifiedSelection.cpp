@@ -209,10 +209,17 @@ SoFCUnifiedSelection::handleEvent(SoHandleEventAction * action)
             }
         }
 
-        if(vp && vp->useNewSelectionModel()){
-            const char * e = vp->getElement(pp);
+        if (vp && vp->useNewSelectionModel()) {
+            std::string e = vp->getElement(pp);
+            vp->getSelectionShape(e.c_str());
+            static char buf[513];
+            snprintf(buf,512,"Hovered: %s (%f,%f,%f)"
+                                       ,e.c_str()
+                                       ,pp->getPoint()[0]
+                                       ,pp->getPoint()[1]
+                                       ,pp->getPoint()[2]);
 
-            vp->getSelectionShape(0);
+            getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
         }
     }
     // key press events

@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <sstream>
 # include <Poly_Polygon3D.hxx>
 # include <BRepBndLib.hxx>
 # include <BRepMesh.hxx>
@@ -58,6 +59,9 @@
 # include <TColStd_Array1OfInteger.hxx>
 # include <TopTools_ListOfShape.hxx>
 # include <Inventor/SoPickedPoint.h>
+# include <Inventor/details/SoFaceDetail.h>
+# include <Inventor/details/SoLineDetail.h>
+# include <Inventor/details/SoPointDetail.h>
 # include <Inventor/events/SoMouseButtonEvent.h>
 # include <Inventor/nodes/SoCoordinate3.h>
 # include <Inventor/nodes/SoDrawStyle.h>
@@ -334,9 +338,29 @@ std::vector<std::string> ViewProviderPartExt::getDisplayModes(void) const
     return StrList;
 }
 
-const char* ViewProviderPartExt::getElement(const SoPickedPoint* Point)
+std::string ViewProviderPartExt::getElement(const SoPickedPoint* pp) const
 {
-    return 0;
+    std::stringstream str;
+    const SoDetail* detail = pp->getDetail();
+    if (detail) {
+        if (detail->getTypeId() == SoFaceDetail::getClassTypeId()) {
+            const SoFaceDetail* face_detail = static_cast<const SoFaceDetail*>(detail);
+            int face = face_detail->getPartIndex() + 1;
+            str << "Face" << face;
+        }
+        else if (detail->getTypeId() == SoLineDetail::getClassTypeId()) {
+            const SoLineDetail* line_detail = static_cast<const SoLineDetail*>(detail);
+            int edge = line_detail->getPartIndex() + 1;
+            str << "Edge" << edge;
+        }
+        else if (detail->getTypeId() == SoPointDetail::getClassTypeId()) {
+            const SoPointDetail* point_detail = static_cast<const SoPointDetail*>(detail);
+            int vertex = point_detail->getCoordinateIndex() + 1;
+            str << "Vertex" << vertex;
+        }
+    }
+
+    return str.str();
 }
 
 std::vector<Base::Vector3d> ViewProviderPartExt::getSelectionShape(const char* Element)
