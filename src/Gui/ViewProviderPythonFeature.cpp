@@ -274,9 +274,9 @@ std::vector<App::DocumentObject*> ViewProviderPythonFeatureImp::claimChildren() 
     return children;
 }
 
-const char* ViewProviderPythonFeatureImp::getElement(const SoPickedPoint *pp)
+std::string ViewProviderPythonFeatureImp::getElement(const SoPickedPoint *pp) const
 {
-    return 0;
+    return "";
 }
 
 std::vector<Base::Vector3d> ViewProviderPythonFeatureImp::getSelectionShape(const char* Element)
