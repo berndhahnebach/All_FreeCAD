@@ -28,6 +28,7 @@
 # include <QPainter>
 #endif
 
+#include <Base/Console.h>
 #include <App/Application.h>
 #include <App/Document.h>
 #include "PropertyEditor.h"
@@ -37,7 +38,7 @@
 using namespace Gui::PropertyEditor;
 
 PropertyEditor::PropertyEditor(QWidget *parent)
-    : QTreeView(parent), autoupdate(false)
+    : QTreeView(parent), autoupdate(false), committing(false), delaybuild(false)
 {
     propertyModel = new PropertyModel(this);
     setModel(propertyModel);
@@ -83,7 +84,13 @@ void PropertyEditor::closeEditor (QWidget * editor, QAbstractItemDelegate::EndEd
 
 void PropertyEditor::commitData (QWidget * editor)
 {
+    committing = true;
     QTreeView::commitData(editor);
+    committing = false;
+    if (delaybuild) {
+        delaybuild = false;
+        propertyModel->buildUp(std::map<std::string, std::vector<App::Property*> >());
+    }
 }
 
 void PropertyEditor::editorDestroyed (QObject * editor)
@@ -121,6 +128,12 @@ void PropertyEditor::drawBranches(QPainter *painter, const QRect &rect, const QM
 
 void PropertyEditor::buildUp(const std::map<std::string, std::vector<App::Property*> >& props)
 {
+    if (committing) {
+        Base::Console().Warning("While committing the data to the property the selection has changed.\n");
+        delaybuild = true;
+        return;
+    }
+
     QModelIndex index = this->currentIndex();
     QStringList propertyPath = propertyModel->propertyPathFromIndex(index);
     propertyModel->buildUp(props);

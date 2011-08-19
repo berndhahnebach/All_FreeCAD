@@ -64,6 +64,8 @@ protected:
 private:
     PropertyModel* propertyModel;
     bool autoupdate;
+    bool committing;
+    bool delaybuild;
 };
 
 } //namespace PropertyEditor
