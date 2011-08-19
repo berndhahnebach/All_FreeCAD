@@ -96,8 +96,6 @@ public:
     static void initClass();
     SoBrepEdgeSet();
 
-    SoMFInt32 partIndex;
-
 protected:
     virtual ~SoBrepEdgeSet() {};
     virtual void GLRender(SoGLRenderAction *action);
@@ -106,18 +104,6 @@ protected:
         const SoPrimitiveVertex *v1,
         const SoPrimitiveVertex *v2,
         SoPickedPoint *pp);
-
-private:
-    enum Binding {
-        OVERALL = 0,
-        PER_PART,
-        PER_PART_INDEXED,
-        PER_VERTEX,
-        PER_VERTEX_INDEXED,
-        NONE = OVERALL
-    };
-    Binding findMaterialBinding(SoState * const state) const;
-    Binding findNormalBinding(SoState * const state) const;
 };
 
 } // namespace PartGui

@@ -143,7 +143,7 @@ ViewProviderPartExt::ViewProviderPartExt()
     normb = new SoNormalBinding;
     normb->value = SoNormalBinding::PER_VERTEX_INDEXED;
     normb->ref();
-    lineset = new SoIndexedLineSet();
+    lineset = new SoBrepEdgeSet();
     lineset->ref();
 
     pcShapeBind = new SoMaterialBinding();
@@ -485,7 +485,6 @@ void ViewProviderPartExt::updateVisual(const TopoDS_Shape &inputShape)
 
         std::set<int>         edgeIdxSet;
         std::vector<int32_t>  indxVector;
-        std::list< std::vector<gp_Pnt> >   edgePoints;
 
         // count and index the edges
         for (int i=1; i <= M.Extent(); i++) {
@@ -493,30 +492,14 @@ void ViewProviderPartExt::updateVisual(const TopoDS_Shape &inputShape)
             nbrEdges++;
 
             const TopoDS_Edge& aEdge = TopoDS::Edge(M(i));
-            //gp_Trsf myTransf;
             TopLoc_Location aLoc;
 
             // handling of the free edge that are not associated to a face
             Handle(Poly_Polygon3D) aPoly = BRep_Tool::Polygon3D(aEdge, aLoc);
             if (!aPoly.IsNull()) {
-                //if (!aLoc.IsIdentity()) {
-                //    myTransf = aLoc.Transformation();
-                //}
-
                 const TColgp_Array1OfPnt& aNodes = aPoly->Nodes();
                 int nbNodesInEdge = aPoly->NbNodes();
                 nbrNodes += nbNodesInEdge;
-
-                gp_Pnt pnt;
-                std::vector<gp_Pnt> pnts;
-                pnts.reserve(nbNodesInEdge);
-                for (Standard_Integer j=1;j <= nbNodesInEdge;j++) {
-                    pnt = aNodes(j);
-                    //pnt.Transform(myTransf);
-                    pnts.push_back(pnt);
-                }
-
-                edgePoints.push_back(pnts);
             }
         }
         // reserve some memory
@@ -642,16 +625,32 @@ void ViewProviderPartExt::updateVisual(const TopoDS_Shape &inputShape)
         }
 
         // handling of the free edges
-        for (std::list< std::vector<gp_Pnt> >::iterator it = edgePoints.begin(); it != edgePoints.end(); ++it) {
-            int i=0;
-            for (std::vector<gp_Pnt>::iterator jt = it->begin(); jt != it->end(); ++jt) {
-                verts[FaceNodeOffset+i].setValue((float)(jt->X()),(float)(jt->Y()),(float)(jt->Z()));
-                indxVector.push_back(FaceNodeOffset+i);
-                i++;
-            }
+        for (int i=1; i <= M.Extent(); i++) {
+            const TopoDS_Edge& aEdge = TopoDS::Edge(M(i));
+            //gp_Trsf myTransf;
+            TopLoc_Location aLoc;
 
-            indxVector.push_back(-1);
-            FaceNodeOffset += i;
+            // handling of the free edge that are not associated to a face
+            Handle(Poly_Polygon3D) aPoly = BRep_Tool::Polygon3D(aEdge, aLoc);
+            if (!aPoly.IsNull()) {
+                //if (!aLoc.IsIdentity()) {
+                //    myTransf = aLoc.Transformation();
+                //}
+
+                const TColgp_Array1OfPnt& aNodes = aPoly->Nodes();
+                int nbNodesInEdge = aPoly->NbNodes();
+
+                gp_Pnt pnt;
+                for (Standard_Integer j=1;j <= nbNodesInEdge;j++) {
+                    pnt = aNodes(j);
+                    //pnt.Transform(myTransf);
+                    verts[FaceNodeOffset+j-1].setValue((float)(pnt.X()),(float)(pnt.Y()),(float)(pnt.Z()));
+                    indxVector.push_back(FaceNodeOffset+j-1);
+                }
+
+                indxVector.push_back(-1);
+                FaceNodeOffset += nbNodesInEdge;
+            }
         }
 
         // handling of the vertices
