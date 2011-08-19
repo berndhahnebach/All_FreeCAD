@@ -35,7 +35,7 @@ using namespace SketcherGui;
 
 #if 0 // needed for Qt's lupdate utility
     qApp->translate("Workbench", "Sketcher");
-    qApp->translate("Workbench", "Sketcher geoms");
+    qApp->translate("Workbench", "Sketcher geometries");
     qApp->translate("Workbench", "Sketcher constraints");
 #endif
 
@@ -87,6 +87,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
           << "Sketcher_ConstrainSymmetric";
     *sketch 
         << "Sketcher_NewSketch"
+        << "Sketcher_LeaveSketch"
         << "Sketcher_MapSketch"
         << geom
         << cons

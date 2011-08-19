@@ -236,7 +236,7 @@ bool CmdSketcherMapSketch::isActive(void)
 DEF_STD_CMD_A(CmdSketcherLeaveSketch);
 
 CmdSketcherLeaveSketch::CmdSketcherLeaveSketch()
-	:Command("Sketcher_LeaveSketch")
+  : Command("Sketcher_LeaveSketch")
 {
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
@@ -245,6 +245,7 @@ CmdSketcherLeaveSketch::CmdSketcherLeaveSketch()
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_LeaveSketch";
+    eType           = 0;
 }
 
 void CmdSketcherLeaveSketch::activated(int iMsg)
@@ -258,14 +259,14 @@ void CmdSketcherLeaveSketch::activated(int iMsg)
 
 bool CmdSketcherLeaveSketch::isActive(void)
 {
-	Gui::Document *doc = getActiveGuiDocument();
-	if(doc)
-		// checks if a Sketch Viewprovider is in Edit and is in no special mode
-		if(doc->getInEdit() && doc->getInEdit()->isDerivedFrom(ViewProviderSketch::getClassTypeId()))
-			if(dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit())
-				->getSketchMode() == ViewProviderSketch::STATUS_NONE)
-			return true;
-	return false;
+    Gui::Document *doc = getActiveGuiDocument();
+    if (doc) {
+        // checks if a Sketch Viewprovider is in Edit and is in no special mode
+        SketcherGui::ViewProviderSketch* vp = dynamic_cast<SketcherGui::ViewProviderSketch*>(doc->getInEdit());
+        if (vp && vp->getSketchMode() == ViewProviderSketch::STATUS_NONE)
+            return true;
+    }
+    return false;
 }
 
 // Sketchflat integration ++++++++++++++++++++++++++++++++++++++++++++++++

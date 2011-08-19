@@ -249,6 +249,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     PartDesign->setCommand("Part design");
 
     *PartDesign   << "Sketcher_NewSketch"
+                  << "Sketcher_LeaveSketch"
                   << "Sketcher_MapSketch"
                   << "Separator" 
                   << "Sketcher_CreateArc"
@@ -473,7 +474,9 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     // Sketch based
     Gui::ToolBarItem* sketch_based = new Gui::ToolBarItem( root );
     sketch_based->setCommand("Sketch based");
-    *sketch_based   << "Sketcher_NewSketch"
+    *sketch_based
+              << "Sketcher_NewSketch"
+              << "Sketcher_LeaveSketch"
               << "Separator" 
               << "Sketcher_CreateArc"
               << "Sketcher_CreateCircle"

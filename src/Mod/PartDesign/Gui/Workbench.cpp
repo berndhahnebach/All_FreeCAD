@@ -153,6 +153,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     root->insertItem(item, part);
     part->setCommand("&Part Design");
     *part << "Sketcher_NewSketch" 
+          << "Sketcher_LeaveSketch"
           << "Sketcher_MapSketch"
           << geom
           << cons
@@ -172,6 +173,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     Gui::ToolBarItem* part = new Gui::ToolBarItem(root);
     part->setCommand("Part Design");
     *part << "Sketcher_NewSketch" 
+          << "Sketcher_LeaveSketch"
           << "Separator" 
           << "PartDesign_Pad" 
           << "PartDesign_Pocket" 

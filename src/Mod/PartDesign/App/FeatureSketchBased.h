@@ -27,6 +27,7 @@
 #include <App/PropertyStandard.h>
 #include <Mod/Part/App/PartFeature.h>
 
+class TopoDS_Face;
 class TopoDS_Wire;
 
 namespace PartDesign
@@ -42,6 +43,7 @@ public:
     App::PropertyLink   Sketch;
 
 protected:
+    TopoDS_Face validateFace(const TopoDS_Face&) const;
     TopoDS_Shape makeFace(const std::vector<TopoDS_Wire>&) const;
     TopoDS_Shape makeFace(std::list<TopoDS_Wire>&) const; // for internal use only
 };

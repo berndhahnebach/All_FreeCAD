@@ -66,7 +66,7 @@
 # include <BRepTools_ReShape.hxx>
 # include <BRepTools_ShapeSet.hxx>
 # include <GeomLProp_SLProps.hxx>
-#include <GeomAPI_ProjectPointOnSurf.hxx>
+# include <GeomAPI_ProjectPointOnSurf.hxx>
 # include <GeomFill_CorrectedFrenet.hxx>
 # include <GeomFill_CurveAndTrihedron.hxx>
 # include <GeomFill_EvolvedSection.hxx>
