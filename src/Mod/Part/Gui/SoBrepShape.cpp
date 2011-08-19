@@ -373,7 +373,6 @@ void SoBrepEdgeSet::initClass()
 SoBrepEdgeSet::SoBrepEdgeSet()
 {
     SO_NODE_CONSTRUCTOR(SoBrepEdgeSet);
-    SO_NODE_ADD_FIELD(partIndex, (-1));
 }
 
 /**
@@ -381,50 +380,7 @@ SoBrepEdgeSet::SoBrepEdgeSet()
  */
 void SoBrepEdgeSet::GLRender(SoGLRenderAction *action)
 {
-    if (this->coordIndex.getNum() < 2)
-        return;
-
-    if (!this->shouldGLRender(action))
-        return;
-
-    SoState * state = action->getState();
-
-    Binding mbind = this->findMaterialBinding(state);
-    Binding nbind = this->findNormalBinding(state);
-
-    const SoCoordinateElement * coords;
-    const SbVec3f * normals;
-    const int32_t * cindices;
-    int numindices;
-    const int32_t * nindices;
-    const int32_t * tindices;
-    const int32_t * mindices;
-    const int32_t * pindices;
-    int numparts;
-    SbBool doTextures;
-    SbBool normalCacheUsed;
-
-    SoMaterialBundle mb(action);
-
-    SoTextureCoordinateBundle tb(action, TRUE, FALSE);
-    doTextures = tb.needCoordinates();
-    SbBool sendNormals = !mb.isColorOnly() || tb.isFunction();
-
-    this->getVertexData(state, coords, normals, cindices,
-                        nindices, tindices, mindices, numindices,
-                        sendNormals, normalCacheUsed);
-
-    mb.sendFirst(); // make sure we have the correct material
-
-    // just in case someone forgot
-    if (!mindices) mindices = cindices;
-    if (!nindices) nindices = cindices;
-    pindices = this->partIndex.getValues(0);
-    numparts = this->partIndex.getNum();
-    //renderShape(static_cast<const SoGLCoordinateElement*>(coords), cindices, numindices,
-    //    pindices, numparts, normals, nindices, &mb, mindices, &tb, tindices, nbind, mbind, doTextures?1:0);
-    // Disable caching for this node
-    SoGLCacheContextElement::shouldAutoCache(state, SoGLCacheContextElement::DONT_AUTO_CACHE);
+    inherited::GLRender(action);
 }
 
 SoDetail * SoBrepEdgeSet::createLineSegmentDetail(SoRayPickAction * action,
@@ -433,77 +389,8 @@ SoDetail * SoBrepEdgeSet::createLineSegmentDetail(SoRayPickAction * action,
                                                   SoPickedPoint * pp)
 {
     SoDetail* detail = inherited::createLineSegmentDetail(action, v1, v2, pp);
-    const int32_t * indices = this->partIndex.getValues(0);
-    int num = this->partIndex.getNum();
-    if (indices) {
-        SoLineDetail* line_detail = static_cast<SoLineDetail*>(detail);
-        int index = line_detail->getLineIndex();
-        int count = 0;
-        for (int i=0; i<num; i++) {
-            count += indices[i];
-            if (index < count) {
-                line_detail->setPartIndex(i);
-                break;
-            }
-        }
-    }
+    SoLineDetail* line_detail = static_cast<SoLineDetail*>(detail);
+    int index = line_detail->getLineIndex();
+    line_detail->setPartIndex(index);
     return detail;
-}
-
-SoBrepEdgeSet::Binding
-SoBrepEdgeSet::findMaterialBinding(SoState * const state) const
-{
-    Binding binding = OVERALL;
-    SoMaterialBindingElement::Binding matbind =
-        SoMaterialBindingElement::get(state);
-
-    switch (matbind) {
-    case SoMaterialBindingElement::OVERALL:
-        binding = OVERALL;
-        break;
-    case SoMaterialBindingElement::PER_VERTEX:
-        binding = PER_VERTEX;
-        break;
-    case SoMaterialBindingElement::PER_VERTEX_INDEXED:
-        binding = PER_VERTEX_INDEXED;
-        break;
-    case SoMaterialBindingElement::PER_PART:
-        binding = PER_PART;
-        break;
-    case SoMaterialBindingElement::PER_PART_INDEXED:
-        binding = PER_PART_INDEXED;
-        break;
-    default:
-        break;
-    }
-    return binding;
-}
-
-SoBrepEdgeSet::Binding
-SoBrepEdgeSet::findNormalBinding(SoState * const state) const
-{
-    Binding binding = PER_VERTEX_INDEXED;
-    SoNormalBindingElement::Binding normbind =
-        (SoNormalBindingElement::Binding) SoNormalBindingElement::get(state);
-
-    switch (normbind) {
-    case SoNormalBindingElement::OVERALL:
-        binding = OVERALL;
-        break;
-    case SoNormalBindingElement::PER_VERTEX:
-        binding = PER_VERTEX;
-        break;
-    case SoNormalBindingElement::PER_VERTEX_INDEXED:
-        binding = PER_VERTEX_INDEXED;
-        break;
-    case SoNormalBindingElement::PER_PART:
-        binding = PER_PART;
-        break;
-    case SoNormalBindingElement::PER_PART_INDEXED:
-        binding = PER_PART_INDEXED;
-        break;
-    default:
-        break;
-    }
-    return binding;
 }

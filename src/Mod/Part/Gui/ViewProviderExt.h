@@ -123,7 +123,7 @@ protected:
     SoBrepFaceSet     * faceset;
     SoNormal          * norm;
     SoNormalBinding   * normb;
-    SoIndexedLineSet  * lineset;
+    SoBrepEdgeSet     * lineset;
 
     bool VisualTouched;
 private:
