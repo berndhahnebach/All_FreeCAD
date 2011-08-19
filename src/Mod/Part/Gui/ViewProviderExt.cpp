@@ -275,12 +275,15 @@ void ViewProviderPartExt::attach(App::DocumentObject *pcFeat)
     // Avoid any Z-buffer artefacts, so that the lines always appear on top of the faces
     // The correct order is Edges, Polygon offset, Faces.
     SoPolygonOffset* offset = new SoPolygonOffset();
+    SoSeparator* sepWire = new SoSeparator();
+    SoSeparator* sepFlat = new SoSeparator();
+    SoSeparator* sepPnts = new SoSeparator();
 
     // normal viewing with edges and points
-    pcNormalRoot->addChild(pcFlatRoot);
+    pcNormalRoot->addChild(sepWire);
     pcNormalRoot->addChild(offset);
-    pcNormalRoot->addChild(pcWireframeRoot);
-    pcNormalRoot->addChild(pcPointsRoot);
+    pcNormalRoot->addChild(sepFlat);
+    pcNormalRoot->addChild(sepPnts);
 
     // just faces with no edges or points
     pcFlatRoot->addChild(pShapeHints);
@@ -290,18 +293,24 @@ void ViewProviderPartExt::attach(App::DocumentObject *pcFeat)
     pcFlatRoot->addChild(normb);
     pcFlatRoot->addChild(coords);
     pcFlatRoot->addChild(faceset);
+    for (int i=0; i<pcFlatRoot->getNumChildren(); i++)
+        sepFlat->addChild(pcFlatRoot->getChild(i));
 
     // only edges
     pcWireframeRoot->addChild(pcLineMaterial);
     pcWireframeRoot->addChild(pcLineStyle);
     pcWireframeRoot->addChild(coords);
     pcWireframeRoot->addChild(lineset);
+    for (int i=0; i<pcWireframeRoot->getNumChildren(); i++)
+        sepWire->addChild(pcWireframeRoot->getChild(i));
 
     // normal viewing with edges and points
     pcPointsRoot->addChild(pcPointMaterial);
     pcPointsRoot->addChild(pcPointStyle);
     pcPointsRoot->addChild(vertex);
     pcPointsRoot->addChild(new SoPointSet());
+    for (int i=0; i<pcPointsRoot->getNumChildren(); i++)
+        sepPnts->addChild(pcPointsRoot->getChild(i));
 
     // putting all together with the switch
     addDisplayMaskMode(pcNormalRoot, "Flat Lines");
@@ -553,14 +562,14 @@ void ViewProviderPartExt::updateVisual(const TopoDS_Shape &inputShape)
             if (mesh.IsNull()) continue;
 
             // getting the transformation of the shape/face
-            //gp_Trsf myTransf;
-            //Standard_Boolean identity = true;
-            //if (!aLoc.IsIdentity()) {
-            //    identity = false;
-            //    myTransf = aLoc.Transformation();
-            //}
+            gp_Trsf myTransf;
+            Standard_Boolean identity = true;
+            if (!aLoc.IsIdentity()) {
+                identity = false;
+                myTransf = aLoc.Transformation();
+            }
 
-            // geting size of node and triangle aray of this Face
+            // getting size of node and triangle array of this face
             int nbNodesInFace = mesh->NbNodes();
             int nbTriInFace   = mesh->NbTriangles();
             // check orientation
@@ -586,11 +595,11 @@ void ViewProviderPartExt::updateVisual(const TopoDS_Shape &inputShape)
                 gp_Pnt V1(Nodes(N1)), V2(Nodes(N2)), V3(Nodes(N3));
 
                 // transform the vertices to the place of the face
-                /*if (!identity) {
+                if (!identity) {
                     V1.Transform(myTransf);
                     V2.Transform(myTransf);
                     V3.Transform(myTransf);
-                }*/
+                }
                 
                 // calculating per vertex normals                    
                 // Calculate triangle normal
@@ -651,15 +660,17 @@ void ViewProviderPartExt::updateVisual(const TopoDS_Shape &inputShape)
         // handling of the free edges
         for (int i=1; i <= M.Extent(); i++) {
             const TopoDS_Edge& aEdge = TopoDS::Edge(M(i));
-            //gp_Trsf myTransf;
+            Standard_Boolean identity = true;
+            gp_Trsf myTransf;
             TopLoc_Location aLoc;
 
             // handling of the free edge that are not associated to a face
             Handle(Poly_Polygon3D) aPoly = BRep_Tool::Polygon3D(aEdge, aLoc);
             if (!aPoly.IsNull()) {
-                //if (!aLoc.IsIdentity()) {
-                //    myTransf = aLoc.Transformation();
-                //}
+                if (!aLoc.IsIdentity()) {
+                    identity = false;
+                    myTransf = aLoc.Transformation();
+                }
 
                 const TColgp_Array1OfPnt& aNodes = aPoly->Nodes();
                 int nbNodesInEdge = aPoly->NbNodes();
@@ -667,7 +678,8 @@ void ViewProviderPartExt::updateVisual(const TopoDS_Shape &inputShape)
                 gp_Pnt pnt;
                 for (Standard_Integer j=1;j <= nbNodesInEdge;j++) {
                     pnt = aNodes(j);
-                    //pnt.Transform(myTransf);
+                    if (!identity)
+                        pnt.Transform(myTransf);
                     verts[FaceNodeOffset+j-1].setValue((float)(pnt.X()),(float)(pnt.Y()),(float)(pnt.Z()));
                     indxVector.push_back(FaceNodeOffset+j-1);
                 }
