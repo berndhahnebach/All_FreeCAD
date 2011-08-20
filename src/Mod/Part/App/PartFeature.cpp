@@ -128,7 +128,7 @@ TopLoc_Location Feature::getLocation() const
     /// returns the type name of the ViewProvider
 const char* Feature::getViewProviderName(void) const {
     return "PartGui::ViewProviderPart";
-    //return "PartGui::ViewProviderPartExt";
+    // return "PartGui::ViewProviderPartExt";
 }
 
 // ---------------------------------------------------------
