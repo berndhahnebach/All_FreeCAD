@@ -281,9 +281,10 @@ protected:
     static void interactionFinishCB(void * data, SoQtViewer * viewer);
     static void interactionLoggerCB(void * ud, SoAction* action);
 
-//private:
-//    static void selectCB(void * closure, SoPath * p);
-//    static void deselectCB(void * closure, SoPath * p);
+private:
+    static void selectCB(void * closure, SoPath * p);
+    static void deselectCB(void * closure, SoPath * p);
+    static SoPath * pickFilterCB(void * data, const SoPickedPoint * pick);
 
 private:
     std::set<ViewProvider*> _ViewProviderSet;
@@ -295,7 +296,7 @@ private:
     SoRotationXYZ * arrowrotation;
     SoDirectionalLight* backlight;
 
-    SoFCUnifiedSelection * pcViewProviderRoot;
+    SoSeparator * pcViewProviderRoot;
     SoEventCallback* pEventCallback;
     NavigationStyle* navigation;
 

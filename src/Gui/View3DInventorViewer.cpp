@@ -185,39 +185,44 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name,
     cam->nearDistance = 0;
     cam->farDistance = 10;
 
-	// dragger
-	//SoSeparator * draggSep = new SoSeparator();
-	//SoScale *scale = new SoScale();
-	//scale->scaleFactor = SbVec3f  (0.2,0.2,0.2);
-	//draggSep->addChild(scale);
-	//SoCenterballDragger *dragger = new SoCenterballDragger();
-	//dragger->center = SbVec3f  (0.8,0.8,0);
-	////dragger->rotation = SbRotation(rrot[0],rrot[1],rrot[2],rrot[3]);
-	//draggSep->addChild(dragger);
-
+    // dragger
+    //SoSeparator * dragSep = new SoSeparator();
+    //SoScale *scale = new SoScale();
+    //scale->scaleFactor = SbVec3f  (0.2,0.2,0.2);
+    //dragSep->addChild(scale);
+    //SoCenterballDragger *dragger = new SoCenterballDragger();
+    //dragger->center = SbVec3f  (0.8,0.8,0);
+    ////dragger->rotation = SbRotation(rrot[0],rrot[1],rrot[2],rrot[3]);
+    //dragSep->addChild(dragger);
 
     this->foregroundroot->addChild(cam);
     this->foregroundroot->addChild(lm);
     this->foregroundroot->addChild(bc);
-    //this->foregroundroot->addChild(draggSep);
+    //this->foregroundroot->addChild(dragSep);
 
-    // set the ViewProvider root
-    //SoSelection* selectionRoot = new SoSelection();
-    //selectionRoot->addSelectionCallback(View3DInventorViewer::selectCB, this);
-    //selectionRoot->addDeselectionCallback(View3DInventorViewer::deselectCB, this);
-    //pcViewProviderRoot = selectionRoot;
+#if 0
     // NOTE: For every mouse click event the SoSelection searches for the picked
     // point which causes a certain slow-down because for all objects the primitives
     // must be created. Using an SoSeparator avoids this drawback.
-    //pcViewProviderRoot = new SoSeparator();
-    pcViewProviderRoot = new Gui::SoFCUnifiedSelection();
-    pcViewProviderRoot->viewer = this;
+    SoSelection* selectionRoot = new SoSelection();
+    selectionRoot->addSelectionCallback(View3DInventorViewer::selectCB, this);
+    selectionRoot->addDeselectionCallback(View3DInventorViewer::deselectCB, this);
+    selectionRoot->setPickFilterCallback(View3DInventorViewer::pickFilterCB, this);
+#else
+    // NOTE: For every mouse click event the SoFCUnifiedSelection searches for the picked
+    // point which causes a certain slow-down because for all objects the primitives
+    // must be created. Using an SoSeparator avoids this drawback.
+    Gui::SoFCUnifiedSelection* selectionRoot = new Gui::SoFCUnifiedSelection();
+    selectionRoot->viewer = this;
+#endif
+    // set the ViewProvider root node
+    pcViewProviderRoot = selectionRoot;
 
     // increase refcount before passing it to setScenegraph(), to avoid
     // premature destruction
     pcViewProviderRoot->ref();
     // is not really working with Coin3D. 
-//  redrawOverlayOnSelectionChange(pcSelection);
+    //redrawOverlayOnSelectionChange(pcSelection);
     setSceneGraph(pcViewProviderRoot);
     // Event callback node
     pEventCallback = new SoEventCallback();
@@ -2026,17 +2031,37 @@ void View3DInventorViewer::setEditingCursor (const QCursor& cursor)
     this->editCursor = cursor;
 }
 
-//void View3DInventorViewer::selectCB(void *viewer, SoPath *path)
-//{
-//    ViewProvider* view = static_cast<View3DInventorViewer*>(viewer)->getViewProviderByPath(path);
-//    if (view) view->select(path);
-//}
-//
-//void View3DInventorViewer::deselectCB(void *viewer, SoPath *path)
-//{
-//    ViewProvider* view = static_cast<View3DInventorViewer*>(viewer)->getViewProviderByPath(path);
-//    if (view) view->deselect(path);
-//}
+void View3DInventorViewer::selectCB(void *viewer, SoPath *path)
+{
+    ViewProvider* vp = static_cast<View3DInventorViewer*>(viewer)->getViewProviderByPath(path);
+    if (vp && vp->useNewSelectionModel()) {
+    }
+}
+
+void View3DInventorViewer::deselectCB(void *viewer, SoPath *path)
+{
+    ViewProvider* vp = static_cast<View3DInventorViewer*>(viewer)->getViewProviderByPath(path);
+    if (vp && vp->useNewSelectionModel()) {
+    }
+}
+
+SoPath * View3DInventorViewer::pickFilterCB(void *viewer, const SoPickedPoint * pp)
+{
+    ViewProvider* vp = static_cast<View3DInventorViewer*>(viewer)->getViewProviderByPath(pp->getPath());
+    if (vp && vp->useNewSelectionModel()) {
+        std::string e = vp->getElement(pp);
+        vp->getSelectionShape(e.c_str());
+        static char buf[513];
+        snprintf(buf,512,"Hovered: %s (%f,%f,%f)"
+                                   ,e.c_str()
+                                   ,pp->getPoint()[0]
+                                   ,pp->getPoint()[1]
+                                   ,pp->getPoint()[2]);
+
+        getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
+    }
+    return pp->getPath();
+}
 
 void View3DInventorViewer::addEventCallback(SoType eventtype, SoEventCallbackCB * cb, void* userdata)
 {
