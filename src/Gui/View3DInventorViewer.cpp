@@ -76,6 +76,7 @@
 # include <QKeyEvent>
 # include <QMessageBox>
 # include <QTimer>
+# include <QStatusBar>
 #endif
 
 #include <sstream>
