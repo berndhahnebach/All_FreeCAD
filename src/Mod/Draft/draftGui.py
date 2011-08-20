@@ -155,14 +155,6 @@ class DraftToolBar:
                 if self.taskmode:
                         # create a widget for the draft tray buttons
                         self.baseWidget = QtGui.QWidget()
-                        print "setting tray"
-                        self.traywidget = QtGui.QWidget()
-                        self.tray = QtGui.QVBoxLayout(self.traywidget)
-                        self.tray.setObjectName("traylayout")
-                        self.toptray = QtGui.QHBoxLayout()
-                        self.bottomtray = QtGui.QHBoxLayout()
-                        self.tray.addLayout(self.toptray)
-                        self.tray.addLayout(self.bottomtray)
                 else:
                         # create the draft Toolbar                
                         self.draftWidget = QtGui.QDockWidget()
@@ -772,15 +764,15 @@ class DraftToolBar:
                 if txt.endsWith(" ") or txt.endsWith("r"):
                         self.isRelative.setChecked(not self.isRelative.isChecked())
                         spec = True
-                if txt.endsWith("i"):
+                elif txt.endsWith("i"):
                         if self.hasFill.isVisible():
                                 self.hasFill.setChecked(not self.hasFill.isChecked())
                         spec = True
-                if txt.endsWith("f"):
+                elif txt.endsWith("f"):
                         if self.finishButton.isVisible():
                                 self.finish()
                         spec = True
-                if txt.endsWith("c"):
+                elif txt.endsWith("c"):
                         if self.closeButton.isVisible():
                                 self.closeLine()
                         elif self.isCopy.isVisible():
@@ -943,7 +935,6 @@ class DraftToolBar:
                                                  "Draft_Circle","Draft_BSpline",
                                                  "Draft_Text","Draft_Dimension"]
                                 self.title = "Create objects"
-                                self.icon = "Draft_Wire"
                         def shouldShow(self):
                                 return (FreeCAD.ActiveDocument != None) and (not FreeCADGui.Selection.getSelection())
 
@@ -955,7 +946,6 @@ class DraftToolBar:
                                                  "Draft_Downgrade","Draft_Edit",
                                                  "Draft_Drawing"]
                                 self.title = "Modify objects"
-                                self.icon = "Draft_Move"
                         def shouldShow(self):
                                 return (FreeCAD.ActiveDocument != None) and (FreeCADGui.Selection.getSelection() != [])
                         
@@ -966,6 +956,14 @@ class DraftToolBar:
                         def shouldShow(self):
                                 return True
 
+                print "setting tray"
+                self.traywidget = QtGui.QWidget()
+                self.tray = QtGui.QVBoxLayout(self.traywidget)
+                self.tray.setObjectName("traylayout")
+                self.toptray = QtGui.QHBoxLayout()
+                self.bottomtray = QtGui.QHBoxLayout()
+                self.tray.addLayout(self.toptray)
+                self.tray.addLayout(self.bottomtray)
                 self.setupTray()
                 self.setupStyle()
                 w = DraftTrayWatcher(self.traywidget)        

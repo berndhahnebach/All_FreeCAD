@@ -54,8 +54,10 @@ class ArchWorkbench(Workbench):
                 self.appendMenu("Drafting",drafttools)
 		Log ('Loading Arch module... done\n')
 	def Activated(self):
+                FreeCADGui.draftToolBar.Activated()
 		Msg("Arch workbench activated\n")
 	def Deactivated(self):
+                FreeCADGui.draftToolBar.Deactivated()
 		Msg("Arch workbench deactivated\n")
 
 Gui.addIconPath(":/icons")
