@@ -654,6 +654,22 @@ private:
     Handle_Geom_SurfaceOfLinearExtrusion mySurface;
 };
 
+
+// Helper functions for fillet tools
+bool find2DLinesIntersection(const Base::Vector3d &orig1, const Base::Vector3d &dir1,
+                             const Base::Vector3d &orig2, const Base::Vector3d &dir2,
+                             Base::Vector3d &point);
+bool find2DLinesIntersection(const GeomLineSegment *lineSeg1, const GeomLineSegment *lineSeg2,
+                             Base::Vector3d &point);
+bool findFilletCenter(const GeomLineSegment *lineSeg1, const GeomLineSegment *lineSeg2, double radius,
+                      Base::Vector3d &center);
+bool findFilletCenter(const GeomLineSegment *lineSeg1, const GeomLineSegment *lineSeg2, double radius,
+                      const Base::Vector3d& refPnt1, const Base::Vector3d& refPnt2,
+                      Base::Vector3d &center);
+double suggestFilletRadius(const GeomLineSegment *lineSeg1, const GeomLineSegment *lineSeg2,
+                           const Base::Vector3d &refPnt1, const Base::Vector3d &refPnt2);
+GeomArcOfCircle *createFilletGeometry(const GeomLineSegment *lineSeg1, const GeomLineSegment *lineSeg2,
+                                      const Base::Vector3d &center, double radius);
 }
 
 #endif // PART_GEOMETRY_H
