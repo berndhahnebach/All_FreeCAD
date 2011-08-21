@@ -148,7 +148,7 @@ class DraftWorkbench (Workbench):
 		"    @.@.@.@.@.@.@.@.        "};
 		"""
 
-	MenuText = "2d Drafting"
+	MenuText = "Draft"
 	ToolTip = "The Draft module is used for basic 2D CAD Drafting"
 
 	def Initialize(self):

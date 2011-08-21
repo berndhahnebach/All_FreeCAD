@@ -140,11 +140,12 @@ class DraftTaskPanel:
 class DraftToolBar:
 	"main draft Toolbar"
 	def __init__(self):
+                self.tray = None
                 self.sourceCmd = None
                 self.taskmode = Draft.getParam("UiMode")
                 self.paramcolor = Draft.getParam("color")>>8
-                self.paramlinewidth = Draft.getParam("linewidth")
-                self.paramfontsize = Draft.getParam("textheight")
+                self.linewidth = Draft.getParam("linewidth")
+                self.fontsize = Draft.getParam("textheight")
                 self.paramconstr = Draft.getParam("constructioncolor")>>8
                 self.constrMode = False
                 self.continueMode = False
@@ -360,9 +361,9 @@ class DraftToolBar:
                 self.facecolorPix = QtGui.QPixmap(16,16)
                 self.facecolorPix.fill(self.facecolor)
                 self.facecolorButton.setIcon(QtGui.QIcon(self.facecolorPix))
-                self.widthButton = self._spinbox("widthButton", self.bottomtray, val=self.paramlinewidth,hide=False,size=(50,22))
+                self.widthButton = self._spinbox("widthButton", self.bottomtray, val=self.linewidth,hide=False,size=(50,22))
                 self.widthButton.setSuffix("px")
-                self.fontsizeButton = self._spinbox("fontsizeButton",self.bottomtray, val=self.paramfontsize,hide=False,double=True,size=(50,22))
+                self.fontsizeButton = self._spinbox("fontsizeButton",self.bottomtray, val=self.fontsize,hide=False,double=True,size=(50,22))
                 self.applyButton = self._pushbutton("applyButton", self.toptray, hide=False, icon='Draft_Apply',width=22)
 
                 QtCore.QObject.connect(self.wplabel,QtCore.SIGNAL("pressed()"),self.selectplane)
@@ -422,14 +423,15 @@ class DraftToolBar:
                 self.resetPlaneButton.setToolTip(translate("draft", "Do not project points to a drawing plane"))
                 self.isCopy.setText(translate("draft", "&Copy"))
                 self.isCopy.setToolTip(translate("draft", "If checked, objects will be copied instead of moved (C)"))
-                self.colorButton.setToolTip(translate("draft", "Line Color"))
-                self.continueCmd.setToolTip(translate("draft", "If checked, command will not finish until you press the command button again"))
-                self.continueCmd.setText(translate("draft", "&Continue"))
-                self.facecolorButton.setToolTip(translate("draft", "Face Color"))
-                self.widthButton.setToolTip(translate("draft", "Line Width"))
-                self.fontsizeButton.setToolTip(translate("draft", "Font Size"))
-                self.applyButton.setToolTip(translate("draft", "Apply to selected objects"))
-                self.constrButton.setToolTip(translate("draft", "Toggles Construction Mode"))
+                if (not self.taskmode) or self.tray:
+                        self.colorButton.setToolTip(translate("draft", "Line Color"))
+                        self.continueCmd.setToolTip(translate("draft", "If checked, command will not finish until you press the command button again"))
+                        self.continueCmd.setText(translate("draft", "&Continue"))
+                        self.facecolorButton.setToolTip(translate("draft", "Face Color"))
+                        self.widthButton.setToolTip(translate("draft", "Line Width"))
+                        self.fontsizeButton.setToolTip(translate("draft", "Font Size"))
+                        self.applyButton.setToolTip(translate("draft", "Apply to selected objects"))
+                        self.constrButton.setToolTip(translate("draft", "Toggles Construction Mode"))
 
 #---------------------------------------------------------------------------
 # Interface modes
@@ -658,6 +660,7 @@ class DraftToolBar:
                                 i.ViewObject.ShapeColor = col
 					
         def setwidth(self,val):
+                self.linewidth = float(val)
                 if Draft.getParam("saveonexit"):
                         Draft.setParam("linewidth",int(val))
                 for i in FreeCADGui.Selection.getSelection():
@@ -665,6 +668,7 @@ class DraftToolBar:
                                 i.ViewObject.LineWidth = float(val)
 
         def setfontsize(self,val):
+                self.fontsize = float(val)
                 if Draft.getParam("saveonexit"):
                         Draft.setParam("textheight",float(val))
                 for i in FreeCADGui.Selection.getSelection():
@@ -875,6 +879,12 @@ class DraftToolBar:
                 self.baseWidget.setStyleSheet("#constrButton:Checked {background-color: "+self.getDefaultColor("constr",rgb=True)+" }")
                 self.constrMode = checked
 
+        def isConstructionMode(self):
+                if self.tray or (not self.taskmode):
+                        return self.constrButton.isChecked()
+                else:
+                        return False
+
         def drawPage(self):
                 self.sourceCmd.draw()
 
@@ -986,6 +996,7 @@ class DraftToolBar:
                         FreeCAD.activeDraftCommand.finish()
                 if self.taskmode:
                         FreeCADGui.Control.clearTaskWatcher()
+                        self.tray = None
                 else:
                         self.draftWidget.setVisible(False)
                         self.draftWidget.toggleViewAction().setVisible(False)
