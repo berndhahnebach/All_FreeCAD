@@ -1713,3 +1713,177 @@ PyObject *GeomSurfaceOfExtrusion::getPyObject(void)
 {
     return new SurfaceOfExtrusionPy((GeomSurfaceOfExtrusion*)this->clone());
 }
+
+
+// Helper functions for fillet tools
+// -------------------------------------------------
+namespace Part {
+
+bool find2DLinesIntersection(const Base::Vector3d &orig1, const Base::Vector3d &dir1,
+                             const Base::Vector3d &orig2, const Base::Vector3d &dir2,
+                             Base::Vector3d &point)
+{
+    double det = dir1.x*dir2.y - dir1.y*dir2.x;
+    if ((det > 0 ? det : -det) < 1e-10)
+        return false;
+    double c1 = dir1.y*orig1.x - dir1.x*orig1.y;
+    double c2 = dir2.y*orig2.x - dir2.x*orig2.y;
+    double x = (dir1.x*c2 - dir2.x*c1)/det;
+    double y = (dir1.y*c2 - dir2.y*c1)/det;
+    point = Base::Vector3d(x,y,0.f);
+    return true;
+}
+
+bool find2DLinesIntersection(const GeomLineSegment *lineSeg1, const GeomLineSegment *lineSeg2,
+                             Base::Vector3d &point)
+{
+    Base::Vector3d orig1 = lineSeg1->getStartPoint();
+    Base::Vector3d orig2 = lineSeg2->getStartPoint();
+    Base::Vector3d dir1 = (lineSeg1->getEndPoint()-lineSeg1->getStartPoint());
+    Base::Vector3d dir2 = (lineSeg2->getEndPoint()-lineSeg2->getStartPoint());
+    return find2DLinesIntersection(orig1, dir1, orig2, dir2, point);
+}
+
+bool findFilletCenter(const GeomLineSegment *lineSeg1, const GeomLineSegment *lineSeg2, double radius,
+                      Base::Vector3d &center)
+{
+    Base::Vector3d midPoint1 = (lineSeg1->getStartPoint()+lineSeg1->getEndPoint())/2;
+    Base::Vector3d midPoint2 = (lineSeg2->getStartPoint()+lineSeg2->getEndPoint())/2;
+    return findFilletCenter(lineSeg1, lineSeg2, radius, midPoint1, midPoint2, center);
+}
+
+bool findFilletCenter(const GeomLineSegment *lineSeg1, const GeomLineSegment *lineSeg2, double radius,
+                      const Base::Vector3d &refPnt1, const Base::Vector3d &refPnt2, Base::Vector3d &center)
+{
+    //Calculate directions and normals for each straight line
+    Base::Vector3d l1p1, l1p2, l2p1, l2p2, dir1, dir2, norm1, norm2;
+    l1p1 = lineSeg1->getStartPoint();
+    l1p2 = lineSeg1->getEndPoint();
+    l2p1 = lineSeg2->getStartPoint();
+    l2p2 = lineSeg2->getEndPoint();
+
+    dir1 = (l1p1 - l1p2).Normalize();
+    dir2 = (l2p1 - l2p2).Normalize();
+
+    norm1 = Base::Vector3d(dir1.y, -dir1.x, 0.).Normalize();
+    norm2 = Base::Vector3d(dir2.y, -dir2.x, 0.).Normalize();
+
+    // calculate the intersections between the normals to find inwards direction
+
+    // find intersection of lines
+    Base::Vector3d corner;
+    if (!find2DLinesIntersection(lineSeg1,lineSeg2,corner))
+        return false;
+
+    // Just project the given reference points onto the lines, just in case they are not already lying on
+    Base::Vector3d normPnt1, normPnt2;
+    normPnt1.ProjToLine(refPnt1-l1p1, l1p2-l1p1);
+    normPnt2.ProjToLine(refPnt2-l2p1, l2p2-l2p1);
+    normPnt1 += refPnt1;
+    normPnt2 += refPnt2;
+
+    //Angle bisector
+    Base::Vector3d bisectDir = ((normPnt1 - corner).Normalize() + (normPnt2-corner).Normalize()).Normalize();
+
+    //redefine norms pointing towards bisect line
+    Base::Vector3d normIntersection1, normIntersection2;
+    if (find2DLinesIntersection(normPnt1, norm1, corner, bisectDir, normIntersection1) &&
+        find2DLinesIntersection(normPnt2, norm2, corner, bisectDir, normIntersection2)) {
+        norm1 = (normIntersection1 - normPnt1).Normalize();
+        norm2 = (normIntersection2 - normPnt2).Normalize();
+    } else {
+        return false;
+    }
+
+    // Project lines to find mid point of fillet arc
+    Base::Vector3d tmpPoint1 = l1p1 + (norm1 * radius);
+    Base::Vector3d tmpPoint2 = l2p1 + (norm2 * radius);
+
+    // found center point
+    if (find2DLinesIntersection(tmpPoint1, dir1, tmpPoint2, dir2, center))
+        return true;
+    else
+        return false;
+}
+
+// Returns -1 if radius cannot be suggested
+double suggestFilletRadius(const GeomLineSegment *lineSeg1, const GeomLineSegment *lineSeg2,
+                           const Base::Vector3d &refPnt1, const Base::Vector3d &refPnt2)
+{
+    Base::Vector3d corner;
+    if (!Part::find2DLinesIntersection(lineSeg1, lineSeg2, corner))
+        return -1;
+
+    Base::Vector3d dir1 = lineSeg1->getEndPoint() - lineSeg1->getStartPoint();
+    Base::Vector3d dir2 = lineSeg2->getEndPoint() - lineSeg2->getStartPoint();
+
+    // Decide the line directions depending on the reference points
+    if (dir1*(refPnt1-corner) < 0)
+        dir1 *= -1;
+    if (dir2*(refPnt2-corner) < 0)
+        dir2 *= -1;
+
+    //Angle bisector
+    Base::Vector3d dirBisect = (dir1.Normalize() + dir2.Normalize()).Normalize();
+
+    Base::Vector3d projPnt1, projPnt2;
+    projPnt1.ProjToLine(refPnt1-corner, dir1);
+    projPnt2.ProjToLine(refPnt2-corner, dir2);
+    projPnt1 += refPnt1;
+    projPnt2 += refPnt2;
+
+    Base::Vector3d norm1(dir1.y, -dir1.x, 0.f);
+    Base::Vector3d norm2(dir2.y, -dir2.x, 0.f);
+
+    double r1=-1, r2=-1;
+    Base::Vector3d center1, center2;
+    if (find2DLinesIntersection(projPnt1, norm1, corner, dirBisect, center1))
+        r1 = (projPnt1 - center1).Length();
+    if (find2DLinesIntersection(projPnt2, norm2, corner, dirBisect, center2))
+        r2 = (projPnt1 - center2).Length();
+
+    return r1 < r2 ? r1 : r2;
+}
+
+GeomArcOfCircle *createFilletGeometry(const GeomLineSegment *lineSeg1, const GeomLineSegment *lineSeg2,
+                                      const Base::Vector3d &center, double radius)
+{
+    Base::Vector3d corner;
+    if (!Part::find2DLinesIntersection(lineSeg1, lineSeg2, corner))
+        // Parallel Lines so return null pointer
+        return 0;
+
+    Base::Vector3d dir1 = lineSeg1->getEndPoint() - lineSeg1->getStartPoint();
+    Base::Vector3d dir2 = lineSeg2->getEndPoint() - lineSeg2->getStartPoint();
+
+    Base::Vector3d rad1, rad2;
+    rad1.ProjToLine(center - corner, dir1);
+    rad2.ProjToLine(center - corner, dir2);
+
+    // Angle Variables
+    float startAngle, endAngle, midAngle, range;
+
+    startAngle = atan2(rad1.y, rad1.x);
+    range = atan2(-rad1.y*rad2.x+rad1.x*rad2.y,
+                  rad1.x*rad2.x+rad1.y*rad2.y);
+    endAngle = startAngle + range;
+
+    if (endAngle < startAngle)
+        std::swap(startAngle, endAngle);
+
+    if (endAngle > 2*M_PI )
+        endAngle -= 2*M_PI;
+
+    if (startAngle < 0 )
+        endAngle += 2*M_PI;
+
+    // Create Arc Segment
+    GeomArcOfCircle *arc = new GeomArcOfCircle();
+    arc->setRadius(radius);
+    arc->setCenter(center);
+    arc->setRange(startAngle, endAngle);
+
+    return arc;
+}
+
+}
