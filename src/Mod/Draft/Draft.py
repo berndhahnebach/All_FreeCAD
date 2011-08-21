@@ -93,7 +93,7 @@ def typecheck (args_and_types, name="?"):
 
 def getParamType(param):
         if param in ["dimsymbol","dimPrecision","dimorientation","precision","defaultWP",
-                     "snapRange","gridEvery","lineweight","UiMode"]:
+                     "snapRange","gridEvery","linewidth","UiMode"]:
                 return "int"
         elif param in ["constructiongroupname","textfont","patternFile","template"]:
 		return "string"
@@ -227,7 +227,7 @@ def formatObject(target,origin=None):
 	obrep = target.ViewObject
 	ui = FreeCADGui.draftToolBar
 	doc = FreeCAD.ActiveDocument
-	if ui.constrButton.isChecked():
+	if ui.isConstructionMode():
 		col = fcol = ui.getDefaultColor("constr")
 		gname = getParam("constructiongroupname")
 		if gname:
@@ -240,8 +240,8 @@ def formatObject(target,origin=None):
                 fcol = ui.getDefaultColor("face")
 	col = (float(col[0]),float(col[1]),float(col[2]),0.0)
         fcol = (float(fcol[0]),float(fcol[1]),float(fcol[2]),0.0)
-	lw = float(ui.widthButton.value())
-        fs = float(ui.fontsizeButton.value())
+	lw = ui.linewidth
+        fs = ui.fontsize
         if not origin:
                 if "FontSize" in obrep.PropertiesList: obrep.FontSize = fs
                 if "TextColor" in obrep.PropertiesList: obrep.TextColor = col
