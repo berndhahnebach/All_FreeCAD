@@ -108,6 +108,7 @@
 #include <Base/Exception.h>
 #include <Base/Writer.h>
 #include <Base/Reader.h>
+#include <Base/Tools.h>
 
 #include "Geometry.h"
 
@@ -1856,16 +1857,16 @@ GeomArcOfCircle *createFilletGeometry(const GeomLineSegment *lineSeg1, const Geo
     Base::Vector3d dir1 = lineSeg1->getEndPoint() - lineSeg1->getStartPoint();
     Base::Vector3d dir2 = lineSeg2->getEndPoint() - lineSeg2->getStartPoint();
 
-    Base::Vector3d rad1, rad2;
-    rad1.ProjToLine(center - corner, dir1);
-    rad2.ProjToLine(center - corner, dir2);
+    Base::Vector3d rad_1, rad_2;
+    rad_1.ProjToLine(center - corner, dir1);
+    rad_2.ProjToLine(center - corner, dir2);
 
     // Angle Variables
-    float startAngle, endAngle, midAngle, range;
+    double startAngle, endAngle, /*midAngle,*/ range;
 
-    startAngle = atan2(rad1.y, rad1.x);
-    range = atan2(-rad1.y*rad2.x+rad1.x*rad2.y,
-                  rad1.x*rad2.x+rad1.y*rad2.y);
+    startAngle = atan2(rad_1.y, rad_1.x);
+    range = atan2(-rad_1.y*rad_2.x+rad_1.x*rad_2.y,
+                   rad_1.x*rad_2.x+rad_1.y*rad_2.y);
     endAngle = startAngle + range;
 
     if (endAngle < startAngle)
