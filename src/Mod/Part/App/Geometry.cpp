@@ -1857,16 +1857,16 @@ GeomArcOfCircle *createFilletGeometry(const GeomLineSegment *lineSeg1, const Geo
     Base::Vector3d dir1 = lineSeg1->getEndPoint() - lineSeg1->getStartPoint();
     Base::Vector3d dir2 = lineSeg2->getEndPoint() - lineSeg2->getStartPoint();
 
-    Base::Vector3d rad_1, rad_2;
-    rad_1.ProjToLine(center - corner, dir1);
-    rad_2.ProjToLine(center - corner, dir2);
+    Base::Vector3d radDir1, radDir2;
+    radDir1.ProjToLine(center - corner, dir1);
+    radDir2.ProjToLine(center - corner, dir2);
 
     // Angle Variables
-    double startAngle, endAngle, /*midAngle,*/ range;
+    double startAngle, endAngle, range;
 
-    startAngle = atan2(rad_1.y, rad_1.x);
-    range = atan2(-rad_1.y*rad_2.x+rad_1.x*rad_2.y,
-                   rad_1.x*rad_2.x+rad_1.y*rad_2.y);
+    startAngle = atan2(radDir1.y, radDir1.x);
+    range = atan2(-radDir1.y*radDir2.x+radDir1.x*radDir2.y,
+                   radDir1.x*radDir2.x+radDir1.y*radDir2.y);
     endAngle = startAngle + range;
 
     if (endAngle < startAngle)
