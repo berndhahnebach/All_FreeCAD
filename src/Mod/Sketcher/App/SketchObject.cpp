@@ -286,6 +286,86 @@ int SketchObject::delConstraintOnPoint(int PointNbr)
     return -1; // no such constraint
 }
 
+int SketchObject::fillet(int geoId, PointPos pos, double radius, bool trim)
+{
+    const std::vector<Part::Geometry *> &geomlist = this->Geometry.getValues();
+    const std::vector<Constraint *> &constraints = this->Constraints.getValues();
+    assert(geoId < int(geomlist.size()));
+    // Find the other geometry Id associated with the coincident point
+    int coincidentsFound = 0;
+    int geoId2, pos2;
+    for (std::vector<Constraint *>::const_iterator it = constraints.begin();
+        it != constraints.end(); ++it) {
+        if ((*it)->Type == Sketcher::Coincident) {
+            if ((*it)->First == geoId && (*it)->FirstPos == pos) {
+                coincidentsFound++;
+                geoId2 = (*it)->Second;
+                pos2 = (*it)->SecondPos;
+            } else if ((*it)->Second == geoId && (*it)->SecondPos == pos) {
+                coincidentsFound++;
+                geoId2 = (*it)->First;
+                pos2 = (*it)->FirstPos;
+            }
+        }
+    }
+
+    // only coincident points between two edges can be filleted
+    if (coincidentsFound == 1) {
+        Part::Geometry *geo1 = geomlist[geoId];
+        Part::Geometry *geo2 = geomlist[geoId2];
+        if (geo1->getTypeId() == Part::GeomLineSegment::getClassTypeId() &&
+            geo2->getTypeId() == Part::GeomLineSegment::getClassTypeId() ) {
+            const Part::GeomLineSegment *lineSeg1 = dynamic_cast<const Part::GeomLineSegment*>(geo1);
+            const Part::GeomLineSegment *lineSeg2 = dynamic_cast<const Part::GeomLineSegment*>(geo2);
+    
+            Base::Vector3d midPnt1 = (lineSeg1->getStartPoint() + lineSeg1->getEndPoint()) / 2 ;
+            Base::Vector3d midPnt2 = (lineSeg2->getStartPoint() + lineSeg2->getEndPoint()) / 2 ;
+            return fillet(geoId, geoId2, midPnt1, midPnt2, radius, trim);
+        }
+    }
+
+    return -1;
+}
+
+int SketchObject::fillet(int geoId1, int geoId2,
+                         const Base::Vector3d& refPnt1, const Base::Vector3d& refPnt2,
+                         double radius, bool trim)
+{
+    const std::vector<Part::Geometry *> &geomlist = this->Geometry.getValues();
+    const std::vector<Constraint *> &constraints = this->Constraints.getValues();
+    assert(geoId1 < int(geomlist.size()));
+    assert(geoId2 < int(geomlist.size()));
+    Part::Geometry *geo1 = geomlist[geoId1];
+    Part::Geometry *geo2 = geomlist[geoId2];
+    if (geo1->getTypeId() == Part::GeomLineSegment::getClassTypeId() &&
+        geo2->getTypeId() == Part::GeomLineSegment::getClassTypeId() ) {
+        const Part::GeomLineSegment *lineSeg1 = dynamic_cast<const Part::GeomLineSegment*>(geo1);
+        const Part::GeomLineSegment *lineSeg2 = dynamic_cast<const Part::GeomLineSegment*>(geo2);
+
+        Base::Vector3d filletCenter;
+        if (!Part::findFilletCenter(lineSeg1, lineSeg2, radius, refPnt1, refPnt2, filletCenter))
+            return -1;
+
+        // create arc from known parameters and lines
+        Part::GeomArcOfCircle *arc = Part::createFilletGeometry(lineSeg1, lineSeg2, filletCenter, radius);
+
+        // If null-pointer - Arc couldn't be created
+        if (!arc) {
+            return -1;
+        }
+
+        // Add this geometry permanently
+        Part::Geometry *newgeo = dynamic_cast<Part::Geometry* >(arc);
+        int filletArcId = addGeometry(newgeo);
+
+        if (trim) {
+        }
+        
+        return 0;
+    }
+    return -1;
+}
+
 int SketchObject::addExternal(App::DocumentObject *Obj, const char* SubName)
 {
     // so far only externals to the support of the sketch

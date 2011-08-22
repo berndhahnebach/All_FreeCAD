@@ -65,7 +65,7 @@ public:
     std::vector<Part::Geometry *> getGeometry(bool withConstrucionElements = false) const;
     /// get the geometry as python objects
     Py::Tuple getPyGeometry(void) const;
-    /// set an geometric element to a construction element
+    /// set a geometric element to a construction element
     void setConstruction(int geoIndex,bool isConstruction=true);
     bool getConstruction(int geoIndex) const;
 
