@@ -65,6 +65,8 @@ App::DocumentObjectExecReturn *SketchObject::execute(void)
         assert(sub.size()==1);
         // get the selected sub shape (a Face)
         const Part::TopoShape &shape = part->Shape.getShape();
+        if (shape._Shape.IsNull())
+            return new App::DocumentObjectExecReturn("Support shape is empty!");
         TopoDS_Shape sh = shape.getSubShape(sub[0].c_str());
         const TopoDS_Face &face = TopoDS::Face(sh);
         assert(!face.IsNull());
