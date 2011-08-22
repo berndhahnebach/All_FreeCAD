@@ -186,6 +186,7 @@ void TaskSketcherConstrains::on_listWidgetConstraints_itemActivated(QListWidgetI
         ui_ins_datum.setupUi(&dlg);
 
         ui_ins_datum.lineEdit->setText(QLocale::system().toString(datum,'g',6));
+        ui_ins_datum.lineEdit->selectAll(); 
         if (dlg.exec()) {
             bool ok;
             double newDatum = ui_ins_datum.lineEdit->text().toDouble(&ok);

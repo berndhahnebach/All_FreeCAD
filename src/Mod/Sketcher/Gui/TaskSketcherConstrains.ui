@@ -25,6 +25,9 @@
      </item>
      <item>
       <widget class="QComboBox" name="comboBoxFilter">
+       <property name="currentIndex">
+        <number>1</number>
+       </property>
        <item>
         <property name="text">
          <string>All</string>
