@@ -20,7 +20,7 @@
  *                                                                         *
  ***************************************************************************/
 
- 
+
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <TopoDS_Shape.hxx>
@@ -75,16 +75,16 @@ App::DocumentObjectExecReturn *SketchObject::execute(void)
         if (adapt.GetType() != GeomAbs_Plane)
             return new App::DocumentObjectExecReturn("Sketch has no planar support!");
 
-        // set sketch position 
+        // set sketch position
         Base::Placement placement = Part2DObject::positionBySupport(face,ObjectPos);
         Placement.setValue(placement);
     }
-     
+
     // and now solve the sketch
     Sketch sketch;
 
     sketch.setUpSketch(Geometry.getValues(), Constraints.getValues());
- 
+
     // solve the sketch with no fixed points
     if (sketch.solve() != 0)
         return new App::DocumentObjectExecReturn("Solving the sketch failed!",this);
@@ -106,7 +106,7 @@ int SketchObject::setDatum(double Datum, int ConstrNbr)
     if (ConstrNbr < 0 || ConstrNbr >= (int)vals.size())
         return -1;
     ConstraintType type = vals[ConstrNbr]->Type;
-    if (type != Distance && 
+    if (type != Distance &&
         type != DistanceX &&
         type != DistanceY &&
         type != Radius &&
@@ -114,7 +114,7 @@ int SketchObject::setDatum(double Datum, int ConstrNbr)
         return -1;
 
     // copy the list
-    std::vector< Constraint * > newVals(vals);
+    std::vector<Constraint *> newVals(vals);
     // clone the changed Constraint
     Constraint *constNew = vals[ConstrNbr]->clone();
     constNew->Value = Datum;
@@ -122,14 +122,12 @@ int SketchObject::setDatum(double Datum, int ConstrNbr)
     this->Constraints.setValues(newVals);
     delete constNew;
 
-    // set up a extra sketch
+    // set up an extra sketch
     Sketch sketch;
-    // set the geometry and constraints
     sketch.setUpSketch(Geometry.getValues(), Constraints.getValues());
- 
-    int ret = sketch.solve();
 
-    if(ret)
+    int ret = sketch.solve();
+    if (ret)
         return ret;
 
     // set the newly solved geometry
@@ -145,9 +143,8 @@ int SketchObject::movePoint(int geoIndex, PointPos pos, const Base::Vector3d& to
 {
     // set up an extra sketch
     Sketch sketch;
-    // set the geometry and constraints
     sketch.setUpSketch(Geometry.getValues(), Constraints.getValues());
- 
+
     int ret = sketch.movePoint(geoIndex, pos, toPoint);
 
     if (ret == 0) {
@@ -360,11 +357,11 @@ void SketchObject::rebuildVertexIndex(void)
 
 PyObject *SketchObject::getPyObject(void)
 {
-    if (PythonObject.is(Py::_None())){
+    if (PythonObject.is(Py::_None())) {
         // ref counter is set to 1
         PythonObject = Py::Object(new SketchObjectPy(this),true);
     }
-    return Py::new_reference_to(PythonObject); 
+    return Py::new_reference_to(PythonObject);
 }
 
 unsigned int SketchObject::getMemSize(void) const

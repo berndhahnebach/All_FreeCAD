@@ -62,7 +62,7 @@ PyObject* SketchObjectPy::addGeometry(PyObject *args)
         Part::Geometry *geo = static_cast<Part::GeometryPy*>(pcObj)->getGeometryPtr();
         return Py::new_reference_to(Py::Int(this->getSketchObjectPtr()->addGeometry(geo)));
     }
-    Py_Return; 
+    Py_Return;
 }
 
 PyObject* SketchObjectPy::delGeometry(PyObject *args)
@@ -78,7 +78,7 @@ PyObject* SketchObjectPy::delGeometry(PyObject *args)
         return 0;
     }
 
-    Py_Return; 
+    Py_Return;
 }
 
 PyObject* SketchObjectPy::addConstraint(PyObject *args)
@@ -91,7 +91,7 @@ PyObject* SketchObjectPy::addConstraint(PyObject *args)
         Sketcher::Constraint *constr = static_cast<Sketcher::ConstraintPy*>(pcObj)->getConstraintPtr();
         return Py::new_reference_to(Py::Int(this->getSketchObjectPtr()->addConstraint(constr)));
     }
-    Py_Return; 
+    Py_Return;
 }
 
 PyObject* SketchObjectPy::delConstraint(PyObject *args)
@@ -107,7 +107,7 @@ PyObject* SketchObjectPy::delConstraint(PyObject *args)
         return 0;
     }
 
-    Py_Return; 
+    Py_Return;
 }
 
 PyObject* SketchObjectPy::addExternal(PyObject *args)
@@ -125,7 +125,7 @@ PyObject* SketchObjectPy::addExternal(PyObject *args)
         PyErr_SetString(PyExc_ValueError, str.str().c_str());
         return 0;
     }
-    // check if its belong to the sketch support 
+    // check if its belong to the sketch support
     if (this->getSketchObjectPtr()->Support.getValue() != Obj) {
         std::stringstream str;
         str << ObjectName << "is not supported by this sketch";
@@ -133,7 +133,7 @@ PyObject* SketchObjectPy::addExternal(PyObject *args)
         return 0;
     }
 
-    // add the external 
+    // add the external
     if (this->getSketchObjectPtr()->addExternal(Obj,SubName)) {
         std::stringstream str;
         str << "Not able to add external shape element";
@@ -141,7 +141,7 @@ PyObject* SketchObjectPy::addExternal(PyObject *args)
         return 0;
     }
 
-    Py_Return; 
+    Py_Return;
 }
 
 PyObject* SketchObjectPy::delExternal(PyObject *args)
@@ -163,7 +163,7 @@ PyObject* SketchObjectPy::delConstraintOnPoint(PyObject *args)
         return 0;
     }
 
-    Py_Return; 
+    Py_Return;
 }
 
 PyObject* SketchObjectPy::setDatum(PyObject *args)
@@ -180,7 +180,7 @@ PyObject* SketchObjectPy::setDatum(PyObject *args)
         return 0;
     }
 
-    Py_Return; 
+    Py_Return;
 }
 
 PyObject* SketchObjectPy::movePoint(PyObject *args)
@@ -200,7 +200,7 @@ PyObject* SketchObjectPy::movePoint(PyObject *args)
         return 0;
     }
 
-    Py_Return; 
+    Py_Return;
 
 }
 
@@ -233,7 +233,7 @@ int SketchObjectPy::setCustomAttributes(const char* attr, PyObject* obj)
         }
 
         prop->setPyObject(obj);
-        
+
         if (strcmp(attr,"Geometry") == 0)
             getSketchObjectPtr()->rebuildVertexIndex();
 
