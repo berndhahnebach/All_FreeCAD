@@ -34,6 +34,7 @@
 # endif
 # include <float.h>
 # include <algorithm>
+# include <Inventor/SoPickedPoint.h>
 # include <Inventor/actions/SoCallbackAction.h>
 # include <Inventor/actions/SoGetBoundingBoxAction.h>
 # include <Inventor/actions/SoGetPrimitiveCountAction.h>
@@ -52,6 +53,7 @@
 #endif
 
 #include "SoBrepShape.h"
+#include <Gui/SoFCUnifiedSelection.h>
 
 using namespace PartGui;
 
@@ -69,9 +71,6 @@ SoBrepFaceSet::SoBrepFaceSet()
     SO_NODE_ADD_FIELD(partIndex, (-1));
 }
 
-/**
- * Renders the control points.
- */
 void SoBrepFaceSet::GLRender(SoGLRenderAction *action)
 {
     if (this->coordIndex.getNum() < 3)
@@ -375,9 +374,6 @@ SoBrepEdgeSet::SoBrepEdgeSet()
     SO_NODE_CONSTRUCTOR(SoBrepEdgeSet);
 }
 
-/**
- * Renders the control points.
- */
 void SoBrepEdgeSet::GLRender(SoGLRenderAction *action)
 {
     inherited::GLRender(action);
@@ -393,4 +389,106 @@ SoDetail * SoBrepEdgeSet::createLineSegmentDetail(SoRayPickAction * action,
     int index = line_detail->getLineIndex();
     line_detail->setPartIndex(index);
     return detail;
+}
+
+// ---------------------------------------------------------------------
+
+SO_NODE_SOURCE(SoBrepEdgeHighlight);
+
+void SoBrepEdgeHighlight::initClass()
+{
+    SO_NODE_INIT_CLASS(SoBrepEdgeHighlight, SoIndexedLineSet, "IndexedLineSet");
+}
+
+SoBrepEdgeHighlight::SoBrepEdgeHighlight() : _doDraw(FALSE)
+{
+    SO_NODE_CONSTRUCTOR(SoBrepEdgeHighlight);
+    SO_NODE_ADD_FIELD(edgeIndex, (-1));
+    SO_NODE_ADD_FIELD(edgeNode, (0));
+}
+
+void SoBrepEdgeHighlight::GLRender(SoGLRenderAction *action)
+{
+    if (!this->shouldGLRender(action)) return;
+    if (!_doDraw) return;
+    glLineWidth(4.0f);
+    inherited::GLRender(action);
+}
+
+SoDetail * SoBrepEdgeHighlight::createLineSegmentDetail(
+    SoRayPickAction * action, const SoPrimitiveVertex * v1,
+    const SoPrimitiveVertex * v2, SoPickedPoint * pp)
+{
+    return 0;
+}
+
+void SoBrepEdgeHighlight::doAction(SoAction* action)
+{
+    if (action->getTypeId() == Gui::SoHighlightElementAction::getClassTypeId()) {
+        SoNode* node = this->edgeNode.getValue();
+        if (!node || !node->isOfType(SoIndexedLineSet::getClassTypeId())) return;
+
+        this->_doDraw = static_cast<Gui::SoHighlightElementAction*>(action)->isHighlighted();
+        if (!this->_doDraw) {
+            this->coordIndex.setNum(0);
+            return;
+        }
+
+        std::vector< std::vector<int32_t> > blocks;
+        std::vector<int32_t> block;
+        SoIndexedLineSet* lines = static_cast<SoIndexedLineSet*>(node);
+        const int32_t* indices = lines->coordIndex.getValues(0);
+        int cnt_inds = lines->coordIndex.getNum();
+        for (int i=0; i<cnt_inds; i++) {
+            if (indices[i] > -1) {
+                block.push_back(indices[i]);
+            }
+            else {
+                blocks.push_back(block);
+                block.clear();
+            }
+        }
+
+        const SoPickedPoint* pp = static_cast<Gui::SoHighlightElementAction*>(action)->getElement();
+        if (pp && pp->getDetail()) {
+            const SoDetail* detail = pp->getDetail();
+            if (detail->isOfType(SoLineDetail::getClassTypeId())) {
+                int index = static_cast<const SoLineDetail*>(detail)->getLineIndex();
+                int32_t e = index;
+                block = blocks[e];
+                this->coordIndex.setNum(block.size());
+                int32_t* coords = this->coordIndex.startEditing();
+                for (int i=0; i<(int)block.size(); i++) {
+                    coords[i] = block[i];
+                }
+                this->coordIndex.finishEditing();
+            }
+            else if (detail->isOfType(SoFaceDetail::getClassTypeId())) {
+#if 0
+                int index = static_cast<const SoFaceDetail*>(detail)->getPartIndex();
+                const int32_t* edges = this->edgeIndex.getValues(0);
+                int cnt_edges = this->edgeIndex.getNum();
+                int section=0;
+                std::vector<int> v;
+                for (int i=0; i<cnt_edges;i++) {
+                    if (edges[i] < 0)
+                        section++;
+                    if (index == section)
+                        v.push_back(edges[i]);
+                    else if (section > index)
+                        break;
+                }
+
+                std::vector<int32_t> c;
+                for (std::vector<int32_t>::iterator it = v.begin(); it != v.end(); ++it) {
+                    block = blocks[*it];
+                    c.insert(c.end(), block.begin(), block.end());
+                    c.push_back(-1);
+                }
+                this->coordIndex.setValuesPointer(c.size(), &(c[0]));
+#endif
+            }
+        }
+    }
+    inherited::doAction(action);
 }

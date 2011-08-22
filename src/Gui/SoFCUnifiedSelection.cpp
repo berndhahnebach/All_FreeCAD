@@ -39,6 +39,21 @@
 #include <Inventor/actions/SoGLRenderAction.h>
 #include <Inventor/actions/SoHandleEventAction.h>
 #include <Inventor/events/SoKeyboardEvent.h>
+#include <Inventor/elements/SoComplexityElement.h>
+#include <Inventor/elements/SoComplexityTypeElement.h>
+#include <Inventor/elements/SoCoordinateElement.h>
+#include <Inventor/elements/SoElements.h>
+#include <Inventor/elements/SoFontNameElement.h>
+#include <Inventor/elements/SoFontSizeElement.h>
+#include <Inventor/elements/SoModelMatrixElement.h>
+#include <Inventor/elements/SoShapeStyleElement.h>
+#include <Inventor/elements/SoProfileCoordinateElement.h>
+#include <Inventor/elements/SoProfileElement.h>
+#include <Inventor/elements/SoSwitchElement.h>
+#include <Inventor/elements/SoUnitsElement.h>
+#include <Inventor/elements/SoViewVolumeElement.h>
+#include <Inventor/elements/SoViewingMatrixElement.h>
+#include <Inventor/elements/SoViewportRegionElement.h>
 #include <Inventor/events/SoMouseButtonEvent.h>
 #include <Inventor/misc/SoState.h>
 #include <Inventor/misc/SoChildList.h>
@@ -118,14 +133,12 @@ SoFCUnifiedSelection::SoFCUnifiedSelection()
 */
 SoFCUnifiedSelection::~SoFCUnifiedSelection()
 {
-    //// If we're being deleted and we're the current highlight,
-    //// NULL out that variable
-    //if (currenthighlight != NULL &&
-    //    (!currenthighlight->getTail()->isOfType(SoFCUnifiedSelection::getClassTypeId()))) {
-    //    currenthighlight->unref();
-    //    currenthighlight = NULL;
-    //}
-    ////delete THIS;
+    // If we're being deleted and we're the current highlight,
+    // NULL out that variable
+    if (currenthighlight != NULL) {
+        currenthighlight->unref();
+        currenthighlight = NULL;
+    }
 }
 
 // doc from parent
@@ -209,6 +222,8 @@ SoFCUnifiedSelection::handleEvent(SoHandleEventAction * action)
             }
         }
 
+        SbBool old_state = highlighted;
+        highlighted = FALSE;
         if (vp && vp->useNewSelectionModel()) {
             std::string e = vp->getElement(pp);
             vp->getSelectionShape(e.c_str());
@@ -220,6 +235,35 @@ SoFCUnifiedSelection::handleEvent(SoHandleEventAction * action)
                                        ,pp->getPoint()[2]);
 
             getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
+            SoSearchAction sa;
+            sa.setNode(vp->getRoot());
+            sa.apply(vp->getRoot());
+            if (sa.getPath()) {
+                highlighted = TRUE;
+                if (currenthighlight && currenthighlight->getTail() != sa.getPath()->getTail()) {
+                    SoHighlightElementAction action;
+                    action.setHighlighted(FALSE);
+                    action.apply(currenthighlight);
+                    currenthighlight->unref();
+                    currenthighlight = 0;
+                    old_state = !highlighted;
+                }
+
+                currenthighlight = static_cast<SoFullPath*>(sa.getPath()->copy());
+                currenthighlight->ref();
+            }
+        }
+
+        if (currenthighlight && old_state != highlighted) {
+            SoHighlightElementAction action;
+            action.setHighlighted(highlighted);
+            action.setElement(pp);
+            action.apply(currenthighlight);
+            if (!highlighted) {
+                currenthighlight->unref();
+                currenthighlight = 0;
+            }
+            this->touch();
         }
     }
     // key press events
@@ -319,3 +363,73 @@ SoFCUnifiedSelection::handleEvent(SoHandleEventAction * action)
         inherited::handleEvent(action);
 }
 
+// ---------------------------------------------------------------
+
+SO_ACTION_SOURCE(SoHighlightElementAction);
+
+void SoHighlightElementAction::initClass()
+{
+    SO_ACTION_INIT_CLASS(SoHighlightElementAction,SoAction);
+
+    SO_ENABLE(SoHighlightElementAction, SoSwitchElement);
+
+    SO_ACTION_ADD_METHOD(SoNode,nullAction);
+
+    SO_ENABLE(SoHighlightElementAction, SoModelMatrixElement);
+    SO_ENABLE(SoHighlightElementAction, SoProjectionMatrixElement);
+    SO_ENABLE(SoHighlightElementAction, SoCoordinateElement);
+    SO_ENABLE(SoHighlightElementAction, SoViewVolumeElement);
+    SO_ENABLE(SoHighlightElementAction, SoViewingMatrixElement);
+    SO_ENABLE(SoHighlightElementAction, SoViewportRegionElement);
+
+
+    SO_ACTION_ADD_METHOD(SoCamera,callDoAction);
+    SO_ACTION_ADD_METHOD(SoCoordinate3,callDoAction);
+    SO_ACTION_ADD_METHOD(SoCoordinate4,callDoAction);
+    SO_ACTION_ADD_METHOD(SoGroup,callDoAction);
+    SO_ACTION_ADD_METHOD(SoSwitch,callDoAction);
+    SO_ACTION_ADD_METHOD(SoShape,callDoAction);
+    SO_ACTION_ADD_METHOD(SoIndexedLineSet,callDoAction);
+
+    SO_ACTION_ADD_METHOD(SoSeparator,callDoAction);
+    SO_ACTION_ADD_METHOD(SoFCUnifiedSelection,callDoAction);
+}
+
+SoHighlightElementAction::SoHighlightElementAction () : _highlight(FALSE), _pp(0)
+{
+    SO_ACTION_CONSTRUCTOR(SoHighlightElementAction);
+}
+
+SoHighlightElementAction::~SoHighlightElementAction()
+{
+}
+
+void SoHighlightElementAction::beginTraversal(SoNode *node)
+{
+    traverse(node);
+}
+
+void SoHighlightElementAction::callDoAction(SoAction *action,SoNode *node)
+{
+    node->doAction(action);
+}
+
+void SoHighlightElementAction::setHighlighted(SbBool ok)
+{
+    this->_highlight = ok;
+}
+
+SbBool SoHighlightElementAction::isHighlighted() const
+{
+    return this->_highlight;
+}
+
+void SoHighlightElementAction::setElement(const SoPickedPoint* pp)
+{
+    this->_pp = pp;
+}
+
+const SoPickedPoint* SoHighlightElementAction::getElement() const
+{
+    return this->_pp;
+}

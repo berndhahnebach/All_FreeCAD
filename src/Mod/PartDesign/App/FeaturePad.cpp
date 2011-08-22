@@ -106,7 +106,7 @@ App::DocumentObjectExecReturn *Pad::execute(void)
     // get the support of the Sketch if any
     App::DocumentObject* SupportLink = static_cast<Part::Part2DObject*>(link)->Support.getValue();
     Part::Feature *SupportObject = 0;
-    if(SupportLink && SupportLink->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
+    if (SupportLink && SupportLink->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
         SupportObject = static_cast<Part::Feature*>(SupportLink);
 
 	/* Version from the blog
