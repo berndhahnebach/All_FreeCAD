@@ -85,6 +85,12 @@ public:
     /// retrieves the coordinates of a point
     Base::Vector3d getPoint(int geoIndex1, PointPos Pos1);
 
+    /// create a fillet
+    int fillet(int geoId, PointPos pos, double radius, bool trim=true);
+    int fillet(int geoId1, int geoId2,
+               const Base::Vector3d& refPnt1, const Base::Vector3d& refPnt2,
+               double radius, bool trim=true);
+
     /** retrieves for a Vertex number the corosponding GeoId and PointPosition
     */
     void getGeoVertexIndex(int VertexId, int &GeoId, PointPos &PosId);

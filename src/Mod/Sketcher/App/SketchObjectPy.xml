@@ -70,6 +70,11 @@
         </UserDocu>
       </Documentation>
     </Methode>
+      <Methode Name="fillet">
+        <Documentation>
+          <UserDocu>create fillet between two edges or at a point</UserDocu>
+        </Documentation>
+      </Methode>
     <Attribute Name="ConstraintCount" ReadOnly="true">
       <Documentation>
         <UserDocu>Number of Constraints in this sketch</UserDocu>
