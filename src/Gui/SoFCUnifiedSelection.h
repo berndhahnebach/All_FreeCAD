@@ -124,6 +124,35 @@ private:
     SbBool bCtrl;
 };
 
+/**
+ * @author Werner Mayer
+ */
+class GuiExport SoHighlightElementAction : public SoAction
+{
+    SO_ACTION_HEADER(SoHighlightElementAction);
+
+public:
+    SoHighlightElementAction ();
+    ~SoHighlightElementAction();
+
+    void setHighlighted(SbBool);
+    SbBool isHighlighted() const;
+    void setElement(const SoPickedPoint*);
+    const SoPickedPoint* getElement() const;
+
+    static void initClass();
+
+protected:
+    virtual void beginTraversal(SoNode *node);
+
+private:
+    static void callDoAction(SoAction *action,SoNode *node);
+
+private:
+    SbBool _highlight;
+    const SoPickedPoint* _pp;
+};
+
 
 } // namespace Gui
 

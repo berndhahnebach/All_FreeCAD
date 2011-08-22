@@ -24,6 +24,7 @@
 #define PARTGUI_SOBREPSHAPE_H
 
 #include <Inventor/fields/SoMFInt32.h>
+#include <Inventor/fields/SoSFNode.h>
 #include <Inventor/fields/SoSubField.h>
 #include <Inventor/nodes/SoSubNode.h>
 #include <Inventor/nodes/SoIndexedFaceSet.h>
@@ -104,6 +105,32 @@ protected:
         const SoPrimitiveVertex *v1,
         const SoPrimitiveVertex *v2,
         SoPickedPoint *pp);
+};
+
+class AppPartGuiExport SoBrepEdgeHighlight : public SoIndexedLineSet {
+    typedef SoIndexedLineSet inherited;
+
+    SO_NODE_HEADER(SoBrepEdgeHighlight);
+
+public:
+    static void initClass();
+    SoBrepEdgeHighlight();
+
+    SoMFInt32 edgeIndex;
+    SoSFNode edgeNode;
+
+protected:
+    virtual ~SoBrepEdgeHighlight() {};
+    virtual void GLRender(SoGLRenderAction *action);
+    virtual SoDetail * createLineSegmentDetail(
+        SoRayPickAction *action,
+        const SoPrimitiveVertex *v1,
+        const SoPrimitiveVertex *v2,
+        SoPickedPoint *pp);
+    virtual void doAction(SoAction* action); 
+
+private:
+    SbBool _doDraw;
 };
 
 } // namespace PartGui
