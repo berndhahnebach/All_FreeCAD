@@ -81,13 +81,12 @@ App::DocumentObjectExecReturn *Pocket::execute(void)
 
     // this is a workaround for an obscure OCC bug which leads to empty tessellations
     // for some faces. Making an explicit copy of the linked shape seems to fix it.
-    // The error only happens when re-computing the shape.
-    if (!this->Shape.getValue().IsNull()) {
-        BRepBuilderAPI_Copy copy(shape);
-        shape = copy.Shape();
-        if (shape.IsNull())
-            return new App::DocumentObjectExecReturn("Linked shape object is empty");
-    }
+    // The error almost happens when re-computing the shape but sometimes also for the
+    // first time
+    BRepBuilderAPI_Copy copy(shape);
+    shape = copy.Shape();
+    if (shape.IsNull())
+        return new App::DocumentObjectExecReturn("Linked shape object is empty");
 
     TopExp_Explorer ex;
     std::vector<TopoDS_Wire> wires;
