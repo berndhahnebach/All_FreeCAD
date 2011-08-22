@@ -90,6 +90,7 @@ SbColor sCurveColor             (1.0f,1.0f,1.0f);
 SbColor sCurveConstructionColor (0.2f,1.0f,0.2f);
 SbColor sPointColor             (0.5f,0.5f,0.5f);
 SbColor sConstraintColor        (0.0f,0.8f,0.0f);
+SbColor sCrossColor             (0.0f,0.0f,0.8f);
 
 SbColor ViewProviderSketch::PreselectColor(0.1f, 0.1f, 0.8f);
 SbColor ViewProviderSketch::SelectColor   (0.1f, 0.1f, 0.8f);
@@ -106,6 +107,7 @@ struct EditData {
     DragConstraint(-1),
     PreselectPoint(-1),
     PreselectCurve(-1),
+    PreselectCross(-1),
     //ActSketch(0),
     EditRoot(0),
     PointsMaterials(0),
@@ -130,12 +132,14 @@ struct EditData {
     int PreselectPoint;
     int PreselectCurve;
     int PreselectConstraint;
+    int PreselectCross;
     // pointer to the Solver
     Sketcher::Sketch ActSketch;
     // container to track our own selected parts
     std::set<int> SelPointSet;
     std::set<int> SelCurvSet;
     std::set<int> SelConstraintSet;
+    std::set<int> SelCrossSet;
 
     // helper data structure for the constraint rendering
     std::vector<ConstraintType> vConstrType;
@@ -144,12 +148,15 @@ struct EditData {
     SoSeparator   *EditRoot;
     SoMaterial    *PointsMaterials;
     SoMaterial    *CurvesMaterials;
+    SoMaterial    *RootCrossMaterials;
     SoMaterial    *EditCurvesMaterials;
     SoCoordinate3 *PointsCoordinate;
     SoCoordinate3 *CurvesCoordinate;
+    SoCoordinate3 *RootCrossCoordinate;
     SoCoordinate3 *EditCurvesCoordinate;
     SoLineSet     *CurveSet;
     SoLineSet     *EditCurveSet;
+    SoLineSet     *RootCrossSet;
     SoMarkerSet   *PointSet;
 
     SoText2       *textX;
@@ -277,6 +284,10 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                         //Base::Console().Log("start dragging, point:%d\n",this->DragPoint);
                         Mode = STATUS_SELECT_Edge;
                         return true;
+                    } else if (edit->PreselectCross >=0) {
+                        //Base::Console().Log("start dragging, point:%d\n",this->DragPoint);
+                        Mode = STATUS_SELECT_Cross;
+                        return true;
                     } else if (edit->PreselectConstraint >=0) {
                         //Base::Console().Log("start dragging, point:%d\n",this->DragPoint);
                         Mode = STATUS_SELECT_Constraint;
@@ -332,6 +343,37 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                                                          ,getSketchObject()->getNameInDocument(), ss.str().c_str());
                         } else {
                             // Add edge to the selection
+                            Gui::Selection().addSelection(getSketchObject()->getDocument()->getName()
+                                                         ,getSketchObject()->getNameInDocument()
+                                                         ,ss.str().c_str()
+                                                         ,pp->getPoint()[0]
+                                                         ,pp->getPoint()[1]
+                                                         ,pp->getPoint()[2]);
+                            this->edit->DragPoint = -1;
+                            this->edit->DragCurve = -1;
+                            this->edit->DragConstraint = -1;
+                        }
+                    }
+                    Mode = STATUS_NONE;
+                    return true;
+                case STATUS_SELECT_Cross:
+                    if (pp) {
+                        //Base::Console().Log("Select Point:%d\n",this->DragPoint);
+                        std::stringstream ss;
+                        switch(edit->PreselectCross){
+                            case 0: ss << "RootPoint" ; break;
+                            case 1: ss << "H_Axis"    ; break;
+                            case 2: ss << "V_Axis"    ; break;
+                        }
+
+
+                        // If cross already selected move from selection
+                        if (Gui::Selection().isSelected(getSketchObject()->getDocument()->getName()
+                                                       ,getSketchObject()->getNameInDocument(),ss.str().c_str()) ) {
+                            Gui::Selection().rmvSelection(getSketchObject()->getDocument()->getName()
+                                                         ,getSketchObject()->getNameInDocument(), ss.str().c_str());
+                        } else {
+                            // Add cross to the selection
                             Gui::Selection().addSelection(getSketchObject()->getDocument()->getName()
                                                          ,getSketchObject()->getNameInDocument()
                                                          ,ss.str().c_str()
@@ -549,8 +591,8 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
     double x,y;
     getCoordsOnSketchPlane(x,y,point,normal);
 
-    int PtIndex,CurvIndex,ConstrIndex;
-    bool preselectChanged = detectPreselection(pp,PtIndex,CurvIndex,ConstrIndex);
+    int PtIndex,CurvIndex,ConstrIndex,CrossIndex;
+    bool preselectChanged = detectPreselection(pp,PtIndex,CurvIndex,ConstrIndex,CrossIndex);
 
     switch (Mode) {
         case STATUS_NONE:
@@ -794,10 +836,11 @@ void ViewProviderSketch::onSelectionChanged(const Gui::SelectionChanges& msg)
         std::string temp;
         if (msg.Type == Gui::SelectionChanges::ClrSelection) {
             // if something selected in this object?
-            if (edit->SelPointSet.size() > 0 || edit->SelCurvSet.size() > 0 || edit->SelConstraintSet.size() > 0) {
+            if (edit->SelPointSet.size() > 0 || edit->SelCurvSet.size() > 0|| edit->SelCrossSet.size() > 0 || edit->SelConstraintSet.size() > 0) {
                 // clear our selection and update the color of the viewed edges and points
                 edit->SelPointSet.clear();
                 edit->SelCurvSet.clear();
+                edit->SelCrossSet.clear();
                 edit->SelConstraintSet.clear();
                 updateColor();
             }
@@ -816,6 +859,18 @@ void ViewProviderSketch::onSelectionChanged(const Gui::SelectionChanges& msg)
                         else if (shapetype.size() > 6 && shapetype.substr(0,6) == "Vertex") {
                             int index=std::atoi(&shapetype[6]);
                             edit->SelPointSet.insert(index);
+                            updateColor();
+                        }
+                        else if (shapetype == "RootPoint") {
+                            edit->SelCrossSet.insert(0);
+                            updateColor();
+                        }
+                        else if (shapetype == "V_Axis") {
+                            edit->SelCrossSet.insert(2);
+                            updateColor();
+                        }
+                        else if (shapetype == "H_Axis") {
+                            edit->SelCrossSet.insert(1);
                             updateColor();
                         }
                         else if (shapetype.size() > 10 && shapetype.substr(0,10) == "Constraint") {
@@ -873,13 +928,14 @@ void ViewProviderSketch::onSelectionChanged(const Gui::SelectionChanges& msg)
     }
 }
 
-bool ViewProviderSketch::detectPreselection(const SoPickedPoint *Point, int &PtIndex, int &CurvIndex, int &ConstrIndex)
+bool ViewProviderSketch::detectPreselection(const SoPickedPoint *Point, int &PtIndex, int &CurvIndex, int &ConstrIndex,int &CrossIndex)
 {
     assert(edit);
 
     PtIndex = -1;
     CurvIndex = -1;
     ConstrIndex = -1;
+    CrossIndex = -1;
 
     if (Point) {
         //Base::Console().Log("Point pick\n");
@@ -902,6 +958,13 @@ bool ViewProviderSketch::detectPreselection(const SoPickedPoint *Point, int &PtI
                 if (curve_detail && curve_detail->getTypeId() == SoLineDetail::getClassTypeId()) {
                     // get the index
                     CurvIndex = static_cast<const SoLineDetail *>(curve_detail)->getLineIndex();
+                }
+            // checking for a hit in the Cross
+            } else if (tail == edit->RootCrossSet) {
+                const SoDetail *cross_detail = Point->getDetail(edit->RootCrossSet);
+                if (cross_detail && cross_detail->getTypeId() == SoLineDetail::getClassTypeId()) {
+                    // get the index
+                    CrossIndex = static_cast<const SoLineDetail *>(cross_detail)->getLineIndex() + 1;
                 }
             } else {
                 // checking if a constraint is hit
@@ -927,6 +990,7 @@ bool ViewProviderSketch::detectPreselection(const SoPickedPoint *Point, int &PtI
             if (ConstrIndex != edit->PreselectConstraint) {
                 edit->PreselectConstraint = ConstrIndex;
                 edit->PreselectPoint = -1;
+                edit->PreselectCross = -1;
                 edit->PreselectCurve = -1;
                 return true;
             } else
@@ -944,6 +1008,7 @@ bool ViewProviderSketch::detectPreselection(const SoPickedPoint *Point, int &PtI
             if (PtIndex != edit->PreselectPoint) {
                 edit->PreselectPoint = PtIndex;
                 edit->PreselectCurve = -1;
+                edit->PreselectCross = -1;
                 edit->PreselectConstraint = -1;
                 return true;
             } else
@@ -951,6 +1016,7 @@ bool ViewProviderSketch::detectPreselection(const SoPickedPoint *Point, int &PtI
         } else if (CurvIndex >= 0) {  // if a curve is hit
             if (CurvIndex != edit->PreselectCurve) {
                 edit->PreselectCurve = CurvIndex;
+                edit->PreselectCross = -1;
                 edit->PreselectPoint = -1;
                 edit->PreselectConstraint = -1;
                 std::stringstream ss;
@@ -968,16 +1034,43 @@ bool ViewProviderSketch::detectPreselection(const SoPickedPoint *Point, int &PtI
                                                   ,Point->getPoint()[1]
                                                   ,Point->getPoint()[2]);
             }
+        } else if (CrossIndex >= 0) {  // if a curve is hit
+            if (CrossIndex != edit->PreselectCross) {
+                edit->PreselectCross = CrossIndex;
+                edit->PreselectCurve = -1;
+                edit->PreselectPoint = -1;
+                edit->PreselectConstraint = -1;
+                std::stringstream ss;
+                switch(CrossIndex){
+                    case 0: ss << "RootPoint" ; break;
+                    case 1: ss << "H_Axis"    ; break;
+                    case 2: ss << "V_Axis"    ; break;
+                }
+                Gui::Selection().setPreselect(getSketchObject()->getDocument()->getName()
+                                             ,getSketchObject()->getNameInDocument()
+                                             ,ss.str().c_str()
+                                             ,Point->getPoint()[0]
+                                             ,Point->getPoint()[1]
+                                             ,Point->getPoint()[2]);
+
+                return true;
+            } else {
+                Gui::Selection().setPreselectCoord(Point->getPoint()[0]
+                                                  ,Point->getPoint()[1]
+                                                  ,Point->getPoint()[2]);
+            }
         } else if ((CurvIndex < 0 && PtIndex < 0) && (edit->PreselectCurve >= 0 || edit->PreselectPoint >= 0)) {
             edit->PreselectCurve = -1;
             edit->PreselectPoint = -1;
+            edit->PreselectCross = -1;
             edit->PreselectConstraint = -1;
             return true;
         }
 
-    } else if (edit->PreselectCurve >= 0 || edit->PreselectPoint >= 0 || edit->PreselectConstraint >= 0) {
+    } else if (edit->PreselectCurve >= 0 || edit->PreselectPoint >= 0 || edit->PreselectConstraint >= 0 || edit->PreselectCross >= 0) {
         edit->PreselectCurve = -1;
         edit->PreselectPoint = -1;
+        edit->PreselectCross = -1;
         edit->PreselectConstraint = -1;
         return true;
     }
@@ -994,6 +1087,7 @@ void ViewProviderSketch::updateColor(void)
     SbColor *pcolor = edit->PointsMaterials->diffuseColor.startEditing();
     int CurvNum = edit->CurvesMaterials->diffuseColor.getNum();
     SbColor *color = edit->CurvesMaterials->diffuseColor.startEditing();
+    SbColor *ccolor = edit->RootCrossMaterials->diffuseColor.startEditing();
 
     // colors of the point set
     for (int  i=0;i<PtNum;i++) {
@@ -1014,6 +1108,16 @@ void ViewProviderSketch::updateColor(void)
         else
             color[i] = sCurveColor;
     }
+
+    // colors or the cross
+    for (int  i=0; i < 2; i++) {
+        if (edit->SelCrossSet.find(i+1) != edit->SelCrossSet.end())
+            ccolor[i] = SelectColor;
+        else if (edit->PreselectCross == i+1)
+            ccolor[i] = PreselectColor;
+        else
+            ccolor[i] = sCrossColor;
+    }
     // colors of the constraints
     for (int i=0; i < edit->constrGroup->getNumChildren(); i++) {
         SoSeparator *s = dynamic_cast<SoSeparator *>(edit->constrGroup->getChild(i));
@@ -1029,6 +1133,7 @@ void ViewProviderSketch::updateColor(void)
     // end editing
     edit->CurvesMaterials->diffuseColor.finishEditing();
     edit->PointsMaterials->diffuseColor.finishEditing();
+    edit->RootCrossMaterials->diffuseColor.finishEditing();
 }
 
 bool ViewProviderSketch::isPointOnSketch(const SoPickedPoint *pp) const
@@ -1182,9 +1287,15 @@ void ViewProviderSketch::draw(bool temp)
     SbVec3f *pverts = edit->PointsCoordinate->point.startEditing();
     SbColor *pcolor = edit->PointsMaterials->diffuseColor.startEditing();
 
+    // set cross coordiantes
+    edit->RootCrossCoordinate->point.set1Value(0,SbVec3f((float)MinX - (MaxX-MinX)*0.5,0.0,0.1f));
+    edit->RootCrossCoordinate->point.set1Value(1,SbVec3f((float)MaxX + (MaxX-MinX)*0.5,0.0,0.1f));
+    edit->RootCrossCoordinate->point.set1Value(2,SbVec3f(0.0f,(float)MinY - (MaxY-MinY)*0.5f,0.1f));
+    edit->RootCrossCoordinate->point.set1Value(3,SbVec3f(0.0f,(float)MaxY + (MaxY-MinY)*0.5f,0.1f));
+
     int i=0; // setting up the line set
     for (std::vector<Base::Vector3d>::const_iterator it = Coords.begin(); it != Coords.end(); ++it,i++)
-        verts[i].setValue(it->x,it->y,0.1f);
+        verts[i].setValue(it->x,it->y,0.2f);
 
     i=0; // setting up the indexes of the line set
     for (std::vector<unsigned int>::const_iterator it = Index.begin(); it != Index.end(); ++it,i++)
@@ -1196,7 +1307,7 @@ void ViewProviderSketch::draw(bool temp)
 
     i=0; // setting up the point set
     for (std::vector<Base::Vector3d>::const_iterator it = Points.begin(); it != Points.end(); ++it,i++)
-        pverts[i].setValue(it->x,it->y,0.1f);
+        pverts[i].setValue(it->x,it->y,0.3f);
 
     i=0; // color of the point set
     for (std::vector<unsigned int>::const_iterator it = PtColor.begin(); it != PtColor.end(); ++it,i++)
@@ -2200,6 +2311,28 @@ void ViewProviderSketch::createEditInventorNodes(void)
     edit->CurveSet = new SoLineSet;
 
     edit->EditRoot->addChild(edit->CurveSet);
+
+    // stuff for the RootCross lines +++++++++++++++++++++++++++++++++++++++
+    edit->RootCrossMaterials = new SoMaterial;
+    edit->RootCrossMaterials->diffuseColor.set1Value(0,sCrossColor);
+    edit->RootCrossMaterials->diffuseColor.set1Value(1,sCrossColor);
+    edit->EditRoot->addChild(edit->RootCrossMaterials);
+ 
+    MtlBind = new SoMaterialBinding;
+    MtlBind->value = SoMaterialBinding::PER_FACE;
+    edit->EditRoot->addChild(MtlBind);
+
+    edit->RootCrossCoordinate = new SoCoordinate3;
+    edit->EditRoot->addChild(edit->RootCrossCoordinate);
+
+    DrawStyle = new SoDrawStyle;
+    DrawStyle->lineWidth = 2;
+    edit->EditRoot->addChild(DrawStyle);
+
+    edit->RootCrossSet = new SoLineSet;
+    edit->RootCrossSet->numVertices.set1Value(0,2);
+    edit->RootCrossSet->numVertices.set1Value(1,2);
+    edit->EditRoot->addChild(edit->RootCrossSet);
 
     // stuff for the EditCurves +++++++++++++++++++++++++++++++++++++++
     edit->EditCurvesMaterials = new SoMaterial;

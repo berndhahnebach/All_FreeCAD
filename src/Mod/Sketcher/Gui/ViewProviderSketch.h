@@ -100,6 +100,7 @@ public:
         STATUS_SELECT_Point,      /**< enum value a point was selected. */
         STATUS_SELECT_Edge,       /**< enum value a edge was selected. */
         STATUS_SELECT_Constraint, /**< enum value a constraint was selected. */
+        STATUS_SELECT_Cross,      /**< enum value the base coordinate system was selected. */
         STATUS_SKETCH_DragPoint,  /**< enum value while dragging a point. */
         STATUS_SKETCH_DragCurve,  /**< enum value while dragging a curve. */
         STATUS_SKETCH_DragConstraint,  /**< enum value while dragging a compatible constraint. */
@@ -118,7 +119,7 @@ public:
     /// helper to detect preselection
     //bool handlePreselection(const SoPickedPoint *pp);
     /// helper to detect preselection
-    bool detectPreselection(const SoPickedPoint *Point, int &PtIndex,int &CurvIndex, int &ConstrIndex);
+    bool detectPreselection(const SoPickedPoint *Point, int &PtIndex,int &CurvIndex, int &ConstrIndex, int &CrossIndex);
     /// helper change the color of the sketch according to selection and solver status
     void updateColor(void);
     /// get the pointer to the sketch document object
