@@ -1105,15 +1105,12 @@ class ViewProviderDraft:
 		return None
 
         def setEdit(self,vp,mode):
-                print "entering editmode ",mode
                 FreeCADGui.runCommand("Draft_Edit")
-                return
+                return True
 
         def unsetEdit(self,vp,mode):
-                print "leaving editmode"
-                if hasattr(FreeCAD,"activeDraftCommand"):
-                        if FreeCAD.activeDraftCommand:
-                                FreeCAD.activeDraftCommand.finish()
+                if FreeCAD.activeDraftCommand:
+                        FreeCAD.activeDraftCommand.finish()
                 return
 		
 class Dimension:
