@@ -482,6 +482,16 @@ void SoBrepEdgeSet::GLRenderBelowPath(SoGLRenderAction * action)
 void SoBrepEdgeSet::renderHighlight(SoGLRenderAction *action, int id)
 {
     SoState * state = action->getState();
+    state->push();
+    SoColorPacker colorpacker;
+    SbColor color(1,170.0f/255,0);
+    glLineWidth(4.0f);
+    glColor3i(255,170,0);
+
+    SoLazyElement::setEmissive(state, &color);
+    SoOverrideElement::setEmissiveColorOverride(state, this, TRUE);
+    SoLazyElement::setDiffuse(state, this,1, &color,&colorpacker);
+    SoOverrideElement::setDiffuseColorOverride(state, this, TRUE);
 
     const SoCoordinateElement * coords;
     const SbVec3f * normals;
@@ -494,6 +504,30 @@ void SoBrepEdgeSet::renderHighlight(SoGLRenderAction *action, int id)
 
     this->getVertexData(state, coords, normals, cindices, nindices,
         tindices, mindices, numcindices, FALSE, normalCacheUsed);
+
+    cindices = this->highlightIndex.getValues(0);
+    numcindices = this->highlightIndex.getNum();
+
+    const SbVec3f * coords3d = coords->getArrayPtr3();
+    int numcoords = coords->getNum();
+
+    int32_t i;
+    int previ;
+    const int32_t *end = cindices + numcindices;
+    glBegin(GL_LINES);
+    while (cindices < end) {
+        previ = *cindices++;
+        i = (cindices < end) ? *cindices++ : -1;
+        while (i >= 0) {
+            // For robustness upon buggy data sets
+            glVertex3fv((const GLfloat*) (coords3d + previ));
+            glVertex3fv((const GLfloat*) (coords3d + i));
+            previ = i;
+            i = cindices < end ? *cindices++ : -1;
+        }
+    }
+    glEnd();
+    state->pop();
 }
 
 void SoBrepEdgeSet::doAction(SoAction* action)
@@ -563,7 +597,7 @@ SoBrepEdgeHighlight::SoBrepEdgeHighlight() : _doDraw(FALSE)
 }
 
 void SoBrepEdgeHighlight::GLRender(SoGLRenderAction *action)
-{
+{return;
     if (!this->shouldGLRender(action)) return;
     if (!_doDraw) return;
     glLineWidth(4.0f);

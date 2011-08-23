@@ -150,8 +150,8 @@ ViewProviderPartExt::ViewProviderPartExt()
     normb->ref();
     lineset = new SoBrepEdgeSet();
     lineset->ref();
-    highlight = new SoBrepEdgeHighlight();
-    highlight->ref();
+  //highlight = new SoBrepEdgeHighlight();
+  //highlight->ref();
 
     pcShapeBind = new SoMaterialBinding();
     pcShapeBind->ref();
@@ -201,7 +201,7 @@ ViewProviderPartExt::~ViewProviderPartExt()
     faceset->unref();
     norm->unref();
     lineset->unref();
-    highlight->unref();
+  //highlight->unref();
 }
 
 void ViewProviderPartExt::onChanged(const App::Property* prop)
@@ -281,17 +281,17 @@ void ViewProviderPartExt::attach(App::DocumentObject *pcFeat)
     SoSeparator* sepWire = new SoSeparator();
     SoSeparator* sepFlat = new SoSeparator();
     SoSeparator* sepPnts = new SoSeparator();
-    SoSeparator* sepHigh = new SoSeparator();
-    SoBaseColor* color = new SoBaseColor();
-    color->rgb.setValue(1,0,0);
-    sepHigh->addChild(color);
-    sepHigh->addChild(coords);
-    sepHigh->addChild(highlight);
-    highlight->edgeNode = lineset;
+  //SoSeparator* sepHigh = new SoSeparator();
+  //SoBaseColor* color = new SoBaseColor();
+  //color->rgb.setValue(1,0,0);
+  //sepHigh->addChild(color);
+  //sepHigh->addChild(coords);
+  //sepHigh->addChild(highlight);
+  //highlight->edgeNode = lineset;
 
     // normal viewing with edges and points
     pcNormalRoot->addChild(sepWire);
-    pcNormalRoot->addChild(sepHigh);
+  //pcNormalRoot->addChild(sepHigh);
     pcNormalRoot->addChild(offset);
     pcNormalRoot->addChild(sepFlat);
     pcNormalRoot->addChild(sepPnts);
@@ -306,7 +306,7 @@ void ViewProviderPartExt::attach(App::DocumentObject *pcFeat)
     pcFlatRoot->addChild(faceset);
     for (int i=0; i<pcFlatRoot->getNumChildren(); i++)
         sepFlat->addChild(pcFlatRoot->getChild(i));
-    pcFlatRoot->addChild(sepHigh);
+  //pcFlatRoot->addChild(sepHigh);
 
     // only edges
     pcWireframeRoot->addChild(pcLineMaterial);
@@ -315,7 +315,7 @@ void ViewProviderPartExt::attach(App::DocumentObject *pcFeat)
     pcWireframeRoot->addChild(lineset);
     for (int i=0; i<pcWireframeRoot->getNumChildren(); i++)
         sepWire->addChild(pcWireframeRoot->getChild(i));
-    pcWireframeRoot->addChild(sepHigh);
+  //pcWireframeRoot->addChild(sepHigh);
 
     // normal viewing with edges and points
     pcPointsRoot->addChild(pcPointMaterial);
@@ -726,16 +726,16 @@ void ViewProviderPartExt::updateVisual(const TopoDS_Shape &inputShape)
         // preset the index vector size
         nbrLines =  indxVector.size();
         lineset ->coordIndex .setNum(nbrLines);
-        highlight->edgeIndex .setNum((int)edgeVector.size());
+      //highlight->edgeIndex .setNum((int)edgeVector.size());
         int32_t* lines = lineset ->coordIndex  .startEditing();
-        int32_t* faces = highlight->edgeIndex  .startEditing();
+      //int32_t* faces = highlight->edgeIndex  .startEditing();
 
         int l=0;
         for (std::vector<int32_t>::const_iterator it=indxVector.begin();it!=indxVector.end();++it,l++)
             lines[l] = *it;
         l=0;
-        for (std::vector<int32_t>::const_iterator it=edgeVector.begin();it!=edgeVector.end();++it,l++)
-            faces[l] = *it;
+      //for (std::vector<int32_t>::const_iterator it=edgeVector.begin();it!=edgeVector.end();++it,l++)
+      //    faces[l] = *it;
 
         // end the editing of the nodes
         coords  ->point       .finishEditing();
@@ -744,7 +744,7 @@ void ViewProviderPartExt::updateVisual(const TopoDS_Shape &inputShape)
         faceset ->partIndex   .finishEditing();
         lineset ->coordIndex  .finishEditing();
         vertex  ->point       .finishEditing();
-        highlight->edgeIndex  .finishEditing();
+      //highlight->edgeIndex  .finishEditing();
     }
     catch (...) {
         Base::Console().Error("Cannot compute Inventor representation for the shape of %s.\n",pcObject->getNameInDocument());
