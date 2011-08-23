@@ -559,7 +559,7 @@ private:
     Handle_Geom_Plane mySurface;
 };
 
-class GeomOffsetSurface : public GeomSurface
+class PartExport GeomOffsetSurface : public GeomSurface
 {
     TYPESYSTEM_HEADER();
 public:
@@ -583,7 +583,7 @@ private:
     Handle_Geom_OffsetSurface mySurface;
 };
 
-class GeomTrimmedSurface : public GeomSurface
+class PartExport GeomTrimmedSurface : public GeomSurface
 {
     TYPESYSTEM_HEADER();
 public:
@@ -606,7 +606,7 @@ private:
     Handle_Geom_RectangularTrimmedSurface mySurface;
 };
 
-class GeomSurfaceOfRevolution : public GeomSurface
+class PartExport GeomSurfaceOfRevolution : public GeomSurface
 {
     TYPESYSTEM_HEADER();
 public:
@@ -630,7 +630,7 @@ private:
     Handle_Geom_SurfaceOfRevolution mySurface;
 };
 
-class GeomSurfaceOfExtrusion : public GeomSurface
+class PartExport GeomSurfaceOfExtrusion : public GeomSurface
 {
     TYPESYSTEM_HEADER();
 public:
@@ -663,12 +663,12 @@ bool find2DLinesIntersection(const GeomLineSegment *lineSeg1, const GeomLineSegm
                              Base::Vector3d &point);
 bool findFilletCenter(const GeomLineSegment *lineSeg1, const GeomLineSegment *lineSeg2, double radius,
                       Base::Vector3d &center);
-bool findFilletCenter(const GeomLineSegment *lineSeg1, const GeomLineSegment *lineSeg2, double radius,
+PartExport bool findFilletCenter(const GeomLineSegment *lineSeg1, const GeomLineSegment *lineSeg2, double radius,
                       const Base::Vector3d& refPnt1, const Base::Vector3d& refPnt2,
                       Base::Vector3d &center);
 double suggestFilletRadius(const GeomLineSegment *lineSeg1, const GeomLineSegment *lineSeg2,
                            const Base::Vector3d &refPnt1, const Base::Vector3d &refPnt2);
-GeomArcOfCircle *createFilletGeometry(const GeomLineSegment *lineSeg1, const GeomLineSegment *lineSeg2,
+PartExport GeomArcOfCircle *createFilletGeometry(const GeomLineSegment *lineSeg1, const GeomLineSegment *lineSeg2,
                                       const Base::Vector3d &center, double radius);
 }
 
