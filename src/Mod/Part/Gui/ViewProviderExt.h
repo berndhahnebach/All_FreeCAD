@@ -125,7 +125,7 @@ protected:
     SoNormal          * norm;
     SoNormalBinding   * normb;
     SoBrepEdgeSet     * lineset;
-    SoBrepEdgeHighlight* highlight;
+  //SoBrepEdgeHighlight* highlight;
 
     bool VisualTouched;
 private:
