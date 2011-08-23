@@ -46,10 +46,14 @@ public:
     SoBrepFaceSet();
 
     SoMFInt32 partIndex;
+    SoMFInt32 highlightIndex;
+    SoMFInt32 selectionIndex;
 
 protected:
     virtual ~SoBrepFaceSet() {};
     virtual void GLRender(SoGLRenderAction *action);
+    virtual void GLRenderBelowPath(SoGLRenderAction * action);
+    virtual void doAction(SoAction* action); 
     virtual SoDetail * createTriangleDetail(
         SoRayPickAction * action,
         const SoPrimitiveVertex * v1,
@@ -84,6 +88,7 @@ private:
                      const int nbind,
                      const int mbind,
                      const int texture);
+    void renderHighlight(SoGLRenderAction *action, int);
 };
 
 // ---------------------------------------------------------------------
@@ -97,14 +102,21 @@ public:
     static void initClass();
     SoBrepEdgeSet();
 
+    SoMFInt32 highlightIndex;
+    SoMFInt32 selectionIndex;
+
 protected:
     virtual ~SoBrepEdgeSet() {};
     virtual void GLRender(SoGLRenderAction *action);
+    virtual void GLRenderBelowPath(SoGLRenderAction * action);
+    virtual void doAction(SoAction* action); 
     virtual SoDetail * createLineSegmentDetail(
         SoRayPickAction *action,
         const SoPrimitiveVertex *v1,
         const SoPrimitiveVertex *v2,
         SoPickedPoint *pp);
+private:
+    void renderHighlight(SoGLRenderAction *action, int);
 };
 
 class AppPartGuiExport SoBrepEdgeHighlight : public SoIndexedLineSet {

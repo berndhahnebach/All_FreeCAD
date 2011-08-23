@@ -254,7 +254,7 @@ SoFCUnifiedSelection::handleEvent(SoHandleEventAction * action)
             }
         }
 
-        if (currenthighlight && old_state != highlighted) {
+        if (currenthighlight/* && old_state != highlighted*/) {
             SoHighlightElementAction action;
             action.setHighlighted(highlighted);
             action.setElement(pp);
@@ -390,6 +390,7 @@ void SoHighlightElementAction::initClass()
     SO_ACTION_ADD_METHOD(SoSwitch,callDoAction);
     SO_ACTION_ADD_METHOD(SoShape,callDoAction);
     SO_ACTION_ADD_METHOD(SoIndexedLineSet,callDoAction);
+    SO_ACTION_ADD_METHOD(SoIndexedFaceSet,callDoAction);
 
     SO_ACTION_ADD_METHOD(SoSeparator,callDoAction);
     SO_ACTION_ADD_METHOD(SoFCUnifiedSelection,callDoAction);
