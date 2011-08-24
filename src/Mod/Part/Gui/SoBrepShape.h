@@ -29,6 +29,7 @@
 #include <Inventor/nodes/SoSubNode.h>
 #include <Inventor/nodes/SoIndexedFaceSet.h>
 #include <Inventor/nodes/SoIndexedLineSet.h>
+#include <Inventor/nodes/SoPointSet.h>
 #include <Inventor/elements/SoLazyElement.h>
 #include <Inventor/elements/SoReplacedElement.h>
 
@@ -90,6 +91,7 @@ private:
                      const int mbind,
                      const int texture);
     void renderHighlight(SoGLRenderAction *action, int);
+    void renderSelection(SoGLRenderAction *action);
 
 private:
     SbColor selectionColor;
@@ -126,6 +128,40 @@ private:
                      const int32_t *vertexindices,
                      int num_vertexindices);
     void renderHighlight(SoGLRenderAction *action, int);
+    void renderSelection(SoGLRenderAction *action);
+
+private:
+    SbColor selectionColor;
+    SbColor highlightColor;
+    SoColorPacker colorpacker;
+};
+
+// ---------------------------------------------------------------------
+
+class AppPartGuiExport SoBrepPointSet : public SoPointSet {
+    typedef SoPointSet inherited;
+
+    SO_NODE_HEADER(SoBrepPointSet);
+
+public:
+    static void initClass();
+    SoBrepPointSet();
+
+    SoMFInt32 highlightIndex;
+    SoMFInt32 selectionIndex;
+
+protected:
+    virtual ~SoBrepPointSet() {};
+    virtual void GLRender(SoGLRenderAction *action);
+    virtual void GLRenderBelowPath(SoGLRenderAction * action);
+    virtual void doAction(SoAction* action); 
+
+private:
+    void renderShape(const SoGLCoordinateElement * const vertexlist,
+                     const int32_t *vertexindices,
+                     int num_vertexindices);
+    void renderHighlight(SoGLRenderAction *action, int);
+    void renderSelection(SoGLRenderAction *action);
 
 private:
     SbColor selectionColor;

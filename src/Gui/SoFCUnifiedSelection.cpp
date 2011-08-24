@@ -154,6 +154,16 @@ void SoFCUnifiedSelection::finish()
 }
 
 
+int SoFCUnifiedSelection::getPriority(const SoPickedPoint* p)
+{
+    const SoDetail* detail = p->getDetail();
+    if(!detail) return 0;
+    if(detail->isOfType(SoFaceDetail::getClassTypeId())) return 1;
+    if(detail->isOfType(SoLineDetail::getClassTypeId())) return 2;
+    if(detail->isOfType(SoPointDetail::getClassTypeId())) return 3;
+    return 0;
+}
+
 const SoPickedPoint*
 SoFCUnifiedSelection::getPickedPoint(SoHandleEventAction* action) const
 {
@@ -166,19 +176,22 @@ SoFCUnifiedSelection::getPickedPoint(SoHandleEventAction* action) const
         return 0;
     else if (points.getLength() == 1)
         return points[0];
-    const SoPickedPoint* pp0 = points[0];
-    const SoPickedPoint* pp1 = points[1];
-    const SoDetail* det0 = pp0->getDetail();
-    const SoDetail* det1 = pp1->getDetail();
-    if (det0 && det0->isOfType(SoFaceDetail::getClassTypeId()) &&
-        det1 && det1->isOfType(SoLineDetail::getClassTypeId())) {
-        const SbVec3f& pt0 = pp0->getPoint();
-        const SbVec3f& pt1 = pp1->getPoint();
-        if (pt0.equals(pt1, 0.01f))
-            return pp1;
-    }
+    
+    const SoPickedPoint* picked = points[0];
+    int picked_prio = getPriority(picked);
+    const SbVec3f& picked_pt = picked->getPoint();
 
-    return pp0;
+    for (int i=1; i<points.getLength();i++) {
+        const SoPickedPoint* cur = points[i];
+        int cur_prio = getPriority(cur);
+        const SbVec3f& cur_pt = cur->getPoint();
+
+        if ((cur_prio > picked_prio) && picked_pt.equals(cur_pt, 0.01f)) {
+            picked = cur;
+            picked_prio = cur_prio;
+        }
+    }
+    return picked;
 }
 
 // doc from parent
@@ -209,17 +222,7 @@ SoFCUnifiedSelection::handleEvent(SoHandleEventAction * action)
         SoFullPath *pPath = (pp != NULL) ? (SoFullPath *) pp->getPath() : NULL;
         ViewProvider *vp = 0;
         if (pPath && pPath->containsPath(action->getCurPath())) {
-            // Make sure I'm the lowest LocHL in the pick path!
-            for (int i = 0; i < pPath->getLength(); i++) {
-                SoNode *node = pPath->getNodeFromTail(i);
-                if (node->isOfType(SoSeparator::getClassTypeId())) {
-                    std::map<SoSeparator*,ViewProvider*>::iterator it = viewer->_ViewProviderMap.find(static_cast<SoSeparator*>(node));
-                    if(it != viewer->_ViewProviderMap.end()){
-                        vp=it->second;
-                        break;
-                    }
-                 }
-            }
+            vp = viewer->getViewProviderByPathFromTail(pPath);
         }
 
         SbBool old_state = highlighted;
@@ -283,10 +286,39 @@ SoFCUnifiedSelection::handleEvent(SoHandleEventAction * action)
             SoKeyboardEvent::isKeyReleaseEvent(e,SoKeyboardEvent::RIGHT_CONTROL) )
             bCtrl = false;
     }
-    //// mouse press events for (de)selection (only if selection is enabled on this node)
-    //else if (event->isOfType(SoMouseButtonEvent::getClassTypeId()) && 
-    //         selectionMode.getValue() == SoFCUnifiedSelection::SEL_ON) {
-    //    SoMouseButtonEvent * const e = (SoMouseButtonEvent *) event;
+    // mouse press events for (de)selection (only if selection is enabled on this node)
+    else if (event->isOfType(SoMouseButtonEvent::getClassTypeId()) && 
+             selectionMode.getValue() == SoFCUnifiedSelection::SEL_ON) {
+        SoMouseButtonEvent * const e = (SoMouseButtonEvent *) event;
+        // check to see if the mouse is over our geometry...
+        const SoPickedPoint * pp = this->getPickedPoint(action);
+        SoFullPath *pPath = (pp != NULL) ? (SoFullPath *) pp->getPath() : NULL;
+        ViewProvider *vp = 0;
+        if (pPath && pPath->containsPath(action->getCurPath())) {
+            vp = viewer->getViewProviderByPathFromTail(pPath);
+        }
+
+        if (vp && vp->useNewSelectionModel()) {
+            std::string e = vp->getElement(pp);
+            vp->getSelectionShape(e.c_str());
+            static char buf[513];
+            snprintf(buf,512,"Selected: %s (%f,%f,%f)"
+                                       ,e.c_str()
+                                       ,pp->getPoint()[0]
+                                       ,pp->getPoint()[1]
+                                       ,pp->getPoint()[2]);
+
+            getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
+
+            if (currenthighlight) {
+                SoSelectionElementAction action;
+                action.setSelected(TRUE);
+                action.setColor(this->colorSelection.getValue());
+                action.setElement(pp);
+                action.apply(currenthighlight);
+                this->touch();
+            }
+        }
     //    if (SoMouseButtonEvent::isButtonReleaseEvent(e,SoMouseButtonEvent::BUTTON1)) {
     //        //FIXME: Shouldn't we remove the preselection for newly selected objects?
     //        //       Otherwise the tree signals that an object is preselected even though it is hidden. (Werner)
@@ -357,7 +389,7 @@ SoFCUnifiedSelection::handleEvent(SoHandleEventAction * action)
     //            action->setHandled(); 
     //        } // picked point
     //    } // mouse release
-    //}
+    }
 
     //// Let the base class traverse the children.
     //if (action->getGrabber() != this)
@@ -376,25 +408,12 @@ void SoHighlightElementAction::initClass()
 
     SO_ACTION_ADD_METHOD(SoNode,nullAction);
 
-    SO_ENABLE(SoHighlightElementAction, SoModelMatrixElement);
-    SO_ENABLE(SoHighlightElementAction, SoProjectionMatrixElement);
     SO_ENABLE(SoHighlightElementAction, SoCoordinateElement);
-    SO_ENABLE(SoHighlightElementAction, SoViewVolumeElement);
-    SO_ENABLE(SoHighlightElementAction, SoViewingMatrixElement);
-    SO_ENABLE(SoHighlightElementAction, SoViewportRegionElement);
 
-
-    SO_ACTION_ADD_METHOD(SoCamera,callDoAction);
-    SO_ACTION_ADD_METHOD(SoCoordinate3,callDoAction);
-    SO_ACTION_ADD_METHOD(SoCoordinate4,callDoAction);
     SO_ACTION_ADD_METHOD(SoGroup,callDoAction);
-    SO_ACTION_ADD_METHOD(SoSwitch,callDoAction);
-    SO_ACTION_ADD_METHOD(SoShape,callDoAction);
     SO_ACTION_ADD_METHOD(SoIndexedLineSet,callDoAction);
     SO_ACTION_ADD_METHOD(SoIndexedFaceSet,callDoAction);
-
-    SO_ACTION_ADD_METHOD(SoSeparator,callDoAction);
-    SO_ACTION_ADD_METHOD(SoFCUnifiedSelection,callDoAction);
+    SO_ACTION_ADD_METHOD(SoPointSet,callDoAction);
 }
 
 SoHighlightElementAction::SoHighlightElementAction () : _highlight(FALSE), _pp(0)
@@ -442,6 +461,75 @@ void SoHighlightElementAction::setElement(const SoPickedPoint* pp)
 }
 
 const SoPickedPoint* SoHighlightElementAction::getElement() const
+{
+    return this->_pp;
+}
+
+// ---------------------------------------------------------------
+
+SO_ACTION_SOURCE(SoSelectionElementAction);
+
+void SoSelectionElementAction::initClass()
+{
+    SO_ACTION_INIT_CLASS(SoSelectionElementAction,SoAction);
+
+    SO_ENABLE(SoSelectionElementAction, SoSwitchElement);
+
+    SO_ACTION_ADD_METHOD(SoNode,nullAction);
+
+    SO_ENABLE(SoSelectionElementAction, SoCoordinateElement);
+
+    SO_ACTION_ADD_METHOD(SoGroup,callDoAction);
+    SO_ACTION_ADD_METHOD(SoIndexedLineSet,callDoAction);
+    SO_ACTION_ADD_METHOD(SoIndexedFaceSet,callDoAction);
+    SO_ACTION_ADD_METHOD(SoPointSet,callDoAction);
+}
+
+SoSelectionElementAction::SoSelectionElementAction () : _select(FALSE), _pp(0)
+{
+    SO_ACTION_CONSTRUCTOR(SoSelectionElementAction);
+}
+
+SoSelectionElementAction::~SoSelectionElementAction()
+{
+}
+
+void SoSelectionElementAction::beginTraversal(SoNode *node)
+{
+    traverse(node);
+}
+
+void SoSelectionElementAction::callDoAction(SoAction *action,SoNode *node)
+{
+    node->doAction(action);
+}
+
+void SoSelectionElementAction::setSelected(SbBool ok)
+{
+    this->_select = ok;
+}
+
+SbBool SoSelectionElementAction::isSelected() const
+{
+    return this->_select;
+}
+
+void SoSelectionElementAction::setColor(const SbColor& c)
+{
+    this->_color = c;
+}
+
+const SbColor& SoSelectionElementAction::getColor() const
+{
+    return this->_color;
+}
+
+void SoSelectionElementAction::setElement(const SoPickedPoint* pp)
+{
+    this->_pp = pp;
+}
+
+const SoPickedPoint* SoSelectionElementAction::getElement() const
 {
     return this->_pp;
 }

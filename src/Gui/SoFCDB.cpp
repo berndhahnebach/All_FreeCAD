@@ -87,6 +87,7 @@ void Gui::SoFCDB::init()
     SoFCVectorizeSVGAction          ::initClass();
     SoFCVectorizeU3DAction          ::initClass();
     SoHighlightElementAction        ::initClass();
+    SoSelectionElementAction        ::initClass();
     SoSkipBoundingGroup             ::initClass();
     SoTextLabel                     ::initClass();
     SoStringLabel                   ::initClass();

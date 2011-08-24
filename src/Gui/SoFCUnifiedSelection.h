@@ -113,6 +113,7 @@ private:
     //void setOverride(SoGLRenderAction * action);
     //SbBool isHighlighted(SoAction *action);
     //SbBool preRender(SoGLRenderAction *act, GLint &oldDepthFunc);
+    static int getPriority(const SoPickedPoint* p);
     const SoPickedPoint* getPickedPoint(SoHandleEventAction*) const;
 
     static SoFullPath * currenthighlight;
@@ -152,6 +153,38 @@ private:
 
 private:
     SbBool _highlight;
+    SbColor _color;
+    const SoPickedPoint* _pp;
+};
+
+/**
+ * @author Werner Mayer
+ */
+class GuiExport SoSelectionElementAction : public SoAction
+{
+    SO_ACTION_HEADER(SoSelectionElementAction);
+
+public:
+    SoSelectionElementAction ();
+    ~SoSelectionElementAction();
+
+    void setSelected(SbBool);
+    SbBool isSelected() const;
+    void setColor(const SbColor&);
+    const SbColor& getColor() const;
+    void setElement(const SoPickedPoint*);
+    const SoPickedPoint* getElement() const;
+
+    static void initClass();
+
+protected:
+    virtual void beginTraversal(SoNode *node);
+
+private:
+    static void callDoAction(SoAction *action,SoNode *node);
+
+private:
+    SbBool _select;
     SbColor _color;
     const SoPickedPoint* _pp;
 };

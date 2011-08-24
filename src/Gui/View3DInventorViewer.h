@@ -128,6 +128,7 @@ public:
     void removeViewProvider(ViewProvider*);
     /// get view provider by path
     ViewProvider* getViewProviderByPath(SoPath*) const;
+    ViewProvider* getViewProviderByPathFromTail(SoPath*) const;
     /// get all view providers of given type
     std::vector<ViewProvider*> getViewProvidersOfType(const Base::Type& typeId) const;
     /// set the ViewProvider in special edit mode
@@ -261,8 +262,6 @@ public:
     void setEnabledFPSCounter(bool b);
     void setNavigationType(Base::Type);
     NavigationStyle* navigationStyle() const;
-
-    friend class SoFCUnifiedSelection;
 
 protected:
     virtual void actualRedraw(void);

@@ -2089,6 +2089,22 @@ ViewProvider* View3DInventorViewer::getViewProviderByPath(SoPath * path) const
     return 0;
 }
 
+ViewProvider* View3DInventorViewer::getViewProviderByPathFromTail(SoPath * path) const
+{
+    // Make sure I'm the lowest LocHL in the pick path!
+    for (int i = 0; i < path->getLength(); i++) {
+        SoNode *node = path->getNodeFromTail(i);
+        if (node->isOfType(SoSeparator::getClassTypeId())) {
+            std::map<SoSeparator*,ViewProvider*>::const_iterator it = _ViewProviderMap.find(static_cast<SoSeparator*>(node));
+            if (it != _ViewProviderMap.end()){
+                return it->second;
+            }
+         }
+    }
+
+    return 0;
+}
+
 std::vector<ViewProvider*> View3DInventorViewer::getViewProvidersOfType(const Base::Type& typeId) const
 {
     std::vector<ViewProvider*> views;
