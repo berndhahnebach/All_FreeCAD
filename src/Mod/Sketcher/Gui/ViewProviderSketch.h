@@ -43,6 +43,7 @@ class SoMarkerSet;
 
 class SoText2;
 class SoTranslation;
+class SbTime;
 
 struct EditData;
 
@@ -172,6 +173,9 @@ protected:
     /// get called by the container whenever a property has been changed
     virtual void onChanged(const App::Property *prop);
 
+    /// get called if a subelement is double clicked while edeting
+    void editDoubleClicked(void);
+
     /// set up the edition data structure EditData
     void createEditInventorNodes(void);
     /// pointer to the edit data structure if the ViewProvider is in edit. 
@@ -188,6 +192,9 @@ protected:
     // colors for selection and preselection
     static SbColor PreselectColor; 
     static SbColor SelectColor; 
+
+    static SbTime prvClickTime;
+    static SbVec3f prvClickPoint;
 
 };
 

@@ -56,7 +56,10 @@
 # include <QMenu>
 # include <QMessageBox>
 # include <QImage>
+# include <QApplication>
 #endif
+
+#include <Inventor/SbTime.h>
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include <Base/Parameter.h>
@@ -94,6 +97,10 @@ SbColor sCrossColor             (0.0f,0.0f,0.8f);
 
 SbColor ViewProviderSketch::PreselectColor(0.1f, 0.1f, 0.8f);
 SbColor ViewProviderSketch::SelectColor   (0.1f, 0.1f, 0.8f);
+
+// statics for double click handling
+SbTime  ViewProviderSketch::prvClickTime;
+SbVec3f ViewProviderSketch::prvClickPoint;
 
 //**************************************************************************
 // Edit data structure
@@ -258,6 +265,9 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                                             const SbVec3f &normal, const SoPickedPoint *pp)
 {
     assert(edit);
+    
+    // Radius maximum to allow double click event
+    const int dblClickRadius = 5;
 
     double x,y;
     SbVec3f pos = point;
@@ -275,27 +285,47 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
         if (pressed) {
             // Do things depending on the mode of the user interaction
             switch (Mode) {
-                case STATUS_NONE:
+                case STATUS_NONE:{
+                    bool done=false;
+                    // Double click events variables
+                    SbTime tmp = (SbTime::getTimeOfDay() - prvClickTime);
+                    float dci = (float) QApplication::doubleClickInterval()/1000.0f;
+                    float length = (point - prvClickPoint).length();
+
                     if (edit->PreselectPoint >=0) {
                         //Base::Console().Log("start dragging, point:%d\n",this->DragPoint);
                         Mode = STATUS_SELECT_Point;
-                        return true;
+                        done = true;
                     } else if (edit->PreselectCurve >=0) {
                         //Base::Console().Log("start dragging, point:%d\n",this->DragPoint);
                         Mode = STATUS_SELECT_Edge;
-                        return true;
+                        done = true;
                     } else if (edit->PreselectCross >=0) {
                         //Base::Console().Log("start dragging, point:%d\n",this->DragPoint);
                         Mode = STATUS_SELECT_Cross;
-                        return true;
+                        done = true;
                     } else if (edit->PreselectConstraint >=0) {
                         //Base::Console().Log("start dragging, point:%d\n",this->DragPoint);
                         Mode = STATUS_SELECT_Constraint;
-                        return true;
+                        done = true;
 
-                    } else
-                        return false;
+                    } 
+ 
+                    if (done && length <  dblClickRadius && tmp.getValue() < dci) {
+                        // Double Click Event Occured
+                        editDoubleClicked();
+                        // Reset Double Click Static Variables
+                        prvClickTime = SbTime();
+                        prvClickPoint = SbVec3f(0.0f, 0.0f, 0.0f);
+                        Mode = STATUS_NONE;
 
+                    } else {
+                        prvClickTime = SbTime::getTimeOfDay();
+                        prvClickPoint = point;
+                    }
+
+                    return done;
+                }
                 case STATUS_SKETCH_UseHandler:
                     return edit->sketchHandler->pressButton(Base::Vector2D(x,y));
                 default:
@@ -581,6 +611,21 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
 
     return false;
 }
+
+void ViewProviderSketch::editDoubleClicked(void)
+{
+    if (edit->PreselectPoint >=0) {
+         Base::Console().Log("double click point:%d\n",edit->PreselectPoint);
+     } else if (edit->PreselectCurve >=0) {
+         Base::Console().Log("double click edge:%d\n",edit->PreselectCurve);
+     } else if (edit->PreselectCross >=0) {
+         Base::Console().Log("ouble click cross:%d\n",edit->PreselectCross);
+     } else if (edit->PreselectConstraint >=0) {
+         Base::Console().Log("ouble click constraint:%d\n",edit->PreselectConstraint);
+
+     } 
+}
+
 
 bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, const SoPickedPoint *pp)
 {
