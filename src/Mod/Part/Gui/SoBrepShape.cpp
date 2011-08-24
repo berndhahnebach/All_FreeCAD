@@ -48,6 +48,7 @@
 # include <Inventor/elements/SoGLCoordinateElement.h>
 # include <Inventor/elements/SoGLCacheContextElement.h>
 # include <Inventor/elements/SoLineWidthElement.h>
+# include <Inventor/elements/SoPointSizeElement.h>
 # include <Inventor/errors/SoReadError.h>
 # include <Inventor/details/SoFaceDetail.h>
 # include <Inventor/details/SoLineDetail.h>
@@ -73,13 +74,14 @@ SoBrepFaceSet::SoBrepFaceSet()
     SO_NODE_ADD_FIELD(partIndex, (-1));
     SO_NODE_ADD_FIELD(highlightIndex, (-1));
     SO_NODE_ADD_FIELD(selectionIndex, (-1));
+    selectionIndex.setNum(0);
 }
 
 void SoBrepFaceSet::doAction(SoAction* action)
 {
     if (action->getTypeId() == Gui::SoHighlightElementAction::getClassTypeId()) {
         Gui::SoHighlightElementAction* hlaction = static_cast<Gui::SoHighlightElementAction*>(action);
-        if (!static_cast<Gui::SoHighlightElementAction*>(action)->isHighlighted()) {
+        if (!hlaction->isHighlighted()) {
             this->highlightIndex.setNum(0);
             return;
         }
@@ -96,6 +98,27 @@ void SoBrepFaceSet::doAction(SoAction* action)
                 this->highlightIndex.setNum(0);
                 return;
             }
+        }
+    }
+    else if (action->getTypeId() == Gui::SoSelectionElementAction::getClassTypeId()) {
+        Gui::SoSelectionElementAction* selaction = static_cast<Gui::SoSelectionElementAction*>(action);
+        if (!selaction->isSelected()) {
+            this->selectionIndex.setNum(0);
+            return;
+        }
+
+        const SoPickedPoint* pp = selaction->getElement();
+        if (pp && pp->getDetail()) {
+            const SoDetail* detail = pp->getDetail();
+            if (detail->isOfType(SoFaceDetail::getClassTypeId())) {
+                int index = static_cast<const SoFaceDetail*>(detail)->getPartIndex();
+                this->selectionIndex.set1Value(this->selectionIndex.getNum(), index);
+                this->selectionColor = selaction->getColor();
+            }
+            //else {
+            //    this->selectionIndex.setNum(0);
+            //    return;
+            //}
         }
     }
     inherited::doAction(action);
@@ -151,10 +174,12 @@ void SoBrepFaceSet::GLRender(SoGLRenderAction *action)
 
 void SoBrepFaceSet::GLRenderBelowPath(SoGLRenderAction * action)
 {
+    if (this->selectionIndex.getNum() > 0) {
+        renderSelection(action);
+    }
     if (this->highlightIndex.getNum() > 0) {
         int index = (int)this->highlightIndex.getValues(0)[0];
-        if (index > -1)
-            renderHighlight(action, index);
+        if (index > -1) renderHighlight(action, index);
     }
     inherited::GLRenderBelowPath(action);
 }
@@ -208,6 +233,66 @@ void SoBrepFaceSet::renderHighlight(SoGLRenderAction *action, int id)
     start *= 4;
     renderShape(static_cast<const SoGLCoordinateElement*>(coords), &(cindices[start]), length,
         &(pindices[id]), 1, normals, nindices, &mb, mindices, &tb, tindices, 0, mbind, doTextures?1:0);
+    state->pop();
+}
+
+void SoBrepFaceSet::renderSelection(SoGLRenderAction *action)
+{
+    int numSelected =  this->selectionIndex.getNum();
+    const int32_t* selected = this->selectionIndex.getValues(0);
+    if (numSelected == 0) return;
+
+    SoState * state = action->getState();
+    state->push();
+    SoColorPacker colorpacker;
+
+    SoLazyElement::setEmissive(state, &this->selectionColor);
+    SoOverrideElement::setEmissiveColorOverride(state, this, TRUE);
+#if 0 // disables shading effect
+    SoLazyElement::setDiffuse(state, this,1, &this->selectionColor,&this->colorpacker);
+    SoOverrideElement::setDiffuseColorOverride(state, this, TRUE);
+    SoLazyElement::setLightModel(state, SoLazyElement::BASE_COLOR);
+#endif
+
+    Binding mbind = this->findMaterialBinding(state);
+    Binding nbind = this->findNormalBinding(state);
+
+    const SoCoordinateElement * coords;
+    const SbVec3f * normals;
+    const int32_t * cindices;
+    int numindices;
+    const int32_t * nindices;
+    const int32_t * tindices;
+    const int32_t * mindices;
+    const int32_t * pindices;
+    SbBool doTextures;
+    SbBool normalCacheUsed;
+
+    SoMaterialBundle mb(action);
+    SoTextureCoordinateBundle tb(action, TRUE, FALSE);
+    doTextures = tb.needCoordinates();
+    SbBool sendNormals = !mb.isColorOnly() || tb.isFunction();
+
+    this->getVertexData(state, coords, normals, cindices,
+                        nindices, tindices, mindices, numindices,
+                        sendNormals, normalCacheUsed);
+
+    mb.sendFirst(); // make sure we have the correct material
+
+    // just in case someone forgot
+    if (!mindices) mindices = cindices;
+    if (!nindices) nindices = cindices;
+    pindices = this->partIndex.getValues(0);
+
+    for (int i=0; i<numSelected; i++) {
+        int id = selected[i];
+        int length = (int)pindices[id]*4;
+        int start=0;
+        for (int j=0;j<id;j++) start+=(int)pindices[j];
+        start *= 4;
+        renderShape(static_cast<const SoGLCoordinateElement*>(coords), &(cindices[start]), length,
+            &(pindices[id]), 1, normals, nindices, &mb, mindices, &tb, tindices, 0, mbind, doTextures?1:0);
+    }
     state->pop();
 }
 
@@ -466,6 +551,7 @@ SoBrepEdgeSet::SoBrepEdgeSet()
     SO_NODE_CONSTRUCTOR(SoBrepEdgeSet);
     SO_NODE_ADD_FIELD(highlightIndex, (-1));
     SO_NODE_ADD_FIELD(selectionIndex, (-1));
+    selectionIndex.setNum(0);
 }
 
 void SoBrepEdgeSet::GLRender(SoGLRenderAction *action)
@@ -475,6 +561,9 @@ void SoBrepEdgeSet::GLRender(SoGLRenderAction *action)
 
 void SoBrepEdgeSet::GLRenderBelowPath(SoGLRenderAction * action)
 {
+    if (this->selectionIndex.getNum() > 0) {
+        renderSelection(action);
+    }
     if (this->highlightIndex.getNum() > 0) {
         int index = (int)this->highlightIndex.getValues(0)[0];
         if (index > -1)
@@ -541,6 +630,44 @@ void SoBrepEdgeSet::renderHighlight(SoGLRenderAction *action, int id)
     state->pop();
 }
 
+void SoBrepEdgeSet::renderSelection(SoGLRenderAction *action)
+{
+    int numSelected =  this->selectionIndex.getNum();
+    const int32_t* selected = this->selectionIndex.getValues(0);
+    if (numSelected == 0) return;
+
+    SoState * state = action->getState();
+    state->push();
+  //SoLineWidthElement::set(state, this, 4.0f);
+
+    SoLazyElement::setEmissive(state, &this->selectionColor);
+    SoOverrideElement::setEmissiveColorOverride(state, this, TRUE);
+    SoLazyElement::setDiffuse(state, this,1, &this->selectionColor,&this->colorpacker);
+    SoOverrideElement::setDiffuseColorOverride(state, this, TRUE);
+    SoLazyElement::setLightModel(state, SoLazyElement::BASE_COLOR);
+
+    const SoCoordinateElement * coords;
+    const SbVec3f * normals;
+    const int32_t * cindices;
+    int numcindices;
+    const int32_t * nindices;
+    const int32_t * tindices;
+    const int32_t * mindices;
+    SbBool normalCacheUsed;
+
+    this->getVertexData(state, coords, normals, cindices, nindices,
+        tindices, mindices, numcindices, FALSE, normalCacheUsed);
+
+    SoMaterialBundle mb(action);
+    mb.sendFirst(); // make sure we have the correct material
+
+    cindices = this->selectionIndex.getValues(0);
+    numcindices = this->selectionIndex.getNum();
+
+    renderShape(static_cast<const SoGLCoordinateElement*>(coords), cindices, numcindices);
+    state->pop();
+}
+
 void SoBrepEdgeSet::doAction(SoAction* action)
 {
     if (action->getTypeId() == Gui::SoHighlightElementAction::getClassTypeId()) {
@@ -578,6 +705,36 @@ void SoBrepEdgeSet::doAction(SoAction* action)
             this->highlightColor = hlaction->getColor();
         }
     }
+    else if (action->getTypeId() == Gui::SoSelectionElementAction::getClassTypeId()) {
+        Gui::SoSelectionElementAction* selaction = static_cast<Gui::SoSelectionElementAction*>(action);
+        const SoPickedPoint* pp = selaction->getElement();
+        if (pp && pp->getDetail()) {
+            const SoDetail* detail = pp->getDetail();
+            if (!detail->isOfType(SoLineDetail::getClassTypeId())) {
+                return;
+            }
+
+            int index = static_cast<const SoLineDetail*>(detail)->getLineIndex();
+            const int32_t* cindices = this->coordIndex.getValues(0);
+            int numcindices = this->coordIndex.getNum();
+
+            int start=0, num=0;
+            int section=0;
+            for (int i=0;i<numcindices;i++) {
+                if (section < index)
+                    start++;
+                else if (section == index)
+                    num++;
+                else if (section > index)
+                    break;
+                if (cindices[i] < 0)
+                    section++;
+            }
+
+            this->selectionIndex.setValuesPointer(num, &(cindices[start]));
+            this->selectionColor = selaction->getColor();
+        }
+    }
     inherited::doAction(action);
 }
 
@@ -591,4 +748,153 @@ SoDetail * SoBrepEdgeSet::createLineSegmentDetail(SoRayPickAction * action,
     int index = line_detail->getLineIndex();
     line_detail->setPartIndex(index);
     return detail;
+}
+
+// ---------------------------------------------------------------------
+
+SO_NODE_SOURCE(SoBrepPointSet);
+
+void SoBrepPointSet::initClass()
+{
+    SO_NODE_INIT_CLASS(SoBrepPointSet, SoPointSet, "PointSet");
+}
+
+SoBrepPointSet::SoBrepPointSet()
+{
+    SO_NODE_CONSTRUCTOR(SoBrepPointSet);
+    SO_NODE_ADD_FIELD(highlightIndex, (-1));
+    SO_NODE_ADD_FIELD(selectionIndex, (-1));
+    selectionIndex.setNum(0);
+}
+
+void SoBrepPointSet::GLRender(SoGLRenderAction *action)
+{
+    inherited::GLRender(action);
+}
+
+void SoBrepPointSet::GLRenderBelowPath(SoGLRenderAction * action)
+{
+    if (this->selectionIndex.getNum() > 0) {
+        renderSelection(action);
+    }
+    if (this->highlightIndex.getNum() > 0) {
+        int index = (int)this->highlightIndex.getValues(0)[0];
+        if (index > -1)
+            renderHighlight(action, index);
+    }
+    inherited::GLRenderBelowPath(action);
+}
+
+void SoBrepPointSet::renderShape(const SoGLCoordinateElement * const coords, 
+                                 const int32_t *cindices,
+                                 int numindices)
+{
+    const SbVec3f * coords3d = coords->getArrayPtr3();
+    int numcoords = coords->getNum();
+
+    int previ;
+    const int32_t *end = cindices + numindices;
+    glBegin(GL_POINTS);
+    while (cindices < end) {
+        previ = *cindices++;
+        glVertex3fv((const GLfloat*) (coords3d + previ));
+    }
+    glEnd();
+}
+
+void SoBrepPointSet::renderHighlight(SoGLRenderAction *action, int id)
+{
+    SoState * state = action->getState();
+    state->push();
+    SoPointSizeElement::set(state, this, 4.0f);
+
+    SoLazyElement::setEmissive(state, &this->highlightColor);
+    SoOverrideElement::setEmissiveColorOverride(state, this, TRUE);
+    SoLazyElement::setDiffuse(state, this,1, &this->highlightColor,&this->colorpacker);
+    SoOverrideElement::setDiffuseColorOverride(state, this, TRUE);
+    SoLazyElement::setLightModel(state, SoLazyElement::BASE_COLOR);
+
+    const SoCoordinateElement * coords;
+    const SbVec3f * normals;
+    const int32_t * cindices;
+    int numcindices;
+
+    this->getVertexData(state, coords, normals, FALSE);
+
+    SoMaterialBundle mb(action);
+    mb.sendFirst(); // make sure we have the correct material
+
+    cindices = this->highlightIndex.getValues(0);
+    numcindices = this->highlightIndex.getNum();
+
+    renderShape(static_cast<const SoGLCoordinateElement*>(coords), cindices, numcindices);
+    state->pop();
+}
+
+void SoBrepPointSet::renderSelection(SoGLRenderAction *action)
+{
+    SoState * state = action->getState();
+    state->push();
+    SoPointSizeElement::set(state, this, 4.0f);
+
+    SoLazyElement::setEmissive(state, &this->selectionColor);
+    SoOverrideElement::setEmissiveColorOverride(state, this, TRUE);
+    SoLazyElement::setDiffuse(state, this,1, &this->selectionColor,&this->colorpacker);
+    SoOverrideElement::setDiffuseColorOverride(state, this, TRUE);
+    SoLazyElement::setLightModel(state, SoLazyElement::BASE_COLOR);
+
+    const SoCoordinateElement * coords;
+    const SbVec3f * normals;
+    const int32_t * cindices;
+    int numcindices;
+
+    this->getVertexData(state, coords, normals, FALSE);
+
+    SoMaterialBundle mb(action);
+    mb.sendFirst(); // make sure we have the correct material
+
+    cindices = this->selectionIndex.getValues(0);
+    numcindices = this->selectionIndex.getNum();
+
+    renderShape(static_cast<const SoGLCoordinateElement*>(coords), cindices, numcindices);
+    state->pop();
+}
+
+void SoBrepPointSet::doAction(SoAction* action)
+{
+    if (action->getTypeId() == Gui::SoHighlightElementAction::getClassTypeId()) {
+        Gui::SoHighlightElementAction* hlaction = static_cast<Gui::SoHighlightElementAction*>(action);
+        if (!hlaction->isHighlighted()) {
+            this->highlightIndex.setNum(0);
+            return;
+        }
+        const SoPickedPoint* pp = hlaction->getElement();
+        if (pp && pp->getDetail()) {
+            const SoDetail* detail = pp->getDetail();
+            if (!detail->isOfType(SoPointDetail::getClassTypeId())) {
+                this->highlightIndex.setNum(0);
+                return;
+            }
+
+            int index = static_cast<const SoPointDetail*>(detail)->getCoordinateIndex();
+            this->highlightIndex.setValue(index);
+            this->highlightColor = hlaction->getColor();
+        }
+    }
+    else if (action->getTypeId() == Gui::SoSelectionElementAction::getClassTypeId()) {
+        Gui::SoSelectionElementAction* selaction = static_cast<Gui::SoSelectionElementAction*>(action);
+        const SoPickedPoint* pp = selaction->getElement();
+        if (pp && pp->getDetail()) {
+            const SoDetail* detail = pp->getDetail();
+            if (!detail->isOfType(SoPointDetail::getClassTypeId())) {
+                return;
+            }
+
+            int index = static_cast<const SoPointDetail*>(detail)->getCoordinateIndex();
+            this->selectionIndex.setValue(index);
+            this->selectionColor = selaction->getColor();
+        }
+    }
+
+    inherited::doAction(action);
 }

@@ -308,7 +308,7 @@ void ViewProviderPartExt::attach(App::DocumentObject *pcFeat)
     pcPointsRoot->addChild(pcPointMaterial);
     pcPointsRoot->addChild(pcPointStyle);
     pcPointsRoot->addChild(vertex);
-    pcPointsRoot->addChild(new SoPointSet());
+    pcPointsRoot->addChild(new SoBrepPointSet());
     for (int i=0; i<pcPointsRoot->getNumChildren(); i++)
         sepPnts->addChild(pcPointsRoot->getChild(i));
 
