@@ -137,6 +137,8 @@ public:
 
     void setHighlighted(SbBool);
     SbBool isHighlighted() const;
+    void setColor(const SbColor&);
+    const SbColor& getColor() const;
     void setElement(const SoPickedPoint*);
     const SoPickedPoint* getElement() const;
 
@@ -150,6 +152,7 @@ private:
 
 private:
     SbBool _highlight;
+    SbColor _color;
     const SoPickedPoint* _pp;
 };
 

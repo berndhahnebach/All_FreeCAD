@@ -93,7 +93,7 @@ SoFCUnifiedSelection::SoFCUnifiedSelection()
 {
     SO_NODE_CONSTRUCTOR(SoFCUnifiedSelection);
 
-    SO_NODE_ADD_FIELD(colorHighlight, (SbColor(0.8f, 0.1f, 0.1f)));
+    SO_NODE_ADD_FIELD(colorHighlight, (SbColor(1.0f, 0.6f, 0.0f)));
     SO_NODE_ADD_FIELD(colorSelection, (SbColor(0.1f, 0.8f, 0.1f)));
     SO_NODE_ADD_FIELD(style,          (EMISSIVE));
     SO_NODE_ADD_FIELD(highlightMode,  (AUTO));
@@ -257,6 +257,7 @@ SoFCUnifiedSelection::handleEvent(SoHandleEventAction * action)
         if (currenthighlight/* && old_state != highlighted*/) {
             SoHighlightElementAction action;
             action.setHighlighted(highlighted);
+            action.setColor(this->colorHighlight.getValue());
             action.setElement(pp);
             action.apply(currenthighlight);
             if (!highlighted) {
@@ -423,6 +424,16 @@ void SoHighlightElementAction::setHighlighted(SbBool ok)
 SbBool SoHighlightElementAction::isHighlighted() const
 {
     return this->_highlight;
+}
+
+void SoHighlightElementAction::setColor(const SbColor& c)
+{
+    this->_color = c;
+}
+
+const SbColor& SoHighlightElementAction::getColor() const
+{
+    return this->_color;
 }
 
 void SoHighlightElementAction::setElement(const SoPickedPoint* pp)
