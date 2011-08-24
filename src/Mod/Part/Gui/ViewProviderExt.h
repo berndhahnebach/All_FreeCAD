@@ -125,9 +125,9 @@ protected:
     SoNormal          * norm;
     SoNormalBinding   * normb;
     SoBrepEdgeSet     * lineset;
-  //SoBrepEdgeHighlight* highlight;
 
     bool VisualTouched;
+
 private:
     // settings stuff
     float meshDeviation;

@@ -29,6 +29,7 @@
 #include <Inventor/nodes/SoSubNode.h>
 #include <Inventor/nodes/SoIndexedFaceSet.h>
 #include <Inventor/nodes/SoIndexedLineSet.h>
+#include <Inventor/elements/SoLazyElement.h>
 #include <Inventor/elements/SoReplacedElement.h>
 
 class SoGLCoordinateElement;
@@ -89,6 +90,11 @@ private:
                      const int mbind,
                      const int texture);
     void renderHighlight(SoGLRenderAction *action, int);
+
+private:
+    SbColor selectionColor;
+    SbColor highlightColor;
+    SoColorPacker colorpacker;
 };
 
 // ---------------------------------------------------------------------
@@ -116,33 +122,15 @@ protected:
         const SoPrimitiveVertex *v2,
         SoPickedPoint *pp);
 private:
+    void renderShape(const SoGLCoordinateElement * const vertexlist,
+                     const int32_t *vertexindices,
+                     int num_vertexindices);
     void renderHighlight(SoGLRenderAction *action, int);
-};
-
-class AppPartGuiExport SoBrepEdgeHighlight : public SoIndexedLineSet {
-    typedef SoIndexedLineSet inherited;
-
-    SO_NODE_HEADER(SoBrepEdgeHighlight);
-
-public:
-    static void initClass();
-    SoBrepEdgeHighlight();
-
-    SoMFInt32 edgeIndex;
-    SoSFNode edgeNode;
-
-protected:
-    virtual ~SoBrepEdgeHighlight() {};
-    virtual void GLRender(SoGLRenderAction *action);
-    virtual SoDetail * createLineSegmentDetail(
-        SoRayPickAction *action,
-        const SoPrimitiveVertex *v1,
-        const SoPrimitiveVertex *v2,
-        SoPickedPoint *pp);
-    virtual void doAction(SoAction* action); 
 
 private:
-    SbBool _doDraw;
+    SbColor selectionColor;
+    SbColor highlightColor;
+    SoColorPacker colorpacker;
 };
 
 } // namespace PartGui
