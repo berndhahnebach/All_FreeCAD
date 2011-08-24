@@ -102,7 +102,7 @@ App::DocumentObjectExecReturn *SketchObject::execute(void)
 int SketchObject::setDatum(double Datum, int ConstrNbr)
 {
     // set the changed value for the constraint
-    const std::vector< Constraint * > &vals = this->Constraints.getValues();
+    const std::vector<Constraint *> &vals = this->Constraints.getValues();
     if (ConstrNbr < 0 || ConstrNbr >= (int)vals.size())
         return -1;
     ConstraintType type = vals[ConstrNbr]->Type;
@@ -139,13 +139,13 @@ int SketchObject::setDatum(double Datum, int ConstrNbr)
     return 0;
 }
 
-int SketchObject::movePoint(int geoIndex, PointPos pos, const Base::Vector3d& toPoint)
+int SketchObject::movePoint(int geoIndex, PointPos PosId, const Base::Vector3d& toPoint)
 {
     // set up an extra sketch
     Sketch sketch;
     sketch.setUpSketch(Geometry.getValues(), Constraints.getValues());
 
-    int ret = sketch.movePoint(geoIndex, pos, toPoint);
+    int ret = sketch.movePoint(geoIndex, PosId, toPoint);
 
     if (ret == 0) {
         std::vector<Part::Geometry *> geomlist = sketch.getGeometry();
@@ -158,28 +158,28 @@ int SketchObject::movePoint(int geoIndex, PointPos pos, const Base::Vector3d& to
     return ret;
 }
 
-Base::Vector3d SketchObject::getPoint(int geoIndex, PointPos pos)
+Base::Vector3d SketchObject::getPoint(int geoIndex, PointPos PosId)
 {
     const std::vector< Part::Geometry * > &geomlist = this->Geometry.getValues();
     assert(geoIndex < (int)geomlist.size());
     Part::Geometry *geo = geomlist[geoIndex];
     if (geo->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
         const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geo);
-        if (pos == start)
+        if (PosId == start)
             return lineSeg->getStartPoint();
-        else if (pos == end)
+        else if (PosId == end)
             return lineSeg->getEndPoint();
     } else if (geo->getTypeId() == Part::GeomCircle::getClassTypeId()) {
         const Part::GeomCircle *circle = dynamic_cast<const Part::GeomCircle*>(geo);
-        if (pos == mid)
+        if (PosId == mid)
             return circle->getCenter();
     } else if (geo->getTypeId() == Part::GeomArcOfCircle::getClassTypeId()) {
         const Part::GeomArcOfCircle *aoc = dynamic_cast<const Part::GeomArcOfCircle*>(geo);
-        if (pos == start)
+        if (PosId == start)
             return aoc->getStartPoint();
-        else if (pos == end)
+        else if (PosId == end)
             return aoc->getEndPoint();
-        else if (pos == mid)
+        else if (PosId == mid)
             return aoc->getCenter();
     }
 
@@ -261,11 +261,11 @@ int SketchObject::delConstraint(int ConstrNbr)
     return 0;
 }
 
-int SketchObject::delConstraintOnPoint(int PointNbr)
+int SketchObject::delConstraintOnPoint(int VertexId)
 {
     int GeoId;
     PointPos PosId;
-    getGeoVertexIndex(PointNbr, GeoId, PosId);
+    getGeoVertexIndex(VertexId, GeoId, PosId);
 
     const std::vector< Constraint * > &vals = this->Constraints.getValues();
 
@@ -327,16 +327,16 @@ int SketchObject::fillet(int geoId, PointPos pos, double radius, bool trim)
     return -1;
 }
 
-int SketchObject::fillet(int geoId1, int geoId2,
+int SketchObject::fillet(int GeoId1, int GeoId2,
                          const Base::Vector3d& refPnt1, const Base::Vector3d& refPnt2,
                          double radius, bool trim)
 {
     const std::vector<Part::Geometry *> &geomlist = this->Geometry.getValues();
     const std::vector<Constraint *> &constraints = this->Constraints.getValues();
-    assert(geoId1 < int(geomlist.size()));
-    assert(geoId2 < int(geomlist.size()));
-    Part::Geometry *geo1 = geomlist[geoId1];
-    Part::Geometry *geo2 = geomlist[geoId2];
+    assert(GeoId1 < int(geomlist.size()));
+    assert(GeoId2 < int(geomlist.size()));
+    Part::Geometry *geo1 = geomlist[GeoId1];
+    Part::Geometry *geo2 = geomlist[GeoId2];
     if (geo1->getTypeId() == Part::GeomLineSegment::getClassTypeId() &&
         geo2->getTypeId() == Part::GeomLineSegment::getClassTypeId() ) {
         const Part::GeomLineSegment *lineSeg1 = dynamic_cast<const Part::GeomLineSegment*>(geo1);
@@ -350,9 +350,8 @@ int SketchObject::fillet(int geoId1, int geoId2,
         Part::GeomArcOfCircle *arc = Part::createFilletGeometry(lineSeg1, lineSeg2, filletCenter, radius);
 
         // If null-pointer - Arc couldn't be created
-        if (!arc) {
+        if (!arc)
             return -1;
-        }
 
         // Add this geometry permanently
         Part::Geometry *newgeo = dynamic_cast<Part::Geometry* >(arc);

@@ -881,7 +881,7 @@ void ViewProviderSketch::onSelectionChanged(const Gui::SelectionChanges& msg)
         std::string temp;
         if (msg.Type == Gui::SelectionChanges::ClrSelection) {
             // if something selected in this object?
-            if (edit->SelPointSet.size() > 0 || edit->SelCurvSet.size() > 0|| edit->SelCrossSet.size() > 0 || edit->SelConstraintSet.size() > 0) {
+            if (edit->SelPointSet.size() > 0 || edit->SelCurvSet.size() > 0 || edit->SelCrossSet.size() > 0 || edit->SelConstraintSet.size() > 0) {
                 // clear our selection and update the color of the viewed edges and points
                 edit->SelPointSet.clear();
                 edit->SelCurvSet.clear();
@@ -973,7 +973,7 @@ void ViewProviderSketch::onSelectionChanged(const Gui::SelectionChanges& msg)
     }
 }
 
-bool ViewProviderSketch::detectPreselection(const SoPickedPoint *Point, int &PtIndex, int &CurvIndex, int &ConstrIndex,int &CrossIndex)
+bool ViewProviderSketch::detectPreselection(const SoPickedPoint *Point, int &PtIndex, int &CurvIndex, int &ConstrIndex, int &CrossIndex)
 {
     assert(edit);
 

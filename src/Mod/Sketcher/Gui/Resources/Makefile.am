@@ -35,13 +35,14 @@ EXTRA_DIST = \
 		icons/Sketcher_ConstrainHorizontal.svg \
 		icons/Sketcher_ConstrainLock.svg \
 		icons/Sketcher_ConstrainVertical.svg \
-		icons/Sketcher_CreateArc.png \
-		icons/Sketcher_CreateCircle.png \
-		icons/Sketcher_CreateLine.png \
+		icons/Sketcher_CreateArc.svg \
+		icons/Sketcher_CreateCircle.svg \
+		icons/Sketcher_CreateLine.svg \
 		icons/Sketcher_CreatePoint.svg \
-		icons/Sketcher_CreatePolyline.png \
-		icons/Sketcher_CreateRectangle.png \
-		icons/Sketcher_CreateText.png \
+		icons/Sketcher_CreatePolyline.svg \
+		icons/Sketcher_CreateRectangle.svg \
+		icons/Sketcher_CreateFillet.svg \
+		icons/Sketcher_CreateText.svg \
 		icons/Sketcher_DraftLine.svg \
 		icons/Sketcher_LeaveSketch.svg \
 		icons/Sketcher_NewSketch.svg \

@@ -70,7 +70,7 @@ public:
     int addConstraint(const Constraint *constraint);
     /// delete constraint
     int delConstraint(int ConstrNbr);
-    int delConstraintOnPoint(int PointNbr);
+    int delConstraintOnPoint(int VertexId);
     /// add an external geometry reference
     int addExternal(App::DocumentObject *Obj, const char* SubName);
     /// returns a list of projected external geoms
@@ -91,8 +91,7 @@ public:
                const Base::Vector3d& refPnt1, const Base::Vector3d& refPnt2,
                double radius, bool trim=true);
 
-    /** retrieves for a Vertex number the corosponding GeoId and PointPosition
-    */
+    /// retrieves for a Vertex number the corresponding GeoId and PosId
     void getGeoVertexIndex(int VertexId, int &GeoId, PointPos &PosId);
     int getHighestVertexIndex(void) { return VertexId2GeoId.size() - 1; }
     int getHighestCurveIndex(void) { return Geometry.getSize() - 1; }

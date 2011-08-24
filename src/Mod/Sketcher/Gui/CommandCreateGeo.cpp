@@ -119,7 +119,7 @@ public:
     DrawSketchHandlerLine():Mode(STATUS_SEEK_First),EditCurve(2){}
     virtual ~DrawSketchHandlerLine(){}
     /// mode table
-    enum LineMode {
+    enum SelectMode {
         STATUS_SEEK_First,      /**< enum value ----. */  
         STATUS_SEEK_Second,     /**< enum value ----. */  
         STATUS_End
@@ -169,7 +169,7 @@ public:
         return true;
     }
 protected:
-    LineMode Mode;
+    SelectMode Mode;
     std::vector<Base::Vector2D> EditCurve;
 };
 
@@ -422,7 +422,7 @@ public:
       : Mode(STATUS_SEEK_First),EditCurve(2),firstPoint(-1),previousCurve(-1){}
     virtual ~DrawSketchHandlerLineSet(){}
     /// mode table
-    enum LineMode {
+    enum SelectMode {
         STATUS_SEEK_First,      /**< enum value ----. */  
         STATUS_SEEK_Second,     /**< enum value ----. */  
         STATUS_Do,
@@ -515,7 +515,7 @@ public:
         return true;
     }
 protected:
-    LineMode Mode;
+    SelectMode Mode;
     std::vector<Base::Vector2D> EditCurve;
     Base::Vector2D lastPos;
     int firstPoint;
@@ -596,7 +596,7 @@ public:
       : Mode(STATUS_SEEK_First),EditCurve(2){}
     virtual ~DrawSketchHandlerArc(){}
     /// mode table
-    enum LineMode {
+    enum SelectMode {
         STATUS_SEEK_First,      /**< enum value ----. */
         STATUS_SEEK_Second,     /**< enum value ----. */
         STATUS_SEEK_Third,      /**< enum value ----. */
@@ -699,7 +699,7 @@ public:
         return true;
     }
 protected:
-    LineMode Mode;
+    SelectMode Mode;
     std::vector<Base::Vector2D> EditCurve;
     Base::Vector2D CenterPoint;
     float rx, ry, startAngle, endAngle, arcAngle;
@@ -776,7 +776,7 @@ public:
     DrawSketchHandlerCircle() : Mode(STATUS_SEEK_First),EditCurve(34){}
     virtual ~DrawSketchHandlerCircle(){}
     /// mode table
-    enum LineMode {
+    enum SelectMode {
         STATUS_SEEK_First,      /**< enum value ----. */
         STATUS_SEEK_Second,     /**< enum value ----. */
         STATUS_Close
@@ -838,7 +838,7 @@ public:
         return true;
     }
 protected:
-    LineMode Mode;
+    SelectMode Mode;
     std::vector<Base::Vector2D> EditCurve;
 };
 
