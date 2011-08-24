@@ -224,7 +224,10 @@ PyObject* SketchObjectPy::fillet(PyObject *args)
             return 0;
         }
     // Point, radius
-    } else if (PyArg_ParseTuple(args, "iid|i", &geoId1, &posId1, &radius, &trim)) {
+    }
+    PyErr_Clear();
+
+    if (PyArg_ParseTuple(args, "iid|i", &geoId1, &posId1, &radius, &trim)) {
         if (this->getSketchObjectPtr()->fillet(geoId1, (Sketcher::PointPos) posId1, radius, trim?true:false)) {
             std::stringstream str;
             str << "Not able to fillet point with ( geoId: " << geoId1 << ", PointPos: " << posId1 << " )";

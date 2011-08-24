@@ -663,12 +663,14 @@ bool find2DLinesIntersection(const GeomLineSegment *lineSeg1, const GeomLineSegm
                              Base::Vector3d &point);
 bool findFilletCenter(const GeomLineSegment *lineSeg1, const GeomLineSegment *lineSeg2, double radius,
                       Base::Vector3d &center);
-PartExport bool findFilletCenter(const GeomLineSegment *lineSeg1, const GeomLineSegment *lineSeg2, double radius,
+PartExport
+bool findFilletCenter(const GeomLineSegment *lineSeg1, const GeomLineSegment *lineSeg2, double radius,
                       const Base::Vector3d& refPnt1, const Base::Vector3d& refPnt2,
                       Base::Vector3d &center);
 double suggestFilletRadius(const GeomLineSegment *lineSeg1, const GeomLineSegment *lineSeg2,
                            const Base::Vector3d &refPnt1, const Base::Vector3d &refPnt2);
-PartExport GeomArcOfCircle *createFilletGeometry(const GeomLineSegment *lineSeg1, const GeomLineSegment *lineSeg2,
+PartExport
+GeomArcOfCircle *createFilletGeometry(const GeomLineSegment *lineSeg1, const GeomLineSegment *lineSeg2,
                                       const Base::Vector3d &center, double radius);
 }
 
