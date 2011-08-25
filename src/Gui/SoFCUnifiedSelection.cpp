@@ -303,6 +303,7 @@ SoFCUnifiedSelection::handleEvent(SoHandleEventAction * action)
         }
 
         if (vp && vp->useNewSelectionModel()) {
+            action->setHandled();
             std::string e = vp->getElement(pp);
             vp->getSelectionShape(e.c_str());
             static char buf[513];
@@ -315,8 +316,7 @@ SoFCUnifiedSelection::handleEvent(SoHandleEventAction * action)
             getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
 
             if (currenthighlight) {
-                SoSelectionElementAction action;
-                action.setSelected(TRUE);
+                SoSelectionElementAction action(SoSelectionElementAction::Append);
                 action.setColor(this->colorSelection.getValue());
                 action.setElement(pp);
                 action.apply(currenthighlight);
@@ -489,7 +489,7 @@ void SoSelectionElementAction::initClass()
     SO_ACTION_ADD_METHOD(SoPointSet,callDoAction);
 }
 
-SoSelectionElementAction::SoSelectionElementAction () : _select(FALSE), _pp(0)
+SoSelectionElementAction::SoSelectionElementAction (Type t) : _type(t), _select(FALSE), _pp(0)
 {
     SO_ACTION_CONSTRUCTOR(SoSelectionElementAction);
 }
@@ -508,14 +508,10 @@ void SoSelectionElementAction::callDoAction(SoAction *action,SoNode *node)
     node->doAction(action);
 }
 
-void SoSelectionElementAction::setSelected(SbBool ok)
+SoSelectionElementAction::Type
+SoSelectionElementAction::getType() const
 {
-    this->_select = ok;
-}
-
-SbBool SoSelectionElementAction::isSelected() const
-{
-    return this->_select;
+    return this->_type;
 }
 
 void SoSelectionElementAction::setColor(const SbColor& c)

@@ -166,11 +166,12 @@ class GuiExport SoSelectionElementAction : public SoAction
     SO_ACTION_HEADER(SoSelectionElementAction);
 
 public:
-    SoSelectionElementAction ();
+    enum Type {Append, Remove};
+
+    SoSelectionElementAction (Type);
     ~SoSelectionElementAction();
 
-    void setSelected(SbBool);
-    SbBool isSelected() const;
+    Type getType() const;
     void setColor(const SbColor&);
     const SbColor& getColor() const;
     void setElement(const SoPickedPoint*);
@@ -185,6 +186,7 @@ private:
     static void callDoAction(SoAction *action,SoNode *node);
 
 private:
+    Type _type;
     SbBool _select;
     SbColor _color;
     const SoPickedPoint* _pp;
