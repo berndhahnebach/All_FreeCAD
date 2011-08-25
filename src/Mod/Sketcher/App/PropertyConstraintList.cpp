@@ -177,16 +177,13 @@ Property *PropertyConstraintList::Copy(void) const
 {
     PropertyConstraintList *p = new PropertyConstraintList();
     p->setValues(_lValueList);
-
     return p;
 }
 
 void PropertyConstraintList::Paste(const Property &from)
 {
-    aboutToSetValue();
     const PropertyConstraintList& FromList = dynamic_cast<const PropertyConstraintList&>(from);
     setValues(FromList._lValueList);
-    hasSetValue();
 }
 
 unsigned int PropertyConstraintList::getMemSize(void) const

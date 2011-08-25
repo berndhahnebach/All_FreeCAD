@@ -187,16 +187,13 @@ Property *PropertyGeometryList::Copy(void) const
 {
     PropertyGeometryList *p = new PropertyGeometryList();
     p->setValues(_lValueList);
-
     return p;
 }
 
 void PropertyGeometryList::Paste(const Property &from)
 {
-    aboutToSetValue();
     const PropertyGeometryList& FromList = dynamic_cast<const PropertyGeometryList&>(from);
     setValues(FromList._lValueList);
-    hasSetValue();
 }
 
 unsigned int PropertyGeometryList::getMemSize(void) const
