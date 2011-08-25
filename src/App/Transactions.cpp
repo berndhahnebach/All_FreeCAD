@@ -107,7 +107,7 @@ int Transaction::getPos(void) const
 // separator for other implemetation aspects
 
 
-void Transaction::apply(Document &Doc/*, DocChanges &ChangeList*/)
+void Transaction::apply(Document &Doc, bool forward)
 {
     std::map<const DocumentObject*,TransactionObject*>::iterator It;
     //for (It= _Objects.begin();It!=_Objects.end();++It)
@@ -117,7 +117,7 @@ void Transaction::apply(Document &Doc/*, DocChanges &ChangeList*/)
     for (It= _Objects.begin();It!=_Objects.end();++It)
         It->second->applyNew(Doc,const_cast<DocumentObject*>(It->first));
     for (It= _Objects.begin();It!=_Objects.end();++It)
-        It->second->applyChn(Doc,const_cast<DocumentObject*>(It->first));
+        It->second->applyChn(Doc,const_cast<DocumentObject*>(It->first),forward);
 }
 
 void Transaction::addObjectNew(DocumentObject *Obj)
@@ -230,13 +230,19 @@ void TransactionObject::applyNew(Document &Doc, DocumentObject *pcObj)
     }
 }
 
-void TransactionObject::applyChn(Document & /*Doc*/, DocumentObject * /*pcObj*/)
+void TransactionObject::applyChn(Document & /*Doc*/, DocumentObject * /*pcObj*/,bool Forward)
 {
     if (status == New || status == Chn) {
         // apply changes if any
-        std::map<const Property*,Property*>::const_iterator It;
-        for (It=_PropChangeMap.begin();It!=_PropChangeMap.end();++It)
-            const_cast<Property*>(It->first)->Paste(*(It->second));
+        if(!Forward){
+            std::map<const Property*,Property*>::const_reverse_iterator It;
+            for (It=_PropChangeMap.rbegin();It!=_PropChangeMap.rend();++It)
+                const_cast<Property*>(It->first)->Paste(*(It->second));
+        }else{
+            std::map<const Property*,Property*>::const_iterator It;
+            for (It=_PropChangeMap.begin();It!=_PropChangeMap.end();++It)
+                const_cast<Property*>(It->first)->Paste(*(It->second));
+        }
     }
 }
 
