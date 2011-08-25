@@ -45,6 +45,7 @@ public:
     void setDisplayMode(const char* ModeName);
     std::vector<std::string> getDisplayModes() const;
     void updateData(const App::Property*);
+    bool useNewSelectionModel(void) const {return true;}
 
 private:
     void adjustSelectionNodes(SoNode* child, const char* docname, const char* objname);

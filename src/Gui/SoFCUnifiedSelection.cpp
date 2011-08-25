@@ -89,7 +89,7 @@ SO_NODE_SOURCE(SoFCUnifiedSelection);
 /*!
   Constructor.
 */
-SoFCUnifiedSelection::SoFCUnifiedSelection()
+SoFCUnifiedSelection::SoFCUnifiedSelection() : viewer(0)
 {
     SO_NODE_CONSTRUCTOR(SoFCUnifiedSelection);
 
@@ -153,14 +153,18 @@ void SoFCUnifiedSelection::finish()
     atexit_cleanup();
 }
 
+const char* SoFCUnifiedSelection::getFileFormatName(void) const
+{
+    return "Separator";
+}
 
 int SoFCUnifiedSelection::getPriority(const SoPickedPoint* p)
 {
     const SoDetail* detail = p->getDetail();
-    if(!detail) return 0;
-    if(detail->isOfType(SoFaceDetail::getClassTypeId())) return 1;
-    if(detail->isOfType(SoLineDetail::getClassTypeId())) return 2;
-    if(detail->isOfType(SoPointDetail::getClassTypeId())) return 3;
+    if (!detail)                                           return 0;
+    if (detail->isOfType(SoFaceDetail::getClassTypeId()))  return 1;
+    if (detail->isOfType(SoLineDetail::getClassTypeId()))  return 2;
+    if (detail->isOfType(SoPointDetail::getClassTypeId())) return 3;
     return 0;
 }
 
