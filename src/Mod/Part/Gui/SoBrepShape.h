@@ -32,6 +32,7 @@
 #include <Inventor/nodes/SoPointSet.h>
 #include <Inventor/elements/SoLazyElement.h>
 #include <Inventor/elements/SoReplacedElement.h>
+#include <vector>
 
 class SoGLCoordinateElement;
 class SoTextureCoordinateBundle;
@@ -48,7 +49,7 @@ public:
     SoBrepFaceSet();
 
     SoMFInt32 partIndex;
-    SoMFInt32 highlightIndex;
+    SoSFInt32 highlightIndex;
     SoMFInt32 selectionIndex;
 
 protected:
@@ -90,7 +91,7 @@ private:
                      const int nbind,
                      const int mbind,
                      const int texture);
-    void renderHighlight(SoGLRenderAction *action, int);
+    void renderHighlight(SoGLRenderAction *action);
     void renderSelection(SoGLRenderAction *action);
 
 private:
@@ -110,7 +111,7 @@ public:
     static void initClass();
     SoBrepEdgeSet();
 
-    SoMFInt32 highlightIndex;
+    SoSFInt32 highlightIndex;
     SoMFInt32 selectionIndex;
 
 protected:
@@ -127,10 +128,11 @@ private:
     void renderShape(const SoGLCoordinateElement * const vertexlist,
                      const int32_t *vertexindices,
                      int num_vertexindices);
-    void renderHighlight(SoGLRenderAction *action, int);
+    void renderHighlight(SoGLRenderAction *action);
     void renderSelection(SoGLRenderAction *action);
 
 private:
+    std::vector<int32_t> hl, sl;
     SbColor selectionColor;
     SbColor highlightColor;
     SoColorPacker colorpacker;
