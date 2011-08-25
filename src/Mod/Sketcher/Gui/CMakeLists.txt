@@ -52,6 +52,7 @@ SET(SketcherGui_SRCS
     Command.cpp
     CommandCreateGeo.cpp
     CommandConstraints.cpp
+	CommandAlterGeometry.cpp
     Resources/Sketcher.qrc
     PreCompiled.cpp
     PreCompiled.h

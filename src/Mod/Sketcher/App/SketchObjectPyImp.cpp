@@ -81,6 +81,22 @@ PyObject* SketchObjectPy::delGeometry(PyObject *args)
     Py_Return;
 }
 
+PyObject* SketchObjectPy::toggleConstruction(PyObject *args)
+{
+    int Index;
+    if (!PyArg_ParseTuple(args, "i", &Index))
+        return 0;
+
+    if (this->getSketchObjectPtr()->toggleConstruction(Index)) {
+        std::stringstream str;
+        str << "Not able to toggle a geometry with the given index: " << Index;
+        PyErr_SetString(PyExc_ValueError, str.str().c_str());
+        return 0;
+    }
+
+    Py_Return;
+}
+
 PyObject* SketchObjectPy::addConstraint(PyObject *args)
 {
     PyObject *pcObj;

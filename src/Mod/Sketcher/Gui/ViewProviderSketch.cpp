@@ -93,7 +93,8 @@ using namespace SketcherGui;
 using namespace Sketcher;
 
 SbColor sCurveColor             (1.0f,1.0f,1.0f);
-SbColor sCurveConstructionColor (0.2f,1.0f,0.2f);
+SbColor sCurveDraftColor        (0.4f,0.4f,0.8f);
+//SbColor sCurveConstructionColor (0.2f,1.0f,0.2f);
 SbColor sPointColor             (0.5f,0.5f,0.5f);
 SbColor sConstraintColor        (0.0f,0.8f,0.0f);
 SbColor sCrossColor             (0.0f,0.0f,0.8f);
@@ -1168,7 +1169,10 @@ void ViewProviderSketch::updateColor(void)
         else if (edit->PreselectCurve == i)
             color[i] = PreselectColor;
         else
-            color[i] = sCurveColor;
+            if(this->getSketchObject()->Geometry.getValues()[i]->Construction)
+                color[i] = sCurveDraftColor;
+            else
+                color[i] = sCurveColor;
     }
 
     // colors or the cross
@@ -1365,7 +1369,7 @@ void ViewProviderSketch::draw(bool temp)
 
     i=0; // color of the line set
     for (std::vector<unsigned int>::const_iterator it = Color.begin(); it != Color.end(); ++it,i++)
-        color[i] = (*it == 1 ? sCurveConstructionColor : sCurveColor);
+        color[i] = (*it == 1 ? sCurveDraftColor : sCurveColor);
 
     i=0; // setting up the point set
     for (std::vector<Base::Vector3d>::const_iterator it = Points.begin(); it != Points.end(); ++it,i++)
@@ -1373,7 +1377,7 @@ void ViewProviderSketch::draw(bool temp)
 
     i=0; // color of the point set
     for (std::vector<unsigned int>::const_iterator it = PtColor.begin(); it != PtColor.end(); ++it,i++)
-        pcolor[i] = (*it == 1 ? sCurveConstructionColor : sPointColor);
+        pcolor[i] = (*it == 1 ? sCurveDraftColor : sPointColor);
 
     if (edit->PreselectPoint >= 0 && edit->PreselectPoint < int(Points.size()))
         pcolor[edit->PreselectPoint] = PreselectColor;
@@ -2014,7 +2018,7 @@ Restart:
         }
     }
 
-    //edit->ActSketch.Cons
+    this->updateColor();
 
     // delete the cloned objects
     for (std::vector<Part::Geometry *>::iterator it = tempGeo.begin(); it != tempGeo.end(); ++it)

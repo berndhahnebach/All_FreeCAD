@@ -21,6 +21,7 @@ libSketcherGui_la_SOURCES=\
 		Command.cpp \
 		CommandCreateGeo.cpp \
 		CommandConstraints.cpp \
+		CommandAlterGeometry.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		TaskSketcherConstrains.cpp \

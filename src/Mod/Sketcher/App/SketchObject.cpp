@@ -232,6 +232,22 @@ int SketchObject::delGeometry(int GeoNbr)
     return 0;
 }
 
+int SketchObject::toggleConstruction(int GeoNbr)
+{
+    const std::vector< Part::Geometry * > &vals = this->Geometry.getValues();
+    if (GeoNbr < 0 || GeoNbr >= (int)vals.size())
+        return -1;
+
+    std::vector< Part::Geometry * > newVals(vals);
+
+    Part::Geometry *geoNew = newVals[GeoNbr]->clone();
+    geoNew->Construction = !geoNew->Construction;
+    newVals[GeoNbr]=geoNew;
+
+    this->Geometry.setValues(newVals);
+    return 0;
+}
+
 int SketchObject::addConstraints(const std::vector<Constraint *> &ConstraintList)
 {
     return -1;
