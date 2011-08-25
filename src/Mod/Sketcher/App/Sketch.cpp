@@ -126,7 +126,9 @@ void Sketch::setUpSketch(const std::vector<Part::Geometry *> &geo, const std::ve
         }
     }
 
-    addConstraints(ConstraintList);
+    // The Geoms list might be empty after an undo/redo
+    if (!Geoms.empty())
+        addConstraints(ConstraintList);
 
     GCSsys.clearLevel(-1);
     GCSsys.initSolution(Parameters);
@@ -545,7 +547,7 @@ int Sketch::addConstraint(const Constraint *constraint)
 int Sketch::addConstraints(const std::vector<Constraint *> &ConstraintList)
 {
     // constraints on nothing makes no sense
-    assert(int(Geoms.size()) > 0 || ConstraintList.size() == 0);
+    assert(!Geoms.empty() || ConstraintList.empty());
 
     int rtn = -1;
     for (std::vector<Constraint *>::const_iterator it = ConstraintList.begin();it!=ConstraintList.end();++it)

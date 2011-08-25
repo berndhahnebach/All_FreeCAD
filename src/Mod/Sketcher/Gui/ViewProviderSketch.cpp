@@ -1369,6 +1369,12 @@ void ViewProviderSketch::draw(bool temp)
 
     // Render Constraints ===================================================
     const std::vector<Sketcher::Constraint *> &ConStr = getSketchObject()->Constraints.getValues();
+    // After an undo/redo it can happen that we have an empty geometry list but a non-empty constraint list
+    // In this case just ignore the constraints. (See bug #0000421)
+    if (geomlist->empty() && !ConStr.empty()) {
+        rebuildConstraintsVisual();
+        return;
+    }
     // reset point if the constraint type has changed
 Restart:
     // check if a new constraint arrived
