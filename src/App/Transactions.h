@@ -49,7 +49,7 @@ public:
 
     void applyNew(Document &Doc, DocumentObject *pcObj);
     void applyDel(Document &Doc, DocumentObject *pcObj);
-    void applyChn(Document &Doc, DocumentObject *pcObj);
+    void applyChn(Document &Doc, DocumentObject *pcObj,bool Forward);
 
     void setProperty(const Property* pcProp);
 
@@ -81,7 +81,7 @@ public:
     virtual ~Transaction();
 
     /// apply the content to the document
-    void apply(Document &Doc);
+    void apply(Document &Doc,bool forward);
 
     // the utf-8 name of the transaction
     std::string Name; 

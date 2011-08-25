@@ -229,7 +229,7 @@ bool Document::undo(void)
         d->activeUndoTransaction->Name = mUndoTransactions.back()->Name;
 
         // applying the undo
-        mUndoTransactions.back()->apply(*this/*,DocChange*/);
+        mUndoTransactions.back()->apply(*this,false);
 
         // save the redo
         mRedoTransactions.push_back(d->activeUndoTransaction);
@@ -255,7 +255,7 @@ bool Document::redo(void)
         d->activeUndoTransaction->Name = mRedoTransactions.back()->Name;
 
         // do the redo
-        mRedoTransactions.back()->apply(*this/*,DocChange*/);
+        mRedoTransactions.back()->apply(*this,true);
         mUndoTransactions.push_back(d->activeUndoTransaction);
         d->activeUndoTransaction = 0;
 
@@ -323,7 +323,7 @@ void Document::abortTransaction()
     if (d->activeUndoTransaction) {
         d->rollback = true;
         // applieing the so far made changes
-        d->activeUndoTransaction->apply(*this);
+        d->activeUndoTransaction->apply(*this,false);
         d->rollback = false;
 
         // destroy the undo

@@ -9,6 +9,7 @@ SET(MachDist_SRCS
 	calculix_postprocess.py
 	MachiningDistortionCommands.py
 	User_Interface_Mach_Dist.py
+	machdist_rc.py
     
 )
 SOURCE_GROUP("" FILES ${MachDist_SRCS})
