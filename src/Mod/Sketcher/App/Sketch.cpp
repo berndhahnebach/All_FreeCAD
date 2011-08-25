@@ -224,7 +224,7 @@ int Sketch::addLineSegment(const Part::GeomLineSegment &lineSegment)
     GeoDef def;
     def.geo  = lineSeg;
     def.type = Line;
-    def.construction = false;
+    def.construction = lineSeg->Construction;
 
     // get the points from the line
     Base::Vector3d start = lineSeg->getStartPoint();
@@ -271,7 +271,7 @@ int Sketch::addArc(const Part::GeomArcOfCircle &circleSegment)
     GeoDef def;
     def.geo  = aoc;
     def.type = Arc;
-    def.construction = false;
+    def.construction = aoc->Construction;
 
     Base::Vector3d center   = aoc->getCenter();
     Base::Vector3d startPnt = aoc->getStartPoint();
@@ -340,7 +340,7 @@ int Sketch::addCircle(const Part::GeomCircle &cir)
     GeoDef def;
     def.geo  = circ;
     def.type = Circle;
-    def.construction = false;
+    def.construction = circ->Construction;
 
     Base::Vector3d center = circ->getCenter();
     double radius         = circ->getRadius();

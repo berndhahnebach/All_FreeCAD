@@ -28,6 +28,11 @@
         <UserDocu>delete a geometric object from the sketch</UserDocu>
       </Documentation>
     </Methode>
+    <Methode Name="toggleConstruction">
+      <Documentation>
+        <UserDocu>switch a geometry to a construcion line</UserDocu>
+      </Documentation>
+    </Methode>
     <Methode Name="addConstraint">
       <Documentation>
         <UserDocu>add a constraint to the sketch</UserDocu>

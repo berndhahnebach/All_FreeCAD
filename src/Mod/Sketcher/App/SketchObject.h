@@ -85,6 +85,9 @@ public:
     /// retrieves the coordinates of a point
     Base::Vector3d getPoint(int geoIndex1, PointPos Pos1);
 
+    /// toggle geometry to draft line
+    int toggleConstruction(int GeoNbr);
+
     /// create a fillet
     int fillet(int geoId, PointPos pos, double radius, bool trim=true);
     int fillet(int geoId1, int geoId2,

@@ -62,7 +62,7 @@ public:
     /// add unspecified geometry
     void addGeometry(const std::vector<Part::Geometry *> &geo);
     /// returns the actual geometry
-    std::vector<Part::Geometry *> getGeometry(bool withConstrucionElements = false) const;
+    std::vector<Part::Geometry *> getGeometry(bool withConstrucionElements = true) const;
     /// get the geometry as python objects
     Py::Tuple getPyGeometry(void) const;
     /// set a geometric element to a construction element
