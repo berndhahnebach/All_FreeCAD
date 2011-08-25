@@ -1,4 +1,49 @@
 import os,FreeCAD,FreeCADGui,tempfile,time,zipfile
+from PyQt4 import QtGui
+
+def translate(context,text):
+        "convenience function for the Qt translator"
+        return str(QtGui.QApplication.translate(context, text, None, QtGui.QApplication.UnicodeUTF8).toUtf8())
+
+# texts to be translated
+
+text01 = translate("StartPage","FreeCAD Start Center")
+text02 = translate("StartPage","Start a new project")
+text03 = translate("StartPage","Recent Files")
+text04 = translate("StartPage","Demos")
+text05 = translate("StartPage","Tutorials")
+text06 = translate("StartPage","Homepage")
+text07 = translate("StartPage","This is the FreeCAD Homepage. Here you will be able to find a lot of information about FreeCAD, tutorials, examples and user documentation.")
+text08 = translate("StartPage","FreeCAD Homepage")
+text09 = translate("StartPage","Example projects")
+text10 = translate("StartPage","Schenkel STEP file")
+text11 = translate("StartPage","Load a PartDesign example")
+text12 = translate("StartPage","Load a Drawing extraction")
+text13 = translate("StartPage","Load a Robot simulation example")
+text14 = translate("StartPage","Projects from the Web")
+text15 = translate("StartPage","Schenkel STEP")
+text16 = translate("StartPage","Complex Part")
+text17 = translate("StartPage","Close this window after opening or creating a file")
+text18 = translate("StartPage","Don't show me this window again next time")
+text19 = translate("StartPage","Designing parts")
+text20 = translate("StartPage","The <b>Part Design</b> workbench is designed to create complex pieces based on constrained 2D sketches. Use it to draw 2D shapes, constrain some of their elements and extrude them to form 3D pieces.")
+text21 = translate("StartPage","Example workflow")
+text22 = translate("StartPage","Part Design")
+text23 = translate("StartPage","Designing architectural elements")
+text24 = translate("StartPage","The <b>Architectural Design</b> workbench is specially designed for working with architectural elements such as walls or windows. Start by drawing 2D shapes, and use them as guides to build architecutral objects.")
+text25 = translate("StartPage","Architectual Design")
+text26 = translate("StartPage","Working with Meshes")
+text27 = translate("StartPage","The <b>Mesh Workbench</b> is used to work with Mesh objects. Meshes are simpler 3D objects than Part objects, but they are often easier to import and export to/from other applications.")
+text28 = translate("StartPage","FreeCAD offers you several tools to convert between Mesh and Part objects.")
+text29 = translate("StartPage","Work with Meshes")
+text30 = translate("StartPage","The complete workbench")
+text31 = translate("StartPage","FreeCAD default workbench")
+text32 = translate("StartPage","populated with some of the most commonly used tools.")
+text33 = translate("StartPage","file size:")
+text34 = translate("StartPage","creation time:")
+text35 = translate("StartPage","last modified:")
+
+# here is the html page skeleton
 
 page = """
 <html>
@@ -64,26 +109,26 @@ page = """
 
   <body>
 
-    <h1><img src="FreeCAD.png">&nbsp;FreeCAD Start Center</h1>
+    <h1><img src="FreeCAD.png">&nbsp;""" + text01 + """</h1>
 
     <div class="column">
 
       <div class="block">
-        <h2>Start a new project</h2>
+        <h2>""" + text02 + """</h2>
           defaultworkbenches
       </div>
 
       <div class="block">
-        <h2>Recent Files</h2>
+        <h2>""" + text03 + """</h2>
           recentfiles
       </div>
 
       <div class="block">
-        <h2>Demos</h2>
+        <h2>""" + text04 + """</h2>
       </div>
 
       <div class="block">
-        <h2>Tutorials</h2>
+        <h2>""" + text05 + """</h2>
       </div>
 
     </div>
@@ -91,32 +136,30 @@ page = """
     <div class="column">
 
       <div class="block">
-        <h2>Homepage</h2>
+        <h2>""" + text06 + """</h2>
         <ul>
           <li><img src="web.png">&nbsp;
-              <a onMouseover="show('<p>This is the FreeCAD Homepage. Here you will be \
-                              able to find a lot of information about FreeCAD, tutorials, \
-                              examples and user documentation.</p>')" 
+              <a onMouseover="show('<p>""" + text07 + """</p>')" 
                  onMouseout="show('')"
-                 href="http://free-cad.sf.net/">FreeCAD Homepage</a></li>
+                 href="http://free-cad.sf.net/">""" + text08 + """</a></li>
         </ul>
       </div>
 
       <div class="block">
-        <h2>Example projects</h2>
+        <h2>""" + text09 + """</h2>
         <ul>
-          <li><a href="LoadSchenkel.py">Schenkel STEP file</a></li>
-          <li><a href="LoadPartDesignExample.py">Load a PartDesign example</a></li>
-          <li><a href="LoadDrawingExample.py">Load a Drawing extraction</a></li>
-          <li><a href="LoadRobotExample.py">Load a Robot simulation example</a></li>
+          <li><a href="LoadSchenkel.py">""" + text10 + """</a></li>
+          <li><a href="LoadPartDesignExample.py">""" + text11 + """</a></li>
+          <li><a href="LoadDrawingExample.py">""" + text12 + """</a></li>
+          <li><a href="LoadRobotExample.py">""" + text13 + """</a></li>
         </ul>
       </div>
 
       <div class="block">
-        <h2>Projects from the Web</h2>
+        <h2>""" + text14 + """</h2>
         <ul>
-          <li><a href="http://freecad-project.de/svn/ExampleData/FileFormates/Schenkel.stp">Schenkel STEP</a></li>
-          <li><a href="http://freecad-project.de/svn/ExampleData/Examples/CAD/Complex.FCStd">Complex Part</a></li>
+          <li><a href="http://freecad-project.de/svn/ExampleData/FileFormates/Schenkel.stp">""" + text15 + """</a></li>
+          <li><a href="http://freecad-project.de/svn/ExampleData/Examples/CAD/Complex.FCStd">""" + text16 + """</a></li>
         </ul>
       </div>
 
@@ -128,9 +171,9 @@ page = """
 
     <form class="options">
       <input type="checkbox" name="closeThisDialog">
-      Close this window after opening or creating a file<br/>
+      """ + text17 + """<br/>
       <input type="checkbox" name="dontShowAgain">
-      Don't show me this window again next time
+      """ + text18 + """
     </form>
 
   </body>
@@ -138,43 +181,32 @@ page = """
 """
 
 def getWorkbenches():
-        return '''
+        return """
         <ul>    
           <li><img src="PartDesign.png">&nbsp;
-              <a onMouseover="show('<h3>Designing parts</h3> \
-                              <p>The <b>Part Design</b> workbench is designed \
-                              to create complex pieces based on constrained 2D sketches. \
-                              Use it to draw 2D shapes, constrain some of their elements \
-                              and extrude them to form 3D pieces.</p><p><small>Example \
-                              workflow:</small></p><img src=PartDesignExample.png>')" 
+              <a onMouseover="show('<h3>""" + text19 + """</h3> \
+                              <p>""" + text20 + """</p><p><small>""" + text21 + """ \
+                 :</small></p><img src=PartDesignExample.png>')" 
                  onMouseout="show('')" 
-                 href="PartDesign.py">Part Design</a></li>
+                 href="PartDesign.py">""" + text22 + """</a></li>
           <li><img src="ArchDesign.png">&nbsp;
-              <a onMouseover="show('<h3>Designing architectural elements</h3> \
-                              <p>The <b>Architectural Design</b> workbench \
-                              is specially designed for working with architectural \
-                              elements such as walls or windows. Start by drawing \
-                              2D shapes, and use them as guides to build architecutral \
-                              objects.</p>')" 
+              <a onMouseover="show('<h3>""" + text23 + """</h3> \
+                              <p>""" + text24 + """</p>')" 
                  onMouseout="show('')"
-                 href="ArchDesign.py">Architectual Design</a></li>
+                 href="ArchDesign.py">""" + text25 + """</a></li>
           <li><img src="Mesh.png">&nbsp;
-              <a onMouseover="show('<h3>Working with Meshes</h3> \
-                              <p>The <b>Mesh Workbench</b> is used to work with \
-                              Mesh objects. Meshes are simpler 3D objects than Part objects, \
-                              but they are often easier to import and export to/from other \
-                              applications.</p><p>FreeCAD offers you several tools to convert \
-                              between Mesh and Part objects.</p>')" 
+              <a onMouseover="show('<h3>""" + text26 + """</h3> \
+                              <p>""" + text27 + """</p><p>""" + text28 + """</p>')" 
                  onMouseout="show('')" 
-                 href="Mesh.py">Work with Meshes</a></li>
+                 href="Mesh.py">""" + text29 + """</a></li>
           <li><img src="Complete.png">&nbsp;
-              <a onMouseover="show('<h3>A complete workbench</h3> \
-                              <p>This is the <b>FreeCAD default workbench</b>, \
-                              populated with some of the most commonly used tools.</p>')" 
+              <a onMouseover="show('<h3>""" + text30 +"""</h3> \
+                              <p>This is the <b>""" + text31 + """</b>, \
+                              """ + text32 + """</p>')" 
                  onMouseout="show('')" 
-                 href="DefaultWorkbench.py">The Default Workbench</a></li>
+                 href="DefaultWorkbench.py">""" + text31 + """</a></li>
         </ul>
-'''
+"""
 
 def getInfo(filename):
         "returns available file information"
@@ -200,9 +232,9 @@ def getInfo(filename):
         if os.path.exists(filename):
                 # get normal file info
                 s = os.stat(filename)
-                html += "<p>file size: " + getSize(s.st_size) + "<br/>"
-                html += "creation time: " + getLocalTime(s.st_ctime) + "<br/>"
-                html += "last modified: " + getLocalTime(s.st_mtime) + "</p>"
+                html += "<p>" + text33 + " " + getSize(s.st_size) + "<br/>"
+                html += text34 + " " + getLocalTime(s.st_ctime) + "<br/>"
+                html += text35 + " " + getLocalTime(s.st_mtime) + "</p>"
                 # get additional info from fcstd files
                 if os.path.splitext(filename)[1] in [".fcstd",".FcStd"]:
                         zfile=zipfile.ZipFile(filename)
