@@ -37,6 +37,8 @@ libSketcherGui_la_SOURCES=\
 		ViewProviderSketchSF.h \
 		Workbench.cpp \
 		Workbench.h \
+		EditDatumDialog.cpp \
+		EditDatumDialog.h \
 		TaskDlgEditSketch.cpp \
 		TaskDlgEditSketch.h \
 		ViewProviderPython.cpp \

@@ -71,6 +71,8 @@ SET(SketcherGui_SRCS
     DrawSketchHandler.h
     Workbench.cpp
     Workbench.h
+    EditDatumDialog.cpp
+    EditDatumDialog.h
     TaskDlgEditSketch.cpp
     TaskDlgEditSketch.h
     ViewProviderPython.cpp

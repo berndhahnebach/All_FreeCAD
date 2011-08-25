@@ -50,13 +50,15 @@
 # include <Inventor/nodes/SoTranslation.h>
 # include <Inventor/nodes/SoText2.h>
 # include <Inventor/nodes/SoFont.h>
+# include <Inventor/sensors/SoIdleSensor.h>
 
 /// Qt Include Files
 # include <QAction>
+# include <QApplication>
+# include <QDialog>
+# include <QImage>
 # include <QMenu>
 # include <QMessageBox>
-# include <QImage>
-# include <QApplication>
 #endif
 
 #include <Inventor/SbTime.h>
@@ -82,6 +84,7 @@
 #include <Mod/Sketcher/App/SketchObject.h>
 #include <Mod/Sketcher/App/Sketch.h>
 
+#include "EditDatumDialog.h"
 #include "ViewProviderSketch.h"
 #include "DrawSketchHandler.h"
 #include "TaskDlgEditSketch.h"
@@ -98,7 +101,7 @@ SbColor sCrossColor             (0.0f,0.0f,0.8f);
 SbColor ViewProviderSketch::PreselectColor(0.1f, 0.1f, 0.8f);
 SbColor ViewProviderSketch::SelectColor   (0.1f, 0.1f, 0.8f);
 
-// statics for double click handling
+// Variables for holding previous click
 SbTime  ViewProviderSketch::prvClickTime;
 SbVec3f ViewProviderSketch::prvClickPoint;
 
@@ -619,12 +622,26 @@ void ViewProviderSketch::editDoubleClicked(void)
      } else if (edit->PreselectCurve >=0) {
          Base::Console().Log("double click edge:%d\n",edit->PreselectCurve);
      } else if (edit->PreselectCross >=0) {
-         Base::Console().Log("ouble click cross:%d\n",edit->PreselectCross);
+         Base::Console().Log("double click cross:%d\n",edit->PreselectCross);
      } else if (edit->PreselectConstraint >=0) {
-         Base::Console().Log("ouble click constraint:%d\n",edit->PreselectConstraint);
+        // Find the constraint
+        Base::Console().Log("double click constraint:%d\n",edit->PreselectConstraint);
+        
+        const std::vector<Sketcher::Constraint *> &ConStr = getSketchObject()->Constraints.getValues();
+        Constraint *Constr = ConStr[edit->PreselectConstraint];
 
-     } 
+        // if its the right constraint
+        if (Constr->Type == Sketcher::Distance ||
+            Constr->Type == Sketcher::DistanceX || Constr->Type == Sketcher::DistanceY ||
+            Constr->Type == Sketcher::Radius || Constr->Type == Sketcher::Angle) {
+
+            EditDatumDialog * editDatumDialog = new EditDatumDialog(this, edit->PreselectConstraint);
+            SoIdleSensor* sensor = new SoIdleSensor(EditDatumDialog::run, editDatumDialog);
+            sensor->schedule();
+        }
+    } 
 }
+
 
 
 bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, const SoPickedPoint *pp)
