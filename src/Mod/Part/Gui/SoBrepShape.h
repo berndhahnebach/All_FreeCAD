@@ -147,7 +147,7 @@ public:
     static void initClass();
     SoBrepPointSet();
 
-    SoMFInt32 highlightIndex;
+    SoSFInt32 highlightIndex;
     SoMFInt32 selectionIndex;
 
 protected:
@@ -160,7 +160,7 @@ private:
     void renderShape(const SoGLCoordinateElement * const vertexlist,
                      const int32_t *vertexindices,
                      int num_vertexindices);
-    void renderHighlight(SoGLRenderAction *action, int);
+    void renderHighlight(SoGLRenderAction *action);
     void renderSelection(SoGLRenderAction *action);
 
 private:

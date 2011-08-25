@@ -41,7 +41,9 @@
 #  include <Inventor/nodes/SoProfileCoordinate3.h>
 #  include <Inventor/nodes/SoSwitch.h>
 #  include <Inventor/nodes/SoTransformation.h>
+#  include <Inventor/nodes/SoIndexedLineSet.h>
 #  include <Inventor/nodes/SoIndexedFaceSet.h>
+#  include <Inventor/nodes/SoPointSet.h>
 #  include <Inventor/nodes/SoDrawStyle.h>
 #  include <Inventor/nodes/SoComplexity.h>
 #  include <Inventor/nodes/SoLightModel.h>
@@ -142,6 +144,10 @@ void SoFCSelectionAction::initClass()
 
   SO_ACTION_ADD_METHOD(SoSeparator,callDoAction);
   SO_ACTION_ADD_METHOD(SoFCSelection,callDoAction);
+
+  SO_ACTION_ADD_METHOD(SoIndexedLineSet,callDoAction);
+  SO_ACTION_ADD_METHOD(SoIndexedFaceSet,callDoAction);
+  SO_ACTION_ADD_METHOD(SoPointSet,callDoAction);
 }
 
 void SoFCSelectionAction::finish()
