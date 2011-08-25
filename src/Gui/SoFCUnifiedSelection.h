@@ -80,6 +80,7 @@ public:
         EMISSIVE, EMISSIVE_DIFFUSE, BOX
     };
 
+    const char* getFileFormatName(void) const;
     SbBool isHighlighted(void) const {return highlighted;}
 
     SoSFColor colorHighlight;

@@ -372,7 +372,7 @@ std::string ViewProviderPartExt::getElement(const SoPickedPoint* pp) const
     return str.str();
 }
 
-std::vector<Base::Vector3d> ViewProviderPartExt::getSelectionShape(const char* Element)
+std::vector<Base::Vector3d> ViewProviderPartExt::getSelectionShape(const char* Element) const
 {
     return std::vector<Base::Vector3d>();
 }

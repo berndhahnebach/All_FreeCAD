@@ -49,7 +49,7 @@ public:
     QIcon getIcon() const;
     std::vector<App::DocumentObject*> claimChildren() const;
     std::string getElement(const SoPickedPoint *pp) const;
-    std::vector<Base::Vector3d> getSelectionShape(const char* Element);
+    std::vector<Base::Vector3d> getSelectionShape(const char* Element) const;
     bool setEdit(int ModNum);
     bool unsetEdit(int ModNum);
 
@@ -122,13 +122,13 @@ public:
 
     /** @name Selection handling */
     //@{
-    virtual bool useNewSelectionModel() {
+    virtual bool useNewSelectionModel() const {
         return ViewProviderT::useNewSelectionModel();
     }
     virtual std::string getElement(const SoPickedPoint *pp) const {
         return imp->getElement(pp);
     }
-    virtual std::vector<Base::Vector3d> getSelectionShape(const char* Element) {
+    virtual std::vector<Base::Vector3d> getSelectionShape(const char* Element) const {
         return imp->getSelectionShape(Element);
     };
     //@}

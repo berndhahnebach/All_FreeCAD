@@ -279,7 +279,7 @@ std::string ViewProviderPythonFeatureImp::getElement(const SoPickedPoint *pp) co
     return "";
 }
 
-std::vector<Base::Vector3d> ViewProviderPythonFeatureImp::getSelectionShape(const char* Element)
+std::vector<Base::Vector3d> ViewProviderPythonFeatureImp::getSelectionShape(const char* Element) const
 {
     return std::vector<Base::Vector3d>();
 }

@@ -173,7 +173,7 @@ protected:
     /// get called by the container whenever a property has been changed
     virtual void onChanged(const App::Property *prop);
 
-    /// get called if a subelement is double clicked while edeting
+    /// get called if a subelement is double clicked while editing
     void editDoubleClicked(void);
 
     /// set up the edition data structure EditData
