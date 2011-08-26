@@ -282,7 +282,11 @@ int SketchObject::delConstraintOnPoint(int VertexId)
     int GeoId;
     PointPos PosId;
     getGeoVertexIndex(VertexId, GeoId, PosId);
+    return delConstraintOnPoint(GeoId, PosId);
+}
 
+int SketchObject::delConstraintOnPoint(int GeoId, PointPos PosId)
+{
     const std::vector< Constraint * > &vals = this->Constraints.getValues();
 
     std::vector< Constraint * > newVals(0);
@@ -302,41 +306,27 @@ int SketchObject::delConstraintOnPoint(int VertexId)
     return -1; // no such constraint
 }
 
-int SketchObject::fillet(int geoId, PointPos pos, double radius, bool trim)
+int SketchObject::fillet(int GeoId, PointPos PosId, double radius, bool trim)
 {
     const std::vector<Part::Geometry *> &geomlist = this->Geometry.getValues();
-    const std::vector<Constraint *> &constraints = this->Constraints.getValues();
-    assert(geoId < int(geomlist.size()));
+    assert(GeoId < int(geomlist.size()));
     // Find the other geometry Id associated with the coincident point
-    int coincidentsFound = 0;
-    int geoId2, pos2;
-    for (std::vector<Constraint *>::const_iterator it = constraints.begin();
-        it != constraints.end(); ++it) {
-        if ((*it)->Type == Sketcher::Coincident) {
-            if ((*it)->First == geoId && (*it)->FirstPos == pos) {
-                coincidentsFound++;
-                geoId2 = (*it)->Second;
-                pos2 = (*it)->SecondPos;
-            } else if ((*it)->Second == geoId && (*it)->SecondPos == pos) {
-                coincidentsFound++;
-                geoId2 = (*it)->First;
-                pos2 = (*it)->FirstPos;
-            }
-        }
-    }
+    std::vector<int> GeoIdList;
+    std::vector<PointPos> PosIdList;
+    getCoincidentPoints(GeoId, PosId, GeoIdList, PosIdList);
 
     // only coincident points between two edges can be filleted
-    if (coincidentsFound == 1) {
-        Part::Geometry *geo1 = geomlist[geoId];
-        Part::Geometry *geo2 = geomlist[geoId2];
+    if (GeoIdList.size() == 2) {
+        Part::Geometry *geo1 = geomlist[GeoIdList[0]];
+        Part::Geometry *geo2 = geomlist[GeoIdList[1]];
         if (geo1->getTypeId() == Part::GeomLineSegment::getClassTypeId() &&
             geo2->getTypeId() == Part::GeomLineSegment::getClassTypeId() ) {
             const Part::GeomLineSegment *lineSeg1 = dynamic_cast<const Part::GeomLineSegment*>(geo1);
             const Part::GeomLineSegment *lineSeg2 = dynamic_cast<const Part::GeomLineSegment*>(geo2);
-    
+
             Base::Vector3d midPnt1 = (lineSeg1->getStartPoint() + lineSeg1->getEndPoint()) / 2 ;
             Base::Vector3d midPnt2 = (lineSeg2->getStartPoint() + lineSeg2->getEndPoint()) / 2 ;
-            return fillet(geoId, geoId2, midPnt1, midPnt2, radius, trim);
+            return fillet(GeoIdList[0], GeoIdList[1], midPnt1, midPnt2, radius, trim);
         }
     }
 
@@ -348,7 +338,6 @@ int SketchObject::fillet(int GeoId1, int GeoId2,
                          double radius, bool trim)
 {
     const std::vector<Part::Geometry *> &geomlist = this->Geometry.getValues();
-    const std::vector<Constraint *> &constraints = this->Constraints.getValues();
     assert(GeoId1 < int(geomlist.size()));
     assert(GeoId2 < int(geomlist.size()));
     Part::Geometry *geo1 = geomlist[GeoId1];
@@ -361,21 +350,71 @@ int SketchObject::fillet(int GeoId1, int GeoId2,
         Base::Vector3d filletCenter;
         if (!Part::findFilletCenter(lineSeg1, lineSeg2, radius, refPnt1, refPnt2, filletCenter))
             return -1;
+        Base::Vector3d dir1 = lineSeg1->getEndPoint() - lineSeg1->getStartPoint();
+        Base::Vector3d dir2 = lineSeg2->getEndPoint() - lineSeg2->getStartPoint();
+
+        // the intersection point will and two distances will be necessary later for trimming the lines
+        Base::Vector3d intersection, dist1, dist2;
 
         // create arc from known parameters and lines
+        int filletId;
         Part::GeomArcOfCircle *arc = Part::createFilletGeometry(lineSeg1, lineSeg2, filletCenter, radius);
-
-        // If null-pointer - Arc couldn't be created
-        if (!arc)
+        if (arc) {
+            // calculate intersection and distances before we invalidate lineSeg1 and lineSeg2
+            if (!find2DLinesIntersection(lineSeg1, lineSeg2, intersection)) {
+                delete arc;
+                return -1;
+            }
+            dist1.ProjToLine(arc->getStartPoint()-intersection, dir1);
+            dist2.ProjToLine(arc->getStartPoint()-intersection, dir2);
+            Part::Geometry *newgeo = dynamic_cast<Part::Geometry* >(arc);
+            filletId = addGeometry(newgeo);
+            if (filletId < 0) {
+                delete arc;
+                return -1;
+            }
+        }
+        else
             return -1;
 
-        // Add this geometry permanently
-        Part::Geometry *newgeo = dynamic_cast<Part::Geometry* >(arc);
-        int filletArcId = addGeometry(newgeo);
-
         if (trim) {
+            PointPos PosId1 = (filletCenter-intersection)*dir1 > 0 ? start : end;
+            PointPos PosId2 = (filletCenter-intersection)*dir2 > 0 ? start : end;
+
+            delConstraintOnPoint(GeoId1, PosId1);
+            delConstraintOnPoint(GeoId2, PosId2);
+            Sketcher::Constraint *tangent1 = new Sketcher::Constraint();
+            Sketcher::Constraint *tangent2 = new Sketcher::Constraint();
+
+            tangent1->Type = Sketcher::Tangent;
+            tangent1->First = GeoId1;
+            tangent1->FirstPos = PosId1;
+            tangent1->Second = filletId;
+
+            tangent2->Type = Sketcher::Tangent;
+            tangent2->First = GeoId2;
+            tangent2->FirstPos = PosId2;
+            tangent2->Second = filletId;
+
+            if (dist1.Length() < dist2.Length()) {
+                tangent1->SecondPos = start;
+                tangent2->SecondPos = end;
+                movePoint(GeoId1, PosId1, arc->getStartPoint());
+                movePoint(GeoId2, PosId2, arc->getEndPoint());
+            }
+            else {
+                tangent1->SecondPos = end;
+                tangent2->SecondPos = start;
+                movePoint(GeoId1, PosId1, arc->getEndPoint());
+                movePoint(GeoId2, PosId2, arc->getStartPoint());
+            }
+
+            addConstraint(tangent1);
+            addConstraint(tangent2);
+            delete tangent1;
+            delete tangent2;
         }
-        
+        delete arc;
         return 0;
     }
     return -1;
@@ -448,6 +487,43 @@ void SketchObject::rebuildVertexIndex(void)
             VertexId2PosId.push_back(end);
         }
     }
+}
+
+void SketchObject::getCoincidentPoints(int GeoId, PointPos PosId, std::vector<int> &GeoIdList,
+                                       std::vector<PointPos> &PosIdList)
+{
+    const std::vector<Constraint *> &constraints = this->Constraints.getValues();
+
+    GeoIdList.clear();
+    PosIdList.clear();
+    GeoIdList.push_back(GeoId);
+    PosIdList.push_back(PosId);
+    for (std::vector<Constraint *>::const_iterator it=constraints.begin();
+         it != constraints.end(); ++it) {
+        if ((*it)->Type == Sketcher::Coincident) {
+            if ((*it)->First == GeoId && (*it)->FirstPos == PosId) {
+                GeoIdList.push_back((*it)->Second);
+                PosIdList.push_back((*it)->SecondPos);
+            }
+            else if ((*it)->Second == GeoId && (*it)->SecondPos == PosId) {
+                GeoIdList.push_back((*it)->First);
+                PosIdList.push_back((*it)->FirstPos);
+            }
+        }
+    }
+    if (GeoIdList.size() == 1) {
+        GeoIdList.clear();
+        PosIdList.clear();
+    }
+}
+
+void SketchObject::getCoincidentPoints(int VertexId, std::vector<int> &GeoIdList,
+                                       std::vector<PointPos> &PosIdList)
+{
+    int GeoId;
+    PointPos PosId;
+    getGeoVertexIndex(VertexId, GeoId, PosId);
+    getCoincidentPoints(GeoId, PosId, GeoIdList, PosIdList);
 }
 
 PyObject *SketchObject::getPyObject(void)
