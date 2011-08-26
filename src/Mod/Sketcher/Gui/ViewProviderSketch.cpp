@@ -453,10 +453,14 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                         Sketcher::PointPos PosId;
                         getSketchObject()->getGeoVertexIndex(edit->DragPoint, GeoId, PosId);
 
+                        Gui::Command::openCommand("Move Point");
                         Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.movePoint(%i,%i,App.Vector(%f,%f,0))"
                                                ,getObject()->getNameInDocument()
                                                ,GeoId, PosId, x, y
                                                );
+                        Gui::Command::commitCommand();
+                        Gui::Command::updateActive();
+                        
                         edit->PreselectPoint = edit->DragPoint;
                         edit->DragPoint = -1;
                         //updateColor();
@@ -472,10 +476,15 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                         if (geo->getTypeId() == Part::GeomLineSegment::getClassTypeId() ||
                             geo->getTypeId() == Part::GeomArcOfCircle::getClassTypeId() ||
                             geo->getTypeId() == Part::GeomCircle::getClassTypeId()) {
+                            
+                            Gui::Command::openCommand("Move Point");
                             Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.movePoint(%i,%i,App.Vector(%f,%f,0))"
                                                    ,getObject()->getNameInDocument()
                                                    ,edit->DragCurve, none, x, y
                                                    );
+                            
+                            Gui::Command::commitCommand();
+                            Gui::Command::updateActive();
                         }
                         edit->PreselectCurve = edit->DragCurve;
                         edit->DragCurve = -1;
