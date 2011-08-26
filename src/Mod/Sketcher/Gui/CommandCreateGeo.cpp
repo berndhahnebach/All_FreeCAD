@@ -162,6 +162,8 @@ public:
             Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addGeometry(Part.Line(App.Vector(%f,%f,0),App.Vector(%f,%f,0)))",
                       sketchgui->getObject()->getNameInDocument(),
                       EditCurve[0].fX,EditCurve[0].fY,EditCurve[1].fX,EditCurve[1].fY);
+            Gui::Command::commitCommand();
+            Gui::Command::updateActive();
             EditCurve.clear();
             sketchgui->drawEdit(EditCurve);
             sketchgui->purgeHandler(); // no code after this line, Handler get deleted in ViewProvider
@@ -335,6 +337,8 @@ public:
                      ,sketchgui->getObject()->getNameInDocument()
                      ,firstCurve+3);
 
+            Gui::Command::commitCommand();
+            Gui::Command::updateActive();
             EditCurve.clear();
             sketchgui->drawEdit(EditCurve);
             sketchgui->purgeHandler(); // no code after this line, Handler get deleted in ViewProvider
@@ -482,6 +486,7 @@ public:
             Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addGeometry(Part.Line(App.Vector(%f,%f,0),App.Vector(%f,%f,0)))",
                       sketchgui->getObject()->getNameInDocument(),
                       EditCurve[0].fX,EditCurve[0].fY,EditCurve[1].fX,EditCurve[1].fY);
+            
             // issue the constraint
             if (previousCurve != -1) {
                 Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Coincident',%i,2,%i,1)) "
@@ -490,12 +495,17 @@ public:
                           );
 
             }
+            
             if (Mode==STATUS_Do) {
                 //remember the vertex for the next rounds constraint...
                 previousCurve = getHighestCurveIndex() + 1;
                 // setup for the next line segment 
                 EditCurve[0] = onSketchPos;
                 Mode = STATUS_SEEK_Second;
+
+                Gui::Command::commitCommand();
+                Gui::Command::updateActive();
+                
                 applyCursor();
             }
             else { //Mode==STATUS_Close
@@ -504,6 +514,10 @@ public:
                           ,sketchgui->getObject()->getNameInDocument()
                           ,previousCurve,firstCurve
                           );
+                
+                Gui::Command::commitCommand();
+                Gui::Command::updateActive();
+                
                 unsetCursor();
                 // empty the edit draw
                 EditCurve.clear();
@@ -692,6 +706,10 @@ public:
                       sketchgui->getObject()->getNameInDocument(),
                       CenterPoint.fX, CenterPoint.fY, sqrt(rx*rx + ry*ry),
                       startAngle, endAngle); //arcAngle > 0 ? 0 : 1);
+                      
+            Gui::Command::commitCommand();
+            Gui::Command::updateActive();
+            
             EditCurve.clear();
             sketchgui->drawEdit(EditCurve);
             sketchgui->purgeHandler(); // no code after this line, Handler get deleted in ViewProvider
@@ -831,6 +849,10 @@ public:
                       sketchgui->getObject()->getNameInDocument(),
                       EditCurve[0].fX, EditCurve[0].fY,
                       sqrt(rx*rx + ry*ry));
+
+            Gui::Command::commitCommand();
+            Gui::Command::updateActive();
+            
             EditCurve.clear();
             sketchgui->drawEdit(EditCurve);
             sketchgui->purgeHandler(); // no code after this line, Handler get deleted in ViewProvider
