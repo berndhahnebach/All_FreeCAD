@@ -252,8 +252,8 @@ void ViewProviderPartExt::onChanged(const App::Property* prop)
             pcShapeBind->value = SoMaterialBinding::PER_PART;
             pcShapeMaterial->diffuseColor.setNum(c.size());
             SbColor* ca = pcShapeMaterial->diffuseColor.startEditing();
-            for (unsigned int i=0; i<c.size(); i++)
-                ca[i].setValue(Base::convertTo<SbColor>(c[i]));
+            for (unsigned int i=0; i < c.size(); i++)
+                ca[i].setValue(c[i].r,c[i].g,c[i].b);
             pcShapeMaterial->diffuseColor.finishEditing();
         }
     }

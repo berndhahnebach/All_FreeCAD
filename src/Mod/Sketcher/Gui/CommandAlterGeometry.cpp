@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2010 Jürgen Riegel (juergen.riegel@web.de)              *
+ *   Copyright (c) 2011 Jürgen Riegel (juergen.riegel@web.de)              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -65,12 +65,12 @@ CmdSketcherToggleConstruction::CmdSketcherToggleConstruction()
 {
     sAppModule      = "Sketcher";
     sGroup          = QT_TR_NOOP("Sketcher");
-    sMenuText       = QT_TR_NOOP("Constrain horizontally");
-    sToolTipText    = QT_TR_NOOP("Create a horizontal constraint on the selected item");
+    sMenuText       = QT_TR_NOOP("Toggle construction line");
+    sToolTipText    = QT_TR_NOOP("Toggles the currently selected lines to/from construction mode");
     sWhatsThis      = sToolTipText;
     sStatusTip      = sToolTipText;
     sPixmap         = "Sketcher_AlterConstruction";
-    sAccel          = "H";
+    sAccel          = "T";
     eType           = ForEdit;
 }
 
