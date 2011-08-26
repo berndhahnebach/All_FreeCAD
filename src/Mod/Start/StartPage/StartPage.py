@@ -1,5 +1,6 @@
-import os,FreeCAD,FreeCADGui,tempfile,time,zipfile
+import os,FreeCAD,FreeCADGui,tempfile,time,zipfile,urllib,re
 from PyQt4 import QtGui
+from xml.etree.ElementTree import parse
 
 def translate(context,text):
         "convenience function for the Qt translator"
@@ -10,10 +11,10 @@ def translate(context,text):
 text01 = translate("StartPage","FreeCAD Start Center")
 text02 = translate("StartPage","Start a new project")
 text03 = translate("StartPage","Recent Files")
-text04 = translate("StartPage","Demos")
-text05 = translate("StartPage","Tutorials")
-text06 = translate("StartPage","Homepage")
-text07 = translate("StartPage","This is the FreeCAD Homepage. Here you will be able to find a lot of information about FreeCAD, tutorials, examples and user documentation.")
+text04 = translate("StartPage","Latest videos")
+text05 = translate("StartPage","Latest news")
+text06 = translate("StartPage","On the web")
+text07 = translate("StartPage","This is the FreeCAD Homepage. Here you will be able to find a lot of information about FreeCAD, including tutorials, examples and user documentation.")
 text08 = translate("StartPage","FreeCAD Homepage")
 text09 = translate("StartPage","Example projects")
 text10 = translate("StartPage","Schenkel STEP file")
@@ -42,6 +43,7 @@ text32 = translate("StartPage","populated with some of the most commonly used to
 text33 = translate("StartPage","file size:")
 text34 = translate("StartPage","creation time:")
 text35 = translate("StartPage","last modified:")
+text36 = translate("StartPage","location:")
 
 # here is the html page skeleton
 
@@ -76,6 +78,9 @@ page = """
       }
       p {
         text-align: justify;
+      }
+      .left {
+        text-align: left;
       }
       h1 {
         font-size: 3em;
@@ -125,6 +130,7 @@ page = """
 
       <div class="block">
         <h2>""" + text04 + """</h2>
+          youtubefeed
       </div>
 
       <div class="block">
@@ -234,7 +240,8 @@ def getInfo(filename):
                 s = os.stat(filename)
                 html += "<p>" + text33 + " " + getSize(s.st_size) + "<br/>"
                 html += text34 + " " + getLocalTime(s.st_ctime) + "<br/>"
-                html += text35 + " " + getLocalTime(s.st_mtime) + "</p>"
+                html += text35 + " " + getLocalTime(s.st_mtime) + "<br/>"
+                html += "<span>" + text36 + " " + filename + "</span></p>"
                 # get additional info from fcstd files
                 if os.path.splitext(filename)[1] in [".fcstd",".FcStd"]:
                         zfile=zipfile.ZipFile(filename)
@@ -276,6 +283,40 @@ def getRecentFiles():
         html += '</ul>'
         return html
 
+def getFeed(url,numitems=3):
+        "returns a html list with links from the given RSS feed url"
+	xml = parse(urllib.urlopen(url)).getroot()
+	items = []
+        channel = xml.find('channel')
+	for element in channel.findall('item'):
+		items.append({
+                                'title': element.find('title').text,
+                                'description': element.find('description').text,
+                                'link': element.find('link').text,
+                                })
+        if len(items) > numitems:
+                items = items[:numitems]
+        resp = '<ul>'
+        for item in items:
+                descr = re.compile("style=\".*?\"").sub('',item['description'])
+                descr = re.compile("alt=\".*?\"").sub('',descr)
+                descr = re.compile("\"").sub('',descr)
+                d1 = re.findall("<img.*?>",descr)[0]
+                d2 = re.findall("<span>.*?</span>",descr)[0]
+                descr = "<h3>" + item['title'] + "</h3>"
+                descr += d1 + "<br/>"
+                descr += d2
+                resp += '<li><a onMouseover="show(\''
+                resp += descr
+                resp += '\')" onMouseout="show(\'\')" href="'
+                resp += item['link']
+                resp += '">'
+                resp += item['title']
+                resp += '</a></li>'
+        resp += '</ul>'
+        print resp
+        return resp                
+
 def handle():
         "returns the complete html startpage"
         
@@ -285,6 +326,9 @@ def handle():
 
         # add default workbenches
         html = html.replace("defaultworkbenches",getWorkbenches())
+
+        # add videos
+        #html = html.replace("youtubefeed",getFeed("http://gdata.youtube.com/feeds/base/users/salceson2/uploads?alt=rss&v=2&orderby=published"))
         
         return html
 	
