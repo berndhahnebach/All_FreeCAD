@@ -34,6 +34,7 @@
 #include <Gui/ViewProvider.h>
 #include <Gui/WaitCursor.h>
 #include <Base/Console.h>
+#include <Base/UnitsApi.h>
 #include <boost/bind.hpp>
 
 #include "ViewProviderSketch.h"
@@ -55,6 +56,18 @@ TaskSketcherGeneral::TaskSketcherGeneral(ViewProviderSketch *sketchView)
 
     connectionSolved = sketchView->signalSolved.connect(boost::bind(&SketcherGui::TaskSketcherGeneral::slotSolved, this,_1,_2));
 
+     // connecting the needed signals
+    QObject::connect(
+        ui->checkBoxGridSnap, SIGNAL(stateChanged(int)),
+        this              , SLOT  (toggleGridSnap(int))
+       );
+
+     // connecting the needed signals
+    QObject::connect(
+        ui->comboBoxGridSize, SIGNAL(currentIndexChanged(QString)),
+        this              , SLOT  (setGridSnapSize(QString))
+       );
+    
     Gui::Selection().Attach(this);
 }
 
@@ -63,6 +76,18 @@ TaskSketcherGeneral::~TaskSketcherGeneral()
     connectionSolved.disconnect();
     delete ui;
     Gui::Selection().Detach(this);
+}
+
+void TaskSketcherGeneral::setGridSnapSize(const QString& val)
+{
+    float gridSnapSize = (float) Base::UnitsApi::translateUnit(val);
+    sketchView->setGridSnapSize(gridSnapSize);
+}
+
+void TaskSketcherGeneral::toggleGridSnap(int state)
+{
+    setGridSnapSize(ui->comboBoxGridSize->currentText()); // Ensure consistency
+    sketchView->setGridSnap(state == Qt::Checked);
 }
 
 void TaskSketcherGeneral::slotSolved(int type,float time)

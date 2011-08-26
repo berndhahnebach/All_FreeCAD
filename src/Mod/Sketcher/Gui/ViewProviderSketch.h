@@ -163,7 +163,8 @@ public:
     /// signals if the Constraints have changed
     boost::signal<void (int type,float time)> signalSolved;
 
-    void setGridSnap(int Type);
+    void setGridSnap(bool status);
+    void setGridSnapSize(float size);
 
 protected:
     virtual bool setEdit(int ModNum);

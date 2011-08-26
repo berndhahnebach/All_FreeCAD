@@ -56,6 +56,10 @@ public:
 Q_SIGNALS:
     void setGridSnap(int Type);
 
+public Q_SLOTS:
+    void setGridSnapSize(const QString& val);
+    void toggleGridSnap(int state);
+
 protected:
     void changeEvent(QEvent *e);
 
