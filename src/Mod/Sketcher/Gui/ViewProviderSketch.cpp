@@ -51,6 +51,7 @@
 # include <Inventor/nodes/SoText2.h>
 # include <Inventor/nodes/SoFont.h>
 # include <Inventor/sensors/SoIdleSensor.h>
+# include <Inventor/nodes/SoCamera.h>
 
 /// Qt Include Files
 # include <QAction>
@@ -283,6 +284,18 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
     }
 
     getCoordsOnSketchPlane(x,y,pos,normal);
+
+    if(GridSnap.getValue())
+    {
+        x = x / GridSnapSize.getValue();
+        x = x < 0.0 ? ceil(x - 0.5) : floor(x + 0.5);
+        x *= GridSnapSize.getValue();
+        
+        y = y / GridSnapSize.getValue();
+        y = y < 0.0 ? ceil(y - 0.5) : floor(y + 0.5);
+        y *= GridSnapSize.getValue();
+    }
+    
 
     // Left Mouse button ****************************************************
     if (Button == 1) {
@@ -663,6 +676,17 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
     double x,y;
     getCoordsOnSketchPlane(x,y,point,normal);
 
+    if(GridSnap.getValue())
+    {
+        x = x / GridSnapSize.getValue();
+        x = x < 0.0 ? ceil(x - 0.5) : floor(x + 0.5);
+        x *= GridSnapSize.getValue();
+
+        y = y / GridSnapSize.getValue();
+        y = y < 0.0 ? ceil(y - 0.5) : floor(y + 0.5);
+        y *= GridSnapSize.getValue();
+    }
+    
     int PtIndex,CurvIndex,ConstrIndex,CrossIndex;
     bool preselectChanged = detectPreselection(pp,PtIndex,CurvIndex,ConstrIndex,CrossIndex);
 
@@ -2050,6 +2074,7 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
     //Constraint Icons Size scaled by (width) in px
     const int constraintImageSize = 16;
 
+    
     for (std::vector<Sketcher::Constraint *>::const_iterator it = ConStr.begin(); it != ConStr.end(); ++it) {
         // root separator for one constraint
         SoSeparator *sep = new SoSeparator();
@@ -2534,9 +2559,17 @@ int ViewProviderSketch::getPreselectConstraint(void)const
     return -1;
 }
 
-void ViewProviderSketch::setGridSnap(int Type)
+void ViewProviderSketch::setGridSnap(bool status)
 {
-    assert(edit);
+    GridSnap.setValue(status);
+}
+
+void ViewProviderSketch::setGridSnapSize(float size)
+{
+    if(size > 0)
+    {
+        GridSnapSize.setValue(size);
+    }
 }
 
 Sketcher::SketchObject *ViewProviderSketch::getSketchObject(void) const
