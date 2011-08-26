@@ -24,7 +24,9 @@
 #define GUI_UTILITIES_H
 
 #include <Base/ViewProj.h>
+#include <App/Material.h>
 #include <vector>
+#include <Inventor/SbColor.h>
 #include <Inventor/SbVec2f.h>
 #include <Inventor/SbViewVolume.h>
 
@@ -54,6 +56,32 @@ struct vec_traits<SbVec3d> {
     inline float_type x() { return v[0]; }
     inline float_type y() { return v[1]; }
     inline float_type z() { return v[2]; }
+private:
+    const vec_type& v;
+};
+
+// Specialization for SbColor
+template <>
+struct vec_traits<SbColor> {
+    typedef SbColor vec_type;
+    typedef float float_type;
+    vec_traits(const vec_type& v) : v(v){}
+    inline float_type x() { return v[0]; }
+    inline float_type y() { return v[1]; }
+    inline float_type z() { return v[2]; }
+private:
+    const vec_type& v;
+};
+
+// Specialization for Color
+template <>
+struct vec_traits<App::Color> {
+    typedef App::Color vec_type;
+    typedef float float_type;
+    vec_traits(const vec_type& v) : v(v){}
+    inline float_type x() { return v.r; }
+    inline float_type y() { return v.g; }
+    inline float_type z() { return v.b; }
 private:
     const vec_type& v;
 };

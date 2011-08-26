@@ -95,6 +95,7 @@
 #include <Gui/SoFCSelection.h>
 #include <Gui/Selection.h>
 #include <Gui/View3DInventorViewer.h>
+#include <Gui/Utilities.h>
 
 #include "ViewProviderExt.h"
 #include "SoBrepShape.h"
@@ -129,6 +130,7 @@ ViewProviderPartExt::ViewProviderPartExt()
     ADD_PROPERTY(PointMaterial,(mat));
     ADD_PROPERTY(LineColor,(mat.diffuseColor));
     ADD_PROPERTY(PointColor,(mat.diffuseColor));
+    ADD_PROPERTY(DiffuseColor,(ShapeColor.getValue()));
     ADD_PROPERTY(LineWidth,(2.0f));
     LineWidth.setConstraints(&floatRange);
     PointSize.setConstraints(&floatRange);
@@ -243,6 +245,22 @@ void ViewProviderPartExt::onChanged(const App::Property* prop)
         pcPointMaterial->shininess.setValue(Mat.shininess);
         pcPointMaterial->transparency.setValue(Mat.transparency);
     }
+    // For testing
+    else if (prop == &DiffuseColor) {
+        const std::vector<App::Color>& c = DiffuseColor.getValues();
+        if ((int)c.size() == this->faceset->partIndex.getNum()) {
+            pcShapeBind->value = SoMaterialBinding::PER_PART;
+            pcShapeMaterial->diffuseColor.setNum(c.size());
+            SbColor* ca = pcShapeMaterial->diffuseColor.startEditing();
+            for (unsigned int i=0; i<c.size(); i++)
+                ca[i].setValue(Base::convertTo<SbColor>(c[i]));
+            pcShapeMaterial->diffuseColor.finishEditing();
+        }
+    }
+    else if (prop == &ShapeMaterial || prop == &ShapeColor) {
+        pcShapeBind->value = SoMaterialBinding::OVERALL;
+        ViewProviderGeometryObject::onChanged(prop);
+    }
     else if (prop == &Lighting) {
         if (Lighting.getValue() == 0)
             pShapeHints->vertexOrdering = SoShapeHints::UNKNOWN_ORDERING;
@@ -250,7 +268,7 @@ void ViewProviderPartExt::onChanged(const App::Property* prop)
             pShapeHints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE;
     }
     else {
-        // if the object was invisibly and chnaged while, recreate the visual
+        // if the object was invisible and has been changed, recreate the visual
         if (prop == &Visibility && Visibility.getValue() && VisualTouched) 
             updateVisual(dynamic_cast<Part::Feature*>(pcObject)->Shape.getValue());
 
@@ -474,6 +492,13 @@ void ViewProviderPartExt::updateData(const App::Property* prop)
             updateVisual(cShape);
         else
             VisualTouched = true;
+
+        if (!VisualTouched) {
+            if (this->faceset->partIndex.getNum() > 
+                this->pcShapeMaterial->diffuseColor.getNum()) {
+                this->pcShapeBind->value = SoMaterialBinding::OVERALL;
+            }
+        }
     }
 }
 
