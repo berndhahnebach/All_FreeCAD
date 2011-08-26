@@ -77,6 +77,8 @@ public:
     App::PropertyBool ControlPoints;
     App::PropertyEnumeration Lighting;
 
+    App::PropertyColorList DiffuseColor;
+
 
     virtual void attach(App::DocumentObject *);
     virtual void setDisplayMode(const char* ModeName);
