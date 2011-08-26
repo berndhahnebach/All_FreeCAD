@@ -70,6 +70,7 @@ public:
     int addConstraint(const Constraint *constraint);
     /// delete constraint
     int delConstraint(int ConstrNbr);
+    int delConstraintOnPoint(int GeoId, PointPos PosId);
     int delConstraintOnPoint(int VertexId);
     /// add an external geometry reference
     int addExternal(App::DocumentObject *Obj, const char* SubName);
@@ -99,6 +100,11 @@ public:
     int getHighestVertexIndex(void) { return VertexId2GeoId.size() - 1; }
     int getHighestCurveIndex(void) { return Geometry.getSize() - 1; }
     void rebuildVertexIndex(void);
+
+    /// retrieves for a Vertex number a list with all coincident points
+    void getCoincidentPoints(int GeoId, PointPos PosId, std::vector<int> &GeoIdList,
+                             std::vector<PointPos> &PosIdList);
+    void getCoincidentPoints(int VertexId, std::vector<int> &GeoIdList, std::vector<PointPos> &PosIdList);
 
     // from base class
     virtual PyObject *getPyObject(void);
