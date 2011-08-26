@@ -62,6 +62,8 @@ ViewProvider2DObject::ViewProvider2DObject()
     ADD_PROPERTY_TYPE(ShowGrid,(false),"Grid",(App::PropertyType)(App::Prop_None),"Switch the grid on/off");
     ADD_PROPERTY_TYPE(GridSize,(10),"Grid",(App::PropertyType)(App::Prop_None),"Gap size of the grid");
     ADD_PROPERTY_TYPE(GridStyle,((long)0),"Grid",(App::PropertyType)(App::Prop_None),"Appearence style of the grid");
+    ADD_PROPERTY_TYPE(GridSnap,(false),"GridSnap",(App::PropertyType)(App::Prop_None),"Switch the grid on/off");
+    ADD_PROPERTY_TYPE(GridSnapSize,(10),"Grid",(App::PropertyType)(App::Prop_None),"Grid Snap Size");
 
     GridRoot = new SoSeparator();
     GridRoot->ref();
@@ -215,8 +217,6 @@ void ViewProvider2DObject::attach(App::DocumentObject *pcFeat)
 
     if (ShowGrid.getValue())
         createGrid();
-
-
 }
 
 bool ViewProvider2DObject::setEdit(int)
