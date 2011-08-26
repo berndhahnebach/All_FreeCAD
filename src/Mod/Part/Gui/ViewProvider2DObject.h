@@ -57,6 +57,10 @@ public:
   App::PropertyDistance GridSize;
   App::PropertyEnumeration GridStyle;
 
+  /// Properties for Grid Snap
+  App::PropertyBool GridSnap;
+  App::PropertyDistance GridSnapSize;
+
   virtual void attach(App::DocumentObject *);
   virtual void updateData(const App::Property*);
   virtual std::vector<std::string> getDisplayModes(void) const;
