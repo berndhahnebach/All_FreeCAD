@@ -552,7 +552,7 @@ def getNormal(shape):
         if n.getAngle(vdir) < 0.78: n = fcvec.neg(n)
         return n
 
-def offsetWire(wire,dvec,bind=False):
+def offsetWire(wire,dvec,bind=False,occ=False):
         '''
         offsetWire(wire,vector,[bind]): offsets the given wire along the
         given vector. The vector will be applied at the first vertex of
@@ -563,6 +563,17 @@ def offsetWire(wire,dvec,bind=False):
         norm = getNormal(wire)
         closed = isReallyClosed(wire)
         nedges = []
+        if occ:
+                l=abs(dvec.Length)
+                if not l: return None
+                if not wire.Wires:
+                        wire = Part.Wire(edges)
+                try:
+                        off = wire.makeOffset(l)
+                except:
+                        return None
+                else:
+                        return off
         for i in range(len(edges)):
                 curredge = edges[i]
                 delta = dvec
