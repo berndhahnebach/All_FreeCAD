@@ -95,7 +95,6 @@ using namespace Sketcher;
 
 SbColor sCurveColor             (1.0f,1.0f,1.0f);
 SbColor sCurveDraftColor        (0.4f,0.4f,0.8f);
-//SbColor sCurveConstructionColor (0.2f,1.0f,0.2f);
 SbColor sPointColor             (0.5f,0.5f,0.5f);
 SbColor sConstraintColor        (0.0f,0.8f,0.0f);
 SbColor sCrossColor             (0.0f,0.0f,0.8f);
@@ -465,7 +464,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                         int GeoId;
                         Sketcher::PointPos PosId;
                         getSketchObject()->getGeoVertexIndex(edit->DragPoint, GeoId, PosId);
-
+                        Gui::Command::openCommand("Drag Point");
                         Gui::Command::openCommand("Move Point");
                         Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.movePoint(%i,%i,App.Vector(%f,%f,0))"
                                                ,getObject()->getNameInDocument()
@@ -489,8 +488,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                         if (geo->getTypeId() == Part::GeomLineSegment::getClassTypeId() ||
                             geo->getTypeId() == Part::GeomArcOfCircle::getClassTypeId() ||
                             geo->getTypeId() == Part::GeomCircle::getClassTypeId()) {
-                            
-                            Gui::Command::openCommand("Move Point");
+                            Gui::Command::openCommand("Drag Curve");
                             Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.movePoint(%i,%i,App.Vector(%f,%f,0))"
                                                    ,getObject()->getNameInDocument()
                                                    ,edit->DragCurve, none, x, y
@@ -508,6 +506,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                     return true;
                 case STATUS_SKETCH_DragConstraint:
                     if (edit->DragConstraint != -1 && pp) {
+                        Gui::Command::openCommand("Drag Constraint");
                         moveConstraint(edit->DragConstraint, Base::Vector2D(x, y));
                         edit->PreselectConstraint = edit->DragConstraint;
                         edit->DragConstraint = -1;
