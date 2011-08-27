@@ -747,7 +747,7 @@ def scale(objectslist,delta,center=Vector(0,0,0),copy=False):
         if len(newobjlist) == 1: return newobjlist[0]
         return newobjlist
 
-def offset(obj,delta,copy=False,bind=False,sym=False):
+def offset(obj,delta,copy=False,bind=False,sym=False,occ=False):
         '''offset(object,Vector,[copymode],[bind]): offsets the given wire by
         applying the given Vector to its first vertex. If copymode is
         True, another object is created, otherwise the same object gets
@@ -795,7 +795,11 @@ def offset(obj,delta,copy=False,bind=False,sym=False):
                 else:
                         newwire = fcgeo.offsetWire(obj.Shape,delta)
                         p = fcgeo.getVerts(newwire)
-        if bind:
+        if occ:
+                newobj = FreeCAD.ActiveDocument.addObject("Part::Feature","Offset")
+                newobj.Shape = fcgeo.offsetWire(obj.Shape,delta,occ=True)
+                formatObject(newobj,obj)
+        elif bind:
                 if not fcgeo.isReallyClosed(obj.Shape):
                         if sym:
                                 s1 = n1

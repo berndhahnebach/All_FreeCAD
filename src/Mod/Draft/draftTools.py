@@ -877,24 +877,26 @@ class PlaneTracker(Tracker):
 class wireTracker(Tracker):                
         "A wire tracker"
 	def __init__(self,wire):
-                line = coin.SoLineSet()
+                self.line = coin.SoLineSet()
                 self.closed = fcgeo.isReallyClosed(wire)
                 if self.closed:
-                        line.numVertices.setValue(len(wire.Vertexes)+1)
+                        self.line.numVertices.setValue(len(wire.Vertexes)+1)
                 else:
-                        line.numVertices.setValue(len(wire.Vertexes))
+                        self.line.numVertices.setValue(len(wire.Vertexes))
                 self.coords = coin.SoCoordinate3()
                 self.update(wire)
-                Tracker.__init__(self,children=[self.coords,line])
+                Tracker.__init__(self,children=[self.coords,self.line])
 
         def update(self,wire):
-                for i in range(len(wire.Vertexes)):
-                        p=wire.Vertexes[i].Point
-                        self.coords.point.set1Value(i,[p.x,p.y,p.z])
-                if self.closed:
-                        t = len(wire.Vertexes)
-                        p = wire.Vertexes[0].Point
-                        self.coords.point.set1Value(t,[p.x,p.y,p.z])
+                if wire:
+                        self.line.numVertices.setValue(len(wire.Vertexes))
+                        for i in range(len(wire.Vertexes)):
+                                p=wire.Vertexes[i].Point
+                                self.coords.point.set1Value(i,[p.x,p.y,p.z])
+                        if self.closed:
+                                t = len(wire.Vertexes)
+                                p = wire.Vertexes[0].Point
+                                self.coords.point.set1Value(t,[p.x,p.y,p.z])
 
 class gridTracker(Tracker):
         "A grid tracker"
@@ -2765,12 +2767,7 @@ class Offset(Modifier):
                         self.step = 0
                         self.dvec = None
                         self.constrainSeg = None
-                        self.ui.radiusUi()
-                        self.ui.isCopy.show()
-                        self.ui.labelRadius.setText("Distance")
-                        self.ui.setTitle("Offset")
-                        self.ui.radiusValue.setFocus()
-                        self.ui.radiusValue.selectAll()
+                        self.ui.offsetUi()
                         self.linetrack = lineTracker()
                         self.constraintrack = lineTracker(dotted=True)
                         self.faces = False
@@ -2814,7 +2811,7 @@ class Offset(Modifier):
                                         v2 = fcgeo.getTangent(self.shape.Edges[dist[1]],point)
                                         a = -fcvec.angle(v1,v2)
                                         self.dvec = fcvec.rotate(d,a,plane.axis)
-                                        self.ghost.update(fcgeo.offsetWire(self.shape,self.dvec))
+                                        self.ghost.update(fcgeo.offsetWire(self.shape,self.dvec,occ=self.ui.occOffset.isChecked()))
                                 elif self.mode == "Circle":
                                         self.dvec = point.sub(self.center).Length
                                         self.ghost.setRadius(self.dvec)
@@ -2836,9 +2833,10 @@ class Offset(Modifier):
                 if (arg["Type"] == "SoMouseButtonEvent"):
 			if (arg["State"] == "DOWN") and (arg["Button"] == "BUTTON1"):
                                 copymode = False
+                                occmode = self.ui.occOffset.isChecked()
                                 if arg["AltDown"] or self.ui.isCopy.isChecked(): copymode = True
                                 if self.dvec:
-                                        self.commit(translate("draft","Offset"),partial(Draft.offset,self.sel,self.dvec,copymode))
+                                        self.commit(translate("draft","Offset"),partial(Draft.offset,self.sel,self.dvec,copymode,occ=occmode))
 				if arg["AltDown"]:
 					self.extendedCopy = True
 				else:
@@ -2857,8 +2855,9 @@ class Offset(Modifier):
                         self.dvec.normalize()
                         self.dvec.multiply(rad)
                         copymode = False
+                        occmode = self.ui.occOffset.isChecked()
                         if self.ui.isCopy.isChecked(): copymode = True
-                        self.commit(translate("draft","Copy"),partial(Draft.rotate,self.sel,math.degrees(angle),self.center,plane.axis,copy))
+                        self.commit(translate("draft","Offset"),partial(Draft.offset,self.sel,self.dvec,copymode,occ=occmode))
                         self.finish()
 
 class Upgrade(Modifier):

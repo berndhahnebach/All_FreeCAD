@@ -283,6 +283,7 @@ class DraftToolBar:
                 self.isRelative = self._checkbox("isRelative",self.layout,checked=True)
                 self.hasFill = self._checkbox("hasFill",self.layout,checked=Draft.getParam("fillmode"))
                 self.continueCmd = self._checkbox("continueCmd",self.layout,checked=False)
+                self.occOffset = self._checkbox("occOffset",self.layout,checked=False)
                 self.undoButton = self._pushbutton("undoButton", self.layout, icon='Draft_Rotate')
                 self.finishButton = self._pushbutton("finishButton", self.layout, icon='Draft_Finish')
                 self.closeButton = self._pushbutton("closeButton", self.layout, icon='Draft_Lock')
@@ -403,6 +404,10 @@ class DraftToolBar:
                 self.hasFill.setToolTip(translate("draft", "Check this if the object should appear as filled, otherwise it will appear as wireframe (F)"))
                 self.finishButton.setText(translate("draft", "F&inish"))
                 self.finishButton.setToolTip(translate("draft", "Finishes the current drawing or editing operation (F)"))
+                self.continueCmd.setToolTip(translate("draft", "If checked, command will not finish until you press the command button again"))
+                self.continueCmd.setText(translate("draft", "&Continue"))
+                self.occOffset.setToolTip(translate("draft", "If checked, an OCC-style offset will be performed instead of the classic offset"))
+                self.occOffset.setText(translate("draft", "&OCC-style offset"))
                 self.addButton.setToolTip(translate("draft", "Add points to the current object"))
                 self.delButton.setToolTip(translate("draft", "Remove points from the current object"))
                 self.undoButton.setText(translate("draft", "&Undo"))
@@ -425,8 +430,6 @@ class DraftToolBar:
                 self.isCopy.setToolTip(translate("draft", "If checked, objects will be copied instead of moved (C)"))
                 if (not self.taskmode) or self.tray:
                         self.colorButton.setToolTip(translate("draft", "Line Color"))
-                        self.continueCmd.setToolTip(translate("draft", "If checked, command will not finish until you press the command button again"))
-                        self.continueCmd.setText(translate("draft", "&Continue"))
                         self.facecolorButton.setToolTip(translate("draft", "Face Color"))
                         self.widthButton.setToolTip(translate("draft", "Line Width"))
                         self.fontsizeButton.setToolTip(translate("draft", "Font Size"))
@@ -496,6 +499,15 @@ class DraftToolBar:
                 self.xValue.setFocus()
                 self.xValue.selectAll()
 
+        def offsetUi(self):
+                self.taskUi(translate("draft","Offset"))
+                self.radiusUi()
+                self.isCopy.show()
+                self.occOffset.show()
+                self.labelRadius.setText(translate("draft","Distance"))
+                self.radiusValue.setFocus()
+                self.radiusValue.selectAll()
+
         def offUi(self):
                 if self.taskmode:
                         FreeCADGui.Control.closeDialog()
@@ -529,6 +541,7 @@ class DraftToolBar:
                         self.isCopy.hide()
                         self.textValue.hide()
                         self.continueCmd.hide()
+                        self.occOffset.hide()
 
         def radiusUi(self):
                 self.labelx.hide()
