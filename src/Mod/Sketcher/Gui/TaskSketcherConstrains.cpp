@@ -126,13 +126,14 @@ void TaskSketcherConstrains::onSelectionChanged(const Gui::SelectionChanges& msg
                     int index = rx.cap(1).toInt(&ok);
                     if (ok) {
                         int countItems = ui->listWidgetConstraints->count();
-                        if (index < countItems) {
+                        for (int i=0; i<countItems;i++) {
                             ConstraintItem* item = static_cast<ConstraintItem*>
-                                (ui->listWidgetConstraints->item(index));
+                                (ui->listWidgetConstraints->item(i));
                             if (item->ConstraintNbr == index) {
                                 ui->listWidgetConstraints->blockSignals(true);
                                 item->setSelected(select);
                                 ui->listWidgetConstraints->blockSignals(false);
+                                break;
                             }
                         }
                     }
