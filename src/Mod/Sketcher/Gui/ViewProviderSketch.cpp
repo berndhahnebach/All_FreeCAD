@@ -187,6 +187,9 @@ ViewProviderSketch::ViewProviderSketch()
   : edit(0),
     Mode(STATUS_NONE)
 {
+    // FIXME Should this be placed in here?
+    ADD_PROPERTY_TYPE(Autoconstraints,(true),"Auto Constraints",(App::PropertyType)(App::Prop_None),"Create auto constraints");
+    
     sPixmap = "Sketcher_NewSketch";
     LineColor.setValue(1,1,1);
     PointColor.setValue(1,1,1);

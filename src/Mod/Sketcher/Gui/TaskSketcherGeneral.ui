@@ -617,12 +617,12 @@
     </layout>
    </item>
    <item>
-    <widget class="QCheckBox" name="checkBox_2">
+    <widget class="QCheckBox" name="checkBoxAutoconstraints">
      <property name="enabled">
       <bool>true</bool>
      </property>
      <property name="text">
-      <string>auto constraints</string>
+      <string>Auto constraints</string>
      </property>
      <property name="checked">
       <bool>true</bool>

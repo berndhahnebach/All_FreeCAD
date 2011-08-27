@@ -77,6 +77,8 @@ public:
     /// destructor
     virtual ~ViewProviderSketch();
 
+    App::PropertyBool Autoconstraints;
+
     /// draw the sketch in the inventor nodes
     void draw(bool temp=false);
     /// draw the edit curve
