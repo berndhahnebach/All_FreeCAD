@@ -62,10 +62,14 @@ TaskSketcherGeneral::TaskSketcherGeneral(ViewProviderSketch *sketchView)
         this              , SLOT  (toggleGridSnap(int))
        );
 
-     // connecting the needed signals
     QObject::connect(
         ui->comboBoxGridSize, SIGNAL(currentIndexChanged(QString)),
         this              , SLOT  (setGridSnapSize(QString))
+       );
+
+    QObject::connect(
+        ui->checkBoxAutoconstraints, SIGNAL(stateChanged(int)),
+        this              , SLOT  (toggleAutoconstraints(int))
        );
     
     Gui::Selection().Attach(this);
@@ -88,6 +92,11 @@ void TaskSketcherGeneral::toggleGridSnap(int state)
 {
     setGridSnapSize(ui->comboBoxGridSize->currentText()); // Ensure consistency
     sketchView->setGridSnap(state == Qt::Checked);
+}
+
+void TaskSketcherGeneral::toggleAutoconstraints(int state)
+{
+    sketchView->Autoconstraints.setValue(state == Qt::Checked);
 }
 
 void TaskSketcherGeneral::slotSolved(int type,float time)

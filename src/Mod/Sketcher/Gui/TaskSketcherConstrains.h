@@ -28,7 +28,6 @@
 #include <Gui/Selection.h>
 #include <boost/signals.hpp>
 
-
 class Ui_TaskSketcherConstrains;
 
 namespace App {
