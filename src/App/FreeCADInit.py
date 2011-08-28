@@ -50,6 +50,8 @@ def InitApplications():
 	AddPath = FreeCAD.ConfigGet("AdditionalModulePaths").split(";")
 	HomeMod = FreeCAD.ConfigGet("UserAppData")+"Mod"
 	HomeMod = os.path.realpath(HomeMod)
+	MacroMod = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Macro").GetString("MacroPath")
+	MacroMod = os.path.realpath(MacroMod)
 	ModPar = FreeCAD.ParamGet("System parameter:Modules")
 
 	#print FreeCAD.getHomePath()
@@ -67,6 +69,10 @@ def InitApplications():
 	if os.path.isdir(HomeMod):
 		HomeMods = os.listdir(HomeMod)
 		for i in HomeMods: ModDict[i.lower()] = os.path.join(HomeMod,i)
+	# Search for additional modules in the macro directory
+	if os.path.isdir(MacroMod):
+		MacroMods = os.listdir(MacroMod)
+		for i in MacroMods: ModDict[i.lower()] = os.path.join(MacroMod,i)
 	# Search for additional modules in command line
 	for i in AddPath:
 		if os.path.isdir(i): ModDict[i] = i
