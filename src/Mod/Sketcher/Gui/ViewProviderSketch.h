@@ -128,6 +128,9 @@ public:
     /// get the pointer to the sketch document object
     Sketcher::SketchObject *getSketchObject(void) const;
     
+    /// Snap Points X,Y (Mouse Coordinates) onto Snap Grid if enabled
+    void snapToGrid(double& x, double& y);
+    
     // Moves a selected constraint
     void moveConstraint(int constNum, const Base::Vector2D &toPos);
      // Checks if there is a constraint object at position vector

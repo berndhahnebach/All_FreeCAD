@@ -246,6 +246,34 @@ bool ViewProviderSketch::keyPressed(bool pressed, int key)
     return true; // handle all other key events
 }
 
+void ViewProviderSketch::snapToGrid(double& x, double& y)
+{
+    if(GridSnap.getValue())
+    {
+        // Snap Tolerance in pixels
+        // FIXME make configurable as a Parameter
+        const double snapTol = GridSnapSize.getValue() / 5;
+
+        double tmpX = x, tmpY = y;
+
+        // Find Nearest Snap points
+        tmpX = tmpX / GridSnapSize.getValue();
+        tmpX = tmpX < 0.0 ? ceil(tmpX - 0.5) : floor(tmpX + 0.5);
+        tmpX *= GridSnapSize.getValue();
+
+        tmpY = tmpY / GridSnapSize.getValue();
+        tmpY = tmpY < 0.0 ? ceil(tmpY - 0.5) : floor(tmpY + 0.5);
+        tmpY *= GridSnapSize.getValue();
+
+        // Check if x within snap tolerance
+        if(x < tmpX + snapTol && x > tmpX - snapTol)
+            x = tmpX; // Snap X Mouse Position
+
+         // Check if y within snap tolerance
+        if(y < tmpY + snapTol && y > tmpY - snapTol)
+            y = tmpY; // Snap Y Mouse Position
+    }
+}
 void ViewProviderSketch::getCoordsOnSketchPlane(double &u, double &v,const SbVec3f &point, const SbVec3f &normal)
 {
     // Plane form
@@ -290,18 +318,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
     }
 
     getCoordsOnSketchPlane(x,y,pos,normal);
-
-    if(GridSnap.getValue())
-    {
-        x = x / GridSnapSize.getValue();
-        x = x < 0.0 ? ceil(x - 0.5) : floor(x + 0.5);
-        x *= GridSnapSize.getValue();
-        
-        y = y / GridSnapSize.getValue();
-        y = y < 0.0 ? ceil(y - 0.5) : floor(y + 0.5);
-        y *= GridSnapSize.getValue();
-    }
-    
+    snapToGrid(x, y);
 
     // Left Mouse button ****************************************************
     if (Button == 1) {
@@ -682,16 +699,7 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
 
     double x,y;
     getCoordsOnSketchPlane(x,y,point,normal);
-
-    if (GridSnap.getValue()) {
-        x = x / GridSnapSize.getValue();
-        x = x < 0.0 ? ceil(x - 0.5) : floor(x + 0.5);
-        x *= GridSnapSize.getValue();
-
-        y = y / GridSnapSize.getValue();
-        y = y < 0.0 ? ceil(y - 0.5) : floor(y + 0.5);
-        y *= GridSnapSize.getValue();
-    }
+    snapToGrid(x, y);
 
     int PtIndex,CurvIndex,ConstrIndex,CrossIndex;
     bool preselectChanged = detectPreselection(pp,PtIndex,CurvIndex,ConstrIndex,CrossIndex);
