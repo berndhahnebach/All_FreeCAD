@@ -28,6 +28,7 @@
 # include <Inventor/nodes/SoTranslation.h>
 # include <Inventor/nodes/SoText2.h>
 # include <Inventor/nodes/SoFont.h>
+# include <QPainter>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
