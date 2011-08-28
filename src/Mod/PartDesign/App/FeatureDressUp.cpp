@@ -34,7 +34,7 @@ using namespace PartDesign;
 namespace PartDesign {
 
 
-PROPERTY_SOURCE(PartDesign::DressUp, Part::Feature)
+PROPERTY_SOURCE(PartDesign::DressUp, PartDesign::Feature)
 
 DressUp::DressUp()
 {

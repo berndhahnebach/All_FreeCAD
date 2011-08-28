@@ -5,12 +5,24 @@ lib_LTLIBRARIES=libPartDesignGui.la PartDesignGui.la
 BUILT_SOURCES=\
 		moc_TaskChamfer.cpp \
 		moc_TaskPadParameters.cpp \
+		moc_TaskPatternRectangularParameters.cpp \
+		moc_TaskPocketParameters.cpp \
+		moc_TaskHoleParameters.cpp \
+		moc_TaskRevolutionParameters.cpp \
 		ui_TaskChamfer.h \
-		ui_TaskPadParameters.h
+		ui_TaskPadParameters.h \
+		ui_TaskPatternRectangularParameters.h \
+		ui_TaskPocketParameters.h \
+		ui_TaskHoleParameters.h \
+		ui_TaskRevolutionParameters.h 
 
 libPartDesignGui_la_UI=\
 		TaskChamfer.ui \
-		TaskPadParameters.ui
+		TaskPadParameters.ui \
+		TaskPatternRectangularParameters.ui \
+		TaskPocketParameters.ui \
+		TaskHoleParameters.ui \
+		TaskRevolutionParameters.ui
 
 libPartDesignGui_la_SOURCES=\
 		AppPartDesignGuiPy.cpp \
@@ -21,12 +33,22 @@ libPartDesignGui_la_SOURCES=\
 		TaskChamfer.h \
 		TaskPadParameters.cpp \
 		TaskPadParameters.h \
+		TaskPatternRectangularParameters.cpp \
+		TaskPatternRectangularParameters.h \
+		TaskPocketParameters.cpp \
+		TaskPocketParameters.h \
+		TaskRevolutionParameters.cpp \
+		TaskRevolutionParameters.h \
+		TaskHoleParameters.cpp \
+		TaskHoleParameters.h \
 		ViewProviderPad.cpp \
 		ViewProviderPad.h \
 		ViewProviderPocket.cpp \
 		ViewProviderPocket.h \
 		ViewProviderRevolution.cpp \
 		ViewProviderRevolution.h \
+		ViewProviderPatternRectangular.cpp \
+		ViewProviderPatternRectangular.h \
 		Workbench.cpp \
 		Workbench.h
 

@@ -21,16 +21,16 @@
  ***************************************************************************/
 
 
-#ifndef GUI_TASKVIEW_TaskPadParameters_H
-#define GUI_TASKVIEW_TaskPadParameters_H
+#ifndef GUI_TASKVIEW_TaskPatternRectangularParameters_H
+#define GUI_TASKVIEW_TaskPatternRectangularParameters_H
 
 #include <Gui/TaskView/TaskView.h>
 #include <Gui/Selection.h>
 #include <Gui/TaskView/TaskDialog.h>
 
-#include "ViewProviderPad.h"
+#include "ViewProviderPatternRectangular.h"
 
-class Ui_TaskPadParameters;
+class Ui_TaskPatternRectangularParameters;
 
 namespace App {
 class Property;
@@ -44,13 +44,13 @@ namespace PartDesignGui {
 
 
 
-class TaskPadParameters : public Gui::TaskView::TaskBox, public Gui::SelectionSingleton::ObserverType
+class TaskPatternRectangularParameters : public Gui::TaskView::TaskBox, public Gui::SelectionSingleton::ObserverType
 {
     Q_OBJECT
 
 public:
-    TaskPadParameters(QWidget *parent = 0);
-    ~TaskPadParameters();
+    TaskPatternRectangularParameters(QWidget *parent = 0);
+    ~TaskPatternRectangularParameters();
     /// Observer message from the Selection
     void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
                   Gui::SelectionSingleton::MessageType Reason);
@@ -64,20 +64,20 @@ private:
 
 private:
     QWidget* proxy;
-    Ui_TaskPadParameters* ui;
+    Ui_TaskPatternRectangularParameters* ui;
 };
 
 /// simulation dialog for the TaskView
-class TaskDlgPadParameters : public Gui::TaskView::TaskDialog
+class TaskDlgPatternRectangularParameters : public Gui::TaskView::TaskDialog
 {
     Q_OBJECT
 
 public:
-    TaskDlgPadParameters(ViewProviderPad *PadView);
-    ~TaskDlgPadParameters();
+    TaskDlgPatternRectangularParameters(ViewProviderPatternRectangular *PatternRectangularView);
+    ~TaskDlgPatternRectangularParameters();
 
-    ViewProviderPad* getPadView() const
-    { return PadView; }
+    ViewProviderPatternRectangular* getPatternRectangularView() const
+    { return PatternRectangularView; }
 
 public:
     /// is called the TaskView when the dialog is opened
@@ -98,9 +98,9 @@ public:
     { return QDialogButtonBox::Close|QDialogButtonBox::Help; }
 
 protected:
-    ViewProviderPad   *PadView;
+    ViewProviderPatternRectangular   *PatternRectangularView;
 
-    TaskPadParameters  *parameter;
+    TaskPatternRectangularParameters  *parameter;
 };
 
 } //namespace PartDesignGui

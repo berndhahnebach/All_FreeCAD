@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>PartDesignGui::TaskPadParameters</class>
- <widget class="QWidget" name="PartDesignGui::TaskPadParameters">
+ <class>PartDesignGui::TaskHoleParameters</class>
+ <widget class="QWidget" name="PartDesignGui::TaskHoleParameters">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -30,6 +30,16 @@
          <string>Dimension</string>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>Up to last</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Up to first</string>
+        </property>
+       </item>
       </widget>
      </item>
     </layout>
@@ -39,7 +49,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Lenth:</string>
+        <string>Size:</string>
        </property>
       </widget>
      </item>
@@ -47,20 +57,6 @@
       <widget class="QDoubleSpinBox" name="doubleSpinBox"/>
      </item>
     </layout>
-   </item>
-   <item>
-    <widget class="QCheckBox" name="checkBox">
-     <property name="text">
-      <string>Mirrored extent</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QCheckBox" name="checkBox_2">
-     <property name="text">
-      <string>Reversed</string>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>

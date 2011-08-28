@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2010 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
+ *   Copyright (c) 2011 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,27 +21,22 @@
  ***************************************************************************/
 
 
-#ifndef PARTDESIGN_DressUp_H
-#define PARTDESIGN_DressUp_H
+#include "PreCompiled.h"
+#ifndef _PreComp_
+#endif
 
-#include <App/PropertyStandard.h>
+
 #include "Feature.h"
 
-namespace PartDesign
+
+
+namespace PartDesign {
+
+
+PROPERTY_SOURCE(PartDesign::Feature,Part::Feature)
+
+Feature::Feature()
 {
+}
 
-class DressUp : public PartDesign::Feature
-{
-    PROPERTY_HEADER(PartDesign::DressUp);
-
-public:
-    DressUp();
-
-    App::PropertyLinkSub Base;
-
- };
-
-} //namespace PartDesign
-
-
-#endif // PART_DressUp_H
+}

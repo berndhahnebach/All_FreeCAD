@@ -26,8 +26,8 @@
 #ifndef _PreComp_
 #endif
 
-#include "ui_TaskPadParameters.h"
-#include "TaskPadParameters.h"
+#include "ui_TaskHoleParameters.h"
+#include "TaskHoleParameters.h"
 #include <Gui/Application.h>
 #include <Gui/Document.h>
 #include <Gui/BitmapFactory.h>
@@ -41,14 +41,14 @@
 using namespace PartDesignGui;
 using namespace Gui;
 
-/* TRANSLATOR PartDesignGui::TaskPadParameters */
+/* TRANSLATOR PartDesignGui::TaskHoleParameters */
 
-TaskPadParameters::TaskPadParameters(QWidget *parent)
-    : TaskBox(Gui::BitmapFactory().pixmap("document-new"),tr("TaskPadParameters"),true, parent)
+TaskHoleParameters::TaskHoleParameters(QWidget *parent)
+    : TaskBox(Gui::BitmapFactory().pixmap("document-new"),tr("TaskHoleParameters"),true, parent)
 {
     // we need a separate container widget to add all controls to
     proxy = new QWidget(this);
-    ui = new Ui_TaskPadParameters();
+    ui = new Ui_TaskHoleParameters();
     ui->setupUi(proxy);
     QMetaObject::connectSlotsByName(this);
 
@@ -57,13 +57,13 @@ TaskPadParameters::TaskPadParameters(QWidget *parent)
     Gui::Selection().Attach(this);
 }
 
-TaskPadParameters::~TaskPadParameters()
+TaskHoleParameters::~TaskHoleParameters()
 {
     delete ui;
     Gui::Selection().Detach(this);
 }
 
-void TaskPadParameters::changeEvent(QEvent *e)
+void TaskHoleParameters::changeEvent(QEvent *e)
 {
     TaskBox::changeEvent(e);
     if (e->type() == QEvent::LanguageChange) {
@@ -72,7 +72,7 @@ void TaskPadParameters::changeEvent(QEvent *e)
 }
 
 /// @cond DOXERR
-void TaskPadParameters::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
+void TaskHoleParameters::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
                               Gui::SelectionSingleton::MessageType Reason)
 {
     if (Reason.Type == SelectionChanges::AddSelection ||
@@ -88,16 +88,16 @@ void TaskPadParameters::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
 // TaskDialog
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-TaskDlgPadParameters::TaskDlgPadParameters(ViewProviderPad *PadView)
-    : TaskDialog(),PadView(PadView)
+TaskDlgHoleParameters::TaskDlgHoleParameters(ViewProviderHole *HoleView)
+    : TaskDialog(),HoleView(HoleView)
 {
-    assert(PadView);
-    parameter  = new TaskPadParameters();
+    assert(HoleView);
+    parameter  = new TaskHoleParameters();
 
     Content.push_back(parameter);
 }
 
-TaskDlgPadParameters::~TaskDlgPadParameters()
+TaskDlgHoleParameters::~TaskDlgHoleParameters()
 {
 
 }
@@ -105,24 +105,24 @@ TaskDlgPadParameters::~TaskDlgPadParameters()
 //==== calls from the TaskView ===============================================================
 
 
-void TaskDlgPadParameters::open()
+void TaskDlgHoleParameters::open()
 {
 
 }
 
-void TaskDlgPadParameters::clicked(int)
+void TaskDlgHoleParameters::clicked(int)
 {
     
 }
 
-bool TaskDlgPadParameters::accept()
+bool TaskDlgHoleParameters::accept()
 {
     return true;
 }
 
-bool TaskDlgPadParameters::reject()
+bool TaskDlgHoleParameters::reject()
 {
-    Gui::Command::openCommand("Pad changed");
+    Gui::Command::openCommand("Hole changed");
     Gui::Command::doCommand(Gui::Command::Gui,"Gui.activeDocument().resetEdit()");
     Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.recompute()");
     Gui::Command::commitCommand();
@@ -130,7 +130,7 @@ bool TaskDlgPadParameters::reject()
     return true;
 }
 
-void TaskDlgPadParameters::helpRequested()
+void TaskDlgHoleParameters::helpRequested()
 {
 
 }
@@ -138,4 +138,4 @@ void TaskDlgPadParameters::helpRequested()
 
 
 
-#include "moc_TaskPadParameters.cpp"
+#include "moc_TaskHoleParameters.cpp"

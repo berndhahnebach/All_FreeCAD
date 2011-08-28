@@ -25,7 +25,7 @@
 #define PARTDESIGN_SketchBased_H
 
 #include <App/PropertyStandard.h>
-#include <Mod/Part/App/PartFeature.h>
+#include "Feature.h"
 
 class TopoDS_Face;
 class TopoDS_Wire;
@@ -33,7 +33,7 @@ class TopoDS_Wire;
 namespace PartDesign
 {
 
-class SketchBased : public Part::Feature
+class SketchBased : public PartDesign::Feature
 {
     PROPERTY_HEADER(PartDesign::SketchBased);
 

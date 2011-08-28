@@ -21,16 +21,16 @@
  ***************************************************************************/
 
 
-#ifndef GUI_TASKVIEW_TaskPadParameters_H
-#define GUI_TASKVIEW_TaskPadParameters_H
+#ifndef GUI_TASKVIEW_TaskPocketParameters_H
+#define GUI_TASKVIEW_TaskPocketParameters_H
 
 #include <Gui/TaskView/TaskView.h>
 #include <Gui/Selection.h>
 #include <Gui/TaskView/TaskDialog.h>
 
-#include "ViewProviderPad.h"
+#include "ViewProviderPocket.h"
 
-class Ui_TaskPadParameters;
+class Ui_TaskPocketParameters;
 
 namespace App {
 class Property;
@@ -44,13 +44,13 @@ namespace PartDesignGui {
 
 
 
-class TaskPadParameters : public Gui::TaskView::TaskBox, public Gui::SelectionSingleton::ObserverType
+class TaskPocketParameters : public Gui::TaskView::TaskBox, public Gui::SelectionSingleton::ObserverType
 {
     Q_OBJECT
 
 public:
-    TaskPadParameters(QWidget *parent = 0);
-    ~TaskPadParameters();
+    TaskPocketParameters(QWidget *parent = 0);
+    ~TaskPocketParameters();
     /// Observer message from the Selection
     void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
                   Gui::SelectionSingleton::MessageType Reason);
@@ -64,20 +64,20 @@ private:
 
 private:
     QWidget* proxy;
-    Ui_TaskPadParameters* ui;
+    Ui_TaskPocketParameters* ui;
 };
 
 /// simulation dialog for the TaskView
-class TaskDlgPadParameters : public Gui::TaskView::TaskDialog
+class TaskDlgPocketParameters : public Gui::TaskView::TaskDialog
 {
     Q_OBJECT
 
 public:
-    TaskDlgPadParameters(ViewProviderPad *PadView);
-    ~TaskDlgPadParameters();
+    TaskDlgPocketParameters(ViewProviderPocket *PocketView);
+    ~TaskDlgPocketParameters();
 
-    ViewProviderPad* getPadView() const
-    { return PadView; }
+    ViewProviderPocket* getPocketView() const
+    { return PocketView; }
 
 public:
     /// is called the TaskView when the dialog is opened
@@ -98,9 +98,9 @@ public:
     { return QDialogButtonBox::Close|QDialogButtonBox::Help; }
 
 protected:
-    ViewProviderPad   *PadView;
+    ViewProviderPocket   *PocketView;
 
-    TaskPadParameters  *parameter;
+    TaskPocketParameters  *parameter;
 };
 
 } //namespace PartDesignGui

@@ -25,12 +25,12 @@
 #define PARTDESIGN_Pocket_H
 
 #include <App/PropertyUnits.h>
-#include "FeatureSketchBased.h"
+#include "FeatureSubtractive.h"
 
 namespace PartDesign
 {
 
-class Pocket : public SketchBased
+class Pocket : public Subtractive
 {
     PROPERTY_HEADER(PartDesign::Pocket);
 

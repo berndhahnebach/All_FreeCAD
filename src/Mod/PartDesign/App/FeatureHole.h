@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2010 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
+ *   Copyright (c) 2011 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,27 +21,46 @@
  ***************************************************************************/
 
 
-#ifndef PARTDESIGN_DressUp_H
-#define PARTDESIGN_DressUp_H
+#ifndef PARTDESIGN_Hole_H
+#define PARTDESIGN_Hole_H
 
-#include <App/PropertyStandard.h>
-#include "Feature.h"
+#include <App/PropertyUnits.h>
+#include "FeatureSubtractive.h"
 
 namespace PartDesign
 {
 
-class DressUp : public PartDesign::Feature
+class Hole : public Subtractive
 {
-    PROPERTY_HEADER(PartDesign::DressUp);
+    PROPERTY_HEADER(PartDesign::Hole);
 
 public:
-    DressUp();
+    Hole();
 
-    App::PropertyLinkSub Base;
+    App::PropertyEnumeration    Type;
+    App::PropertyEnumeration    HoleType;
+    App::PropertyEnumeration    ThreadType;
+    App::PropertyLength         Length;
+    App::PropertyFloat          ThreadSize;
 
- };
+    /** @name methods override feature */
+    //@{
+    /// recalculate the feature
+    App::DocumentObjectExecReturn *execute(void);
+    //short mustExecute() const;
+    /// returns the type name of the view provider
+    const char* getViewProviderName(void) const {
+        return "PartDesignGui::ViewProviderHole";
+    }
+    //@}
+private:
+    static const char* TypeEnums[];
+    static const char* HoleTypeEnums[];
+    static const char* ThreadEnums[];
+
+};
 
 } //namespace PartDesign
 
 
-#endif // PART_DressUp_H
+#endif // PART_Hole_H
