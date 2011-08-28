@@ -21,8 +21,7 @@
  ***************************************************************************/
 
 
-# include "PreCompiled.h"
-# include <Standard_math.hxx>
+#include "PreCompiled.h"
 
 #ifndef _PreComp_
 # include <Standard_math.hxx>
@@ -32,28 +31,23 @@
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
-# include <Base/Console.h>
-# include <Base/Exception.h>
-# include <Base/Interpreter.h>
-# include <Base/Tools2D.h>
-# include <Base/Vector3D.h>
-# include <Gui/Application.h>
-# include <Gui/BitmapFactory.h>
-# include <Gui/Command.h>
-# include <Gui/Document.h>
-# include <Gui/Macro.h>
-# include <Gui/MainWindow.h>
-# include <Gui/View3DInventorViewer.h>
-# include <Gui/View3DInventor.h>
+#include <Base/Console.h>
+#include <Base/Exception.h>
+#include <Base/Interpreter.h>
+#include <Gui/Application.h>
+#include <Gui/BitmapFactory.h>
+#include <Gui/Command.h>
+#include <Gui/Document.h>
+#include <Gui/Macro.h>
+#include <Gui/MainWindow.h>
+#include <Gui/View3DInventorViewer.h>
+#include <Gui/View3DInventor.h>
 
-# include <QString>
-# include <QPainter>
+#include <Mod/Part/App/Geometry.h>
+#include <Mod/Sketcher/App/SketchObject.h>
 
-# include <Mod/Part/App/Geometry.h>
-# include <Mod/Sketcher/App/SketchObject.h>
-
-# include "DrawSketchHandler.h"
-# include "ViewProviderSketch.h"
+#include "DrawSketchHandler.h"
+#include "ViewProviderSketch.h"
 
 
 using namespace SketcherGui;
@@ -64,7 +58,7 @@ using namespace Sketcher;
 // Construction/Destruction
 
 DrawSketchHandler::DrawSketchHandler()
-        :sketchgui(0)
+    : sketchgui(0)
 {
 
 }
@@ -305,13 +299,13 @@ int DrawSketchHandler::seekAutoConstraint(const Base::Vector2D& Pos, const Base:
 
 void DrawSketchHandler::createAutoConstraints(const std::vector<AutoConstraint *>& autoConstrs, int geoId, int vertexId = -1)
 {
-    if(!sketchgui->Autoconstraints.getValue())
-    return; // If Autoconstraints property is not set quit
+    if (!sketchgui->Autoconstraints.getValue())
+        return; // If Autoconstraints property is not set quit
 
     // If a Vertex point was given provided calculate Point Position
     Sketcher::PointPos pointPos;
 
-    if(vertexId != -1) {
+    if (vertexId != -1) {
         int geoTmpId;
         sketchgui->getSketchObject()->getGeoVertexIndex(vertexId, geoTmpId, pointPos);
 
@@ -319,16 +313,17 @@ void DrawSketchHandler::createAutoConstraints(const std::vector<AutoConstraint *
         return; // Vertex doesn't belong to this geoId
     }
 
-    if(autoConstrs.size() > 0) {
+    if (autoConstrs.size() > 0) {
         // Open the Command
         Gui::Command::openCommand("Add auto constraints");
 
         // Iterate through constraints
         std::vector<AutoConstraint *>::const_iterator it = autoConstrs.begin();
-        for( ; it != autoConstrs.end(); ++it) {
-            switch((*it)->Type) {
-                case Sketcher::Coincident: {
-                    if(vertexId == -1)
+        for (; it != autoConstrs.end(); ++it) {
+            switch ((*it)->Type)
+            {
+            case Sketcher::Coincident: {
+                    if (vertexId == -1)
                         continue; // Requires a vertex id to create constraint
 
                     Sketcher::PointPos pointPos2;
@@ -340,25 +335,25 @@ void DrawSketchHandler::createAutoConstraints(const std::vector<AutoConstraint *
                         ,geoId, pointPos, geoId2, pointPos2
                         );
                 } break;
-                case Sketcher::PointOnObject: {
+            case Sketcher::PointOnObject: {
                     Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('PointOnObject',%i,%i,%i)) "
                     ,sketchgui->getObject()->getNameInDocument()
                     ,geoId, pointPos, (*it)->Index
                     );
                 } break;
-                case Sketcher::Horizontal: {
+            case Sketcher::Horizontal: {
                     Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Horizontal',%i)) "
                     ,sketchgui->getObject()->getNameInDocument()
                     ,geoId
                     );
                 } break;
-                case Sketcher::Vertical: {
+            case Sketcher::Vertical: {
                     Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Vertical',%i)) "
                     ,sketchgui->getObject()->getNameInDocument()
                     ,geoId
                     );
                 } break;
-                case Sketcher::Tangent: {
+            case Sketcher::Tangent: {
                     Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Tangent',%i, %i)) "
                     ,sketchgui->getObject()->getNameInDocument()
                     ,geoId, (*it)->Index
@@ -419,7 +414,7 @@ void DrawSketchHandler::renderSuggestConstraintsCursor()
     qp.end(); // Finish painting
 
     // Create the new cursor with the icon.
-    actCursor = QCursor(newIcon, 7, 7);
+    actCursor = QCursor(newIcon, 5, 5);
     applyCursor();
 }
 
