@@ -94,6 +94,13 @@ SoSeparator* ViewProvider2DObject::createGrid(void)
     float MaX = MaxX + (MaxX-MinX)*0.5;
     float MiY = MinY - (MaxY-MinY)*0.5;
     float MaY = MaxY + (MaxY-MinY)*0.5;
+
+    //Round the values otherwise grid is not aligned with center
+    MiX = ceil(MiX / Step) * Step;
+    MaX = ceil(MaX / Step) * Step;
+    MiY = ceil(MiY / Step) * Step;
+    MaY = ceil(MaY / Step) * Step;
+    
     //float Step = 10.0;
     double dz = 0.0;                     // carpet-grid separation
     //int gridsize = 20;                    // grid size
