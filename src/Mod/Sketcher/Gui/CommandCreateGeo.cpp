@@ -801,20 +801,23 @@ public:
             Gui::Command::commitCommand();
             Gui::Command::updateActive();
 
-            // Add auto constraints
-            if (suggestedConstraints.size() > 0)
-                createAutoConstraints(suggestedConstraints, getHighestCurveIndex(), getHighestVertexIndex() - 1);
-
+            // Auto Constraint center point
             if (sugConstr1.size() > 0)
                 createAutoConstraints(sugConstr1, getHighestCurveIndex(), getHighestVertexIndex() -2);
 
+            int hvindex = getHighestVertexIndex();
+
+            // Auto Constraint first picked point
             if (sugConstr2.size() > 0)
-                createAutoConstraints(sugConstr2, getHighestCurveIndex(), getHighestVertexIndex() );
-            
+                createAutoConstraints(sugConstr2, getHighestCurveIndex(), (arcAngle > 0) ? hvindex - 1 : hvindex );
+            // Add auto constraints
+            if (suggestedConstraints.size() > 0)
+                createAutoConstraints(suggestedConstraints, getHighestCurveIndex(), (arcAngle > 0) ? hvindex : hvindex - 1);
+
             // Delete stored auto constraint sets
             clearSuggestedConstraints(sugConstr1);
             clearSuggestedConstraints(sugConstr2);
-            
+
             EditCurve.clear();
             sketchgui->drawEdit(EditCurve);
             sketchgui->purgeHandler(); // no code after this line, Handler get deleted in ViewProvider
@@ -920,7 +923,7 @@ public:
             if (seekAutoConstraint(onSketchPos, Base::Vector2D(0.f,0.f)))
                 renderSuggestConstraintsCursor();
             else
-                setCursor(QPixmap(cursor_createline),5,5);
+                setCursor(QPixmap(cursor_createcircle),5,5);
         }
         else if (Mode==STATUS_SEEK_Second) {
             float rx0 = onSketchPos.fX - EditCurve[0].fX;
@@ -932,6 +935,12 @@ public:
                 EditCurve[1+i] = Base::Vector2D(EditCurve[0].fX + rx, EditCurve[0].fY + ry);
                 EditCurve[17+i] = Base::Vector2D(EditCurve[0].fX - rx, EditCurve[0].fY - ry);
             }
+
+            if (seekAutoConstraint(onSketchPos, Base::Vector2D(0.f,0.f), CURVE))
+                renderSuggestConstraintsCursor();
+            else
+                setCursor(QPixmap(cursor_createcircle),5,5);
+
             EditCurve[33] = EditCurve[1];
             sketchgui->drawEdit(EditCurve);
         }
@@ -942,6 +951,8 @@ public:
         if (Mode==STATUS_SEEK_First){
             EditCurve[0] = onSketchPos;
             Mode = STATUS_SEEK_Second;
+            
+            cloneSuggestedConstraints(sugConstr1);
         } else {
             EditCurve[1] = onSketchPos;
             Mode = STATUS_Close;
@@ -951,7 +962,9 @@ public:
 
     virtual bool releaseButton(Base::Vector2D onSketchPos)
     {
-        if (Mode==STATUS_Close) {
+        if (Mode==STATUS_SEEK_Second) {
+
+        } else  if (Mode==STATUS_Close) {
             float rx = EditCurve[1].fX - EditCurve[0].fX;
             float ry = EditCurve[1].fY - EditCurve[0].fY;
             unsetCursor();
@@ -968,8 +981,15 @@ public:
             Gui::Command::updateActive();
 
             // Add auto constraints
+            // Add auto constraints
+            if (sugConstr1.size() > 0)
+                createAutoConstraints(sugConstr1, getHighestCurveIndex(), getHighestVertexIndex());
+
+            // Add suggested constraints for circumference
             if (suggestedConstraints.size() > 0)
-                createAutoConstraints(suggestedConstraints, getHighestCurveIndex(), getHighestVertexIndex());
+                createAutoConstraints(suggestedConstraints, getHighestCurveIndex());
+
+            clearSuggestedConstraints(sugConstr1);
             
             EditCurve.clear();
             sketchgui->drawEdit(EditCurve);
@@ -980,6 +1000,8 @@ public:
 protected:
     SelectMode Mode;
     std::vector<Base::Vector2D> EditCurve;
+    std::vector<AutoConstraint *> sugConstr1;
+    
 };
 
 DEF_STD_CMD_A(CmdSketcherCreateCircle);
