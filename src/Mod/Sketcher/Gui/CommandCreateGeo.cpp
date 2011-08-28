@@ -32,6 +32,7 @@
 #include <Gui/DlgEditFileIncludeProptertyExternal.h>
 
 #include <Mod/Sketcher/App/SketchObject.h>
+
 #include "ViewProviderSketch.h"
 #include "DrawSketchHandler.h"
 

@@ -143,8 +143,9 @@ struct EditData {
     SbColor PreselectOldColor;
     int PreselectPoint;
     int PreselectCurve;
-    int PreselectConstraint;
     int PreselectCross;
+    int PreselectConstraint;
+
     // pointer to the Solver
     Sketcher::Sketch ActSketch;
     // container to track our own selected parts
@@ -760,9 +761,9 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
             }
             return true;
         case STATUS_SKETCH_UseHandler:
+            edit->sketchHandler->mouseMove(Base::Vector2D(x,y));
             if (preselectChanged)
                 updateColor();
-            edit->sketchHandler->mouseMove(Base::Vector2D(x,y));
             return true;
         default:
             return false;
@@ -2598,8 +2599,9 @@ void ViewProviderSketch::delSelected(void)
 
         this->blockConnection(false);
         Gui::Selection().clearSelection();
-        edit->PreselectCurve = -1;
         edit->PreselectPoint = -1;
+        edit->PreselectCurve = -1;
+        edit->PreselectCross = -1;
         edit->PreselectConstraint = -1;
         updateColor();
     }

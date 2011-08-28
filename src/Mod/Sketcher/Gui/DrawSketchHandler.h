@@ -26,6 +26,7 @@
 
 #include <Base/Tools2D.h>
 #include <Mod/Sketcher/App/Constraint.h>
+
 class QPixmap;
 
 namespace Gui {
