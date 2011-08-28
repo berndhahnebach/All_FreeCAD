@@ -127,6 +127,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
           << "Sketcher_CreateLine"
           << "Sketcher_CreatePolyline"
           << "Sketcher_CreateRectangle"
+          << "Sketcher_CreateFillet"
           << "Sketcher_ToggleConstruction"
           /*<< "Sketcher_CreateText"*/
           /*<< "Sketcher_CreateDraftLine"*/;
@@ -190,6 +191,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 		  << "Sketcher_CreateLine"
 		  << "Sketcher_CreatePolyline"
 		  << "Sketcher_CreateRectangle"
+          << "Sketcher_CreateFillet"
 		  << "Sketcher_ToggleConstruction"
 		  /*<< "Sketcher_CreateText"*/
 		  /*<< "Sketcher_CreateDraftLine"*/;

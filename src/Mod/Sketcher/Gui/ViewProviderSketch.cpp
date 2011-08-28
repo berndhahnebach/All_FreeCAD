@@ -120,6 +120,7 @@ struct EditData {
     PreselectCurve(-1),
     PreselectCross(-1),
     PreselectConstraint(-1),
+    blockedPreselection(false),
     //ActSketch(0),
     EditRoot(0),
     PointsMaterials(0),
@@ -145,6 +146,7 @@ struct EditData {
     int PreselectCurve;
     int PreselectCross;
     int PreselectConstraint;
+    bool blockedPreselection;
 
     // pointer to the Solver
     Sketcher::Sketch ActSketch;
@@ -557,6 +559,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                                 << "Sketcher_CreateLine"
                                 << "Sketcher_CreatePolyline"
                                 << "Sketcher_CreateRectangle"
+                                << "Sketcher_CreateFillet"
                                 /*<< "Sketcher_CreateText"*/
                                 /*<< "Sketcher_CreateDraftLine"*/;
 
@@ -1077,98 +1080,115 @@ bool ViewProviderSketch::detectPreselection(const SoPickedPoint *Point, int &PtI
             }
         }
 
-        if (PtIndex >= 0) { // if a point is hit
+        if (PtIndex >= 0 && PtIndex != edit->PreselectPoint) { // if a new point is hit
             std::stringstream ss;
             ss << "Vertex" << PtIndex;
+            bool accepted =
             Gui::Selection().setPreselect(getSketchObject()->getDocument()->getName()
                                          ,getSketchObject()->getNameInDocument()
                                          ,ss.str().c_str()
                                          ,Point->getPoint()[0]
                                          ,Point->getPoint()[1]
                                          ,Point->getPoint()[2]);
-
-            if (PtIndex != edit->PreselectPoint) {
+            edit->blockedPreselection = !accepted;
+            if (accepted) {
                 edit->PreselectPoint = PtIndex;
                 edit->PreselectCurve = -1;
                 edit->PreselectCross = -1;
                 edit->PreselectConstraint = -1;
+                if (edit->sketchHandler)
+                    edit->sketchHandler->applyCursor();
                 return true;
-            } else
-                return false;
-        } else if (CurvIndex >= 0) {  // if a curve is hit
-            if (CurvIndex != edit->PreselectCurve) {
-                edit->PreselectPoint = -1;
-                edit->PreselectCurve = CurvIndex;
-                edit->PreselectCross = -1;
-                edit->PreselectConstraint = -1;
-                std::stringstream ss;
-                ss << "Edge" << CurvIndex;
-                Gui::Selection().setPreselect(getSketchObject()->getDocument()->getName()
-                                             ,getSketchObject()->getNameInDocument()
-                                             ,ss.str().c_str()
-                                             ,Point->getPoint()[0]
-                                             ,Point->getPoint()[1]
-                                             ,Point->getPoint()[2]);
-
-                return true;
-            } else {
-                Gui::Selection().setPreselectCoord(Point->getPoint()[0]
-                                                  ,Point->getPoint()[1]
-                                                  ,Point->getPoint()[2]);
             }
-        } else if (CrossIndex >= 0) {  // if a curve is hit
-            if (CrossIndex != edit->PreselectCross) {
-                edit->PreselectPoint = -1;
-                edit->PreselectCurve = -1;
-                edit->PreselectCross = CrossIndex;
-                edit->PreselectConstraint = -1;
-                std::stringstream ss;
-                switch(CrossIndex){
-                    case 0: ss << "RootPoint" ; break;
-                    case 1: ss << "H_Axis"    ; break;
-                    case 2: ss << "V_Axis"    ; break;
-                }
-                Gui::Selection().setPreselect(getSketchObject()->getDocument()->getName()
-                                             ,getSketchObject()->getNameInDocument()
-                                             ,ss.str().c_str()
-                                             ,Point->getPoint()[0]
-                                             ,Point->getPoint()[1]
-                                             ,Point->getPoint()[2]);
-
-                return true;
-            } else {
-                Gui::Selection().setPreselectCoord(Point->getPoint()[0]
-                                                  ,Point->getPoint()[1]
-                                                  ,Point->getPoint()[2]);
-            }
-        } else if (ConstrIndex >= 0) { // if a constraint is hit
+        } else if (CurvIndex >= 0 && CurvIndex != edit->PreselectCurve) {  // if a new curve is hit
             std::stringstream ss;
-            ss << "Constraint" << ConstrIndex;
+            ss << "Edge" << CurvIndex;
+            bool accepted =
             Gui::Selection().setPreselect(getSketchObject()->getDocument()->getName()
                                          ,getSketchObject()->getNameInDocument()
                                          ,ss.str().c_str()
                                          ,Point->getPoint()[0]
                                          ,Point->getPoint()[1]
                                          ,Point->getPoint()[2]);
-            if (ConstrIndex != edit->PreselectConstraint) {
+            edit->blockedPreselection = !accepted;
+            if (accepted) {
+                edit->PreselectPoint = -1;
+                edit->PreselectCurve = CurvIndex;
+                edit->PreselectCross = -1;
+                edit->PreselectConstraint = -1;
+                if (edit->sketchHandler)
+                    edit->sketchHandler->applyCursor();
+                return true;
+            }
+        } else if (CrossIndex >= 0 && CrossIndex != edit->PreselectCross) {
+            std::stringstream ss;
+            switch(CrossIndex){
+                case 0: ss << "RootPoint" ; break;
+                case 1: ss << "H_Axis"    ; break;
+                case 2: ss << "V_Axis"    ; break;
+            }
+            bool accepted =
+            Gui::Selection().setPreselect(getSketchObject()->getDocument()->getName()
+                                         ,getSketchObject()->getNameInDocument()
+                                         ,ss.str().c_str()
+                                         ,Point->getPoint()[0]
+                                         ,Point->getPoint()[1]
+                                         ,Point->getPoint()[2]);
+            edit->blockedPreselection = !accepted;
+            if (accepted) {
                 edit->PreselectPoint = -1;
                 edit->PreselectCurve = -1;
-                edit->PreselectCross = -1;                edit->PreselectConstraint = ConstrIndex;                return true;
-            } else
-                return false;
-        } else if ((CurvIndex < 0 && PtIndex < 0) && (edit->PreselectCurve >= 0 || edit->PreselectPoint >= 0)) {
+                edit->PreselectCross = CrossIndex;
+                edit->PreselectConstraint = -1;
+                if (edit->sketchHandler)
+                    edit->sketchHandler->applyCursor();
+                return true;
+            }
+        } else if (ConstrIndex >= 0 && ConstrIndex != edit->PreselectConstraint) { // if a constraint is hit
+            std::stringstream ss;
+            ss << "Constraint" << ConstrIndex;
+            bool accepted =
+            Gui::Selection().setPreselect(getSketchObject()->getDocument()->getName()
+                                         ,getSketchObject()->getNameInDocument()
+                                         ,ss.str().c_str()
+                                         ,Point->getPoint()[0]
+                                         ,Point->getPoint()[1]
+                                         ,Point->getPoint()[2]);
+            edit->blockedPreselection = !accepted;
+            if (accepted) {
+                edit->PreselectPoint = -1;
+                edit->PreselectCurve = -1;
+                edit->PreselectCross = -1;
+                edit->PreselectConstraint = ConstrIndex;
+                if (edit->sketchHandler)
+                    edit->sketchHandler->applyCursor();
+                return true;
+            }
+        } else if ((PtIndex < 0 && CurvIndex < 0 && CrossIndex < 0 && ConstrIndex < 0) &&
+                   (edit->PreselectPoint >= 0 || edit->PreselectCurve >= 0 || edit->PreselectCross >= 0
+                    || edit->PreselectConstraint >= 0 || edit->blockedPreselection)) {
+            // we have just left a preselection
             edit->PreselectCurve = -1;
             edit->PreselectPoint = -1;
             edit->PreselectCross = -1;
             edit->PreselectConstraint = -1;
+            edit->blockedPreselection = false;
+            if (edit->sketchHandler)
+                edit->sketchHandler->applyCursor();
             return true;
         }
-
-    } else if (edit->PreselectCurve >= 0 || edit->PreselectPoint >= 0 || edit->PreselectConstraint >= 0 || edit->PreselectCross >= 0) {
+        Gui::Selection().setPreselectCoord(Point->getPoint()[0]
+                                          ,Point->getPoint()[1]
+                                          ,Point->getPoint()[2]);
+    } else if (edit->PreselectCurve >= 0 || edit->PreselectPoint >= 0 || 
+               edit->PreselectConstraint >= 0 || edit->PreselectCross >= 0 || edit->blockedPreselection) {
         edit->PreselectCurve = -1;
         edit->PreselectPoint = -1;
         edit->PreselectCross = -1;
         edit->PreselectConstraint = -1;
+        edit->blockedPreselection = false;
+        if (edit->sketchHandler)
+            edit->sketchHandler->applyCursor();
         return true;
     }
 
