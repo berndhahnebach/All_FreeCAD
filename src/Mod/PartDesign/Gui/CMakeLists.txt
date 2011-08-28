@@ -27,6 +27,10 @@ set(PartDesignGui_LIBS
 set(PartDesignGui_MOC_HDRS
     TaskChamfer.h
     TaskPadParameters.h
+    TaskPatternRectangularParameters.h
+	TaskPocketParameters.h
+	TaskHoleParameters.h
+	TaskRevolutionParameters.h
 )
 fc_wrap_cpp(PartDesignGui_MOC_SRCS ${PartDesignGui_MOC_HDRS})
 SOURCE_GROUP("Moc" FILES ${PartDesignGui_MOC_SRCS})
@@ -36,32 +40,69 @@ qt4_add_resources(PartDesignGui_SRCS Resources/PartDesign.qrc)
 set(PartDesignGui_UIC_SRCS
     TaskChamfer.ui
     TaskPadParameters.ui
+    TaskPatternRectangularParameters.ui
+	TaskPocketParameters.ui
+	TaskHoleParameters.ui
+	TaskRevolutionParameters.ui
 )
 qt4_wrap_ui(PartDesignGui_UIC_HDRS ${PartDesignGui_UIC_SRCS})
 
-SET(PartDesignGui_SRCS
-    ${PartDesignGui_SRCS}
-    ${PartDesignGui_UIC_HDRS}
-    AppPartDesignGui.cpp
-    AppPartDesignGuiPy.cpp
-    Command.cpp
-    Resources/PartDesign.qrc
+SET(PartDesignGuiViewProvider_SRCS
+    ViewProviderPad.cpp
+    ViewProviderPad.h
+    ViewProviderHole.cpp
+    ViewProviderHole.h
+    ViewProviderPocket.cpp
+    ViewProviderPocket.h
+    ViewProviderRevolution.cpp
+    ViewProviderRevolution.h
+    ViewProviderPatternRectangular.cpp
+    ViewProviderPatternRectangular.h
+)
+SOURCE_GROUP("ViewProvider" FILES ${PartDesignGuiViewProvider_SRCS})
+
+SET(PartDesignGuiTaskDlgs_SRCS
     TaskChamfer.ui
     TaskChamfer.cpp
     TaskChamfer.h
     TaskPadParameters.ui
     TaskPadParameters.cpp
     TaskPadParameters.h
-    ViewProviderPad.cpp
-    ViewProviderPad.h
-    ViewProviderPocket.cpp
-    ViewProviderPocket.h
-    ViewProviderRevolution.cpp
-    ViewProviderRevolution.h
+    TaskPatternRectangularParameters.ui
+    TaskPatternRectangularParameters.cpp
+    TaskPatternRectangularParameters.h
+    TaskPocketParameters.ui
+    TaskPocketParameters.cpp
+    TaskPocketParameters.h
+    TaskRevolutionParameters.ui
+    TaskRevolutionParameters.cpp
+    TaskRevolutionParameters.h
+    TaskHoleParameters.ui
+    TaskHoleParameters.cpp
+    TaskHoleParameters.h
+)
+SOURCE_GROUP("TaskDialogs" FILES ${PartDesignGuiTaskDlgs_SRCS})
+
+SET(PartDesignGuiModule_SRCS
+    AppPartDesignGui.cpp
+    AppPartDesignGuiPy.cpp
+    Command.cpp
+    Resources/PartDesign.qrc
     PreCompiled.cpp
     PreCompiled.h
     Workbench.cpp
     Workbench.h
+)
+SOURCE_GROUP("Module" FILES ${PartDesignGuiModule_SRCS})
+
+
+
+SET(PartDesignGui_SRCS
+    ${PartDesignGui_SRCS}
+    ${PartDesignGui_UIC_HDRS}
+	${PartDesignGuiModule_SRCS}
+	${PartDesignGuiTaskDlgs_SRCS}
+	${PartDesignGuiViewProvider_SRCS}
 )
 
 add_library(PartDesignGui SHARED ${PartDesignGui_SRCS})

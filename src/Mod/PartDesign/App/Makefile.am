@@ -21,6 +21,14 @@ libPartDesign_la_SOURCES=\
 		FeatureSketchBased.h \
 		FeatureRevolution.cpp \
 		FeatureRevolution.h \
+		FeatureAdditive.cpp \
+		FeatureAdditive.h \
+		FeaturePatternRectangular.cpp \
+		FeaturePatternRectangular.h \
+		FeatureSubtractive.cpp \
+		FeatureSubtractive.h \
+		FeatureHole.cpp \
+		FeatureHole.h \
 		PreCompiled.cpp \
 		PreCompiled.h
 

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2010 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
+ *   Copyright (c) 2011 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,27 +21,28 @@
  ***************************************************************************/
 
 
-#ifndef PARTDESIGN_DressUp_H
-#define PARTDESIGN_DressUp_H
+#ifndef PARTGUI_ViewProviderPatternRectangular_H
+#define PARTGUI_ViewProviderPatternRectangular_H
 
-#include <App/PropertyStandard.h>
-#include "Feature.h"
+#include <Mod/Part/Gui/ViewProvider.h>
 
-namespace PartDesign
+
+namespace PartDesignGui {
+
+class PartDesignGuiExport ViewProviderPatternRectangular : public PartGui::ViewProviderPart
 {
-
-class DressUp : public PartDesign::Feature
-{
-    PROPERTY_HEADER(PartDesign::DressUp);
+    PROPERTY_HEADER(PartGui::ViewProviderPatternRectangular);
 
 public:
-    DressUp();
+    /// constructor
+    ViewProviderPatternRectangular();
+    /// destructor
+    virtual ~ViewProviderPatternRectangular();
 
-    App::PropertyLinkSub Base;
-
- };
-
-} //namespace PartDesign
+};
 
 
-#endif // PART_DressUp_H
+} // namespace PartDesignGui
+
+
+#endif // PARTGUI_ViewProviderPad_H

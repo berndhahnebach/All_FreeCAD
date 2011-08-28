@@ -26,8 +26,8 @@
 #ifndef _PreComp_
 #endif
 
-#include "ui_TaskPadParameters.h"
-#include "TaskPadParameters.h"
+#include "ui_TaskPatternRectangularParameters.h"
+#include "TaskPatternRectangularParameters.h"
 #include <Gui/Application.h>
 #include <Gui/Document.h>
 #include <Gui/BitmapFactory.h>
@@ -41,14 +41,14 @@
 using namespace PartDesignGui;
 using namespace Gui;
 
-/* TRANSLATOR PartDesignGui::TaskPadParameters */
+/* TRANSLATOR PartDesignGui::TaskPatternRectangularParameters */
 
-TaskPadParameters::TaskPadParameters(QWidget *parent)
-    : TaskBox(Gui::BitmapFactory().pixmap("document-new"),tr("TaskPadParameters"),true, parent)
+TaskPatternRectangularParameters::TaskPatternRectangularParameters(QWidget *parent)
+    : TaskBox(Gui::BitmapFactory().pixmap("document-new"),tr("TaskPatternRectangularParameters"),true, parent)
 {
     // we need a separate container widget to add all controls to
     proxy = new QWidget(this);
-    ui = new Ui_TaskPadParameters();
+    ui = new Ui_TaskPatternRectangularParameters();
     ui->setupUi(proxy);
     QMetaObject::connectSlotsByName(this);
 
@@ -57,13 +57,13 @@ TaskPadParameters::TaskPadParameters(QWidget *parent)
     Gui::Selection().Attach(this);
 }
 
-TaskPadParameters::~TaskPadParameters()
+TaskPatternRectangularParameters::~TaskPatternRectangularParameters()
 {
     delete ui;
     Gui::Selection().Detach(this);
 }
 
-void TaskPadParameters::changeEvent(QEvent *e)
+void TaskPatternRectangularParameters::changeEvent(QEvent *e)
 {
     TaskBox::changeEvent(e);
     if (e->type() == QEvent::LanguageChange) {
@@ -72,7 +72,7 @@ void TaskPadParameters::changeEvent(QEvent *e)
 }
 
 /// @cond DOXERR
-void TaskPadParameters::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
+void TaskPatternRectangularParameters::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
                               Gui::SelectionSingleton::MessageType Reason)
 {
     if (Reason.Type == SelectionChanges::AddSelection ||
@@ -88,16 +88,16 @@ void TaskPadParameters::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
 // TaskDialog
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-TaskDlgPadParameters::TaskDlgPadParameters(ViewProviderPad *PadView)
-    : TaskDialog(),PadView(PadView)
+TaskDlgPatternRectangularParameters::TaskDlgPatternRectangularParameters(ViewProviderPatternRectangular *PatternRectangularView)
+    : TaskDialog(),PatternRectangularView(PatternRectangularView)
 {
-    assert(PadView);
-    parameter  = new TaskPadParameters();
+    assert(PatternRectangularView);
+    parameter  = new TaskPatternRectangularParameters();
 
     Content.push_back(parameter);
 }
 
-TaskDlgPadParameters::~TaskDlgPadParameters()
+TaskDlgPatternRectangularParameters::~TaskDlgPatternRectangularParameters()
 {
 
 }
@@ -105,24 +105,24 @@ TaskDlgPadParameters::~TaskDlgPadParameters()
 //==== calls from the TaskView ===============================================================
 
 
-void TaskDlgPadParameters::open()
+void TaskDlgPatternRectangularParameters::open()
 {
 
 }
 
-void TaskDlgPadParameters::clicked(int)
+void TaskDlgPatternRectangularParameters::clicked(int)
 {
     
 }
 
-bool TaskDlgPadParameters::accept()
+bool TaskDlgPatternRectangularParameters::accept()
 {
     return true;
 }
 
-bool TaskDlgPadParameters::reject()
+bool TaskDlgPatternRectangularParameters::reject()
 {
-    Gui::Command::openCommand("Pad changed");
+    Gui::Command::openCommand("PatternRectangular changed");
     Gui::Command::doCommand(Gui::Command::Gui,"Gui.activeDocument().resetEdit()");
     Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.recompute()");
     Gui::Command::commitCommand();
@@ -130,7 +130,7 @@ bool TaskDlgPadParameters::reject()
     return true;
 }
 
-void TaskDlgPadParameters::helpRequested()
+void TaskDlgPatternRectangularParameters::helpRequested()
 {
 
 }
@@ -138,4 +138,4 @@ void TaskDlgPadParameters::helpRequested()
 
 
 
-#include "moc_TaskPadParameters.cpp"
+#include "moc_TaskPatternRectangularParameters.cpp"

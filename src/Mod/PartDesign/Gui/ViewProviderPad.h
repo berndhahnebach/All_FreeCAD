@@ -41,6 +41,10 @@ public:
 
     /// grouping handling 
     std::vector<App::DocumentObject*> claimChildren(void)const;
+protected:
+    virtual bool setEdit(int ModNum);
+    virtual void unsetEdit(int ModNum);
+
 };
 
 

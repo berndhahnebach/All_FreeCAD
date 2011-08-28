@@ -19,6 +19,16 @@ set(PartDesign_LIBS
     FreeCADApp
 )
 
+SET(Features_SRCS
+    Feature.cpp
+    Feature.h
+	FeaturePatternRectangular.h
+	FeaturePatternRectangular.cpp
+    FeatureMainPart.cpp
+    FeatureMainPart.h
+)
+SOURCE_GROUP("Features" FILES ${Features_SRCS})
+
 SET(FeaturesDressUp_SRCS
     FeatureDressUp.cpp
     FeatureDressUp.h
@@ -40,12 +50,17 @@ SET(FeaturesSketchBased_SRCS
     FeaturePocket.h
     FeatureRevolution.cpp
     FeatureRevolution.h
-)
+	FeatureAdditive.cpp
+	FeatureAdditive.h
+	FeatureSubtractive.h
+	FeatureSubtractive.cpp
+	FeatureHole.h
+	FeatureHole.cpp
+   )
+
 SOURCE_GROUP("SketchBasedFeatures" FILES ${FeaturesSketchBased_SRCS})
 
 SET(Module_SRCS
-    FeatureMainPart.cpp
-    FeatureMainPart.h
     AppPartDesign.cpp
     AppPartDesignPy.cpp
     PreCompiled.cpp
@@ -54,6 +69,7 @@ SET(Module_SRCS
 SOURCE_GROUP("Module" FILES ${Module_SRCS})
 
 SET(PartDesign_SRCS
+    ${Features_SRCS}
     ${FeaturesSketchBased_SRCS}
     ${FeaturesDressUp_SRCS}
     ${Module_SRCS}

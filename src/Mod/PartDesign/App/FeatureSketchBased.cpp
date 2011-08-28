@@ -64,7 +64,7 @@ struct Wire_Compare {
     }
 };
 
-PROPERTY_SOURCE(PartDesign::SketchBased, Part::Feature)
+PROPERTY_SOURCE(PartDesign::SketchBased, PartDesign::Feature)
 
 SketchBased::SketchBased()
 {

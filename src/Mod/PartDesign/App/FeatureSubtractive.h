@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2010 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
+ *   Copyright (c) 2011 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,27 +21,30 @@
  ***************************************************************************/
 
 
-#ifndef PARTDESIGN_DressUp_H
-#define PARTDESIGN_DressUp_H
+#ifndef PARTDESIGN_FeatureSubtractive_H
+#define PARTDESIGN_FeatureSubtractive_H
 
 #include <App/PropertyStandard.h>
-#include "Feature.h"
+#include <Mod/Part/App/PropertyTopoShape.h>
+
+#include "FeatureSketchBased.h"
 
 namespace PartDesign
 {
 
-class DressUp : public PartDesign::Feature
+class Subtractive : public SketchBased
 {
-    PROPERTY_HEADER(PartDesign::DressUp);
+    PROPERTY_HEADER(PartDesign::Subtractive);
 
 public:
-    DressUp();
+    Subtractive();
 
-    App::PropertyLinkSub Base;
+   Part::PropertyPartShape   SubShape;
 
- };
+protected:
+};
 
 } //namespace PartDesign
 
 
-#endif // PART_DressUp_H
+#endif // PARTDESIGN_FeatureSubtractive_H

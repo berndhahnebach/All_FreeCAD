@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2010 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
+ *   Copyright (c) 2011 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,27 +21,31 @@
  ***************************************************************************/
 
 
-#ifndef PARTDESIGN_DressUp_H
-#define PARTDESIGN_DressUp_H
+#ifndef PARTDESIGN_FeatureAdditive_H
+#define PARTDESIGN_FeatureAdditive_H
 
 #include <App/PropertyStandard.h>
-#include "Feature.h"
+#include <Mod/Part/App/PropertyTopoShape.h>
 
+#include "FeatureSketchBased.h"
+
+/// Base class of all additive features in PartDesign
 namespace PartDesign
 {
 
-class DressUp : public PartDesign::Feature
+class Additive : public SketchBased
 {
-    PROPERTY_HEADER(PartDesign::DressUp);
+    PROPERTY_HEADER(PartDesign::Additive);
 
 public:
-    DressUp();
+    Additive();
 
-    App::PropertyLinkSub Base;
+    Part::PropertyPartShape   AddShape;
 
- };
+protected:
+};
 
 } //namespace PartDesign
 
 
-#endif // PART_DressUp_H
+#endif // PARTDESIGN_FeatureAdditive_H

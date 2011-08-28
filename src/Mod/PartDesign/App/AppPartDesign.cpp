@@ -38,6 +38,10 @@
 #include "FeatureDressUp.h"
 #include "FeatureChamfer.h"
 #include "FeatureFace.h"
+#include "FeatureSubtractive.h"
+#include "FeatureAdditive.h"
+#include "FeatureHole.h"
+#include "FeaturePatternRectangular.h"
 
 extern struct PyMethodDef PartDesign_methods[];
 
@@ -66,15 +70,20 @@ void AppPartDesignExport initPartDesign()
     // call PyType_Ready, otherwise we run into a segmentation fault, later on.
     // This function is responsible for adding inherited slots from a type's base class.
  
-    PartDesign::DressUp    ::init();
-    PartDesign::SketchBased::init();
-    PartDesign::MainPart   ::init();
-    PartDesign::Pad        ::init();
-    PartDesign::Pocket     ::init();
-    PartDesign::Fillet     ::init();
-    PartDesign::Revolution ::init();
-    PartDesign::Chamfer    ::init();
-    PartDesign::Face       ::init();
+    PartDesign::Feature            ::init();
+    PartDesign::DressUp            ::init();
+    PartDesign::SketchBased        ::init();
+    PartDesign::Subtractive        ::init();
+    PartDesign::Additive           ::init();
+    PartDesign::PatternRectangular ::init();
+    PartDesign::Hole               ::init();
+    PartDesign::MainPart           ::init();
+    PartDesign::Pad                ::init();
+    PartDesign::Pocket             ::init();
+    PartDesign::Fillet             ::init();
+    PartDesign::Revolution         ::init();
+    PartDesign::Chamfer            ::init();
+    PartDesign::Face               ::init();
 }
 
 } // extern "C"

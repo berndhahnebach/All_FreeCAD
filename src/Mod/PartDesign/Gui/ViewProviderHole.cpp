@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2010 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
+ *   Copyright (c) 2011 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,27 +21,32 @@
  ***************************************************************************/
 
 
-#ifndef PARTDESIGN_DressUp_H
-#define PARTDESIGN_DressUp_H
+#include "PreCompiled.h"
 
-#include <App/PropertyStandard.h>
-#include "Feature.h"
+#ifndef _PreComp_
+#endif
 
-namespace PartDesign
+#include "ViewProviderHole.h"
+#include <Mod/PartDesign/App/FeaturePad.h>
+
+using namespace PartDesignGui;
+
+PROPERTY_SOURCE(PartDesignGui::ViewProviderHole,PartGui::ViewProviderPart)
+
+ViewProviderHole::ViewProviderHole()
 {
+}
 
-class DressUp : public PartDesign::Feature
+ViewProviderHole::~ViewProviderHole()
 {
-    PROPERTY_HEADER(PartDesign::DressUp);
+}
 
-public:
-    DressUp();
+std::vector<App::DocumentObject*> ViewProviderHole::claimChildren(void)const
+{
+    std::vector<App::DocumentObject*> temp;
+    temp.push_back(static_cast<PartDesign::Pad*>(getObject())->Sketch.getValue());
 
-    App::PropertyLinkSub Base;
-
- };
-
-} //namespace PartDesign
+    return temp;
+}
 
 
-#endif // PART_DressUp_H

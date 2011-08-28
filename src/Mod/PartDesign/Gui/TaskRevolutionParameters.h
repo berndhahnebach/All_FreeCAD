@@ -21,16 +21,16 @@
  ***************************************************************************/
 
 
-#ifndef GUI_TASKVIEW_TaskPadParameters_H
-#define GUI_TASKVIEW_TaskPadParameters_H
+#ifndef GUI_TASKVIEW_TaskRevolutionParameters_H
+#define GUI_TASKVIEW_TaskRevolutionParameters_H
 
 #include <Gui/TaskView/TaskView.h>
 #include <Gui/Selection.h>
 #include <Gui/TaskView/TaskDialog.h>
 
-#include "ViewProviderPad.h"
+#include "ViewProviderRevolution.h"
 
-class Ui_TaskPadParameters;
+class Ui_TaskRevolutionParameters;
 
 namespace App {
 class Property;
@@ -44,13 +44,13 @@ namespace PartDesignGui {
 
 
 
-class TaskPadParameters : public Gui::TaskView::TaskBox, public Gui::SelectionSingleton::ObserverType
+class TaskRevolutionParameters : public Gui::TaskView::TaskBox, public Gui::SelectionSingleton::ObserverType
 {
     Q_OBJECT
 
 public:
-    TaskPadParameters(QWidget *parent = 0);
-    ~TaskPadParameters();
+    TaskRevolutionParameters(QWidget *parent = 0);
+    ~TaskRevolutionParameters();
     /// Observer message from the Selection
     void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
                   Gui::SelectionSingleton::MessageType Reason);
@@ -64,20 +64,20 @@ private:
 
 private:
     QWidget* proxy;
-    Ui_TaskPadParameters* ui;
+    Ui_TaskRevolutionParameters* ui;
 };
 
 /// simulation dialog for the TaskView
-class TaskDlgPadParameters : public Gui::TaskView::TaskDialog
+class TaskDlgRevolutionParameters : public Gui::TaskView::TaskDialog
 {
     Q_OBJECT
 
 public:
-    TaskDlgPadParameters(ViewProviderPad *PadView);
-    ~TaskDlgPadParameters();
+    TaskDlgRevolutionParameters(ViewProviderRevolution *RevolutionView);
+    ~TaskDlgRevolutionParameters();
 
-    ViewProviderPad* getPadView() const
-    { return PadView; }
+    ViewProviderRevolution* getRevolutionView() const
+    { return RevolutionView; }
 
 public:
     /// is called the TaskView when the dialog is opened
@@ -98,9 +98,9 @@ public:
     { return QDialogButtonBox::Close|QDialogButtonBox::Help; }
 
 protected:
-    ViewProviderPad   *PadView;
+    ViewProviderRevolution   *RevolutionView;
 
-    TaskPadParameters  *parameter;
+    TaskRevolutionParameters  *parameter;
 };
 
 } //namespace PartDesignGui
