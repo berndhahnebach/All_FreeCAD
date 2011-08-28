@@ -136,21 +136,21 @@ public:
     {
         setPositionText(onSketchPos);
 
-        if( Mode==STATUS_SEEK_First) {
-
-            if( seekAutoConstraint(onSketchPos, Base::Vector2D(0.f,0.f)) )
+        if (Mode==STATUS_SEEK_First) {
+            if (seekAutoConstraint(onSketchPos, Base::Vector2D(0.f,0.f)))
                 renderSuggestConstraintsCursor();
             else
                 setCursor(QPixmap(cursor_createline),5,5);
-
-        } else if (Mode==STATUS_SEEK_Second){
+        }
+        else if (Mode==STATUS_SEEK_Second){
             EditCurve[1] = onSketchPos; 
             sketchgui->drawEdit(EditCurve);
-            if( seekAutoConstraint(onSketchPos, onSketchPos - EditCurve[0]) )
+            if (seekAutoConstraint(onSketchPos, onSketchPos - EditCurve[0]))
                 renderSuggestConstraintsCursor();
             else
                 setCursor(QPixmap(cursor_createline),5,5);
-        } else
+        }
+        else
             setCursor(QPixmap(cursor_createline),5,5);
     }
 
@@ -158,8 +158,8 @@ public:
     {
         if (Mode==STATUS_SEEK_First){
             EditCurve[0] = onSketchPos;
-            cloneSuggestedConstraints(sugConstr1);
             Mode = STATUS_SEEK_Second;
+            cloneSuggestedConstraints(sugConstr1);
         }
         else {
             EditCurve[1] = onSketchPos;
@@ -179,22 +179,17 @@ public:
             Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addGeometry(Part.Line(App.Vector(%f,%f,0),App.Vector(%f,%f,0)))",
                       sketchgui->getObject()->getNameInDocument(),
                       EditCurve[0].fX,EditCurve[0].fY,EditCurve[1].fX,EditCurve[1].fY);
-            
             Gui::Command::commitCommand();
             Gui::Command::updateActive();
 
-            // Add Auto Constraints
-            if(sugConstr1.size() > 0)
-            {
+            // Add auto constraints
+            if (sugConstr1.size() > 0)
                 createAutoConstraints(sugConstr1, getHighestCurveIndex(), getHighestVertexIndex() -1);
-            }
 
-            // Add Auto Constraints
-            if(suggestedConstraints.size() > 0)
-            {
+            if (suggestedConstraints.size() > 0)
                 createAutoConstraints(suggestedConstraints, getHighestCurveIndex(), getHighestVertexIndex());
-            }
-            // Delete Stored auto constraints
+
+            // Delete stored auto constraints
             clearSuggestedConstraints(sugConstr1);
             
             EditCurve.clear();
@@ -308,10 +303,10 @@ public:
         }
 
         // Find any suggestions for auto constraints (Only provide a point)
-        if( seekAutoConstraint(onSketchPos, Base::Vector2D(0.f,0.f)) )
-                renderSuggestConstraintsCursor();
-            else
-                setCursor(QPixmap(cursor_createbox),5,5);
+        if (seekAutoConstraint(onSketchPos, Base::Vector2D(0.f,0.f)))
+            renderSuggestConstraintsCursor();
+        else
+            setCursor(QPixmap(cursor_createbox),5,5);
     }
 
     virtual bool pressButton(Base::Vector2D onSketchPos)
@@ -320,7 +315,7 @@ public:
             EditCurve[0] = onSketchPos;
             EditCurve[4] = onSketchPos;
             Mode = STATUS_SEEK_Second;
-            // Clone the suggested contraints for later
+            // Clone the suggested constraints for later
             cloneSuggestedConstraints(sugConstr1);
         }
         else {
@@ -384,19 +379,14 @@ public:
             Gui::Command::commitCommand();
             Gui::Command::updateActive();
 
-            // Process Auto Constraints
-                        // Add Auto Constraints
-            if(sugConstr1.size() > 0)
-            {
+            // Add auto constraints
+            if (sugConstr1.size() > 0)
                 createAutoConstraints(sugConstr1, getHighestCurveIndex() - 3 , getHighestVertexIndex() - 7);
-            }
 
-            // Add Auto Constraints
-            if(suggestedConstraints.size() > 0)
-            {
+            if (suggestedConstraints.size() > 0)
                 createAutoConstraints(suggestedConstraints, getHighestCurveIndex() - 2, getHighestVertexIndex() - 4);
-            }
-            // Delete Stored auto constraints
+
+            // Delete stored auto constraints
             clearSuggestedConstraints(sugConstr1);
             
             EditCurve.clear();
@@ -505,19 +495,20 @@ public:
         setPositionText(onSketchPos);
         if (Mode==STATUS_SEEK_First) {
 
-            if( seekAutoConstraint(onSketchPos, Base::Vector2D(0.f,0.f)) )
+            if (seekAutoConstraint(onSketchPos, Base::Vector2D(0.f,0.f)))
                 renderSuggestConstraintsCursor();
             else
                 setCursor(QPixmap(cursor_createlineset),5,5);
 
-        } else if (Mode==STATUS_SEEK_Second || Mode==STATUS_Do || Mode==STATUS_Close){
+        }
+        else if (Mode==STATUS_SEEK_Second || Mode==STATUS_Do || Mode==STATUS_Close){
             EditCurve[1] = onSketchPos;
-            
-            if( seekAutoConstraint(onSketchPos, onSketchPos - EditCurve[0]) )
+
+            if (seekAutoConstraint(onSketchPos, onSketchPos - EditCurve[0]))
                 renderSuggestConstraintsCursor();
             else
                 setCursor(QPixmap(cursor_createlineset),5,5);
-            
+
             sketchgui->drawEdit(EditCurve);
         }
     }
@@ -530,7 +521,6 @@ public:
             firstCurve = getHighestCurveIndex() + 1;
             EditCurve[0] = onSketchPos;
             Mode = STATUS_SEEK_Second;
-
             cloneSuggestedConstraints(sugConstr1);
         }
         else {
@@ -573,21 +563,15 @@ public:
 
             }
             
-            // Add Auto Constraints
-            if(sugConstr1.size() > 0)
-            {
+            // Add auto constraints
+            if (sugConstr1.size() > 0)
                 createAutoConstraints(sugConstr1, getHighestCurveIndex(), getHighestVertexIndex() -1);
-            }
 
-            // Add Auto Constraints
-            if(suggestedConstraints.size() > 0)
-            {
+            if (suggestedConstraints.size() > 0)
                 createAutoConstraints(suggestedConstraints, getHighestCurveIndex(), getHighestVertexIndex());
-            }
             
-            // Delete Stored auto constraints
+            // Delete stored auto constraints
             clearSuggestedConstraints(sugConstr1);
-            
 
             if (Mode==STATUS_Do) {
                 //remember the vertex for the next rounds constraint...
@@ -721,10 +705,10 @@ public:
     {
         setPositionText(onSketchPos);
 
-        if( seekAutoConstraint(onSketchPos, Base::Vector2D(0.f,0.f)) )
-                renderSuggestConstraintsCursor();
-            else
-                setCursor(QPixmap(cursor_createarc),5,5);
+        if (seekAutoConstraint(onSketchPos, Base::Vector2D(0.f,0.f)))
+            renderSuggestConstraintsCursor();
+        else
+            setCursor(QPixmap(cursor_createarc),5,5);
 
         if (Mode==STATUS_SEEK_Second) {
             float dx_ = onSketchPos.fX - EditCurve[0].fX;
@@ -774,9 +758,8 @@ public:
             ry = EditCurve[0].fY - CenterPoint.fY;
             startAngle = atan2(ry, rx);
             arcAngle = 0.;
-
-            cloneSuggestedConstraints(sugConstr2);
             Mode = STATUS_SEEK_Third;
+            cloneSuggestedConstraints(sugConstr2);
         }
         else {
             EditCurve.resize(30);
@@ -816,22 +799,17 @@ public:
             Gui::Command::commitCommand();
             Gui::Command::updateActive();
 
-            // Add Auto Constraints
-            if(suggestedConstraints.size() > 0) {
+            // Add auto constraints
+            if (suggestedConstraints.size() > 0)
                 createAutoConstraints(suggestedConstraints, getHighestCurveIndex(), getHighestVertexIndex() - 1);
-            }
 
-            // Add Auto Constraints
-            if(sugConstr1.size() > 0) {
+            if (sugConstr1.size() > 0)
                 createAutoConstraints(sugConstr1, getHighestCurveIndex(), getHighestVertexIndex() -2);
-            }
 
-            // Add Auto Constraints
-            if(sugConstr2.size() > 0) {
+            if (sugConstr2.size() > 0)
                 createAutoConstraints(sugConstr2, getHighestCurveIndex(), getHighestVertexIndex() );
-            }
             
-            // Delete Stored auto constraint sets
+            // Delete stored auto constraint sets
             clearSuggestedConstraints(sugConstr1);
             clearSuggestedConstraints(sugConstr2);
             
@@ -936,12 +914,13 @@ public:
     virtual void mouseMove(Base::Vector2D onSketchPos)
     {
         setPositionText(onSketchPos);
-        if(Mode ==STATUS_SEEK_First) {
-            if( seekAutoConstraint(onSketchPos, Base::Vector2D(0.f,0.f)) )
+        if (Mode==STATUS_SEEK_First) {
+            if (seekAutoConstraint(onSketchPos, Base::Vector2D(0.f,0.f)))
                 renderSuggestConstraintsCursor();
             else
                 setCursor(QPixmap(cursor_createline),5,5);
-        } else if (Mode==STATUS_SEEK_Second) {
+        }
+        else if (Mode==STATUS_SEEK_Second) {
             float rx0 = onSketchPos.fX - EditCurve[0].fX;
             float ry0 = onSketchPos.fY - EditCurve[0].fY;
             for (int i=0; i < 16; i++) {
@@ -986,11 +965,9 @@ public:
             Gui::Command::commitCommand();
             Gui::Command::updateActive();
 
-             // Add Auto Constraints
-            if(suggestedConstraints.size() > 0)
-            {
+            // Add auto constraints
+            if (suggestedConstraints.size() > 0)
                 createAutoConstraints(suggestedConstraints, getHighestCurveIndex(), getHighestVertexIndex());
-            }
             
             EditCurve.clear();
             sketchgui->drawEdit(EditCurve);
