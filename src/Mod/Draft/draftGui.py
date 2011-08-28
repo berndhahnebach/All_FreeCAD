@@ -144,6 +144,8 @@ class DraftToolBar:
                 self.sourceCmd = None
                 self.taskmode = Draft.getParam("UiMode")
                 self.paramcolor = Draft.getParam("color")>>8
+                self.color = QtGui.QColor(self.paramcolor)
+                self.facecolor = QtGui.QColor(204,204,204)
                 self.linewidth = Draft.getParam("linewidth")
                 self.fontsize = Draft.getParam("textheight")
                 self.paramconstr = Draft.getParam("constructioncolor")>>8
@@ -154,7 +156,7 @@ class DraftToolBar:
                 self.crossedViews = []
 
                 if self.taskmode:
-                        # create a widget for the draft tray buttons
+                        # only a dummy widget, since widgets are created on demand
                         self.baseWidget = QtGui.QWidget()
                 else:
                         # create the draft Toolbar                
@@ -353,12 +355,10 @@ class DraftToolBar:
                 self.constrButton = self._pushbutton("constrButton", self.toptray, hide=False, icon='Draft_Construction',width=22, checkable=True)
                 self.constrColor = QtGui.QColor(self.paramconstr)
                 self.colorButton = self._pushbutton("colorButton",self.bottomtray, hide=False,width=22)
-                self.color = QtGui.QColor(self.paramcolor)
                 self.colorPix = QtGui.QPixmap(16,16)
                 self.colorPix.fill(self.color)
                 self.colorButton.setIcon(QtGui.QIcon(self.colorPix))
                 self.facecolorButton = self._pushbutton("facecolorButton",self.bottomtray, hide=False,width=22)
-                self.facecolor = QtGui.QColor(204,204,204)
                 self.facecolorPix = QtGui.QPixmap(16,16)
                 self.facecolorPix.fill(self.facecolor)
                 self.facecolorButton.setIcon(QtGui.QIcon(self.facecolorPix))
