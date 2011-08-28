@@ -30,7 +30,8 @@
 #include <Gui/Command.h>
 #include <Gui/MainWindow.h>
 #include <Gui/DlgEditFileIncludeProptertyExternal.h>
-
+#include <Gui/Selection.h>
+#include <Gui/SelectionFilter.h>
 #include <Mod/Sketcher/App/SketchObject.h>
 
 #include "ViewProviderSketch.h"
@@ -1085,6 +1086,251 @@ bool CmdSketcherCreateDraftLine::isActive(void)
 }
 
 
+
+// ======================================================================================
+
+namespace SketcherGui {
+    class FilletSelection : public Gui::SelectionFilterGate
+    {
+        App::DocumentObject* object;
+    public:
+        FilletSelection(App::DocumentObject* obj)
+            : Gui::SelectionFilterGate((Gui::SelectionFilter*)0), object(obj)
+        {
+        }
+        bool allow(App::Document *pDoc, App::DocumentObject *pObj, const char *sSubName)
+        {
+            if (pObj != this->object)
+                return false;
+            if (!sSubName || sSubName[0] == '\0')
+                return false;
+            std::string element(sSubName);
+            if (element.substr(0,4) == "Edge") {
+                int index=std::atoi(element.substr(4,4000).c_str());
+                Sketcher::SketchObject *Sketch = static_cast<Sketcher::SketchObject*>(object);
+                const std::vector<Part::Geometry *> &geo = Sketch->Geometry.getValues();
+                const Part::Geometry *geom = geo[index];
+                if (geom->getTypeId() == Part::GeomLineSegment::getClassTypeId())
+                    return true;
+            }
+            if (element.substr(0,6) == "Vertex") {
+                int index=std::atoi(element.substr(6,4000).c_str());
+                Sketcher::SketchObject *Sketch = static_cast<Sketcher::SketchObject*>(object);
+                std::vector<int> GeoIdList;
+                std::vector<Sketcher::PointPos> PosIdList;
+                Sketch->getCoincidentPoints(index, GeoIdList, PosIdList);
+                if (GeoIdList.size() == 2) {
+                    const std::vector<Part::Geometry *> &geo = Sketch->Geometry.getValues();
+                    const Part::Geometry *geom1 = geo[GeoIdList[0]];
+                    const Part::Geometry *geom2 = geo[GeoIdList[1]];
+                    if (geom1->getTypeId() == Part::GeomLineSegment::getClassTypeId() &&
+                        geom2->getTypeId() == Part::GeomLineSegment::getClassTypeId())
+                        return true;
+                }
+            }
+            return  false;
+        }
+    };
+};
+
+/* XPM */
+static const char *cursor_createfillet[]={
+"32 32 3 1",
+"+ c white",
+"* c red",
+". c None",
+"...+++..........................",
+"...+++..........................",
+"...+++..........................",
+"++++.++++.......................",
+"+++...+++.......................",
+"++++.++++.......................",
+"...+++..........................",
+"...+++..........................",
+"...+++..........................",
+"................................",
+".......*........................",
+".......*........................",
+".......*........................",
+".......*........................",
+".......*........................",
+".......*........................",
+".......*........................",
+".......*........................",
+".......*........................",
+".......*.........***............",
+".......*.........*.*............",
+".......*.........***............",
+".......*........................",
+".......*........................",
+"........*.......................",
+"........*.......................",
+".........*......................",
+"..........*.....................",
+"...........*....................",
+"............*...................",
+".............**.................",
+"...............****************.",
+"................................"};
+
+class DrawSketchHandlerFillet: public DrawSketchHandler
+{
+public:
+    DrawSketchHandlerFillet() : Mode(STATUS_SEEK_First) {}
+    virtual ~DrawSketchHandlerFillet()
+    {
+        Gui::Selection().rmvSelectionGate();
+    }
+    enum SelectMode{
+        STATUS_SEEK_First,
+        STATUS_SEEK_Second
+    };
+
+    virtual void activated(ViewProviderSketch *sketchgui)
+    {
+        Gui::Selection().rmvSelectionGate();
+        Gui::Selection().addSelectionGate(new FilletSelection(sketchgui->getObject()));
+        setCursor(QPixmap(cursor_createfillet),5,5);
+    }
+
+    virtual void mouseMove(Base::Vector2D onSketchPos)
+    {
+    }
+
+    virtual bool pressButton(Base::Vector2D onSketchPos)
+    {
+        return true;
+    }
+
+    virtual bool releaseButton(Base::Vector2D onSketchPos)
+    {
+        int VtId = sketchgui->getPreselectPoint();
+        if (Mode == STATUS_SEEK_First && VtId != -1) {
+            int GeoId;
+            Sketcher::PointPos PosId=Sketcher::none;
+            sketchgui->getSketchObject()->getGeoVertexIndex(VtId,GeoId,PosId);
+            const std::vector<Part::Geometry *> &geo = sketchgui->getSketchObject()->Geometry.getValues();
+            const Part::Geometry *geom = geo[GeoId];
+            if (geom->getTypeId() == Part::GeomLineSegment::getClassTypeId() &&
+                (PosId == Sketcher::start || PosId == Sketcher::end)) {
+
+                // guess fillet radius
+                double radius=-1;
+                std::vector<int> GeoIdList;
+                std::vector<Sketcher::PointPos> PosIdList;
+                sketchgui->getSketchObject()->getCoincidentPoints(GeoId, PosId, GeoIdList, PosIdList);
+                if (GeoIdList.size() == 2) {
+                    const Part::Geometry *geom1 = geo[GeoIdList[0]];
+                    const Part::Geometry *geom2 = geo[GeoIdList[1]];
+                    if (geom1->getTypeId() == Part::GeomLineSegment::getClassTypeId() &&
+                        geom2->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
+                        const Part::GeomLineSegment *lineSeg1 = dynamic_cast<const Part::GeomLineSegment *>(geom1);
+                        const Part::GeomLineSegment *lineSeg2 = dynamic_cast<const Part::GeomLineSegment *>(geom2);
+                        double r1 = (lineSeg1->getStartPoint()-lineSeg1->getEndPoint()).Length();
+                        double r2 = (lineSeg2->getStartPoint()-lineSeg2->getEndPoint()).Length();
+                        radius = (r1 < r2 ? r1 : r2) * 0.2;
+                    }
+                }
+                if (radius < 0)
+                    return false;
+
+                // create fillet at point
+                Gui::Command::openCommand("Create fillet");
+                Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.fillet(%d,%d,%f)",
+                          sketchgui->getObject()->getNameInDocument(),
+                          GeoId, PosId, radius);
+                Gui::Command::commitCommand();
+                Gui::Command::updateActive();
+            }
+            return true;
+        }
+
+        int GeoId = sketchgui->getPreselectCurve();
+        if (GeoId > -1) {
+            const std::vector<Part::Geometry *> &geo = sketchgui->getSketchObject()->Geometry.getValues();
+            const Part::Geometry *geom = geo[GeoId];
+            if (geom->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
+                if (Mode==STATUS_SEEK_First) {
+                    firstCurve = GeoId;
+                    firstPos = onSketchPos;
+                    Mode = STATUS_SEEK_Second;
+                    // add the line to the selection
+                    std::stringstream ss;
+                    ss << "Edge" << firstCurve;
+                    Gui::Selection().addSelection(sketchgui->getSketchObject()->getDocument()->getName()
+                                                 ,sketchgui->getSketchObject()->getNameInDocument()
+                                                 ,ss.str().c_str()
+                                                 ,onSketchPos.fX
+                                                 ,onSketchPos.fY
+                                                 ,0.f);
+                }
+                else if (Mode==STATUS_SEEK_Second) {
+                    int secondCurve = GeoId;
+                    Base::Vector2D secondPos = onSketchPos;
+
+                    // guess fillet radius
+                    const Part::GeomLineSegment *lineSeg1 = dynamic_cast<const Part::GeomLineSegment *>(geo[firstCurve]);
+                    const Part::GeomLineSegment *lineSeg2 = dynamic_cast<const Part::GeomLineSegment *>(geo[secondCurve]);
+                    Base::Vector3d refPnt1(firstPos.fX, firstPos.fY, 0.f);
+                    Base::Vector3d refPnt2(secondPos.fX, secondPos.fY, 0.f);
+                    double radius = Part::suggestFilletRadius(lineSeg1, lineSeg2, refPnt1, refPnt2);
+                    if (radius < 0)
+                        return false;
+
+                    // create fillet between lines
+                    Gui::Command::openCommand("Create fillet");
+                    Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.fillet(%d,%d,App.Vector(%f,%f,0),App.Vector(%f,%f,0),%f)",
+                              sketchgui->getObject()->getNameInDocument(),
+                              firstCurve, secondCurve,
+                              firstPos.fX, firstPos.fY,
+                              secondPos.fX, secondPos.fY, 10.);
+                    Gui::Command::commitCommand();
+                    Gui::Command::updateActive();
+
+                    Gui::Selection().clearSelection();
+                    Mode = STATUS_SEEK_First;
+                }
+            }
+        }
+
+        if (VtId < 0 && GeoId < 0) // exit the fillet tool if the user clicked on empty space
+            sketchgui->purgeHandler(); // no code after this line, Handler get deleted in ViewProvider
+
+        return true;
+    }
+
+protected:
+    SelectMode Mode;
+    int firstCurve;
+    Base::Vector2D firstPos;
+};
+
+DEF_STD_CMD_A(CmdSketcherCreateFillet);
+
+CmdSketcherCreateFillet::CmdSketcherCreateFillet()
+  : Command("Sketcher_CreateFillet")
+{
+    sAppModule      = "Sketcher";
+    sGroup          = QT_TR_NOOP("Sketcher");
+    sMenuText       = QT_TR_NOOP("Create fillet");
+    sToolTipText    = QT_TR_NOOP("Create a fillet between to lines or at a coincident point");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Sketcher_CreateFillet";
+    sAccel          = "F";
+    eType           = ForEdit;
+}
+
+void CmdSketcherCreateFillet::activated(int iMsg)
+{
+    ActivateHandler(getActiveGuiDocument(), new DrawSketchHandlerFillet());
+}
+
+bool CmdSketcherCreateFillet::isActive(void)
+{
+    return isCreateGeoActive(getActiveGuiDocument());
+}
+
 void CreateSketcherCommandsCreateGeo(void)
 {
     Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
@@ -1095,6 +1341,7 @@ void CreateSketcherCommandsCreateGeo(void)
     rcCmdMgr.addCommand(new CmdSketcherCreateLine());
     rcCmdMgr.addCommand(new CmdSketcherCreatePolyline());
     rcCmdMgr.addCommand(new CmdSketcherCreateRectangle());
+    rcCmdMgr.addCommand(new CmdSketcherCreateFillet());
     //rcCmdMgr.addCommand(new CmdSketcherCreateText());
     //rcCmdMgr.addCommand(new CmdSketcherCreateDraftLine());
 }
