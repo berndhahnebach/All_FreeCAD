@@ -51,6 +51,12 @@ struct AutoConstraint
     Base::Vector2D PointFound;
 };
 
+enum Type
+{
+    VERTEX,
+    CURVE
+};
+
 /** Handler to create new sketch geometry
   * This class has to be reimplemented to create geometry in the 
   * sketcher while its in editing.
@@ -80,8 +86,8 @@ public:
     // get the actual highest edge index, the next use will be +1
     int getHighestCurveIndex(void);
 
-    int seekAutoConstraint(const Base::Vector2D &Pos, const Base::Vector2D &Dir);
-    void createAutoConstraints(const std::vector<AutoConstraint *>& autoConstrs, int geoId, int vertexId);
+    int seekAutoConstraint(const Base::Vector2D &Pos, const Base::Vector2D &Dir, Type selType = VERTEX);
+    void createAutoConstraints(const std::vector<AutoConstraint *>& autoConstrs, int geoId, int vertexId = -1);
 
     void setPositionText(const Base::Vector2D &Pos);
     void resetPositionText(void);
