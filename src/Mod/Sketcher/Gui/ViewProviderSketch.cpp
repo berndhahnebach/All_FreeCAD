@@ -119,6 +119,7 @@ struct EditData {
     PreselectPoint(-1),
     PreselectCurve(-1),
     PreselectCross(-1),
+    PreselectConstraint(-1),
     //ActSketch(0),
     EditRoot(0),
     PointsMaterials(0),
@@ -468,7 +469,6 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                         Sketcher::PointPos PosId;
                         getSketchObject()->getGeoVertexIndex(edit->DragPoint, GeoId, PosId);
                         Gui::Command::openCommand("Drag Point");
-                        Gui::Command::openCommand("Move Point");
                         Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.movePoint(%i,%i,App.Vector(%f,%f,0))"
                                                ,getObject()->getNameInDocument()
                                                ,GeoId, PosId, x, y
@@ -628,6 +628,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
 
                         return true;
                     }
+                case STATUS_SELECT_Cross:
                 case STATUS_SELECT_Constraint:
                 case STATUS_SKETCH_DragPoint:
                 case STATUS_SKETCH_DragCurve:
@@ -678,8 +679,7 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
     double x,y;
     getCoordsOnSketchPlane(x,y,point,normal);
 
-    if(GridSnap.getValue())
-    {
+    if (GridSnap.getValue()) {
         x = x / GridSnapSize.getValue();
         x = x < 0.0 ? ceil(x - 0.5) : floor(x + 0.5);
         x *= GridSnapSize.getValue();
@@ -688,7 +688,7 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
         y = y < 0.0 ? ceil(y - 0.5) : floor(y + 0.5);
         y *= GridSnapSize.getValue();
     }
-    
+
     int PtIndex,CurvIndex,ConstrIndex,CrossIndex;
     bool preselectChanged = detectPreselection(pp,PtIndex,CurvIndex,ConstrIndex,CrossIndex);
 
@@ -1076,24 +1076,7 @@ bool ViewProviderSketch::detectPreselection(const SoPickedPoint *Point, int &PtI
             }
         }
 
-        if (ConstrIndex >= 0) { // if a constraint is hit
-            std::stringstream ss;
-            ss << "Constraint" << ConstrIndex;
-            Gui::Selection().setPreselect(getSketchObject()->getDocument()->getName()
-                                         ,getSketchObject()->getNameInDocument()
-                                         ,ss.str().c_str()
-                                         ,Point->getPoint()[0]
-                                         ,Point->getPoint()[1]
-                                         ,Point->getPoint()[2]);
-            if (ConstrIndex != edit->PreselectConstraint) {
-                edit->PreselectConstraint = ConstrIndex;
-                edit->PreselectPoint = -1;
-                edit->PreselectCross = -1;
-                edit->PreselectCurve = -1;
-                return true;
-            } else
-                return false;
-        } else if (PtIndex >= 0) { // if a point is hit
+        if (PtIndex >= 0) { // if a point is hit
             std::stringstream ss;
             ss << "Vertex" << PtIndex;
             Gui::Selection().setPreselect(getSketchObject()->getDocument()->getName()
@@ -1113,9 +1096,9 @@ bool ViewProviderSketch::detectPreselection(const SoPickedPoint *Point, int &PtI
                 return false;
         } else if (CurvIndex >= 0) {  // if a curve is hit
             if (CurvIndex != edit->PreselectCurve) {
+                edit->PreselectPoint = -1;
                 edit->PreselectCurve = CurvIndex;
                 edit->PreselectCross = -1;
-                edit->PreselectPoint = -1;
                 edit->PreselectConstraint = -1;
                 std::stringstream ss;
                 ss << "Edge" << CurvIndex;
@@ -1134,9 +1117,9 @@ bool ViewProviderSketch::detectPreselection(const SoPickedPoint *Point, int &PtI
             }
         } else if (CrossIndex >= 0) {  // if a curve is hit
             if (CrossIndex != edit->PreselectCross) {
-                edit->PreselectCross = CrossIndex;
-                edit->PreselectCurve = -1;
                 edit->PreselectPoint = -1;
+                edit->PreselectCurve = -1;
+                edit->PreselectCross = CrossIndex;
                 edit->PreselectConstraint = -1;
                 std::stringstream ss;
                 switch(CrossIndex){
@@ -1157,6 +1140,21 @@ bool ViewProviderSketch::detectPreselection(const SoPickedPoint *Point, int &PtI
                                                   ,Point->getPoint()[1]
                                                   ,Point->getPoint()[2]);
             }
+        } else if (ConstrIndex >= 0) { // if a constraint is hit
+            std::stringstream ss;
+            ss << "Constraint" << ConstrIndex;
+            Gui::Selection().setPreselect(getSketchObject()->getDocument()->getName()
+                                         ,getSketchObject()->getNameInDocument()
+                                         ,ss.str().c_str()
+                                         ,Point->getPoint()[0]
+                                         ,Point->getPoint()[1]
+                                         ,Point->getPoint()[2]);
+            if (ConstrIndex != edit->PreselectConstraint) {
+                edit->PreselectPoint = -1;
+                edit->PreselectCurve = -1;
+                edit->PreselectCross = -1;                edit->PreselectConstraint = ConstrIndex;                return true;
+            } else
+                return false;
         } else if ((CurvIndex < 0 && PtIndex < 0) && (edit->PreselectCurve >= 0 || edit->PreselectPoint >= 0)) {
             edit->PreselectCurve = -1;
             edit->PreselectPoint = -1;
@@ -1204,7 +1202,7 @@ void ViewProviderSketch::updateColor(void)
         else if (edit->PreselectCurve == i)
             color[i] = PreselectColor;
         else
-            if(this->getSketchObject()->Geometry.getValues()[i]->Construction)
+            if (this->getSketchObject()->Geometry.getValues()[i]->Construction)
                 color[i] = sCurveDraftColor;
             else
                 color[i] = sCurveColor;
@@ -2076,7 +2074,6 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
     //Constraint Icons Size scaled by (width) in px
     const int constraintImageSize = 16;
 
-    
     for (std::vector<Sketcher::Constraint *>::const_iterator it = ConStr.begin(); it != ConStr.end(); ++it) {
         // root separator for one constraint
         SoSeparator *sep = new SoSeparator();

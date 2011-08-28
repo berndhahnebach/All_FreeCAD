@@ -78,22 +78,23 @@ SketcherGui::ViewProviderSketch* getSketchViewprovider(Gui::Document *doc)
 
 /* XPM */
 static const char *cursor_createline[]={
-"32 32 2 1",
-"# c #646464",
+"32 32 3 1",
+"+ c white",
+"# c red",
 ". c None",
-"................................",
-"................................",
-".......#........................",
-".......#........................",
-".......#........................",
-"................................",
-".......#........................",
-"..###.###.###...................",
-".......#..............###.......",
+"...+++..........................",
+"...+++..........................",
+"...+++..........................",
+"++++.++++.......................",
+"+++...+++.......................",
+"++++.++++.......................",
+"...+++..........................",
+"...+++..........................",
+"...+++................###.......",
 "......................#.#.......",
-".......#..............###.......",
-".......#.............#..........",
-".......#............#...........",
+"......................###.......",
+".....................#..........",
+"....................#...........",
 "....................#...........",
 "...................#............",
 "..................#.............",
@@ -128,7 +129,7 @@ public:
 
     virtual void activated(ViewProviderSketch *sketchgui)
     {
-        setCursor(QPixmap(cursor_createline),7,7);
+        setCursor(QPixmap(cursor_createline),5,5);
     } 
 
     virtual void mouseMove(Base::Vector2D onSketchPos)
@@ -140,7 +141,7 @@ public:
             if( seekAutoConstraint(onSketchPos, Base::Vector2D(0.f,0.f)) )
                 renderSuggestConstraintsCursor();
             else
-                setCursor(QPixmap(cursor_createline),7,7);
+                setCursor(QPixmap(cursor_createline),5,5);
 
         } else if (Mode==STATUS_SEEK_Second){
             EditCurve[1] = onSketchPos; 
@@ -148,9 +149,9 @@ public:
             if( seekAutoConstraint(onSketchPos, onSketchPos - EditCurve[0]) )
                 renderSuggestConstraintsCursor();
             else
-                setCursor(QPixmap(cursor_createline),7,7);
+                setCursor(QPixmap(cursor_createline),5,5);
         } else
-            setCursor(QPixmap(cursor_createline),7,7);
+            setCursor(QPixmap(cursor_createline),5,5);
     }
 
     virtual bool pressButton(Base::Vector2D onSketchPos)
@@ -241,22 +242,23 @@ bool CmdSketcherCreateLine::isActive(void)
 
 /* XPM */
 static const char *cursor_createbox[]={
-"32 32 2 1",
-"# c #646464",
+"32 32 3 1",
+"+ c white",
+"# c red",
 ". c None",
+"...+++..........................",
+"...+++..........................",
+"...+++..........................",
+"++++.++++.......................",
+"+++...+++.......................",
+"++++.++++.......................",
+"...+++..........................",
+"...+++..........................",
+"...+++..........................",
 "................................",
 "................................",
-".......#........................",
-".......#........................",
-".......#........................",
 "................................",
-".......#........................",
-"..###.###.###...................",
-".......#........................",
 "................................",
-".......#........................",
-".......#........................",
-".......#........................",
 "................................",
 "................................",
 "..........................###...",
@@ -291,7 +293,7 @@ public:
 
     virtual void activated(ViewProviderSketch *sketchgui)
     {
-        setCursor(QPixmap(cursor_createbox),7,7);
+        setCursor(QPixmap(cursor_createbox),5,5);
     } 
 
     virtual void mouseMove(Base::Vector2D onSketchPos)
@@ -309,7 +311,7 @@ public:
         if( seekAutoConstraint(onSketchPos, Base::Vector2D(0.f,0.f)) )
                 renderSuggestConstraintsCursor();
             else
-                setCursor(QPixmap(cursor_createbox),7,7);
+                setCursor(QPixmap(cursor_createbox),5,5);
     }
 
     virtual bool pressButton(Base::Vector2D onSketchPos)
@@ -442,18 +444,19 @@ bool CmdSketcherCreateRectangle::isActive(void)
 
 /* XPM */
 static const char *cursor_createlineset[]={
-"32 32 2 1",
-"# c #646464",
+"32 32 3 1",
+"+ c white",
+"# c red",
 ". c None",
-"................................",
-"................................",
-".......#........................",
-".......#........................",
-".......#........................",
-"................................",
-".......#........................",
-"..###.###.###...................",
-".......#..............###.......",
+"...+++..........................",
+"...+++..........................",
+"...+++..........................",
+"++++.++++.......................",
+"+++...+++.......................",
+"++++.++++.......................",
+"...+++..........................",
+"...+++..........................",
+"...+++................###.......",
 "......................#.#.......",
 ".......#..............###.......",
 ".......#.............#..#.......",
@@ -494,18 +497,18 @@ public:
 
     virtual void activated(ViewProviderSketch *sketchgui)
     {
-        setCursor(QPixmap(cursor_createlineset),7,7);
+        setCursor(QPixmap(cursor_createlineset),5,5);
     } 
 
     virtual void mouseMove(Base::Vector2D onSketchPos)
     {
         setPositionText(onSketchPos);
-        if( Mode==STATUS_SEEK_First) {
+        if (Mode==STATUS_SEEK_First) {
 
             if( seekAutoConstraint(onSketchPos, Base::Vector2D(0.f,0.f)) )
                 renderSuggestConstraintsCursor();
             else
-                setCursor(QPixmap(cursor_createlineset),7,7);
+                setCursor(QPixmap(cursor_createlineset),5,5);
 
         } else if (Mode==STATUS_SEEK_Second || Mode==STATUS_Do || Mode==STATUS_Close){
             EditCurve[1] = onSketchPos;
@@ -513,10 +516,9 @@ public:
             if( seekAutoConstraint(onSketchPos, onSketchPos - EditCurve[0]) )
                 renderSuggestConstraintsCursor();
             else
-                setCursor(QPixmap(cursor_createlineset),7,7);
+                setCursor(QPixmap(cursor_createlineset),5,5);
             
             sketchgui->drawEdit(EditCurve);
-            
         }
     }
 
@@ -596,7 +598,7 @@ public:
 
                 Gui::Command::commitCommand();
                 Gui::Command::updateActive();
-                
+
                 applyCursor();
             }
             else { //Mode==STATUS_Close
@@ -605,10 +607,10 @@ public:
                           ,sketchgui->getObject()->getNameInDocument()
                           ,previousCurve,firstCurve
                           );
-                
+
                 Gui::Command::commitCommand();
                 Gui::Command::updateActive();
-                
+
                 unsetCursor();
                 // empty the edit draw
                 EditCurve.clear();
@@ -659,22 +661,21 @@ bool CmdSketcherCreatePolyline::isActive(void)
 
 /* XPM */
 static const char *cursor_createarc[]={
-"32 32 2 1",
-"# c #646464",
+"32 32 3 1",
+"+ c white",
+"# c red",
 ". c None",
-"................................",
-"................................",
-".......#..........###...........",
-".......#..........#.#...........",
-".......#..........###...........",
-".....................##.........",
-".......#..............##........",
-"..###.###.###..........#........",
-".......#................#.......",
-"........................##......",
-".......#.................#......",
-".......#.................#......",
-".......#..................#.....",
+"...+++............###...........",
+"...+++............#.#...........",
+"...+++............###...........",
+"++++.++++............##.........",
+"+++...+++.............##........",
+"++++.++++..............#........",
+"...+++..................#.......",
+"...+++..................##......",
+"...+++...................#......",
+".........................#......",
+"..........................#.....",
 "..........................#.....",
 "..........................#.....",
 "..........................#.....",
@@ -691,6 +692,8 @@ static const char *cursor_createarc[]={
 "......##...........##...........",
 ".......###.......##.............",
 "..........#######...............",
+"................................",
+"................................",
 "................................",
 "................................",
 "................................"};
@@ -711,7 +714,7 @@ public:
 
     virtual void activated(ViewProviderSketch *sketchgui)
     {
-        setCursor(QPixmap(cursor_createarc),7,7);
+        setCursor(QPixmap(cursor_createarc),5,5);
     }
 
     virtual void mouseMove(Base::Vector2D onSketchPos)
@@ -721,7 +724,7 @@ public:
         if( seekAutoConstraint(onSketchPos, Base::Vector2D(0.f,0.f)) )
                 renderSuggestConstraintsCursor();
             else
-                setCursor(QPixmap(cursor_createarc),7,7);
+                setCursor(QPixmap(cursor_createarc),5,5);
 
         if (Mode==STATUS_SEEK_Second) {
             float dx_ = onSketchPos.fX - EditCurve[0].fX;
@@ -735,6 +738,7 @@ public:
             }
             EditCurve[33] = EditCurve[1];
             sketchgui->drawEdit(EditCurve);
+            applyCursor();
         }
         else if (Mode==STATUS_SEEK_Third) {
             float angle1 = atan2(onSketchPos.fY - CenterPoint.fY,
@@ -748,8 +752,9 @@ public:
                 EditCurve[i] = Base::Vector2D(CenterPoint.fX + dx, CenterPoint.fY + dy);
             }
             sketchgui->drawEdit(EditCurve);
+            applyCursor();
         }
-        
+
     }
 
     virtual bool pressButton(Base::Vector2D onSketchPos)
@@ -807,7 +812,7 @@ public:
                       sketchgui->getObject()->getNameInDocument(),
                       CenterPoint.fX, CenterPoint.fY, sqrt(rx*rx + ry*ry),
                       startAngle, endAngle); //arcAngle > 0 ? 0 : 1);
-                      
+
             Gui::Command::commitCommand();
             Gui::Command::updateActive();
 
@@ -874,18 +879,19 @@ bool CmdSketcherCreateArc::isActive(void)
 
 /* XPM */
 static const char *cursor_createcircle[]={
-"32 32 2 1",
-"# c #646464",
+"32 32 3 1",
+"+ c white",
+"# c red",
 ". c None",
-"................................",
-"................................",
-".......#........................",
-".......#........................",
-".......#........................",
-"................................",
-".......#........................",
-"..###.###.###...................",
-".......#.......#######..........",
+"...+++..........................",
+"...+++..........................",
+"...+++..........................",
+"++++.++++.......................",
+"+++...+++.......................",
+"++++.++++.......................",
+"...+++..........................",
+"...+++..........................",
+"...+++.........#######..........",
 ".............##.......##........",
 ".......#....#...........#.......",
 ".......#...#.............#......",
@@ -924,7 +930,7 @@ public:
 
     virtual void activated(ViewProviderSketch *sketchgui)
     {
-        setCursor(QPixmap(cursor_createcircle),7,7);
+        setCursor(QPixmap(cursor_createcircle),5,5);
     } 
 
     virtual void mouseMove(Base::Vector2D onSketchPos)
@@ -934,7 +940,7 @@ public:
             if( seekAutoConstraint(onSketchPos, Base::Vector2D(0.f,0.f)) )
                 renderSuggestConstraintsCursor();
             else
-                setCursor(QPixmap(cursor_createline),7,7);
+                setCursor(QPixmap(cursor_createline),5,5);
         } else if (Mode==STATUS_SEEK_Second) {
             float rx0 = onSketchPos.fX - EditCurve[0].fX;
             float ry0 = onSketchPos.fY - EditCurve[0].fY;
