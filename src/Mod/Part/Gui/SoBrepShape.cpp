@@ -103,14 +103,29 @@ void SoBrepFaceSet::doAction(SoAction* action)
     }
     else if (action->getTypeId() == Gui::SoSelectionElementAction::getClassTypeId()) {
         Gui::SoSelectionElementAction* selaction = static_cast<Gui::SoSelectionElementAction*>(action);
+        this->selectionColor = selaction->getColor();
+        if (selaction->getType() == Gui::SoSelectionElementAction::All) {
+            int num = this->partIndex.getNum();
+            this->selectionIndex.setNum(num);
+            int32_t* v = this->selectionIndex.startEditing();
+            for (int i=0; i<num;i++)
+                v[i] = i;
+            this->selectionIndex.finishEditing();
+            return;
+        }
+        else if (selaction->getType() == Gui::SoSelectionElementAction::None) {
+            this->selectionIndex.setNum(0);
+            return;
+        }
+
         const SoPickedPoint* pp = selaction->getElement();
         if (pp && pp->getDetail()) {
             const SoDetail* detail = pp->getDetail();
+
             if (!detail->isOfType(SoFaceDetail::getClassTypeId())) {
                 return;
             }
 
-            this->selectionColor = selaction->getColor();
             int index = static_cast<const SoFaceDetail*>(detail)->getPartIndex();
             switch (selaction->getType()) {
             case Gui::SoSelectionElementAction::Append:
@@ -125,13 +140,10 @@ void SoBrepFaceSet::doAction(SoAction* action)
                     this->selectionIndex.deleteValues(start,1);
                 }
                 break;
+            default:
+                break;
             }
         }
-    }
-    else if (action->getTypeId() == Gui::SoFCSelectionAction::getClassTypeId()) {
-        Gui::SoFCSelectionAction* selaction = static_cast<Gui::SoFCSelectionAction*>(action);
-        if (selaction->SelChange.Type == Gui::SelectionChanges::ClrSelection)
-            this->selectionIndex.setNum(0);
     }
 
     inherited::doAction(action);
@@ -764,6 +776,14 @@ void SoBrepEdgeSet::doAction(SoAction* action)
     }
     else if (action->getTypeId() == Gui::SoSelectionElementAction::getClassTypeId()) {
         Gui::SoSelectionElementAction* selaction = static_cast<Gui::SoSelectionElementAction*>(action);
+
+        if (selaction->getType() == Gui::SoSelectionElementAction::All) {
+        }
+        else if (selaction->getType() == Gui::SoSelectionElementAction::None) {
+            this->selectionIndex.setNum(0);
+            this->sl.clear();
+        }
+
         const SoPickedPoint* pp = selaction->getElement();
         if (pp && pp->getDetail()) {
             const SoDetail* detail = pp->getDetail();
@@ -786,6 +806,8 @@ void SoBrepEdgeSet::doAction(SoAction* action)
                     this->selectionIndex.deleteValues(start,1);
                 }
                 break;
+            default:
+                break;
             }
 
             int numsegm = this->selectionIndex.getNum();
@@ -795,13 +817,6 @@ void SoBrepEdgeSet::doAction(SoAction* action)
                 int numcindices = this->coordIndex.getNum();
                 createIndexArray(selsegm, numsegm, cindices, numcindices, this->sl);
             }
-        }
-    }
-    else if (action->getTypeId() == Gui::SoFCSelectionAction::getClassTypeId()) {
-        Gui::SoFCSelectionAction* selaction = static_cast<Gui::SoFCSelectionAction*>(action);
-        if (selaction->SelChange.Type == Gui::SelectionChanges::ClrSelection) {
-            this->selectionIndex.setNum(0);
-            this->sl.clear();
         }
     }
 
@@ -944,6 +959,23 @@ void SoBrepPointSet::doAction(SoAction* action)
     }
     else if (action->getTypeId() == Gui::SoSelectionElementAction::getClassTypeId()) {
         Gui::SoSelectionElementAction* selaction = static_cast<Gui::SoSelectionElementAction*>(action);
+        this->selectionColor = selaction->getColor();
+        if (selaction->getType() == Gui::SoSelectionElementAction::All) {
+            //FIXME: SoCoordinateElement delivers only one point!!!
+            const SoCoordinateElement* coords = SoCoordinateElement::getInstance(action->getState());
+            int num = coords->getNum();
+            this->selectionIndex.setNum(num);
+            int32_t* v = this->selectionIndex.startEditing();
+            for (int i=0; i<num;i++)
+                v[i] = i;
+            this->selectionIndex.finishEditing();
+            return;
+        }
+        else if (selaction->getType() == Gui::SoSelectionElementAction::None) {
+            this->selectionIndex.setNum(0);
+            return;
+        }
+
         const SoPickedPoint* pp = selaction->getElement();
         if (pp && pp->getDetail()) {
             const SoDetail* detail = pp->getDetail();
@@ -951,7 +983,6 @@ void SoBrepPointSet::doAction(SoAction* action)
                 return;
             }
 
-            this->selectionColor = selaction->getColor();
             int index = static_cast<const SoPointDetail*>(detail)->getCoordinateIndex();
             switch (selaction->getType()) {
             case Gui::SoSelectionElementAction::Append:
@@ -966,13 +997,10 @@ void SoBrepPointSet::doAction(SoAction* action)
                     this->selectionIndex.deleteValues(start,1);
                 }
                 break;
+            default:
+                break;
             }
         }
-    }
-    else if (action->getTypeId() == Gui::SoFCSelectionAction::getClassTypeId()) {
-        Gui::SoFCSelectionAction* selaction = static_cast<Gui::SoFCSelectionAction*>(action);
-        if (selaction->SelChange.Type == Gui::SelectionChanges::ClrSelection)
-            this->selectionIndex.setNum(0);
     }
 
     inherited::doAction(action);
