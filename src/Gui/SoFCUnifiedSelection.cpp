@@ -230,23 +230,25 @@ void SoFCUnifiedSelection::doAction(SoAction *action)
         this->colorHighlight = colaction->highlightColor;
     }
 
-    if (selectionMode.getValue() == SEL_ON && !currenthighlight &&
-        action->getTypeId() == SoFCSelectionAction::getClassTypeId()) {
+    if (selectionMode.getValue() == SEL_ON && action->getTypeId() == SoFCSelectionAction::getClassTypeId()) {
         SoFCSelectionAction *selaction = static_cast<SoFCSelectionAction*>(action);
         if (selaction->SelChange.Type == SelectionChanges::AddSelection || 
             selaction->SelChange.Type == SelectionChanges::RmvSelection) {
-            App::Document* doc = App::GetApplication().getDocument(selaction->SelChange.pDocName);
-            App::DocumentObject* obj = doc->getObject(selaction->SelChange.pObjectName);
-            ViewProvider*vp = Application::Instance->getViewProvider(obj);
-            if (vp && vp->useNewSelectionModel()) {
-                SoSelectionElementAction::Type type = SoSelectionElementAction::None;
-                if (selaction->SelChange.Type == SelectionChanges::AddSelection)
-                    type = SoSelectionElementAction::All;
-                else
-                    type = SoSelectionElementAction::None;
-                SoSelectionElementAction action(type);
-                action.setColor(this->colorSelection.getValue());
-                action.apply(vp->getRoot());
+            // selection changes inside the 3d view are handled in handleEvent()
+            if (!currenthighlight) {
+                App::Document* doc = App::GetApplication().getDocument(selaction->SelChange.pDocName);
+                App::DocumentObject* obj = doc->getObject(selaction->SelChange.pObjectName);
+                ViewProvider*vp = Application::Instance->getViewProvider(obj);
+                if (vp && vp->useNewSelectionModel()) {
+                    SoSelectionElementAction::Type type = SoSelectionElementAction::None;
+                    if (selaction->SelChange.Type == SelectionChanges::AddSelection)
+                        type = SoSelectionElementAction::All;
+                    else
+                        type = SoSelectionElementAction::None;
+                    SoSelectionElementAction action(type);
+                    action.setColor(this->colorSelection.getValue());
+                    action.apply(vp->getRoot());
+                }
             }
         }
         else if (selaction->SelChange.Type == SelectionChanges::ClrSelection ||
@@ -301,23 +303,28 @@ SoFCUnifiedSelection::handleEvent(SoHandleEventAction * action)
         const SoPickedPoint * pp = this->getPickedPoint(action);
         SoFullPath *pPath = (pp != NULL) ? (SoFullPath *) pp->getPath() : NULL;
         ViewProvider *vp = 0;
-        if (pPath && pPath->containsPath(action->getCurPath())) {
+        ViewProviderDocumentObject* vpd = 0;
+        if (pPath && pPath->containsPath(action->getCurPath()))
             vp = viewer->getViewProviderByPathFromTail(pPath);
-        }
+        if (vp && vp->isDerivedFrom(ViewProviderDocumentObject::getClassTypeId()))
+            vpd = static_cast<ViewProviderDocumentObject*>(vp);
 
         SbBool old_state = highlighted;
         highlighted = FALSE;
-        if (vp && vp->useNewSelectionModel()) {
-            std::string e = vp->getElement(pp);
-            vp->getSelectionShape(e.c_str());
+        if (vpd && vpd->useNewSelectionModel()) {
+            std::string documentName = vpd->getObject()->getDocument()->getName();
+            std::string objectName = vpd->getObject()->getNameInDocument();
+            std::string subElementName = vpd->getElement(pp);
             static char buf[513];
-            snprintf(buf,512,"Hovered: %s (%f,%f,%f)"
-                                       ,e.c_str()
+            snprintf(buf,512,"Preselected: %s.%s.%s (%f,%f,%f)",documentName.c_str()
+                                       ,objectName.c_str()
+                                       ,subElementName.c_str()
                                        ,pp->getPoint()[0]
                                        ,pp->getPoint()[1]
                                        ,pp->getPoint()[2]);
 
             getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
+
             SoSearchAction sa;
             sa.setNode(vp->getRoot());
             sa.apply(vp->getRoot());
@@ -366,42 +373,6 @@ SoFCUnifiedSelection::handleEvent(SoHandleEventAction * action)
             SoKeyboardEvent::isKeyReleaseEvent(e,SoKeyboardEvent::RIGHT_CONTROL) )
             bCtrl = false;
     }
-#if 0
-    // mouse press events for (de)selection (only if selection is enabled on this node)
-    else if (event->isOfType(SoMouseButtonEvent::getClassTypeId()) && 
-             selectionMode.getValue() == SoFCUnifiedSelection::SEL_ON) {
-        SoMouseButtonEvent * const e = (SoMouseButtonEvent *) event;
-        // check to see if the mouse is over our geometry...
-        const SoPickedPoint * pp = this->getPickedPoint(action);
-        SoFullPath *pPath = (pp != NULL) ? (SoFullPath *) pp->getPath() : NULL;
-        ViewProvider *vp = 0;
-        if (pPath && pPath->containsPath(action->getCurPath())) {
-            vp = viewer->getViewProviderByPathFromTail(pPath);
-        }
-
-        if (vp && vp->useNewSelectionModel()) {
-            action->setHandled();
-            std::string e = vp->getElement(pp);
-            vp->getSelectionShape(e.c_str());
-            static char buf[513];
-            snprintf(buf,512,"Selected: %s (%f,%f,%f)"
-                                       ,e.c_str()
-                                       ,pp->getPoint()[0]
-                                       ,pp->getPoint()[1]
-                                       ,pp->getPoint()[2]);
-
-            getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
-
-            if (currenthighlight) {
-                SoSelectionElementAction action(SoSelectionElementAction::Append);
-                action.setColor(this->colorSelection.getValue());
-                action.setElement(pp);
-                action.apply(currenthighlight);
-                this->touch();
-            }
-        }
-    }
-#else
     // mouse press events for (de)selection
     else if (event->isOfType(SoMouseButtonEvent::getClassTypeId()) && 
              selectionMode.getValue() == SoFCUnifiedSelection::SEL_ON) {
@@ -498,7 +469,6 @@ SoFCUnifiedSelection::handleEvent(SoHandleEventAction * action)
             } // picked point
         } // mouse release
     }
-#endif
 
     inherited::handleEvent(action);
 }
