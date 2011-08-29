@@ -57,6 +57,7 @@
 
 #include "SoTextLabel.h"
 #include "SoFCInteractiveElement.h"
+#include "BitmapFactory.h"
 
 using namespace Gui;
 
@@ -374,6 +375,181 @@ void SoStringLabel::GLRender(SoGLRenderAction *action)
     glMatrixMode(GL_MODELVIEW);
 
     state->pop();
+}
+
+// ------------------------------------------------------
+
+SO_NODE_SOURCE(SoFrameLabel);
+
+void SoFrameLabel::initClass()
+{
+    SO_NODE_INIT_CLASS(SoFrameLabel, SoImage, "Image");
+}
+
+SoFrameLabel::SoFrameLabel()
+{
+    SO_NODE_CONSTRUCTOR(SoFrameLabel);
+    SO_NODE_ADD_FIELD(string, (""));
+    SO_NODE_ADD_FIELD(textColor, (SbVec3f(1.0f,1.0f,1.0f)));
+    SO_NODE_ADD_FIELD(backgroundColor, (SbVec3f(0.0f,0.333f,1.0f)));
+    SO_NODE_ADD_FIELD(justification, (LEFT));
+    SO_NODE_ADD_FIELD(name, ("Helvetica"));
+    SO_NODE_ADD_FIELD(size, (12));
+    SO_NODE_ADD_FIELD(frame, (TRUE));
+  //SO_NODE_ADD_FIELD(image, (SbVec2s(0,0), 0, NULL));
+}
+
+void SoFrameLabel::notify(SoNotList * list)
+{
+    SoField *f = list->getLastField();
+    if (f == &this->string ||
+        f == &this->textColor ||
+        f == &this->backgroundColor ||
+        f == &this->justification ||
+        f == &this->name ||
+        f == &this->size ||
+        f == &this->frame) {
+        drawImage();
+    }
+    inherited::notify(list);
+}
+
+void SoFrameLabel::drawImage()
+{
+    const SbString* s = string.getValues(0);
+    int num = string.getNum();
+    if (num == 0) {
+        this->image = SoSFImage();
+        return;
+    }
+
+    QFont font(QString::fromAscii(name.getValue()), size.getValue());
+    QFontMetrics fm(font);
+    int w = 0;
+    int h = fm.height() * num;
+    const SbColor& b = backgroundColor.getValue();
+    QColor brush;
+    brush.setRgbF(b[0],b[1],b[2]);
+    const SbColor& t = textColor.getValue();
+    QColor front;
+    front.setRgbF(t[0],t[1],t[2]);
+
+    QStringList lines;
+    for (int i=0; i<num; i++) {
+        QString line = QString::fromUtf8(s[i].getString());
+        w = std::max<int>(w, fm.width(line));
+        lines << line;
+    }
+
+    QImage image(w+10,h+10,QImage::Format_ARGB32_Premultiplied);
+    image.fill(0x00000000);
+    QPainter painter(&image);
+    painter.setRenderHint(QPainter::Antialiasing);
+
+    SbBool drawFrame = frame.getValue();
+    if (drawFrame) {
+        painter.setPen(QPen(QColor(0,0,127), 2, Qt::SolidLine, Qt::RoundCap,
+                            Qt::RoundJoin));
+        painter.setBrush(QBrush(brush, Qt::SolidPattern));
+        QRectF rectangle(0.0, 0.0, w+10, h+10);
+        painter.drawRoundedRect(rectangle, 5, 5);
+    }
+
+    painter.setPen(front);
+
+    Qt::Alignment align = Qt::AlignVCenter;
+    if (justification.getValue() == 0)
+        align = Qt::AlignVCenter | Qt::AlignLeft;
+    else if (justification.getValue() == 1)
+        align = Qt::AlignVCenter | Qt::AlignRight;
+    else
+        align = Qt::AlignVCenter | Qt::AlignHCenter;
+    QString text = lines.join(QLatin1String("\n"));
+    painter.setFont(font);
+    painter.drawText(5,5,w,h,align,text);
+    painter.end();
+
+    SoSFImage sfimage;
+    Gui::BitmapFactory().convert(image, sfimage);
+    this->image = sfimage;
+}
+
+/**
+ * Renders the open edges only.
+ */
+void SoFrameLabel::GLRender(SoGLRenderAction *action)
+{
+    inherited::GLRender(action);
+#if 0
+    QGLWidget* window;
+    SoState * state = action->getState();
+    state->push();
+    SoLazyElement::setLightModel(state, SoLazyElement::BASE_COLOR);
+    SoGLWidgetElement::get(state, window);
+    if (!window) {
+        state->pop();
+        return;
+    }
+
+    // Enter in 2D screen mode
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(-1,1,-1,1,-1,1);
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+    glPushAttrib(GL_ENABLE_BIT);
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_LIGHTING);
+    glDisable(GL_TEXTURE_2D);
+    glEnable(GL_BLEND);
+
+    QFont font;
+    font.setStyleStrategy(QFont::NoAntialias);
+    font.setFamily(QLatin1String(this->name.getValue()));
+    font.setPixelSize(this->size.getValue());
+
+    glBlendFunc(GL_ONE,GL_SRC_ALPHA);
+
+    /* Background Box */
+    //glColor4f(1,0.1f,0.1f,1);
+    //int ln =4;
+    //float ls = font.pixelSize()*1.5f;
+    //float bh = -1 + 2.0*(ls*(ln+.25))/float(window->height());
+
+    //glBegin(GL_QUADS);
+    //glVertex2f(-1.f,bh);   glVertex2f(-1.f,-1.f);
+    //glVertex2f( 1.f,-1.f); glVertex2f( 1.f,bh);
+    //glEnd();
+
+    //float middleCol=window->width()*0.40;
+    //float rightCol=window->width()*0.85;
+    //float startPos = window->height()-(5+ls*(ln));
+
+    // text color
+    SbColor color = this->textColor.getValue();
+    glColor4f(color[0], color[1], color[2],1);
+    //window->renderText(20,20/*startPos+ 1*ls*/,QLatin1String(this->string[0].getString()),font);
+    const SbMatrix & mat = SoModelMatrixElement::get(state);
+    const SbMatrix & projmatrix = (mat * SoViewingMatrixElement::get(state) *
+                                   SoProjectionMatrixElement::get(state));
+    SbVec3f nil(0.0f, 0.0f, 0.0f);
+    projmatrix.multVecMatrix(nil, nil);
+    QStringList list;
+    for (int i=0; i<this->string.getNum(); i++)
+        list << QLatin1String(this->string[i].getString());
+    window->renderText(nil[0],nil[1],nil[2],list.join(QLatin1String("\n")),font);
+
+    // Leave 2D screen mode
+    glPopAttrib();
+    glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+
+    state->pop();
+#endif
 }
 
 // ------------------------------------------------------
