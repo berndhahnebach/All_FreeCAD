@@ -39,7 +39,7 @@ class Subtractive : public SketchBased
 public:
     Subtractive();
 
-   Part::PropertyPartShape   SubShape;
+    Part::PropertyPartShape   SubShape;
 
 protected:
 };
