@@ -7,6 +7,30 @@ nodist_libResources_la_SOURCES=\
 		qrc_Sketcher.cpp 
 
 EXTRA_DIST = \
+icons/Constraint_PointOnObject.svg \
+		icons/small/Constraint_TangentToStart_sm.xpm \
+		icons/small/Constraint_Length_sm.xpm \
+		icons/small/Constraint_Concentric_sm.xpm \
+		icons/small/Constraint_TangentToEnd_sm.xpm \
+		icons/small/Constraint_PointOnMidPoint_sm.xpm \
+		icons/small/Sketcher_ConstrainDistance_sm.xpm \
+		icons/small/Sketcher_ConstrainParallel_sm.xpm \
+		icons/small/Constraint_PointOnStart_sm.xpm \
+		icons/small/Constraint_Vertical_sm.xpm \
+		icons/small/Constraint_PointOnEnd_sm.xpm \
+		icons/small/Constraint_PointToObject_sm.xpm \
+		icons/small/Constraint_InternalAngle_sm.xpm \
+		icons/small/Constraint_Radius_sm.xpm \
+		icons/small/Constraint_Horizontal_sm.xpm \
+		icons/small/Constraint_ExternalAngle_sm.xpm \
+		icons/small/Constraint_Parallel_sm.xpm \
+		icons/small/Constraint_Perpendicular_sm.xpm \
+		icons/small/Constraint_PointOnPoint_sm.xpm \
+		icons/small/Constraint_Tangent_sm.xpm \
+		icons/small/Constraint_EqualLength_sm.xpm \
+		icons/small/Constraint_HorizontalDistance_sm.xpm \
+		icons/small/Constraint_VerticalDistance_sm.xpm \
+		icons/small/Constraint_Symmetric_sm.xpm \
 		icons/Constraint_PointOnObject.svg \
 		icons/Constraint_TangentToStart.svg \
 		icons/Constraint_Length.svg \

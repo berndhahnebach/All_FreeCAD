@@ -1,5 +1,27 @@
 <RCC>
-    <qresource> 
+    <qresource>
+        <file>icons/small/Constraint_Concentric_sm.xpm</file>
+        <file>icons/small/Constraint_EqualLength_sm.xpm</file>
+        <file>icons/small/Constraint_ExternalAngle_sm.xpm</file>
+        <file>icons/small/Constraint_Horizontal_sm.xpm</file>
+        <file>icons/small/Constraint_InternalAngle_sm.xpm</file>
+        <file>icons/small/Constraint_Length_sm.xpm</file>
+        <file>icons/small/Constraint_Parallel_sm.xpm</file>
+        <file>icons/small/Constraint_Perpendicular_sm.xpm</file>
+        <file>icons/small/Constraint_PointOnEnd_sm.xpm</file>
+        <file>icons/small/Constraint_PointOnMidPoint_sm.xpm</file>
+        <file>icons/small/Constraint_PointOnObject_sm.xpm</file>
+        <file>icons/small/Constraint_PointOnPoint_sm.xpm</file>
+        <file>icons/small/Constraint_PointOnStart_sm.xpm</file>
+        <file>icons/small/Constraint_PointToObject_sm.xpm</file>
+        <file>icons/small/Constraint_Radius_sm.xpm</file>
+        <file>icons/small/Constraint_Tangent_sm.xpm</file>
+        <file>icons/small/Constraint_TangentToEnd_sm.xpm</file>
+        <file>icons/small/Constraint_TangentToStart_sm.xpm</file>
+        <file>icons/small/Constraint_Vertical_sm.xpm</file>
+        <file>icons/small/Constraint_HorizontalDistance_sm.xpm</file>
+        <file>icons/small/Constraint_VerticalDistance_sm.xpm</file>
+        <file>icons/small/Constraint_Symmetric_sm.xpm</file>
         <file>icons/Constraint_Concentric.svg</file>
         <file>icons/Constraint_EqualLength.svg</file>
         <file>icons/Constraint_ExternalAngle.svg</file>
