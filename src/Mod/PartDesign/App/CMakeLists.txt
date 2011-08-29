@@ -22,8 +22,8 @@ set(PartDesign_LIBS
 SET(Features_SRCS
     Feature.cpp
     Feature.h
-	FeaturePatternRectangular.h
-	FeaturePatternRectangular.cpp
+    FeaturePatternRectangular.h
+    FeaturePatternRectangular.cpp
     FeatureMainPart.cpp
     FeatureMainPart.h
 )
@@ -50,13 +50,13 @@ SET(FeaturesSketchBased_SRCS
     FeaturePocket.h
     FeatureRevolution.cpp
     FeatureRevolution.h
-	FeatureAdditive.cpp
-	FeatureAdditive.h
-	FeatureSubtractive.h
-	FeatureSubtractive.cpp
-	FeatureHole.h
-	FeatureHole.cpp
-   )
+    FeatureAdditive.cpp
+    FeatureAdditive.h
+    FeatureSubtractive.h
+    FeatureSubtractive.cpp
+    FeatureHole.h
+    FeatureHole.cpp
+)
 
 SOURCE_GROUP("SketchBasedFeatures" FILES ${FeaturesSketchBased_SRCS})
 

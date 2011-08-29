@@ -20,7 +20,7 @@ link_directories(${OCC_LIBRARY_DIR})
 
 set(PartDesignGui_LIBS
     PartDesign
-	PartGui
+    PartGui
     FreeCADGui
 )
 
@@ -28,9 +28,9 @@ set(PartDesignGui_MOC_HDRS
     TaskChamfer.h
     TaskPadParameters.h
     TaskPatternRectangularParameters.h
-	TaskPocketParameters.h
-	TaskHoleParameters.h
-	TaskRevolutionParameters.h
+    TaskPocketParameters.h
+    TaskHoleParameters.h
+    TaskRevolutionParameters.h
 )
 fc_wrap_cpp(PartDesignGui_MOC_SRCS ${PartDesignGui_MOC_HDRS})
 SOURCE_GROUP("Moc" FILES ${PartDesignGui_MOC_SRCS})
@@ -41,9 +41,9 @@ set(PartDesignGui_UIC_SRCS
     TaskChamfer.ui
     TaskPadParameters.ui
     TaskPatternRectangularParameters.ui
-	TaskPocketParameters.ui
-	TaskHoleParameters.ui
-	TaskRevolutionParameters.ui
+    TaskPocketParameters.ui
+    TaskHoleParameters.ui
+    TaskRevolutionParameters.ui
 )
 qt4_wrap_ui(PartDesignGui_UIC_HDRS ${PartDesignGui_UIC_SRCS})
 
@@ -100,9 +100,9 @@ SOURCE_GROUP("Module" FILES ${PartDesignGuiModule_SRCS})
 SET(PartDesignGui_SRCS
     ${PartDesignGui_SRCS}
     ${PartDesignGui_UIC_HDRS}
-	${PartDesignGuiModule_SRCS}
-	${PartDesignGuiTaskDlgs_SRCS}
-	${PartDesignGuiViewProvider_SRCS}
+    ${PartDesignGuiModule_SRCS}
+    ${PartDesignGuiTaskDlgs_SRCS}
+    ${PartDesignGuiViewProvider_SRCS}
 )
 
 add_library(PartDesignGui SHARED ${PartDesignGui_SRCS})
