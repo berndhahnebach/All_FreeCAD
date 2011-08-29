@@ -25,12 +25,15 @@
 
 #include <Inventor/fields/SoSubField.h>
 #include <Inventor/nodes/SoSubNode.h>
+#include <Inventor/nodes/SoImage.h>
 #include <Inventor/nodes/SoText2.h>
 #include <Inventor/fields/SoSFColor.h>
+#include <Inventor/fields/SoSFEnum.h>
 #include <Inventor/fields/SoSFFloat.h>
 #include <Inventor/fields/SoSFBool.h>
 #include <Inventor/fields/SoSFName.h>
 #include <Inventor/fields/SoSFInt32.h>
+#include <Inventor/fields/SoSFImage.h>
 #include <Inventor/manips/SoTransformManip.h>
 
 namespace Gui {
@@ -74,6 +77,37 @@ public:
 protected:
     virtual ~SoStringLabel() {};
     virtual void GLRender(SoGLRenderAction *action);
+};
+
+class GuiExport SoFrameLabel : public SoImage {
+    typedef SoImage inherited;
+
+    SO_NODE_HEADER(SoFrameLabel);
+
+public:
+    enum Justification {
+        LEFT, RIGHT, CENTER
+    };
+
+    static void initClass();
+    SoFrameLabel();
+
+    SoMFString string;
+    SoSFColor  textColor;
+    SoSFColor  backgroundColor;
+    SoSFEnum   justification;
+    SoSFName   name;
+    SoSFInt32  size;
+    SoSFBool   frame;
+  //SoSFImage  image;
+
+protected:
+    virtual ~SoFrameLabel() {};
+    virtual void notify(SoNotList * list);
+    virtual void GLRender(SoGLRenderAction *action);
+
+private:
+    void drawImage();
 };
 
 class GuiExport TranslateManip : public SoTransformManip

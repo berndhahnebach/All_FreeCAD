@@ -50,7 +50,7 @@ def InitApplications():
 	AddPath = FreeCAD.ConfigGet("AdditionalModulePaths").split(";")
 	HomeMod = FreeCAD.ConfigGet("UserAppData")+"Mod"
 	HomeMod = os.path.realpath(HomeMod)
-	MacroMod = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Macro").GetString("MacroPath")
+	MacroMod = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Macro").GetString("MacroPath")+"/Mod"
 	MacroMod = os.path.realpath(MacroMod)
 	ModPar = FreeCAD.ParamGet("System parameter:Modules")
 
