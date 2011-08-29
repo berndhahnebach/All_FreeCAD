@@ -90,11 +90,7 @@ public:
     SoSFEnum highlightMode;
     SoSFEnum selectionMode;
 
-    SoSFString documentName;
-    SoSFString objectName;
-    SoSFString subElementName;
-
-    //virtual void doAction(SoAction *action);
+    virtual void doAction(SoAction *action);
     //virtual void GLRender(SoGLRenderAction * action);
 
     virtual void handleEvent(SoHandleEventAction * action);
@@ -166,7 +162,7 @@ class GuiExport SoSelectionElementAction : public SoAction
     SO_ACTION_HEADER(SoSelectionElementAction);
 
 public:
-    enum Type {Append, Remove};
+    enum Type {None, Append, Remove, All};
 
     SoSelectionElementAction (Type);
     ~SoSelectionElementAction();

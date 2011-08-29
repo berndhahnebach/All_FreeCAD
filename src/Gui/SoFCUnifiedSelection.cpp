@@ -64,18 +64,18 @@
 #include "View3DInventorViewer.h"
 
 #include <Base/Console.h>
+#include <App/Application.h>
+#include <App/Document.h>
+#include <App/DocumentObject.h>
+
 #include "SoFCUnifiedSelection.h"
+#include "Application.h"
 #include "MainWindow.h"
 #include "Selection.h"
 #include "ViewProvider.h"
 #include "SoFCInteractiveElement.h"
-
-// For 64-bit system the method using the front buffer doesn't work at all for lines.
-// Thus, use the method which forces a redraw every time. This is a bit slower but at
-// least it works.
-#if defined(_OCC64) // is set by configure or cmake
-# define NO_FRONTBUFFER
-#endif
+#include "SoFCSelectionAction.h"
+#include "ViewProviderDocumentObject.h"
 
 using namespace Gui;
 
@@ -99,9 +99,6 @@ SoFCUnifiedSelection::SoFCUnifiedSelection() : viewer(0)
     SO_NODE_ADD_FIELD(highlightMode,  (AUTO));
     SO_NODE_ADD_FIELD(selectionMode,  (SEL_ON));
     SO_NODE_ADD_FIELD(selected,       (NOTSELECTED));
-    SO_NODE_ADD_FIELD(documentName,   (""));
-    SO_NODE_ADD_FIELD(objectName,     (""));
-    SO_NODE_ADD_FIELD(subElementName, (""));
 
     SO_NODE_DEFINE_ENUM_VALUE(Styles, EMISSIVE);
     SO_NODE_DEFINE_ENUM_VALUE(Styles, EMISSIVE_DIFFUSE);
@@ -198,6 +195,85 @@ SoFCUnifiedSelection::getPickedPoint(SoHandleEventAction* action) const
     return picked;
 }
 
+void SoFCUnifiedSelection::doAction(SoAction *action)
+{
+    if (action->getTypeId() == SoFCEnableHighlightAction::getClassTypeId()) {
+        SoFCEnableHighlightAction *preaction = (SoFCEnableHighlightAction*)action;
+        if (preaction->highlight) {
+            this->highlightMode = SoFCUnifiedSelection::AUTO;
+        }
+        else {
+            this->highlightMode = SoFCUnifiedSelection::OFF;
+        }
+    }
+
+    if (action->getTypeId() == SoFCEnableSelectionAction::getClassTypeId()) {
+        SoFCEnableSelectionAction *selaction = (SoFCEnableSelectionAction*)action;
+        if (selaction->selection) {
+            this->selectionMode = SoFCUnifiedSelection::SEL_ON;
+        }
+        else {
+            this->selectionMode = SoFCUnifiedSelection::SEL_OFF;
+            if (selected.getValue() == SELECTED) {
+                this->selected = NOTSELECTED;
+            }
+        }
+    }
+
+    if (action->getTypeId() == SoFCSelectionColorAction::getClassTypeId()) {
+        SoFCSelectionColorAction *colaction = (SoFCSelectionColorAction*)action;
+        this->colorSelection = colaction->selectionColor;
+    }
+
+    if (action->getTypeId() == SoFCHighlightColorAction::getClassTypeId()) {
+        SoFCHighlightColorAction *colaction = (SoFCHighlightColorAction*)action;
+        this->colorHighlight = colaction->highlightColor;
+    }
+
+    if (selectionMode.getValue() == SEL_ON && !currenthighlight &&
+        action->getTypeId() == SoFCSelectionAction::getClassTypeId()) {
+        SoFCSelectionAction *selaction = static_cast<SoFCSelectionAction*>(action);
+        if (selaction->SelChange.Type == SelectionChanges::AddSelection || 
+            selaction->SelChange.Type == SelectionChanges::RmvSelection) {
+            App::Document* doc = App::GetApplication().getDocument(selaction->SelChange.pDocName);
+            App::DocumentObject* obj = doc->getObject(selaction->SelChange.pObjectName);
+            ViewProvider*vp = Application::Instance->getViewProvider(obj);
+            if (vp && vp->useNewSelectionModel()) {
+                SoSelectionElementAction::Type type = SoSelectionElementAction::None;
+                if (selaction->SelChange.Type == SelectionChanges::AddSelection)
+                    type = SoSelectionElementAction::All;
+                else
+                    type = SoSelectionElementAction::None;
+                SoSelectionElementAction action(type);
+                action.setColor(this->colorSelection.getValue());
+                action.apply(vp->getRoot());
+            }
+        }
+        else if (selaction->SelChange.Type == SelectionChanges::ClrSelection ||
+                 selaction->SelChange.Type == SelectionChanges::SetSelection) {
+            std::vector<ViewProvider*> vps = this->viewer->getViewProvidersOfType
+                (ViewProviderDocumentObject::getClassTypeId());
+            for (std::vector<ViewProvider*>::iterator it = vps.begin(); it != vps.end(); ++it) {
+                ViewProviderDocumentObject* vpd = static_cast<ViewProviderDocumentObject*>(*it);
+                if (vpd->useNewSelectionModel()) {
+                    if (Selection().isSelected(vpd->getObject())) {
+                        SoSelectionElementAction action(SoSelectionElementAction::All);
+                        action.setColor(this->colorSelection.getValue());
+                        action.apply(vpd->getRoot());
+                    }
+                    else {
+                        SoSelectionElementAction action(SoSelectionElementAction::None);
+                        action.setColor(this->colorSelection.getValue());
+                        action.apply(vpd->getRoot());
+                    }
+                }
+            }
+        }
+    }
+
+    inherited::doAction( action );
+}
+
 // doc from parent
 void
 SoFCUnifiedSelection::handleEvent(SoHandleEventAction * action)
@@ -290,6 +366,7 @@ SoFCUnifiedSelection::handleEvent(SoHandleEventAction * action)
             SoKeyboardEvent::isKeyReleaseEvent(e,SoKeyboardEvent::RIGHT_CONTROL) )
             bCtrl = false;
     }
+#if 0
     // mouse press events for (de)selection (only if selection is enabled on this node)
     else if (event->isOfType(SoMouseButtonEvent::getClassTypeId()) && 
              selectionMode.getValue() == SoFCUnifiedSelection::SEL_ON) {
@@ -323,81 +400,107 @@ SoFCUnifiedSelection::handleEvent(SoHandleEventAction * action)
                 this->touch();
             }
         }
-    //    if (SoMouseButtonEvent::isButtonReleaseEvent(e,SoMouseButtonEvent::BUTTON1)) {
-    //        //FIXME: Shouldn't we remove the preselection for newly selected objects?
-    //        //       Otherwise the tree signals that an object is preselected even though it is hidden. (Werner)
-    //        const SoPickedPoint * pp = this->getPickedPoint(action);
-    //        if (pp && pp->getPath()->containsPath(action->getCurPath())) {
-    //            if (bCtrl) {
-    //                if (Gui::Selection().isSelected(documentName.getValue().getString()
-    //                                     ,objectName.getValue().getString()
-    //                                     ,subElementName.getValue().getString())) {
-    //                    Gui::Selection().rmvSelection(documentName.getValue().getString()
-    //                                      ,objectName.getValue().getString()
-    //                                      ,subElementName.getValue().getString());
-    //                }
-    //                else {
-    //                    Gui::Selection().addSelection(documentName.getValue().getString()
-    //                                      ,objectName.getValue().getString()
-    //                                      ,subElementName.getValue().getString()
-    //                                      ,pp->getPoint()[0]
-    //                                      ,pp->getPoint()[1]
-    //                                      ,pp->getPoint()[2]);
-
-    //                    if (mymode == OFF) {
-    //                        snprintf(buf,512,"Selected: %s.%s.%s (%f,%f,%f)",documentName.getValue().getString()
-    //                                                   ,objectName.getValue().getString()
-    //                                                   ,subElementName.getValue().getString()
-    //                                                   ,pp->getPoint()[0]
-    //                                                   ,pp->getPoint()[1]
-    //                                                   ,pp->getPoint()[2]);
-
-    //                        getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
-    //                    }
-    //                }
-    //            }
-    //            else { // Ctrl
-    //                if (!Gui::Selection().isSelected(documentName.getValue().getString()
-    //                                     ,objectName.getValue().getString()
-    //                                     ,subElementName.getValue().getString())) {
-    //                    Gui::Selection().clearSelection(documentName.getValue().getString());
-    //                    Gui::Selection().addSelection(documentName.getValue().getString()
-    //                                          ,objectName.getValue().getString()
-    //                                          ,subElementName.getValue().getString()
-    //                                          ,pp->getPoint()[0]
-    //                                          ,pp->getPoint()[1]
-    //                                          ,pp->getPoint()[2]);
-    //                }
-    //                else {
-    //                    Gui::Selection().clearSelection(documentName.getValue().getString());
-    //                    Gui::Selection().addSelection(documentName.getValue().getString()
-    //                                          ,objectName.getValue().getString()
-    //                                          ,0
-    //                                          ,pp->getPoint()[0]
-    //                                          ,pp->getPoint()[1]
-    //                                          ,pp->getPoint()[2]);
-    //                }
- 
-    //                if (mymode == OFF) {
-    //                    snprintf(buf,512,"Selected: %s.%s.%s (%f,%f,%f)",documentName.getValue().getString()
-    //                                               ,objectName.getValue().getString()
-    //                                               ,subElementName.getValue().getString()
-    //                                               ,pp->getPoint()[0]
-    //                                               ,pp->getPoint()[1]
-    //                                               ,pp->getPoint()[2]);
-
-    //                    getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
-    //                }
-    //            }
-
-    //            action->setHandled(); 
-    //        } // picked point
-    //    } // mouse release
     }
+#else
+    // mouse press events for (de)selection
+    else if (event->isOfType(SoMouseButtonEvent::getClassTypeId()) && 
+             selectionMode.getValue() == SoFCUnifiedSelection::SEL_ON) {
+        const SoMouseButtonEvent* e = static_cast<const SoMouseButtonEvent *>(event);
+        if (SoMouseButtonEvent::isButtonReleaseEvent(e,SoMouseButtonEvent::BUTTON1)) {
+            // check to see if the mouse is over a geometry...
+            const SoPickedPoint * pp = this->getPickedPoint(action);
+            SoFullPath *pPath = (pp != NULL) ? (SoFullPath *) pp->getPath() : NULL;
+            ViewProvider *vp = 0;
+            ViewProviderDocumentObject* vpd = 0;
+            if (pPath && pPath->containsPath(action->getCurPath()))
+                vp = viewer->getViewProviderByPathFromTail(pPath);
+            if (vp && vp->isDerivedFrom(ViewProviderDocumentObject::getClassTypeId()))
+                vpd = static_cast<ViewProviderDocumentObject*>(vp);
+            if (vpd && vpd->useNewSelectionModel()) {
+                SoSelectionElementAction::Type type = SoSelectionElementAction::None;
+                std::string documentName = vpd->getObject()->getDocument()->getName();
+                std::string objectName = vpd->getObject()->getNameInDocument();
+                std::string subElementName = vpd->getElement(pp);
+                if (bCtrl) {
+                    if (Gui::Selection().isSelected(documentName.c_str()
+                                         ,objectName.c_str()
+                                         ,subElementName.c_str())) {
+                        Gui::Selection().rmvSelection(documentName.c_str()
+                                          ,objectName.c_str()
+                                          ,subElementName.c_str());
+                        type = SoSelectionElementAction::Remove;
+                    }
+                    else {
+                        Gui::Selection().addSelection(documentName.c_str()
+                                          ,objectName.c_str()
+                                          ,subElementName.c_str()
+                                          ,pp->getPoint()[0]
+                                          ,pp->getPoint()[1]
+                                          ,pp->getPoint()[2]);
 
-    //// Let the base class traverse the children.
-    //if (action->getGrabber() != this)
-        inherited::handleEvent(action);
+                        type = SoSelectionElementAction::Append;
+                        if (mymode == OFF) {
+                            snprintf(buf,512,"Selected: %s.%s.%s (%f,%f,%f)",documentName.c_str()
+                                                       ,objectName.c_str()
+                                                       ,subElementName.c_str()
+                                                       ,pp->getPoint()[0]
+                                                       ,pp->getPoint()[1]
+                                                       ,pp->getPoint()[2]);
+
+                            getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
+                        }
+                    }
+                }
+                else { // Ctrl
+                    if (!Gui::Selection().isSelected(documentName.c_str()
+                                         ,objectName.c_str()
+                                         ,subElementName.c_str())) {
+                        Gui::Selection().clearSelection(documentName.c_str());
+                        Gui::Selection().addSelection(documentName.c_str()
+                                              ,objectName.c_str()
+                                              ,subElementName.c_str()
+                                              ,pp->getPoint()[0]
+                                              ,pp->getPoint()[1]
+                                              ,pp->getPoint()[2]);
+                        type = SoSelectionElementAction::Append;
+                    }
+                    else {
+                        Gui::Selection().clearSelection(documentName.c_str());
+                        Gui::Selection().addSelection(documentName.c_str()
+                                              ,objectName.c_str()
+                                              ,0
+                                              ,pp->getPoint()[0]
+                                              ,pp->getPoint()[1]
+                                              ,pp->getPoint()[2]);
+                        type = SoSelectionElementAction::All;
+                    }
+
+                    if (mymode == OFF) {
+                        snprintf(buf,512,"Selected: %s.%s.%s (%f,%f,%f)",documentName.c_str()
+                                                   ,objectName.c_str()
+                                                   ,subElementName.c_str()
+                                                   ,pp->getPoint()[0]
+                                                   ,pp->getPoint()[1]
+                                                   ,pp->getPoint()[2]);
+
+                        getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
+                    }
+                }
+
+                action->setHandled(); 
+                if (currenthighlight) {
+                    SoSelectionElementAction action(type);
+                    action.setColor(this->colorSelection.getValue());
+                    action.setElement(pp);
+                    action.apply(currenthighlight);
+                    this->touch();
+                }
+            } // picked point
+        } // mouse release
+    }
+#endif
+
+    inherited::handleEvent(action);
 }
 
 // ---------------------------------------------------------------
