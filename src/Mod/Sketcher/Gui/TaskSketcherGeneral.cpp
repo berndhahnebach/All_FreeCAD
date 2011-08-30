@@ -64,7 +64,7 @@ TaskSketcherGeneral::TaskSketcherGeneral(ViewProviderSketch *sketchView)
 
     QObject::connect(
         ui->comboBoxGridSize, SIGNAL(currentIndexChanged(QString)),
-        this              , SLOT  (setGridSnapSize(QString))
+        this              , SLOT  (setGridSize(QString))
        );
 
     QObject::connect(
@@ -82,15 +82,15 @@ TaskSketcherGeneral::~TaskSketcherGeneral()
     Gui::Selection().Detach(this);
 }
 
-void TaskSketcherGeneral::setGridSnapSize(const QString& val)
+void TaskSketcherGeneral::setGridSize(const QString& val)
 {
-    float gridSnapSize = (float) Base::UnitsApi::translateUnit(val);
-    sketchView->setGridSnapSize(gridSnapSize);
+    float gridSize = (float) Base::UnitsApi::translateUnit(val);
+    sketchView->setGridSize(gridSize);
 }
 
 void TaskSketcherGeneral::toggleGridSnap(int state)
 {
-    setGridSnapSize(ui->comboBoxGridSize->currentText()); // Ensure consistency
+    setGridSize(ui->comboBoxGridSize->currentText()); // Ensure consistency
     sketchView->setGridSnap(state == Qt::Checked);
 }
 
