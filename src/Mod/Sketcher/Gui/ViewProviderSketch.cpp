@@ -197,7 +197,7 @@ ViewProviderSketch::ViewProviderSketch()
 {
     // FIXME Should this be placed in here?
     ADD_PROPERTY_TYPE(Autoconstraints,(true),"Auto Constraints",(App::PropertyType)(App::Prop_None),"Create auto constraints");
-    
+
     sPixmap = "Sketcher_NewSketch";
     LineColor.setValue(1,1,1);
     PointColor.setValue(1,1,1);
@@ -306,7 +306,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                                             const SbVec3f &normal, const SoPickedPoint *pp)
 {
     assert(edit);
-    
+
     // Radius maximum to allow double click event
     const int dblClickRadius = 5;
 
@@ -351,8 +351,8 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                         Mode = STATUS_SELECT_Constraint;
                         done = true;
 
-                    } 
- 
+                    }
+
                     if (done && length <  dblClickRadius && tmp.getValue() < dci) {
                         // Double Click Event Occured
                         editDoubleClicked();
@@ -497,7 +497,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                                                );
                         Gui::Command::commitCommand();
                         Gui::Command::updateActive();
-                        
+
                         edit->PreselectPoint = edit->DragPoint;
                         edit->DragPoint = -1;
                         //updateColor();
@@ -518,7 +518,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                                                    ,getObject()->getNameInDocument()
                                                    ,edit->DragCurve, none, x, y
                                                    );
-                            
+
                             Gui::Command::commitCommand();
                             Gui::Command::updateActive();
                         }
@@ -675,7 +675,7 @@ void ViewProviderSketch::editDoubleClicked(void)
      } else if (edit->PreselectConstraint >=0) {
         // Find the constraint
         Base::Console().Log("double click constraint:%d\n",edit->PreselectConstraint);
-        
+
         const std::vector<Sketcher::Constraint *> &ConStr = getSketchObject()->Constraints.getValues();
         Constraint *Constr = ConStr[edit->PreselectConstraint];
 
@@ -688,7 +688,7 @@ void ViewProviderSketch::editDoubleClicked(void)
             SoIdleSensor* sensor = new SoIdleSensor(EditDatumDialog::run, editDatumDialog);
             sensor->schedule();
         }
-    } 
+    }
 }
 
 
@@ -1197,7 +1197,7 @@ bool ViewProviderSketch::detectPreselection(const SoPickedPoint *Point, int &PtI
         Gui::Selection().setPreselectCoord(Point->getPoint()[0]
                                           ,Point->getPoint()[1]
                                           ,Point->getPoint()[2]);
-    } else if (edit->PreselectCurve >= 0 || edit->PreselectPoint >= 0 || 
+    } else if (edit->PreselectCurve >= 0 || edit->PreselectPoint >= 0 ||
                edit->PreselectConstraint >= 0 || edit->PreselectCross >= 0 || edit->blockedPreselection) {
         edit->PreselectCurve = -1;
         edit->PreselectPoint = -1;
@@ -1307,7 +1307,7 @@ void ViewProviderSketch::drawConstraintIcons()
             icoType = QString::fromAscii("small/Constraint_Tangent_sm");
             break;
         case Parallel:
-            icoType = QString::fromAscii("small/Constraint_Parallel_sm"); 
+            icoType = QString::fromAscii("small/Constraint_Parallel_sm");
             index2 = 4;
             break;
         case Perpendicular:
@@ -1328,11 +1328,11 @@ void ViewProviderSketch::drawConstraintIcons()
 
         // Constants to help create constraint icons
         const int constrImgSize = 16;
-        
+
         QColor constrIcoColor((int)(sConstrIcoColor [0] * 255.0f), (int)(sConstrIcoColor[1] * 255.0f),(int)(sConstrIcoColor[2] * 255.0f));
         QColor constrIconSelColor ((int)(SelectColor[0] * 255.0f), (int)(SelectColor[1] * 255.0f),(int)(SelectColor[2] * 255.0f));
         QColor constrIconPreselColor ((int)(PreselectColor[0] * 255.0f), (int)(PreselectColor[1] * 255.0f),(int)(PreselectColor[2] * 255.0f));
-    
+
         // Set Color for Icons
         QColor iconColor;
         if (edit->PreselectConstraint == constrId)
@@ -1341,57 +1341,58 @@ void ViewProviderSketch::drawConstraintIcons()
             iconColor = constrIconSelColor;
         else
             iconColor = constrIcoColor;
-    
+
         // Create Icons
-    
+
         // Create a QPainter for the constraint icon rendering
         QPainter qp;
         QImage icon;
-    
+
         icon = Gui::BitmapFactory().pixmap(icoType.toAscii()).toImage();
-    
-        // Assumes that Icons are SQUARE
-        QImage image = icon.copy(0, 0, icon.width() + 16, icon.height());
-    
+
+        // Assumes that digits are 9 pixel wide
+        int imgwidth = icon.width() + ((index2 == -1) ? 0 : 9 * (1 + (constrId + 1)/10));
+        QImage image = icon.copy(0, 0, imgwidth, icon.height());
+
         // Paint the Icons
         qp.begin(&image);
         qp.setCompositionMode(QPainter::CompositionMode_SourceIn);
-        qp.fillRect(0,0, constrImgSize, constrImgSize, QColor(255, 255,255));
-        qp.setCompositionMode(QPainter::CompositionMode_DestinationOver);
         qp.fillRect(0,0, constrImgSize, constrImgSize, iconColor);
-    
-        // Render Constraint Index Number
-        qp.setCompositionMode(QPainter::CompositionMode_SourceOver);
-        qp.setPen(iconColor);
-        QFont font = QApplication::font();
-        font.setPixelSize(17);
-        font.setBold(true);
-        qp.setFont(font);
-        qp.drawText(constrImgSize + 2, image.height() - 2, QString::number(constrId + 1));
+
+        // Render constraint index if necessary
+        if (index2 != -1) {
+            qp.setCompositionMode(QPainter::CompositionMode_SourceOver);
+            qp.setPen(iconColor);
+            QFont font = QApplication::font();
+            font.setPixelSize(11);
+            font.setBold(true);
+            qp.setFont(font);
+            qp.drawText(constrImgSize, image.height(), QString::number(constrId + 1));
+        }
         qp.end();
-    
+
         SoSFImage icondata = SoSFImage();
-    
+
         Gui::BitmapFactory().convert(image, icondata);
-    
+
         int nc = 4;
         SbVec2s iconSize(image.width(), image.height());
-    
+
         // Find the Constraint Icon SoImage Node
         SoSeparator *sep = dynamic_cast<SoSeparator *>(edit->constrGroup->getChild(constrId));
-        SoImage *constraintIcon = dynamic_cast<SoImage *>(sep->getChild(index1));
-    
-        constraintIcon->image.setValue(iconSize, 4, icondata.getValue(iconSize, nc));
-    
+        SoImage *constraintIcon1 = dynamic_cast<SoImage *>(sep->getChild(index1));
+
+        constraintIcon1->image.setValue(iconSize, 4, icondata.getValue(iconSize, nc));
+
         //Set Image Alignment to Center
-        constraintIcon->vertAlignment = SoImage::HALF;
-        constraintIcon->horAlignment = SoImage::CENTER;
-    
+        constraintIcon1->vertAlignment = SoImage::HALF;
+        constraintIcon1->horAlignment = SoImage::CENTER;
+
         // If more than one icon per constraint
         if (index2 != -1) {
             SoImage *constraintIcon2 = dynamic_cast<SoImage *>(sep->getChild(index2));
             constraintIcon2->image.setValue(iconSize, 4, icondata.getValue(iconSize, nc));
-            //Set Image Alignment to Center 
+            //Set Image Alignment to Center
             constraintIcon2->vertAlignment = SoImage::HALF;
             constraintIcon2->horAlignment = SoImage::CENTER;
         }
@@ -1879,13 +1880,13 @@ Restart:
                         // get the geometry
                         const Part::Geometry *geo1 = (*geomlist)[Constr->First];
                         const Part::Geometry *geo2 = (*geomlist)[Constr->Second];
-    
+
                         const Part::GeomLineSegment *lineSeg = 0;
                         const Part::GeomCircle *circle1 = 0;
                         const Part::GeomCircle *circle2 = 0;
                         const Part::GeomArcOfCircle *arc1 = 0;
                         const Part::GeomArcOfCircle *arc2 = 0;
-    
+
                         //[Fix me] There is probably a nicer way of doing this.
                         //Assign pointers to the first part of the geometry
                         if (geo1->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
@@ -1915,7 +1916,7 @@ Restart:
                                 arc1 = dynamic_cast<const Part::GeomArcOfCircle *>(geo2);
                             }
                         }
-    
+
                         // Select the pairs that we would like to show
                         if (lineSeg && (circle1 || arc1)) {
                             Base::Vector3d lineEndToCenter;
@@ -1923,9 +1924,9 @@ Restart:
                                 lineEndToCenter = circle1->getCenter() - lineSeg->getStartPoint();
                             else if (arc1)
                                 lineEndToCenter = arc1->getCenter() - lineSeg->getStartPoint();
-    
+
                             pos = lineSeg->getEndPoint() - lineSeg->getStartPoint();
-    
+
                             // Get Scalar / Inner product
                             float length = (lineEndToCenter.x * pos.x + lineEndToCenter.y * pos.y) / pos.Length();
                             Base::Vector3d dir = pos;
@@ -2296,7 +2297,7 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
                     sep->addChild(new SoTranslation());
                     sep->addChild(constraintIcon);
                     sep->addChild(new SoTranslation());
-                    sep->addChild(constraintIcon2);   
+                    sep->addChild(constraintIcon2);
 
                     // remember the type of this constraint node
                     edit->vConstrType.push_back((*it)->Type);
@@ -2495,7 +2496,7 @@ void ViewProviderSketch::createEditInventorNodes(void)
     edit->RootCrossMaterials->diffuseColor.set1Value(0,sCrossColor);
     edit->RootCrossMaterials->diffuseColor.set1Value(1,sCrossColor);
     edit->EditRoot->addChild(edit->RootCrossMaterials);
- 
+
     MtlBind = new SoMaterialBinding;
     MtlBind->value = SoMaterialBinding::PER_FACE;
     edit->EditRoot->addChild(MtlBind);
