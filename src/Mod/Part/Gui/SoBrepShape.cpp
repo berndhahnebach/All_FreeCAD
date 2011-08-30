@@ -151,9 +151,12 @@ void SoBrepFaceSet::doAction(SoAction* action)
 
 void SoBrepFaceSet::GLRender(SoGLRenderAction *action)
 {
+    if (this->selectionIndex.getNum() > 0)
+        renderSelection(action);
+    if (this->highlightIndex.getValue() >= 0)
+        renderHighlight(action);
     if (this->coordIndex.getNum() < 3)
         return;
-
     if (!this->shouldGLRender(action))
         return;
 
@@ -199,10 +202,6 @@ void SoBrepFaceSet::GLRender(SoGLRenderAction *action)
 
 void SoBrepFaceSet::GLRenderBelowPath(SoGLRenderAction * action)
 {
-    if (this->selectionIndex.getNum() > 0)
-        renderSelection(action);
-    if (this->highlightIndex.getValue() >= 0)
-        renderHighlight(action);
     inherited::GLRenderBelowPath(action);
 }
 
@@ -615,15 +614,15 @@ SoBrepEdgeSet::SoBrepEdgeSet()
 
 void SoBrepEdgeSet::GLRender(SoGLRenderAction *action)
 {
+    if (this->selectionIndex.getNum() > 0)
+        renderSelection(action);
+    if (this->highlightIndex.getValue() >= 0)
+        renderHighlight(action);
     inherited::GLRender(action);
 }
 
 void SoBrepEdgeSet::GLRenderBelowPath(SoGLRenderAction * action)
 {
-    if (this->selectionIndex.getNum() > 0)
-        renderSelection(action);
-    if (this->highlightIndex.getValue() >= 0)
-        renderHighlight(action);
     inherited::GLRenderBelowPath(action);
 }
 
@@ -875,15 +874,15 @@ SoBrepPointSet::SoBrepPointSet()
 
 void SoBrepPointSet::GLRender(SoGLRenderAction *action)
 {
+    if (this->selectionIndex.getNum() > 0)
+        renderSelection(action);
+    if (this->highlightIndex.getValue() >= 0)
+        renderHighlight(action);
     inherited::GLRender(action);
 }
 
 void SoBrepPointSet::GLRenderBelowPath(SoGLRenderAction * action)
 {
-    if (this->selectionIndex.getNum() > 0)
-        renderSelection(action);
-    if (this->highlightIndex.getValue() >= 0)
-        renderHighlight(action);
     inherited::GLRenderBelowPath(action);
 }
 
