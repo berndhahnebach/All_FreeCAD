@@ -44,16 +44,17 @@ namespace PartDesignGui {
 
 
 
-class TaskPadParameters : public Gui::TaskView::TaskBox, public Gui::SelectionSingleton::ObserverType
+class TaskPadParameters : public Gui::TaskView::TaskBox
 {
     Q_OBJECT
 
 public:
-    TaskPadParameters(QWidget *parent = 0);
+    TaskPadParameters(ViewProviderPad *PadView,QWidget *parent = 0);
     ~TaskPadParameters();
-    /// Observer message from the Selection
-    void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
-                  Gui::SelectionSingleton::MessageType Reason);
+
+    double getLength(void);
+    bool   getReversed(void);
+    bool   getMirroredExtent(void);
 
 private Q_SLOTS:
 
@@ -65,6 +66,7 @@ private:
 private:
     QWidget* proxy;
     Ui_TaskPadParameters* ui;
+    ViewProviderPad *PadView;
 };
 
 /// simulation dialog for the TaskView
@@ -79,6 +81,7 @@ public:
     ViewProviderPad* getPadView() const
     { return PadView; }
 
+
 public:
     /// is called the TaskView when the dialog is opened
     virtual void open();
@@ -89,13 +92,12 @@ public:
     /// is called by the framework if the dialog is rejected (Cancel)
     virtual bool reject();
     /// is called by the framework if the user presses the help button 
-    virtual void helpRequested();
     virtual bool isAllowedAlterDocument(void) const
     { return false; }
 
     /// returns for Close and Help button 
     virtual QDialogButtonBox::StandardButtons getStandardButtons(void) const
-    { return QDialogButtonBox::Close|QDialogButtonBox::Help; }
+    { return QDialogButtonBox::Ok|QDialogButtonBox::Cancel; }
 
 protected:
     ViewProviderPad   *PadView;

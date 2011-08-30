@@ -25,6 +25,7 @@
 #define PARTDESIGN_Pad_H
 
 #include <App/PropertyUnits.h>
+#include <App/PropertyStandard.h>
 #include "FeatureSketchBased.h"
 
 namespace PartDesign
@@ -38,7 +39,9 @@ public:
     Pad();
 
     App::PropertyLength Length;
-    App::PropertyEnumeration Side;
+    //App::PropertyEnumeration Side;
+    App::PropertyBool Reversed;
+    App::PropertyBool MirroredExtent;
 
     /** @name methods override feature */
     //@{
