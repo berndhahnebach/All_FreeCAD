@@ -80,7 +80,7 @@ public:
     App::PropertyBool Autoconstraints;
 
     /// draw constraint icon given the constraint id
-    void drawConstraintIcon(int constrId);
+    void drawConstraintIcons();
     /// draw the sketch in the inventor nodes
     void draw(bool temp=false);
     /// draw the edit curve
