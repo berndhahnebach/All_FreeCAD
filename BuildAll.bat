@@ -12,6 +12,8 @@ if NOT DEFINED VCDIR set VCDIR=C:\Program Files\Microsoft Visual Studio 9.0
 rem Register VS Build programms
 call "%VCDIR%\VC\vcvarsall.bat"
 
+rem "C:\Program Files\TortoiseSVN\bin\TortoiseProc.exe" /command:update /path:"C:\SW_Projects\CAD\FreeCAD_10" /closeonend:3
+
 
 rem Start the Visuall Studio build process
 "%VCDIR%\VC\vcpackages\vcbuild.exe" FreeCAD_trunk.sln "Debug|Win32" 
