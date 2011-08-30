@@ -59,7 +59,6 @@ public:
 
   /// Properties for Grid Snap
   App::PropertyBool GridSnap;
-  App::PropertyDistance GridSnapSize;
 
   virtual void attach(App::DocumentObject *);
   virtual void updateData(const App::Property*);

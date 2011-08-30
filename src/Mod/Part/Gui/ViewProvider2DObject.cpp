@@ -62,8 +62,7 @@ ViewProvider2DObject::ViewProvider2DObject()
     ADD_PROPERTY_TYPE(ShowGrid,(false),"Grid",(App::PropertyType)(App::Prop_None),"Switch the grid on/off");
     ADD_PROPERTY_TYPE(GridSize,(10),"Grid",(App::PropertyType)(App::Prop_None),"Gap size of the grid");
     ADD_PROPERTY_TYPE(GridStyle,((long)0),"Grid",(App::PropertyType)(App::Prop_None),"Appearence style of the grid");
-    ADD_PROPERTY_TYPE(GridSnap,(false),"GridSnap",(App::PropertyType)(App::Prop_None),"Switch the grid on/off");
-    ADD_PROPERTY_TYPE(GridSnapSize,(10),"Grid",(App::PropertyType)(App::Prop_None),"Grid Snap Size");
+    ADD_PROPERTY_TYPE(GridSnap,(false),"GridSnap",(App::PropertyType)(App::Prop_None),"Switch the grid snap on/off");
 
     GridRoot = new SoSeparator();
     GridRoot->ref();
@@ -89,7 +88,7 @@ SoSeparator* ViewProvider2DObject::createGrid(void)
     //double dx = 10 * GridSize.getValue();                       // carpet size
     //double dy = 10 * GridSize.getValue();
     float Size = (MaxX-MinX > MaxY-MinY)?MaxX-MinX: MaxY-MinY;
-    float Step = pow(10,floor(log10(Size/5.0)));
+    float Step = GridSize.getValue();//pow(10,floor(log10(Size/5.0)));
     float MiX = MinX - (MaxX-MinX)*0.5;
     float MaX = MaxX + (MaxX-MinX)*0.5;
     float MiY = MinY - (MaxY-MinY)*0.5;
