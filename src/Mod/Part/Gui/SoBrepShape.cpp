@@ -375,7 +375,6 @@ void SoBrepFaceSet::renderShape(const SoGLCoordinateElement * const vertexlist,
     coords3d = vertexlist->getArrayPtr3();
 
     const int32_t *viptr = vertexindices;
-    const int32_t *vistartptr = vertexindices;
     const int32_t *viendptr = viptr + numindices;
     const int32_t *piptr = partindices;
     const int32_t *piendptr = piptr + num_partindices;
@@ -631,7 +630,6 @@ void SoBrepEdgeSet::renderShape(const SoGLCoordinateElement * const coords,
 {
 
     const SbVec3f * coords3d = coords->getArrayPtr3();
-    int numcoords = coords->getNum();
 
     int32_t i;
     int previ;
@@ -686,7 +684,6 @@ void SoBrepEdgeSet::renderHighlight(SoGLRenderAction *action)
 void SoBrepEdgeSet::renderSelection(SoGLRenderAction *action)
 {
     int numSelected =  this->selectionIndex.getNum();
-    const int32_t* selected = this->selectionIndex.getValues(0);
     if (numSelected == 0) return;
 
     SoState * state = action->getState();
@@ -891,7 +888,6 @@ void SoBrepPointSet::renderShape(const SoGLCoordinateElement * const coords,
                                  int numindices)
 {
     const SbVec3f * coords3d = coords->getArrayPtr3();
-    int numcoords = coords->getNum();
 
     int previ;
     const int32_t *end = cindices + numindices;
