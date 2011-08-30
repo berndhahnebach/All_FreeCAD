@@ -3,8 +3,8 @@ lib_LTLIBRARIES=libPartDesign.la PartDesign.la
 
 libPartDesign_la_SOURCES=\
 		AppPartDesignPy.cpp \
-		Feature.cpp
-		Feature.h
+		Feature.cpp \
+		Feature.h \
 		FeatureFace.cpp \
 		FeatureFace.h \
 		FeatureFillet.cpp \
