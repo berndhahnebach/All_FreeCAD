@@ -556,6 +556,7 @@ void SoSelectionElementAction::initClass()
 
     SO_ENABLE(SoSelectionElementAction, SoCoordinateElement);
 
+    SO_ACTION_ADD_METHOD(SoCoordinate3,callDoAction);
     SO_ACTION_ADD_METHOD(SoGroup,callDoAction);
     SO_ACTION_ADD_METHOD(SoIndexedLineSet,callDoAction);
     SO_ACTION_ADD_METHOD(SoIndexedFaceSet,callDoAction);

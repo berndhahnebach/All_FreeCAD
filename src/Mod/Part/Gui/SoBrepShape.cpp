@@ -637,8 +637,8 @@ void SoBrepEdgeSet::renderShape(const SoGLCoordinateElement * const coords,
     int32_t i;
     int previ;
     const int32_t *end = cindices + numindices;
-    glBegin(GL_LINE_STRIP);
     while (cindices < end) {
+        glBegin(GL_LINE_STRIP);
         previ = *cindices++;
         i = (cindices < end) ? *cindices++ : -1;
         while (i >= 0) {
@@ -647,8 +647,8 @@ void SoBrepEdgeSet::renderShape(const SoGLCoordinateElement * const coords,
             previ = i;
             i = cindices < end ? *cindices++ : -1;
         }
+        glEnd();
     }
-    glEnd();
 }
 
 void SoBrepEdgeSet::renderHighlight(SoGLRenderAction *action)
@@ -777,6 +777,7 @@ void SoBrepEdgeSet::doAction(SoAction* action)
     else if (action->getTypeId() == Gui::SoSelectionElementAction::getClassTypeId()) {
         Gui::SoSelectionElementAction* selaction = static_cast<Gui::SoSelectionElementAction*>(action);
 
+        this->selectionColor = selaction->getColor();
         if (selaction->getType() == Gui::SoSelectionElementAction::All) {
             const int32_t* cindices = this->coordIndex.getValues(0);
             int numcindices = this->coordIndex.getNum();
@@ -801,7 +802,6 @@ void SoBrepEdgeSet::doAction(SoAction* action)
                 return;
             }
 
-            this->selectionColor = selaction->getColor();
             int index = static_cast<const SoLineDetail*>(detail)->getLineIndex();
             switch (selaction->getType()) {
             case Gui::SoSelectionElementAction::Append:
@@ -897,7 +897,8 @@ void SoBrepPointSet::renderHighlight(SoGLRenderAction *action)
 {
     SoState * state = action->getState();
     state->push();
-    SoPointSizeElement::set(state, this, 4.0f);
+    float ps = SoPointSizeElement::get(state);
+    if (ps < 4.0f) SoPointSizeElement::set(state, this, 4.0f);
 
     SoLazyElement::setEmissive(state, &this->highlightColor);
     SoOverrideElement::setEmissiveColorOverride(state, this, TRUE);
@@ -922,7 +923,8 @@ void SoBrepPointSet::renderSelection(SoGLRenderAction *action)
 {
     SoState * state = action->getState();
     state->push();
-    SoPointSizeElement::set(state, this, 4.0f);
+    float ps = SoPointSizeElement::get(state);
+    if (ps < 4.0f) SoPointSizeElement::set(state, this, 4.0f);
 
     SoLazyElement::setEmissive(state, &this->selectionColor);
     SoOverrideElement::setEmissiveColorOverride(state, this, TRUE);
@@ -971,7 +973,6 @@ void SoBrepPointSet::doAction(SoAction* action)
         Gui::SoSelectionElementAction* selaction = static_cast<Gui::SoSelectionElementAction*>(action);
         this->selectionColor = selaction->getColor();
         if (selaction->getType() == Gui::SoSelectionElementAction::All) {
-            //FIXME: SoCoordinateElement delivers only one point!!!
             const SoCoordinateElement* coords = SoCoordinateElement::getInstance(action->getState());
             int num = coords->getNum();
             this->selectionIndex.setNum(num);

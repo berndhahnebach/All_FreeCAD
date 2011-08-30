@@ -281,10 +281,11 @@ void ViewProviderPartExt::attach(App::DocumentObject *pcFeat)
     // call parent attach method
     ViewProviderGeometryObject::attach(pcFeat);
 
-    SoGroup* pcNormalRoot = new SoGroup();
-    SoGroup* pcFlatRoot = new SoGroup();
-    SoGroup* pcWireframeRoot = new SoGroup();
-    SoGroup* pcPointsRoot = new SoGroup();
+    // These must be separators, not groups!
+    SoGroup* pcNormalRoot = new SoSeparator();
+    SoGroup* pcFlatRoot = new SoSeparator();
+    SoGroup* pcWireframeRoot = new SoSeparator();
+    SoGroup* pcPointsRoot = new SoSeparator();
 
     // enable two-side rendering
     pShapeHints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE;
@@ -293,15 +294,12 @@ void ViewProviderPartExt::attach(App::DocumentObject *pcFeat)
     // Avoid any Z-buffer artefacts, so that the lines always appear on top of the faces
     // The correct order is Edges, Polygon offset, Faces.
     SoPolygonOffset* offset = new SoPolygonOffset();
-    SoSeparator* sepWire = new SoSeparator();
-    SoSeparator* sepFlat = new SoSeparator();
-    SoSeparator* sepPnts = new SoSeparator();
 
     // normal viewing with edges and points
-    pcNormalRoot->addChild(sepWire);
+    pcNormalRoot->addChild(pcWireframeRoot);
     pcNormalRoot->addChild(offset);
-    pcNormalRoot->addChild(sepFlat);
-    pcNormalRoot->addChild(sepPnts);
+    pcNormalRoot->addChild(pcFlatRoot);
+    pcNormalRoot->addChild(pcPointsRoot);
 
     // just faces with no edges or points
     pcFlatRoot->addChild(pShapeHints);
@@ -311,24 +309,18 @@ void ViewProviderPartExt::attach(App::DocumentObject *pcFeat)
     pcFlatRoot->addChild(normb);
     pcFlatRoot->addChild(coords);
     pcFlatRoot->addChild(faceset);
-    for (int i=0; i<pcFlatRoot->getNumChildren(); i++)
-        sepFlat->addChild(pcFlatRoot->getChild(i));
 
     // only edges
     pcWireframeRoot->addChild(pcLineMaterial);
     pcWireframeRoot->addChild(pcLineStyle);
     pcWireframeRoot->addChild(coords);
     pcWireframeRoot->addChild(lineset);
-    for (int i=0; i<pcWireframeRoot->getNumChildren(); i++)
-        sepWire->addChild(pcWireframeRoot->getChild(i));
 
     // normal viewing with edges and points
     pcPointsRoot->addChild(pcPointMaterial);
     pcPointsRoot->addChild(pcPointStyle);
     pcPointsRoot->addChild(vertex);
     pcPointsRoot->addChild(new SoBrepPointSet());
-    for (int i=0; i<pcPointsRoot->getNumChildren(); i++)
-        sepPnts->addChild(pcPointsRoot->getChild(i));
 
     // putting all together with the switch
     addDisplayMaskMode(pcNormalRoot, "Flat Lines");

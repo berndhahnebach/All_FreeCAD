@@ -36,6 +36,8 @@
 # include <algorithm>
 # include <QFontMetrics>
 # include <QGLWidget>
+# include <QPainter>
+# include <QPen>
 # include <Inventor/actions/SoGLRenderAction.h>
 # include <Inventor/bundles/SoMaterialBundle.h>
 # include <Inventor/elements/SoLazyElement.h>
