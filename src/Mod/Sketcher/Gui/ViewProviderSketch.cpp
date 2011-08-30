@@ -56,10 +56,13 @@
 /// Qt Include Files
 # include <QAction>
 # include <QApplication>
+# include <QColor>
 # include <QDialog>
+# include <QFont>
 # include <QImage>
 # include <QMenu>
 # include <QMessageBox>
+# include <QPainter>
 #endif
 
 #include <Inventor/SbTime.h>
@@ -98,6 +101,7 @@ SbColor sCurveDraftColor        (0.4f,0.4f,0.8f);
 SbColor sPointColor             (0.5f,0.5f,0.5f);
 SbColor sConstraintColor        (0.0f,0.8f,0.0f);
 SbColor sCrossColor             (0.0f,0.0f,0.8f);
+SbColor sConstrIcoColor        (0.918f,0.145f,0.f);
 
 SbColor ViewProviderSketch::PreselectColor(0.1f, 0.1f, 0.8f);
 SbColor ViewProviderSketch::SelectColor   (0.1f, 0.1f, 0.8f);
@@ -248,22 +252,21 @@ bool ViewProviderSketch::keyPressed(bool pressed, int key)
 
 void ViewProviderSketch::snapToGrid(double& x, double& y)
 {
-    if(GridSnap.getValue())
+    if(GridSnap.getValue() != false)
     {
         // Snap Tolerance in pixels
-        // FIXME make configurable as a Parameter
-        const double snapTol = GridSnapSize.getValue() / 5;
+        const double snapTol = GridSize.getValue() / 5;
 
         double tmpX = x, tmpY = y;
 
         // Find Nearest Snap points
-        tmpX = tmpX / GridSnapSize.getValue();
+        tmpX = tmpX / GridSize.getValue();
         tmpX = tmpX < 0.0 ? ceil(tmpX - 0.5) : floor(tmpX + 0.5);
-        tmpX *= GridSnapSize.getValue();
+        tmpX *= GridSize.getValue();
 
-        tmpY = tmpY / GridSnapSize.getValue();
+        tmpY = tmpY / GridSize.getValue();
         tmpY = tmpY < 0.0 ? ceil(tmpY - 0.5) : floor(tmpY + 0.5);
-        tmpY *= GridSnapSize.getValue();
+        tmpY *= GridSize.getValue();
 
         // Check if x within snap tolerance
         if(x < tmpX + snapTol && x > tmpX - snapTol)
@@ -1250,6 +1253,7 @@ void ViewProviderSketch::updateColor(void)
     for (int i=0; i < edit->constrGroup->getNumChildren(); i++) {
         SoSeparator *s = dynamic_cast<SoSeparator *>(edit->constrGroup->getChild(i));
         SoMaterial *m = dynamic_cast<SoMaterial *>(s->getChild(0));
+        drawConstraintIcon(i);
         if (edit->SelConstraintSet.find(i) != edit->SelConstraintSet.end())
             m->diffuseColor = SelectColor;
         else if (edit->PreselectConstraint == i)
@@ -1275,6 +1279,109 @@ bool ViewProviderSketch::doubleClicked(void)
 {
     Gui::Application::Instance->activeDocument()->setEdit(this);
     return true;
+}
+
+void ViewProviderSketch::drawConstraintIcon(int constrId)
+{
+    // Load the Constraint
+    const Constraint * constr = getSketchObject()->Constraints.getValues()[constrId];
+
+    // Check if Icon Should be created
+
+    int index1 = 2, index2 = -1; // Index for SoImage Nodes in SoContainer
+    QString icoType;
+    switch(constr->Type) {
+        case Horizontal:
+        icoType = QString::fromAscii("small/Constraint_Horizontal_sm"); break;
+        case Vertical:
+        icoType = QString::fromAscii("small/Constraint_Vertical_sm"); break;
+        case Tangent:
+        icoType = QString::fromAscii("small/Constraint_Tangent_sm"); break;
+        case Parallel: {
+        icoType = QString::fromAscii("small/Constraint_Parallel_sm"); 
+        index2 = 4; } break;
+        case Perpendicular: {
+        icoType = QString::fromAscii("small/Constraint_Perpendicular_sm");
+        index2 = 4; } break;
+        case Equal: {
+        icoType = QString::fromAscii("small/Constraint_EqualLength_sm");
+        index2 = 4; } break;
+        case Symmetric:{
+        icoType = QString::fromAscii("small/Constraint_Symmetric_sm");
+        index1 = 3; }break;
+        default:
+            return; // Icon shouldn't be generated
+    }
+    
+   // Constants to help create constraint icons
+    const int constrImgSize = 16;
+    
+    QColor constrIcoColor((int)(sConstrIcoColor [0] * 255.0f), (int)(sConstrIcoColor[1] * 255.0f),(int)(sConstrIcoColor[2] * 255.0f));
+    QColor constrIconSelColor ((int)(SelectColor[0] * 255.0f), (int)(SelectColor[1] * 255.0f),(int)(SelectColor[2] * 255.0f));
+    QColor constrIconPreselColor ((int)(PreselectColor[0] * 255.0f), (int)(PreselectColor[1] * 255.0f),(int)(PreselectColor[2] * 255.0f));
+
+    // Set Color for Icons
+    QColor iconColor;
+    if( edit->PreselectConstraint == constrId)
+        iconColor = constrIconPreselColor;
+    else if (edit->SelConstraintSet.find(constrId) != edit->SelConstraintSet.end())
+        iconColor = constrIconSelColor;
+    else
+        iconColor = constrIcoColor;
+
+     // Create Icons
+
+    // Create a QPainter for the constraint icon rendering
+    QPainter qp;
+    QImage icon;
+
+    icon = Gui::BitmapFactory().pixmap(icoType.toAscii()).toImage();
+
+    // Assumes that Icons are SQUARE
+    QImage image = icon.copy(0, 0, icon.width() + 16, icon.height());
+
+    // Paint the Icons
+    qp.begin(&image);
+    qp.setCompositionMode(QPainter::CompositionMode_SourceIn);
+    qp.fillRect(0,0, constrImgSize, constrImgSize, QColor(255, 255,255));
+    qp.setCompositionMode(QPainter::CompositionMode_DestinationOver);
+    qp.fillRect(0,0, constrImgSize, constrImgSize, iconColor);
+
+    // Render Constraint Index Number
+    qp.setCompositionMode(QPainter::CompositionMode_SourceOver);
+    qp.setPen(iconColor);
+    QFont font = QApplication::font();
+    font.setPixelSize( 17 );
+    font.setBold(true);
+    qp.setFont(font);
+    qp.drawText(constrImgSize + 2, image.height() - 2, QString::number(constrId + 1));
+    qp.end();
+
+    SoSFImage icondata = SoSFImage();
+
+    Gui::BitmapFactory().convert(image, icondata);
+
+    int nc = 4;
+    SbVec2s iconSize(image.width(), image.height());
+
+    // Find the Constraint Icon SoImage Node
+    SoSeparator *sep = dynamic_cast<SoSeparator *>(edit->constrGroup->getChild(constrId));
+    SoImage *constraintIcon = dynamic_cast<SoImage *>(sep->getChild(index1));
+
+    constraintIcon->image.setValue(iconSize, 4, icondata.getValue(iconSize, nc));
+
+    //Set Image Alignment to Center
+    constraintIcon->vertAlignment = SoImage::HALF;
+    constraintIcon->horAlignment = SoImage::CENTER;
+
+        // If more than one icon per constraint
+    if(index2 != -1) {
+        SoImage *constraintIcon2 = dynamic_cast<SoImage *>(sep->getChild(index2));
+        constraintIcon2->image.setValue(iconSize, 4, icondata.getValue(iconSize, nc));
+        //Set Image Alignment to Center 
+        constraintIcon2->vertAlignment = SoImage::HALF;
+        constraintIcon2->horAlignment = SoImage::CENTER;
+    }
 }
 
 void ViewProviderSketch::draw(bool temp)
@@ -1487,6 +1594,7 @@ Restart:
                     const Part::Geometry *geo = (*geomlist)[Constr->First];
                     // Vertical can only be a GeomLineSegment
                     assert(geo->getTypeId()== Part::GeomLineSegment::getClassTypeId());
+                    drawConstraintIcon(i);
                     const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment *>(geo);
 
                     // calculate the half distance between the start and endpoint
@@ -1517,6 +1625,7 @@ Restart:
                     // get the geometry
                     const Part::Geometry *geo1 = (*geomlist)[Constr->First];
                     const Part::Geometry *geo2 = (*geomlist)[Constr->Second];
+                    drawConstraintIcon(i);
 
                     Base::Vector3d midpos1, dir1, norm1;
                     Base::Vector3d midpos2, dir2, norm2;
@@ -1596,14 +1705,10 @@ Restart:
                     while (isConstraintAtPosition(constrPos2, edit->constrGroup->getChild(i)));
 
                     constrPos2 = constrPos2 - constrPos1;
-                    constrPos2 = constrPos2 - Base::Vector3d(2, -2, 0);
-                    dynamic_cast<SoText2 *>(sep->getChild(4))->string = SbString().sprintf("%i",i+1);
-                    dynamic_cast<SoText2 *>(sep->getChild(8))->string = SbString().sprintf("%i",i+1);
 
                     dynamic_cast<SoTranslation *>(sep->getChild(1))->translation =  SbVec3f(constrPos1.x, constrPos1.y, 0.0f);
-                    dynamic_cast<SoTranslation *>(sep->getChild(3))->translation =  SbVec3f( 2, -2, 0.0f);
-                    dynamic_cast<SoTranslation *>(sep->getChild(5))->translation =  SbVec3f(constrPos2.x, constrPos2.y, 0.0f);
-                    dynamic_cast<SoTranslation *>(sep->getChild(7))->translation =  SbVec3f(2, -2, 0.0f);
+                    dynamic_cast<SoTranslation *>(sep->getChild(3))->translation =  SbVec3f(constrPos2.x, constrPos2.y, 0.0f);
+
                 }
                 break;
             case Distance:
@@ -1748,6 +1853,7 @@ Restart:
                     assert(Constr->First < int(geomlist->size()));
                     assert(Constr->Second < int(geomlist->size()));
 
+                    drawConstraintIcon(i);
                     Base::Vector3d pos;
                     if (Constr->Type == PointOnObject) {
                         pos = edit->ActSketch.getPoint(Constr->First, Constr->FirstPos);
@@ -1822,6 +1928,7 @@ Restart:
                 {
                     assert(Constr->First < int(geomlist->size()));
                     assert(Constr->Second < int(geomlist->size()));
+                    drawConstraintIcon(i);
 
                     Base::Vector3d pnt1 = edit->ActSketch.getPoint(Constr->First, Constr->FirstPos);
                     Base::Vector3d pnt2 = edit->ActSketch.getPoint(Constr->Second, Constr->SecondPos);
@@ -2150,25 +2257,6 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
                 {
                     //Create the Image Nodes
                     SoImage *constraintIcon = new SoImage();
-                    QImage image;
-                    if ((*it)->Type == Horizontal)
-                        image = Gui::BitmapFactory().pixmap("Constraint_Horizontal").toImage();
-                    else if ((*it)->Type == Vertical)
-                        image = Gui::BitmapFactory().pixmap("Constraint_Vertical").toImage();
-
-                    // Scale Image
-                    image = image.scaledToWidth(constraintImageSize);
-                    SoSFImage icondata = SoSFImage();
-                    Gui::BitmapFactory().convert(image, icondata);
-
-                    int nc = 4;
-                    SbVec2s iconSize = SbVec2s(image.width(), image.height());
-
-                    constraintIcon->image.setValue(iconSize, 4, icondata.getValue(iconSize, nc));
-
-                    //Set Image Alignment to Center
-                    constraintIcon->vertAlignment = SoImage::HALF;
-                    constraintIcon->horAlignment = SoImage::CENTER;
 
                     sep->addChild(new SoTranslation());
                     sep->addChild(constraintIcon);
@@ -2188,44 +2276,11 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
                     SoImage *constraintIcon = new SoImage();
                     SoImage *constraintIcon2 = new SoImage();
 
-                    QImage image;
-                    if ((*it)->Type == Parallel)
-                        image = Gui::BitmapFactory().pixmap("Constraint_Parallel").toImage();
-                    else if ((*it)->Type == Perpendicular)
-                        image = Gui::BitmapFactory().pixmap("Constraint_Perpendicular").toImage();
-                    else if ((*it)->Type == Equal)
-                        image = Gui::BitmapFactory().pixmap("Constraint_EqualLength").toImage();
-
-                    //Scale Image
-                    image = image.scaledToWidth(constraintImageSize);
-
-                    SoSFImage icondata = SoSFImage();
-                    Gui::BitmapFactory().convert(image, icondata);
-
-                    int nc = 4;
-                    SbVec2s iconSize = SbVec2s(image.width(), image.height());
-
-                    constraintIcon->image.setValue(iconSize, 4, icondata.getValue(iconSize, nc));
-                    constraintIcon2->image.setValue(iconSize, 4, icondata.getValue(iconSize, nc));
-
-                    //Set Image Alignment to center
-                    constraintIcon->vertAlignment = SoImage::HALF;
-                    constraintIcon->horAlignment = SoImage::CENTER;
-                    constraintIcon2->vertAlignment = SoImage::HALF;
-                    constraintIcon2->horAlignment = SoImage::CENTER;
-
-                    SoText2 *indexText1 = new SoText2();
-                    SoText2 *indexText2 = new SoText2();
-
                     // Add new nodes to Constraint Seperator
                     sep->addChild(new SoTranslation());
                     sep->addChild(constraintIcon);
                     sep->addChild(new SoTranslation());
-                    sep->addChild(indexText1);
-                    sep->addChild(new SoTranslation());
-                    sep->addChild(constraintIcon2);
-                    sep->addChild(new SoTranslation());
-                    sep->addChild(indexText2);
+                    sep->addChild(constraintIcon2);   
 
                     // remember the type of this constraint node
                     edit->vConstrType.push_back((*it)->Type);
@@ -2238,31 +2293,6 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
                     // Create the Image Nodes
                     SoImage *constraintIcon = new SoImage();
 
-                    QImage image;
-                    if ((*it)->Type == PointOnObject)
-                        image = Gui::BitmapFactory().pixmap("Constraint_PointOnObject").toImage();
-                    if ((*it)->Type == Tangent)
-                        image = Gui::BitmapFactory().pixmap("Constraint_Tangent").toImage();
-                    if ((*it)->Type == Symmetric)
-                        image = Gui::BitmapFactory().pixmap("Constraint_Symmetric").toImage();
-
-                    //Scale Image
-                    image = image.scaledToWidth(constraintImageSize);
-
-                    SoSFImage icondata = SoSFImage();
-                    Gui::BitmapFactory().convert(image, icondata);
-
-                    int nc = 4;
-                    SbVec2s iconSize = SbVec2s(image.width(), image.height());
-
-                    constraintIcon->image.setValue(iconSize, 4, icondata.getValue(iconSize, nc));
-
-                    //Set Image Alignment to center
-                    constraintIcon->vertAlignment = SoImage::HALF;
-                    constraintIcon->horAlignment = SoImage::CENTER;
-
-                    SoText2 *indexText1 = new SoText2();
-
                     if ((*it)->Type == Symmetric) {
                         SoSeparator *sepArrows = new SoSeparator();
                         sepArrows->addChild(new SoCoordinate3());
@@ -2274,8 +2304,6 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
                     // Add new nodes to Constraint Seperator
                     sep->addChild(new SoTranslation());
                     sep->addChild(constraintIcon);
-                    sep->addChild(new SoTranslation());
-                    sep->addChild(indexText1);
 
                     edit->vConstrType.push_back((*it)->Type);
                 }
@@ -2592,11 +2620,11 @@ void ViewProviderSketch::setGridSnap(bool status)
     GridSnap.setValue(status);
 }
 
-void ViewProviderSketch::setGridSnapSize(float size)
+void ViewProviderSketch::setGridSize(float size)
 {
     if(size > 0)
     {
-        GridSnapSize.setValue(size);
+        GridSize.setValue(size);
     }
 }
 

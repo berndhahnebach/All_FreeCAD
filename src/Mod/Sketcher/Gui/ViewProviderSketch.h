@@ -79,6 +79,8 @@ public:
 
     App::PropertyBool Autoconstraints;
 
+    /// draw constraint icon given the constraint id
+    void drawConstraintIcon(int constrId);
     /// draw the sketch in the inventor nodes
     void draw(bool temp=false);
     /// draw the edit curve
@@ -169,7 +171,7 @@ public:
     boost::signal<void (int type,float time)> signalSolved;
 
     void setGridSnap(bool status);
-    void setGridSnapSize(float size);
+    void setGridSize(float size);
 
 protected:
     virtual bool setEdit(int ModNum);
