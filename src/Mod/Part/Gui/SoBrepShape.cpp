@@ -984,11 +984,12 @@ void SoBrepPointSet::doAction(SoAction* action)
         this->selectionColor = selaction->getColor();
         if (selaction->getType() == Gui::SoSelectionElementAction::All) {
             const SoCoordinateElement* coords = SoCoordinateElement::getInstance(action->getState());
-            int num = coords->getNum();
+            int num = coords->getNum() - this->startIndex.getValue();
             this->selectionIndex.setNum(num);
             int32_t* v = this->selectionIndex.startEditing();
+            int32_t s = this->startIndex.getValue();
             for (int i=0; i<num;i++)
-                v[i] = i;
+                v[i] = i + s;
             this->selectionIndex.finishEditing();
             return;
         }

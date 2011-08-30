@@ -139,8 +139,6 @@ ViewProviderPartExt::ViewProviderPartExt()
     ADD_PROPERTY(Lighting,(1));
     Lighting.setEnums(LightingEnums);
 
-    vertex = new SoCoordinate3();
-    vertex->ref();
     coords = new SoCoordinate3();
     coords->ref();
     faceset = new SoBrepFaceSet();
@@ -152,6 +150,8 @@ ViewProviderPartExt::ViewProviderPartExt()
     normb->ref();
     lineset = new SoBrepEdgeSet();
     lineset->ref();
+    nodeset = new SoBrepPointSet();
+    nodeset->ref();
 
     pcShapeBind = new SoMaterialBinding();
     pcShapeBind->ref();
@@ -196,11 +196,11 @@ ViewProviderPartExt::~ViewProviderPartExt()
     pcLineStyle->unref();
     pcPointStyle->unref();
     pShapeHints->unref();
-    vertex->unref();
     coords->unref();
     faceset->unref();
     norm->unref();
     lineset->unref();
+    nodeset->unref();
 }
 
 void ViewProviderPartExt::onChanged(const App::Property* prop)
@@ -309,20 +309,20 @@ void ViewProviderPartExt::attach(App::DocumentObject *pcFeat)
     pcFlatRoot->addChild(pcFaceStyle);
     pcFlatRoot->addChild(norm);
     pcFlatRoot->addChild(normb);
-    pcFlatRoot->addChild(coords);
     pcFlatRoot->addChild(faceset);
 
     // only edges
     pcWireframeRoot->addChild(pcLineMaterial);
     pcWireframeRoot->addChild(pcLineStyle);
-    pcWireframeRoot->addChild(coords);
     pcWireframeRoot->addChild(lineset);
 
     // normal viewing with edges and points
     pcPointsRoot->addChild(pcPointMaterial);
     pcPointsRoot->addChild(pcPointStyle);
-    pcPointsRoot->addChild(vertex);
-    pcPointsRoot->addChild(new SoBrepPointSet());
+    pcPointsRoot->addChild(nodeset);
+
+    // Move 'coords' before the switch
+    pcRoot->insertChild(coords,pcRoot->findChild(pcModeSwitch));
 
     // putting all together with the switch
     addDisplayMaskMode(pcNormalRoot, "Flat Lines");
@@ -376,7 +376,7 @@ std::string ViewProviderPartExt::getElement(const SoPickedPoint* pp) const
         }
         else if (detail->getTypeId() == SoPointDetail::getClassTypeId()) {
             const SoPointDetail* point_detail = static_cast<const SoPointDetail*>(detail);
-            int vertex = point_detail->getCoordinateIndex() + 1;
+            int vertex = point_detail->getCoordinateIndex() - nodeset->startIndex.getValue() + 1;
             str << "Vertex" << vertex;
         }
     }
@@ -558,6 +558,11 @@ void ViewProviderPartExt::updateVisual(const TopoDS_Shape &inputShape)
         // reserve some memory
         indxVector.reserve(nbrEdges*8);
 
+        // handling of the vertices
+        TopTools_IndexedMapOfShape V;
+        TopExp::MapShapes(inputShape, TopAbs_VERTEX, V);
+        nbrNodes += V.Extent();
+
         // create memory for the nodes and indexes
         coords  ->point      .setNum(nbrNodes);
         norm    ->vector     .setNum(nbrNorms);
@@ -712,17 +717,11 @@ void ViewProviderPartExt::updateVisual(const TopoDS_Shape &inputShape)
             }
         }
 
-        // handling of the vertices
-        TopTools_IndexedMapOfShape V;
-        TopExp::MapShapes(inputShape, TopAbs_VERTEX, V);
-
-        vertex  ->point      .setNum(V.Extent());
-        SbVec3f* nodes = vertex->point.startEditing();
-
+        nodeset->startIndex.setValue(FaceNodeOffset);
         for (int i=0; i<V.Extent(); i++) {
             const TopoDS_Vertex& aVertex = TopoDS::Vertex(V(i+1));
             gp_Pnt pnt = BRep_Tool::Pnt(aVertex);
-            nodes[i].setValue((float)pnt.X(), (float)pnt.Y(), (float)pnt.Z());
+            verts[FaceNodeOffset+i].setValue((float)(pnt.X()),(float)(pnt.Y()),(float)(pnt.Z()));
         }
 
         // normalize all normals 
@@ -744,7 +743,6 @@ void ViewProviderPartExt::updateVisual(const TopoDS_Shape &inputShape)
         faceset ->coordIndex  .finishEditing();
         faceset ->partIndex   .finishEditing();
         lineset ->coordIndex  .finishEditing();
-        vertex  ->point       .finishEditing();
     }
     catch (...) {
         Base::Console().Error("Cannot compute Inventor representation for the shape of %s.\n",pcObject->getNameInDocument());

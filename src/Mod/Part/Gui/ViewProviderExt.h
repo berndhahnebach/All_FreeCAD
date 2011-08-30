@@ -55,7 +55,7 @@ namespace PartGui {
 
 class SoBrepFaceSet;
 class SoBrepEdgeSet;
-class SoBrepEdgeHighlight;
+class SoBrepPointSet;
 
 class AppPartGuiExport ViewProviderPartExt : public Gui::ViewProviderGeometryObject
 {
@@ -122,11 +122,11 @@ protected:
     SoShapeHints      * pShapeHints;
 
     SoCoordinate3     * coords;
-    SoCoordinate3     * vertex;
     SoBrepFaceSet     * faceset;
     SoNormal          * norm;
     SoNormalBinding   * normb;
     SoBrepEdgeSet     * lineset;
+    SoBrepPointSet    * nodeset;
 
     bool VisualTouched;
 
