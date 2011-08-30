@@ -194,6 +194,13 @@ protected:
     void setPositionText(const Base::Vector2D &Pos);
     void resetPositionText(void);
 
+    // handle preselection and selection of points
+    void setPreselectPoint(int PreselectPoint);
+    void resetPreselectPoint(void);
+    void addSelectPoint(int SelectPoint);
+    void removeSelectPoint(int SelectPoint);
+    void clearSelectPoints(void);
+
     // modes while sketching
     SketchMode Mode;
 
@@ -204,6 +211,13 @@ protected:
     static SbTime prvClickTime;
     static SbVec3f prvClickPoint;
 
+    float zCross;
+    float zLines;
+    float zPoints;
+    float zConstr;
+    float zHighlight;
+    float zText;
+    float zEdit;
 };
 
 } // namespace PartGui
