@@ -88,7 +88,7 @@ SoSeparator* ViewProvider2DObject::createGrid(void)
     //double dx = 10 * GridSize.getValue();                       // carpet size
     //double dy = 10 * GridSize.getValue();
     float Size = (MaxX-MinX > MaxY-MinY)?MaxX-MinX: MaxY-MinY;
-    float Step = GridSize.getValue();//pow(10,floor(log10(Size/5.0)));
+    float Step = GridSize.getValue(); //pow(10,floor(log10(Size/5.0)));
     float MiX = MinX - (MaxX-MinX)*0.5;
     float MaX = MaxX + (MaxX-MinX)*0.5;
     float MiY = MinY - (MaxY-MinY)*0.5;

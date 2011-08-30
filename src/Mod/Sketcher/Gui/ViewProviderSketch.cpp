@@ -101,7 +101,7 @@ SbColor sCurveDraftColor        (0.4f,0.4f,0.8f);
 SbColor sPointColor             (0.5f,0.5f,0.5f);
 SbColor sConstraintColor        (0.0f,0.8f,0.0f);
 SbColor sCrossColor             (0.0f,0.0f,0.8f);
-SbColor sConstrIcoColor        (0.918f,0.145f,0.f);
+SbColor sConstrIcoColor         (0.918f,0.145f,0.f);
 
 SbColor ViewProviderSketch::PreselectColor(0.1f, 0.1f, 0.8f);
 SbColor ViewProviderSketch::SelectColor   (0.1f, 0.1f, 0.8f);
@@ -252,8 +252,7 @@ bool ViewProviderSketch::keyPressed(bool pressed, int key)
 
 void ViewProviderSketch::snapToGrid(double& x, double& y)
 {
-    if(GridSnap.getValue() != false)
-    {
+    if (GridSnap.getValue() != false) {
         // Snap Tolerance in pixels
         const double snapTol = GridSize.getValue() / 5;
 
@@ -709,8 +708,10 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
 
     switch (Mode) {
         case STATUS_NONE:
-            if (preselectChanged)
-                updateColor();
+            if (preselectChanged) {
+                this->drawConstraintIcons();
+                this->updateColor();
+            }
             return false;
         case STATUS_SELECT_Point:
             Mode = STATUS_SKETCH_DragPoint;
@@ -776,8 +777,10 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
             return true;
         case STATUS_SKETCH_UseHandler:
             edit->sketchHandler->mouseMove(Base::Vector2D(x,y));
-            if (preselectChanged)
-                updateColor();
+            if (preselectChanged) {
+                this->drawConstraintIcons();
+                this->updateColor();
+            }
             return true;
         default:
             return false;
@@ -955,7 +958,8 @@ void ViewProviderSketch::onSelectionChanged(const Gui::SelectionChanges& msg)
                 edit->SelCurvSet.clear();
                 edit->SelCrossSet.clear();
                 edit->SelConstraintSet.clear();
-                updateColor();
+                this->drawConstraintIcons();
+                this->updateColor();
             }
         }
         else if (msg.Type == Gui::SelectionChanges::AddSelection) {
@@ -967,7 +971,7 @@ void ViewProviderSketch::onSelectionChanged(const Gui::SelectionChanges& msg)
                         if (shapetype.size() > 4 && shapetype.substr(0,4) == "Edge") {
                             int index=std::atoi(&shapetype[4]);
                             edit->SelCurvSet.insert(index);
-                            updateColor();
+                            this->updateColor();
                         }
                         else if (shapetype.size() > 6 && shapetype.substr(0,6) == "Vertex") {
                             int index=std::atoi(&shapetype[6]);
@@ -976,20 +980,21 @@ void ViewProviderSketch::onSelectionChanged(const Gui::SelectionChanges& msg)
                         }
                         else if (shapetype == "RootPoint") {
                             edit->SelCrossSet.insert(0);
-                            updateColor();
+                            this->updateColor();
                         }
                         else if (shapetype == "V_Axis") {
                             edit->SelCrossSet.insert(2);
-                            updateColor();
+                            this->updateColor();
                         }
                         else if (shapetype == "H_Axis") {
                             edit->SelCrossSet.insert(1);
-                            updateColor();
+                            this->updateColor();
                         }
                         else if (shapetype.size() > 10 && shapetype.substr(0,10) == "Constraint") {
                             int index=std::atoi(&shapetype[10]);
                             edit->SelConstraintSet.insert(index);
-                            updateColor();
+                            this->drawConstraintIcons();
+                            this->updateColor();
                         }
                     }
             }
@@ -1005,17 +1010,18 @@ void ViewProviderSketch::onSelectionChanged(const Gui::SelectionChanges& msg)
                         if (shapetype.size() > 4 && shapetype.substr(0,4) == "Edge") {
                             int index=std::atoi(&shapetype[4]);
                             edit->SelCurvSet.erase(index);
-                            updateColor();
+                            this->updateColor();
                         }
                         else if (shapetype.size() > 6 && shapetype.substr(0,6) == "Vertex") {
                             int index=std::atoi(&shapetype[6]);
                             edit->SelPointSet.erase(index);
-                            updateColor();
+                            this->updateColor();
                         }
                         else if (shapetype.size() > 10 && shapetype.substr(0,10) == "Constraint") {
                             int index=std::atoi(&shapetype[10]);
                             edit->SelConstraintSet.erase(index);
-                            updateColor();
+                            this->drawConstraintIcons();
+                            this->updateColor();
                         }
                     }
                 }
@@ -1249,11 +1255,11 @@ void ViewProviderSketch::updateColor(void)
         else
             ccolor[i] = sCrossColor;
     }
+
     // colors of the constraints
     for (int i=0; i < edit->constrGroup->getNumChildren(); i++) {
         SoSeparator *s = dynamic_cast<SoSeparator *>(edit->constrGroup->getChild(i));
         SoMaterial *m = dynamic_cast<SoMaterial *>(s->getChild(0));
-        drawConstraintIcon(i);
         if (edit->SelConstraintSet.find(i) != edit->SelConstraintSet.end())
             m->diffuseColor = SelectColor;
         else if (edit->PreselectConstraint == i)
@@ -1281,112 +1287,125 @@ bool ViewProviderSketch::doubleClicked(void)
     return true;
 }
 
-void ViewProviderSketch::drawConstraintIcon(int constrId)
+void ViewProviderSketch::drawConstraintIcons()
 {
-    // Load the Constraint
-    const Constraint * constr = getSketchObject()->Constraints.getValues()[constrId];
-
-    // Check if Icon Should be created
-
-    int index1 = 2, index2 = -1; // Index for SoImage Nodes in SoContainer
-    QString icoType;
-    switch(constr->Type) {
+    const std::vector<Sketcher::Constraint *> &constraints = getSketchObject()->Constraints.getValues();
+    int constrId = 0;
+    for (std::vector<Sketcher::Constraint *>::const_iterator it=constraints.begin();
+         it != constraints.end(); ++it, constrId++) {
+        // Check if Icon Should be created
+        int index1 = 2, index2 = -1; // Index for SoImage Nodes in SoContainer
+        QString icoType;
+        switch((*it)->Type) {
         case Horizontal:
-        icoType = QString::fromAscii("small/Constraint_Horizontal_sm"); break;
+            icoType = QString::fromAscii("small/Constraint_Horizontal_sm");
+            break;
         case Vertical:
-        icoType = QString::fromAscii("small/Constraint_Vertical_sm"); break;
+            icoType = QString::fromAscii("small/Constraint_Vertical_sm");
+            break;
         case Tangent:
-        icoType = QString::fromAscii("small/Constraint_Tangent_sm"); break;
-        case Parallel: {
-        icoType = QString::fromAscii("small/Constraint_Parallel_sm"); 
-        index2 = 4; } break;
-        case Perpendicular: {
-        icoType = QString::fromAscii("small/Constraint_Perpendicular_sm");
-        index2 = 4; } break;
-        case Equal: {
-        icoType = QString::fromAscii("small/Constraint_EqualLength_sm");
-        index2 = 4; } break;
-        case Symmetric:{
-        icoType = QString::fromAscii("small/Constraint_Symmetric_sm");
-        index1 = 3; }break;
+            icoType = QString::fromAscii("small/Constraint_Tangent_sm");
+            break;
+        case Parallel:
+            icoType = QString::fromAscii("small/Constraint_Parallel_sm"); 
+            index2 = 4;
+            break;
+        case Perpendicular:
+            icoType = QString::fromAscii("small/Constraint_Perpendicular_sm");
+            index2 = 4;
+            break;
+        case Equal:
+            icoType = QString::fromAscii("small/Constraint_EqualLength_sm");
+            index2 = 4;
+            break;
+        case Symmetric:
+            icoType = QString::fromAscii("small/Constraint_Symmetric_sm");
+            index1 = 3;
+            break;
         default:
-            return; // Icon shouldn't be generated
-    }
+            continue; // Icon shouldn't be generated
+        }
+
+        // Constants to help create constraint icons
+        const int constrImgSize = 16;
+        
+        QColor constrIcoColor((int)(sConstrIcoColor [0] * 255.0f), (int)(sConstrIcoColor[1] * 255.0f),(int)(sConstrIcoColor[2] * 255.0f));
+        QColor constrIconSelColor ((int)(SelectColor[0] * 255.0f), (int)(SelectColor[1] * 255.0f),(int)(SelectColor[2] * 255.0f));
+        QColor constrIconPreselColor ((int)(PreselectColor[0] * 255.0f), (int)(PreselectColor[1] * 255.0f),(int)(PreselectColor[2] * 255.0f));
     
-   // Constants to help create constraint icons
-    const int constrImgSize = 16;
+        // Set Color for Icons
+        QColor iconColor;
+        if (edit->PreselectConstraint == constrId)
+            iconColor = constrIconPreselColor;
+        else if (edit->SelConstraintSet.find(constrId) != edit->SelConstraintSet.end())
+            iconColor = constrIconSelColor;
+        else
+            iconColor = constrIcoColor;
     
-    QColor constrIcoColor((int)(sConstrIcoColor [0] * 255.0f), (int)(sConstrIcoColor[1] * 255.0f),(int)(sConstrIcoColor[2] * 255.0f));
-    QColor constrIconSelColor ((int)(SelectColor[0] * 255.0f), (int)(SelectColor[1] * 255.0f),(int)(SelectColor[2] * 255.0f));
-    QColor constrIconPreselColor ((int)(PreselectColor[0] * 255.0f), (int)(PreselectColor[1] * 255.0f),(int)(PreselectColor[2] * 255.0f));
-
-    // Set Color for Icons
-    QColor iconColor;
-    if( edit->PreselectConstraint == constrId)
-        iconColor = constrIconPreselColor;
-    else if (edit->SelConstraintSet.find(constrId) != edit->SelConstraintSet.end())
-        iconColor = constrIconSelColor;
-    else
-        iconColor = constrIcoColor;
-
-     // Create Icons
-
-    // Create a QPainter for the constraint icon rendering
-    QPainter qp;
-    QImage icon;
-
-    icon = Gui::BitmapFactory().pixmap(icoType.toAscii()).toImage();
-
-    // Assumes that Icons are SQUARE
-    QImage image = icon.copy(0, 0, icon.width() + 16, icon.height());
-
-    // Paint the Icons
-    qp.begin(&image);
-    qp.setCompositionMode(QPainter::CompositionMode_SourceIn);
-    qp.fillRect(0,0, constrImgSize, constrImgSize, QColor(255, 255,255));
-    qp.setCompositionMode(QPainter::CompositionMode_DestinationOver);
-    qp.fillRect(0,0, constrImgSize, constrImgSize, iconColor);
-
-    // Render Constraint Index Number
-    qp.setCompositionMode(QPainter::CompositionMode_SourceOver);
-    qp.setPen(iconColor);
-    QFont font = QApplication::font();
-    font.setPixelSize( 17 );
-    font.setBold(true);
-    qp.setFont(font);
-    qp.drawText(constrImgSize + 2, image.height() - 2, QString::number(constrId + 1));
-    qp.end();
-
-    SoSFImage icondata = SoSFImage();
-
-    Gui::BitmapFactory().convert(image, icondata);
-
-    int nc = 4;
-    SbVec2s iconSize(image.width(), image.height());
-
-    // Find the Constraint Icon SoImage Node
-    SoSeparator *sep = dynamic_cast<SoSeparator *>(edit->constrGroup->getChild(constrId));
-    SoImage *constraintIcon = dynamic_cast<SoImage *>(sep->getChild(index1));
-
-    constraintIcon->image.setValue(iconSize, 4, icondata.getValue(iconSize, nc));
-
-    //Set Image Alignment to Center
-    constraintIcon->vertAlignment = SoImage::HALF;
-    constraintIcon->horAlignment = SoImage::CENTER;
-
+        // Create Icons
+    
+        // Create a QPainter for the constraint icon rendering
+        QPainter qp;
+        QImage icon;
+    
+        icon = Gui::BitmapFactory().pixmap(icoType.toAscii()).toImage();
+    
+        // Assumes that Icons are SQUARE
+        QImage image = icon.copy(0, 0, icon.width() + 16, icon.height());
+    
+        // Paint the Icons
+        qp.begin(&image);
+        qp.setCompositionMode(QPainter::CompositionMode_SourceIn);
+        qp.fillRect(0,0, constrImgSize, constrImgSize, QColor(255, 255,255));
+        qp.setCompositionMode(QPainter::CompositionMode_DestinationOver);
+        qp.fillRect(0,0, constrImgSize, constrImgSize, iconColor);
+    
+        // Render Constraint Index Number
+        qp.setCompositionMode(QPainter::CompositionMode_SourceOver);
+        qp.setPen(iconColor);
+        QFont font = QApplication::font();
+        font.setPixelSize(17);
+        font.setBold(true);
+        qp.setFont(font);
+        qp.drawText(constrImgSize + 2, image.height() - 2, QString::number(constrId + 1));
+        qp.end();
+    
+        SoSFImage icondata = SoSFImage();
+    
+        Gui::BitmapFactory().convert(image, icondata);
+    
+        int nc = 4;
+        SbVec2s iconSize(image.width(), image.height());
+    
+        // Find the Constraint Icon SoImage Node
+        SoSeparator *sep = dynamic_cast<SoSeparator *>(edit->constrGroup->getChild(constrId));
+        SoImage *constraintIcon = dynamic_cast<SoImage *>(sep->getChild(index1));
+    
+        constraintIcon->image.setValue(iconSize, 4, icondata.getValue(iconSize, nc));
+    
+        //Set Image Alignment to Center
+        constraintIcon->vertAlignment = SoImage::HALF;
+        constraintIcon->horAlignment = SoImage::CENTER;
+    
         // If more than one icon per constraint
-    if(index2 != -1) {
-        SoImage *constraintIcon2 = dynamic_cast<SoImage *>(sep->getChild(index2));
-        constraintIcon2->image.setValue(iconSize, 4, icondata.getValue(iconSize, nc));
-        //Set Image Alignment to Center 
-        constraintIcon2->vertAlignment = SoImage::HALF;
-        constraintIcon2->horAlignment = SoImage::CENTER;
+        if (index2 != -1) {
+            SoImage *constraintIcon2 = dynamic_cast<SoImage *>(sep->getChild(index2));
+            constraintIcon2->image.setValue(iconSize, 4, icondata.getValue(iconSize, nc));
+            //Set Image Alignment to Center 
+            constraintIcon2->vertAlignment = SoImage::HALF;
+            constraintIcon2->horAlignment = SoImage::CENTER;
+        }
     }
 }
 
 void ViewProviderSketch::draw(bool temp)
 {
     assert(edit);
+
+    float zCross=0.1f;
+    float zLines=0.2f;
+    float zPoints=0.3f;
+    float zConstr=0.4f;
 
     // Render Geometry ===================================================
     std::vector<Base::Vector3d> Coords;
@@ -1523,14 +1542,14 @@ void ViewProviderSketch::draw(bool temp)
     SbColor *pcolor = edit->PointsMaterials->diffuseColor.startEditing();
 
     // set cross coordiantes
-    edit->RootCrossCoordinate->point.set1Value(0,SbVec3f((float)MinX - (MaxX-MinX)*0.5,0.0,0.1f));
-    edit->RootCrossCoordinate->point.set1Value(1,SbVec3f((float)MaxX + (MaxX-MinX)*0.5,0.0,0.1f));
-    edit->RootCrossCoordinate->point.set1Value(2,SbVec3f(0.0f,(float)MinY - (MaxY-MinY)*0.5f,0.1f));
-    edit->RootCrossCoordinate->point.set1Value(3,SbVec3f(0.0f,(float)MaxY + (MaxY-MinY)*0.5f,0.1f));
+    edit->RootCrossCoordinate->point.set1Value(0,SbVec3f((float)MinX - (MaxX-MinX)*0.5,0.0,zCross));
+    edit->RootCrossCoordinate->point.set1Value(1,SbVec3f((float)MaxX + (MaxX-MinX)*0.5,0.0,zCross));
+    edit->RootCrossCoordinate->point.set1Value(2,SbVec3f(0.0f,(float)MinY - (MaxY-MinY)*0.5f,zCross));
+    edit->RootCrossCoordinate->point.set1Value(3,SbVec3f(0.0f,(float)MaxY + (MaxY-MinY)*0.5f,zCross));
 
     int i=0; // setting up the line set
     for (std::vector<Base::Vector3d>::const_iterator it = Coords.begin(); it != Coords.end(); ++it,i++)
-        verts[i].setValue(it->x,it->y,0.2f);
+        verts[i].setValue(it->x,it->y,zLines);
 
     i=0; // setting up the indexes of the line set
     for (std::vector<unsigned int>::const_iterator it = Index.begin(); it != Index.end(); ++it,i++)
@@ -1542,7 +1561,7 @@ void ViewProviderSketch::draw(bool temp)
 
     i=0; // setting up the point set
     for (std::vector<Base::Vector3d>::const_iterator it = Points.begin(); it != Points.end(); ++it,i++)
-        pverts[i].setValue(it->x,it->y,0.3f);
+        pverts[i].setValue(it->x,it->y,zPoints);
 
     i=0; // color of the point set
     for (std::vector<unsigned int>::const_iterator it = PtColor.begin(); it != PtColor.end(); ++it,i++)
@@ -1594,7 +1613,6 @@ Restart:
                     const Part::Geometry *geo = (*geomlist)[Constr->First];
                     // Vertical can only be a GeomLineSegment
                     assert(geo->getTypeId()== Part::GeomLineSegment::getClassTypeId());
-                    drawConstraintIcon(i);
                     const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment *>(geo);
 
                     // calculate the half distance between the start and endpoint
@@ -1613,7 +1631,7 @@ Restart:
                     }
                     while (isConstraintAtPosition(constrPos, edit->constrGroup->getChild(i)));
 
-                    dynamic_cast<SoTranslation *>(sep->getChild(1))->translation = SbVec3f(constrPos.x, constrPos.y, 0.0f);
+                    dynamic_cast<SoTranslation *>(sep->getChild(1))->translation = SbVec3f(constrPos.x, constrPos.y, zConstr);
                 }
                 break;
             case Parallel:
@@ -1625,7 +1643,6 @@ Restart:
                     // get the geometry
                     const Part::Geometry *geo1 = (*geomlist)[Constr->First];
                     const Part::Geometry *geo2 = (*geomlist)[Constr->Second];
-                    drawConstraintIcon(i);
 
                     Base::Vector3d midpos1, dir1, norm1;
                     Base::Vector3d midpos2, dir2, norm2;
@@ -1706,8 +1723,8 @@ Restart:
 
                     constrPos2 = constrPos2 - constrPos1;
 
-                    dynamic_cast<SoTranslation *>(sep->getChild(1))->translation =  SbVec3f(constrPos1.x, constrPos1.y, 0.0f);
-                    dynamic_cast<SoTranslation *>(sep->getChild(3))->translation =  SbVec3f(constrPos2.x, constrPos2.y, 0.0f);
+                    dynamic_cast<SoTranslation *>(sep->getChild(1))->translation =  SbVec3f(constrPos1.x, constrPos1.y, zConstr);
+                    dynamic_cast<SoTranslation *>(sep->getChild(3))->translation =  SbVec3f(constrPos2.x, constrPos2.y, zConstr);
 
                 }
                 break;
@@ -1853,7 +1870,6 @@ Restart:
                     assert(Constr->First < int(geomlist->size()));
                     assert(Constr->Second < int(geomlist->size()));
 
-                    drawConstraintIcon(i);
                     Base::Vector3d pos;
                     if (Constr->Type == PointOnObject) {
                         pos = edit->ActSketch.getPoint(Constr->First, Constr->FirstPos);
@@ -1921,20 +1937,19 @@ Restart:
                             // Other Behaviour hasn't been implemented
                         }
                     }
-                    dynamic_cast<SoTranslation *>(sep->getChild(1))->translation =  SbVec3f(pos.x, pos.y, 0.0f);
+                    dynamic_cast<SoTranslation *>(sep->getChild(1))->translation =  SbVec3f(pos.x, pos.y, zConstr);
                 }
                 break;
             case Symmetric:
                 {
                     assert(Constr->First < int(geomlist->size()));
                     assert(Constr->Second < int(geomlist->size()));
-                    drawConstraintIcon(i);
 
                     Base::Vector3d pnt1 = edit->ActSketch.getPoint(Constr->First, Constr->FirstPos);
                     Base::Vector3d pnt2 = edit->ActSketch.getPoint(Constr->Second, Constr->SecondPos);
 
-                    SbVec3f p1(pnt1.x,pnt1.y,0);
-                    SbVec3f p2(pnt2.x,pnt2.y,0);
+                    SbVec3f p1(pnt1.x,pnt1.y,zConstr);
+                    SbVec3f p2(pnt2.x,pnt2.y,zConstr);
                     SbVec3f dir = (p2-p1);
                     dir.normalize();
                     SbVec3f norm (-dir[1],dir[0],0);
@@ -2116,8 +2131,8 @@ Restart:
                     } else
                         break;
 
-                    SbVec3f p1(pnt1.x,pnt1.y,0);
-                    SbVec3f p2(pnt2.x,pnt2.y,0);
+                    SbVec3f p1(pnt1.x,pnt1.y,zConstr);
+                    SbVec3f p2(pnt2.x,pnt2.y,zConstr);
 
                     SbVec3f dir = (p2-p1);
                     dir.normalize();
@@ -2187,6 +2202,7 @@ Restart:
         }
     }
 
+    this->drawConstraintIcons();
     this->updateColor();
 
     // delete the cloned objects
@@ -2583,10 +2599,11 @@ void ViewProviderSketch::unsetEdit(int ModNum)
 
 void ViewProviderSketch::setPositionText(const Base::Vector2D &Pos)
 {
+    float zText=0.5f;
     char buf[40];
     sprintf( buf, " (%.1f,%.1f)", Pos.fX,Pos.fY );
     edit->textX->string = buf;
-    edit->textPos->translation = SbVec3f(Pos.fX,Pos.fY,0.2f);
+    edit->textPos->translation = SbVec3f(Pos.fX,Pos.fY,zText);
 }
 
 void ViewProviderSketch::resetPositionText(void)
@@ -2622,10 +2639,8 @@ void ViewProviderSketch::setGridSnap(bool status)
 
 void ViewProviderSketch::setGridSize(float size)
 {
-    if(size > 0)
-    {
+    if (size > 0)
         GridSize.setValue(size);
-    }
 }
 
 Sketcher::SketchObject *ViewProviderSketch::getSketchObject(void) const
@@ -2659,6 +2674,7 @@ void ViewProviderSketch::delSelected(void)
         edit->PreselectCurve = -1;
         edit->PreselectCross = -1;
         edit->PreselectConstraint = -1;
-        updateColor();
+        this->drawConstraintIcons();
+        this->updateColor();
     }
 }
