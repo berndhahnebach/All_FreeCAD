@@ -49,14 +49,18 @@ int qp_eq(MatrixXd &H, VectorXd &g, MatrixXd &A, VectorXd &c,
                        .transpose()
                        .solve<OnTheRight>(Q.leftCols(r))
         * qrAT.colsPermutation().transpose();
-    Z = Q.rightCols(rows-r);
+    if (rows-r == 0)
+        x = - Y * c;
+    else {
+        Z = Q.rightCols(rows-r);
 
-    MatrixXd ZTHZ = Z.transpose() * H * Z;
-    VectorXd rhs = Z.transpose() * (H * Y * c - g);
+        MatrixXd ZTHZ = Z.transpose() * H * Z;
+        VectorXd rhs = Z.transpose() * (H * Y * c - g);
 
-    VectorXd y = ZTHZ.colPivHouseholderQr().solve(rhs);
+        VectorXd y = ZTHZ.colPivHouseholderQr().solve(rhs);
 
-    x = - Y * c + Z * y;
+        x = - Y * c + Z * y;
+    }
 
     return 0;
 }
