@@ -53,16 +53,20 @@ PROPERTY_SOURCE(PartDesign::Pad, PartDesign::SketchBased)
 
 Pad::Pad()
 {
-    ADD_PROPERTY(Side,((long)0));
-    Side.setEnums(SideEnums);
+    //ADD_PROPERTY(Side,((long)0));
+    //Side.setEnums(SideEnums);
     ADD_PROPERTY(Length,(100.0));
+    ADD_PROPERTY(Reversed,(0));
+    ADD_PROPERTY(MirroredExtent,(0));
+    
 }
 
 short Pad::mustExecute() const
 {
     if (Sketch.isTouched() ||
         Length.isTouched() ||
-        Side.isTouched())
+        MirroredExtent.isTouched() ||
+        Reversed.isTouched())
         return 1;
     return 0;
 }
@@ -99,7 +103,7 @@ App::DocumentObjectExecReturn *Pad::execute(void)
     Base::Placement SketchPos = static_cast<Part::Part2DObject*>(link)->Placement.getValue();
     Base::Rotation SketchOrientation = SketchPos.getRotation();
     Base::Vector3d SketchOrientationVector(0,0,1);
-    if (Side.getValue() == 1) // negative direction
+    if (Reversed.getValue()) // negative direction
         SketchOrientationVector *= -1;
     SketchOrientation.multVec(SketchOrientationVector,SketchOrientationVector);
 

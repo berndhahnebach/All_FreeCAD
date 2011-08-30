@@ -36,6 +36,7 @@
 #include <Base/Console.h>
 #include <Gui/Selection.h>
 #include <Gui/Command.h>
+#include <Mod/PartDesign/App/FeaturePad.h>
 
 
 using namespace PartDesignGui;
@@ -43,8 +44,8 @@ using namespace Gui;
 
 /* TRANSLATOR PartDesignGui::TaskPadParameters */
 
-TaskPadParameters::TaskPadParameters(QWidget *parent)
-    : TaskBox(Gui::BitmapFactory().pixmap("document-new"),tr("TaskPadParameters"),true, parent)
+TaskPadParameters::TaskPadParameters(ViewProviderPad *PadView,QWidget *parent)
+    : TaskBox(Gui::BitmapFactory().pixmap("PartDesign_Pad"),tr("Pad parameters"),true, parent),PadView(PadView)
 {
     // we need a separate container widget to add all controls to
     proxy = new QWidget(this);
@@ -54,13 +55,31 @@ TaskPadParameters::TaskPadParameters(QWidget *parent)
 
     this->groupLayout()->addWidget(proxy);
 
-    Gui::Selection().Attach(this);
+    double l = static_cast<PartDesign::Pad*>(PadView->getObject())->Length.getValue();
+    ui->doubleSpinBox->setValue(l);
+    ui->doubleSpinBox->selectAll();
+    setFocus ();
+
 }
+double TaskPadParameters::getLength(void)
+{
+    return ui->doubleSpinBox->value();
+}
+
+bool   TaskPadParameters::getReversed(void)
+{
+    return ui->checkBox->isChecked();
+}
+
+bool   TaskPadParameters::getMirroredExtent(void)
+{
+    return ui->checkBox_2->isChecked();
+}
+
 
 TaskPadParameters::~TaskPadParameters()
 {
     delete ui;
-    Gui::Selection().Detach(this);
 }
 
 void TaskPadParameters::changeEvent(QEvent *e)
@@ -71,18 +90,6 @@ void TaskPadParameters::changeEvent(QEvent *e)
     }
 }
 
-/// @cond DOXERR
-void TaskPadParameters::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
-                              Gui::SelectionSingleton::MessageType Reason)
-{
-    if (Reason.Type == SelectionChanges::AddSelection ||
-        Reason.Type == SelectionChanges::RmvSelection ||
-        Reason.Type == SelectionChanges::SetSelection ||
-        Reason.Type == SelectionChanges::ClrSelection) {
-    }
-}
-/// @endcond
-
 //**************************************************************************
 //**************************************************************************
 // TaskDialog
@@ -92,7 +99,7 @@ TaskDlgPadParameters::TaskDlgPadParameters(ViewProviderPad *PadView)
     : TaskDialog(),PadView(PadView)
 {
     assert(PadView);
-    parameter  = new TaskPadParameters();
+    parameter  = new TaskPadParameters(PadView);
 
     Content.push_back(parameter);
 }
@@ -107,7 +114,7 @@ TaskDlgPadParameters::~TaskDlgPadParameters()
 
 void TaskDlgPadParameters::open()
 {
-
+    
 }
 
 void TaskDlgPadParameters::clicked(int)
@@ -117,24 +124,28 @@ void TaskDlgPadParameters::clicked(int)
 
 bool TaskDlgPadParameters::accept()
 {
-    return true;
-}
+    std::string name = PadView->getObject()->getNameInDocument();
 
-bool TaskDlgPadParameters::reject()
-{
     Gui::Command::openCommand("Pad changed");
-    Gui::Command::doCommand(Gui::Command::Gui,"Gui.activeDocument().resetEdit()");
+    Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.Length = %f",name.c_str(),parameter->getLength());
+    Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.Reversed = %i",name.c_str(),parameter->getReversed()?1:0);
+    Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.MirroredExtent = %i",name.c_str(),parameter->getMirroredExtent()?1:0);
     Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.recompute()");
+    Gui::Command::doCommand(Gui::Command::Gui,"Gui.activeDocument().resetEdit()");
     Gui::Command::commitCommand();
 
     return true;
 }
 
-void TaskDlgPadParameters::helpRequested()
+bool TaskDlgPadParameters::reject()
 {
+    //Gui::Command::openCommand("Pad changed");
+    Gui::Command::doCommand(Gui::Command::Gui,"Gui.activeDocument().resetEdit()");
+    //Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.recompute()");
+    //Gui::Command::commitCommand();
 
+    return true;
 }
-
 
 
 
