@@ -150,6 +150,12 @@ void CmdPartDesignPad::activated(int iMsg)
 
     commitCommand();
     adjustCameraPosition();
+
+    if (support) {
+        copyVisual(FeatName.c_str(), "ShapeColor", support->getNameInDocument());
+        copyVisual(FeatName.c_str(), "LineColor", support->getNameInDocument());
+        copyVisual(FeatName.c_str(), "PointColor", support->getNameInDocument());
+    }
 }
 
 bool CmdPartDesignPad::isActive(void)
@@ -222,6 +228,10 @@ void CmdPartDesignPocket::activated(int iMsg)
         doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",support->getNameInDocument());
     }
     commitCommand();
+
+    copyVisual(FeatName.c_str(), "ShapeColor", support->getNameInDocument());
+    copyVisual(FeatName.c_str(), "LineColor", support->getNameInDocument());
+    copyVisual(FeatName.c_str(), "PointColor", support->getNameInDocument());
 }
 
 bool CmdPartDesignPocket::isActive(void)
@@ -294,6 +304,12 @@ void CmdPartDesignRevolution::activated(int iMsg)
     }
     commitCommand();
     adjustCameraPosition();
+
+    if (support) {
+        copyVisual(FeatName.c_str(), "ShapeColor", support->getNameInDocument());
+        copyVisual(FeatName.c_str(), "LineColor", support->getNameInDocument());
+        copyVisual(FeatName.c_str(), "PointColor", support->getNameInDocument());
+    }
 }
 
 bool CmdPartDesignRevolution::isActive(void)
@@ -320,9 +336,7 @@ CmdPartDesignFillet::CmdPartDesignFillet()
 
 void CmdPartDesignFillet::activated(int iMsg)
 {
-    //unsigned int n = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
-
-	std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
+    std::vector<Gui::SelectionObject> selection = getSelection().getSelectionEx();
 
     if (selection.size() != 1) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
@@ -330,12 +344,12 @@ void CmdPartDesignFillet::activated(int iMsg)
         return;
     }
 
-	if ( ! selection[0].isObjectTypeOf(Part::Feature::getClassTypeId())){
+    if (!selection[0].isObjectTypeOf(Part::Feature::getClassTypeId())){
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong object type"),
             QObject::tr("Fillet works only on parts"));
         return;
     }
-	std::string SelString = selection[0].getAsPropertyLinkSubString();
+    std::string SelString = selection[0].getAsPropertyLinkSubString();
     std::string FeatName = getUniqueObjectName("Fillet");
 
     openCommand("Make Fillet");
@@ -344,6 +358,10 @@ void CmdPartDesignFillet::activated(int iMsg)
     doCommand(Gui,"Gui.activeDocument().hide(\"%s\")",selection[0].getFeatName());
     updateActive();
     commitCommand();
+
+    copyVisual(FeatName.c_str(), "ShapeColor", selection[0].getFeatName());
+    copyVisual(FeatName.c_str(), "LineColor",  selection[0].getFeatName());
+    copyVisual(FeatName.c_str(), "PointColor", selection[0].getFeatName());
 }
 
 bool CmdPartDesignFillet::isActive(void)

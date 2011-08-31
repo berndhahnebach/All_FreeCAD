@@ -199,6 +199,11 @@ void DlgExtrusion::apply()
             .arg(dirY*len)
             .arg(dirZ*len);
         Gui::Application::Instance->runPythonCode((const char*)code.toAscii());
+        QByteArray to = name.toAscii();
+        QByteArray from = shape.toAscii();
+        Gui::Command::copyVisual(to, "ShapeColor", from);
+        Gui::Command::copyVisual(to, "LineColor", from);
+        Gui::Command::copyVisual(to, "PointColor", from);
     }
 
     activeDoc->commitTransaction();

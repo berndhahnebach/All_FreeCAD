@@ -610,6 +610,12 @@ bool DlgFilletEdges::accept()
         vp = Gui::Application::Instance->getViewProvider(d->fillet);
         if (vp) vp->show();
     }
+
+    QByteArray to = name.toAscii();
+    QByteArray from = shape.toAscii();
+    Gui::Command::copyVisual(to, "ShapeColor", from);
+    Gui::Command::copyVisual(to, "LineColor", from);
+    Gui::Command::copyVisual(to, "PointColor", from);
     return true;
 }
 

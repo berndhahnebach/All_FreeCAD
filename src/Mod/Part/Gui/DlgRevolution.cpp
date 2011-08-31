@@ -147,6 +147,11 @@ void DlgRevolution::accept()
             .arg(ui->baseZ->value(),0,'f',2)
             .arg(ui->angle->value(),0,'f',2);
         Gui::Application::Instance->runPythonCode((const char*)code.toAscii());
+        QByteArray to = name.toAscii();
+        QByteArray from = shape.toAscii();
+        Gui::Command::copyVisual(to, "ShapeColor", from);
+        Gui::Command::copyVisual(to, "LineColor", from);
+        Gui::Command::copyVisual(to, "PointColor", from);
     }
 
     activeDoc->commitTransaction();

@@ -186,6 +186,9 @@ void CmdPartSimpleCopy::activated(int iMsg)
                       (*it)->getNameInDocument(),
                       (*it)->getNameInDocument(),
                       (*it)->getNameInDocument());
+        copyVisual("ActiveObject", "ShapeColor", (*it)->getNameInDocument());
+        copyVisual("ActiveObject", "LineColor", (*it)->getNameInDocument());
+        copyVisual("ActiveObject", "PointColor", (*it)->getNameInDocument());
     }
     commitCommand();
     updateActive();

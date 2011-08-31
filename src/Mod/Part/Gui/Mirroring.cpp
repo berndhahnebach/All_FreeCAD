@@ -165,6 +165,10 @@ bool Mirroring::accept()
             .arg(normx).arg(normy).arg(normz)
             .arg(basex).arg(basey).arg(basez);
         Gui::Application::Instance->runPythonCode((const char*)code.toAscii());
+        QByteArray from = shape.toAscii();
+        Gui::Command::copyVisual("ActiveObject", "ShapeColor", from);
+        Gui::Command::copyVisual("ActiveObject", "LineColor", from);
+        Gui::Command::copyVisual("ActiveObject", "PointColor", from);
     }
 
     activeDoc->commitTransaction();
