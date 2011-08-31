@@ -48,5 +48,9 @@ TaskEditControl::~TaskEditControl()
 {
 }
 
+int TaskEditControl::standardButtons() const
+{
+    return (int)buttonBox->standardButtons();
+}
 
 #include "moc_TaskEditControl.cpp"

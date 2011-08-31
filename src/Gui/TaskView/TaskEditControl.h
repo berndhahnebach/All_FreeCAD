@@ -48,6 +48,7 @@ class TaskEditControl : public TaskWidget
 public:
     TaskEditControl(QWidget *parent = 0);
     ~TaskEditControl();
+    int standardButtons() const;
     friend class TaskView;
 
 protected:
