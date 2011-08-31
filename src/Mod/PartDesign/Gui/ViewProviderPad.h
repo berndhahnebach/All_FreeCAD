@@ -41,6 +41,8 @@ public:
 
     /// grouping handling 
     std::vector<App::DocumentObject*> claimChildren(void)const;
+    void setupContextMenu(QMenu*, QObject*, const char*);
+
 protected:
     virtual bool setEdit(int ModNum);
     virtual void unsetEdit(int ModNum);

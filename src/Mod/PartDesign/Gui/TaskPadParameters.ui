@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>137</width>
+    <width>158</width>
     <height>116</height>
    </rect>
   </property>
@@ -62,14 +62,14 @@
     </layout>
    </item>
    <item>
-    <widget class="QCheckBox" name="checkBox">
+    <widget class="QCheckBox" name="checkBoxMirrored">
      <property name="text">
       <string>Mirrored extent</string>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QCheckBox" name="checkBox_2">
+    <widget class="QCheckBox" name="checkBoxReversed">
      <property name="text">
       <string>Reversed</string>
      </property>
