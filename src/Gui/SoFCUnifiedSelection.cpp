@@ -299,62 +299,76 @@ SoFCUnifiedSelection::handleEvent(SoHandleEventAction * action)
     // If this is a mouseMotion event, then check for locate highlighting
     //
     if (event->isOfType(SoLocation2Event::getClassTypeId())) {
-        // check to see if the mouse is over our geometry...
-        const SoPickedPoint * pp = this->getPickedPoint(action);
-        SoFullPath *pPath = (pp != NULL) ? (SoFullPath *) pp->getPath() : NULL;
-        ViewProvider *vp = 0;
-        ViewProviderDocumentObject* vpd = 0;
-        if (pPath && pPath->containsPath(action->getCurPath()))
-            vp = viewer->getViewProviderByPathFromTail(pPath);
-        if (vp && vp->isDerivedFrom(ViewProviderDocumentObject::getClassTypeId()))
-            vpd = static_cast<ViewProviderDocumentObject*>(vp);
+        // NOTE: If preselection is off then we do not check for a picked point because otherwise this search may slow
+        // down extremely the system on really big data sets. In this case we just check for a picked point if the data
+        // set has been selected.
+        if (mymode == AUTO || mymode == ON) {
+            // check to see if the mouse is over our geometry...
+            const SoPickedPoint * pp = this->getPickedPoint(action);
+            SoFullPath *pPath = (pp != NULL) ? (SoFullPath *) pp->getPath() : NULL;
+            ViewProvider *vp = 0;
+            ViewProviderDocumentObject* vpd = 0;
+            if (pPath && pPath->containsPath(action->getCurPath()))
+                vp = viewer->getViewProviderByPathFromTail(pPath);
+            if (vp && vp->isDerivedFrom(ViewProviderDocumentObject::getClassTypeId()))
+                vpd = static_cast<ViewProviderDocumentObject*>(vp);
 
-        SbBool old_state = highlighted;
-        highlighted = FALSE;
-        if (vpd && vpd->useNewSelectionModel()) {
-            std::string documentName = vpd->getObject()->getDocument()->getName();
-            std::string objectName = vpd->getObject()->getNameInDocument();
-            std::string subElementName = vpd->getElement(pp);
-            static char buf[513];
-            snprintf(buf,512,"Preselected: %s.%s.%s (%f,%f,%f)",documentName.c_str()
+            SbBool old_state = highlighted;
+            highlighted = FALSE;
+            if (vpd && vpd->useNewSelectionModel()) {
+                std::string documentName = vpd->getObject()->getDocument()->getName();
+                std::string objectName = vpd->getObject()->getNameInDocument();
+                std::string subElementName = vpd->getElement(pp);
+
+                static char buf[513];
+                snprintf(buf,512,"Preselected: %s.%s.%s (%f,%f,%f)",documentName.c_str()
+                                           ,objectName.c_str()
+                                           ,subElementName.c_str()
+                                           ,pp->getPoint()[0]
+                                           ,pp->getPoint()[1]
+                                           ,pp->getPoint()[2]);
+
+                getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
+
+                if (Gui::Selection().setPreselect(documentName.c_str()
                                        ,objectName.c_str()
                                        ,subElementName.c_str()
                                        ,pp->getPoint()[0]
                                        ,pp->getPoint()[1]
-                                       ,pp->getPoint()[2]);
+                                       ,pp->getPoint()[2])){
 
-            getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
+                    SoSearchAction sa;
+                    sa.setNode(vp->getRoot());
+                    sa.apply(vp->getRoot());
+                    if (sa.getPath()) {
+                        highlighted = TRUE;
+                        if (currenthighlight && currenthighlight->getTail() != sa.getPath()->getTail()) {
+                            SoHighlightElementAction action;
+                            action.setHighlighted(FALSE);
+                            action.apply(currenthighlight);
+                            currenthighlight->unref();
+                            currenthighlight = 0;
+                            old_state = !highlighted;
+                        }
 
-            SoSearchAction sa;
-            sa.setNode(vp->getRoot());
-            sa.apply(vp->getRoot());
-            if (sa.getPath()) {
-                highlighted = TRUE;
-                if (currenthighlight && currenthighlight->getTail() != sa.getPath()->getTail()) {
-                    SoHighlightElementAction action;
-                    action.setHighlighted(FALSE);
-                    action.apply(currenthighlight);
+                        currenthighlight = static_cast<SoFullPath*>(sa.getPath()->copy());
+                        currenthighlight->ref();
+                    }
+                }
+            }
+
+            if (currenthighlight/* && old_state != highlighted*/) {
+                SoHighlightElementAction action;
+                action.setHighlighted(highlighted);
+                action.setColor(this->colorHighlight.getValue());
+                action.setElement(pp);
+                action.apply(currenthighlight);
+                if (!highlighted) {
                     currenthighlight->unref();
                     currenthighlight = 0;
-                    old_state = !highlighted;
                 }
-
-                currenthighlight = static_cast<SoFullPath*>(sa.getPath()->copy());
-                currenthighlight->ref();
+                this->touch();
             }
-        }
-
-        if (currenthighlight/* && old_state != highlighted*/) {
-            SoHighlightElementAction action;
-            action.setHighlighted(highlighted);
-            action.setColor(this->colorHighlight.getValue());
-            action.setElement(pp);
-            action.apply(currenthighlight);
-            if (!highlighted) {
-                currenthighlight->unref();
-                currenthighlight = 0;
-            }
-            this->touch();
         }
     }
     // key press events

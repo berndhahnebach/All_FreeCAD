@@ -38,6 +38,7 @@ set(PartGui_MOC_HDRS
     DlgRevolution.h
     DlgSettings3DViewPartImp.h
     DlgSettingsGeneral.h
+    TaskFaceColors.h
 )
 fc_wrap_cpp(PartGui_MOC_SRCS ${PartGui_MOC_HDRS})
 SOURCE_GROUP("Moc" FILES ${PartGui_MOC_SRCS})
@@ -58,6 +59,7 @@ set(PartGui_UIC_SRCS
     DlgRevolution.ui
     DlgSettings3DViewPart.ui
     DlgSettingsGeneral.ui
+    TaskFaceColors.ui
 )
 qt4_wrap_ui(PartGui_UIC_HDRS ${PartGui_UIC_SRCS})
 
@@ -138,6 +140,9 @@ SET(PartGui_SRCS
     ViewProviderBoolean.h
     Workbench.cpp
     Workbench.h
+    TaskFaceColors.cpp
+    TaskFaceColors.h
+    TaskFaceColors.ui
 )
 
 add_library(PartGui SHARED ${PartGui_SRCS})

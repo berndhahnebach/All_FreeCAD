@@ -81,6 +81,8 @@
 # include <Inventor/nodes/SoSphere.h>
 # include <Inventor/nodes/SoScale.h>
 # include <Inventor/nodes/SoLightModel.h>
+# include <QAction>
+# include <QMenu>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
@@ -96,9 +98,11 @@
 #include <Gui/Selection.h>
 #include <Gui/View3DInventorViewer.h>
 #include <Gui/Utilities.h>
+#include <Gui/Control.h>
 
 #include "ViewProviderExt.h"
 #include "SoBrepShape.h"
+#include "TaskFaceColors.h"
 
 #include <Mod/Part/App/PartFeature.h>
 #include <Mod/Part/App/PrimitiveFeature.h>
@@ -155,11 +159,6 @@ ViewProviderPartExt::ViewProviderPartExt()
 
     pcShapeBind = new SoMaterialBinding();
     pcShapeBind->ref();
-    //For testing
-    //pcShapeBind->value = SoMaterialBinding::PER_PART;
-    //pcShapeMaterial->diffuseColor.set1Value(0,1,0,0);
-    //pcShapeMaterial->diffuseColor.set1Value(1,0,1,0);
-    //pcShapeMaterial->diffuseColor.set1Value(2,1,1,0);
 
     pcLineMaterial = new SoMaterial;
     pcLineMaterial->ref();
@@ -255,6 +254,10 @@ void ViewProviderPartExt::onChanged(const App::Property* prop)
             for (unsigned int i=0; i < c.size(); i++)
                 ca[i].setValue(c[i].r,c[i].g,c[i].b);
             pcShapeMaterial->diffuseColor.finishEditing();
+        }
+        else if ((int)c.size() == 1) {
+            pcShapeBind->value = SoMaterialBinding::OVERALL;
+            pcShapeMaterial->diffuseColor.setValue(c[0].r,c[0].g,c[0].b);
         }
     }
     else if (prop == &ShapeMaterial || prop == &ShapeColor) {
@@ -493,6 +496,43 @@ void ViewProviderPartExt::updateData(const App::Property* prop)
                 this->pcShapeBind->value = SoMaterialBinding::OVERALL;
             }
         }
+    }
+}
+
+void ViewProviderPartExt::setupContextMenu(QMenu* menu, QObject* receiver, const char* member)
+{
+    Gui::ViewProviderGeometryObject::setupContextMenu(menu, receiver, member);
+    QAction* act = menu->addAction(QObject::tr("Set colors..."), receiver, member);
+    act->setData(QVariant(getClassTypeId().getKey()));
+}
+
+bool ViewProviderPartExt::setEdit(int ModNum)
+{
+    if (ModNum == getClassTypeId().getKey()) {
+        // When double-clicking on the item for this pad the
+        // object unsets and sets its edit mode without closing
+        // the task panel
+        Gui::TaskView::TaskDialog *dlg = Gui::Control().activeDialog();
+        if (dlg) {
+            Gui::Control().showDialog(dlg);
+            return false;
+        }
+
+        Gui::Selection().clearSelection();
+        Gui::Control().showDialog(new TaskFaceColors(this));
+        return true;
+    }
+    else {
+        return Gui::ViewProviderGeometryObject::setEdit(ModNum);
+    }
+}
+
+void ViewProviderPartExt::unsetEdit(int ModNum)
+{
+    if (ModNum == getClassTypeId().getKey()) {
+    }
+    else {
+        Gui::ViewProviderGeometryObject::unsetEdit(ModNum);
     }
 }
 
