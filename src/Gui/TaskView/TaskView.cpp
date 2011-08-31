@@ -210,6 +210,24 @@ TaskView::~TaskView()
     Gui::Selection().Detach(this);
 }
 
+void TaskView::keyPressEvent(QKeyEvent* ke)
+{
+    if (ActiveCtrl && ActiveDialog) {
+        QDialogButtonBox::StandardButtons flags = ActiveCtrl->standardButtons();
+        if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter) {
+            if (flags & QDialogButtonBox::Ok)
+                ActiveDialog->accept();
+        }
+        else if (ke->key() == Qt::Key_Escape) {
+            if (flags & QDialogButtonBox::Cancel)
+                ActiveDialog->reject();
+        }
+    }
+    else {
+        QScrollArea::keyPressEvent(ke);
+    }
+}
+
 void TaskView::slotActiveDocument(const App::Document& doc)
 {
     if (!ActiveDialog)
