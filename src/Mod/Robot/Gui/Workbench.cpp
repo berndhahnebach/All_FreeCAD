@@ -49,6 +49,9 @@ using namespace RobotGui;
     qApp->translate("Workbench", "Insert Robots");
     qApp->translate("Workbench", "&Robot");
     qApp->translate("Workbench", "Export trajectory");
+    qApp->translate("Gui::TaskView::TaskWatcherCommands", "Trajectory tools");
+    qApp->translate("Gui::TaskView::TaskWatcherCommands", "Robot tools");
+    qApp->translate("Gui::TaskView::TaskWatcherCommands", "Insert Robot");
 #endif
 
 /// @namespace RobotGui @class Workbench

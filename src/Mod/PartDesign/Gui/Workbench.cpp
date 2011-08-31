@@ -36,6 +36,9 @@ using namespace PartDesignGui;
 
 #if 0 // needed for Qt's lupdate utility
     qApp->translate("Workbench", "Part Design");
+    qApp->translate("Gui::TaskView::TaskWatcherCommands", "Face tools");
+    qApp->translate("Gui::TaskView::TaskWatcherCommands", "Sketch tools");
+    qApp->translate("Gui::TaskView::TaskWatcherCommands", "Create Geometry");
 #endif
 
 /// @namespace PartDesignGui @class Workbench
