@@ -84,11 +84,11 @@ bool TaskWatcher::shouldShow()
 
 TaskWatcherCommands::TaskWatcherCommands(const char* Filter,const char* commands[],
                                          const char* name, const char* pixmap)
-    :TaskWatcher(Filter)
+    : TaskWatcher(Filter)
 {
     CommandManager &mgr = Gui::Application::Instance->commandManager();
     Gui::TaskView::TaskBox *tb = new Gui::TaskView::TaskBox
-        (BitmapFactory().pixmap(pixmap), QString::fromUtf8(name), true, 0);
+        (BitmapFactory().pixmap(pixmap), trUtf8(name), true, 0);
 
     for (const char** i=commands;*i;i++) {
         if(!i) break;
@@ -124,7 +124,7 @@ bool TaskWatcherCommands::shouldShow()
 TaskWatcherCommandsEmptyDoc::TaskWatcherCommandsEmptyDoc(const char* commands[],
                                                          const char* name,
                                                          const char* pixmap )
-    :TaskWatcherCommands(0,commands,name,pixmap)
+    : TaskWatcherCommands(0,commands,name,pixmap)
 {
 }
 
