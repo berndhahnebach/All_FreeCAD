@@ -215,8 +215,15 @@ void TaskView::keyPressEvent(QKeyEvent* ke)
     if (ActiveCtrl && ActiveDialog) {
         QDialogButtonBox::StandardButtons flags = ActiveCtrl->standardButtons();
         if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter) {
-            if (flags & QDialogButtonBox::Ok)
-                ActiveDialog->accept();
+            QList<QPushButton*> list = this->findChildren<QPushButton*>();
+            for (int i=0; i<list.size(); ++i) {
+                QPushButton *pb = list.at(i);
+                if (pb->isDefault() && pb->isVisible()) {
+                    if (pb->isEnabled())
+                        pb->click();
+                    return;
+                }
+            }
         }
         else if (ke->key() == Qt::Key_Escape) {
             if (flags & QDialogButtonBox::Cancel)
