@@ -52,48 +52,64 @@ std::vector<App::DocumentObject*> ViewProviderPad::claimChildren(void)const
     return temp;
 }
 
+void ViewProviderPad::setupContextMenu(QMenu* menu, QObject* receiver, const char* member)
+{
+    QAction* act;
+    act = menu->addAction(QObject::tr("Edit pad"), receiver, member);
+    act->setData(QVariant((int)ViewProvider::Default));
+    act = menu->addAction(QObject::tr("Transform"), receiver, member);
+    act->setData(QVariant((int)ViewProvider::Transform));
+}
 
 bool ViewProviderPad::setEdit(int ModNum)
 {
-    // When double-clicking on the item for this pad the
-    // object unsets and sets its edit mode without closing
-    // the task panel
-    Gui::TaskView::TaskDialog *dlg = Gui::Control().activeDialog();
-    TaskDlgPadParameters *padDlg = qobject_cast<TaskDlgPadParameters *>(dlg);
-    if (padDlg && padDlg->getPadView() != this)
-        padDlg = 0; // another pad left open its task panel
-    if (dlg && !padDlg) {
-        QMessageBox msgBox;
-        msgBox.setText(QObject::tr("A dialog is already open in the task panel"));
-        msgBox.setInformativeText(QObject::tr("Do you want to close this dialog?"));
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setDefaultButton(QMessageBox::Yes);
-        int ret = msgBox.exec();
-        if (ret == QMessageBox::Yes)
-            Gui::Control().closeDialog();
+    if (ModNum == ViewProvider::Default) {
+        // When double-clicking on the item for this pad the
+        // object unsets and sets its edit mode without closing
+        // the task panel
+        Gui::TaskView::TaskDialog *dlg = Gui::Control().activeDialog();
+        TaskDlgPadParameters *padDlg = qobject_cast<TaskDlgPadParameters *>(dlg);
+        if (padDlg && padDlg->getPadView() != this)
+            padDlg = 0; // another pad left open its task panel
+        if (dlg && !padDlg) {
+            QMessageBox msgBox;
+            msgBox.setText(QObject::tr("A dialog is already open in the task panel"));
+            msgBox.setInformativeText(QObject::tr("Do you want to close this dialog?"));
+            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            msgBox.setDefaultButton(QMessageBox::Yes);
+            int ret = msgBox.exec();
+            if (ret == QMessageBox::Yes)
+                Gui::Control().closeDialog();
+            else
+                return false;
+        }
+
+        // clear the selection (convenience)
+        Gui::Selection().clearSelection();
+
+        // start the edit dialog
+        if (padDlg)
+            Gui::Control().showDialog(padDlg);
         else
-            return false;
+            Gui::Control().showDialog(new TaskDlgPadParameters(this));
     }
-
-    // clear the selection (convenience)
-    Gui::Selection().clearSelection();
-
-
-    // start the edit dialog
-    if (padDlg)
-        Gui::Control().showDialog(padDlg);
-    else
-        Gui::Control().showDialog(new TaskDlgPadParameters(this));
+    else {
+        PartGui::ViewProviderPart::setEdit(ModNum);
+    }
 
     return true;
 }
 
 void ViewProviderPad::unsetEdit(int ModNum)
 {
+    if (ModNum == ViewProvider::Default) {
+        // and update the pad
+        //getSketchObject()->getDocument()->recompute();
 
-    // and update the pad
-    //getSketchObject()->getDocument()->recompute();
-
-    // when pressing ESC make sure to close the dialog
-    Gui::Control().closeDialog();
+        // when pressing ESC make sure to close the dialog
+        Gui::Control().closeDialog();
+    }
+    else {
+        PartGui::ViewProviderPart::unsetEdit(ModNum);
+    }
 }

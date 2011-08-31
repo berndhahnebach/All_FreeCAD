@@ -52,9 +52,9 @@ public:
     TaskPadParameters(ViewProviderPad *PadView,QWidget *parent = 0);
     ~TaskPadParameters();
 
-    double getLength(void);
-    bool   getReversed(void);
-    bool   getMirroredExtent(void);
+    double getLength(void) const;
+    bool   getReversed(void) const;
+    bool   getMirroredExtent(void) const;
 
 private Q_SLOTS:
 

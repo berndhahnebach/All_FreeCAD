@@ -55,27 +55,33 @@ TaskPadParameters::TaskPadParameters(ViewProviderPad *PadView,QWidget *parent)
 
     this->groupLayout()->addWidget(proxy);
 
-    double l = static_cast<PartDesign::Pad*>(PadView->getObject())->Length.getValue();
+    PartDesign::Pad* pad = static_cast<PartDesign::Pad*>(PadView->getObject());
+    double l = pad->Length.getValue();
+    bool mirrored = pad->MirroredExtent.getValue();
+    bool reversed = pad->Reversed.getValue();
+
     ui->doubleSpinBox->setValue(l);
     ui->doubleSpinBox->selectAll();
-    setFocus ();
+    ui->checkBoxMirrored->setChecked(mirrored);
+    ui->checkBoxReversed->setChecked(reversed);
 
+    setFocus ();
 }
-double TaskPadParameters::getLength(void)
+
+double TaskPadParameters::getLength(void) const
 {
     return ui->doubleSpinBox->value();
 }
 
-bool   TaskPadParameters::getReversed(void)
+bool   TaskPadParameters::getReversed(void) const
 {
-    return ui->checkBox->isChecked();
+    return ui->checkBoxReversed->isChecked();
 }
 
-bool   TaskPadParameters::getMirroredExtent(void)
+bool   TaskPadParameters::getMirroredExtent(void) const
 {
-    return ui->checkBox_2->isChecked();
+    return ui->checkBoxMirrored->isChecked();
 }
-
 
 TaskPadParameters::~TaskPadParameters()
 {
