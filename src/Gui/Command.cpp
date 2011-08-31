@@ -424,6 +424,15 @@ void Command::doCommand(DoCmd_Type eType,const char* sCmd,...)
     free (format);
 }
 
+void Command::copyVisual(const char* to, const char* attr, const char* from)
+{
+    doCommand(Gui,"Gui.ActiveDocument.%s.%s=Gui.ActiveDocument.%s.%s", to, attr, from, attr);
+}
+
+void Command::copyVisual(const char* to, const char* attr_to, const char* from, const char* attr_from)
+{
+    doCommand(Gui,"Gui.ActiveDocument.%s.%s=Gui.ActiveDocument.%s.%s", to, attr_to, from, attr_from);
+}
 
 const std::string Command::strToPython(const char* Str)
 {

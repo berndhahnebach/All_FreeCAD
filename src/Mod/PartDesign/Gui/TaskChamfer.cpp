@@ -551,6 +551,13 @@ bool ChamferWidget::accept()
     Gui::Application::Instance->runPythonCode((const char*)code.toAscii());
     activeDoc->commitTransaction();
     activeDoc->recompute();
+
+    QByteArray to = name.toAscii();
+    QByteArray from = shape.toAscii();
+    Gui::Command::copyVisual(to, "ShapeColor", from);
+    Gui::Command::copyVisual(to, "LineColor", from);
+    Gui::Command::copyVisual(to, "PointColor", from);
+
     return true;
 }
 

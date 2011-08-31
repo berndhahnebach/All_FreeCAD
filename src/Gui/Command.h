@@ -234,6 +234,8 @@ public:
     static void blockCommand(bool);
     /// Run a App level Action 
     static void doCommand(DoCmd_Type eType,const char* sCmd,...);
+    static void copyVisual(const char* to, const char* attr, const char* from);
+    static void copyVisual(const char* to, const char* attr_to, const char* from, const char* attr_from);
     /// import an external module only once 
     //static void addModule(const char* sModuleName);
     /// translate a string to a python string literal (needed e.g. in file names for windows...)
