@@ -105,6 +105,13 @@ public:
     virtual std::vector<Base::Vector3d> getSelectionShape(const char* Element) const;
     //@}
 
+    /** @name Edit methods */
+    //@{
+    void setupContextMenu(QMenu*, QObject*, const char*);
+protected:
+    bool setEdit(int ModNum);
+    void unsetEdit(int ModNum);
+    //@}
 
 protected:
     /// get called by the container whenever a property has been changed
