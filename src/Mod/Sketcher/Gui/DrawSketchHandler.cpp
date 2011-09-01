@@ -141,12 +141,17 @@ void DrawSketchHandler::setCursor(const QPixmap &p,int x,int y)
     }
 }
 
-void DrawSketchHandler::applyCursor(void )
+void DrawSketchHandler::applyCursor(void)
+{
+    applyCursor(actCursor);
+}
+
+void DrawSketchHandler::applyCursor(QCursor &newCursor)
 {
     Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
     if (view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
         Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
-        viewer->getWidget()->setCursor(actCursor);
+        viewer->getWidget()->setCursor(newCursor);
     }
 }
 
@@ -351,44 +356,42 @@ void DrawSketchHandler::createAutoConstraints(const std::vector<AutoConstraint *
                                         ,geoId, pointPos, geoId2, pointPos2
                                         );
                 } break;
-                case Sketcher::PointOnObject: {
-                    int index = (*it)->Index;
-                    if(vertexId == -1) {
-                        // Auto constraining an edge so swap parameters
-                        index = geoId;
-                        sketchgui->getSketchObject()->getGeoVertexIndex((*it)->Index, geoId, pointPos);
-                    }
+            case Sketcher::PointOnObject: {
+                int index = (*it)->Index;
+                if (vertexId == -1) {
+                    // Auto constraining an edge so swap parameters
+                    index = geoId;
+                    sketchgui->getSketchObject()->getGeoVertexIndex((*it)->Index, geoId, pointPos);
+                }
                     
-                    Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('PointOnObject',%i,%i,%i)) "
-                                            ,sketchgui->getObject()->getNameInDocument()
-                                            ,geoId, pointPos, index
-                                           );
+                Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('PointOnObject',%i,%i,%i)) "
+                                        ,sketchgui->getObject()->getNameInDocument()
+                                        ,geoId, pointPos, index
+                                       );
                 } break;
-                case Sketcher::Horizontal: {
-                    Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Horizontal',%i)) "
-                                            ,sketchgui->getObject()->getNameInDocument()
-                                            ,geoId
-                                           );
+            case Sketcher::Horizontal: {
+                Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Horizontal',%i)) "
+                                        ,sketchgui->getObject()->getNameInDocument()
+                                        ,geoId
+                                       );
                 } break;
-                case Sketcher::Vertical: {
-                    Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Vertical',%i)) "
-                                            ,sketchgui->getObject()->getNameInDocument()
-                                            ,geoId
-                                           );
+            case Sketcher::Vertical: {
+                Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Vertical',%i)) "
+                                        ,sketchgui->getObject()->getNameInDocument()
+                                        ,geoId
+                                       );
                 } break;
-                case Sketcher::Tangent: {
-                    
-                    Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Tangent',%i, %i)) "
-                                            ,sketchgui->getObject()->getNameInDocument()
-                                            ,geoId, (*it)->Index
-                                           );
+            case Sketcher::Tangent: {
+                
+                Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Tangent',%i, %i)) "
+                                        ,sketchgui->getObject()->getNameInDocument()
+                                        ,geoId, (*it)->Index
+                                       );
                 } break;
             }
 
-
             Gui::Command::commitCommand();
             Gui::Command::updateActive();
-
         }
     }
 }
@@ -399,18 +402,19 @@ void DrawSketchHandler::renderSuggestConstraintsCursor()
     int iconSize = 16;
 
     // Create a pixmap that will contain icon and each autoconstraint icon
-    QPixmap newIcon(oldCursor.pixmap().width() + suggestedConstraints.size() * iconSize, oldCursor.pixmap().height());
+    QPixmap baseIcon = actCursor.pixmap();
+    QPixmap newIcon(baseIcon.width() + suggestedConstraints.size() * iconSize,
+                    baseIcon.height());
     newIcon.fill(Qt::transparent);
 
     QPainter qp;
     qp.begin(&newIcon);
 
-    qp.drawPixmap(0,0, oldCursor.pixmap());
+    qp.drawPixmap(0,0, baseIcon);
 
     // Iterate through AutoConstraints type and add icons to the cursor pixmap
     std::vector<AutoConstraint *>::iterator it = suggestedConstraints.begin();
     int i = 0;
-
     for (; it != suggestedConstraints.end(); ++it, i++) {
         QString iconType;
         switch ((*it)->Type)
@@ -433,14 +437,15 @@ void DrawSketchHandler::renderSuggestConstraintsCursor()
         }
 
         QPixmap icon = Gui::BitmapFactory().pixmap(iconType.toAscii()).scaledToWidth(iconSize);
-        qp.drawPixmap(QPoint(oldCursor.pixmap().width() + i * iconSize, oldCursor.pixmap().height() - iconSize), icon);
+        qp.drawPixmap(QPoint(baseIcon.width() + i * iconSize, baseIcon.height() - iconSize), icon);
     }
 
     qp.end(); // Finish painting
 
     // Create the new cursor with the icon.
-    actCursor = QCursor(newIcon, 5, 5);
-    applyCursor();
+    QPoint p=actCursor.hotSpot();
+    QCursor newCursor(newIcon, p.x(), p.y());
+    applyCursor(newCursor);
 }
 
 void DrawSketchHandler::setPositionText(const Base::Vector2D &Pos)

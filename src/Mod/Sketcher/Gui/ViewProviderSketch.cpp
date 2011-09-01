@@ -1313,6 +1313,9 @@ void ViewProviderSketch::drawConstraintIcons()
         case Vertical:
             icoType = QString::fromAscii("small/Constraint_Vertical_sm");
             break;
+        case PointOnObject:
+            icoType = QString::fromAscii("small/Constraint_PointOnObject_sm");
+            break;
         case Tangent:
             icoType = QString::fromAscii("small/Constraint_Tangent_sm");
             break;
@@ -2238,7 +2241,7 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
         Material->diffuseColor = sConstraintColor;
         sep->addChild(Material);
 
-        // destiquish different constraint types to build up
+        // distinguish different constraint types to build up
         switch ((*it)->Type) {
             case Distance:
             case DistanceX:
