@@ -40,6 +40,7 @@
 # include <Inventor/nodes/SoIndexedFaceSet.h>
 # include <Inventor/nodes/SoShapeHints.h>
 # include <Inventor/nodes/SoPointSet.h>
+# include <Inventor/nodes/SoPolygonOffset.h>
 # include <QFile>
 #endif
 
@@ -61,6 +62,8 @@ using namespace FemGui;
 
 PROPERTY_SOURCE(FemGui::ViewProviderFemMesh, Gui::ViewProviderGeometryObject)
 
+App::PropertyFloatConstraint::Constraints ViewProviderFemMesh::floatRange = {1.0f,64.0f,1.0f};
+
 ViewProviderFemMesh::ViewProviderFemMesh()
 {
     App::Material mat;
@@ -73,16 +76,19 @@ ViewProviderFemMesh::ViewProviderFemMesh()
     ADD_PROPERTY(PointMaterial,(mat));
     ADD_PROPERTY(PointColor,(mat.diffuseColor));
     ADD_PROPERTY(PointSize,(2.0f));
+    PointSize.setConstraints(&floatRange);
+    ADD_PROPERTY(LineWidth,(1.0f));
+    LineWidth.setConstraints(&floatRange);
 
     pcDrawStyle = new SoDrawStyle();
     pcDrawStyle->ref();
     pcDrawStyle->style = SoDrawStyle::LINES;
-    pcDrawStyle->lineWidth = 2;
+    pcDrawStyle->lineWidth = LineWidth.getValue();
 
     pShapeHints = new SoShapeHints;
     pShapeHints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
     pShapeHints->vertexOrdering = SoShapeHints::UNKNOWN_ORDERING;
-    //pShapeHints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE;
+    pShapeHints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE;
     pShapeHints->ref();
 
     pcMatBinding = new SoMaterialBinding;
@@ -128,7 +134,7 @@ void ViewProviderFemMesh::attach(App::DocumentObject *pcObj)
     pcFlatRoot->addChild(pcShapeMaterial);
     pcFlatRoot->addChild(pcMatBinding);
     pcFlatRoot->addChild(pcHighlight);
-    //addDisplayMaskMode(pcFlatRoot, "Flat");
+    addDisplayMaskMode(pcFlatRoot, "Flat");
 
     // line
     SoLightModel* pcLightModel = new SoLightModel();
@@ -140,16 +146,16 @@ void ViewProviderFemMesh::attach(App::DocumentObject *pcObj)
     color->rgb.setValue(0.0f,0.0f,0.0f);
     pcWireRoot->addChild(color);
     pcWireRoot->addChild(pcHighlight);
-    //addDisplayMaskMode(pcWireRoot, "Wireframe");
+    addDisplayMaskMode(pcWireRoot, "Wireframe");
 
     // flat+line
-    //SoPolygonOffset* offset = new SoPolygonOffset();
-    //offset->styles = SoPolygonOffset::LINES;
-    //offset->factor = -2.0f;
-    //offset->units = 1.0f;
+    SoPolygonOffset* offset = new SoPolygonOffset();
+    offset->styles = SoPolygonOffset::LINES;
+    offset->factor = -2.0f;
+    offset->units = 1.0f;
     SoGroup* pcFlatWireRoot = new SoSeparator();
     pcFlatWireRoot->addChild(pcFlatRoot);
-    //pcFlatWireRoot->addChild(offset);
+    pcFlatWireRoot->addChild(offset);
     pcFlatWireRoot->addChild(pcWireRoot);
     addDisplayMaskMode(pcFlatWireRoot, "Flat Lines");
 
@@ -164,14 +170,17 @@ void ViewProviderFemMesh::attach(App::DocumentObject *pcObj)
 
     pcHighlight->addChild(pcCoords);
     pcHighlight->addChild(pcFaces);
-
-
 }
+
 void ViewProviderFemMesh::setDisplayMode(const char* ModeName)
 {
-    if ( strcmp("Flat Lines",ModeName)==0 )
+    if (strcmp("Flat Lines",ModeName)==0)
         setDisplayMaskMode("Flat Lines");
-    else if ( strcmp("Points",ModeName)==0 )
+    else if (strcmp("Shaded",ModeName)==0)
+        setDisplayMaskMode("Flat");
+    else if (strcmp("Wireframe",ModeName)==0)
+        setDisplayMaskMode("Wireframe");
+    else if (strcmp("Points",ModeName)==0)
         setDisplayMaskMode("Points");
 
     ViewProviderGeometryObject::setDisplayMode( ModeName );
@@ -181,6 +190,8 @@ std::vector<std::string> ViewProviderFemMesh::getDisplayModes(void) const
 {
     std::vector<std::string> StrList;
     StrList.push_back("Flat Lines");
+    StrList.push_back("Shaded");
+    StrList.push_back("Wireframe");
     StrList.push_back("Points");
     return StrList;
 }
@@ -217,6 +228,9 @@ void ViewProviderFemMesh::onChanged(const App::Property* prop)
         pcPointMaterial->emissiveColor.setValue(Mat.emissiveColor.r,Mat.emissiveColor.g,Mat.emissiveColor.b);
         pcPointMaterial->shininess.setValue(Mat.shininess);
         pcPointMaterial->transparency.setValue(Mat.transparency);
+    }
+    else if (prop == &LineWidth) {
+        pcDrawStyle->lineWidth = LineWidth.getValue();
     }
     else {
         ViewProviderGeometryObject::onChanged(prop);

@@ -59,12 +59,16 @@ public:
     // Display properties
     App::PropertyColor PointColor;
     App::PropertyFloatConstraint PointSize;
+    App::PropertyFloatConstraint LineWidth;
     App::PropertyMaterial PointMaterial;
 
     void attach(App::DocumentObject *pcObject);
     void setDisplayMode(const char* ModeName);
     std::vector<std::string> getDisplayModes() const;
     void updateData(const App::Property*);
+
+private:
+    static App::PropertyFloatConstraint::Constraints floatRange;
 
 protected:
     /// get called by the container whenever a property has been changed
