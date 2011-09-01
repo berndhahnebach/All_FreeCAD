@@ -48,9 +48,9 @@ TaskEditControl::~TaskEditControl()
 {
 }
 
-int TaskEditControl::standardButtons() const
+QDialogButtonBox* TaskEditControl::standardButtons() const
 {
-    return (int)buttonBox->standardButtons();
+    return buttonBox;
 }
 
 #include "moc_TaskEditControl.cpp"

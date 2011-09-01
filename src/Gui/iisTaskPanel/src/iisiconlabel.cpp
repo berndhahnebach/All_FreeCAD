@@ -28,7 +28,8 @@ iisIconLabel::iisIconLabel(const QIcon &icon, const QString &title, QWidget *par
 
 iisIconLabel::~iisIconLabel()
 {
-
+	if (m_changeCursorOver)
+		QApplication::restoreOverrideCursor();
 }
 
 void iisIconLabel::setSchemePointer(iisIconLabelScheme **pointer)
