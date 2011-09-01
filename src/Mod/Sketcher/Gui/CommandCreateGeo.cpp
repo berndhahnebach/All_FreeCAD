@@ -1303,7 +1303,7 @@ public:
                               sketchgui->getObject()->getNameInDocument(),
                               firstCurve, secondCurve,
                               firstPos.fX, firstPos.fY,
-                              secondPos.fX, secondPos.fY, 10.);
+                              secondPos.fX, secondPos.fY, radius);
                     Gui::Command::commitCommand();
                     Gui::Command::updateActive();
 
