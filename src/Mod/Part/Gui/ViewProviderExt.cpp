@@ -508,7 +508,7 @@ void ViewProviderPartExt::setupContextMenu(QMenu* menu, QObject* receiver, const
 
 bool ViewProviderPartExt::setEdit(int ModNum)
 {
-    if (ModNum == getClassTypeId().getKey()) {
+    if (ModNum == (int)getClassTypeId().getKey()) {
         // When double-clicking on the item for this pad the
         // object unsets and sets its edit mode without closing
         // the task panel
@@ -529,7 +529,7 @@ bool ViewProviderPartExt::setEdit(int ModNum)
 
 void ViewProviderPartExt::unsetEdit(int ModNum)
 {
-    if (ModNum == getClassTypeId().getKey()) {
+    if (ModNum == (int)getClassTypeId().getKey()) {
     }
     else {
         Gui::ViewProviderGeometryObject::unsetEdit(ModNum);
@@ -590,7 +590,6 @@ void ViewProviderPartExt::updateVisual(const TopoDS_Shape &inputShape)
             // handling of the free edge that are not associated to a face
             Handle(Poly_Polygon3D) aPoly = BRep_Tool::Polygon3D(aEdge, aLoc);
             if (!aPoly.IsNull()) {
-                const TColgp_Array1OfPnt& aNodes = aPoly->Nodes();
                 int nbNodesInEdge = aPoly->NbNodes();
                 nbrNodes += nbNodesInEdge;
             }
