@@ -9,7 +9,8 @@
       Namespace="Robot" 
       FatherInclude="Base/PersistencePy.h" 
       FatherNamespace="Base"
-      Constructor="true">
+      Constructor="true"
+      Delete="true">
     <Documentation>
       <Author Licence="LGPL" Name="Juergen Riegel" EMail="Juergen.Riegel@web.de" />
       <UserDocu>Waypoint class</UserDocu>

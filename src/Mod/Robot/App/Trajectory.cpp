@@ -75,15 +75,18 @@ Trajectory::~Trajectory()
 {
     for(std::vector<Waypoint*>::iterator it = vpcWaypoints.begin();it!=vpcWaypoints.end();++it)
         delete ( *it );
+    delete pcTrajectory;
 }
 
 Trajectory &Trajectory::operator=(const Trajectory& Trac)
 {
+    for(std::vector<Waypoint*>::iterator it = vpcWaypoints.begin();it!=vpcWaypoints.end();++it)
+        delete ( *it );
     vpcWaypoints.clear();
     vpcWaypoints.resize(Trac.vpcWaypoints.size());
 
     int i=0;
-    for( std::vector<Waypoint*>::const_iterator it=Trac.vpcWaypoints.begin();it!=Trac.vpcWaypoints.end();++it,i++)
+    for (std::vector<Waypoint*>::const_iterator it=Trac.vpcWaypoints.begin();it!=Trac.vpcWaypoints.end();++it,i++)
         vpcWaypoints[i] = new Waypoint(**it);
 
     generateTrajectory();
@@ -168,9 +171,9 @@ void Trajectory::generateTrajectory(void)
                 switch((*it)->Type){
                     case Waypoint::LINE:
                     case Waypoint::PTP:{
-                         KDL::Frame Next = toFrame((*it)->EndPos);
-                         // continues the movement until no continus waypoint or the end
-                         bool Cont = (*it)->Cont && !(it==--vpcWaypoints.end());
+                        KDL::Frame Next = toFrame((*it)->EndPos);
+                        // continues the movement until no continus waypoint or the end
+                        bool Cont = (*it)->Cont && !(it==--vpcWaypoints.end());
                         // start of a continue block
                         if(Cont && pcRoundComp==0){
                             pcRoundComp = new KDL::Path_RoundedComposite(3,
@@ -190,7 +193,7 @@ void Trajectory::generateTrajectory(void)
                         }else if (Cont==false && pcRoundComp){
                             // add the last one
                             pcRoundComp->Add(Next);
-                             pcRoundComp->Finish();
+                            pcRoundComp->Finish();
                             pcVelPrf->SetProfile(0,pcRoundComp->PathLength());
                             pcTrak = new KDL::Trajectory_Segment(pcRoundComp,pcVelPrf);
                             pcRoundComp = 0;
