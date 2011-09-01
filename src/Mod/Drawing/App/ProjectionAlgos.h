@@ -43,6 +43,7 @@ public:
     virtual ~ProjectionAlgos();
 
     void execute(void);
+    static TopoDS_Shape invertY(const TopoDS_Shape&);
 
     std::string Edges2SVG(const TopoDS_Shape &);
 
