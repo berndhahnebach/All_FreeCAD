@@ -87,7 +87,7 @@ using namespace std;
 
 
 
-ProjectionAlgos::ProjectionAlgos(const TopoDS_Shape &Input,const Base::Vector3f &Dir) 
+ProjectionAlgos::ProjectionAlgos(const TopoDS_Shape &Input, const Base::Vector3f &Dir) 
   : Input(Input), Direction(Dir)
 {
     execute();
@@ -97,21 +97,24 @@ ProjectionAlgos::~ProjectionAlgos()
 {
 }
 
-void ProjectionAlgos::execute(void)
+TopoDS_Shape ProjectionAlgos::invertY(const TopoDS_Shape& shape)
 {
-    Handle( HLRBRep_Algo ) brep_hlr = new HLRBRep_Algo;
-
     // make sure to have the y coordinates inverted
     gp_Trsf mat;
     Bnd_Box bounds;
-    BRepBndLib::Add(Input, bounds);
+    BRepBndLib::Add(shape, bounds);
     bounds.SetGap(0.0);
     Standard_Real xMin, yMin, zMin, xMax, yMax, zMax;
     bounds.Get(xMin, yMin, zMin, xMax, yMax, zMax);
     mat.SetMirror(gp_Ax2(gp_Pnt((xMin+xMax)/2,(yMin+yMax)/2,(zMin+zMax)/2), gp_Dir(0,1,0)));
-    BRepBuilderAPI_Transform mkTrf(Input, mat);
-    brep_hlr->Add(mkTrf.Shape());
-    //brep_hlr->Add(Input);
+    BRepBuilderAPI_Transform mkTrf(shape, mat);
+    return mkTrf.Shape();
+}
+
+void ProjectionAlgos::execute(void)
+{
+    Handle( HLRBRep_Algo ) brep_hlr = new HLRBRep_Algo;
+    brep_hlr->Add(Input);
 
     gp_Ax2 transform(gp_Pnt(0,0,0),gp_Dir(Direction.x,Direction.y,Direction.z));
     HLRAlgo_Projector projector( transform );
@@ -276,9 +279,11 @@ void ProjectionAlgos::printCircle(const BRepAdaptor_Curve& c, std::ostream& out)
     double f = c.FirstParameter();
     double l = c.LastParameter();
     gp_Pnt s = c.Value(f);
+    gp_Pnt m = c.Value((l+f)/2.0);
     gp_Pnt e = c.Value(l);
-    gp_Vec v1(p,s);
-    gp_Vec v2(p,e);
+
+    gp_Vec v1(m,s);
+    gp_Vec v2(m,e);
     gp_Vec v3(0,0,1);
     double a = v3.DotCross(v1,v2);
 
@@ -292,7 +297,7 @@ void ProjectionAlgos::printCircle(const BRepAdaptor_Curve& c, std::ostream& out)
         // See also https://developer.mozilla.org/en/SVG/Tutorial/Paths
         char xar = '0'; // x-axis-rotation
         char las = (l-f > D_PI) ? '1' : '0'; // large-arc-flag
-        char swp = (a > 0) ? '1' : '0'; // sweep-flag, i.e. clockwise (0) or counter-clockwise (1)
+        char swp = (a < 0) ? '1' : '0'; // sweep-flag, i.e. clockwise (0) or counter-clockwise (1)
         out << "<path d=\"M" << s.X() <<  " " << s.Y()
             << " A" << r << " " << r << " "
             << xar << " " << las << " " << swp << " "

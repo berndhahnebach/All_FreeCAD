@@ -187,7 +187,7 @@ App::DocumentObjectExecReturn *FeatureViewPart::execute(void)
     bool smooth = ShowSmoothLines.getValue();
 
     try {
-        ProjectionAlgos Alg(shape,Dir);
+        ProjectionAlgos Alg(ProjectionAlgos::invertY(shape),Dir);
         result  << "<g" 
                 << " id=\"" << ViewName << "\"" << endl
                 << "   transform=\"rotate("<< Rotation.getValue() << ","<< X.getValue()<<","<<Y.getValue()<<") translate("<< X.getValue()<<","<<Y.getValue()<<") scale("<< Scale.getValue()<<","<<Scale.getValue()<<")\"" << endl
