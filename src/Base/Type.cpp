@@ -168,6 +168,9 @@ void Type::destruct(void)
 {
   for(std::vector<TypeData*>::const_iterator it = typedata.begin();it!= typedata.end();++it)
     delete *it;
+  typedata.clear();
+  typemap.clear();
+  loadModuleSet.clear();
 }
 
 Type Type::fromName(const char *name)
