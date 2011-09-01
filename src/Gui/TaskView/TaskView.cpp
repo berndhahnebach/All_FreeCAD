@@ -213,8 +213,8 @@ TaskView::~TaskView()
 void TaskView::keyPressEvent(QKeyEvent* ke)
 {
     if (ActiveCtrl && ActiveDialog) {
-        QDialogButtonBox::StandardButtons flags = ActiveCtrl->standardButtons();
         if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter) {
+            // get all buttons of the complete task dialog
             QList<QPushButton*> list = this->findChildren<QPushButton*>();
             for (int i=0; i<list.size(); ++i) {
                 QPushButton *pb = list.at(i);
@@ -226,8 +226,17 @@ void TaskView::keyPressEvent(QKeyEvent* ke)
             }
         }
         else if (ke->key() == Qt::Key_Escape) {
-            if (flags & QDialogButtonBox::Cancel)
-                ActiveDialog->reject();
+            // get only the buttons of the button box
+            QDialogButtonBox* box = ActiveCtrl->standardButtons();
+            QList<QAbstractButton*> list = box->buttons();
+            for (int i=0; i<list.size(); ++i) {
+                QAbstractButton *pb = list.at(i);
+                if (box->buttonRole(pb) == QDialogButtonBox::RejectRole) {
+                    if (pb->isEnabled())
+                        pb->click();
+                    return;
+                }
+            }
         }
     }
     else {
