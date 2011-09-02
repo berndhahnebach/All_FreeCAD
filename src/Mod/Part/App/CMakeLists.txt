@@ -211,10 +211,12 @@ SET(Part_SRCS
     ${Python_SRCS}
     AppPart.cpp
     AppPartPy.cpp
-	CrossSection.cpp
-	CrossSection.h
+    CrossSection.cpp
+    CrossSection.h
     Geometry.cpp
     Geometry.h
+    ImportIges.cpp
+    ImportIges.h
     ImportStep.cpp
     ImportStep.h
     PreCompiled.cpp
