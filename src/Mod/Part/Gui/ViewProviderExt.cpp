@@ -564,10 +564,12 @@ void ViewProviderPartExt::updateVisual(const TopoDS_Shape &inputShape)
         TopExp_Explorer Ex;
         for (Ex.Init(cShape,TopAbs_FACE);Ex.More();Ex.Next()) {
             Handle (Poly_Triangulation) mesh = BRep_Tool::Triangulation(TopoDS::Face(Ex.Current()), aLoc);
-            if (mesh.IsNull()) continue;
-            nbrTriangles += mesh->NbTriangles();
-            nbrNodes     += mesh->NbNodes();
-            nbrNorms     += mesh->NbNodes();
+            // Note: we must also count empty faces
+            if (!mesh.IsNull()) {
+                nbrTriangles += mesh->NbTriangles();
+                nbrNodes     += mesh->NbNodes();
+                nbrNorms     += mesh->NbNodes();
+            }
             nbrFaces++;
         }
 
