@@ -63,6 +63,7 @@ public:
     static void initClass(void);
     static void finish(void);
     SoFCUnifiedSelection(void);
+    void applySettings();
 
     enum HighlightModes {
         AUTO, ON, OFF
