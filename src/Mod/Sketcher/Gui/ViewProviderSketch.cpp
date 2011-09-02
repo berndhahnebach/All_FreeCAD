@@ -557,7 +557,7 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
     }
     // Right mouse button ****************************************************
     else if (Button == 2) {
-        if (pressed) {
+        if (!pressed) {
             switch (Mode) {
                 case STATUS_SKETCH_UseHandler:
                     // make the handler quit
@@ -2447,6 +2447,11 @@ bool ViewProviderSketch::setEdit(int ModNum)
     else
         Gui::Control().showDialog(new TaskDlgEditSketch(this));
 
+    Gui::View3DInventor *mdi = qobject_cast<Gui::View3DInventor*>(this->getActiveView());
+    if (mdi) {
+        mdi->getViewer()->setEditing(TRUE);
+    }
+
     return true;
 }
 
@@ -2600,6 +2605,10 @@ void ViewProviderSketch::unsetEdit(int ModNum)
 
     // when pressing ESC make sure to close the dialog
     Gui::Control().closeDialog();
+    Gui::View3DInventor *mdi = qobject_cast<Gui::View3DInventor*>(this->getActiveView());
+    if (mdi) {
+        mdi->getViewer()->setEditing(FALSE);
+    }
 }
 
 void ViewProviderSketch::setPositionText(const Base::Vector2D &Pos)

@@ -38,6 +38,7 @@
 #include "Application.h"
 #include "Document.h"
 #include "Selection.h"
+#include "MDIView.h"
 #include "TaskView/TaskAppearance.h"
 #include "ViewProviderDocumentObject.h"
 #include "ViewProviderDocumentObjectPy.h"
@@ -153,6 +154,13 @@ void ViewProviderDocumentObject::attach(App::DocumentObject *pcObj)
     const char* defmode = this->getDefaultDisplayMode();
     if (defmode)
         DisplayMode.setValue(defmode);
+}
+
+Gui::MDIView* ViewProviderDocumentObject::getActiveView() const
+{
+    App::Document* pAppDoc = pcObject->getDocument();
+    Gui::Document* pGuiDoc = Gui::Application::Instance->getDocument(pAppDoc);
+    return pGuiDoc->getActiveView();
 }
 
 SoNode* ViewProviderDocumentObject::findFrontRootOfType(const SoType& type) const
