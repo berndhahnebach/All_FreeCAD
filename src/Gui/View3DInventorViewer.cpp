@@ -214,6 +214,7 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name,
     // point which causes a certain slow-down because for all objects the primitives
     // must be created. Using an SoSeparator avoids this drawback.
     Gui::SoFCUnifiedSelection* selectionRoot = new Gui::SoFCUnifiedSelection();
+    selectionRoot->applySettings();
     selectionRoot->viewer = this;
 #endif
     // set the ViewProvider root node
