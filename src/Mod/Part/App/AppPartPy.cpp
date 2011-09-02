@@ -113,6 +113,7 @@
 #include "FeaturePartImportStep.h"
 #include "FeaturePartImportIges.h"
 #include "FeaturePartImportBrep.h"
+#include "ImportIges.h"
 #include "ImportStep.h"
 #include "edgecluster.h"
 
@@ -156,6 +157,13 @@ static PyObject * open(PyObject *self, PyObject *args)
 #endif 
             pcDoc->recompute();
         }
+#if 1
+        else if (file.hasExtension("igs") || file.hasExtension("iges")) {
+            App::Document *pcDoc = App::GetApplication().newDocument("Unnamed");
+            ImportIgesParts(pcDoc,Name);
+            pcDoc->recompute();
+        }
+#endif
         else {
             try {
                 TopoShape shape;

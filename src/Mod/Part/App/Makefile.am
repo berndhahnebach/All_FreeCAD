@@ -125,6 +125,7 @@ libPart_la_SOURCES=\
 		FeatureMirroring.cpp \
 		Features.cpp \
 		Geometry.cpp \
+		ImportIges.cpp \
 		ImportStep.cpp \
 		CustomFeature.cpp \
 		PartFeature.cpp \
@@ -176,6 +177,7 @@ include_HEADERS=\
 		FeatureMirroring.h \
 		Features.h \
 		Geometry.h \
+		ImportIges.h \
 		ImportStep.h \
 		PartFeature.h \
 		PartFeatureReference.h \
