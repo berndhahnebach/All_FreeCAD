@@ -42,6 +42,8 @@ namespace App
 
 namespace Gui {
 
+class MDIView;
+
 class GuiExport ViewProviderDocumentObject : public ViewProvider
 {
     PROPERTY_HEADER(Gui::ViewProviderDocumentObject);
@@ -88,6 +90,8 @@ public:
     //@}
 
 protected:
+    /// Get the active mdi view of a view provider
+    Gui::MDIView* getActiveView() const;
     /// Gets called by the container whenever a property has been changed
     virtual void onChanged(const App::Property* prop);
     /** Searches in all view providers that are attached to an object that
