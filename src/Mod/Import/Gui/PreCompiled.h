@@ -30,10 +30,12 @@
 #ifdef FC_OS_WIN32
 # define ImportGuiExport    __declspec(dllexport)
 # define AppPartExport      __declspec(dllimport)
+# define PartExport         __declspec(dllimport)
 # define AppPartGuiExport   __declspec(dllimport)
 #else // for Linux
 # define ImportGuiExport
 # define AppPartExport
+# define PartExport
 # define AppPartGuiExport
 #endif
 

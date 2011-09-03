@@ -36,11 +36,14 @@
 # include <XCAFDoc_ColorTool.hxx>
 # include <TDF_Label.hxx>
 # include <TDF_LabelSequence.hxx>
+# include <TDF_ChildIterator.hxx>
 # include <Quantity_Color.hxx>
 # include <STEPCAFControl_Reader.hxx>
 # include <STEPCAFControl_Writer.hxx>
 # include <IGESCAFControl_Reader.hxx>
 # include <IGESCAFControl_Writer.hxx>
+# include <Transfer_TransientProcess.hxx>
+# include <XSControl_WorkSession.hxx>
 #endif
 
 #include <Base/PyObjectBase.h>
@@ -51,7 +54,84 @@
 #include <Gui/Application.h>
 #include <Mod/Part/Gui/ViewProvider.h>
 #include <Mod/Part/App/PartFeature.h>
+#include <Mod/Part/App/ProgressIndicator.h>
 
+class ImportXCAF
+{
+public:
+    ImportXCAF(Handle_TDocStd_Document h, App::Document* d) : hdoc(h), doc(d)
+    {
+        aShapeTool = XCAFDoc_DocumentTool::ShapeTool (hdoc->Main());
+        hColors = XCAFDoc_DocumentTool::ColorTool(hdoc->Main());
+    }
+
+    void loadShapes()
+    {
+        //TDF_Label anAccess = hDoc->GetData()->Root();
+        // collect sequence of labels to display
+        TDF_LabelSequence shapeLabels, colorLabels;
+        aShapeTool->GetFreeShapes (shapeLabels);
+        hColors->GetColors(colorLabels);
+        
+        // set presentations and show
+        for (Standard_Integer i=1; i <= shapeLabels.Length(); i++ ) {
+            const TDF_Label& label = shapeLabels.Value(i);
+            loadShapes(label);
+        }
+
+        // get colors if available
+        for (Standard_Integer i=1; i <= colorLabels.Length(); i++ ) {
+            const TDF_Label& label = colorLabels.Value(i);
+            Quantity_Color col;
+            if (hColors->GetColor(label, col)) {
+                App::Color color;
+                color.r = col.Red();
+                color.g = col.Green();
+                color.b = col.Blue();
+                std::map<Standard_Integer, Part::Feature*>::iterator it = tagPart.find(label.Tag());
+                if (it != tagPart.end()) {
+                    Gui::ViewProvider* vp = Gui::Application::Instance->getViewProvider(it->second);
+                    if (vp && vp->isDerivedFrom(PartGui::ViewProviderPart::getClassTypeId())) {
+                        static_cast<PartGui::ViewProviderPart*>(vp)->ShapeColor.setValue(color);
+                    }
+                }
+            }
+        }
+    }
+
+private:
+    void loadShapes(const TDF_Label& label)
+    {
+        Standard_Integer nbAttr = label.NbAttributes();
+#if 1
+        if (aShapeTool->IsTopLevel(label)) {
+            for (TDF_ChildIterator it(label, 0); it.More(); it.Next()) {
+                loadShapes(it.Value());
+            }
+        }
+        else {
+#endif
+            if (aShapeTool->IsShape(label)) {
+                TopoDS_Shape shape;
+                if (aShapeTool->GetShape(label, shape) && !shape.IsNull()) {
+                    Part::Feature* part;
+                    part = static_cast<Part::Feature*>(doc->addObject("Part::Feature", "Shape"));
+                    part->Shape.setValue(shape);
+                    tagPart[label.Tag()] = part;
+                }
+            }
+#if 1
+        }
+#endif
+    }
+
+private:
+    Handle_TDocStd_Document hdoc;
+    App::Document* doc;
+    Handle_XCAFDoc_ShapeTool aShapeTool;
+    Handle_XCAFDoc_ColorTool hColors;
+    std::map<Standard_Integer, Part::Feature*> tagPart;
+};
 
 /* module functions */
 static PyObject * importer(PyObject *self, PyObject *args)
@@ -84,7 +164,12 @@ static PyObject * importer(PyObject *self, PyObject *args)
                 return 0;
             }
 
+            Handle_Message_ProgressIndicator pi = new Part::ProgressIndicator(100);
+            aReader.Reader().WS()->MapReader()->SetProgress(pi);
+            pi->NewScope(100, "Reading STEP file...");
+            pi->Show();
             aReader.Transfer(hDoc);
+            pi->EndScope();
         }
         else if (file.hasExtension("igs") || file.hasExtension("iges")) {
             IGESCAFControl_Reader aReader;
@@ -93,52 +178,20 @@ static PyObject * importer(PyObject *self, PyObject *args)
                 return 0;
             }
 
+            Handle_Message_ProgressIndicator pi = new Part::ProgressIndicator(100);
+            aReader.WS()->MapReader()->SetProgress(pi);
+            pi->NewScope(100, "Reading STEP file...");
+            pi->Show();
             aReader.Transfer(hDoc);
+            pi->EndScope();
         }
         else {
             PyErr_SetString(PyExc_Exception, "no supported file format");
+            return 0;
         }
 
-        //TDF_Label anAccess = hDoc->GetData()->Root();
-        // collect sequence of labels to display
-        Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool (hDoc->Main());
-        Handle_XCAFDoc_ColorTool hColors = XCAFDoc_DocumentTool::ColorTool(hDoc->Main());
-        TDF_LabelSequence shapeLabels, colorLabels;
-        aShapeTool->GetFreeShapes (shapeLabels);
-        hColors->GetColors(colorLabels);
-        
-        // set presentations and show
-        std::map<Standard_Integer, Part::Feature*> tagPart;
-        for (Standard_Integer i=1; i <= shapeLabels.Length(); i++ ) {
-            const TDF_Label& label = shapeLabels.Value(i);
-            TopoDS_Shape shape;
-            if (aShapeTool->GetShape(label, shape) && !shape.IsNull()) {
-                Part::Feature* part;
-                part = static_cast<Part::Feature*>(pcDoc->addObject("Part::Feature", "Shape"));
-                part->Shape.setValue(shape);
-                tagPart[label.Tag()] = part;
-            }
-        }
-
-        // get colors if available
-        for (Standard_Integer i=1; i <= colorLabels.Length(); i++ ) {
-            const TDF_Label& label = colorLabels.Value(i);
-            Quantity_Color col;
-            if (hColors->GetColor(label, col)) {
-                App::Color color;
-                color.r = col.Red();
-                color.g = col.Green();
-                color.b = col.Blue();
-                std::map<Standard_Integer, Part::Feature*>::iterator it = tagPart.find(label.Tag());
-                if (it != tagPart.end()) {
-                    Gui::ViewProvider* vp = Gui::Application::Instance->getViewProvider(it->second);
-                    if (vp && vp->isDerivedFrom(PartGui::ViewProviderPart::getClassTypeId())) {
-                        static_cast<PartGui::ViewProviderPart*>(vp)->ShapeColor.setValue(color);
-                    }
-                }
-            }
-        }
-
+        ImportXCAF xcaf(hDoc, pcDoc);
+        xcaf.loadShapes();
     } PY_CATCH;
 
     Py_Return;
