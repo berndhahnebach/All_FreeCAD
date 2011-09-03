@@ -97,10 +97,6 @@ int Part::ImportStepParts(App::Document *pcDoc, const char* Name)
     if (aReader.ReadFile((Standard_CString)Name) != IFSelect_RetDone) {
         throw Base::Exception("Cannot open STEP file");
     }
-    ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath
-        ("User parameter:BaseApp/Preferences/Mod/Import");
-    bool bUseFast = hGrp->GetBool("UseFastRendering",false);
-
 
     Handle_Message_ProgressIndicator pi = new ProgressIndicator(100);
     aReader.WS()->MapReader()->SetProgress(pi);
@@ -148,11 +144,7 @@ int Part::ImportStepParts(App::Document *pcDoc, const char* Name)
                 //}
 
                 Part::Feature *pcFeature;
-                if(bUseFast)
-                    pcFeature = static_cast<Part::Feature*>(pcDoc->addObject("Part::FeatureExt", name.c_str()));
-                else
-                    pcFeature = static_cast<Part::Feature*>(pcDoc->addObject("Part::Feature", name.c_str()));
-
+                pcFeature = static_cast<Part::Feature*>(pcDoc->addObject("Part::Feature", name.c_str()));
                 pcFeature->Shape.setValue(aSolid);
 
                 // This is a trick to access the GUI via Python and set the color property
