@@ -480,10 +480,6 @@ void ViewProviderPartExt::updateData(const App::Property* prop)
         // get the shape to show
         const TopoDS_Shape &cShape = static_cast<const Part::PropertyPartShape*>(prop)->getValue();
 
-        // do nothing if shape is empty
-        if (cShape.IsNull())
-            return;
-
         // calculate the visual only if visible
         if (Visibility.getValue())
             updateVisual(cShape);
@@ -536,9 +532,19 @@ void ViewProviderPartExt::unsetEdit(int ModNum)
     }
 }
 
-void ViewProviderPartExt::updateVisual(const TopoDS_Shape &inputShape)
+void ViewProviderPartExt::updateVisual(const TopoDS_Shape& inputShape)
 {
     TopoDS_Shape cShape(inputShape);
+    if (cShape.IsNull()) {
+        coords  ->point      .setNum(0);
+        norm    ->vector     .setNum(0);
+        faceset ->coordIndex .setNum(0);
+        faceset ->partIndex  .setNum(0);
+        lineset ->coordIndex .setNum(0);
+        VisualTouched = false;
+        return;
+    }
+
     // time measurement and book keeping
     Base::TimeInfo start_time;
     int nbrTriangles=0,nbrNodes=0,nbrNorms=0,nbrFaces=0,nbrEdges=0,nbrLines=0;
@@ -790,8 +796,8 @@ void ViewProviderPartExt::updateVisual(const TopoDS_Shape &inputShape)
     }
 
     // printing some informations
-    Base::Console().Message("ViewProvider update time: %f s\n",Base::TimeInfo::diffTimeF(start_time,Base::TimeInfo()));
-    Base::Console().Message("Shape tria info: Faces:%d Edges:%d Nodes:%d Triangles:%d IdxVec:%d\n",nbrFaces,nbrEdges,nbrNodes,nbrTriangles,nbrLines);
+    Base::Console().Log("ViewProvider update time: %f s\n",Base::TimeInfo::diffTimeF(start_time,Base::TimeInfo()));
+    Base::Console().Log("Shape tria info: Faces:%d Edges:%d Nodes:%d Triangles:%d IdxVec:%d\n",nbrFaces,nbrEdges,nbrNodes,nbrTriangles,nbrLines);
 
     VisualTouched = false;
 }

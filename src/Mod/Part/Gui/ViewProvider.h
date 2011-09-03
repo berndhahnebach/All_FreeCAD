@@ -29,6 +29,7 @@
 #include <TopoDS_Shape.hxx>
 #include <Gui/ViewProviderGeometryObject.h>
 #include <Gui/ViewProviderBuilder.h>
+#include <Mod/Part/Gui/ViewProviderExt.h>
 #include <map>
 
 class TopoDS_Shape;
@@ -46,8 +47,10 @@ class SbVec3f;
 class SoSphere;
 class SoScale;
 
-namespace PartGui {
+// Set this to use the fast rendering of shapes
+#define FC_USE_FAST_SHAPE_RENDERING
 
+namespace PartGui {
 
 class ViewProviderShapeBuilder : public Gui::ViewProviderBuilder
 {
@@ -58,15 +61,15 @@ public:
     void createShape(const App::Property*, SoSeparator*) const;
 };
 
-class AppPartGuiExport ViewProviderPart : public Gui::ViewProviderGeometryObject
+class AppPartGuiExport ViewProviderPartBase : public Gui::ViewProviderGeometryObject
 {
-    PROPERTY_HEADER(PartGui::ViewProviderPart);
+    PROPERTY_HEADER(PartGui::ViewProviderPartBase);
 
 public:
     /// constructor
-    ViewProviderPart();
+    ViewProviderPartBase();
     /// destructor
-    virtual ~ViewProviderPart();
+    virtual ~ViewProviderPartBase();
 
     // Display properties
     App::PropertyFloatConstraint LineWidth;
@@ -126,7 +129,7 @@ private:
     std::map<SoVertexShape*, TopoDS_Shape> vertexShapeMap;
 };
 
-class AppPartGuiExport ViewProviderEllipsoid : public ViewProviderPart
+class AppPartGuiExport ViewProviderEllipsoid : public ViewProviderPartBase
 {
     PROPERTY_HEADER(PartGui::ViewProviderEllipsoid);
 
@@ -142,6 +145,30 @@ private:
     SoSphere* pSphere;
     SoScale * pScaling;
 };
+
+#if defined(FC_USE_FAST_SHAPE_RENDERING)
+class AppPartGuiExport ViewProviderPart : public ViewProviderPartExt
+{
+    PROPERTY_HEADER(PartGui::ViewProviderPart);
+
+public:
+    /// constructor
+    ViewProviderPart();
+    /// destructor
+    virtual ~ViewProviderPart();
+};
+#else
+class AppPartGuiExport ViewProviderPart : public ViewProviderPartBase
+{
+    PROPERTY_HEADER(PartGui::ViewProviderPart);
+
+public:
+    /// constructor
+    ViewProviderPart();
+    /// destructor
+    virtual ~ViewProviderPart();
+};
+#endif
 
 } // namespace PartGui
 

@@ -95,6 +95,33 @@
 
 using namespace PartGui;
 
+#if defined(FC_USE_FAST_SHAPE_RENDERING)
+
+PROPERTY_SOURCE(PartGui::ViewProviderPart, PartGui::ViewProviderPartExt)
+
+
+ViewProviderPart::ViewProviderPart()
+{
+}
+
+ViewProviderPart::~ViewProviderPart()
+{
+}
+#else
+PROPERTY_SOURCE(PartGui::ViewProviderPart, PartGui::ViewProviderPartBase)
+
+
+ViewProviderPart::ViewProviderPart()
+{
+}
+
+ViewProviderPart::~ViewProviderPart()
+{
+}
+#endif
+
+// ----------------------------------------------------------------------------
+
 void ViewProviderShapeBuilder::buildNodes(const App::Property* prop, std::vector<SoNode*>& nodes) const
 {
 }
@@ -104,16 +131,16 @@ void ViewProviderShapeBuilder::createShape(const App::Property* prop, SoSeparato
 }
 
 
-PROPERTY_SOURCE(PartGui::ViewProviderPart, Gui::ViewProviderGeometryObject)
+PROPERTY_SOURCE(PartGui::ViewProviderPartBase, Gui::ViewProviderGeometryObject)
 
 
 //**************************************************************************
 // Construction/Destruction
 
-App::PropertyFloatConstraint::Constraints ViewProviderPart::floatRange = {1.0f,64.0f,1.0f};
-const char* ViewProviderPart::LightingEnums[]= {"One side","Two side",NULL};
+App::PropertyFloatConstraint::Constraints ViewProviderPartBase::floatRange = {1.0f,64.0f,1.0f};
+const char* ViewProviderPartBase::LightingEnums[]= {"One side","Two side",NULL};
 
-ViewProviderPart::ViewProviderPart() : pcControlPoints(0)
+ViewProviderPartBase::ViewProviderPartBase() : pcControlPoints(0)
 {
     App::Material mat;
     mat.ambientColor.set(0.2f,0.2f,0.2f);
@@ -167,7 +194,7 @@ ViewProviderPart::ViewProviderPart() : pcControlPoints(0)
     loadParameter();
 }
 
-ViewProviderPart::~ViewProviderPart()
+ViewProviderPartBase::~ViewProviderPartBase()
 {
     EdgeRoot->unref();
     FaceRoot->unref();
@@ -179,7 +206,7 @@ ViewProviderPart::~ViewProviderPart()
     pShapeHints->unref();
 }
 
-void ViewProviderPart::onChanged(const App::Property* prop)
+void ViewProviderPartBase::onChanged(const App::Property* prop)
 {
     if (prop == &LineWidth) {
         pcLineStyle->lineWidth = LineWidth.getValue();
@@ -237,7 +264,7 @@ void ViewProviderPart::onChanged(const App::Property* prop)
     }
 }
 
-void ViewProviderPart::attach(App::DocumentObject *pcFeat)
+void ViewProviderPartBase::attach(App::DocumentObject *pcFeat)
 {
     // call parent attach method
     ViewProviderGeometryObject::attach(pcFeat);
@@ -280,7 +307,7 @@ void ViewProviderPart::attach(App::DocumentObject *pcFeat)
     addDisplayMaskMode(pcPointsRoot, "Point");
 }
 
-void ViewProviderPart::setDisplayMode(const char* ModeName)
+void ViewProviderPartBase::setDisplayMode(const char* ModeName)
 {
     if ( strcmp("Flat Lines",ModeName)==0 )
         setDisplayMaskMode("Flat Lines");
@@ -294,7 +321,7 @@ void ViewProviderPart::setDisplayMode(const char* ModeName)
     ViewProviderGeometryObject::setDisplayMode( ModeName );
 }
 
-std::vector<std::string> ViewProviderPart::getDisplayModes(void) const
+std::vector<std::string> ViewProviderPartBase::getDisplayModes(void) const
 {
     // get the modes of the father
     std::vector<std::string> StrList = ViewProviderGeometryObject::getDisplayModes();
@@ -308,7 +335,7 @@ std::vector<std::string> ViewProviderPart::getDisplayModes(void) const
     return StrList;
 }
 
-void ViewProviderPart::shapeInfoCallback(void * ud, SoEventCallback * n)
+void ViewProviderPartBase::shapeInfoCallback(void * ud, SoEventCallback * n)
 {
     const SoMouseButtonEvent * mbe = (SoMouseButtonEvent *)n->getEvent();
     Gui::View3DInventorViewer* view  = reinterpret_cast<Gui::View3DInventorViewer*>(n->getUserData());
@@ -333,9 +360,9 @@ void ViewProviderPart::shapeInfoCallback(void * ud, SoEventCallback * n)
         // By specifying the indexed mesh node 'pcFaceSet' we make sure that the picked point is
         // really from the mesh we render and not from any other geometry
         Gui::ViewProvider* vp = static_cast<Gui::ViewProvider*>(view->getViewProviderByPath(point->getPath()));
-        if (!vp || !vp->getTypeId().isDerivedFrom(ViewProviderPart::getClassTypeId()))
+        if (!vp || !vp->getTypeId().isDerivedFrom(ViewProviderPartBase::getClassTypeId()))
             return;
-        ViewProviderPart* that = static_cast<ViewProviderPart*>(vp);
+        ViewProviderPartBase* that = static_cast<ViewProviderPartBase*>(vp);
         TopoDS_Shape sh = that->getShape(point);
         if (!sh.IsNull()) {
             SbVec3f pt = point->getPoint();
@@ -344,7 +371,7 @@ void ViewProviderPart::shapeInfoCallback(void * ud, SoEventCallback * n)
     }
 }
 
-TopoDS_Shape ViewProviderPart::getShape(const SoPickedPoint* point) const
+TopoDS_Shape ViewProviderPartBase::getShape(const SoPickedPoint* point) const
 {
     if (point && point->getPath()->getTail()->getTypeId().isDerivedFrom(SoVertexShape::getClassTypeId())) {
         SoVertexShape* vs = static_cast<SoVertexShape*>(point->getPath()->getTail());
@@ -356,7 +383,7 @@ TopoDS_Shape ViewProviderPart::getShape(const SoPickedPoint* point) const
     return TopoDS_Shape();
 }
 
-bool ViewProviderPart::loadParameter()
+bool ViewProviderPartBase::loadParameter()
 {
     bool changed = false;
     ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath
@@ -381,7 +408,7 @@ bool ViewProviderPart::loadParameter()
     return changed;
 }
 
-void ViewProviderPart::reload()
+void ViewProviderPartBase::reload()
 {
     if (loadParameter()) {
         App::Property* shape     = pcObject->getPropertyByName("Shape");
@@ -389,7 +416,7 @@ void ViewProviderPart::reload()
     }
 }
 
-void ViewProviderPart::updateData(const App::Property* prop)
+void ViewProviderPartBase::updateData(const App::Property* prop)
 {
     Gui::ViewProviderGeometryObject::updateData(prop);
     if (prop->getTypeId() == Part::PropertyPartShape::getClassTypeId()) {
@@ -448,7 +475,7 @@ void ViewProviderPart::updateData(const App::Property* prop)
     }
 }
 
-Standard_Boolean ViewProviderPart::computeEdges(SoGroup* EdgeRoot, const TopoDS_Shape &myShape)
+Standard_Boolean ViewProviderPartBase::computeEdges(SoGroup* EdgeRoot, const TopoDS_Shape &myShape)
 {
     //TopExp_Explorer ex;
 
@@ -566,7 +593,7 @@ Standard_Boolean ViewProviderPart::computeEdges(SoGroup* EdgeRoot, const TopoDS_
     return true;
 }
 
-Standard_Boolean ViewProviderPart::computeVertices(SoGroup* VertexRoot, const TopoDS_Shape &myShape)
+Standard_Boolean ViewProviderPartBase::computeVertices(SoGroup* VertexRoot, const TopoDS_Shape &myShape)
 {
 #if 0 // new implementation of computeVertice
     VertexRoot->addChild(pcPointMaterial);  
@@ -659,7 +686,7 @@ Standard_Boolean ViewProviderPart::computeVertices(SoGroup* VertexRoot, const To
 #endif
 }
 
-Standard_Boolean ViewProviderPart::computeFaces(SoGroup* FaceRoot, const TopoDS_Shape &myShape, double defl)
+Standard_Boolean ViewProviderPartBase::computeFaces(SoGroup* FaceRoot, const TopoDS_Shape &myShape, double defl)
 {
     TopExp_Explorer ex;
 
@@ -745,8 +772,8 @@ Standard_Boolean ViewProviderPart::computeFaces(SoGroup* FaceRoot, const TopoDS_
     return true;
 }
 
-void ViewProviderPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals,
-                                       int32_t** cons,int &nbNodesInFace,int &nbTriInFace )
+void ViewProviderPartBase::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals,
+                                           int32_t** cons,int &nbNodesInFace,int &nbTriInFace )
 {
     TopLoc_Location aLoc;
 
@@ -858,7 +885,7 @@ void ViewProviderPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertic
     }
 }
 
-void ViewProviderPart::showControlPoints(bool show, const App::Property* prop)
+void ViewProviderPartBase::showControlPoints(bool show, const App::Property* prop)
 {
     if (!pcControlPoints && show) {
         pcControlPoints = new SoSwitch();
@@ -900,7 +927,7 @@ void ViewProviderPart::showControlPoints(bool show, const App::Property* prop)
     }
 }
 
-void ViewProviderPart::showControlPointsOfEdge(const TopoDS_Edge& edge)
+void ViewProviderPartBase::showControlPointsOfEdge(const TopoDS_Edge& edge)
 {
     std::list<gp_Pnt> poles, knots; 
     Standard_Integer nCt=0;
@@ -963,7 +990,7 @@ void ViewProviderPart::showControlPointsOfEdge(const TopoDS_Edge& edge)
     pcControlPoints->addChild(nodes);
 }
 
-void ViewProviderPart::showControlPointsOfWire(const TopoDS_Wire& wire)
+void ViewProviderPartBase::showControlPointsOfWire(const TopoDS_Wire& wire)
 {
     TopoDS_Iterator it;
     for (it.Initialize(wire); it.More(); it.Next()) {
@@ -1000,7 +1027,7 @@ void ViewProviderPart::showControlPointsOfWire(const TopoDS_Wire& wire)
     }
 }
 
-void ViewProviderPart::showControlPointsOfFace(const TopoDS_Face& face)
+void ViewProviderPartBase::showControlPointsOfFace(const TopoDS_Face& face)
 {
     std::list<gp_Pnt> knots;
     std::vector<std::vector<gp_Pnt> > poles;
@@ -1082,7 +1109,7 @@ void ViewProviderPart::showControlPointsOfFace(const TopoDS_Face& face)
 
 // ----------------------------------------------------------------------------
 
-PROPERTY_SOURCE(PartGui::ViewProviderEllipsoid, PartGui::ViewProviderPart)
+PROPERTY_SOURCE(PartGui::ViewProviderEllipsoid, PartGui::ViewProviderPartBase)
 
 ViewProviderEllipsoid::ViewProviderEllipsoid()
 {
@@ -1128,7 +1155,7 @@ void ViewProviderEllipsoid::updateData(const App::Property* prop)
         }
 
         // if not a full ellipsoid do it the general way
-        ViewProviderPart::updateData(prop);
+        ViewProviderPartBase::updateData(prop);
     }
     else {
         Gui::ViewProviderGeometryObject::updateData(prop);
