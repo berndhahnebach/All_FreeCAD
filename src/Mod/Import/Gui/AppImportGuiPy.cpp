@@ -26,7 +26,9 @@
 # define WNT // avoid conflict with GUID
 #endif
 #ifndef _PreComp_
+# include <climits>
 # include <Python.h>
+# include <BRep_Builder.hxx>
 # include <Handle_TDocStd_Document.hxx>
 # include <Handle_XCAFApp_Application.hxx>
 # include <TDocStd_Document.hxx>
@@ -42,8 +44,13 @@
 # include <STEPCAFControl_Writer.hxx>
 # include <IGESCAFControl_Reader.hxx>
 # include <IGESCAFControl_Writer.hxx>
+# include <IGESControl_Controller.hxx>
+# include <Interface_Static.hxx>
 # include <Transfer_TransientProcess.hxx>
 # include <XSControl_WorkSession.hxx>
+# include <TopTools_IndexedMapOfShape.hxx>
+# include <TopTools_MapOfShape.hxx>
+# include <TopExp_Explorer.hxx>
 #endif
 
 #include <Base/PyObjectBase.h>
@@ -59,7 +66,8 @@
 class ImportXCAF
 {
 public:
-    ImportXCAF(Handle_TDocStd_Document h, App::Document* d) : hdoc(h), doc(d)
+    ImportXCAF(Handle_TDocStd_Document h, App::Document* d, const std::string& name)
+        : hdoc(h), doc(d), default_name(name)
     {
         aShapeTool = XCAFDoc_DocumentTool::ShapeTool (hdoc->Main());
         hColors = XCAFDoc_DocumentTool::ColorTool(hdoc->Main());
@@ -67,62 +75,140 @@ public:
 
     void loadShapes()
     {
-        //TDF_Label anAccess = hDoc->GetData()->Root();
         // collect sequence of labels to display
         TDF_LabelSequence shapeLabels, colorLabels;
         aShapeTool->GetFreeShapes (shapeLabels);
         hColors->GetColors(colorLabels);
-        
+
         // set presentations and show
         for (Standard_Integer i=1; i <= shapeLabels.Length(); i++ ) {
+            // get the shapes and attributes
             const TDF_Label& label = shapeLabels.Value(i);
             loadShapes(label);
         }
-
-        // get colors if available
-        for (Standard_Integer i=1; i <= colorLabels.Length(); i++ ) {
-            const TDF_Label& label = colorLabels.Value(i);
-            Quantity_Color col;
-            if (hColors->GetColor(label, col)) {
-                App::Color color;
-                color.r = col.Red();
-                color.g = col.Green();
-                color.b = col.Blue();
-                std::map<Standard_Integer, Part::Feature*>::iterator it = tagPart.find(label.Tag());
-                if (it != tagPart.end()) {
-                    Gui::ViewProvider* vp = Gui::Application::Instance->getViewProvider(it->second);
-                    if (vp && vp->isDerivedFrom(PartGui::ViewProviderPart::getClassTypeId())) {
-                        static_cast<PartGui::ViewProviderPart*>(vp)->ShapeColor.setValue(color);
-                    }
-                }
+        std::map<Standard_Integer, TopoDS_Shape>::iterator it;
+        // go through solids
+        for (it = mySolids.begin(); it != mySolids.end(); ++it) {
+            createShape(it->second);
+        }
+        // go through shells
+        for (it = myShells.begin(); it != myShells.end(); ++it) {
+            createShape(it->second);
+        }
+        // go through compounds
+        for (it = myCompds.begin(); it != myCompds.end(); ++it) {
+            createShape(it->second, true);
+        }
+        // do the rest
+        if (!myShapes.empty()) {
+            BRep_Builder builder;
+            TopoDS_Compound comp;
+            builder.MakeCompound(comp);
+            for (it = myShapes.begin(); it != myShapes.end(); ++it) {
+                builder.Add(comp, it->second);
             }
+            createShape(comp, true);
         }
     }
 
 private:
-    void loadShapes(const TDF_Label& label)
+    void createShape(const TopoDS_Shape& shape, bool perface=false) const
     {
-        Standard_Integer nbAttr = label.NbAttributes();
-#if 1
-        if (aShapeTool->IsTopLevel(label)) {
-            for (TDF_ChildIterator it(label, 0); it.More(); it.Next()) {
-                loadShapes(it.Value());
+        Part::Feature* part;
+        part = static_cast<Part::Feature*>(doc->addObject("Part::Feature", default_name.c_str()));
+        part->Shape.setValue(shape);
+        std::map<Standard_Integer, Quantity_Color>::const_iterator jt;
+        jt = myColorMap.find(shape.HashCode(INT_MAX));
+        if (jt != myColorMap.end()) {
+            Gui::ViewProvider* vp = Gui::Application::Instance->getViewProvider(part);
+            if (vp && vp->isDerivedFrom(PartGui::ViewProviderPart::getClassTypeId())) {
+                App::Color color;
+                color.r = jt->second.Red();
+                color.g = jt->second.Green();
+                color.b = jt->second.Blue();
+                static_cast<PartGui::ViewProviderPart*>(vp)->ShapeColor.setValue(color);
             }
         }
-        else {
-#endif
-            if (aShapeTool->IsShape(label)) {
-                TopoDS_Shape shape;
-                if (aShapeTool->GetShape(label, shape) && !shape.IsNull()) {
-                    Part::Feature* part;
-                    part = static_cast<Part::Feature*>(doc->addObject("Part::Feature", "Shape"));
-                    part->Shape.setValue(shape);
-                    tagPart[label.Tag()] = part;
+
+        // check for colors per face
+        if (perface && !myColorMap.empty()) {
+            TopTools_IndexedMapOfShape faces;
+            TopExp_Explorer xp(shape,TopAbs_FACE);
+            while (xp.More()) {
+                faces.Add(xp.Current());
+                xp.Next();
+            }
+
+            bool found_face_color = false;
+            std::vector<App::Color> faceColors;
+            faceColors.resize(faces.Extent(), App::Color(0.8f,0.8f,0.8f));
+            xp.Init(shape,TopAbs_FACE);
+            while (xp.More()) {
+                jt = myColorMap.find(xp.Current().HashCode(INT_MAX));
+                if (jt != myColorMap.end()) {
+                    int index = faces.FindIndex(xp.Current());
+                    App::Color color;
+                    color.r = jt->second.Red();
+                    color.g = jt->second.Green();
+                    color.b = jt->second.Blue();
+                    faceColors[index-1] = color;
+                    found_face_color = true;
+                }
+                xp.Next();
+            }
+
+            if (found_face_color) {
+                Gui::ViewProvider* vp = Gui::Application::Instance->getViewProvider(part);
+                if (vp && vp->isDerivedFrom(PartGui::ViewProviderPart::getClassTypeId())) {
+                    static_cast<PartGui::ViewProviderPart*>(vp)->DiffuseColor.setValues(faceColors);
                 }
             }
-#if 1
         }
-#endif
+    }
+    void loadShapes(const TDF_Label& label)
+    {
+        TopoDS_Shape aShape;
+        if (aShapeTool->GetShape(label,aShape)) {
+            if (aShapeTool->IsTopLevel(label)) {
+                int ctSolids = 0, ctShells = 0, ctComps = 0;
+                // add the shapes
+                TopExp_Explorer xp;
+                for (xp.Init(aShape, TopAbs_SOLID); xp.More(); xp.Next(), ctSolids++)
+                    this->mySolids[xp.Current().HashCode(INT_MAX)] = (xp.Current());
+                for (xp.Init(aShape, TopAbs_SHELL, TopAbs_SOLID); xp.More(); xp.Next(), ctShells++)
+                    this->myShells[xp.Current().HashCode(INT_MAX)] = (xp.Current());
+                // if no solids and no shells were found then go for compounds
+                if (ctSolids == 0 && ctShells == 0) {
+                    for (xp.Init(aShape, TopAbs_COMPOUND); xp.More(); xp.Next(), ctComps++)
+                        this->myCompds[xp.Current().HashCode(INT_MAX)] = (xp.Current());
+                }
+                if (ctComps == 0) {
+                    for (xp.Init(aShape, TopAbs_FACE, TopAbs_SHELL); xp.More(); xp.Next())
+                        this->myShapes[xp.Current().HashCode(INT_MAX)] = (xp.Current());
+                    for (xp.Init(aShape, TopAbs_WIRE, TopAbs_FACE); xp.More(); xp.Next())
+                        this->myShapes[xp.Current().HashCode(INT_MAX)] = (xp.Current());
+                    for (xp.Init(aShape, TopAbs_EDGE, TopAbs_WIRE); xp.More(); xp.Next())
+                        this->myShapes[xp.Current().HashCode(INT_MAX)] = (xp.Current());
+                    for (xp.Init(aShape, TopAbs_VERTEX, TopAbs_EDGE); xp.More(); xp.Next())
+                        this->myShapes[xp.Current().HashCode(INT_MAX)] = (xp.Current());
+                }
+            }
+
+            Quantity_Color col;
+            if (hColors->GetColor(label, XCAFDoc_ColorGen, col) ||
+                hColors->GetColor(label, XCAFDoc_ColorSurf, col) ||
+                hColors->GetColor(label, XCAFDoc_ColorCurv, col)) {
+                // add defined color
+                myColorMap[aShape.HashCode(INT_MAX)] = col;
+            }
+
+            if (label.HasChild()) {
+                TDF_ChildIterator it;
+                for (it.Initialize(label); it.More(); it.Next()) {
+                    loadShapes(it.Value());
+                }
+            }
+        }
     }
 
 private:
@@ -130,7 +216,12 @@ private:
     App::Document* doc;
     Handle_XCAFDoc_ShapeTool aShapeTool;
     Handle_XCAFDoc_ColorTool hColors;
-    std::map<Standard_Integer, Part::Feature*> tagPart;
+    std::string default_name;
+    std::map<Standard_Integer, TopoDS_Shape> mySolids;
+    std::map<Standard_Integer, TopoDS_Shape> myShells;
+    std::map<Standard_Integer, TopoDS_Shape> myCompds;
+    std::map<Standard_Integer, TopoDS_Shape> myShapes;
+    std::map<Standard_Integer, Quantity_Color> myColorMap;
 };
 
 /* module functions */
@@ -172,6 +263,8 @@ static PyObject * importer(PyObject *self, PyObject *args)
             pi->EndScope();
         }
         else if (file.hasExtension("igs") || file.hasExtension("iges")) {
+            IGESControl_Controller::Init();
+            Interface_Static::SetIVal("read.surfacecurve.mode",3);
             IGESCAFControl_Reader aReader;
             if (aReader.ReadFile((Standard_CString)Name) != IFSelect_RetDone) {
                 PyErr_SetString(PyExc_Exception, "cannot read IGES file");
@@ -180,7 +273,7 @@ static PyObject * importer(PyObject *self, PyObject *args)
 
             Handle_Message_ProgressIndicator pi = new Part::ProgressIndicator(100);
             aReader.WS()->MapReader()->SetProgress(pi);
-            pi->NewScope(100, "Reading STEP file...");
+            pi->NewScope(100, "Reading IGES file...");
             pi->Show();
             aReader.Transfer(hDoc);
             pi->EndScope();
@@ -190,8 +283,10 @@ static PyObject * importer(PyObject *self, PyObject *args)
             return 0;
         }
 
-        ImportXCAF xcaf(hDoc, pcDoc);
+        ImportXCAF xcaf(hDoc, pcDoc, file.fileNamePure());
         xcaf.loadShapes();
+        pcDoc->recompute();
+
     } PY_CATCH;
 
     Py_Return;
