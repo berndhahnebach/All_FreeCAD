@@ -215,6 +215,12 @@ static PyObject * insert(PyObject *self, PyObject *args)
 #endif 
             pcDoc->recompute();
         }
+#if 1
+        else if (file.hasExtension("igs") || file.hasExtension("iges")) {
+            ImportIgesParts(pcDoc,Name);
+            pcDoc->recompute();
+        }
+#endif
         else {
             try {
                 TopoShape shape;
