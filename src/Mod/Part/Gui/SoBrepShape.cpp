@@ -151,12 +151,12 @@ void SoBrepFaceSet::doAction(SoAction* action)
 
 void SoBrepFaceSet::GLRender(SoGLRenderAction *action)
 {
+    if (this->coordIndex.getNum() < 3)
+        return;
     if (this->selectionIndex.getNum() > 0)
         renderSelection(action);
     if (this->highlightIndex.getValue() >= 0)
         renderHighlight(action);
-    if (this->coordIndex.getNum() < 3)
-        return;
     if (!this->shouldGLRender(action))
         return;
 
