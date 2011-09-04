@@ -33,21 +33,22 @@ class TopoDS_Face;
 
 namespace Part
 {
+class Geometry;
 
 /** 2D Shape 
-  * This is a specialiced Version of the PartShape for use with 
-  * Flat (2D) geometry. The Z direction have always to be 0.
+  * This is a specialiced version of the PartShape for use with 
+  * flat (2D) geometry. The Z direction has always to be 0.
   * The position and orientation of the Plane this 2D geometry is
-  * referenced in is defined by the Placement property. It allso
+  * referenced is defined by the Placement property. It also
   * has a link to a supporting Face which defines the position 
-  * in space where its located. If the support is changed the
+  * in space where it is located. If the support is changed the
   * static methode positionBySupport() is used to calculate a 
   * new position for the Part2DObject.
   * This object can be used stand alone or for constraint 
   * geometry as its descend Sketcher::SketchObject .
   */
 
-class AppPartExport Part2DObject :public Part::Feature
+class AppPartExport Part2DObject : public Part::Feature
 {
     PROPERTY_HEADER(Part::Part2DObject);
 
@@ -65,7 +66,19 @@ public:
       * If the support is changed this methode is called do determine a new 
       * postion of the 2D shape on the supporting Face
       */
-    static Base::Placement positionBySupport(const TopoDS_Face &face,const Base::Placement &Place );
+    static Base::Placement positionBySupport(const TopoDS_Face &face, const Base::Placement &Place);
+
+    /** calculate the points where a curve with index GeoId should be trimmed
+      * with respect to the rest of the curves contained in the list geomlist
+      * and a picked point. The outputs intersect1 and intersect2 specify the
+      * tightest boundaries for trimming around the picked point and the
+      * indexes GeoId1 and GeoId2 specify the corresponding curves that intersect
+      * the curve GeoId.
+      */
+    static bool seekTrimPoints(const std::vector<Geometry *> &geomlist,
+                               int GeoId, const Base::Vector3d &point,
+                               int &GeoId1, Base::Vector3d &intersect1,
+                               int &GeoId2, Base::Vector3d &intersect2);
 
     /** @name methods overide Feature */
     //@{
