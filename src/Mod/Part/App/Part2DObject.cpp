@@ -32,6 +32,10 @@
 # include <gp_Dir.hxx>
 # include <GeomAPI_ProjectPointOnSurf.hxx>
 # include <Geom_Plane.hxx>
+# include <Geom2d_Curve.hxx>
+# include <Geom2dAPI_InterCurveCurve.hxx>
+# include <Geom2dAPI_ProjectPointOnCurve.hxx>
+# include <GeomAPI.hxx>
 # include <BRepAdaptor_Surface.hxx>
 #endif
 
@@ -42,6 +46,7 @@
 
 
 #include "Part2DObject.h"
+#include "Geometry.h"
 
 
 using namespace Part;
@@ -62,7 +67,7 @@ App::DocumentObjectExecReturn *Part2DObject::execute(void)
     return App::DocumentObject::StdReturn;
 }
 
-Base::Placement Part2DObject::positionBySupport(const TopoDS_Face &face,const Base::Placement &Place)
+Base::Placement Part2DObject::positionBySupport(const TopoDS_Face &face, const Base::Placement &Place)
 {
     if (face.IsNull())
         throw Base::Exception("Null Face in Part2DObject::positionBySupport()!");
@@ -134,8 +139,77 @@ Base::Placement Part2DObject::positionBySupport(const TopoDS_Face &face,const Ba
     // check the angle against the Z Axis
     //Standard_Real a = Normal.Angle(gp_Ax1(gp_Pnt(0,0,0),gp_Dir(0,0,1)));
 
-
     return Base::Placement(mtrx);
+}
+
+bool Part2DObject::seekTrimPoints(const std::vector<Geometry *> &geomlist,
+                                  int GeoId, const Base::Vector3d &point,
+                                  int &GeoId1, Base::Vector3d &intersect1,
+                                  int &GeoId2, Base::Vector3d &intersect2)
+{
+    if (GeoId >= int(geomlist.size()))
+        return false;
+
+    gp_Pln plane(gp_Pnt(0,0,0),gp_Dir(0,0,1));
+
+    Handle_Geom2d_Curve primaryCurve;
+    Handle_Geom_Geometry geom = (geomlist[GeoId])->handle();
+    Handle_Geom_Curve curve3d = Handle_Geom_Curve::DownCast(geom);
+    if (curve3d.IsNull())
+        return false;
+    else
+        primaryCurve = GeomAPI::To2d(curve3d, plane);
+
+    // create the intersector and projector functions
+    Geom2dAPI_InterCurveCurve Intersector;
+    Geom2dAPI_ProjectPointOnCurve Projector;
+
+    // find the parameter of the picked point on the primary curve
+    Projector.Init(gp_Pnt2d(point.x, point.y), primaryCurve);
+    double pickedParam = Projector.Parameter(1);
+
+    // find intersection points
+    GeoId1 = -1;
+    GeoId2 = -1;
+    double param1=-1e10,param2=1e10;
+    gp_Pnt2d p1,p2;
+    Handle_Geom2d_Curve secondaryCurve;
+    for (int id=0; id < int(geomlist.size()); id++) {
+        if (id != GeoId && !geomlist[id]->Construction) {
+            geom = (geomlist[id])->handle();
+            curve3d = Handle_Geom_Curve::DownCast(geom);
+            if (!curve3d.IsNull()) {
+                secondaryCurve = GeomAPI::To2d(curve3d, plane);
+                // perform the curves intersection
+                Intersector.Init(primaryCurve, secondaryCurve, 1.0e-12);
+                for (int i=1; i <= Intersector.NbPoints(); i++) {
+                    gp_Pnt2d p = Intersector.Point(i);
+                    // get the parameter of the intersection point on the primary curve
+                    Projector.Init(p, primaryCurve);
+                    double param = Projector.Parameter(1);
+                    if (param < pickedParam && param > param1) {
+                        param1 = param;
+                        p1 = p;
+                        GeoId1 = id;
+                    }
+                    else if (param > pickedParam && param < param2) {
+                        param2 = param;
+                        p2 = p;
+                        GeoId2 = id;
+                    }
+                }
+            }
+        }
+    }
+
+   if (GeoId1 < 0 && GeoId2 < 0)
+       return false;
+
+   if (GeoId1 >= 0)
+       intersect1 = Base::Vector3d(p1.X(),p1.Y(),0.f);
+   if (GeoId2 >= 0)
+       intersect2 = Base::Vector3d(p2.X(),p2.Y(),0.f);
+   return true;
 }
 
 // Python Drawing feature ---------------------------------------------------------
