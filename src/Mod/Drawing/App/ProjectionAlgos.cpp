@@ -28,6 +28,7 @@
 # include <BRepAdaptor_Curve.hxx>
 # include <Geom_Circle.hxx>
 # include <gp_Circ.hxx>
+# include <gp_Elips.hxx>
 #endif
 
 #include <Bnd_Box.hxx>
@@ -73,6 +74,7 @@
 
 #include <Base/Exception.h>
 #include <Base/FileInfo.h>
+#include <Base/Tools.h>
 #include <Mod/Part/App/PartFeature.h>
 
 #include "ProjectionAlgos.h"
@@ -243,6 +245,9 @@ std::string ProjectionAlgos::Edges2SVG(const TopoDS_Shape &Input)
         if (adapt.GetType() == GeomAbs_Circle) {
             printCircle(adapt, result);
         }
+        else if (adapt.GetType() == GeomAbs_Ellipse) {
+            printEllipse(adapt, i, result);
+        }
         else if (adapt.GetType() == GeomAbs_BSplineCurve) {
             printBSpline(adapt, i, result);
         }
@@ -301,6 +306,43 @@ void ProjectionAlgos::printCircle(const BRepAdaptor_Curve& c, std::ostream& out)
         out << "<path d=\"M" << s.X() <<  " " << s.Y()
             << " A" << r << " " << r << " "
             << xar << " " << las << " " << swp << " "
+            << e.X() << " " << e.Y() << "\" />";
+    }
+}
+
+void ProjectionAlgos::printEllipse(const BRepAdaptor_Curve& c, int id, std::ostream& out)
+{
+    gp_Elips ellp = c.Ellipse();
+    const gp_Pnt& p= ellp.Location();
+    double r1 = ellp.MajorRadius();
+    double r2 = ellp.MinorRadius();
+    double f = c.FirstParameter();
+    double l = c.LastParameter();
+    gp_Pnt s = c.Value(f);
+    gp_Pnt m = c.Value((l+f)/2.0);
+    gp_Pnt e = c.Value(l);
+
+    gp_Vec v1(m,s);
+    gp_Vec v2(m,e);
+    gp_Vec v3(0,0,1);
+    double a = v3.DotCross(v1,v2);
+
+    // a full ellipse
+    if (s.SquareDistance(e) < 0.001) {
+        out << "<ellipse cx =\"" << p.X() << "\" cy =\"" 
+            << p.Y() << "\" rx =\"" << r1 << "\"  ry =\"" << r2 << "\"/>";
+    }
+    // arc of ellipse
+    else {
+        // See also https://developer.mozilla.org/en/SVG/Tutorial/Paths
+        gp_Dir xaxis = ellp.XAxis().Direction();
+        Standard_Real angle = xaxis.Angle(gp_Dir(1,0,0));
+        angle = Base::degrees<double>(angle);
+        char las = (l-f > D_PI) ? '1' : '0'; // large-arc-flag
+        char swp = (a < 0) ? '1' : '0'; // sweep-flag, i.e. clockwise (0) or counter-clockwise (1)
+        out << "<path d=\"M" << s.X() <<  " " << s.Y()
+            << " A" << r1 << " " << r2 << " "
+            << angle << " " << las << " " << swp << " "
             << e.X() << " " << e.Y() << "\" />";
     }
 }
