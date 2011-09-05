@@ -717,6 +717,16 @@ void ViewProviderPartExt::updateVisual(const TopoDS_Shape& inputShape)
                     for (Standard_Integer i=indices.Lower();i <= indices.Upper();i++) {
                         int inx = indices(i);
                         indxVector.push_back(FaceNodeOffset+inx-1);
+
+                        // usually the coordinates for this edge are already set by the
+                        // triangles of the face this edge belongs to. However, there are
+                        // rare cases where some points are only referenced by the polygon
+                        // but not by any triangle. Thus, we must apply the coordinates to
+                        // make sure that everything is properly set.
+                        gp_Pnt p(Nodes(inx));
+                        if (!identity)
+                            p.Transform(myTransf);
+                        verts[FaceNodeOffset+inx-1].setValue((float)(p.X()),(float)(p.Y()),(float)(p.Z()));
                     }
                     indxVector.push_back(-1);
 
