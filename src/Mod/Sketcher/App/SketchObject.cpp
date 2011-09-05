@@ -420,6 +420,97 @@ int SketchObject::fillet(int GeoId1, int GeoId2,
     return -1;
 }
 
+int SketchObject::trim(int GeoId, const Base::Vector3d& point)
+{
+    const std::vector<Part::Geometry *> &geomlist = this->Geometry.getValues();
+    assert(GeoId < int(geomlist.size()));
+
+    int GeoId1=-1, GeoId2=-1;
+    Base::Vector3d point1, point2;
+    Part2DObject::seekTrimPoints(geomlist, GeoId, point, GeoId1, point1, GeoId2, point2);
+    if (GeoId1 < 0 && GeoId2 >= 0) {
+        std::swap(GeoId1,GeoId2);
+        std::swap(point1,point2);
+    }
+
+    Part::Geometry *geo = geomlist[GeoId];
+    if (geo->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
+        const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment*>(geo);
+        Base::Vector3d startPnt = lineSeg->getStartPoint();
+        Base::Vector3d endPnt = lineSeg->getEndPoint();
+        Base::Vector3d dir = (endPnt - startPnt).Normalize();
+        double xmin = 0;
+        double xmax = (endPnt - startPnt)*dir;
+        double x0 = (point - startPnt)*dir;
+        if (GeoId1 >= 0 && GeoId2 >= 0) {
+            double x1 = (point1 - startPnt)*dir;
+            double x2 = (point2 - startPnt)*dir;
+            if (x1 > xmin && x1 < xmax && x2 > xmin && x2 < xmax) {
+                if (x1 > x2) {
+                    std::swap(GeoId1,GeoId2);
+                    std::swap(point1,point2);
+                    std::swap(x1,x2);
+                }
+                if (x1 < x0 && x2 > x0) {
+                    int newGeoId = addGeometry(geo);
+                    movePoint(GeoId, end, point1);
+                    movePoint(newGeoId, start, point2);
+
+                    // constrain the trimming points on the corresponding geometries
+                    Sketcher::Constraint *newConstr = new Sketcher::Constraint();
+                    newConstr->Type = Sketcher::PointOnObject;
+                    newConstr->First = GeoId;
+                    newConstr->FirstPos = end;
+                    newConstr->Second = GeoId1;
+                    addConstraint(newConstr);
+
+                    newConstr->First = newGeoId;
+                    newConstr->FirstPos = start;
+                    newConstr->Second = GeoId2;
+                    addConstraint(newConstr);
+                    
+                    delete newConstr;
+                    return 0;
+                }
+            }
+        }
+        else if (GeoId1 >= 0) {
+            double x1 = (point1 - startPnt)*dir;
+            if (x1 > xmin && x1 < xmax) {
+                if (x1 > x0) { // trim line start
+                    movePoint(GeoId, start, point1);
+                    // constrain the trimming point on the corresponding geometry
+                    Sketcher::Constraint *newConstr = new Sketcher::Constraint();
+                    newConstr->Type = Sketcher::PointOnObject;
+                    newConstr->First = GeoId;
+                    newConstr->FirstPos = start;
+                    newConstr->Second = GeoId1;
+                    addConstraint(newConstr);
+                    delete newConstr;
+                    return 0;
+                }
+                else if (x1 < x0) { // trim line end
+                    movePoint(GeoId, end, point1);
+                    Sketcher::Constraint *newConstr = new Sketcher::Constraint();
+                    newConstr->Type = Sketcher::PointOnObject;
+                    newConstr->First = GeoId;
+                    newConstr->FirstPos = end;
+                    newConstr->Second = GeoId1;
+                    addConstraint(newConstr);
+                    delete newConstr;
+                    return 0;
+                }
+            }
+        }
+    } else if (geo->getTypeId() == Part::GeomCircle::getClassTypeId()) {
+        const Part::GeomCircle *circle = dynamic_cast<const Part::GeomCircle*>(geo);
+    } else if (geo->getTypeId() == Part::GeomArcOfCircle::getClassTypeId()) {
+        const Part::GeomArcOfCircle *aoc = dynamic_cast<const Part::GeomArcOfCircle*>(geo);
+    }
+
+    return -1;
+}
+
 int SketchObject::addExternal(App::DocumentObject *Obj, const char* SubName)
 {
     // so far only externals to the support of the sketch
