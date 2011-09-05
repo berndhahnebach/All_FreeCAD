@@ -201,6 +201,8 @@ short Sphere::mustExecute() const
 App::DocumentObjectExecReturn *Sphere::execute(void)
 {
     // Build a sphere
+    if (Radius.getValue() < Precision::Confusion())
+        return new App::DocumentObjectExecReturn("Radius of sphere too small");
     try {
         BRepPrimAPI_MakeSphere mkSphere(Radius.getValue(),
                                         Angle1.getValue()/180.0f*Standard_PI,
@@ -251,6 +253,10 @@ short Ellipsoid::mustExecute() const
 App::DocumentObjectExecReturn *Ellipsoid::execute(void)
 {
     // Build a sphere
+    if (Radius1.getValue() < Precision::Confusion())
+        return new App::DocumentObjectExecReturn("Radius of ellipsoid too small");
+    if (Radius2.getValue() < Precision::Confusion())
+        return new App::DocumentObjectExecReturn("Radius of ellipsoid too small");
     try {
         gp_Pnt pnt(0.0,0.0,0.0);
         gp_Dir dir(0.0,0.0,1.0);
@@ -309,6 +315,10 @@ short Cylinder::mustExecute() const
 App::DocumentObjectExecReturn *Cylinder::execute(void)
 {
     // Build a cylinder
+    if (Radius.getValue() < Precision::Confusion())
+        return new App::DocumentObjectExecReturn("Radius of cylinder too small");
+    if (Height.getValue() < Precision::Confusion())
+        return new App::DocumentObjectExecReturn("Height of cylinder too small");
     try {
         BRepPrimAPI_MakeCylinder mkCylr(Radius.getValue(),
                                         Height.getValue(),
@@ -350,6 +360,12 @@ short Cone::mustExecute() const
 
 App::DocumentObjectExecReturn *Cone::execute(void)
 {
+    if (Radius1.getValue() < Precision::Confusion())
+        return new App::DocumentObjectExecReturn("Radius of cone too small");
+    if (Radius2.getValue() < Precision::Confusion())
+        return new App::DocumentObjectExecReturn("Radius of cone too small");
+    if (Height.getValue() < Precision::Confusion())
+        return new App::DocumentObjectExecReturn("Height of cone too small");
     try {
         // Build a cone
         BRepPrimAPI_MakeCone mkCone(Radius1.getValue(),
@@ -400,6 +416,10 @@ short Torus::mustExecute() const
 
 App::DocumentObjectExecReturn *Torus::execute(void)
 {
+    if (Radius1.getValue() < Precision::Confusion())
+        return new App::DocumentObjectExecReturn("Radius of torus too small");
+    if (Radius2.getValue() < Precision::Confusion())
+        return new App::DocumentObjectExecReturn("Radius of torus too small");
     try {
         // Build a torus
         BRepPrimAPI_MakeTorus mkTorus(Radius1.getValue(),
