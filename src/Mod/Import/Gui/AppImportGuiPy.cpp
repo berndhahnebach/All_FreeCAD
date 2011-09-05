@@ -39,6 +39,7 @@
 # include <TDF_Label.hxx>
 # include <TDF_LabelSequence.hxx>
 # include <TDF_ChildIterator.hxx>
+# include <TDataStd_Name.hxx>
 # include <Quantity_Color.hxx>
 # include <STEPCAFControl_Reader.hxx>
 # include <STEPCAFControl_Writer.hxx>
@@ -89,15 +90,15 @@ public:
         std::map<Standard_Integer, TopoDS_Shape>::iterator it;
         // go through solids
         for (it = mySolids.begin(); it != mySolids.end(); ++it) {
-            createShape(it->second);
+            createShape(it->second, false, true);
         }
         // go through shells
         for (it = myShells.begin(); it != myShells.end(); ++it) {
-            createShape(it->second);
+            createShape(it->second, false, true);
         }
         // go through compounds
         for (it = myCompds.begin(); it != myCompds.end(); ++it) {
-            createShape(it->second, true);
+            createShape(it->second, true, true);
         }
         // do the rest
         if (!myShapes.empty()) {
@@ -107,12 +108,12 @@ public:
             for (it = myShapes.begin(); it != myShapes.end(); ++it) {
                 builder.Add(comp, it->second);
             }
-            createShape(comp, true);
+            createShape(comp, true, false);
         }
     }
 
 private:
-    void createShape(const TopoDS_Shape& shape, bool perface=false) const
+    void createShape(const TopoDS_Shape& shape, bool perface=false, bool setname=false) const
     {
         Part::Feature* part;
         part = static_cast<Part::Feature*>(doc->addObject("Part::Feature", default_name.c_str()));
@@ -127,6 +128,15 @@ private:
                 color.g = jt->second.Green();
                 color.b = jt->second.Blue();
                 static_cast<PartGui::ViewProviderPart*>(vp)->ShapeColor.setValue(color);
+            }
+        }
+
+        // set label name if defined
+        if (setname && !myNameMap.empty()) {
+            std::map<Standard_Integer, std::string>::const_iterator jt;
+            jt = myNameMap.find(shape.HashCode(INT_MAX));
+            if (jt != myNameMap.end()) {
+                part->Label.setValue(jt->second);
             }
         }
 
@@ -194,12 +204,25 @@ private:
                 }
             }
 
+            // getting color
             Quantity_Color col;
             if (hColors->GetColor(label, XCAFDoc_ColorGen, col) ||
                 hColors->GetColor(label, XCAFDoc_ColorSurf, col) ||
                 hColors->GetColor(label, XCAFDoc_ColorCurv, col)) {
                 // add defined color
                 myColorMap[aShape.HashCode(INT_MAX)] = col;
+            }
+
+            // getting names
+            Handle(TDataStd_Name) name;
+            if (label.FindAttribute(TDataStd_Name::GetID(),name)) {
+                TCollection_ExtendedString extstr = name->Get();
+                char* str = new char[extstr.LengthOfCString()+1];
+                extstr.ToUTF8CString(str);
+                std::string label(str);
+                if (!label.empty())
+                    myNameMap[aShape.HashCode(INT_MAX)] = label;
+                delete [] str;
             }
 
             if (label.HasChild()) {
@@ -222,6 +245,7 @@ private:
     std::map<Standard_Integer, TopoDS_Shape> myCompds;
     std::map<Standard_Integer, TopoDS_Shape> myShapes;
     std::map<Standard_Integer, Quantity_Color> myColorMap;
+    std::map<Standard_Integer, std::string> myNameMap;
 };
 
 /* module functions */
