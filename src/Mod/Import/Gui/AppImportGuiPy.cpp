@@ -169,8 +169,8 @@ private:
 
             if (found_face_color) {
                 Gui::ViewProvider* vp = Gui::Application::Instance->getViewProvider(part);
-                if (vp && vp->isDerivedFrom(PartGui::ViewProviderPart::getClassTypeId())) {
-                    static_cast<PartGui::ViewProviderPart*>(vp)->DiffuseColor.setValues(faceColors);
+                if (vp && vp->isDerivedFrom(PartGui::ViewProviderPartExt::getClassTypeId())) {
+                    static_cast<PartGui::ViewProviderPartExt*>(vp)->DiffuseColor.setValues(faceColors);
                 }
             }
         }
