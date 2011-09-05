@@ -775,8 +775,10 @@ int Sketch::addTangentConstraint(int geoId1, int geoId2)
     if (Geoms[geoId2].type == Line) {
         if (Geoms[geoId1].type == Line) {
             GCS::Line &l1 = Lines[Geoms[geoId1].index];
-            GCS::Line &l2 = Lines[Geoms[geoId2].index];
-            return GCSsys.addConstraintParallel(l1, l2);
+            GCS::Point &l2p1 = Points[Geoms[geoId2].startPointId];
+            GCS::Point &l2p2 = Points[Geoms[geoId2].endPointId];
+            GCSsys.addConstraintPointOnLine(l2p1,l1);
+            return GCSsys.addConstraintPointOnLine(l2p2,l1);
         }
         else
             std::swap(geoId1, geoId2);
