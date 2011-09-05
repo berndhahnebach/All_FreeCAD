@@ -75,11 +75,16 @@
         </UserDocu>
       </Documentation>
     </Methode>
-      <Methode Name="fillet">
-        <Documentation>
-          <UserDocu>create fillet between two edges or at a point</UserDocu>
-        </Documentation>
-      </Methode>
+    <Methode Name="fillet">
+      <Documentation>
+        <UserDocu>create fillet between two edges or at a point</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="trim">
+      <Documentation>
+        <UserDocu>trim a curve with a given id at a given reference point</UserDocu>
+      </Documentation>
+    </Methode>
     <Attribute Name="ConstraintCount" ReadOnly="true">
       <Documentation>
         <UserDocu>Number of Constraints in this sketch</UserDocu>

@@ -254,6 +254,27 @@ PyObject* SketchObjectPy::fillet(PyObject *args)
     Py_Return;
 }
 
+PyObject* SketchObjectPy::trim(PyObject *args)
+{
+    PyObject *pcObj;
+    int GeoId;
+
+    if (!PyArg_ParseTuple(args, "iO!", &GeoId, &(Base::VectorPy::Type), &pcObj))
+        return 0;
+
+    Base::Vector3d v1 = static_cast<Base::VectorPy*>(pcObj)->value();
+
+    if (this->getSketchObjectPtr()->trim(GeoId,v1)) {
+        std::stringstream str;
+        str << "Not able to trim curve with id : (" << GeoId << ")";
+        PyErr_SetString(PyExc_ValueError, str.str().c_str());
+        return 0;
+    }
+
+    Py_Return; 
+
+}
+
 Py::Int SketchObjectPy::getConstraintCount(void) const
 {
     return Py::Int(this->getSketchObjectPtr()->Constraints.getSize());

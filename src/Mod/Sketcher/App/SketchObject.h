@@ -36,7 +36,7 @@
 namespace Sketcher
 {
 
-class AppSketcherExport SketchObject :public Part::Part2DObject
+class AppSketcherExport SketchObject : public Part::Part2DObject
 {
     PROPERTY_HEADER(Sketcher::SketchObject);
 
@@ -94,6 +94,9 @@ public:
     int fillet(int geoId1, int geoId2,
                const Base::Vector3d& refPnt1, const Base::Vector3d& refPnt2,
                double radius, bool trim=true);
+
+    /// trim a curve
+    int trim(int geoId, const Base::Vector3d& point);
 
     /// retrieves for a Vertex number the corresponding GeoId and PosId
     void getGeoVertexIndex(int VertexId, int &GeoId, PointPos &PosId);

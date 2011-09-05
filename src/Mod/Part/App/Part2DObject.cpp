@@ -152,13 +152,19 @@ bool Part2DObject::seekTrimPoints(const std::vector<Geometry *> &geomlist,
 
     gp_Pln plane(gp_Pnt(0,0,0),gp_Dir(0,0,1));
 
+    bool periodic=false;
+    double period;
     Handle_Geom2d_Curve primaryCurve;
     Handle_Geom_Geometry geom = (geomlist[GeoId])->handle();
     Handle_Geom_Curve curve3d = Handle_Geom_Curve::DownCast(geom);
     if (curve3d.IsNull())
         return false;
-    else
+    else {
         primaryCurve = GeomAPI::To2d(curve3d, plane);
+        periodic = primaryCurve->IsPeriodic();
+        if (periodic)
+            period = primaryCurve->Period();
+    }
 
     // create the intersector and projector functions
     Geom2dAPI_InterCurveCurve Intersector;
@@ -187,7 +193,22 @@ bool Part2DObject::seekTrimPoints(const std::vector<Geometry *> &geomlist,
                     // get the parameter of the intersection point on the primary curve
                     Projector.Init(p, primaryCurve);
                     double param = Projector.Parameter(1);
-                    if (param < pickedParam && param > param1) {
+                    if (periodic) {
+                        // transfer param into the interval (pickedParam-period pickedParam]
+                        param = param - period * ceil((param-pickedParam) / period);
+                        if (param > param1) {
+                            param1 = param;
+                            p1 = p;
+                            GeoId1 = id;
+                        }
+                        param -= period; // transfer param into the interval (pickedParam pickedParam+period]
+                        if (param < param2) {
+                            param2 = param;
+                            p2 = p;
+                            GeoId2 = id;
+                        }
+                    }
+                    else if (param < pickedParam && param > param1) {
                         param1 = param;
                         p1 = p;
                         GeoId1 = id;
@@ -199,6 +220,16 @@ bool Part2DObject::seekTrimPoints(const std::vector<Geometry *> &geomlist,
                     }
                 }
             }
+        }
+    }
+
+    if (periodic) {
+        // in case both points coincide, cancel the selection of one of both
+        if (abs(param2-param1-period) < 1e-10) {
+            if (param2 - pickedParam >= pickedParam - param1)
+                GeoId2 = -1;
+            else
+                GeoId1 = -1;
         }
     }
 
