@@ -100,7 +100,7 @@ SbColor sCurveColor             (1.0f,1.0f,1.0f);
 SbColor sCurveDraftColor        (0.4f,0.4f,0.8f);
 SbColor sPointColor             (0.5f,0.5f,0.5f);
 SbColor sConstraintColor        (0.0f,0.8f,0.0f);
-SbColor sCrossColor             (0.0f,0.0f,0.8f);
+SbColor sCrossColor             (0.4f,0.4f,0.8f);
 SbColor sConstrIcoColor         (0.918f,0.145f,0.f);
 
 SbColor ViewProviderSketch::PreselectColor(0.1f, 0.1f, 0.8f);
@@ -955,6 +955,21 @@ bool ViewProviderSketch::isConstraintAtPosition(const Base::Vector3d &constrPos,
     }
 }
 
+Base::Vector3d ViewProviderSketch::seekConstraintPosition(const Base::Vector3d &suggestedPos,
+                                                          const Base::Vector3d &dir, int step,
+                                                          const SoNode *constraint)
+{
+    int multiplier = 0;
+    Base::Vector3d freePos;
+    do {
+        // Calculate new position of constraint
+        freePos = suggestedPos + (dir * (multiplier * step));
+        multiplier++; // Increment the multiplier
+    }
+    while (isConstraintAtPosition(freePos, constraint));
+    return freePos;
+}
+
 void ViewProviderSketch::onSelectionChanged(const Gui::SelectionChanges& msg)
 {
     // are we in edit?
@@ -1318,6 +1333,14 @@ void ViewProviderSketch::drawConstraintIcons()
             break;
         case Tangent:
             icoType = QString::fromAscii("small/Constraint_Tangent_sm");
+            {   // second icon is available only for colinear line segments
+                Part::Geometry *geo1 = getSketchObject()->Geometry.getValues()[(*it)->First];
+                Part::Geometry *geo2 = getSketchObject()->Geometry.getValues()[(*it)->Second];
+                if (geo1->getTypeId() == Part::GeomLineSegment::getClassTypeId() &&
+                    geo2->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
+                    index2 = 4;
+                }
+            }
             break;
         case Parallel:
             icoType = QString::fromAscii("small/Constraint_Parallel_sm");
@@ -1630,15 +1653,8 @@ Restart:
                     //Get a set of vectors perpendicular and tangential to these
                     Base::Vector3d dir = (lineSeg->getEndPoint()-lineSeg->getStartPoint()).Normalize();
                     Base::Vector3d norm(-dir.y,dir.x,0);
-                    Base::Vector3d constrPos;
-
-                    int multiplier = 0;
-                    do {
-                        // Calculate new position of constraint
-                        constrPos = midpos + (norm * 5) + (dir * (multiplier * 5));
-                        multiplier++; // Increment the multiplier
-                    }
-                    while (isConstraintAtPosition(constrPos, edit->constrGroup->getChild(i)));
+                    Base::Vector3d constrPos = midpos + (norm * 5);
+                    constrPos = seekConstraintPosition(constrPos, dir, 5, edit->constrGroup->getChild(i));
 
                     dynamic_cast<SoTranslation *>(sep->getChild(1))->translation = SbVec3f(constrPos.x, constrPos.y, zConstr);
                 }
@@ -1712,23 +1728,11 @@ Restart:
                         norm2 = Base::Vector3d(-dir2.y,dir2.x,0.);
                     }
 
-                    Base::Vector3d constrPos1;
-                    int multiplier = 0;
-                    do {
-                        // Calculate new position of constraint
-                        constrPos1 = midpos1 + (norm1 * 5) + (dir1 * (multiplier * 5));
-                        multiplier++; // Increment the multiplier
-                    }
-                    while (isConstraintAtPosition(constrPos1, edit->constrGroup->getChild(i)));
+                    Base::Vector3d constrPos1 = midpos1 + (norm1 * 5);
+                    constrPos1 = seekConstraintPosition(constrPos1, dir1, 5, edit->constrGroup->getChild(i));
 
-                    Base::Vector3d constrPos2;
-                    multiplier = 0;
-                    do {
-                        // Calculate new position of constraint
-                        constrPos2 = midpos2 + (norm2 * 5) + (dir2 * (multiplier * 5));
-                        multiplier++; // Increment the multiplier
-                    }
-                    while (isConstraintAtPosition(constrPos2, edit->constrGroup->getChild(i)));
+                    Base::Vector3d constrPos2 = midpos2 + (norm2 * 5);
+                    constrPos2 = seekConstraintPosition(constrPos2, dir2, 5, edit->constrGroup->getChild(i));
 
                     constrPos2 = constrPos2 - constrPos1;
 
@@ -1889,62 +1893,77 @@ Restart:
                         const Part::Geometry *geo1 = (*geomlist)[Constr->First];
                         const Part::Geometry *geo2 = (*geomlist)[Constr->Second];
 
-                        const Part::GeomLineSegment *lineSeg = 0;
-                        const Part::GeomCircle *circle1 = 0;
-                        const Part::GeomCircle *circle2 = 0;
-                        const Part::GeomArcOfCircle *arc1 = 0;
-                        const Part::GeomArcOfCircle *arc2 = 0;
+                        if (geo1->getTypeId() == Part::GeomLineSegment::getClassTypeId() &&
+                            geo2->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
+                            const Part::GeomLineSegment *lineSeg1 = dynamic_cast<const Part::GeomLineSegment *>(geo1);
+                            const Part::GeomLineSegment *lineSeg2 = dynamic_cast<const Part::GeomLineSegment *>(geo2);
+                            // tangency between two lines
+                            Base::Vector3d midpos1 = ((lineSeg1->getEndPoint()+lineSeg1->getStartPoint())/2);
+                            Base::Vector3d midpos2 = ((lineSeg2->getEndPoint()+lineSeg2->getStartPoint())/2);
+                            Base::Vector3d dir1 = (lineSeg1->getEndPoint()-lineSeg1->getStartPoint()).Normalize();
+                            Base::Vector3d dir2 = (lineSeg2->getEndPoint()-lineSeg2->getStartPoint()).Normalize();
+                            Base::Vector3d norm1 = Base::Vector3d(-dir1.y,dir1.x,0.);
+                            Base::Vector3d norm2 = Base::Vector3d(-dir2.y,dir2.x,0.);
 
-                        //[Fix me] There is probably a nicer way of doing this.
-                        //Assign pointers to the first part of the geometry
+                            Base::Vector3d constrPos1 = midpos1 + (norm1 * 5);
+                            constrPos1 = seekConstraintPosition(constrPos1, dir1, 5, edit->constrGroup->getChild(i));
+
+                            Base::Vector3d constrPos2 = midpos2 + (norm2 * 5);
+                            constrPos2 = seekConstraintPosition(constrPos2, dir2, 5, edit->constrGroup->getChild(i));
+
+                            constrPos2 = constrPos2 - constrPos1;
+
+                            dynamic_cast<SoTranslation *>(sep->getChild(1))->translation =  SbVec3f(constrPos1.x, constrPos1.y, zConstr);
+                            dynamic_cast<SoTranslation *>(sep->getChild(3))->translation =  SbVec3f(constrPos2.x, constrPos2.y, zConstr);
+                            break;
+                        }
+                        else if (geo2->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
+                            std::swap(geo1,geo2);
+                        }
+
                         if (geo1->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
-                            lineSeg = dynamic_cast<const Part::GeomLineSegment *>(geo1);
+                            const Part::GeomLineSegment *lineSeg = dynamic_cast<const Part::GeomLineSegment *>(geo1);
+                            Base::Vector3d dir = (lineSeg->getEndPoint() - lineSeg->getStartPoint()).Normalize();
+                            Base::Vector3d norm(-dir.y, dir.x, 0);
+                            if (geo2->getTypeId()== Part::GeomCircle::getClassTypeId()) {
+                                const Part::GeomCircle *circle = dynamic_cast<const Part::GeomCircle *>(geo2);
+                                // tangency between a line and a circle
+                                float length = (circle->getCenter() - lineSeg->getStartPoint())*dir;
+                                pos = lineSeg->getStartPoint() + dir * length + norm * 5;
+                            }
+                            else if (geo2->getTypeId()== Part::GeomArcOfCircle::getClassTypeId()) {
+                                const Part::GeomArcOfCircle *arc = dynamic_cast<const Part::GeomArcOfCircle *>(geo2);
+                                // tangency between a line and an arc
+                                float length = (arc->getCenter() - lineSeg->getStartPoint())*dir;
+                                pos = lineSeg->getStartPoint() + dir * length + norm * 5;
+                            }
                         }
-                        else if (geo1->getTypeId()== Part::GeomArcOfCircle::getClassTypeId()) {
-                            arc1= dynamic_cast<const Part::GeomArcOfCircle *>(geo1);
-                        }
-                        else if (geo1->getTypeId()== Part::GeomCircle::getClassTypeId()) {
-                            circle1 = dynamic_cast<const Part::GeomCircle *>(geo1);
-                        }
-                        // Assign the second type of geometry
-                        if (geo2->getTypeId()== Part::GeomLineSegment::getClassTypeId()) {
-                            lineSeg = dynamic_cast<const Part::GeomLineSegment *>(geo2);
+
+                        if (geo1->getTypeId()== Part::GeomCircle::getClassTypeId() &&
+                            geo2->getTypeId()== Part::GeomCircle::getClassTypeId()) {
+                            const Part::GeomCircle *circle1 = dynamic_cast<const Part::GeomCircle *>(geo1);
+                            const Part::GeomCircle *circle2 = dynamic_cast<const Part::GeomCircle *>(geo2);
+                            // tangency between two cicles
                         }
                         else if (geo2->getTypeId()== Part::GeomCircle::getClassTypeId()) {
-                            if (circle1) {
-                                circle2 = dynamic_cast<const Part::GeomCircle *>(geo2);
-                            } else {
-                                circle1 = dynamic_cast<const Part::GeomCircle *>(geo2);
-                            }
+                            std::swap(geo1,geo2);
                         }
-                        else if (geo2->getTypeId()== Part::GeomArcOfCircle::getClassTypeId()) {
-                            if (arc1) {
-                                arc2 = dynamic_cast<const Part::GeomArcOfCircle *>(geo2);
-                            } else {
-                                arc1 = dynamic_cast<const Part::GeomArcOfCircle *>(geo2);
+
+                        if (geo1->getTypeId()== Part::GeomCircle::getClassTypeId()) {
+                            const Part::GeomCircle *circle = dynamic_cast<const Part::GeomCircle *>(geo1);
+                            if (geo2->getTypeId()== Part::GeomArcOfCircle::getClassTypeId()) {
+                                const Part::GeomArcOfCircle *arc = dynamic_cast<const Part::GeomArcOfCircle *>(geo2);
+                                // tangency between a circle and an arc
                             }
                         }
 
-                        // Select the pairs that we would like to show
-                        if (lineSeg && (circle1 || arc1)) {
-                            Base::Vector3d lineEndToCenter;
-                            if (circle1)
-                                lineEndToCenter = circle1->getCenter() - lineSeg->getStartPoint();
-                            else if (arc1)
-                                lineEndToCenter = arc1->getCenter() - lineSeg->getStartPoint();
-
-                            pos = lineSeg->getEndPoint() - lineSeg->getStartPoint();
-
-                            // Get Scalar / Inner product
-                            float length = (lineEndToCenter.x * pos.x + lineEndToCenter.y * pos.y) / pos.Length();
-                            Base::Vector3d dir = pos;
-                            dir.Normalize();
-                            Base::Vector3d norm(-dir.y, dir.x, 0);
-                            pos = lineSeg->getStartPoint() + dir * length + norm * 5;
+                        if (geo1->getTypeId()== Part::GeomArcOfCircle::getClassTypeId() &&
+                            geo1->getTypeId()== Part::GeomArcOfCircle::getClassTypeId()) {
+                            const Part::GeomArcOfCircle *arc1 = dynamic_cast<const Part::GeomArcOfCircle *>(geo1);
+                            const Part::GeomArcOfCircle *arc2 = dynamic_cast<const Part::GeomArcOfCircle *>(geo2);
+                            // tangency between two arcs
                         }
-                        else {
-                            // Other Behaviour hasn't been implemented
-                        }
+
                     }
                     dynamic_cast<SoTranslation *>(sep->getChild(1))->translation =  SbVec3f(pos.x, pos.y, zConstr);
                 }
@@ -2276,11 +2295,8 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
             case Horizontal:
             case Vertical:
                 {
-                    //Create the Image Nodes
-                    SoImage *constraintIcon = new SoImage();
-
-                    sep->addChild(new SoTranslation());
-                    sep->addChild(constraintIcon);
+                    sep->addChild(new SoTranslation()); // 1.
+                    sep->addChild(new SoImage());       // 2. constraint icon
 
                     // remember the type of this constraint node
                     edit->vConstrType.push_back((*it)->Type);
@@ -2293,15 +2309,11 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
             case Perpendicular:
             case Equal:
                 {
-                    // Create the Image Nodes
-                    SoImage *constraintIcon = new SoImage();
-                    SoImage *constraintIcon2 = new SoImage();
-
                     // Add new nodes to Constraint Seperator
-                    sep->addChild(new SoTranslation());
-                    sep->addChild(constraintIcon);
-                    sep->addChild(new SoTranslation());
-                    sep->addChild(constraintIcon2);
+                    sep->addChild(new SoTranslation()); // 1.
+                    sep->addChild(new SoImage());       // 2. first constraint icon
+                    sep->addChild(new SoTranslation()); // 3.
+                    sep->addChild(new SoImage());       // 4. second constraint icon
 
                     // remember the type of this constraint node
                     edit->vConstrType.push_back((*it)->Type);
@@ -2311,9 +2323,6 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
             case Tangent:
             case Symmetric:
                 {
-                    // Create the Image Nodes
-                    SoImage *constraintIcon = new SoImage();
-
                     if ((*it)->Type == Symmetric) {
                         SoSeparator *sepArrows = new SoSeparator();
                         sepArrows->addChild(new SoCoordinate3());
@@ -2324,7 +2333,17 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
 
                     // Add new nodes to Constraint Seperator
                     sep->addChild(new SoTranslation());
-                    sep->addChild(constraintIcon);
+                    sep->addChild(new SoImage()); // constraint icon
+
+                    if ((*it)->Type == Tangent) {
+                        Part::Geometry *geo1 = getSketchObject()->Geometry.getValues()[(*it)->First];
+                        Part::Geometry *geo2 = getSketchObject()->Geometry.getValues()[(*it)->Second];
+                        if (geo1->getTypeId() == Part::GeomLineSegment::getClassTypeId() &&
+                            geo2->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
+                            sep->addChild(new SoTranslation());
+                            sep->addChild(new SoImage()); // second constraint icon
+                        }
+                    }
 
                     edit->vConstrType.push_back((*it)->Type);
                 }

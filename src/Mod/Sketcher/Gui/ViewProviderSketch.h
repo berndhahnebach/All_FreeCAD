@@ -64,7 +64,7 @@ class DrawSketchHandler;
 /** The Sketch ViewProvider
   * This class handles mainly the drawing and editing of the sketch.
   * It draws the geometry and the constraints applied to the sketch.
-  * It uses the class DrawSketchHandler to facilitade the creation 
+  * It uses the class DrawSketchHandler to facilitade the creation
   * of new geometry while editing.
   */
 class SketcherGuiExport ViewProviderSketch :  public PartGui::ViewProvider2DObject, public Gui::SelectionObserver
@@ -129,14 +129,18 @@ public:
     void updateColor(void);
     /// get the pointer to the sketch document object
     Sketcher::SketchObject *getSketchObject(void) const;
-    
+
     /// Snap Points X,Y (Mouse Coordinates) onto Snap Grid if enabled
     void snapToGrid(double& x, double& y);
-    
-    // Moves a selected constraint
+
+    /// Moves a selected constraint
     void moveConstraint(int constNum, const Base::Vector2D &toPos);
-     // Checks if there is a constraint object at position vector
+    /// Checks if there is a constraint object at position vector
     bool isConstraintAtPosition(const Base::Vector3d &constrPos, const SoNode *constraint);
+    /// Finds a free position for placing a constraint icon
+    Base::Vector3d seekConstraintPosition(const Base::Vector3d &suggestedPos,
+                                          const Base::Vector3d &dir, int step,
+                                          const SoNode *constraint);
 
     int getPreselectPoint(void) const;
     int getPreselectCurve(void) const;
@@ -157,7 +161,7 @@ public:
     virtual bool mouseMove(const SbVec3f &pNear, const SbVec3f &pFar, const SoPickedPoint *pp);
     /// is called when the Provider is in edit and a key event ocours. Only ESC ends edit.
     virtual bool keyPressed(bool pressed, int key);
-    /// is called when the Provider is in edit and the mouse is clicked 
+    /// is called when the Provider is in edit and the mouse is clicked
     virtual bool mouseButtonPressed(int Button, bool pressed, const SbVec3f &point,
         const SbVec3f &normal, const SoPickedPoint *pp);
     //@}
@@ -186,7 +190,7 @@ protected:
 
     /// set up the edition data structure EditData
     void createEditInventorNodes(void);
-    /// pointer to the edit data structure if the ViewProvider is in edit. 
+    /// pointer to the edit data structure if the ViewProvider is in edit.
     EditData *edit;
     /// build up the visual of the constraints
     void rebuildConstraintsVisual(void);
@@ -205,8 +209,8 @@ protected:
     SketchMode Mode;
 
     // colors for selection and preselection
-    static SbColor PreselectColor; 
-    static SbColor SelectColor; 
+    static SbColor PreselectColor;
+    static SbColor SelectColor;
 
     static SbTime prvClickTime;
     static SbVec3f prvClickPoint;
