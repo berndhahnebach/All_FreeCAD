@@ -607,7 +607,7 @@ void ViewProviderPartExt::updateVisual(const TopoDS_Shape& inputShape)
 
         // handling of the vertices
         TopTools_IndexedMapOfShape V;
-        TopExp::MapShapes(inputShape, TopAbs_VERTEX, V);
+        TopExp::MapShapes(cShape, TopAbs_VERTEX, V);
         nbrNodes += V.Extent();
 
         // create memory for the nodes and indexes
