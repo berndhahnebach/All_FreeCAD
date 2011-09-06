@@ -587,6 +587,8 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                                 << "Sketcher_CreatePolyline"
                                 << "Sketcher_CreateRectangle"
                                 << "Sketcher_CreateFillet"
+                                << "Sketcher_Trimming"
+                                << "Sketcher_ToggleConstruction"
                                 /*<< "Sketcher_CreateText"*/
                                 /*<< "Sketcher_CreateDraftLine"*/;
 

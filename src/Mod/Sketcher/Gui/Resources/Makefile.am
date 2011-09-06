@@ -70,6 +70,7 @@ icons/Constraint_PointOnObject.svg \
 		icons/Sketcher_CreateFillet.svg \
 		icons/Sketcher_CreateText.svg \
 		icons/Sketcher_DraftLine.svg \
+		icons/Sketcher_Trimming.svg \
 		icons/Sketcher_LeaveSketch.svg \
 		icons/Sketcher_NewSketch.svg \
 		translations/Sketcher_af.qm \
