@@ -1106,8 +1106,6 @@ bool CmdSketcherCreateDraftLine::isActive(void)
     return false;
 }
 
-
-
 // ======================================================================================
 
 namespace SketcherGui {
@@ -1350,6 +1348,151 @@ bool CmdSketcherCreateFillet::isActive(void)
 {
     return isCreateGeoActive(getActiveGuiDocument());
 }
+// ======================================================================================
+
+namespace SketcherGui {
+    class TrimmingSelection : public Gui::SelectionFilterGate
+    {
+        App::DocumentObject* object;
+    public:
+        TrimmingSelection(App::DocumentObject* obj)
+            : Gui::SelectionFilterGate((Gui::SelectionFilter*)0), object(obj)
+        {}
+
+        bool allow(App::Document *pDoc, App::DocumentObject *pObj, const char *sSubName)
+        {
+            if (pObj != this->object)
+                return false;
+            if (!sSubName || sSubName[0] == '\0')
+                return false;
+            std::string element(sSubName);
+            if (element.substr(0,4) == "Edge") {
+                int index=std::atoi(element.substr(4,4000).c_str());
+                Sketcher::SketchObject *Sketch = static_cast<Sketcher::SketchObject*>(object);
+                const std::vector<Part::Geometry *> &geo = Sketch->Geometry.getValues();
+                const Part::Geometry *geom = geo[index];
+                if (geom->getTypeId() == Part::GeomLineSegment::getClassTypeId())
+                    return true;
+            }
+            return  false;
+        }
+    };
+};
+
+/* XPM */
+static const char *cursor_trimming[]={
+"32 32 3 1",
+"+ c white",
+"* c red",
+". c None",
+"......+.........................",
+"......+.........................",
+"......+.........................",
+"......+.........................",
+"......+.........................",
+"................................",
+"+++++...+++++...................",
+"................................",
+"......+.........................",
+"......+.........................",
+"......+......................*..",
+"......+....................**...",
+"......+...................**....",
+".*..............................",
+"..*.....................*.......",
+"...*..................**........",
+".....*...............**.........",
+"......*.........................",
+".......*..........*.............",
+".........*......**..............",
+"..........*....**...............",
+"...........****.................",
+"............*.*.................",
+"............***.................",
+"..........*....*................",
+".........*.......*..............",
+".......*..........*.............",
+"......*............*............",
+"....*................*..........",
+"...*..................*.........",
+".*.....................*........",
+".........................*......"};
+
+class DrawSketchHandlerTrimming: public DrawSketchHandler
+{
+public:
+    DrawSketchHandlerTrimming() {}
+    virtual ~DrawSketchHandlerTrimming()
+    {
+        Gui::Selection().rmvSelectionGate();
+    }
+
+    virtual void activated(ViewProviderSketch *sketchgui)
+    {
+        Gui::Selection().rmvSelectionGate();
+        Gui::Selection().addSelectionGate(new TrimmingSelection(sketchgui->getObject()));
+        setCursor(QPixmap(cursor_trimming),7,7);
+    }
+
+    virtual void mouseMove(Base::Vector2D onSketchPos)
+    {
+    }
+
+    virtual bool pressButton(Base::Vector2D onSketchPos)
+    {
+        return true;
+    }
+
+    virtual bool releaseButton(Base::Vector2D onSketchPos)
+    {
+        int GeoId = sketchgui->getPreselectCurve();
+        if (GeoId > -1) {
+            const std::vector<Part::Geometry *> &geo = sketchgui->getSketchObject()->Geometry.getValues();
+            const Part::Geometry *geom = geo[GeoId];
+            if (geom->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
+                Gui::Command::openCommand("Trim edge");
+                Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.trim(%d,App.Vector(%f,%f,0))",
+                          sketchgui->getObject()->getNameInDocument(),
+                          GeoId, onSketchPos.fX, onSketchPos.fY);
+                Gui::Command::commitCommand();
+                Gui::Command::updateActive();
+
+                Gui::Selection().clearSelection();
+            }
+        }
+        else // exit the trimming tool if the user clicked on empty space
+            sketchgui->purgeHandler(); // no code after this line, Handler get deleted in ViewProvider
+
+        return true;
+    }
+};
+
+DEF_STD_CMD_A(CmdSketcherTrimming);
+
+CmdSketcherTrimming::CmdSketcherTrimming()
+  : Command("Sketcher_Trimming")
+{
+    sAppModule      = "Sketcher";
+    sGroup          = QT_TR_NOOP("Sketcher");
+    sMenuText       = QT_TR_NOOP("Trim edge");
+    sToolTipText    = QT_TR_NOOP("Trims an edge with respect to the picked position");
+    sWhatsThis      = sToolTipText;
+    sStatusTip      = sToolTipText;
+    sPixmap         = "Sketcher_Trimming";
+    sAccel          = "T";
+    eType           = ForEdit;
+}
+
+void CmdSketcherTrimming::activated(int iMsg)
+{
+    ActivateHandler(getActiveGuiDocument(), new DrawSketchHandlerTrimming());
+}
+
+bool CmdSketcherTrimming::isActive(void)
+{
+    return isCreateGeoActive(getActiveGuiDocument());
+}
+
 
 void CreateSketcherCommandsCreateGeo(void)
 {
@@ -1364,4 +1507,5 @@ void CreateSketcherCommandsCreateGeo(void)
     rcCmdMgr.addCommand(new CmdSketcherCreateFillet());
     //rcCmdMgr.addCommand(new CmdSketcherCreateText());
     //rcCmdMgr.addCommand(new CmdSketcherCreateDraftLine());
+    rcCmdMgr.addCommand(new CmdSketcherTrimming());
 }
