@@ -345,7 +345,7 @@ SoFCUnifiedSelection::handleEvent(SoHandleEventAction * action)
 
             SbBool old_state = highlighted;
             highlighted = FALSE;
-            if (vpd && vpd->useNewSelectionModel() && !vpd->isEditing()) {
+            if (vpd && vpd->useNewSelectionModel() && vpd->isSelectable()) {
                 std::string documentName = vpd->getObject()->getDocument()->getName();
                 std::string objectName = vpd->getObject()->getNameInDocument();
                 std::string subElementName = vpd->getElement(pp);
@@ -431,7 +431,7 @@ SoFCUnifiedSelection::handleEvent(SoHandleEventAction * action)
                 vp = viewer->getViewProviderByPathFromTail(pPath);
             if (vp && vp->isDerivedFrom(ViewProviderDocumentObject::getClassTypeId()))
                 vpd = static_cast<ViewProviderDocumentObject*>(vp);
-            if (vpd && vpd->useNewSelectionModel() && !vpd->isEditing()) {
+            if (vpd && vpd->useNewSelectionModel() && vpd->isSelectable()) {
                 SoSelectionElementAction::Type type = SoSelectionElementAction::None;
                 std::string documentName = vpd->getObject()->getDocument()->getName();
                 std::string objectName = vpd->getObject()->getNameInDocument();

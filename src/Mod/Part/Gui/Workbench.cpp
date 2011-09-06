@@ -61,7 +61,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     Gui::MenuItem* part = new Gui::MenuItem;
     root->insertItem(item, part);
     part->setCommand("&Part");
-    *part << "Part_Import" << "Separator";
+    *part << "Part_Import" << "Part_Export" << "Separator";
     *part << "Part_Primitives" << "Part_ShapeFromMesh"
           << "Part_MakeSolid" << "Part_ReverseShape" << "Part_SimpleCopy" << "Separator"
           << "Part_Boolean" << "Part_CrossSections" << "Part_Extrude"

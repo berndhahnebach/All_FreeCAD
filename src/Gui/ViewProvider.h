@@ -100,6 +100,8 @@ public:
 
     /// indicates if the ViewProvider use the new Selection model
     virtual bool useNewSelectionModel(void) const {return false;}
+    /// indicates if the ViewProvider can be selected
+    virtual bool isSelectable(void) const {return true;}
     /// return a hit element to the selection path or 0
     virtual std::string getElement(const SoPickedPoint *) const { return std::string(); }
     /// return the higlight lines for a given element or the whole shape

@@ -449,9 +449,19 @@ void CmdPartImport::activated(int iMsg)
     if (!fn.isEmpty()) {
         App::Document* pDoc = getDocument();
         if (!pDoc) return; // no document
-        openCommand("Part Import Create");
-        doCommand(Doc, "import Part");
-        doCommand(Doc, "Part.insert(\"%s\",\"%s\")", (const char*)fn.toAscii(), pDoc->getName());
+        openCommand("Import Part");
+        QString ext = QFileInfo(fn).suffix().toLower();
+        if (ext == QLatin1String("step") || 
+            ext == QLatin1String("stp")  ||
+            ext == QLatin1String("iges") ||
+            ext == QLatin1String("igs")) {
+            doCommand(Doc, "import ImportGui");
+            doCommand(Doc, "ImportGui.insert(\"%s\",\"%s\")", (const char*)fn.toUtf8(), pDoc->getName());
+        }
+        else {
+            doCommand(Doc, "import Part");
+            doCommand(Doc, "Part.insert(\"%s\",\"%s\")", (const char*)fn.toUtf8(), pDoc->getName());
+        }
         commitCommand();
     }
 }
@@ -462,6 +472,56 @@ bool CmdPartImport::isActive(void)
         return true;
     else
         return false;
+}
+
+//===========================================================================
+// CmdPartExport
+//===========================================================================
+DEF_STD_CMD_A(CmdPartExport);
+
+CmdPartExport::CmdPartExport()
+  : Command("Part_Export")
+{
+    sAppModule    = "Part";
+    sGroup        = QT_TR_NOOP("Part");
+    sMenuText     = QT_TR_NOOP("Export CAD...");
+    sToolTipText  = QT_TR_NOOP("Exports to a CAD file");
+    sWhatsThis    = "Part_Export";
+    sStatusTip    = sToolTipText;
+  //sPixmap       = "Part_Export";
+}
+
+void CmdPartExport::activated(int iMsg)
+{
+    QStringList filter;
+    filter << QObject::tr("All CAD Files (*.stp *.step *.igs *.iges *.brp *.brep)");
+    filter << QObject::tr("STEP (*.stp *.step)");
+    filter << QObject::tr("IGES (*.igs *.iges)");
+    filter << QObject::tr("BREP (*.brp *.brep)");
+    filter << QObject::tr("All Files (*.*)");
+
+    QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), QString(), QString(), filter.join(QLatin1String(";;")));
+    if (!fn.isEmpty()) {
+        App::Document* pDoc = getDocument();
+        if (!pDoc) return; // no document
+        openCommand("Import Part");
+        QString ext = QFileInfo(fn).suffix().toLower();
+        if (ext == QLatin1String("step") || 
+            ext == QLatin1String("stp")  ||
+            ext == QLatin1String("iges") ||
+            ext == QLatin1String("igs")) {
+            Gui::Application::Instance->exportTo((const char*)fn.toUtf8(),pDoc->getName(),"ImportGui");
+        }
+        else {
+            Gui::Application::Instance->exportTo((const char*)fn.toUtf8(),pDoc->getName(),"Part");
+        }
+        commitCommand();
+    }
+}
+
+bool CmdPartExport::isActive(void)
+{
+    return Gui::Selection().countObjectsOfType(Part::Feature::getClassTypeId()) > 0;
 }
 
 //===========================================================================
@@ -1041,6 +1101,7 @@ void CreatePartCommands(void)
     rcCmdMgr.addCommand(new CmdPartPrimitives());
 
     rcCmdMgr.addCommand(new CmdPartImport());
+    rcCmdMgr.addCommand(new CmdPartExport());
     rcCmdMgr.addCommand(new CmdPartImportCurveNet());
     rcCmdMgr.addCommand(new CmdPartPickCurveNet());
     rcCmdMgr.addCommand(new CmdShapeInfo());
