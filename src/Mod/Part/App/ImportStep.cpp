@@ -160,7 +160,7 @@ int Part::ImportStepParts(App::Document *pcDoc, const char* Name)
                         col.setItem(1, Py::Float(it->second.Green()));
                         col.setItem(2, Py::Float(it->second.Blue()));
                         vp.setAttr("ShapeColor", col);
-                        Base::Console().Message("Set color to shape\n");
+                        //Base::Console().Message("Set color to shape\n");
                     }
                     catch (Py::Exception& e) {
                         e.clear();

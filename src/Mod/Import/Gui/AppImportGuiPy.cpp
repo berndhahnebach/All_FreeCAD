@@ -52,6 +52,7 @@
 # include <TopTools_IndexedMapOfShape.hxx>
 # include <TopTools_MapOfShape.hxx>
 # include <TopExp_Explorer.hxx>
+# include <TDataStd_Shape.hxx>
 #endif
 
 #include <Base/PyObjectBase.h>
@@ -90,11 +91,11 @@ public:
         std::map<Standard_Integer, TopoDS_Shape>::iterator it;
         // go through solids
         for (it = mySolids.begin(); it != mySolids.end(); ++it) {
-            createShape(it->second, false, true);
+            createShape(it->second, true, true);
         }
         // go through shells
         for (it = myShells.begin(); it != myShells.end(); ++it) {
-            createShape(it->second, false, true);
+            createShape(it->second, true, true);
         }
         // go through compounds
         for (it = myCompds.begin(); it != myCompds.end(); ++it) {
@@ -311,7 +312,13 @@ static PyObject * importer(PyObject *self, PyObject *args)
         xcaf.loadShapes();
         pcDoc->recompute();
 
-    } PY_CATCH;
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
+    PY_CATCH
 
     Py_Return;
 }
@@ -330,6 +337,8 @@ static PyObject * exporter(PyObject *self, PyObject *args)
         Handle_XCAFDoc_ShapeTool hShapeTool = XCAFDoc_DocumentTool::ShapeTool(hDoc->Main());
         Handle_XCAFDoc_ColorTool hColors = XCAFDoc_DocumentTool::ColorTool(hDoc->Main());
 
+        TDF_Label rootLabel= TDF_TagSource::NewChild(hDoc->Main());
+
         Py::List list(object);
         for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
             PyObject* item = (*it).ptr();
@@ -339,20 +348,58 @@ static PyObject * exporter(PyObject *self, PyObject *args)
                     Part::Feature* part = static_cast<Part::Feature*>(obj);
                     const TopoDS_Shape& shape = part->Shape.getValue();
 
-                    // Add shape
-                    TDF_Label col_label = hShapeTool->AddShape(shape, Standard_False);
+                    // Add shape and name
+                    //TDF_Label shapeLabel = hShapeTool->AddShape(shape, Standard_False);
+                    TDF_Label shapeLabel= TDF_TagSource::NewChild(rootLabel);
+                    TDataStd_Shape::Set(shapeLabel, shape);
+                    TDataStd_Name::Set(shapeLabel, TCollection_ExtendedString(part->Label.getValue(), 1));
 
                     // Add color information
                     Quantity_Color col;
                     Gui::ViewProvider* vp = Gui::Application::Instance->getViewProvider(part);
-                    if (vp && vp->isDerivedFrom(PartGui::ViewProviderPart::getClassTypeId())) {
+                    bool per_face = false;
+                    if (vp && vp->isDerivedFrom(PartGui::ViewProviderPartExt::getClassTypeId())) {
+                        const std::vector<App::Color>& c = static_cast<PartGui::ViewProviderPartExt*>
+                            (vp)->DiffuseColor.getValues();
+                        // define color per face
+                        if (c.size() > 1) {
+                            per_face = true;
+                            std::set<int> face_index;
+                            TopTools_IndexedMapOfShape faces;
+                            TopExp_Explorer xp(shape,TopAbs_FACE);
+                            while (xp.More()) {
+                                face_index.insert(faces.Add(xp.Current()));
+                                xp.Next();
+                            }
+
+                            xp.Init(shape,TopAbs_FACE);
+                            while (xp.More()) {
+                                int index = faces.FindIndex(xp.Current());
+                                if (face_index.find(index) != face_index.end()) {
+                                    face_index.erase(index);
+                                    TDF_Label faceLabel= TDF_TagSource::NewChild(shapeLabel);
+                                    TDataStd_Shape::Set(faceLabel, xp.Current());
+
+                                    const App::Color& color = c[index-1];
+                                    Quantity_Parameter mat[3];
+                                    mat[0] = color.r;
+                                    mat[1] = color.g;
+                                    mat[2] = color.b;
+                                    col.SetValues(mat[0],mat[1],mat[2],Quantity_TOC_RGB);
+                                    hColors->SetColor(faceLabel, col, XCAFDoc_ColorSurf);
+                                }
+                                xp.Next();
+                            }
+                        }
+                    }
+                    if (!per_face && vp && vp->isDerivedFrom(PartGui::ViewProviderPart::getClassTypeId())) {
                         App::Color color = static_cast<PartGui::ViewProviderPart*>(vp)->ShapeColor.getValue();
                         Quantity_Parameter mat[3];
                         mat[0] = color.r;
                         mat[1] = color.g;
                         mat[2] = color.b;
                         col.SetValues(mat[0],mat[1],mat[2],Quantity_TOC_RGB);
-                        hColors->SetColor(col_label, col, XCAFDoc_ColorGen);
+                        hColors->SetColor(shapeLabel, col, XCAFDoc_ColorGen);
                     }
                 }
                 else {
@@ -368,11 +415,18 @@ static PyObject * exporter(PyObject *self, PyObject *args)
             writer.Write(filename);
         }
         else if (file.hasExtension("igs") || file.hasExtension("iges")) {
+            IGESControl_Controller::Init();
             IGESCAFControl_Writer writer;
             writer.Transfer(hDoc);
             writer.Write(filename);
         }
-    } PY_CATCH;
+    }
+    catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        PyErr_SetString(PyExc_Exception, e->GetMessageString());
+        return 0;
+    }
+    PY_CATCH
 
     Py_Return;
 }

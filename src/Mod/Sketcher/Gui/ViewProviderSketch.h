@@ -86,6 +86,8 @@ public:
     /// draw the edit curve
     void drawEdit(const std::vector<Base::Vector2D> &EditCurve);
 
+    /// Is the view provider selectable
+    bool isSelectable(void) const {return !isEditing();}
     /// Observer message from the Selection
     virtual void onSelectionChanged(const Gui::SelectionChanges& msg);
 
