@@ -144,10 +144,9 @@ namespace GCS
         void getSubSystems(std::vector<SubSystem *> &subsysvec);
         void applySolution();
 
-        bool isInit() { return init; }
+        bool isInit() const { return init; }
 
-        void calcJacobi();
-//        int analyse();
+        int diagnose(VEC_pD &params, std::vector<VEC_I> &conflicting, VEC_I &multiplicity);
     };
 
     ///////////////////////////////////////
@@ -165,7 +164,6 @@ namespace GCS
     void free(VEC_pD &doublevec);
     void free(std::vector<Constraint *> &constrvec);
     void free(std::vector<SubSystem *> &subsysvec);
-
 
 } //namespace GCS
 

@@ -74,6 +74,21 @@ public:
     /// retrieves a point
     Base::Vector3d getPoint(int geoId, PointPos pos);
 
+    /** returns the degree of freedom of a sketch and provides a list with groups
+      * of conflicting constraints and a list with the number of constraints that
+      * should be removed from each group
+      *
+      * 0 degrees of freedom correspond to a fully constrained sketch
+      * -1 degrees of freedom correspond to an over-constrained sketch
+      * positive degrees of freedom correspond to an under-constrained sketch
+      *
+      * an over-constrained sketch will always contain conflicting constraints
+      * a fully constrained or under-constrained sketch may contain conflicting
+      * constraints or may not
+      */
+    int diagnose(std::vector< std::vector<int> > &conflicting,
+                 std::vector<int> &multiplicity);
+
     /** set the datum of a distance or angle constraint to a certain value and solve
       * This can cause the solving to fail!
       */

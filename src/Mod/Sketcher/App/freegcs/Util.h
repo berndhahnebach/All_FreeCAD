@@ -31,6 +31,7 @@ namespace GCS
 {
     typedef std::vector<double *> VEC_pD;
     typedef std::vector<double> VEC_D;
+    typedef std::vector<int> VEC_I;
     typedef std::map<double *, double *> MAP_pD_pD;
     typedef std::map<double *, double> MAP_pD_D;
     typedef std::map<double *, int> MAP_pD_I;

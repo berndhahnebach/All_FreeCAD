@@ -132,7 +132,9 @@ void Sketch::setUpSketch(const std::vector<Part::Geometry *> &geo, const std::ve
 
     GCSsys.clearLevel(-1);
     GCSsys.initSolution(Parameters);
-
+    std::vector< std::vector<int> > conflicting;
+    std::vector<int> multiplicity;
+    diagnose(conflicting, multiplicity);
 }
 
 const char* nameByType(Sketch::GeoType type)
@@ -1437,6 +1439,20 @@ Base::Vector3d Sketch::getPoint(int geoId, PointPos pos)
         return Base::Vector3d(*Points[pointId].x, *Points[pointId].y, 0);
 
     return Base::Vector3d();
+}
+
+int Sketch::diagnose(std::vector< std::vector<int> > &conflicting,
+                     std::vector<int> &multiplicity)
+{
+    conflicting.clear();
+    multiplicity.clear();
+    if (GCSsys.isInit()) {
+        int dofs = GCSsys.diagnose(Parameters, conflicting, multiplicity);
+        return dofs;
+    }
+    else {
+        return -1;
+    }
 }
 
 

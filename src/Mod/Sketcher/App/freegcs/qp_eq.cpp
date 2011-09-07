@@ -32,27 +32,27 @@ int qp_eq(MatrixXd &H, VectorXd &g, MatrixXd &A, VectorXd &c,
     FullPivHouseholderQR<MatrixXd> qrAT(A.transpose());
     MatrixXd Q = qrAT.matrixQ ();
 
-    size_t rows = qrAT.rows();
-    size_t cols = qrAT.cols();
-    size_t r = qrAT.rank();
+    size_t params_num = qrAT.rows();
+    size_t constr_num = qrAT.cols();
+    size_t rank = qrAT.rank();
 
-    assert(rows >= cols);
-    if (r != cols)
+    assert(params_num >= constr_num);
+    if (rank != constr_num)
         return -1;
 
     // A^T = Q*R*P^T = Q1*R1*P^T
     // Q = [Q1,Q2], R=[R1;0]
     // Y = Q1 * inv(R^T) * P^T
     // Z = Q2
-    Y = qrAT.matrixQR().topRows(cols)
+    Y = qrAT.matrixQR().topRows(constr_num)
                        .triangularView<Upper>()
                        .transpose()
-                       .solve<OnTheRight>(Q.leftCols(r))
+                       .solve<OnTheRight>(Q.leftCols(rank))
         * qrAT.colsPermutation().transpose();
-    if (rows-r == 0)
+    if (params_num == rank)
         x = - Y * c;
     else {
-        Z = Q.rightCols(rows-r);
+        Z = Q.rightCols(params_num-rank);
 
         MatrixXd ZTHZ = Z.transpose() * H * Z;
         VectorXd rhs = Z.transpose() * (H * Y * c - g);
