@@ -63,25 +63,16 @@ static PyObject * open(PyObject *self, PyObject *args)
         if (file.extension() == "")
             Py_Error(PyExc_Exception,"no file ending");
 
-        if (file.hasExtension("skf")) {
-            // create new document and add Import feature
-            App::Document *pcDoc = App::GetApplication().newDocument("Unnamed");
-
-            Sketcher::SketchObjectSF *pcFeature = (Sketcher::SketchObjectSF *)pcDoc->addObject("Sketcher::SketchObjectSF",file.fileNamePure().c_str());
-            pcFeature->SketchFlatFile.setValue(Name);
-
-            pcDoc->recompute();
-        }
-        //else if (file.hasExtension("igs") || file.hasExtension("iges")) {
+        //if (file.hasExtension("igs") || file.hasExtension("iges")) {
         //    // create new document and add Import feature
         //    App::Document *pcDoc = App::GetApplication().newDocument(file.fileNamePure().c_str());
         //    Part::ImportIges *pcFeature = (Part::ImportIges*) pcDoc->addObject("Part::ImportIges",file.fileNamePure().c_str());
         //    pcFeature->FileName.setValue(Name);
         //    pcDoc->recompute();
         //}
-         else {
+        // else {
             Py_Error(PyExc_Exception,"unknown file ending");
-        }
+        //}
 
     Py_Return;
 }
