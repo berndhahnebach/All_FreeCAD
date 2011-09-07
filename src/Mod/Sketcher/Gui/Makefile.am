@@ -34,8 +34,6 @@ libSketcherGui_la_SOURCES=\
 		ViewProviderSketch.h \
 		DrawSketchHandler.cpp \
 		DrawSketchHandler.h \
-		ViewProviderSketchSF.cpp \
-		ViewProviderSketchSF.h \
 		Workbench.cpp \
 		Workbench.h \
 		EditDatumDialog.cpp \

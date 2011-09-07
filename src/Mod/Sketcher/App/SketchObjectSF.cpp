@@ -28,7 +28,7 @@
 
 
 #include "SketchObjectSF.h"
-#include "SketchFlatInterface.h"
+#include <Base/Console.h>
 
 
 using namespace Sketcher;
@@ -52,9 +52,7 @@ short SketchObjectSF::mustExecute() const
 
 App::DocumentObjectExecReturn *SketchObjectSF::execute(void)
 {
-    SketchFlatInterface temp;
-    temp.load(SketchFlatFile.getValue());
-
-    this->Shape.setValue(temp.getGeoAsShape());
+    Base::Console().Warning("%s: This feature is deprecated and will not longer supported in future version of FreeCAD \n",this->getNameInDocument());
+    // do nothing 
     return App::DocumentObject::StdReturn;
 }

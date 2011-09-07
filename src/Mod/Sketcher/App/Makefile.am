@@ -1,4 +1,4 @@
-SUBDIRS=freegcs sketchsolve_cp sketchflat
+SUBDIRS=freegcs 
 
 lib_LTLIBRARIES=libSketcher.la Sketcher.la
 
@@ -19,8 +19,6 @@ libSketcher_la_SOURCES = \
 		Constraint.cpp \
 		Constraint.h \
 		ConstraintPyImp.cpp \
-		SketchFlatInterface.cpp \
-		SketchFlatInterface.h \
 		PropertyConstraintList.cpp \
 		PropertyConstraintList.h \
 		SketchObject.cpp \

@@ -49,10 +49,10 @@ public:
     /// recalculate the Feature
     App::DocumentObjectExecReturn *execute(void);
     short mustExecute() const;
-    /// returns the type name of the ViewProvider
-    const char* getViewProviderName(void) const {
-        return "SketcherGui::ViewProviderSketchSF";
-    }
+    /// Uses the standard ViewProvider
+    //const char* getViewProviderName(void) const {
+    //    return "SketcherGui::ViewProviderSketchSF";
+    //}
     //@}
 
     bool save(const char* FileName);
