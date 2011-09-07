@@ -28,6 +28,7 @@
 #ifndef _PreComp_
 # include <climits>
 # include <Python.h>
+# include <Standard_Version.hxx>
 # include <BRep_Builder.hxx>
 # include <Handle_TDocStd_Document.hxx>
 # include <Handle_XCAFApp_Application.hxx>
@@ -53,7 +54,11 @@
 # include <TopTools_MapOfShape.hxx>
 # include <TopExp_Explorer.hxx>
 # include <TopoDS_Iterator.hxx>
+#if OCC_VERSION_HEX >= 0x060500
+# include <TDataXtd_Shape.hxx>
+# else
 # include <TDataStd_Shape.hxx>
+# endif
 #endif
 
 #include <Base/PyObjectBase.h>
@@ -364,7 +369,11 @@ static PyObject * exporter(PyObject *self, PyObject *args)
                     // Add shape and name
                     //TDF_Label shapeLabel = hShapeTool->AddShape(shape, Standard_False);
                     TDF_Label shapeLabel= TDF_TagSource::NewChild(rootLabel);
+#if OCC_VERSION_HEX >= 0x060500
+                    TDataXtd_Shape::Set(shapeLabel, shape);
+#else
                     TDataStd_Shape::Set(shapeLabel, shape);
+#endif
                     TDataStd_Name::Set(shapeLabel, TCollection_ExtendedString(part->Label.getValue(), 1));
 
                     // Add color information
@@ -391,8 +400,11 @@ static PyObject * exporter(PyObject *self, PyObject *args)
                                 if (face_index.find(index) != face_index.end()) {
                                     face_index.erase(index);
                                     TDF_Label faceLabel= TDF_TagSource::NewChild(shapeLabel);
+#if OCC_VERSION_HEX >= 0x060500
+                                    TDataXtd_Shape::Set(faceLabel, xp.Current());
+#else
                                     TDataStd_Shape::Set(faceLabel, xp.Current());
-
+#endif
                                     const App::Color& color = c[index-1];
                                     Quantity_Parameter mat[3];
                                     mat[0] = color.r;
