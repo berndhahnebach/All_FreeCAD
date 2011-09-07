@@ -475,7 +475,6 @@ void ViewProviderPartExt::reload()
 
 void ViewProviderPartExt::updateData(const App::Property* prop)
 {
-    Gui::ViewProviderGeometryObject::updateData(prop);
     if (prop->getTypeId() == Part::PropertyPartShape::getClassTypeId()) {
         // get the shape to show
         const TopoDS_Shape &cShape = static_cast<const Part::PropertyPartShape*>(prop)->getValue();
@@ -493,6 +492,7 @@ void ViewProviderPartExt::updateData(const App::Property* prop)
             }
         }
     }
+    Gui::ViewProviderGeometryObject::updateData(prop);
 }
 
 void ViewProviderPartExt::setupContextMenu(QMenu* menu, QObject* receiver, const char* member)

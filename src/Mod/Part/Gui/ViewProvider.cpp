@@ -418,7 +418,6 @@ void ViewProviderPartBase::reload()
 
 void ViewProviderPartBase::updateData(const App::Property* prop)
 {
-    Gui::ViewProviderGeometryObject::updateData(prop);
     if (prop->getTypeId() == Part::PropertyPartShape::getClassTypeId()) {
         TopoDS_Shape cShape = static_cast<const Part::PropertyPartShape*>(prop)->getValue();
 
@@ -473,6 +472,7 @@ void ViewProviderPartBase::updateData(const App::Property* prop)
 #endif
         }
     }
+    Gui::ViewProviderGeometryObject::updateData(prop);
 }
 
 Standard_Boolean ViewProviderPartBase::computeEdges(SoGroup* EdgeRoot, const TopoDS_Shape &myShape)

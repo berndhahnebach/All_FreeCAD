@@ -202,9 +202,7 @@ void ViewProviderFemMesh::updateData(const App::Property* prop)
         ViewProviderFEMMeshBuilder builder;
         builder.createMesh(prop, pcCoords, pcFaces);
     }
-    else {
-        Gui::ViewProviderGeometryObject::updateData(prop);
-    }
+    Gui::ViewProviderGeometryObject::updateData(prop);
 }
 
 void ViewProviderFemMesh::onChanged(const App::Property* prop)
