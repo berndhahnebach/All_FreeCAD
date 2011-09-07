@@ -144,6 +144,8 @@ public:
   virtual App::Property *getDynamicPropertyByName(const char* name) const {
       return 0;
   }
+  virtual void addDynamicProperties(const PropertyContainer*) {
+  }
 
   virtual void Save (Base::Writer &writer) const;
   virtual void Restore(Base::XMLReader &reader);

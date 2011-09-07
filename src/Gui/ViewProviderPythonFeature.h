@@ -194,6 +194,9 @@ public:
     App::Property *getDynamicPropertyByName(const char* name) const {
         return props->getDynamicPropertyByName(name);
     }
+    virtual void addDynamicProperties(const App::PropertyContainer* cont) {
+        return props->addDynamicProperties(cont);
+    }
     /// get all properties of the class (including parent)
     virtual void getPropertyMap(std::map<std::string,App::Property*> &Map) const {
         return props->getPropertyMap(Map);
