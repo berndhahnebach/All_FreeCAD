@@ -24,6 +24,7 @@
 
 #include "GCS.h"
 #include "qp_eq.h"
+#include <Eigen/QR>
 
 namespace GCS
 {
@@ -772,7 +773,61 @@ void System::applySolution()
     for (MAP_pD_pD::const_iterator it=reductionmap.begin();
          it != reductionmap.end(); ++it)
         *(it->first) = *(it->second);
+}
 
+int System::diagnose(VEC_pD &params, std::vector<VEC_I> &conflicting, VEC_I &multiplicity)
+{
+    // the vector "conflicting" will hold groups of constraints that contain conflicts
+    // the vector "multiciplicity" will hold the number of constraints to be deleted in
+    // each group in order to resolve the conflict
+    conflicting.clear();
+    multiplicity.clear();
+    if (subsystems.size() > 0) {
+        Eigen::MatrixXd JA;
+        SubSystem *subsysA = subsystems[0];
+        subsysA->redirectParams();
+        subsysA->calcJacobi(params,JA);
+        subsysA->revertParams();
+
+        Eigen::FullPivHouseholderQR<Eigen::MatrixXd> qrAT(JA.transpose());
+        Eigen::MatrixXd Q = qrAT.matrixQ ();
+        int params_num = qrAT.rows();
+        int constr_num = qrAT.cols();
+        int rank = qrAT.rank();
+
+        Eigen::MatrixXd R;
+        if (constr_num >= params_num)
+            R = qrAT.matrixQR().triangularView<Eigen::Upper>();
+        else
+            R = qrAT.matrixQR().topRows(constr_num)
+                               .triangularView<Eigen::Upper>();
+
+        if (constr_num > rank) { // conflicting constraints
+            for (int i=rank-1; i > 0; i--) {
+                // row i+1 of R should not contain more than rank-i non-zero elements
+                int nz = 0; //(R.row(i) != 0).count();
+                for (int j=0; j < R.cols(); j++) {
+                    if (R(i,j) != 0)
+                        nz++;
+                }
+                if (nz > rank-i) {
+                    int groupId = conflicting.size();
+                    conflicting.push_back(std::vector<int>());
+                    multiplicity.push_back(0);
+                    for (int j=0; j < R.cols(); j++) {
+                        if (R(i,j) != 0) {
+                            conflicting[groupId].push_back(j+1);
+                            multiplicity[groupId] += 1;
+                        }
+                    }
+                    //assert(multiplicity[groupId] == nz - rank + i);
+                }
+            }
+        }
+
+        return params_num - rank;
+    }
+    return 0;
 }
 
 void System::clearSubSystems()
@@ -780,10 +835,6 @@ void System::clearSubSystems()
     init = false;
     free(subsystems);
 }
-
-
-
-
 
 double lineSearch(SubSystem *subsys, Eigen::VectorXd &xdir)
 {
