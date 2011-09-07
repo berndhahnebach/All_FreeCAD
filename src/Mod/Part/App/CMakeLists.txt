@@ -229,9 +229,15 @@ SET(Part_SRCS
     edgecluster.h
 )
 
+SET(Part_Scripts
+	Init.py
+	TestPartApp.py
+    MakeBottle.py
+)
+
 add_library(Part SHARED ${Part_SRCS})
 target_link_libraries(Part ${Part_LIBS})
-fc_copy_script("Mod/Part" "Part" Init.py MakeBottle.py)
+fc_copy_script("Mod/Part" "Part" ${Part_Scripts})
 
 if(MSVC)
     set_target_properties(Part PROPERTIES SUFFIX ".pyd")

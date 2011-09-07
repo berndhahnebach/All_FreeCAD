@@ -11,7 +11,7 @@ SUBDIRS=App Gui Scripts
 # Change data dir from default ($(prefix)/share) to $(prefix)
 datadir = $(prefix)/Mod/PartDesign
 
-data_DATA = Init.py InitGui.py __init__.py
+data_DATA = Init.py InitGui.py TestPartDesignGui.py TestPartDesignApp.py __init__.py
 
 EXTRA_DIST = \
 		$(data_DATA) \
