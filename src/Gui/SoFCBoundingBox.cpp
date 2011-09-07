@@ -31,6 +31,7 @@
 #include <Inventor/actions/SoGLRenderAction.h>
 #include <Inventor/bundles/SoMaterialBundle.h>
 #include <Inventor/elements/SoLightModelElement.h>
+#include <Inventor/elements/SoLazyElement.h>
 #include <Inventor/elements/SoMaterialBindingElement.h>
 #include <Inventor/elements/SoModelMatrixElement.h>
 #include <Inventor/misc/SoState.h>
@@ -208,7 +209,13 @@ void SoFCBoundingBox::GLRender (SoGLRenderAction *action)
     }
 
     bboxCoords->point.finishEditing();
+
+    // Avoid shading
+    SoState * state = action->getState();
+    state->push();
+    SoLazyElement::setLightModel(state, SoLazyElement::BASE_COLOR);
     root->GLRender(action);
+    state->pop();
 }
 
 void SoFCBoundingBox::generatePrimitives (SoAction *action)
