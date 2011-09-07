@@ -1441,6 +1441,7 @@ DocumentObject* Document::_copyObject(DocumentObject* obj, std::map<DocumentObje
     objname = objname.substr(0, lastpos+1);
     DocumentObject* copy = addObject(obj->getTypeId().getName(),objname.c_str());
     if (!copy) return 0;
+    copy->addDynamicProperties(obj);
 
     copy_map[obj] = copy;
 

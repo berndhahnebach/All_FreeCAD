@@ -1354,6 +1354,7 @@ QMimeData * MainWindow::createMimeDataFromSelection () const
         mime = QLatin1String("application/x-documentobject");
         Base::ByteArrayOStreambuf buf(res);
         std::ostream str(&buf);
+        // need this instance to call MergeDocuments::Save()
         MergeDocuments mimeView(doc);
         doc->exportObjects(obj, str);
     }
@@ -1361,6 +1362,7 @@ QMimeData * MainWindow::createMimeDataFromSelection () const
         mime = QLatin1String("application/x-documentobject-file");
         static Base::FileInfo fi(Base::FileInfo::getTempFileName());
         Base::ofstream str(fi, std::ios::out | std::ios::binary);
+        // need this instance to call MergeDocuments::Save()
         MergeDocuments mimeView(doc);
         doc->exportObjects(obj, str);
         str.close();

@@ -88,6 +88,24 @@ std::vector<std::string> DynamicProperty::getDynamicPropertyNames() const
     return names;
 }
 
+void DynamicProperty::addDynamicProperties(const PropertyContainer* cont)
+{
+    std::vector<std::string> names = cont->getDynamicPropertyNames();
+    for (std::vector<std::string>::iterator it = names.begin(); it != names.end(); ++it) {
+        App::Property* prop = cont->getDynamicPropertyByName(it->c_str());
+        if (prop) {
+            addDynamicProperty(
+                prop->getTypeId().getName(),
+                prop->getName(),
+                prop->getGroup(),
+                prop->getDocumentation(),
+                prop->getType(),
+                cont->isReadOnly(prop),
+                cont->isHidden(prop));
+        }
+    }
+}
+
 const char* DynamicProperty::getName(const Property* prop) const
 {
     for (std::map<std::string,PropData>::const_iterator it = props.begin(); it != props.end(); ++it) {

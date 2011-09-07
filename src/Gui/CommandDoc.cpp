@@ -824,6 +824,7 @@ void StdCmdDDuplicateSelection::activated(int iMsg)
         // copy the properties of the associated view providers
         Gui::ViewProvider* view = parent->getViewProvider(it->pObject);
         Gui::ViewProvider* copy_view = doc->getViewProvider(copy);
+        copy_view->addDynamicProperties(view);
         if (!view || !copy_view)
             continue; // should not happen
 

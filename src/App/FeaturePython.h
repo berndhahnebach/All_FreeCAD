@@ -106,6 +106,9 @@ public:
     Property *getDynamicPropertyByName(const char* name) const {
         return props->getDynamicPropertyByName(name);
     }
+    virtual void addDynamicProperties(const PropertyContainer* cont) {
+        return props->addDynamicProperties(cont);
+    }
     /// get all properties of the class (including properties of the parent)
     virtual void getPropertyList(std::vector<Property*> &List) const {
         props->getPropertyList(List);
