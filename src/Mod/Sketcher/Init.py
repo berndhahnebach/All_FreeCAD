@@ -42,6 +42,3 @@ ParGrp.SetString("DocTemplateScript","TemplSketcher.py")
 ParGrp.SetString("WorkBenchName",    "Sketcher Design")
 ParGrp.SetString("WorkBenchModule",  "SketcherWorkbench.py")
 
-
-FreeCAD.EndingAdd("SketchFlat files (*.skf)","Sketcher")
-
