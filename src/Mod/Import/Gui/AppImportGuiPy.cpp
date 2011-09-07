@@ -52,6 +52,7 @@
 # include <TopTools_IndexedMapOfShape.hxx>
 # include <TopTools_MapOfShape.hxx>
 # include <TopExp_Explorer.hxx>
+# include <TopoDS_Iterator.hxx>
 # include <TDataStd_Shape.hxx>
 #endif
 
@@ -212,6 +213,18 @@ private:
                 hColors->GetColor(label, XCAFDoc_ColorCurv, col)) {
                 // add defined color
                 myColorMap[aShape.HashCode(INT_MAX)] = col;
+            }
+            else {
+                // http://www.opencascade.org/org/forum/thread_17107/
+                TopoDS_Iterator it;
+                for (it.Initialize(aShape);it.More(); it.Next()) {
+                    if (hColors->GetColor(it.Value(), XCAFDoc_ColorGen, col) ||
+                        hColors->GetColor(it.Value(), XCAFDoc_ColorSurf, col) ||
+                        hColors->GetColor(it.Value(), XCAFDoc_ColorCurv, col)) {
+                        // add defined color
+                        myColorMap[it.Value().HashCode(INT_MAX)] = col;
+                    }
+                }
             }
 
             // getting names
