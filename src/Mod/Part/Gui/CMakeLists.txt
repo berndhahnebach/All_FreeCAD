@@ -145,9 +145,15 @@ SET(PartGui_SRCS
     TaskFaceColors.ui
 )
 
+SET(PartGui_Scripts
+    InitGui.py
+	TestPartGui.py
+)
+
+
 add_library(PartGui SHARED ${PartGui_SRCS})
 target_link_libraries(PartGui ${PartGui_LIBS})
-fc_copy_script("Mod/Part" "PartGui" InitGui.py)
+fc_copy_script("Mod/Part" "PartGui" ${PartGui_Scripts})
 
 if(MSVC)
     set_target_properties(PartGui PROPERTIES SUFFIX ".pyd")

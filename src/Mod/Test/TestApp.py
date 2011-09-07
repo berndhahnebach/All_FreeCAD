@@ -32,15 +32,25 @@ import FreeCAD, os, unittest
 
 def All():
     suite = unittest.TestSuite()
+    # Base system tests
     suite.addTest(unittest.defaultTestLoader.loadTestsFromName("UnicodeTests") )
     suite.addTest(unittest.defaultTestLoader.loadTestsFromName("Document") )
     suite.addTest(unittest.defaultTestLoader.loadTestsFromName("UnitTests") )
     suite.addTest(unittest.defaultTestLoader.loadTestsFromName("BaseTests") )
-    suite.addTest(unittest.defaultTestLoader.loadTestsFromName("MeshTestsApp") )
-    suite.addTest(unittest.defaultTestLoader.loadTestsFromName("SketcherTestsApp") )
+    # Base system gui test
     if ( FreeCAD.GuiUp == 1):
         suite.addTest(unittest.defaultTestLoader.loadTestsFromName("Workbench") )
         suite.addTest(unittest.defaultTestLoader.loadTestsFromName("Menu") )
+    # add the module tests
+    suite.addTest(unittest.defaultTestLoader.loadTestsFromName("MeshTestsApp") )
+    suite.addTest(unittest.defaultTestLoader.loadTestsFromName("TestSketcherApp") )
+    suite.addTest(unittest.defaultTestLoader.loadTestsFromName("TestPartApp") )
+    suite.addTest(unittest.defaultTestLoader.loadTestsFromName("TestPartDesignApp") )
+    # gui tests of modules
+    if ( FreeCAD.GuiUp == 1):
+        suite.addTest(unittest.defaultTestLoader.loadTestsFromName("TestSketcherGui") )
+        suite.addTest(unittest.defaultTestLoader.loadTestsFromName("TestPartGui") )
+        suite.addTest(unittest.defaultTestLoader.loadTestsFromName("TestPartDesignGui") )
     return suite
 
     

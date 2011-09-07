@@ -78,9 +78,14 @@ SET(SketcherGui_SRCS
     ViewProviderPython.h
 )
 
+SET(SketcherGui_Scripts
+    InitGui.py
+	TestSketcherGui.py
+)
+
 add_library(SketcherGui SHARED ${SketcherGui_SRCS})
 target_link_libraries(SketcherGui ${SketcherGui_LIBS})
-fc_copy_script("Mod/Sketcher" "SketcherGui" InitGui.py)
+fc_copy_script("Mod/Sketcher" "SketcherGui" ${SketcherGui_Scripts})
 
 if(MSVC)
     set_target_properties(SketcherGui PROPERTIES SUFFIX ".pyd")

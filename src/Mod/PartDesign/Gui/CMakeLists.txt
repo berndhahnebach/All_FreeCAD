@@ -95,7 +95,10 @@ SET(PartDesignGuiModule_SRCS
 )
 SOURCE_GROUP("Module" FILES ${PartDesignGuiModule_SRCS})
 
-
+SET(PartDesignGui_Scripts
+    InitGui.py
+	TestPartDesignGui.py
+)
 
 SET(PartDesignGui_SRCS
     ${PartDesignGui_SRCS}
@@ -107,7 +110,7 @@ SET(PartDesignGui_SRCS
 
 add_library(PartDesignGui SHARED ${PartDesignGui_SRCS})
 target_link_libraries(PartDesignGui ${PartDesignGui_LIBS})
-fc_copy_script("Mod/PartDesign" "PartDesignGui" InitGui.py)
+fc_copy_script("Mod/PartDesign" "PartDesignGui" ${PartDesignGui_Scripts})
 
 if(MSVC)
     set_target_properties(PartDesignGui PROPERTIES SUFFIX ".pyd")

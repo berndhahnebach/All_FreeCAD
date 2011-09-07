@@ -101,12 +101,12 @@ SET(Sketcher_SRCS
 SET(Sketcher_Scripts
     Init.py
     SketcherExample.py
+	TestSketcherApp.py
 )
 
 add_library(Sketcher SHARED ${Sketcher_SRCS})
 target_link_libraries(Sketcher ${Sketcher_LIBS})
 fc_copy_script("Mod/Sketcher" "Sketcher" ${Sketcher_Scripts})
-fc_copy_sources("Mod/Sketcher" "Sketcher" SketcherTestsApp.py)
 
 if(MSVC)
     set_target_properties(Sketcher PROPERTIES SUFFIX ".pyd")

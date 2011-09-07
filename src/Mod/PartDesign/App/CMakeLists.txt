@@ -77,6 +77,8 @@ SET(PartDesign_SRCS
 
 SET(PartDesign_Scripts
     __init__.py
+	Init.py
+	TestPartDesignApp.py
     Scripts/__init__.py
     Scripts/Gear.py
     Scripts/DistanceBolt.py
@@ -86,7 +88,6 @@ SET(PartDesign_Scripts
 
 add_library(PartDesign SHARED ${PartDesign_SRCS})
 target_link_libraries(PartDesign ${PartDesign_LIBS})
-fc_copy_script("Mod/PartDesign" "PartDesign" Init.py)
 fc_copy_script("Mod/PartDesign" "PartDesign" ${PartDesign_Scripts})
 
 if(MSVC)

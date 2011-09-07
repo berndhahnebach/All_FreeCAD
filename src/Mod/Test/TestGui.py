@@ -45,6 +45,9 @@ class TestCmd:
         QtUnitGui.addTest("Document")
         QtUnitGui.addTest("UnicodeTests")
         QtUnitGui.addTest("MeshTestsApp")
+        QtUnitGui.addTest("TestSketcherApp")
+        QtUnitGui.addTest("TestPartApp")
+        QtUnitGui.addTest("TestPartDesignApp")
         QtUnitGui.addTest("Workbench")
         QtUnitGui.addTest("Menu")
         QtUnitGui.addTest("Menu.MenuDeleteCases")
@@ -96,7 +99,10 @@ class TestAllTextCmd:
         unittest.TextTestRunner().run(unittest.defaultTestLoader.loadTestsFromName("TestApp.All"))
 
     def GetResources(self):
-        return {'Pixmap'  : 'Std_Tool1', 'MenuText': 'Test all', 'ToolTip': 'Runs all tests at once (can take very long!)'}
+        return {'Pixmap'  : 'Std_Tool1', 
+                'MenuText': 'Test all', 
+                'ToolTip' : 'Runs all tests at once (can take very long!)'
+                }
 
 class TestDocTextCmd:
     "Document test commando object"
@@ -117,10 +123,6 @@ class TestBaseTextCmd:
         return {'Pixmap'  : 'Std_Tool1',
                 'MenuText': 'Test base',
                 'ToolTip' : 'Test the basic functions of FreeCAD'}
-
-
-
-
 
 class TestWorkbenchCmd:
     "Workbench test"
