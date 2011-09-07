@@ -42,8 +42,6 @@ libSketcher_la_CPPFLAGS = -DSketcherAppExport=
 
 libSketcher_la_LIBADD = \
 		freegcs/libfreegcs.la \
-		sketchsolve_cp/libsketchsolve.la \
-		sketchflat/libsketchflat.la \
 		@BOOST_REGEX_LIB@ @BOOST_SYSTEM_LIB@ \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
