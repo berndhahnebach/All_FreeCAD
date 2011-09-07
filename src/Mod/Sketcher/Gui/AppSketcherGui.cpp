@@ -31,7 +31,6 @@
 #include <Gui/Application.h>
 #include <Gui/Language/Translator.h>
 #include "Workbench.h"
-#include "ViewProviderSketchSF.h"
 #include "ViewProviderSketch.h"
 #include "ViewProviderPython.h"
 
@@ -82,7 +81,6 @@ void SketcherGuiExport initSketcherGui()
     SketcherGui::Workbench::init();
 
 	// init objects
-	SketcherGui::ViewProviderSketchSF       ::init();
 	SketcherGui::ViewProviderSketch         ::init();
     SketcherGui::ViewProviderPython         ::init();
     SketcherGui::ViewProviderCustom         ::init();

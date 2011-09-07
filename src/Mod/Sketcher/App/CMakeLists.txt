@@ -65,51 +65,6 @@ SET(Python_SRCS
 )
 SOURCE_GROUP("Python" FILES ${Python_SRCS})
 
-SET(Sketchflat_SRCS
-    sketchflat/assume.cpp
-    sketchflat/curve.cpp
-    sketchflat/derive.cpp
-    sketchflat/derived.h
-    sketchflat/draw.cpp
-    sketchflat/draw_constraint.cpp
-    sketchflat/draw_sketch.cpp
-    sketchflat/export.cpp
-    sketchflat/expr.cpp
-    sketchflat/expr.h
-    sketchflat/FCsimple.cpp
-    sketchflat/FCtext.cpp
-    sketchflat/FCutil.cpp
-    sketchflat/FCwindow.cpp
-    sketchflat/layer.cpp
-    sketchflat/loadsave.cpp
-    sketchflat/measure.cpp
-    sketchflat/newton.cpp
-    sketchflat/polygon.cpp
-    sketchflat/sketch_constraint.cpp
-    sketchflat/sketch.cpp
-    sketchflat/sketch.h
-    sketchflat/sketchflat.cpp
-    sketchflat/sketchflat.h
-    sketchflat/solve.cpp
-    sketchflat/ttf.cpp
-    sketchflat/ui.h
-    sketchflat/undoredo.cpp
-    sketchflat/util.cpp
-    sketchflat/COPYING.txt
-    sketchflat/README.txt
-)
-SOURCE_GROUP("Sketchflat" FILES ${Sketchflat_SRCS})
-
-SET(SketchSolver_SRCS
-    #sketchsolve_cp/Derivatives.cpp
-    sketchsolve_cp/solve.cpp
-    sketchsolve_cp/solve.h
-    #sketchsolve_cp/SolverPointers.cpp
-    sketchsolve_cp/timer.h
-    sketchsolve_cp/errorfuncs.cpp
-    sketchsolve_cp/solveimpl.cpp
-)
-SOURCE_GROUP("Sketchsolve" FILES ${SketchSolver_SRCS})
 
 SET(FreeGCS_SRCS
     freegcs/qp_eq.h
@@ -131,15 +86,11 @@ SET(SketchModule_SRCS
     AppSketcherPy.cpp
     PreCompiled.cpp
     PreCompiled.h
-    SketchFlatInterface.cpp
-    SketchFlatInterface.h
 )
 SOURCE_GROUP("Module" FILES ${SketchModule_SRCS})
 
 SET(Sketcher_SRCS
     ${Features_SRCS}
-    ${Sketchflat_SRCS}
-    ${SketchSolver_SRCS}
     ${FreeGCS_SRCS}
     ${SketchModule_SRCS}
     ${Python_SRCS}
@@ -150,7 +101,6 @@ SET(Sketcher_SRCS
 SET(Sketcher_Scripts
     Init.py
     SketcherExample.py
-    Templates/Sketch.skf
 )
 
 add_library(Sketcher SHARED ${Sketcher_SRCS})

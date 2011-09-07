@@ -73,6 +73,7 @@ PyObject* TrajectoryPy::insertWaypoints(PyObject * args)
         getTrajectoryPtr()->generateTrajectory();
        
         return new TrajectoryPy(new Robot::Trajectory(*getTrajectoryPtr()));
+        //Py_Return;
     }
 
     PyErr_Clear();

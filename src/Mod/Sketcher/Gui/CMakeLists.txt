@@ -64,8 +64,6 @@ SET(SketcherGui_SRCS
     TaskSketcherGeneral.ui
     TaskSketcherGeneral.cpp
     TaskSketcherGeneral.h
-    ViewProviderSketchSF.cpp
-    ViewProviderSketchSF.h
     ViewProviderSketch.cpp
     ViewProviderSketch.h
     DrawSketchHandler.cpp
