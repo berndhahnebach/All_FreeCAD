@@ -32,6 +32,7 @@ libImportGui_la_LIBADD   = \
 		-lTKXSBase \
 		-lTKXCAF \
 		-lTKLCAF \
+		-lTKCAF \
 		-lTKSTEP \
 		-lTKIGES \
 		-lTKXDESTEP \
