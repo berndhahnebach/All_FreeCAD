@@ -979,9 +979,7 @@ src/Mod/PartDesign/Gui/Resources/Makefile
 src/Mod/PartDesign/Scripts/Makefile
 src/Mod/Sketcher/Makefile
 src/Mod/Sketcher/App/Makefile
-src/Mod/Sketcher/App/sketchsolve_cp/Makefile
 src/Mod/Sketcher/App/freegcs/Makefile
-src/Mod/Sketcher/App/sketchflat/Makefile
 src/Mod/Sketcher/Gui/Makefile
 src/Mod/Sketcher/Gui/Resources/Makefile
 src/Mod/Sketcher/Templates/Makefile
