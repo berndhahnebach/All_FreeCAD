@@ -600,23 +600,10 @@ unsigned int FemMesh::getMemSize (void) const
 
 void FemMesh::Save (Base::Writer &writer) const
 {
-    if(!writer.isForceXML()) {
-        //See SaveDocFile(), RestoreDocFile()
-        writer.Stream() << writer.ind() << "<FemMesh file=\"" 
-                        << writer.addFile("FemMesh.unv", this)
-                        << "\"/>" << std::endl;
-    }
 }
 
 void FemMesh::Restore(Base::XMLReader &reader)
 {
-    reader.readElement("FemMesh");
-    std::string file (reader.getAttribute("file") );
-
-    if (!file.empty()) {
-        // initate a file read
-        reader.addFile(file.c_str(),this);
-    }
 }
 
 void FemMesh::SaveDocFile (Base::Writer &writer) const
