@@ -26,6 +26,7 @@
 #ifndef _PreComp_
 # include <TopExp_Explorer.hxx>
 # include <TopTools_IndexedMapOfShape.hxx>
+# include <QSet>
 #endif
 
 #include "ui_TaskFaceColors.h"
@@ -71,9 +72,9 @@ public:
     ViewProviderPartExt* vp;
     App::DocumentObject* obj;
     std::vector<App::Color> current,perface;
-    int index;
+    QSet<int> index;
 
-    Private(ViewProviderPartExt* vp) : ui(new Ui_TaskFaceColors()), vp(vp), index(-1)
+    Private(ViewProviderPartExt* vp) : ui(new Ui_TaskFaceColors()), vp(vp)
     {
         obj = vp->getObject();
 
@@ -124,9 +125,11 @@ void FaceColors::on_defaultButton_clicked()
 
 void FaceColors::on_colorButton_changed()
 {
-    if (d->index > -1) {
+    if (!d->index.isEmpty()) {
         QColor c = d->ui->colorButton->color();
-        d->perface[d->index].set(c.redF(), c.greenF(), c.blueF());
+        for (QSet<int>::iterator it = d->index.begin(); it != d->index.end(); ++it) {
+            d->perface[*it].set(c.redF(), c.greenF(), c.blueF());
+        }
         d->vp->DiffuseColor.setValues(d->perface);
     }
 }
@@ -136,6 +139,7 @@ void FaceColors::onSelectionChanged(const Gui::SelectionChanges& msg)
     // no object selected in the combobox or no sub-element was selected
     if (!msg.pSubName)
         return;
+    bool selection_changed = false;
     if (msg.Type == Gui::SelectionChanges::AddSelection) {
         // when adding a sub-element to the selection check
         // whether this is the currently handled object
@@ -143,14 +147,41 @@ void FaceColors::onSelectionChanged(const Gui::SelectionChanges& msg)
         std::string docname = doc->getName();
         std::string objname = d->obj->getNameInDocument();
         if (docname==msg.pDocName && objname==msg.pObjectName) {
-            d->index = std::atoi(msg.pSubName+4)-1;
-            const App::Color& c = d->perface[d->index];
+            int index = std::atoi(msg.pSubName+4)-1;
+            d->index.insert(index);
+            const App::Color& c = d->perface[index];
             QColor color;
             color.setRgbF(c.r,c.g,c.b);
-            d->ui->labelElement->setText(QString::number(d->index+1));
-            d->ui->colorButton->setEnabled(true);
             d->ui->colorButton->setColor(color);
+            selection_changed = true;
         }
+    }
+    else if (msg.Type == Gui::SelectionChanges::RmvSelection) {
+        App::Document* doc = d->obj->getDocument();
+        std::string docname = doc->getName();
+        std::string objname = d->obj->getNameInDocument();
+        if (docname==msg.pDocName && objname==msg.pObjectName) {
+            int index = std::atoi(msg.pSubName+4)-1;
+            d->index.remove(index);
+            selection_changed = true;
+        }
+    }
+    else if (msg.Type == Gui::SelectionChanges::ClrSelection) {
+        d->index.clear();
+        selection_changed = true;
+    }
+
+    if (selection_changed) {
+        QString faces = QString::fromAscii("[");
+        int size = d->index.size();
+        for (QSet<int>::iterator it = d->index.begin(); it != d->index.end(); ++it) {
+            faces += QString::number(*it + 1);
+            if (--size > 0)
+                faces += QString::fromAscii(",");
+        }
+        faces += QString::fromAscii("]");
+        d->ui->labelElement->setText(faces);
+        d->ui->colorButton->setDisabled(d->index.isEmpty());
     }
 }
 
