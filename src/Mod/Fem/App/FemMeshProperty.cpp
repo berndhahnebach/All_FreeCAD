@@ -138,12 +138,33 @@ unsigned int PropertyFemMesh::getMemSize (void) const
 
 void PropertyFemMesh::Save (Base::Writer &writer) const
 {
-    _FemMesh->Save(writer);
+    if (!writer.isForceXML()) {
+        //See SaveDocFile(), RestoreDocFile()
+        writer.Stream() << writer.ind() << "<FemMesh file=\"" 
+                        << writer.addFile("FemMesh.unv", this)
+                        << "\"/>" << std::endl;
+    }
 }
 
 void PropertyFemMesh::Restore(Base::XMLReader &reader)
 {
-    Fem::FemMesh temp;
-    temp.Restore(reader);
-    setValue(temp);
+    reader.readElement("FemMesh");
+    std::string file (reader.getAttribute("file") );
+
+    if (!file.empty()) {
+        // initate a file read
+        reader.addFile(file.c_str(),this);
+    }
+}
+
+void PropertyFemMesh::SaveDocFile (Base::Writer &writer) const
+{
+    _FemMesh->SaveDocFile(writer);
+}
+
+void PropertyFemMesh::RestoreDocFile(Base::Reader &reader)
+{
+    aboutToSetValue();
+    _FemMesh->RestoreDocFile(reader);
+    hasSetValue();
 }
