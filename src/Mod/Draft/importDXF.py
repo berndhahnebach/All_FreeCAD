@@ -166,7 +166,7 @@ class fcformat:
 			r = float(draftui.color.red()/255.0)
 			g = float(draftui.color.green()/255.0)
 			b = float(draftui.color.blue()/255.0)
-			self.lw = float(draftui.widthButton.value())
+			self.lw = float(draftui.linewidth)
 		else:
 			self.lw = float(params.GetInt("linewidth"))
 			c = params.GetUnsigned("color")
@@ -268,14 +268,14 @@ class fcformat:
 							if (l.color == 7) and self.brightbg: return [0.0,0.0,0.0]
 							else: return dxfColorMap.color_map[l.color]
 
-def drawLine(line):
+def drawLine(line,shapemode=False):
 	"returns a Part shape from a dxf line"
 	if (len(line.points) > 1):
 		v1=FreeCAD.Vector(line.points[0][0],line.points[0][1],line.points[0][2])
 		v2=FreeCAD.Vector(line.points[1][0],line.points[1][1],line.points[1][2])
 		if not fcvec.equals(v1,v2):
 			try:
-                                if (fmt.paramstyle == 4) and (not fmt.makeBlocks):
+                                if (fmt.paramstyle == 4) and (not fmt.makeBlocks) and (not shapemode):
                                         return Draft.makeWire([v1,v2])
                                 else:
                                         return Part.Line(v1,v2).toShape()
@@ -283,7 +283,7 @@ def drawLine(line):
                                 warn(line)
 	return None
 
-def drawPolyline(polyline):
+def drawPolyline(polyline,shapemode=False):
 	"returns a Part shape from a dxf polyline"
 	if (len(polyline.points) > 1):
 		edges = []
@@ -319,7 +319,7 @@ def drawPolyline(polyline):
 				except: warn(polyline)
 		if edges:
 			try:
-                                if (fmt.paramstyle == 4) and (not curves) and (not fmt.makeBlocks):
+                                if (fmt.paramstyle == 4) and (not curves) and (not fmt.makeBlocks) and (not shapemode):
                                         ob = Draft.makeWire(verts)
                                         ob.Closed = polyline.closed
                                         return ob
@@ -333,7 +333,7 @@ def drawPolyline(polyline):
                                 warn(polyline)
 	return None
 
-def drawArc(arc):
+def drawArc(arc,shapemode=False):
 	"returns a Part shape from a dxf arc"
 	v=FreeCAD.Vector(arc.loc[0],arc.loc[1],arc.loc[2])
         firstangle=(arc.start_angle/180)*math.pi
@@ -342,7 +342,7 @@ def drawArc(arc):
 	circle.Center=v
 	circle.Radius=arc.radius
 	try:
-                if (fmt.paramstyle == 4) and (not fmt.makeBlocks):
+                if (fmt.paramstyle == 4) and (not fmt.makeBlocks) and (not shapemode):
                         pl = FreeCAD.Placement()
                         pl.move(v)
                         return Draft.makeCircle(arc.radius,pl,False,math.degrees(firstangle),math.degrees(lastangle))
@@ -352,14 +352,14 @@ def drawArc(arc):
                 warn(arc)
 	return None
 
-def drawCircle(circle):
+def drawCircle(circle,shapemode=False):
 	"returns a Part shape from a dxf circle"
 	v = FreeCAD.Vector(circle.loc[0],circle.loc[1],circle.loc[2])
 	curve = Part.Circle()
 	curve.Radius = circle.radius
 	curve.Center = v
 	try:
-                if (fmt.paramstyle == 4) and (not fmt.makeBlocks):
+                if (fmt.paramstyle == 4) and (not fmt.makeBlocks) and (not shapemode):
                         pl = FreeCAD.Placement()
                         pl.move(v)
                         return Draft.makeCircle(circle.radius,pl)
@@ -456,22 +456,21 @@ def drawBlock(blockref):
 	"returns a shape from a dxf block reference"
 	shapes = []
 	for line in blockref.entities.get_type('line'):
-		s = drawLine(line)
+		s = drawLine(line,shapemode=True)
 		if s: shapes.append(s)
 	for polyline in blockref.entities.get_type('polyline'):
-		s = drawPolyline(polyline)
+		s = drawPolyline(polyline,shapemode=True)
 		if s: shapes.append(s)
 	for polyline in blockref.entities.get_type('lwpolyline'):
-		s = drawPolyline(polyline)
+		s = drawPolyline(polyline,shapemode=True)
 		if s: shapes.append(s)
 	for arc in blockref.entities.get_type('arc'):
-		s = drawArc(arc)
+		s = drawArc(arc,shapemode=True)
 		if s: shapes.append(s)
 	for circle in blockref.entities.get_type('circle'):
-		s = drawCircle(circle)
+		s = drawCircle(circle,shapemode=True)
 		if s: shapes.append(s)
 	for insert in blockref.entities.get_type('insert'):
-                print "found insert ",insert.block
 		s = drawInsert(insert)
 		if s: shapes.append(s)
         for solid in blockref.entities.get_type('solid'):
