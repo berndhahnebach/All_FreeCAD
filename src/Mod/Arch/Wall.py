@@ -41,6 +41,12 @@ def makeWall(baseobj,width=None,height=None,align="Center",name="Wall"):
     if height: obj.Height = height
     obj.Align = align
     if obj.Base: obj.Base.ViewObject.hide()
+    p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Arch")
+    c = p.GetUnsigned("WallColor")
+    r = float((c>>24)&0xFF)/255.0
+    g = float((c>>16)&0xFF)/255.0
+    b = float((c>>8)&0xFF)/255.0
+    obj.ViewObject.ShapeColor = (r,g,b,0.0)
     return obj
 
 class CommandWall:

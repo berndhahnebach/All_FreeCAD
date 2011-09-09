@@ -46,12 +46,22 @@ class ArchWorkbench(Workbench):
                               "Draft_Offset","Draft_Upgrade",
                               "Draft_Downgrade"]
                 meshtools = ["Arch_SplitMesh","Arch_MeshToShape",
-                             "Arch_SelectNonSolidMeshes"]
+                             "Arch_SelectNonSolidMeshes","Arch_RemoveShape"]
                 self.appendToolbar("Arch tools",archtools)
                 self.appendToolbar("Draft tools",drafttools)
-                self.appendMenu(["Architecture","Mesh tools"],meshtools)
+                self.appendMenu(["Architecture","Tools"],meshtools)
                 self.appendMenu("Architecture",archtools)
                 self.appendMenu("Drafting",drafttools)
+                FreeCADGui.addIconPath(":/icons")
+                FreeCADGui.addLanguagePath(":/translations")
+                FreeCADGui.addPreferencePage(":/ui/archprefs-base.ui","Arch")
+                FreeCAD.addImportType("Industry Foundation Classes (*.ifc)","importIFC")
+                try:
+                        import collada
+                except:
+                        Log("pycollada not found, no collada support\n")
+                else:
+                        FreeCAD.addImportType("Collada (*.dae)","importDAE")
 		Log ('Loading Arch module... done\n')
 	def Activated(self):
                 FreeCADGui.draftToolBar.Activated()
@@ -60,15 +70,6 @@ class ArchWorkbench(Workbench):
                 FreeCADGui.draftToolBar.Deactivated()
 		Msg("Arch workbench deactivated\n")
 
-Gui.addIconPath(":/icons")
-Gui.addLanguagePath(":/translations")
-Gui.addWorkbench(ArchWorkbench)
-Gui.updateLocale()
-App.addImportType("Industry Foundation Classes (*.ifc)","importIFC")
-try:
-        import collada
-except:
-        Log("pycollada not found, no collada support\n")
-else:
-        App.addImportType("Collada (*.dae)","importDAE")
+FreeCADGui.addWorkbench(ArchWorkbench)
+FreeCADGui.updateLocale()
 

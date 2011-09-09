@@ -60,6 +60,12 @@ def makeStructure(baseobj=None,length=None,width=None,height=None,swap=False,nam
         if (not obj.Width) and (not obj.Length):
             obj.Width = 1
             obj.Height = 1
+    p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Arch")
+    c = p.GetUnsigned("StructureColor")
+    r = float((c>>24)&0xFF)/255.0
+    g = float((c>>16)&0xFF)/255.0
+    b = float((c>>8)&0xFF)/255.0
+    obj.ViewObject.ShapeColor = (r,g,b,0.0)
     return obj
 
 class CommandStructure:

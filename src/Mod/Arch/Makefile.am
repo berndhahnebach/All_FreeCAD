@@ -42,5 +42,7 @@ EXTRA_DIST = \
 		Resources/icons/Arch_Add.svg \
 		Resources/icons/Arch_Remove.svg \
 		Resources/icons/Arch_MeshToShape.svg \
-		Resources/icons/Arch_SplitMesh.svg
+		Resources/icons/Arch_SplitMesh.svg \
+		Resources/icons/Arch_RemoveShape.svg \
+		Resources/ui/archprefs-base.ui
 

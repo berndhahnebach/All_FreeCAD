@@ -167,6 +167,24 @@ def meshToShape(obj,mark=True):
         return newobj
     return None
 
+def removeShape(objs):
+    '''takes an arch object (wall or structure) built on a cubic shape, and removes
+    the inner shape, keeping its length, width and height as parameters.'''
+    if not isinstance(objs,list):
+        objs = [objs]
+    for obj in objs:
+        if fcgeo.isCubic(obj.Shape):
+            dims = fcgeo.getCubicDimensions(obj.Shape)
+            if dims:
+                name = obj.Name
+                type = Draft.getType(obj)
+                if type == "Structure":
+                    FreeCAD.ActiveDocument.removeObject(name)
+                    import Structure
+                    str = Structure.makeStructure(length=dims[1],width=dims[2],height=dims[3],name=name)
+                    str.Placement = dims[0]
+        
+    
 # command definitions ###############################################
                        
 class CommandAdd:
@@ -298,9 +316,27 @@ class CommandSelectNonSolidMeshes:
             for o in sel:
                 FreeCADGui.Selection.addSelection(o)
 
+class CommandRemoveShape:
+    "the Arch RemoveShape command definition"
+    def GetResources(self):
+        return {'Pixmap'  : 'Arch_RemoveShape',
+                'MenuText': QtCore.QT_TRANSLATE_NOOP("Arch_RemoveShape","Remove Shape from Arch"),
+                'ToolTip': QtCore.QT_TRANSLATE_NOOP("Arch_RemoveShape","Removes cubic shapes from Arch components")}
+
+    def IsActive(self):
+        if FreeCADGui.Selection.getSelection():
+            return True
+        else:
+            return False
+        
+    def Activated(self):
+        sel = FreeCADGui.Selection.getSelection()
+        removeShape(sel)
+
             
 FreeCADGui.addCommand('Arch_Add',CommandAdd())
 FreeCADGui.addCommand('Arch_Remove',CommandRemove())
 FreeCADGui.addCommand('Arch_SplitMesh',CommandSplitMesh())
 FreeCADGui.addCommand('Arch_MeshToShape',CommandMeshToShape())
 FreeCADGui.addCommand('Arch_SelectNonSolidMeshes',CommandSelectNonSolidMeshes())
+FreeCADGui.addCommand('Arch_RemoveShape',CommandRemoveShape())
