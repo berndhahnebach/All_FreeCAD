@@ -30,13 +30,13 @@ __title__="FreeCAD Wall"
 __author__ = "Yorik van Havre"
 __url__ = "http://free-cad.sourceforge.net"
 
-def makeWall(baseobj,width=None,height=None,align="Center",name="Wall"):
+def makeWall(baseobj=None,width=None,height=None,align="Center",name="Wall"):
     '''makeWall(obj,[width],[height],[align],[name]): creates a wall based on the
     given object'''
     obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython",name)
     Wall(obj)
     ViewProviderWall(obj.ViewObject)
-    obj.Base = baseobj
+    if baseobj: obj.Base = baseobj
     if width: obj.Width = width
     if height: obj.Height = height
     obj.Align = align
@@ -46,7 +46,7 @@ def makeWall(baseobj,width=None,height=None,align="Center",name="Wall"):
     r = float((c>>24)&0xFF)/255.0
     g = float((c>>16)&0xFF)/255.0
     b = float((c>>8)&0xFF)/255.0
-    obj.ViewObject.ShapeColor = (r,g,b,0.0)
+    obj.ViewObject.ShapeColor = (r,g,b,1.0)
     return obj
 
 class CommandWall:
@@ -140,7 +140,7 @@ class Wall(Component.Component):
                     base = base.cut(hole.Shape)
                     hole.ViewObject.hide() # to be removed
                 obj.Shape = base
-                obj.Placement = pl
+                if not fcgeo.isNull(pl): obj.Placement = pl
 
 class ViewProviderWall(Component.ViewProviderComponent):
     "A View Provider for the Wall object"

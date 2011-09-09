@@ -30,27 +30,15 @@ __title__="FreeCAD Structure"
 __author__ = "Yorik van Havre"
 __url__ = "http://free-cad.sourceforge.net"
 
-def makeStructure(baseobj=None,length=None,width=None,height=None,swap=False,name="Structure"):
+def makeStructure(baseobj=None,length=None,width=None,height=None,name="Structure"):
     '''makeStructure([obj],[length],[width],[heigth],[swap]): creates a
     structure element based on the given profile object and the given
     extrusion height. If no base object is given, you can also specify
-    length and width for a cubic object. If swap is True (default), then if
-    the given base is cubic, it will be erased and a parametric cubic element
-    will be created instead.'''
+    length and width for a cubic object.'''
     obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython",name)
     Structure(obj)
     ViewProviderStructure(obj.ViewObject)
-    if baseobj:
-        if baseobj.isDerivedFrom("Part::Feature"):
-            if swap and fcgeo.isCubic(baseobj.Shape):
-                dims = fcgeo.getCubicDimensions(baseobj.Shape)
-                obj.Placement = dims[0]
-                obj.Length = dims[1]
-                obj.Width = dims[2]
-                obj.Height = dims[3]
-                FreeCAD.ActiveDocument.remove(baseobj.Name)
-            else:
-                obj.Base = baseobj
+    if baseobj: obj.Base = baseobj
     if length: obj.Length = length
     if width: obj.Width = width
     if height: obj.Height = height
@@ -65,7 +53,7 @@ def makeStructure(baseobj=None,length=None,width=None,height=None,swap=False,nam
     r = float((c>>24)&0xFF)/255.0
     g = float((c>>16)&0xFF)/255.0
     b = float((c>>8)&0xFF)/255.0
-    obj.ViewObject.ShapeColor = (r,g,b,0.0)
+    obj.ViewObject.ShapeColor = (r,g,b,1.0)
     return obj
 
 class CommandStructure:
