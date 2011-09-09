@@ -185,20 +185,16 @@ def removeShape(objs,mark=True):
                     str = Structure.makeStructure(length=dims[1],width=dims[2],height=dims[3],name=name)
                     str.Placement = dims[0]
                 elif tp == "Wall":
-                    print "yes"
                     FreeCAD.ActiveDocument.removeObject(name)
                     import Wall
-                    if dims[1] > dims[2]:
-                        length = dims[1]
-                        width = dims[2]
-                    else:
-                        width = dims[1]
-                        length = dims[2]
+                    length = dims[1]
+                    width = dims[2]
                     v1 = Vector(length/2,0,0)
-                    v1 = dims[0].multVec(v1)
                     v2 = fcvec.neg(v1)
-                    line = Draft.makeLine(dims[0].Base.add(v1),dims[0].Base.add(v2))
-                    wal = Wall.makeWall(line,height=dims[3],name=name)
+                    v1 = dims[0].multVec(v1)
+                    v2 = dims[0].multVec(v2)
+                    line = Draft.makeLine(v1,v2)
+                    wal = Wall.makeWall(line,width=width,height=dims[3],name=name)
         else:
             if mark:
                 obj.ViewObject.ShapeColor = (1.0,0.0,0.0,1.0)
