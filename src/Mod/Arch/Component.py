@@ -83,4 +83,3 @@ class ViewProviderComponent:
     def claimChildren(self):
         return [self.Object.Base]+self.Object.Additions+self.Object.Subtractions
 
-

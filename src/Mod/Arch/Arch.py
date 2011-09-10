@@ -32,3 +32,4 @@ from Site import *
 from Building import *
 from Structure import *
 from Commands import *
+from SectionPlane import *

@@ -21,7 +21,7 @@
 #*                                                                         *
 #***************************************************************************
 
-import FreeCAD,FreeCADGui,Part,Draft,MeshPart
+import FreeCAD,FreeCADGui,Part,Draft,MeshPart,Component
 from draftlibs import fcgeo,fcvec
 from FreeCAD import Vector
 from PyQt4 import QtCore
@@ -348,7 +348,6 @@ class CommandRemoveShape:
         sel = FreeCADGui.Selection.getSelection()
         removeShape(sel)
 
-            
 FreeCADGui.addCommand('Arch_Add',CommandAdd())
 FreeCADGui.addCommand('Arch_Remove',CommandRemove())
 FreeCADGui.addCommand('Arch_SplitMesh',CommandSplitMesh())

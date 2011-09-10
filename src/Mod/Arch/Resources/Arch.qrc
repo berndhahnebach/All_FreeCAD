@@ -12,6 +12,7 @@
         <file>icons/Arch_SplitMesh.svg</file>
         <file>icons/preferences-arch.svg</file>
         <file>icons/Arch_RemoveShape.svg</file>
+        <file>icons/Arch_SectionPlane.svg</file>
         <file>ui/archprefs-base.ui</file>
     </qresource>
 </RCC> 
