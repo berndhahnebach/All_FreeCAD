@@ -60,6 +60,7 @@ class todo:
 
 	@staticmethod
 	def doTasks():
+                # print "debug: doing delayed tasks: commitlist: ",todo.commitlist," itinerary: ",todo.itinerary
 		for f, arg in todo.itinerary:
 			try:
 				# print "debug: executing",f
@@ -70,11 +71,12 @@ class todo:
 		todo.itinerary = []
 		if todo.commitlist:
 			for name,func in todo.commitlist:
+                                # print "debug: committing ",str(name)
 				name = str(name)
 				FreeCAD.ActiveDocument.openTransaction(name)
 				func()
 				FreeCAD.ActiveDocument.commitTransaction()
-			todo.commitlist = []
+                todo.commitlist = []
 
 	@staticmethod
 	def delay (f, arg):
@@ -85,6 +87,7 @@ class todo:
 
 	@staticmethod
 	def delayCommit (cl):
+                # print "debug: delaying commit",cl
 		QtCore.QTimer.singleShot(0, todo.doTasks)
 		todo.commitlist = cl
 
@@ -512,6 +515,7 @@ class DraftToolBar:
                 if self.taskmode:
                         FreeCADGui.Control.closeDialog()
                         self.baseWidget = QtGui.QWidget()
+                        print "UI turned off"
                 else:
                         self.setTitle(translate("draft", "None"))
                         self.labelx.setText(translate("draft", "X"))

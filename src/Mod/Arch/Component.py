@@ -57,16 +57,17 @@ class ViewProviderComponent:
         vobj.Proxy = self
         self.Object = vobj.Object
         
-    def updateData(self,obj,prop):
+    def updateData(self,vobj,prop):
         return
 
     def onChanged(self,vobj,prop):
         return
 
-    def attach(self,obj):
+    def attach(self,vobj):
+        self.Object = vobj.Object
         return
 
-    def getDisplayModes(self,obj):
+    def getDisplayModes(self,vobj):
         modes=[]
         return modes
 
