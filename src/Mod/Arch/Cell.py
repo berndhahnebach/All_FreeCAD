@@ -137,7 +137,8 @@ class ViewProviderCell:
     def claimChildren(self):
         return self.Object.Components
 
-    def attach(self,obj):
+    def attach(self,vobj):
+        self.Object = vobj.Object
         return
 
     def getDisplayModes(self,obj):
