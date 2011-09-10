@@ -226,6 +226,10 @@ def snapPoint(target,point,cursor,ctrl=False):
                                                 if pt:
                                                         for p in pt:
                                                                 snapArray.append([p,3,p])
+                                elif ("Vertex" in comp) or (comp == ''):
+                                        # workaround for the new view provider
+                                        p = Vector(snapped['x'],snapped['y'],snapped['z'])
+                                        snapArray.append([p,0,p])
                                 else:
                                         snapArray = [getPassivePoint(snapped)]
                         elif Draft.getType(obj) == "Dimension":
@@ -2390,6 +2394,7 @@ class Modifier:
 
         def commit(self,name,func):
                 "stores partial actions to be committed to the FreeCAD document"
+                print "committing"
                 self.commitList.append((name,func))
 			
 class Move(Modifier):
@@ -2430,11 +2435,11 @@ class Move(Modifier):
 		self.ui.cross(True)
 
 	def finish(self,closed=False,cont=False):
-		Modifier.finish(self)
 		if self.ui:
 			self.ghost.finalize()
 			self.linetrack.finalize()
 			self.constraintrack.finalize()
+                Modifier.finish(self)
                 if cont and self.ui:
                         if self.ui.continueMode:
                                 FreeCADGui.Selection.clearSelection()
@@ -2505,7 +2510,7 @@ class Move(Modifier):
 				self.move(point.sub(last),True)
 			else:
 				self.move(point.sub(last))
-			self.finish(cont=True)
+			self.finish()
 
 			
 class ApplyStyle(Modifier):

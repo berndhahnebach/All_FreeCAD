@@ -511,8 +511,19 @@ def makeCopy(obj):
         elif getType(obj) == "Block":
                 Block(newobj)
                 ViewProviderBlock(newobj.ViewObject)
-        else:
+        elif getType(obj) == "Structure":
+                import Structure
+                Structure.Structure(newobj)
+                Structure.ViewProviderStructure(newobj.ViewObject)
+        elif getType(obj) == "Wall":
+                import Wall
+                Wall.Wall(newobj)
+                Wall.ViewProviderWall(newobj.ViewObject)
+        elif obj.isDerivedFrom("Part::Feature"):
                 newobj.Shape = obj.Shape
+        else:
+                print "Error: Object type cannot be copied"
+                return None
         for p in obj.PropertiesList:
                 if p in newobj.PropertiesList:
                         setattr(newobj,p,obj.getPropertyByName(p))
