@@ -109,6 +109,9 @@ public:
                              std::vector<PointPos> &PosIdList);
     void getCoincidentPoints(int VertexId, std::vector<int> &GeoIdList, std::vector<PointPos> &PosIdList);
 
+    /// generates a warning message about constraint conflicts and appends it to the given message
+    static void appendConflictMsg(const std::vector<int> &conflicting, std::string &msg);
+
     // from base class
     virtual PyObject *getPyObject(void);
     virtual unsigned int getMemSize(void) const;

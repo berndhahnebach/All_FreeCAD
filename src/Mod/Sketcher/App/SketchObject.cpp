@@ -80,12 +80,21 @@ App::DocumentObjectExecReturn *SketchObject::execute(void)
         Placement.setValue(placement);
     }
 
-    // and now solve the sketch
+    // setup and diagnose the sketch
     Sketch sketch;
-
-    sketch.setUpSketch(Geometry.getValues(), Constraints.getValues());
-
-    // solve the sketch with no fixed points
+    int dofs = sketch.setUpSketch(Geometry.getValues(), Constraints.getValues());
+    if (dofs < 0) { // over-constrained sketch
+        std::string msg="The sketch is overconstrained!\n";
+        appendConflictMsg(sketch.getConflicting(), msg);
+        return new App::DocumentObjectExecReturn(msg.c_str(),this);
+    }
+    if (sketch.hasConflicts()) { // conflicting constraints
+        std::string msg="This sketch contains conflicting constraints!\n";
+        appendConflictMsg(sketch.getConflicting(), msg);
+        return new App::DocumentObjectExecReturn(msg.c_str(),this);
+    }
+    
+    // solve the sketch
     if (sketch.solve() != 0)
         return new App::DocumentObjectExecReturn("Solving the sketch failed!",this);
 
@@ -122,13 +131,17 @@ int SketchObject::setDatum(double Datum, int ConstrNbr)
     this->Constraints.setValues(newVals);
     delete constNew;
 
-    // set up an extra sketch
+    // set up a sketch (including dofs counting and diagnosing of conflicts)
     Sketch sketch;
-    sketch.setUpSketch(Geometry.getValues(), Constraints.getValues());
+    int dofs = sketch.setUpSketch(Geometry.getValues(), Constraints.getValues());
+    if (dofs < 0) // over-constrained sketch
+        return -1;
+    if (sketch.hasConflicts()) // conflicting constraints
+        return -1;
 
-    int ret = sketch.solve();
-    if (ret)
-        return ret;
+    // solving
+    if (sketch.solve() != 0)
+        return -1;
 
     // set the newly solved geometry
     std::vector<Part::Geometry *> geomlist = sketch.getGeometry();
@@ -141,12 +154,15 @@ int SketchObject::setDatum(double Datum, int ConstrNbr)
 
 int SketchObject::movePoint(int geoIndex, PointPos PosId, const Base::Vector3d& toPoint)
 {
-    // set up an extra sketch
     Sketch sketch;
-    sketch.setUpSketch(Geometry.getValues(), Constraints.getValues());
+    int dofs = sketch.setUpSketch(Geometry.getValues(), Constraints.getValues());
+    if (dofs < 0) // over-constrained sketch
+        return -1;
+    if (sketch.hasConflicts()) // conflicting constraints
+        return -1;
 
+    // move the point and solve
     int ret = sketch.movePoint(geoIndex, PosId, toPoint);
-
     if (ret == 0) {
         std::vector<Part::Geometry *> geomlist = sketch.getGeometry();
         Geometry.setValues(geomlist);
@@ -647,6 +663,20 @@ void SketchObject::getCoincidentPoints(int VertexId, std::vector<int> &GeoIdList
     PointPos PosId;
     getGeoVertexIndex(VertexId, GeoId, PosId);
     getCoincidentPoints(GeoId, PosId, GeoIdList, PosIdList);
+}
+
+void SketchObject::appendConflictMsg(const std::vector<int> &conflicting, std::string &msg)
+{
+    std::stringstream ss;
+    if (msg.length() > 0)
+        ss << msg;
+    if (conflicting.size() > 0) {
+        ss << "Please remove at least one of the constraints (" << conflicting[0];
+        for (int i=1; i < conflicting.size(); i++)
+            ss << ", " << conflicting[i];
+        ss << ")\n";
+    }
+    msg = ss.str();
 }
 
 PyObject *SketchObject::getPyObject(void)

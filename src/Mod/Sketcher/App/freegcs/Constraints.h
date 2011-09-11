@@ -53,7 +53,7 @@ namespace GCS
         VEC_pD origpvec; // is used only as a reference for redirecting and reverting pvec
         VEC_pD pvec;
         double scale;
-        int priority;
+        int tag;
     public:
         Constraint();
 
@@ -61,8 +61,8 @@ namespace GCS
 
         void redirectParams(MAP_pD_pD redirectionmap);
         void revertParams();
-        void setPriority(int level) { priority = level; }
-        int getPriority() { return priority; }
+        void setTag(int tagId) { tag = tagId; }
+        int getTag() { return tag; }
 
         virtual ConstraintType getTypeId();
         virtual void rescale(double coef=1.);
