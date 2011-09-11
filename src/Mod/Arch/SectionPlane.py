@@ -1,6 +1,7 @@
 import FreeCAD,FreeCADGui,Part,Component
 from FreeCAD import Vector
 from PyQt4 import QtCore
+from pivy import coin
 
 class CommandSectionPlane:
     "the Arch SectionPlane command definition"
@@ -26,7 +27,7 @@ class SectionPlane:
     def execute(self,obj):
         pl = obj.Placement
         l = obj.ViewObject.DisplaySize
-        p = Part.makePlane(l,l,Vector(-l/2,-l/2,0))
+        p = Part.makePlane(l,l,Vector(l/2,-l/2,0),Vector(0,0,-1))
         obj.Shape = p
         obj.Placement = pl
 
@@ -49,7 +50,7 @@ class ViewProviderSectionPlane(Component.ViewProviderComponent):
             "16 16 3 1",
             " 	c None",
             ".	c #000000",
-            "+	c #FFFF00",
+            "+	c #FFFFFF",
             "     ......     ",
             "   ..+++.++..   ",
             "  .+++++..+++.  ",
@@ -71,8 +72,56 @@ class ViewProviderSectionPlane(Component.ViewProviderComponent):
     def claimChildren(self):
         return []
 
+    def attach(self,vobj):
+        self.Object = vobj.Object
+        # adding arrows
+        rn = vobj.RootNode
+        self.col = coin.SoBaseColor()
+        self.setColor()
+        ds = coin.SoDrawStyle()
+        ds.style = coin.SoDrawStyle.LINES
+        self.lcoords = coin.SoCoordinate3()
+        ls = coin.SoLineSet()
+        ls.numVertices.setValues([2,2,2,2])
+        self.mcoords = coin.SoCoordinate3()
+        mk = coin.SoMarkerSet()
+        mk.markerIndex = coin.SoMarkerSet.TRIANGLE_FILLED_5_5
+        pt = coin.SoAnnotation()
+        pt.addChild(self.col)
+        pt.addChild(ds)
+        pt.addChild(self.lcoords)
+        pt.addChild(ls)
+        pt.addChild(self.mcoords)
+        pt.addChild(mk)
+        rn.addChild(pt)
+        self.setVerts()
+
+    def setColor(self):
+        print self.Object.ViewObject.LineColor
+        self.col.rgb.setValue(self.Object.ViewObject.LineColor[0],
+                              self.Object.ViewObject.LineColor[1],
+                              self.Object.ViewObject.LineColor[2])
+
+    def setVerts(self):
+        hd = self.Object.ViewObject.DisplaySize/2
+        verts = []
+        verts.extend([[-hd,-hd,0],[-hd,-hd,-hd/3]])
+        verts.extend([[hd,-hd,0],[hd,-hd,-hd/3]])
+        verts.extend([[hd,hd,0],[hd,hd,-hd/3]])
+        verts.extend([[-hd,hd,0],[-hd,hd,-hd/3]])
+        self.lcoords.point.setValues(0,8,verts)
+        self.mcoords.point.setValues(0,4,[verts[1],verts[3],verts[5],verts[7]])
+
+    def updateData(self,obj,prop):
+        if prop in ["Shape","Placement"]:
+            self.setVerts()
+        return
+
     def onChanged(self,vobj,prop):
-        if prop == "DisplaySize":
+        if prop == "LineColor":
+            self.setColor()
+        elif prop == "DisplaySize":
             vobj.Object.Proxy.execute(vobj.Object)
+        return
 
 FreeCADGui.addCommand('Arch_SectionPlane',CommandSectionPlane())
