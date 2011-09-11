@@ -48,7 +48,6 @@ struct AutoConstraint
 {
     int Index;
     Sketcher::ConstraintType Type;
-    Base::Vector2D PointFound;
 };
 
 enum Type
@@ -58,7 +57,7 @@ enum Type
 };
 
 /** Handler to create new sketch geometry
-  * This class has to be reimplemented to create geometry in the 
+  * This class has to be reimplemented to create geometry in the
   * sketcher while its in editing.
   */
 class SketcherGuiExport DrawSketchHandler
@@ -67,10 +66,6 @@ public:
     DrawSketchHandler();
     virtual ~DrawSketchHandler();
 
-    void clearSuggestedConstraints();
-    void clearSuggestedConstraints(std::vector<AutoConstraint *> &vtr);
-    void cloneSuggestedConstraints(std::vector<AutoConstraint *> &vtr);
-    
     virtual void activated(ViewProviderSketch *sketchgui){};
     virtual void mouseMove(Base::Vector2D onSketchPos)=0;
     virtual bool pressButton(Base::Vector2D onSketchPos)=0;
@@ -86,12 +81,13 @@ public:
     // get the actual highest edge index, the next use will be +1
     int getHighestCurveIndex(void);
 
-    int seekAutoConstraint(const Base::Vector2D &Pos, const Base::Vector2D &Dir, Type selType = VERTEX);
-    void createAutoConstraints(const std::vector<AutoConstraint *>& autoConstrs, int geoId, int vertexId = -1);
+    int seekAutoConstraint(std::vector<AutoConstraint> &suggestedConstraints,
+                           const Base::Vector2D &Pos, const Base::Vector2D &Dir, Type selType = VERTEX);
+    void createAutoConstraints(const std::vector<AutoConstraint> &autoConstrs, int geoId, int vertexId = -1);
 
     void setPositionText(const Base::Vector2D &Pos);
     void resetPositionText(void);
-    void renderSuggestConstraintsCursor();
+    void renderSuggestConstraintsCursor(std::vector<AutoConstraint> &suggestedConstraints);
 
 protected:
     // helpers
@@ -103,7 +99,6 @@ protected:
     ViewProviderSketch *sketchgui;
     QCursor oldCursor;
     QCursor actCursor;
-    std::vector<AutoConstraint *> suggestedConstraints;
 };
 
 
