@@ -75,40 +75,10 @@ void DrawSketchHandler::quit(void)
     sketchgui->drawEdit(std::vector<Base::Vector2D>());
     resetPositionText();
 
-    // Delete Suggested Constraints
-    clearSuggestedConstraints();
-
     unsetCursor();
     sketchgui->purgeHandler();
 }
 
-void DrawSketchHandler::clearSuggestedConstraints(std::vector<AutoConstraint *> &vtr)
-{
-    // Iterate through suggested constraints and remove;
-    for (std::vector<AutoConstraint *>::iterator it = vtr.begin(); it != vtr.end(); ++it)
-        delete (*it);
-    vtr.clear();
-}
-
-void DrawSketchHandler::clearSuggestedConstraints()
-{
-    // Iterate through suggested constraints and remove;
-    for (std::vector<AutoConstraint *>::iterator it = suggestedConstraints.begin(); it != suggestedConstraints.end(); ++it)
-        delete (*it);
-    suggestedConstraints.clear();
-}
-
-void DrawSketchHandler::cloneSuggestedConstraints(std::vector<AutoConstraint *> &vtr)
-{
-    // Iterate through suggested constraints and remove;
-    for (std::vector<AutoConstraint *>::iterator it = suggestedConstraints.begin(); it != suggestedConstraints.end(); ++it) {
-        AutoConstraint* copy = new AutoConstraint();
-        copy->Index = (*it)->Index;
-        copy->PointFound = (*it)->PointFound;
-        copy->Type = (*it)->Type;
-        vtr.push_back(copy);
-    }
-}
 //**************************************************************************
 // Helpers
 
@@ -164,9 +134,10 @@ void DrawSketchHandler::unsetCursor(void)
     }
 }
 
-int DrawSketchHandler::seekAutoConstraint(const Base::Vector2D& Pos, const Base::Vector2D& Dir, Type type)
+int DrawSketchHandler::seekAutoConstraint(std::vector<AutoConstraint> &suggestedConstraints,
+                                          const Base::Vector2D& Pos, const Base::Vector2D& Dir, Type type)
 {
-    clearSuggestedConstraints();
+    suggestedConstraints.clear();
 
     if (!sketchgui->Autoconstraints.getValue())
         return 0; // If Autoconstraints property is not set quit
@@ -174,42 +145,34 @@ int DrawSketchHandler::seekAutoConstraint(const Base::Vector2D& Pos, const Base:
     // Get Preselection
     // Currently only considers objects in current Sketcher
     if (type == VERTEX && sketchgui->getPreselectPoint() != -1) {
-        AutoConstraint *coincident = new AutoConstraint;
-        coincident->Type       = Sketcher::Coincident;
-        coincident->Index      = sketchgui->getPreselectPoint();
-        coincident->PointFound = Pos;
-
+        AutoConstraint coincident;
+        coincident.Type       = Sketcher::Coincident;
+        coincident.Index      = sketchgui->getPreselectPoint();
         suggestedConstraints.push_back(coincident);
-    } else if (type == CURVE && sketchgui->getPreselectPoint() != -1) {
-        AutoConstraint *pointOnObject = new AutoConstraint;
-        pointOnObject->Type       = Sketcher::PointOnObject;
-        pointOnObject->Index      = sketchgui->getPreselectPoint();
-        pointOnObject->PointFound = Pos;
-
+    }
+    else if (type == CURVE && sketchgui->getPreselectPoint() != -1) {
+        AutoConstraint pointOnObject;
+        pointOnObject.Type       = Sketcher::PointOnObject;
+        pointOnObject.Index      = sketchgui->getPreselectPoint();
         suggestedConstraints.push_back(pointOnObject);
-    } else if (type == VERTEX && sketchgui->getPreselectCurve() != -1) {
-
-        AutoConstraint *pointOnObject = new AutoConstraint;
-        pointOnObject->Type       = Sketcher::PointOnObject;
-        pointOnObject->Index      = sketchgui->getPreselectCurve();
-        pointOnObject->PointFound = Pos;
-
+    }
+    else if (type == VERTEX && sketchgui->getPreselectCurve() != -1) {
+        AutoConstraint pointOnObject;
+        pointOnObject.Type       = Sketcher::PointOnObject;
+        pointOnObject.Index      = sketchgui->getPreselectCurve();
         suggestedConstraints.push_back(pointOnObject);
-    } else if (type == CURVE && sketchgui->getPreselectCurve() != -1) {
-
-        AutoConstraint *tangent = new AutoConstraint;
-        tangent->Type       = Sketcher::Tangent;
-        tangent->Index      = sketchgui->getPreselectCurve();
-        tangent->PointFound = Pos;
-
+    }
+    else if (type == CURVE && sketchgui->getPreselectCurve() != -1) {
+        AutoConstraint tangent;
+        tangent.Type       = Sketcher::Tangent;
+        tangent.Index      = sketchgui->getPreselectCurve();
         suggestedConstraints.push_back(tangent);
     }
 
     if (Dir.Length() < 1)
-    {
         // Direction not set so return;
         return suggestedConstraints.size();
-    }
+
     // Suggest vertical and horizontal constraints
 
     // Number of Degree of deviation from horizontal or vertical lines
@@ -217,23 +180,18 @@ int DrawSketchHandler::seekAutoConstraint(const Base::Vector2D& Pos, const Base:
     const double angleDevRad = angleDev *  M_PI / 180.;
 
     double angle = std::abs(atan2(Dir.fY, Dir.fX));
-
-
     if (angle < angleDevRad || (M_PI - angle) < angleDevRad ) {
         // Suggest horizontal constraint
-        AutoConstraint *horConstr = new AutoConstraint();
-        horConstr->Index = -1;
-        horConstr->Type = Horizontal;
-        horConstr->PointFound = Base::Vector2D();
-
+        AutoConstraint horConstr;
+        horConstr.Index = -1;
+        horConstr.Type = Horizontal;
         suggestedConstraints.push_back(horConstr);
-    } else if ( std::abs(angle - M_PI_2) < angleDevRad) {
+    }
+    else if (std::abs(angle - M_PI_2) < angleDevRad) {
         // Suggest vertical constraint
-        AutoConstraint *vertConstr = new AutoConstraint();
-        vertConstr->Index = -1;
-        vertConstr->Type = Vertical;
-        vertConstr->PointFound = Base::Vector2D();
-
+        AutoConstraint vertConstr;
+        vertConstr.Index = -1;
+        vertConstr.Type = Vertical;
         suggestedConstraints.push_back(vertConstr);
     }
 
@@ -285,8 +243,7 @@ int DrawSketchHandler::seekAutoConstraint(const Base::Vector2D& Pos, const Base:
             projPnt = projPnt.ProjToLine(center - tmpPos, Base::Vector3d(Dir.fX, Dir.fY));
             float projDist = projPnt.Length();
 
-            if ( projDist < radius + tangDeviation && projDist > radius - tangDeviation)
-            {
+            if ( projDist < radius + tangDeviation && projDist > radius - tangDeviation) {
                 double startAngle, endAngle;
                 arc->getRange(startAngle, endAngle);
 
@@ -294,9 +251,8 @@ int DrawSketchHandler::seekAutoConstraint(const Base::Vector2D& Pos, const Base:
                 double angle = atan2(projPnt.y, projPnt.x);
 
                 // if the pnt is on correct side of arc and find if nearest
-                if ( (angle > startAngle && angle < endAngle ) &&
-                        (tangId == -1 || projDist < smlTangDist) )
-                {
+                if ((angle > startAngle && angle < endAngle) &&
+                    (tangId == -1 || projDist < smlTangDist) ) {
                     tangId = i;
                     smlTangDist = projDist;
                 }
@@ -304,21 +260,18 @@ int DrawSketchHandler::seekAutoConstraint(const Base::Vector2D& Pos, const Base:
         }
     }
 
-    if (tangId != -1)
-    {
+    if (tangId != -1) {
         // Suggest vertical constraint
-        AutoConstraint *tangConstr = new AutoConstraint();
-        tangConstr->Index = tangId;
-        tangConstr->Type = Tangent;
-        tangConstr->PointFound = Base::Vector2D();
-
+        AutoConstraint tangConstr;
+        tangConstr.Index = tangId;
+        tangConstr.Type = Tangent;
         suggestedConstraints.push_back(tangConstr);
     }
 
     return suggestedConstraints.size();
 }
 
-void DrawSketchHandler::createAutoConstraints(const std::vector<AutoConstraint *>& autoConstrs, int geoId, int vertexId)
+void DrawSketchHandler::createAutoConstraints(const std::vector<AutoConstraint> &autoConstrs, int geoId, int vertexId)
 {
     if (!sketchgui->Autoconstraints.getValue())
         return; // If Autoconstraints property is not set quit
@@ -339,9 +292,9 @@ void DrawSketchHandler::createAutoConstraints(const std::vector<AutoConstraint *
         Gui::Command::openCommand("Add auto constraints");
 
         // Iterate through constraints
-        std::vector<AutoConstraint *>::const_iterator it = autoConstrs.begin();
+        std::vector<AutoConstraint>::const_iterator it = autoConstrs.begin();
         for (; it != autoConstrs.end(); ++it) {
-            switch ((*it)->Type)
+            switch (it->Type)
             {
             case Sketcher::Coincident: {
                 if (vertexId == -1)
@@ -349,7 +302,7 @@ void DrawSketchHandler::createAutoConstraints(const std::vector<AutoConstraint *
                     // If the auto constraint has a point create a coincident otherwise it is an edge on a point
                 Sketcher::PointPos pointPos2;
                 int geoId2;
-                sketchgui->getSketchObject()->getGeoVertexIndex((*it)->Index, geoId2, pointPos2);
+                sketchgui->getSketchObject()->getGeoVertexIndex(it->Index, geoId2, pointPos2);
 
                 Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Coincident',%i,%i,%i,%i)) "
                                         ,sketchgui->getObject()->getNameInDocument()
@@ -357,13 +310,13 @@ void DrawSketchHandler::createAutoConstraints(const std::vector<AutoConstraint *
                                         );
                 } break;
             case Sketcher::PointOnObject: {
-                int index = (*it)->Index;
+                int index = it->Index;
                 if (vertexId == -1) {
                     // Auto constraining an edge so swap parameters
                     index = geoId;
-                    sketchgui->getSketchObject()->getGeoVertexIndex((*it)->Index, geoId, pointPos);
+                    sketchgui->getSketchObject()->getGeoVertexIndex(it->Index, geoId, pointPos);
                 }
-                    
+
                 Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('PointOnObject',%i,%i,%i)) "
                                         ,sketchgui->getObject()->getNameInDocument()
                                         ,geoId, pointPos, index
@@ -382,10 +335,9 @@ void DrawSketchHandler::createAutoConstraints(const std::vector<AutoConstraint *
                                        );
                 } break;
             case Sketcher::Tangent: {
-                
                 Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Tangent',%i, %i)) "
                                         ,sketchgui->getObject()->getNameInDocument()
-                                        ,geoId, (*it)->Index
+                                        ,geoId, it->Index
                                        );
                 } break;
             }
@@ -396,7 +348,7 @@ void DrawSketchHandler::createAutoConstraints(const std::vector<AutoConstraint *
     }
 }
 
-void DrawSketchHandler::renderSuggestConstraintsCursor()
+void DrawSketchHandler::renderSuggestConstraintsCursor(std::vector<AutoConstraint> &suggestedConstraints)
 {
     // Auto Constrait icon size in px
     int iconSize = 16;
@@ -413,11 +365,11 @@ void DrawSketchHandler::renderSuggestConstraintsCursor()
     qp.drawPixmap(0,0, baseIcon);
 
     // Iterate through AutoConstraints type and add icons to the cursor pixmap
-    std::vector<AutoConstraint *>::iterator it = suggestedConstraints.begin();
+    std::vector<AutoConstraint>::iterator it=suggestedConstraints.begin();
     int i = 0;
     for (; it != suggestedConstraints.end(); ++it, i++) {
         QString iconType;
-        switch ((*it)->Type)
+        switch (it->Type)
         {
         case Horizontal:
             iconType = QString::fromAscii("Constraint_Horizontal");
