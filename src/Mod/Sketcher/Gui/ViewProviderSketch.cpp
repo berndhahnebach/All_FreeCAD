@@ -102,6 +102,7 @@ SbColor sPointColor             (0.5f,0.5f,0.5f);
 SbColor sConstraintColor        (0.0f,0.8f,0.0f);
 SbColor sCrossColor             (0.4f,0.4f,0.8f);
 SbColor sConstrIcoColor         (0.918f,0.145f,0.f);
+SbColor sFullyConstrainedColor  (0.6f,0.6f,0.9f);
 
 SbColor ViewProviderSketch::PreselectColor(0.1f, 0.1f, 0.8f);
 SbColor ViewProviderSketch::SelectColor   (0.1f, 0.1f, 0.8f);
@@ -125,6 +126,7 @@ struct EditData {
     PreselectCross(-1),
     PreselectConstraint(-1),
     blockedPreselection(false),
+    FullyConstrained(false),
     //ActSketch(0),
     EditRoot(0),
     PointsMaterials(0),
@@ -151,6 +153,7 @@ struct EditData {
     int PreselectCross;
     int PreselectConstraint;
     bool blockedPreselection;
+    bool FullyConstrained;
 
     // pointer to the Solver
     Sketcher::Sketch ActSketch;
@@ -722,25 +725,31 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
             }
             return false;
         case STATUS_SELECT_Point:
-            Mode = STATUS_SKETCH_DragPoint;
-            if (edit->PreselectPoint != -1 && edit->DragPoint != edit->PreselectPoint) {
+            if (!edit->ActSketch.hasConflicts() &&
+                edit->PreselectPoint != -1 && edit->DragPoint != edit->PreselectPoint) {
+                Mode = STATUS_SKETCH_DragPoint;
                 edit->DragPoint = edit->PreselectPoint;
                 int GeoId;
                 Sketcher::PointPos PosId;
                 getSketchObject()->getGeoVertexIndex(edit->DragPoint, GeoId, PosId);
                 edit->ActSketch.initMove(GeoId, PosId);
             }
+            else
+                Mode = STATUS_NONE;
             resetPreselectPoint();
             edit->PreselectCurve = -1;
             edit->PreselectCross = -1;
             edit->PreselectConstraint = -1;
             return true;
         case STATUS_SELECT_Edge:
-            Mode = STATUS_SKETCH_DragCurve;
-            if (edit->PreselectCurve != -1 && edit->DragCurve != edit->PreselectCurve) {
+            if (!edit->ActSketch.hasConflicts() &&
+                edit->PreselectCurve != -1 && edit->DragCurve != edit->PreselectCurve) {
+                Mode = STATUS_SKETCH_DragCurve;
                 edit->DragCurve = edit->PreselectCurve;
                 edit->ActSketch.initMove(edit->DragCurve, none);
             }
+            else
+                Mode = STATUS_NONE;
             resetPreselectPoint();
             edit->PreselectCurve = -1;
             edit->PreselectCross = -1;
@@ -1269,6 +1278,8 @@ void ViewProviderSketch::updateColor(void)
         else
             if (this->getSketchObject()->Geometry.getValues()[i]->Construction)
                 color[i] = sCurveDraftColor;
+            else if (edit->FullyConstrained)
+                color[i] = sFullyConstrainedColor;
             else
                 color[i] = sCurveColor;
     }
@@ -2381,12 +2392,33 @@ void ViewProviderSketch::updateData(const App::Property *prop)
     ViewProvider2DObject::updateData(prop);
 
     if (edit && (prop == &(getSketchObject()->Geometry) || &(getSketchObject()->Constraints))) {
-        edit->ActSketch.setUpSketch(getSketchObject()->Geometry.getValues(),
-                                    getSketchObject()->Constraints.getValues());
-        if (edit->ActSketch.solve() == 0)
+        edit->FullyConstrained = false;
+        int dofs = edit->ActSketch.setUpSketch(getSketchObject()->Geometry.getValues(),
+                                               getSketchObject()->Constraints.getValues());
+        if (dofs < 0) { // over-constrained sketch
+            std::string msg="This sketch is overconstrained!\n";
+            SketchObject::appendConflictMsg(edit->ActSketch.getConflicting(), msg);
+            Base::Console().Warning(msg.c_str());
+        }
+        else if (edit->ActSketch.hasConflicts()) { // conflicting constraints
+            std::string msg="This sketch contains conflicting constraints!\n";
+            SketchObject::appendConflictMsg(edit->ActSketch.getConflicting(), msg);
+            Base::Console().Warning(msg.c_str());
+        }
+        else if (edit->ActSketch.solve() == 0) { // solving the sketch
             signalSolved(0,edit->ActSketch.SolveTime);
-        else
+            if (dofs == 0) {
+                // color the sketch as fully constrained
+                edit->FullyConstrained = true;
+                Base::Console().Message("This sketch is fully constrained\n");
+            }
+            else {
+                Base::Console().Message("This sketch is underconstrained with %d degrees of freedom\n", dofs);
+            }
+        }
+        else {
             signalSolved(1,edit->ActSketch.SolveTime);
+        }
         draw(true);
     }
     if (edit && &(getSketchObject()->Constraints)) {
@@ -2434,15 +2466,30 @@ bool ViewProviderSketch::setEdit(int ModNum)
             return false;
     }
 
-    // clear the selction (convenience)
+    // clear the selection (convenience)
     Gui::Selection().clearSelection();
 
     // create the container for the addtitional edit data
     assert(!edit);
     edit = new EditData();
 
-    // fill up actual constraints and geometry
-    edit->ActSketch.setUpSketch(getSketchObject()->Geometry.getValues(), getSketchObject()->Constraints.getValues());
+    // set up the sketch and diagnose possible conflicts
+    int dofs = edit->ActSketch.setUpSketch(getSketchObject()->Geometry.getValues(),
+                                           getSketchObject()->Constraints.getValues());
+    if (dofs < 0) { // over-constrained sketch
+        std::string msg="The sketch is overconstrained!\n";
+        SketchObject::appendConflictMsg(edit->ActSketch.getConflicting(), msg);
+        Base::Console().Warning(msg.c_str());
+    }
+    else if (edit->ActSketch.hasConflicts()) { // conflicting constraints
+        std::string msg="This sketch contains conflicting constraints!\n";
+        SketchObject::appendConflictMsg(edit->ActSketch.getConflicting(), msg);
+        Base::Console().Warning(msg.c_str());
+    }
+    else if (dofs==0) {
+        // color the sketch as fully constrained
+        edit->FullyConstrained = true;
+    }
 
     createEditInventorNodes();
     this->hide(); // avoid that the wires interfere with the edit lines

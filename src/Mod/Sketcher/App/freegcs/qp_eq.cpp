@@ -36,8 +36,7 @@ int qp_eq(MatrixXd &H, VectorXd &g, MatrixXd &A, VectorXd &c,
     size_t constr_num = qrAT.cols();
     size_t rank = qrAT.rank();
 
-    assert(params_num >= constr_num);
-    if (rank != constr_num)
+    if (rank != constr_num || constr_num > params_num)
         return -1;
 
     // A^T = Q*R*P^T = Q1*R1*P^T

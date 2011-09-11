@@ -33,37 +33,6 @@ namespace GCS
 // Solver
 ///////////////////////////////////////
 
-/*
-JacobianMatrix::JacobianMatrix()
-: matrix()
-{
-}
-
-double JacobianMatrix::operator() (Constraint *constr, double *param)
-{
-    std::map<Constraint *,MAP_pD_D >:: const_iterator row;
-    row = matrix.find(constr);
-    if (row != matrix.end()) {
-        MAP_pD_D::const_iterator element;
-        element = row->second.find(param);
-        if (element != row->second.end())
-          return element->second;
-    }
-    return 0.;
-}
-
-void JacobianMatrix::set(Constraint *constr, double *param, double value)
-{
-    matrix[constr][param] = value;
-}
-
-void JacobianMatrix::remove(Constraint *constr)
-{
-    matrix.erase(constr);
-}
-*/
-
-
 // System
 System::System()
 : clist(0),
@@ -157,12 +126,12 @@ void System::clear()
     p2c.clear();
 }
 
-void System::clearLevel(int level)
+void System::clearByTag(int tagId)
 {
     std::vector<Constraint *> constrvec;
     for (std::vector<Constraint *>::const_iterator
          constr=clist.begin(); constr != clist.end(); ++constr) {
-        if ((*constr)->getPriority() == level)
+        if ((*constr)->getTag() == tagId)
             constrvec.push_back(*constr);
     }
     for (std::vector<Constraint *>::const_iterator
@@ -211,235 +180,233 @@ void System::removeConstraint(Constraint *constr)
 
 // basic constraints
 
-int System::addConstraintEqual(double *param1, double *param2, int level)
+int System::addConstraintEqual(double *param1, double *param2, int tagId)
 {
     Constraint *constr = new ConstraintEqual(param1, param2);
-    constr->setPriority(level);
+    constr->setTag(tagId);
     return addConstraint(constr);
 }
 
 int System::addConstraintDifference(double *param1, double *param2,
-                                    double *difference, int level)
+                                    double *difference, int tagId)
 {
     Constraint *constr = new ConstraintDifference(param1, param2, difference);
-    constr->setPriority(level);
+    constr->setTag(tagId);
     return addConstraint(constr);
 }
 
-int System::addConstraintP2PDistance(Point &p1, Point &p2, double *distance, int level)
+int System::addConstraintP2PDistance(Point &p1, Point &p2, double *distance, int tagId)
 {
     Constraint *constr = new ConstraintP2PDistance(p1, p2, distance);
-    constr->setPriority(level);
+    constr->setTag(tagId);
     return addConstraint(constr);
 }
 
 int System::addConstraintP2PAngle(Point &p1, Point &p2, double *angle,
-                                  double incr_angle, int level)
+                                  double incr_angle, int tagId)
 {
     Constraint *constr = new ConstraintP2PAngle(p1, p2, angle, incr_angle);
-    constr->setPriority(level);
+    constr->setTag(tagId);
     return addConstraint(constr);
 }
 
-int System::addConstraintP2PAngle(Point &p1, Point &p2, double *angle, int level)
+int System::addConstraintP2PAngle(Point &p1, Point &p2, double *angle, int tagId)
 {
     return addConstraintP2PAngle(p1, p2, angle, 0.);
 }
 
-int System::addConstraintP2LDistance(Point &p, Line &l, double *distance, int level)
+int System::addConstraintP2LDistance(Point &p, Line &l, double *distance, int tagId)
 {
     Constraint *constr = new ConstraintP2LDistance(p, l, distance);
-    constr->setPriority(level);
+    constr->setTag(tagId);
     return addConstraint(constr);
 }
 
-int System::addConstraintPointOnLine(Point &p, Line &l, int level)
+int System::addConstraintPointOnLine(Point &p, Line &l, int tagId)
 {
     Constraint *constr = new ConstraintPointOnLine(p, l);
-    constr->setPriority(level);
+    constr->setTag(tagId);
     return addConstraint(constr);
 }
 
-int System::addConstraintParallel(Line &l1, Line &l2, int level)
+int System::addConstraintParallel(Line &l1, Line &l2, int tagId)
 {
     Constraint *constr = new ConstraintParallel(l1, l2);
-    constr->setPriority(level);
+    constr->setTag(tagId);
     return addConstraint(constr);
 }
 
-int System::addConstraintPerpendicular(Line &l1, Line &l2, int level)
+int System::addConstraintPerpendicular(Line &l1, Line &l2, int tagId)
 {
     Constraint *constr = new ConstraintPerpendicular(l1, l2);
-    constr->setPriority(level);
+    constr->setTag(tagId);
     return addConstraint(constr);
 }
 
 int System::addConstraintPerpendicular(Point &l1p1, Point &l1p2,
-                                       Point &l2p1, Point &l2p2, int level)
+                                       Point &l2p1, Point &l2p2, int tagId)
 {
     Constraint *constr = new ConstraintPerpendicular(l1p1, l1p2, l2p1, l2p2);
-    constr->setPriority(level);
+    constr->setTag(tagId);
     return addConstraint(constr);
 }
 
-int System::addConstraintL2LAngle(Line &l1, Line &l2, double *angle, int level)
+int System::addConstraintL2LAngle(Line &l1, Line &l2, double *angle, int tagId)
 {
     Constraint *constr = new ConstraintL2LAngle(l1, l2, angle);
-    constr->setPriority(level);
+    constr->setTag(tagId);
     return addConstraint(constr);
 }
 
 int System::addConstraintL2LAngle(Point &l1p1, Point &l1p2,
-                                  Point &l2p1, Point &l2p2, double *angle, int level)
+                                  Point &l2p1, Point &l2p2, double *angle, int tagId)
 {
     Constraint *constr = new ConstraintL2LAngle(l1p1, l1p2, l2p1, l2p2, angle);
-    constr->setPriority(level);
+    constr->setTag(tagId);
     return addConstraint(constr);
 }
 
-int System::addConstraintMidpointOnLine(Line &l1, Line &l2, int level)
+int System::addConstraintMidpointOnLine(Line &l1, Line &l2, int tagId)
 {
     Constraint *constr = new ConstraintMidpointOnLine(l1, l2);
-    constr->setPriority(level);
+    constr->setTag(tagId);
     return addConstraint(constr);
 }
 
 int System::addConstraintMidpointOnLine(Point &l1p1, Point &l1p2,
-                                        Point &l2p1, Point &l2p2, int level)
+                                        Point &l2p1, Point &l2p2, int tagId)
 {
     Constraint *constr = new ConstraintMidpointOnLine(l1p1, l1p2, l2p1, l2p2);
-    constr->setPriority(level);
+    constr->setTag(tagId);
     return addConstraint(constr);
 }
 
 // derived constraints
 
-int System::addConstraintP2PCoincident(Point &p1, Point &p2, int level)
+int System::addConstraintP2PCoincident(Point &p1, Point &p2, int tagId)
 {
-           addConstraintEqual(p1.x, p2.x, level);
-    return addConstraintEqual(p1.y, p2.y, level);
+           addConstraintEqual(p1.x, p2.x, tagId);
+    return addConstraintEqual(p1.y, p2.y, tagId);
 }
 
-int System::addConstraintHorizontal(Line &l, int level)
+int System::addConstraintHorizontal(Line &l, int tagId)
 {
-    return addConstraintEqual(l.p1.y, l.p2.y, level);
+    return addConstraintEqual(l.p1.y, l.p2.y, tagId);
 }
 
-int System::addConstraintHorizontal(Point &p1, Point &p2, int level)
+int System::addConstraintHorizontal(Point &p1, Point &p2, int tagId)
 {
-    return addConstraintEqual(p1.y, p2.y, level);
+    return addConstraintEqual(p1.y, p2.y, tagId);
 }
 
-int System::addConstraintVertical(Line &l, int level)
+int System::addConstraintVertical(Line &l, int tagId)
 {
-    return addConstraintEqual(l.p1.x, l.p2.x, level);
+    return addConstraintEqual(l.p1.x, l.p2.x, tagId);
 }
 
-int System::addConstraintVertical(Point &p1, Point &p2, int level)
+int System::addConstraintVertical(Point &p1, Point &p2, int tagId)
 {
-    return addConstraintEqual(p1.x, p2.x, level);
+    return addConstraintEqual(p1.x, p2.x, tagId);
 }
 
-int System::addConstraintCoordinateX(Point &p, double *x, int level)
+int System::addConstraintCoordinateX(Point &p, double *x, int tagId)
 {
-    return addConstraintEqual(p.x, x, level);
+    return addConstraintEqual(p.x, x, tagId);
 }
 
-int System::addConstraintCoordinateY(Point &p, double *y, int level)
+int System::addConstraintCoordinateY(Point &p, double *y, int tagId)
 {
-    return addConstraintEqual(p.y, y, level);
+    return addConstraintEqual(p.y, y, tagId);
 }
 
-int System::addConstraintArcRules(Arc &a, int level)
+int System::addConstraintArcRules(Arc &a, int tagId)
 {
-           addConstraintP2PAngle(a.center, a.start, a.startAngle, level);
-           addConstraintP2PAngle(a.center, a.end, a.endAngle, level);
-           addConstraintP2PDistance(a.center, a.start, a.rad, level);
-    return addConstraintP2PDistance(a.center, a.end, a.rad, level);
+           addConstraintP2PAngle(a.center, a.start, a.startAngle, tagId);
+           addConstraintP2PAngle(a.center, a.end, a.endAngle, tagId);
+           addConstraintP2PDistance(a.center, a.start, a.rad, tagId);
+    return addConstraintP2PDistance(a.center, a.end, a.rad, tagId);
 }
 
-int System::addConstraintPointOnCircle(Point &p, Circle &c, int level)
+int System::addConstraintPointOnCircle(Point &p, Circle &c, int tagId)
 {
-    return addConstraintP2PDistance(p, c.center, c.rad, level);
+    return addConstraintP2PDistance(p, c.center, c.rad, tagId);
 }
 
-int System::addConstraintPointOnArc(Point &p, Arc &a, int level)
+int System::addConstraintPointOnArc(Point &p, Arc &a, int tagId)
 {
-    return addConstraintP2PDistance(p, a.center, a.rad, level);
+    return addConstraintP2PDistance(p, a.center, a.rad, tagId);
 }
 
-int System::addConstraintTangent(Line &l, Circle &c, int level)
+int System::addConstraintTangent(Line &l, Circle &c, int tagId)
 {
-    return addConstraintP2LDistance(c.center, l, c.rad, level);
+    return addConstraintP2LDistance(c.center, l, c.rad, tagId);
 }
 
-int System::addConstraintTangent(Line &l, Arc &a, int level)
+int System::addConstraintTangent(Line &l, Arc &a, int tagId)
 {
-    return addConstraintP2LDistance(a.center, l, a.rad, level);
+    return addConstraintP2LDistance(a.center, l, a.rad, tagId);
 }
 
-int System::addConstraintLine2Arc(Point &p1, Point &p2, Arc &a, int level)
+int System::addConstraintLine2Arc(Point &p1, Point &p2, Arc &a, int tagId)
 {
-    addConstraintP2PCoincident(p2, a.start, level);
+    addConstraintP2PCoincident(p2, a.start, tagId);
     double incr_angle = *(a.startAngle) < *(a.endAngle) ? M_PI/2 : -M_PI/2;
-    return addConstraintP2PAngle(p1, p2, a.startAngle, incr_angle, level);
+    return addConstraintP2PAngle(p1, p2, a.startAngle, incr_angle, tagId);
 }
 
-int System::addConstraintArc2Line(Arc &a, Point &p1, Point &p2, int level)
+int System::addConstraintArc2Line(Arc &a, Point &p1, Point &p2, int tagId)
 {
-    addConstraintP2PCoincident(p1, a.end, level);
+    addConstraintP2PCoincident(p1, a.end, tagId);
     double incr_angle = *(a.startAngle) < *(a.endAngle) ? M_PI/2 : -M_PI/2;
-    return addConstraintP2PAngle(p1, p2, a.endAngle, incr_angle, level);
+    return addConstraintP2PAngle(p1, p2, a.endAngle, incr_angle, tagId);
 }
 
-int System::addConstraintCircleRadius(Circle &c, double *radius, int level)
+int System::addConstraintCircleRadius(Circle &c, double *radius, int tagId)
 {
-    return addConstraintEqual(c.rad, radius, level);
+    return addConstraintEqual(c.rad, radius, tagId);
 }
 
-int System::addConstraintArcRadius(Arc &a, double *radius, int level)
+int System::addConstraintArcRadius(Arc &a, double *radius, int tagId)
 {
-    return addConstraintEqual(a.rad, radius, level);
+    return addConstraintEqual(a.rad, radius, tagId);
 }
 
-int System::addConstraintEqualLength(Line &l1, Line &l2, double *length, int level)
+int System::addConstraintEqualLength(Line &l1, Line &l2, double *length, int tagId)
 {
-           addConstraintP2PDistance(l1.p1, l1.p2, length, level);
-    return addConstraintP2PDistance(l2.p1, l2.p2, length, level);
+           addConstraintP2PDistance(l1.p1, l1.p2, length, tagId);
+    return addConstraintP2PDistance(l2.p1, l2.p2, length, tagId);
 }
 
-int System::addConstraintEqualRadius(Circle &c1, Circle &c2, int level)
+int System::addConstraintEqualRadius(Circle &c1, Circle &c2, int tagId)
 {
-    return addConstraintEqual(c1.rad, c2.rad, level);
+    return addConstraintEqual(c1.rad, c2.rad, tagId);
 }
 
-int System::addConstraintEqualRadius(Circle &c1, Arc &a2, int level)
+int System::addConstraintEqualRadius(Circle &c1, Arc &a2, int tagId)
 {
-    return addConstraintEqual(c1.rad, a2.rad, level);
+    return addConstraintEqual(c1.rad, a2.rad, tagId);
 }
 
-int System::addConstraintEqualRadius(Arc &a1, Arc &a2, int level)
+int System::addConstraintEqualRadius(Arc &a1, Arc &a2, int tagId)
 {
-    return addConstraintEqual(a1.rad, a2.rad, level);
+    return addConstraintEqual(a1.rad, a2.rad, tagId);
 }
 
-int System::addConstraintP2PSymmetric(Point &p1, Point &p2, Line &l, int level)
+int System::addConstraintP2PSymmetric(Point &p1, Point &p2, Line &l, int tagId)
 {
-    addConstraintPerpendicular(p1, p2, l.p1, l.p2, level);
-    return addConstraintMidpointOnLine(p1, p2, l.p1, l.p2, level);
+    addConstraintPerpendicular(p1, p2, l.p1, l.p2, tagId);
+    return addConstraintMidpointOnLine(p1, p2, l.p1, l.p2, tagId);
 }
 
 
 void System::initSolution(VEC_pD &params)
 {
     // - Stores the current parameters in the vector "reference"
-    // - Identifies the equality constraints with priority level >= 0
+    // - Identifies the equality constraints with tagged with ids >= 0
     //   and prepares a corresponding system reduction
     // - Organizes the rest of constraints into two subsystems for
-    //   priority levels >=0 and < 0 respectively and applies the
+    //   tag ids >=0 and < 0 respectively and applies the
     //   system reduction specified in the previous step
-    // - Analyses the constrainess grad of the system and provides
-    //   feedback
 
     clearReference();
     for (VEC_pD::const_iterator param=params.begin();
@@ -457,7 +424,7 @@ void System::initSolution(VEC_pD &params)
 
         for (std::vector<Constraint *>::const_iterator constr=clist.begin();
             constr != clist.end(); ++constr) {
-            if ((*constr)->getPriority() >= 0 && (*constr)->getTypeId() == Equal) {
+            if ((*constr)->getTag() >= 0 && (*constr)->getTypeId() == Equal) {
                 MAP_pD_I::const_iterator it1,it2;
                 it1 = params_index.find((*constr)->params()[0]);
                 it2 = params_index.find((*constr)->params()[1]);
@@ -481,7 +448,7 @@ void System::initSolution(VEC_pD &params)
     for (std::vector<Constraint *>::const_iterator constr=clist.begin();
          constr != clist.end(); ++constr, i++) {
         if (eliminated.count(*constr) == 0) {
-            if ((*constr)->getPriority() >= 0)
+            if ((*constr)->getTag() >= 0)
                 clist0.push_back(*constr);
             else
                 clist1.push_back(*constr);
@@ -775,59 +742,78 @@ void System::applySolution()
         *(it->first) = *(it->second);
 }
 
-int System::diagnose(VEC_pD &params, std::vector<VEC_I> &conflicting, VEC_I &multiplicity)
+int System::diagnose(VEC_pD &params, VEC_I &conflicting)
 {
-    // the vector "conflicting" will hold groups of constraints that contain conflicts
-    // the vector "multiciplicity" will hold the number of constraints to be deleted in
-    // each group in order to resolve the conflict
+    // Analyses the constrainess grad of the system and provides feedback
+    // The vector "conflicting" will hold a group of conflicting constraints
     conflicting.clear();
-    multiplicity.clear();
-    if (subsystems.size() > 0) {
-        Eigen::MatrixXd JA;
-        SubSystem *subsysA = subsystems[0];
-        subsysA->redirectParams();
-        subsysA->calcJacobi(params,JA);
-        subsysA->revertParams();
+    std::vector<VEC_I> conflictingIndex;
+    std::vector<int> tags;
+    Eigen::MatrixXd J(clist.size(), params.size());
+    int count=0;
+    for (std::vector<Constraint *>::iterator constr=clist.begin();
+         constr != clist.end(); ++constr) {
+        (*constr)->revertParams();
+        if ((*constr)->getTag() >= 0) {
+            count++;
+            tags.push_back((*constr)->getTag());
+            for (int j=0; j < int(params.size()); j++)
+                J(count-1,j) = (*constr)->grad(params[j]);
+        }
+    }
 
-        Eigen::FullPivHouseholderQR<Eigen::MatrixXd> qrAT(JA.transpose());
-        Eigen::MatrixXd Q = qrAT.matrixQ ();
-        int params_num = qrAT.rows();
-        int constr_num = qrAT.cols();
-        int rank = qrAT.rank();
+    if (J.rows() > 0) {
+        Eigen::FullPivHouseholderQR<Eigen::MatrixXd> qrJT(J.topRows(count).transpose());
+        Eigen::MatrixXd Q = qrJT.matrixQ ();
+        int params_num = qrJT.rows();
+        int constr_num = qrJT.cols();
+        int rank = qrJT.rank();
 
         Eigen::MatrixXd R;
         if (constr_num >= params_num)
-            R = qrAT.matrixQR().triangularView<Eigen::Upper>();
+            R = qrJT.matrixQR().triangularView<Eigen::Upper>();
         else
-            R = qrAT.matrixQR().topRows(constr_num)
+            R = qrJT.matrixQR().topRows(constr_num)
                                .triangularView<Eigen::Upper>();
 
         if (constr_num > rank) { // conflicting constraints
-            for (int i=rank-1; i > 0; i--) {
-                // row i+1 of R should not contain more than rank-i non-zero elements
-                int nz = 0; //(R.row(i) != 0).count();
-                for (int j=0; j < R.cols(); j++) {
-                    if (R(i,j) != 0)
-                        nz++;
-                }
-                if (nz > rank-i) {
-                    int groupId = conflicting.size();
-                    conflicting.push_back(std::vector<int>());
-                    multiplicity.push_back(0);
-                    for (int j=0; j < R.cols(); j++) {
-                        if (R(i,j) != 0) {
-                            conflicting[groupId].push_back(j+1);
-                            multiplicity[groupId] += 1;
-                        }
+            for (int i=1; i < rank; i++) {
+                // eliminate non zeros above pivot
+                assert(R(i,i) != 0);
+                for (int row=0; row < i; row++) {
+                    if (R(row,i) != 0) {
+                        double coef=R(row,i)/R(i,i);
+                        R.block(row,i+1,1,constr_num-i-1) -= coef * R.block(i,i+1,1,constr_num-i-1);
+                        R(row,i) = 0;
                     }
-                    //assert(multiplicity[groupId] == nz - rank + i);
                 }
             }
+            conflictingIndex.resize(constr_num-rank);
+            for (int j=rank; j < constr_num; j++) {
+                for (int row=0; row < rank; row++) {
+                    if (R(row,j) != 0) {
+                        int orig_col = qrJT.colsPermutation().indices()[row];
+                        conflictingIndex[j-rank].push_back(orig_col);
+                    }
+                }
+                int orig_col = qrJT.colsPermutation().indices()[j];
+                conflictingIndex[j-rank].push_back(orig_col);
+            }
+
+            SET_I tags_set;
+            for (int i=0; i < conflictingIndex.size(); i++) {
+                for (int j=0; j < conflictingIndex[i].size(); j++) {
+                    tags_set.insert(tags[conflictingIndex[i][j]]);
+                }
+            }
+            tags_set.erase(0); // exclude constraints tagged with zero
+            conflicting.resize(tags_set.size());
+            std::copy(tags_set.begin(), tags_set.end(), conflicting.begin());
         }
 
         return params_num - rank;
     }
-    return 0;
+    return params.size();
 }
 
 void System::clearSubSystems()

@@ -31,7 +31,7 @@ namespace GCS
 ///////////////////////////////////////
 
 Constraint::Constraint()
-: origpvec(0), pvec(0), scale(1.), priority(0)
+: origpvec(0), pvec(0), scale(1.), tag(0)
 {
 }
 
@@ -187,6 +187,7 @@ double ConstraintP2PDistance::grad(double *param)
         if (param == p2y()) deriv += -dy/d;
     }
     if (param == distance()) deriv += -1.;
+
     return scale * deriv;
 }
 
@@ -277,6 +278,7 @@ double ConstraintP2PAngle::grad(double *param)
         if (param == p2y()) deriv += ( sa*dx + ca*dy);
     }
     if (param == angle()) deriv += -1;
+
     return scale * deriv;
 }
 
@@ -353,8 +355,8 @@ double ConstraintP2LDistance::grad(double *param)
         if (area < 0)
             deriv *= -1;
     }
-    if (param == distance())
-        deriv += -1;
+    if (param == distance()) deriv += -1;
+
     return scale * deriv;
 }
 
@@ -670,6 +672,7 @@ double ConstraintL2LAngle::grad(double *param)
         if (param == l2p2y()) deriv += ( sa*dx2 + ca*dy2);
     }
     if (param == angle()) deriv += -1;
+
     return scale * deriv;
 }
 

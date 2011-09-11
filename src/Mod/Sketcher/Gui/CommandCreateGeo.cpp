@@ -563,18 +563,18 @@ public:
                           ,previousCurve-1,previousCurve
                           );
             }
-            
-            // Add auto constraints
-            if (sugConstr1.size() > 0)
-                createAutoConstraints(sugConstr1, getHighestCurveIndex(), getHighestVertexIndex() -1);
-
-            if (suggestedConstraints.size() > 0)
-                createAutoConstraints(suggestedConstraints, getHighestCurveIndex(), getHighestVertexIndex());
-            
-            // Delete stored auto constraints
-            clearSuggestedConstraints(sugConstr1);
 
             if (Mode==STATUS_Do) {
+                // Add auto constraints
+                if (sugConstr1.size() > 0)
+                    createAutoConstraints(sugConstr1, getHighestCurveIndex(), getHighestVertexIndex() -1);
+    
+                if (suggestedConstraints.size() > 0)
+                    createAutoConstraints(suggestedConstraints, getHighestCurveIndex(), getHighestVertexIndex());
+                
+                // Delete stored auto constraints
+                clearSuggestedConstraints(sugConstr1);
+
                 //remember the vertex for the next rounds constraint...
                 previousCurve = getHighestCurveIndex() + 1;
                 // setup for the next line segment 

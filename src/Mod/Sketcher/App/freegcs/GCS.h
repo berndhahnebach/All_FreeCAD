@@ -38,33 +38,12 @@ namespace GCS
         Failed = 2     // Failed to find any solution
     };
 
-//    enum ConstrainStatus {
-//        Well = 0,  // Well-constrained system
-//        Under = 1, // Under-constrained system
-//        Over = 2   // Over-constrained system
-//    };
-
-/*
-    class JacobianMatrix
-    {
-    private:
-        std::map<Constraint *,MAP_pD_D > matrix;
-    public:
-        JacobianMatrix();
-        double operator() (Constraint *constr, double *param);
-        void set(Constraint *constr, double *param, double value);
-        void remove(Constraint *constr);
-    };
-*/
-
     class System
     {
     // This is the main class. It holds all constraints and information
     // about partitioning into subsystems and solution strategies
     private:
         std::vector<Constraint *> clist;
-
-//        JacobianMatrix jacobi; // jacobi matrix of the residuals
 
         std::map<Constraint *,VEC_pD > c2p; // constraint to parameter adjacency list
         std::map<double *,std::vector<Constraint *> > p2c; // parameter to constraint adjacency list
@@ -85,54 +64,54 @@ namespace GCS
         ~System();
         
         void clear();
-        void clearLevel(int level);
+        void clearByTag(int tagId);
 
         int addConstraint(Constraint *constr);
         void removeConstraint(Constraint *constr);
 
         // basic constraints
-        int addConstraintEqual(double *param1, double *param2, int level=0);
+        int addConstraintEqual(double *param1, double *param2, int tagId=0);
         int addConstraintDifference(double *param1, double *param2,
-                                    double *difference, int level=0);
-        int addConstraintP2PDistance(Point &p1, Point &p2, double *distance, int level=0);
+                                    double *difference, int tagId=0);
+        int addConstraintP2PDistance(Point &p1, Point &p2, double *distance, int tagId=0);
         int addConstraintP2PAngle(Point &p1, Point &p2, double *angle,
-                                  double incr_angle, int level=0);
-        int addConstraintP2PAngle(Point &p1, Point &p2, double *angle, int level=0);
-        int addConstraintP2LDistance(Point &p, Line &l, double *distance, int level=0);
-        int addConstraintPointOnLine(Point &p, Line &l, int level=0);
-        int addConstraintParallel(Line &l1, Line &l2, int level=0);
-        int addConstraintPerpendicular(Line &l1, Line &l2, int level=0);
+                                  double incr_angle, int tagId=0);
+        int addConstraintP2PAngle(Point &p1, Point &p2, double *angle, int tagId=0);
+        int addConstraintP2LDistance(Point &p, Line &l, double *distance, int tagId=0);
+        int addConstraintPointOnLine(Point &p, Line &l, int tagId=0);
+        int addConstraintParallel(Line &l1, Line &l2, int tagId=0);
+        int addConstraintPerpendicular(Line &l1, Line &l2, int tagId=0);
         int addConstraintPerpendicular(Point &l1p1, Point &l1p2,
-                                       Point &l2p1, Point &l2p2, int level=0);
-        int addConstraintL2LAngle(Line &l1, Line &l2, double *angle, int level=0);
+                                       Point &l2p1, Point &l2p2, int tagId=0);
+        int addConstraintL2LAngle(Line &l1, Line &l2, double *angle, int tagId=0);
         int addConstraintL2LAngle(Point &l1p1, Point &l1p2, Point &l2p1, Point &l2p2,
-                                  double *angle, int level=0);
-        int addConstraintMidpointOnLine(Line &l1, Line &l2, int level=0);
+                                  double *angle, int tagId=0);
+        int addConstraintMidpointOnLine(Line &l1, Line &l2, int tagId=0);
         int addConstraintMidpointOnLine(Point &l1p1, Point &l1p2, Point &l2p1, Point &l2p2,
-                                        int level=0);
+                                        int tagId=0);
 
         // derived constraints
-        int addConstraintP2PCoincident(Point &p1, Point &p2, int level=0);
-        int addConstraintHorizontal(Line &l, int level=0);
-        int addConstraintHorizontal(Point &p1, Point &p2, int level=0);
-        int addConstraintVertical(Line &l, int level=0);
-        int addConstraintVertical(Point &p1, Point &p2, int level=0);
-        int addConstraintCoordinateX(Point &p, double *x, int level=0);
-        int addConstraintCoordinateY(Point &p, double *y, int level=0);
-        int addConstraintArcRules(Arc &a, int level=0);
-        int addConstraintPointOnCircle(Point &p, Circle &c, int level=0);
-        int addConstraintPointOnArc(Point &p, Arc &a, int level=0);
-        int addConstraintTangent(Line &l, Circle &c, int level=0);
-        int addConstraintTangent(Line &l, Arc &a, int level=0);
-        int addConstraintLine2Arc(Point &p1, Point &p2, Arc &a, int level=0);
-        int addConstraintArc2Line(Arc &a, Point &p1, Point &p2, int level=0);
-        int addConstraintCircleRadius(Circle &c, double *radius, int level=0);
-        int addConstraintArcRadius(Arc &a, double *radius, int level=0);
-        int addConstraintEqualLength(Line &l1, Line &l2, double *length, int level=0);
-        int addConstraintEqualRadius(Circle &c1, Circle &c2, int level=0);
-        int addConstraintEqualRadius(Circle &c1, Arc &a2, int level=0);
-        int addConstraintEqualRadius(Arc &a1, Arc &a2, int level=0);
-        int addConstraintP2PSymmetric(Point &p1, Point &p2, Line &l, int level=0);
+        int addConstraintP2PCoincident(Point &p1, Point &p2, int tagId=0);
+        int addConstraintHorizontal(Line &l, int tagId=0);
+        int addConstraintHorizontal(Point &p1, Point &p2, int tagId=0);
+        int addConstraintVertical(Line &l, int tagId=0);
+        int addConstraintVertical(Point &p1, Point &p2, int tagId=0);
+        int addConstraintCoordinateX(Point &p, double *x, int tagId=0);
+        int addConstraintCoordinateY(Point &p, double *y, int tagId=0);
+        int addConstraintArcRules(Arc &a, int tagId=0);
+        int addConstraintPointOnCircle(Point &p, Circle &c, int tagId=0);
+        int addConstraintPointOnArc(Point &p, Arc &a, int tagId=0);
+        int addConstraintTangent(Line &l, Circle &c, int tagId=0);
+        int addConstraintTangent(Line &l, Arc &a, int tagId=0);
+        int addConstraintLine2Arc(Point &p1, Point &p2, Arc &a, int tagId=0);
+        int addConstraintArc2Line(Arc &a, Point &p1, Point &p2, int tagId=0);
+        int addConstraintCircleRadius(Circle &c, double *radius, int tagId=0);
+        int addConstraintArcRadius(Arc &a, double *radius, int tagId=0);
+        int addConstraintEqualLength(Line &l1, Line &l2, double *length, int tagId=0);
+        int addConstraintEqualRadius(Circle &c1, Circle &c2, int tagId=0);
+        int addConstraintEqualRadius(Circle &c1, Arc &a2, int tagId=0);
+        int addConstraintEqualRadius(Arc &a1, Arc &a2, int tagId=0);
+        int addConstraintP2PSymmetric(Point &p1, Point &p2, Line &l, int tagId=0);
 
         void initSolution(VEC_pD &params);
 
@@ -146,7 +125,7 @@ namespace GCS
 
         bool isInit() const { return init; }
 
-        int diagnose(VEC_pD &params, std::vector<VEC_I> &conflicting, VEC_I &multiplicity);
+        int diagnose(VEC_pD &params, VEC_I &conflicting);
     };
 
     ///////////////////////////////////////
@@ -155,7 +134,7 @@ namespace GCS
     #define XconvergenceRough 1e-8
     #define XconvergenceFine  1e-10
     #define smallF            1e-20
-    #define MaxIterations     500 //Note that the total number of iterations allowed is MaxIterations *xLength
+    #define MaxIterations     100 //Note that the total number of iterations allowed is MaxIterations *xLength
 
     ///////////////////////////////////////
     // Helper elements

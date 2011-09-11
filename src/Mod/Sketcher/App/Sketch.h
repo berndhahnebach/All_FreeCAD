@@ -54,7 +54,8 @@ public:
     /// delete all geometry and constraints, leave an empty sketch
     void clear(void);
     /// set the sketch up with geoms and constraints
-    void setUpSketch(const std::vector<Part::Geometry *> &geo,const std::vector<Constraint *> &ConstraintList);
+    int setUpSketch(const std::vector<Part::Geometry *> &GeoList,const std::vector<Constraint *> &ConstraintList,
+                    bool withDiagnose=true);
     /// return the actual geometry of the sketch a TopoShape
     Part::TopoShape toShape(void) const;
     /// add unspecified geometry
@@ -74,9 +75,8 @@ public:
     /// retrieves a point
     Base::Vector3d getPoint(int geoId, PointPos pos);
 
-    /** returns the degree of freedom of a sketch and provides a list with groups
-      * of conflicting constraints and a list with the number of constraints that
-      * should be removed from each group
+    /** returns the degree of freedom of a sketch and calculates a list of
+      * conflicting constraints
       *
       * 0 degrees of freedom correspond to a fully constrained sketch
       * -1 degrees of freedom correspond to an over-constrained sketch
@@ -86,8 +86,9 @@ public:
       * a fully constrained or under-constrained sketch may contain conflicting
       * constraints or may not
       */
-    int diagnose(std::vector< std::vector<int> > &conflicting,
-                 std::vector<int> &multiplicity);
+    int diagnose(void);
+    bool hasConflicts(void) const { return (Conflicting.size() > 0); };
+    const std::vector<int> &getConflicting(void) const { return Conflicting; };
 
     /** set the datum of a distance or angle constraint to a certain value and solve
       * This can cause the solving to fail!
@@ -200,6 +201,8 @@ protected:
 
     std::vector<GeoDef> Geoms;
     GCS::System GCSsys;
+    int ConstraintsCounter;
+    std::vector<int> Conflicting;
 
     // solving parameters
     std::vector<double*> Parameters;    // with memory allocation

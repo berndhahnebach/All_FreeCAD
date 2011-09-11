@@ -36,6 +36,7 @@ namespace GCS
     typedef std::map<double *, double> MAP_pD_D;
     typedef std::map<double *, int> MAP_pD_I;
     typedef std::set<double *> SET_pD;
+    typedef std::set<int> SET_I;
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
