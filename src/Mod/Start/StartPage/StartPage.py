@@ -6,6 +6,8 @@ def translate(context,text):
         "convenience function for the Qt translator"
         return str(QtGui.QApplication.translate(context, text, None, QtGui.QApplication.UnicodeUTF8).toUtf8())
 
+# http://gdata.youtube.com/feeds/base/users/salceson2/uploads?alt=rss&v=2&orderby=published
+
 # texts to be translated
 
 text01 = translate("StartPage","FreeCAD Start Center")
@@ -44,6 +46,11 @@ text33 = translate("StartPage","file size:")
 text34 = translate("StartPage","creation time:")
 text35 = translate("StartPage","last modified:")
 text36 = translate("StartPage","location:")
+text37 = translate("StartPage","User manual")
+text38 = translate("StartPage","http://sourceforge.net/apps/mediawiki/free-cad/index.php?title=Online_Help_Toc")
+text39 = translate("StartPage","Tutorials")
+text40 = translate("StartPage","Python resources")
+text41 = translate("StartPage","File not found")
 
 # here is the html page skeleton
 
@@ -52,11 +59,65 @@ page = """
   <head>
     <title>FreeCAD - Start page</title>
     <script language="javascript">
+      function JSONscriptRequest(fullUrl) {
+        // REST request path
+        this.fullUrl = fullUrl; 
+        // Get the DOM location to put the script tag
+        this.headLoc = document.getElementsByTagName("head").item(0);
+        // Generate a unique script tag id
+        this.scriptId = 'JscriptId' + JSONscriptRequest.scriptCounter++;
+      }
+
+      // Static script ID counter
+      JSONscriptRequest.scriptCounter = 1;
+
+      JSONscriptRequest.prototype.buildScriptTag = function () {
+        // Create the script tag
+        this.scriptObj = document.createElement("script");
+        // Add script object attributes
+        this.scriptObj.setAttribute("type", "text/javascript");
+        this.scriptObj.setAttribute("charset", "utf-8");
+        this.scriptObj.setAttribute("src", this.fullUrl);
+        this.scriptObj.setAttribute("id", this.scriptId);
+      }
+ 
+      JSONscriptRequest.prototype.removeScriptTag = function () {
+        // Destroy the script tag
+        this.headLoc.removeChild(this.scriptObj);  
+      }
+
+      JSONscriptRequest.prototype.addScriptTag = function () {
+        // Create the script tag
+        this.headLoc.appendChild(this.scriptObj);
+      }
+
       function show(theText) {
         ddiv = document.getElementById("description");
         if (theText == "") theText = "&nbsp;";
         ddiv.innerHTML = theText;
       }
+
+      function loadFeeds() {
+        ddiv = document.getElementById("youtube");
+        ddiv.innerHTML = "Fetching data from the web...";
+        var obj=new JSONscriptRequest('http://gdata.youtube.com/feeds/base/users/salceson2/uploads?alt=json-in-script&v=2&orderby=published&callback=showLinks');
+        obj.buildScriptTag(); // Build the script tag
+        obj.addScriptTag(); // Execute (add) the script tag
+        ddiv.innerHTML = "Done fetching";
+      }
+
+      function showLinks(data) {
+        ddiv = document.getElementById('youtube');
+        ddiv.innerHTML = "Received";
+        var feed = data.feed;
+        var entries = feed.entry || [];
+        var html = ['<ul>'];
+        for (var i = 0; i < 5; i++) {
+          html.push('<li><a href="',entries[i].link[0].href,'">', entries[i].title.$t, '</a></li>');
+        }
+        html.push('</ul>');
+        ddiv.innerHTML = html.join('');
+      } 
     </script>
     <style type="text/css">
       body {
@@ -112,7 +173,7 @@ page = """
     </style>
   </head>
 
-  <body>
+  <body onload="loadFeeds()">
 
     <h1><img src="FreeCAD.png">&nbsp;""" + text01 + """</h1>
 
@@ -130,12 +191,15 @@ page = """
 
       <div class="block">
         <h2>""" + text04 + """</h2>
-          youtubefeed
+        <div id="youtube">youtube</div>
       </div>
 
+      <!--
       <div class="block">
         <h2>""" + text05 + """</h2>
+        <div id="news">To be implemented</div>
       </div>
+      -->
 
     </div>
 
@@ -143,30 +207,17 @@ page = """
 
       <div class="block">
         <h2>""" + text06 + """</h2>
-        <ul>
-          <li><img src="web.png">&nbsp;
-              <a onMouseover="show('<p>""" + text07 + """</p>')" 
-                 onMouseout="show('')"
-                 href="http://free-cad.sf.net/">""" + text08 + """</a></li>
-        </ul>
+            defaultlinks
       </div>
 
       <div class="block">
         <h2>""" + text09 + """</h2>
-        <ul>
-          <li><a href="LoadSchenkel.py">""" + text10 + """</a></li>
-          <li><a href="LoadPartDesignExample.py">""" + text11 + """</a></li>
-          <li><a href="LoadDrawingExample.py">""" + text12 + """</a></li>
-          <li><a href="LoadRobotExample.py">""" + text13 + """</a></li>
-        </ul>
+            defaultexamples
       </div>
 
       <div class="block">
         <h2>""" + text14 + """</h2>
-        <ul>
-          <li><a href="http://freecad-project.de/svn/ExampleData/FileFormates/Schenkel.stp">""" + text15 + """</a></li>
-          <li><a href="http://freecad-project.de/svn/ExampleData/Examples/CAD/Complex.FCStd">""" + text16 + """</a></li>
-        </ul>
+            webexamples
       </div>
 
     </div>
@@ -175,16 +226,55 @@ page = """
       &nbsp;
     </div>
 
+    <!--
     <form class="options">
       <input type="checkbox" name="closeThisDialog">
       """ + text17 + """<br/>
       <input type="checkbox" name="dontShowAgain">
       """ + text18 + """
     </form>
+    -->
 
   </body>
 </html>
 """
+
+def getWebExamples():
+        return """
+        <ul>
+          <li><a href="http://freecad-project.de/svn/ExampleData/FileFormates/Schenkel.stp">""" + text15 + """</a></li>
+          <li><a href="http://freecad-project.de/svn/ExampleData/Examples/CAD/Complex.FCStd">""" + text16 + """</a></li>
+        </ul>"""
+      
+def getExamples():
+        return """
+        <ul>
+          <li><a href="LoadSchenkel.py">""" + text10 + """</a></li>
+          <li><a href="LoadPartDesignExample.py">""" + text11 + """</a></li>
+          <li><a href="LoadDrawingExample.py">""" + text12 + """</a></li>
+          <li><a href="LoadRobotExample.py">""" + text13 + """</a></li>
+        </ul>"""
+      
+def getLinks():
+        return """
+        <ul>
+          <li><img src="web.png">&nbsp;
+              <a onMouseover="show('<p>""" + text07 + """</p>')" 
+                 onMouseout="show('')"
+                 href="http://free-cad.sf.net/">""" + text08 + """</a></li>
+          <li><img src="web.png">&nbsp;
+              <a onMouseover="show('<p>""" + text37 + """</p>')" 
+                 onMouseout="show('')"
+                 href=""" + text38 + """>""" + text37 + """</a></li>
+          <li><img src="web.png">&nbsp;
+              <a onMouseover="show('<p>""" + text39 + """</p>')" 
+                 onMouseout="show('')"
+                 href="http://sourceforge.net/apps/mediawiki/free-cad/index.php?title=Tutorials">""" + text39 + """</a></li>
+          <li><img src="web.png">&nbsp;
+              <a onMouseover="show('<p>""" + text40 + """</p>')" 
+                 onMouseout="show('')"
+                 href="http://sourceforge.net/apps/mediawiki/free-cad/index.php?title=Power_users_hub">""" + text40 + """</a></li>
+        </ul>"""
 
 def getWorkbenches():
         return """
@@ -260,7 +350,7 @@ def getInfo(filename):
 
                                         html += thumbfile + '><br/>'
         else:
-                html += "<p>File not found</p>"
+                html += "<p>" + text41 + "</p>"
                 
         return html
 
@@ -327,8 +417,14 @@ def handle():
         # add default workbenches
         html = html.replace("defaultworkbenches",getWorkbenches())
 
-        # add videos
-        #html = html.replace("youtubefeed",getFeed("http://gdata.youtube.com/feeds/base/users/salceson2/uploads?alt=rss&v=2&orderby=published"))
+        # add default web links
+        html = html.replace("defaultlinks",getLinks())
+
+        # add default examples
+        html = html.replace("defaultexamples",getExamples())
+
+        # add web examples
+        html = html.replace("webexamples",getWebExamples())
         
         return html
 	
