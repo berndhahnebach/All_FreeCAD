@@ -1129,7 +1129,8 @@ class ViewProviderDraft:
                 return
 
         def getIcon(self):
-		return FreeCADGui.draftToolBar.getXPM("Draft_Draft")
+                return(":/icons/Draft_Draft.svg")
+		# return FreeCADGui.draftToolBar.getXPM("Draft_Draft")
 		
 class Dimension:
 	"The Dimension object"
