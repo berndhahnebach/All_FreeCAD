@@ -46,8 +46,8 @@ class ViewProviderSketch;
 // A Simple data type to hold basic information for suggested constraints
 struct AutoConstraint
 {
-    int Index;
     Sketcher::ConstraintType Type;
+    int Index;
 };
 
 enum Type
@@ -83,7 +83,8 @@ public:
 
     int seekAutoConstraint(std::vector<AutoConstraint> &suggestedConstraints,
                            const Base::Vector2D &Pos, const Base::Vector2D &Dir, Type selType = VERTEX);
-    void createAutoConstraints(const std::vector<AutoConstraint> &autoConstrs, int geoId, int vertexId = -1);
+    void createAutoConstraints(const std::vector<AutoConstraint> &autoConstrs,
+                               int geoId, Sketcher::PointPos pointPos=Sketcher::none);
 
     void setPositionText(const Base::Vector2D &Pos);
     void resetPositionText(void);

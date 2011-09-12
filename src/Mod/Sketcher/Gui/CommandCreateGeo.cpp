@@ -184,13 +184,13 @@ public:
 
             // add auto constraints for the line segment start
             if (sugConstr1.size() > 0) {
-                createAutoConstraints(sugConstr1, getHighestCurveIndex(), getHighestVertexIndex() -1);
+                createAutoConstraints(sugConstr1, getHighestCurveIndex(), Sketcher::start);
                 sugConstr1.clear();
             }
 
             // add auto constraints for the line segment end
             if (sugConstr2.size() > 0) {
-                createAutoConstraints(sugConstr2, getHighestCurveIndex(), getHighestVertexIndex());
+                createAutoConstraints(sugConstr2, getHighestCurveIndex(), Sketcher::end);
                 sugConstr2.clear();
             }
 
@@ -384,14 +384,15 @@ public:
             Gui::Command::commitCommand();
             Gui::Command::updateActive();
 
-            // Add auto constraints
+            // add auto constraints at the start of the first side
             if (sugConstr1.size() > 0) {
-                createAutoConstraints(sugConstr1, getHighestCurveIndex() - 3 , getHighestVertexIndex() - 7);
+                createAutoConstraints(sugConstr1, getHighestCurveIndex() - 3 , Sketcher::start);
                 sugConstr1.clear();
             }
 
+            // add auto constraints at the end of the second side
             if (sugConstr2.size() > 0) {
-                createAutoConstraints(sugConstr2, getHighestCurveIndex() - 2, getHighestVertexIndex() - 4);
+                createAutoConstraints(sugConstr2, getHighestCurveIndex() - 2, Sketcher::end);
                 sugConstr2.clear();
             }
 
@@ -505,7 +506,7 @@ public:
                 return;
             }
         }
-        else if (Mode==STATUS_SEEK_Second || Mode==STATUS_Do || Mode==STATUS_Close){
+        else if (Mode==STATUS_SEEK_Second){
             EditCurve[1] = onSketchPos;
             sketchgui->drawEdit(EditCurve);
             if (seekAutoConstraint(sugConstr2, onSketchPos, onSketchPos - EditCurve[0])) {
@@ -518,21 +519,20 @@ public:
 
     virtual bool pressButton(Base::Vector2D onSketchPos)
     {
-        if (Mode==STATUS_SEEK_First){
+        if (Mode==STATUS_SEEK_First) {
             // remember our first point
             firstPoint = getHighestVertexIndex() + 1;
             firstCurve = getHighestCurveIndex() + 1;
             EditCurve[0] = onSketchPos;
             Mode = STATUS_SEEK_Second;
         }
-        else {
+        else if (Mode==STATUS_SEEK_Second) {
             EditCurve[1] = onSketchPos;
             sketchgui->drawEdit(EditCurve);
             applyCursor();
+            // exit on clicking exactly at the same position (e.g. double click)
             if (EditCurve[1] == EditCurve[0]) {
-                // set the old cursor
                 unsetCursor();
-                // empty the edit draw
                 EditCurve.clear();
                 resetPositionText();
                 sketchgui->drawEdit(EditCurve);
@@ -548,7 +548,7 @@ public:
 
     virtual bool releaseButton(Base::Vector2D onSketchPos)
     {
-        if (Mode==STATUS_Do || Mode==STATUS_Close){
+        if (Mode==STATUS_Do || Mode==STATUS_Close) {
             // open the transaction
             Gui::Command::openCommand("add sketch wire");
             // issue the geometry
@@ -564,16 +564,46 @@ public:
                           );
             }
 
-            if (Mode==STATUS_Do) {
+            if (Mode==STATUS_Close) {
+                // close the loop by constrain to the first curve point
+                Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Coincident',%i,2,%i,1)) "
+                          ,sketchgui->getObject()->getNameInDocument()
+                          ,previousCurve,firstCurve
+                          );
+
+                Gui::Command::commitCommand();
+                Gui::Command::updateActive();
+
+                if (sugConstr2.size() > 0) {
+                    // exclude any coincidence constraints
+                    std::vector<AutoConstraint> sugConstr;
+                    for (int i=0; i < sugConstr2.size(); i++) {
+                        if (sugConstr2[i].Type != Sketcher::Coincident)
+                            sugConstr.push_back(sugConstr2[i]);
+                    }
+                    createAutoConstraints(sugConstr, getHighestCurveIndex(), Sketcher::end);
+                    sugConstr2.clear();
+                }
+
+                unsetCursor();
+                EditCurve.clear();
+                resetPositionText();
+                sketchgui->drawEdit(EditCurve);
+                sketchgui->purgeHandler(); // no code after this line, Handler get deleted in ViewProvider
+            }
+            else {
+                Gui::Command::commitCommand();
+                Gui::Command::updateActive();
+
                 // Add auto constraints
                 if (sugConstr1.size() > 0) {
-                    createAutoConstraints(sugConstr1, getHighestCurveIndex(), getHighestVertexIndex() -1);
+                    createAutoConstraints(sugConstr1, getHighestCurveIndex(), Sketcher::start);
                     sugConstr1.clear();
                 }
 
                 if (sugConstr2.size() > 0) {
-                    createAutoConstraints(sugConstr2, getHighestCurveIndex(), getHighestVertexIndex());
-                    sugConstr1.clear();
+                    createAutoConstraints(sugConstr2, getHighestCurveIndex(), Sketcher::end);
+                    sugConstr2.clear();
                 }
 
                 //remember the vertex for the next rounds constraint...
@@ -589,30 +619,10 @@ public:
                 else
                     EditCurve[0] = onSketchPos;
 
-                Mode = STATUS_SEEK_Second;
-
-                Gui::Command::commitCommand();
-                Gui::Command::updateActive();
-
                 sketchgui->drawEdit(EditCurve);
                 applyCursor();
-            }
-            else { //Mode==STATUS_Close
-                // close the loop by constrain to the first curve point
-                Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Coincident',%i,2,%i,1)) "
-                          ,sketchgui->getObject()->getNameInDocument()
-                          ,previousCurve,firstCurve
-                          );
 
-                Gui::Command::commitCommand();
-                Gui::Command::updateActive();
-
-                unsetCursor();
-                // empty the edit draw
-                EditCurve.clear();
-                resetPositionText();
-                sketchgui->drawEdit(EditCurve);
-                sketchgui->purgeHandler(); // no code after this line, Handler get deleted in ViewProvider
+                Mode = STATUS_SEEK_Second;
             }
         }
         return true;
@@ -819,21 +829,19 @@ public:
 
             // Auto Constraint center point
             if (sugConstr1.size() > 0) {
-                createAutoConstraints(sugConstr1, getHighestCurveIndex(), getHighestVertexIndex() -2);
+                createAutoConstraints(sugConstr1, getHighestCurveIndex(), Sketcher::mid);
                 sugConstr1.clear();
             }
 
-            int hvindex = getHighestVertexIndex();
-
             // Auto Constraint first picked point
             if (sugConstr2.size() > 0) {
-                createAutoConstraints(sugConstr2, getHighestCurveIndex(), (arcAngle > 0) ? hvindex - 1 : hvindex );
+                createAutoConstraints(sugConstr2, getHighestCurveIndex(), (arcAngle > 0) ? Sketcher::start : Sketcher::end );
                 sugConstr2.clear();
             }
 
             // Auto Constraint second picked point
             if (sugConstr3.size() > 0) {
-                createAutoConstraints(sugConstr3, getHighestCurveIndex(), (arcAngle > 0) ? hvindex : hvindex - 1);
+                createAutoConstraints(sugConstr3, getHighestCurveIndex(), (arcAngle > 0) ? Sketcher::end : Sketcher::start);
                 sugConstr3.clear();
             }
 
@@ -977,9 +985,7 @@ public:
 
     virtual bool releaseButton(Base::Vector2D onSketchPos)
     {
-        if (Mode==STATUS_SEEK_Second) {
-
-        } else  if (Mode==STATUS_Close) {
+        if (Mode==STATUS_Close) {
             float rx = EditCurve[1].fX - EditCurve[0].fX;
             float ry = EditCurve[1].fY - EditCurve[0].fY;
             unsetCursor();
@@ -995,15 +1001,15 @@ public:
             Gui::Command::commitCommand();
             Gui::Command::updateActive();
 
-            // Add auto constraints
+            // add auto constraints for the center point
             if (sugConstr1.size() > 0) {
-                createAutoConstraints(sugConstr1, getHighestCurveIndex(), getHighestVertexIndex());
+                createAutoConstraints(sugConstr1, getHighestCurveIndex(), Sketcher::mid);
                 sugConstr1.clear();
             }
 
-            // Add suggested constraints for circumference
+            // add suggested constraints for circumference
             if (sugConstr2.size() > 0) {
-                createAutoConstraints(sugConstr2, getHighestCurveIndex());
+                createAutoConstraints(sugConstr2, getHighestCurveIndex(), Sketcher::none);
                 sugConstr2.clear();
             }
 

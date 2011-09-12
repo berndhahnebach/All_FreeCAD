@@ -271,21 +271,11 @@ int DrawSketchHandler::seekAutoConstraint(std::vector<AutoConstraint> &suggested
     return suggestedConstraints.size();
 }
 
-void DrawSketchHandler::createAutoConstraints(const std::vector<AutoConstraint> &autoConstrs, int geoId, int vertexId)
+void DrawSketchHandler::createAutoConstraints(const std::vector<AutoConstraint> &autoConstrs,
+                                              int geoId, Sketcher::PointPos pointPos)
 {
     if (!sketchgui->Autoconstraints.getValue())
         return; // If Autoconstraints property is not set quit
-
-    // If a Vertex point was given provided calculate Point Position
-    Sketcher::PointPos pointPos;
-
-    if (vertexId != -1) {
-        int geoTmpId;
-        sketchgui->getSketchObject()->getGeoVertexIndex(vertexId, geoTmpId, pointPos);
-
-        if (geoTmpId != geoId)
-            return; // Vertex doesn't belong to this geoId
-    }
 
     if (autoConstrs.size() > 0) {
         // Open the Command
@@ -297,9 +287,9 @@ void DrawSketchHandler::createAutoConstraints(const std::vector<AutoConstraint> 
             switch (it->Type)
             {
             case Sketcher::Coincident: {
-                if (vertexId == -1)
-                    continue; // Requires vertexId
-                    // If the auto constraint has a point create a coincident otherwise it is an edge on a point
+                if (pointPos == Sketcher::none)
+                    continue;
+                // If the auto constraint has a point create a coincident otherwise it is an edge on a point
                 Sketcher::PointPos pointPos2;
                 int geoId2;
                 sketchgui->getSketchObject()->getGeoVertexIndex(it->Index, geoId2, pointPos2);
@@ -311,7 +301,7 @@ void DrawSketchHandler::createAutoConstraints(const std::vector<AutoConstraint> 
                 } break;
             case Sketcher::PointOnObject: {
                 int index = it->Index;
-                if (vertexId == -1) {
+                if (pointPos == Sketcher::none) {
                     // Auto constraining an edge so swap parameters
                     index = geoId;
                     sketchgui->getSketchObject()->getGeoVertexIndex(it->Index, geoId, pointPos);
