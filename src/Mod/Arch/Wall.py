@@ -117,22 +117,35 @@ class Wall(Component.Component):
                     if height:
                         norm = normal.multiply(height)
                         base = base.extrude(norm)
-                elif base.Wires and not base.isClosed():
-                    dvec = fcgeo.vec(base.Edges[0]).cross(normal)
-                    dvec.normalize()
-                    if obj.Align == "Left":
-                        dvec = dvec.multiply(obj.Width)
-                        base = Draft.offset(obj.Base,dvec,bind=True)
-                    elif obj.Align == "Right":
-                        dvec = dvec.multiply(obj.Width)
-                        dvec = fcvec.neg(dvec)
-                        base = Draft.offset(obj.Base,dvec,bind=True)
-                    elif obj.Align == "Center":
-                        dvec = dvec.multiply(obj.Width)
-                        base = Draft.offset(obj.Base,dvec,bind=True,sym=True)
-                    if height:
-                        norm = normal.multiply(height)
-                        base = base.extrude(norm)
+                elif base.Wires:
+                    temp = None
+                    for wire in obj.Base.Shape.Wires:
+                        dvec = fcgeo.vec(wire.Edges[0]).cross(normal)
+                        dvec.normalize()
+                        if obj.Align == "Left":
+                            dvec = dvec.multiply(obj.Width)
+                            w2 = fcgeo.offsetWire(wire,dvec)
+                            sh = fcgeo.bind(wire,w2)
+                        elif obj.Align == "Right":
+                            dvec = dvec.multiply(obj.Width)
+                            dvec = fcvec.neg(dvec)
+                            w2 = fcgeo.offsetWire(wire,dvec)
+                            sh = fcgeo.bind(wire,w2)
+                        elif obj.Align == "Center":
+                            dvec = dvec.multiply(obj.Width/2)
+                            w1 = fcgeo.offsetWire(wire,dvec)
+                            dvec = fcvec.neg(dvec)
+                            w2 = fcgeo.offsetWire(wire,dvec)
+                            sh = fcgeo.bind(w1,w2)
+                        if height:
+                            norm = Vector(normal).multiply(height)
+                            sh = sh.extrude(norm)
+                            print sh,sh.Edges,dir(sh)
+                        if temp:
+                            temp = temp.oldFuse(sh)
+                        else:
+                            temp = sh
+                    base = temp
                 for app in obj.Additions:
                     base = base.oldFuse(app.Shape)
                     app.ViewObject.hide() #to be removed
