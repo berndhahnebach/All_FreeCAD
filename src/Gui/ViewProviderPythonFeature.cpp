@@ -212,24 +212,30 @@ QIcon ViewProviderPythonFeatureImp::getIcon() const
                 Py::Tuple args(0);
                 Py::String str(method.apply(args));
                 std::string content = str.as_std_string();
-                QByteArray ary;
-                int strlen = (int)content.size();
-                ary.resize(strlen);
-                for (int j=0; j<strlen; j++)
-                    ary[j]=content[j];
                 QPixmap icon;
-                // Make sure to remove crap around the XPM data
-                QList<QByteArray> lines = ary.split('\n');
-                QByteArray buffer;
-                buffer.reserve(ary.size()+lines.size());
-                for (QList<QByteArray>::iterator it = lines.begin(); it != lines.end(); ++it) {
-                    QByteArray trim = it->trimmed();
-                    if (!trim.isEmpty()) {
-                        buffer.append(trim);
-                        buffer.append('\n');
+                // Check if the passed string is an svg filename, otherwise treat as xpm data
+                if (content.substr(content.rfind("."),4).c_str() == std::string(".svg")) {
+                    QString filename = QString::fromAscii(content.c_str());
+                    icon.load(filename);
+                } else {
+                    QByteArray ary;
+                    int strlen = (int)content.size();
+                    ary.resize(strlen);
+                    for (int j=0; j<strlen; j++)
+                        ary[j]=content[j];
+                    // Make sure to remove crap around the XPM data
+                    QList<QByteArray> lines = ary.split('\n');
+                    QByteArray buffer;
+                    buffer.reserve(ary.size()+lines.size());
+                    for (QList<QByteArray>::iterator it = lines.begin(); it != lines.end(); ++it) {
+                        QByteArray trim = it->trimmed();
+                        if (!trim.isEmpty()) {
+                            buffer.append(trim);
+                            buffer.append('\n');
+                        }
                     }
+                    icon.loadFromData(buffer, "XPM");
                 }
-                icon.loadFromData(buffer, "XPM");
                 if (!icon.isNull()) {
                     return icon;
                 }
