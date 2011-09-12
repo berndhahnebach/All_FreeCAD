@@ -62,6 +62,7 @@
         <file>icons/Sketcher_Trimming.svg</file>
         <file>icons/Sketcher_LeaveSketch.svg</file>
         <file>icons/Sketcher_NewSketch.svg</file>
+        <file>icons/Sketcher_Sketch.svg</file>
         <file>icons/Sketcher_AlterConstruction.svg</file>
         <file>translations/Sketcher_af.qm</file>
         <file>translations/Sketcher_de.qm</file>
