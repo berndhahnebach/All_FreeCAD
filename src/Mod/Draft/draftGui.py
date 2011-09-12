@@ -949,6 +949,16 @@ class DraftToolBar:
                 if not self.taskmode:
                         self.draftWidget.setVisible(False)
 
+        def getXPM(self,iconname,size=16):
+                i = QtGui.QIcon(":/icons/"+iconname+".svg")
+                p = i.pixmap(size,size)
+                a = QtCore.QByteArray()
+                b = QtCore.QBuffer(a)
+                b.open(QtCore.QIODevice.WriteOnly)
+                p.save(b,"XPM")
+                b.close()
+                return str(a)
+
 #---------------------------------------------------------------------------
 # TaskView operations
 #---------------------------------------------------------------------------
