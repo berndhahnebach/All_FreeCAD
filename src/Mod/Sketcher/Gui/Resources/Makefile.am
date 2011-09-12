@@ -73,6 +73,7 @@ icons/Constraint_PointOnObject.svg \
 		icons/Sketcher_Trimming.svg \
 		icons/Sketcher_LeaveSketch.svg \
 		icons/Sketcher_NewSketch.svg \
+		icons/Sketcher_Sketch.svg \
 		translations/Sketcher_af.qm \
 		translations/Sketcher_af.ts \
 		translations/Sketcher_de.qm \
