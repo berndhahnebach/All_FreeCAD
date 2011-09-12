@@ -287,7 +287,7 @@ def makeCircle(radius, placement=None, face=True, startangle=None, endangle=None
         if placement: typecheck([(placement,FreeCAD.Placement)], "makeCircle")
         obj = FreeCAD.ActiveDocument.addObject("Part::Part2DObjectPython","Circle")
         Circle(obj)
-        ViewProviderCircle(obj.ViewObject)
+        ViewProviderDraft(obj.ViewObject)
         obj.Radius = radius
         if not face: obj.ViewObject.DisplayMode = "Wireframe"
         if (startangle != None) and (endangle != None):
@@ -420,7 +420,7 @@ def makePolygon(nfaces,radius=1,inscribed=True,placement=None,face=True,support=
         if nfaces < 3: return None
         obj = FreeCAD.ActiveDocument.addObject("Part::Part2DObjectPython","Polygon")
         Polygon(obj)
-        ViewProviderPolygon(obj.ViewObject)
+        ViewProviderDraft(obj.ViewObject)
         obj.FacesNumber = nfaces
         obj.Radius = radius
         if inscribed:
@@ -1127,6 +1127,9 @@ class ViewProviderDraft:
                 if FreeCAD.activeDraftCommand:
                         FreeCAD.activeDraftCommand.finish()
                 return
+
+        def getIcon(self):
+		return FreeCADGui.draftToolBar.getXPM("Draft_Draft")
 		
 class Dimension:
 	"The Dimension object"
@@ -1654,34 +1657,6 @@ class ViewProviderRectangle(ViewProviderDraft):
         def attach(self,obj):
                 self.texture = None
 
-	def getIcon(self):
-		return """
-                        /* XPM */
-                        static char * rec_xpm[] = {
-                        "16 16 5 1",
-                        " 	c None",
-                        ".	c #000000",
-                        "+	c #0000FF",
-                        "@	c #141010",
-                        "#	c #615BD2",
-                        "        @@@@@@@@",
-                        "        @##@@#@@",
-                        "  ......@##@@##@",
-                        "  .+++++@##@@##@",
-                        "  .+++++@######@",
-                        "  .+++++@##@@##@",
-                        "  .+++++@##@@##@",
-                        "  .+++++@######@",
-                        "  .+++++@@@@@@@@"
-                        "  .++++++++++.  ",
-                        "  .++++++++++.  ",
-                        "  .++++++++++.  ",
-                        "  .++++++++++.  ",
-                        "  ............  ",
-                        "                ",
-                        "                "};
-			"""
-
         def onChanged(self, vp, prop):
                 if prop == "TextureImage":
                         r = vp.RootNode
@@ -1694,7 +1669,6 @@ class ViewProviderRectangle(ViewProviderDraft):
                                         r.removeChild(self.texture)
                                         self.texture = None
 		return
-
         
 class Circle:
         "The Circle object"
@@ -1725,37 +1699,6 @@ class Circle:
                         shape = Part.Face(shape)
 		fp.Shape = shape
                 fp.Placement = plm
-
-class ViewProviderCircle(ViewProviderDraft):
-        "A View Provider for the Circle object"
-
-	def getIcon(self):
-		return """
-                        /* XPM */
-                        static char * circ_xpm[] = {
-                        "16 16 5 1",
-                        " 	c None",
-                        ".	c #000000",
-                        "+	c #0000FF",
-                        "@	c #141010",
-                        "#	c #615BD2",
-                        "        @@@@@@@@",
-                        "      ..@##@@#@@",
-                        "    ..++@##@@##@",
-                        "   .++++@##@@##@",
-                        "  .+++++@######@",
-                        "  .+++++@##@@##@",
-                        " .++++++@##@@##@",
-                        " .++++++@######@",
-                        " .++++++@@@@@@@@",
-                        " .++++++++++++. ",
-                        "  .++++++++++.  ",
-                        "  .++++++++++.  ",
-                        "   .++++++++.   ",
-                        "    ..++++..    ",
-                        "      ....      ",
-                        "                "};
-			"""
 
 class Wire:
         "The Wire object"
@@ -1838,34 +1781,6 @@ class ViewProviderWire(ViewProviderDraft):
                 self.pt.addChild(col)
                 self.pt.addChild(self.coords)
                 self.pt.addChild(dimSymbol())
-
-	def getIcon(self):
-		return """
-                       /* XPM */
-                       static char * wire_xpm[] = {
-                       "16 16 5 1",
-                       " 	c None",
-                       ".	c #000000",
-                       "+	c #0000FF",
-                       "@	c #141010",
-                       "#	c #615BD2",
-                       "        @@@@@@@@",
-                       "        @##@@#@@",
-                       "        @##@@##@",
-                       "        @##@@##@",
-                       "    ....@######@",
-                       "....++++@##@@##@",
-                       ".+++++++@##@@##@",
-                       " .++++++@######@",
-                       " .++++++@@@@@@@@"
-                       "  .++++++++++.  ",
-                       "  .+++++++++++. ",
-                       "   .++++++++++..",
-                       "   .++++++++..  ",
-                       "    .+++++..    ",
-                       "    .+++..      ",
-                       "     ...        "};
-		       """
         
         def updateData(self, obj, prop):
                 if prop == "Points":
@@ -1922,37 +1837,6 @@ class Polygon:
                 shape = Part.Face(shape)
 		fp.Shape = shape
                 fp.Placement = plm
-
-class ViewProviderPolygon(ViewProviderDraft):
-        "A View Provider for the Polygon object"
-
-	def getIcon(self):
-		return """
-                        /* XPM */
-                        static char * draft_polygon_xpm[] = {
-                        "16 16 5 1",
-                        " 	c None",
-                        ".	c #000000",
-                        "+	c #0000FF",
-                        "@	c #141010",
-                        "#	c #615BD2",
-                        "        @@@@@@@@",
-                        "  ......@##@@##@",
-                        "  ..++++@##@@##@",
-                        " ..+++++@##@@##@",
-                        " ..+++++@######@",
-                        " .++++++@##@@##@",
-                        " .++++++@##@@##@",
-                        " .++++++@######@",
-                        "..++++++@@@@@@@@",
-                        "..++++++++++++..",
-                        "..+++++++++++.. ",
-                        "...+++++++++..  ",
-                        "  ...++++++..   ",
-                        "    ...+++..    ",
-                        "      .....     ",
-                        "        ..      "};
-			"""
 
 class DrawingView:
         def __init__(self, obj):
@@ -2048,34 +1932,6 @@ class ViewProviderBSpline(ViewProviderDraft):
                 self.pt.addChild(col)
                 self.pt.addChild(self.coords)
                 self.pt.addChild(dimSymbol())
-
-	def getIcon(self):
-		return """
-                       /* XPM */
-                       static char * wire_xpm[] = {
-                       "16 16 5 1",
-                       " 	c None",
-                       ".	c #000000",
-                       "+	c #0000FF",
-                       "@	c #141010",
-                       "#	c #615BD2",
-                       "        @@@@@@@@",
-                       "        @##@@#@@",
-                       "        @##@@##@",
-                       "        @##@@##@",
-                       "    ....@######@",
-                       "....++++@##@@##@",
-                       ".+++++++@##@@##@",
-                       " .++++++@######@",
-                       " .++++++@@@@@@@@"
-                       "  .++++++++++.  ",
-                       "  .+++++++++++. ",
-                       "   .++++++++++..",
-                       "   .++++++++..  ",
-                       "    .+++++..    ",
-                       "    .+++..      ",
-                       "     ...        "};
-		       """
         
         def updateData(self, obj, prop):
                 if prop == "Points":
@@ -2121,32 +1977,6 @@ class Block:
 
 class ViewProviderBlock(ViewProviderDraft):
         "A View Provider for the Block object"
-
-	def getIcon(self):
-		return """
-                        /* XPM */
-                        static char * Draft_block_xpm[] = {
-                        "16 16 3 1",
-                        " 	c None",
-                        ".	c #030110",
-                        "+	c #0B17E8",
-                        "                ",
-                        "............    ",
-                        ".+++++++++++.   ",
-                        ".+++++++++++.   ",
-                        ".+++++++++++.   ",
-                        ".+++++++++...   ",
-                        ".+++++++..++..  ",
-                        ".+++++++.+++++. ",
-                        ".++++++.+++++++.",
-                        ".++++++.+++++++.",
-                        ".+++++..+++++++.",
-                        "........+++++++.",
-                        "       .++++++. ",
-                        "        ..+++.. ",
-                        "         ....   ",
-                        "                "};
-			"""
 
         def claimChildren(self):
                 return self.Object.Components
