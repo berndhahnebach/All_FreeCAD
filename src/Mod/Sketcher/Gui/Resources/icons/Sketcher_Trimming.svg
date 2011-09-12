@@ -14,7 +14,7 @@
    height="64px"
    id="svg2869"
    sodipodi:version="0.32"
-   inkscape:version="0.47 r22583"
+   inkscape:version="0.48.1 r9760"
    sodipodi:docname="Sketcher_Trimming.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    version="1.1">
@@ -224,17 +224,17 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="3.8890873"
-     inkscape:cx="-18.081858"
-     inkscape:cy="34.741974"
-     inkscape:current-layer="g3401"
+     inkscape:zoom="7.7781746"
+     inkscape:cx="23.481841"
+     inkscape:cy="31.126556"
+     inkscape:current-layer="g2337"
      showgrid="true"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
-     inkscape:window-width="1366"
-     inkscape:window-height="693"
+     inkscape:window-width="1280"
+     inkscape:window-height="756"
      inkscape:window-x="0"
-     inkscape:window-y="24"
+     inkscape:window-y="22"
      inkscape:window-maximized="1" />
   <metadata
      id="metadata2874">
@@ -244,7 +244,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -281,12 +281,12 @@
          inkscape:export-ydpi="7.0721951"
          inkscape:export-xdpi="7.0721951"
          inkscape:export-filename="/home/yorik/Documents/Lab/Draft/icons/line.png"
-         transform="matrix(0.56573394,0.69996078,-0.69996078,0.56573394,62.555442,74.138625)"
+         transform="matrix(-0.87876882,0.19433306,-0.19433306,-0.87876882,16.031795,1120.2856)"
          id="g2337"
          style="stroke-width:6.44377279;stroke-miterlimit:4;stroke-dasharray:none">
         <path
            sodipodi:type="arc"
-           style="fill:#ff0000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:6.44377279;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+           style="fill:#ff2000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:6.44377278999999969;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
            id="path2339"
            sodipodi:cx="197.14285"
            sodipodi:cy="655.2193"

@@ -14,7 +14,7 @@
    height="64px"
    id="svg2726"
    sodipodi:version="0.32"
-   inkscape:version="0.47 r22583"
+   inkscape:version="0.48.1 r9760"
    sodipodi:docname="Sketcher_CreateLine.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    version="1.1">
@@ -70,17 +70,17 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="3.8890873"
-     inkscape:cx="19.138856"
+     inkscape:cx="-25.216024"
      inkscape:cy="25.806874"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g3154"
      showgrid="true"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
-     inkscape:window-width="641"
-     inkscape:window-height="688"
+     inkscape:window-width="1280"
+     inkscape:window-height="756"
      inkscape:window-x="0"
-     inkscape:window-y="24"
-     inkscape:window-maximized="0" />
+     inkscape:window-y="22"
+     inkscape:window-maximized="1" />
   <metadata
      id="metadata2731">
     <rdf:RDF>
@@ -130,7 +130,7 @@
              sodipodi:cy="655.2193"
              sodipodi:cx="197.14285"
              id="path2162"
-             style="fill:#ff0000;fill-opacity:1;stroke:#000000;stroke-width:5.80000019000000044;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             style="fill:#ff2000;fill-opacity:1;stroke:#000000;stroke-width:5.80000019000000044;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
              sodipodi:type="arc" />
           <path
              transform="matrix(0.8513023,-0.5246754,0.5246754,0.8513023,-338.69692,214.19328)"
@@ -156,7 +156,7 @@
              sodipodi:cy="655.2193"
              sodipodi:cx="197.14285"
              id="path3162"
-             style="opacity:1;fill:#ff0000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:5.80000019000000044;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+             style="opacity:1;fill:#ff2000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:5.80000019000000044;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
              sodipodi:type="arc" />
           <path
              transform="matrix(0.8513023,-0.5246754,0.5246754,0.8513023,-338.69692,214.19328)"
