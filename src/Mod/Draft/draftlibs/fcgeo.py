@@ -772,26 +772,12 @@ def getTangent(edge,frompoint=None):
                 return v1.cross(edge.Curve.Axis)
         return None
 
-def bind(wire1,wire2):
+def bind(w1,w2):
         '''bind(wire1,wire2): binds 2 wires by their endpoints and
         returns a face'''
-        p1 = wire1.Vertexes[0].Point
-        p2 = wire2.Vertexes[0].Point
-        p3 = wire1.Vertexes[-1].Point
-        p4 = wire2.Vertexes[-1].Point
-        e1 = e2 = []
-        if p1 != p2:
-                e1 = [Part.Line(p1,p2).toShape()]
-        if p3 != p4:
-                e2 = [Part.Line(p3,p4).toShape()]
-        edges = wire1.Edges
-        edges.extend(e2)
-        edges.extend(wire2.Edges)
-        edges.extend(e1)
-        nw = Part.Wire(edges)
-        if nw.isClosed():
-                return Part.Face(nw)
-        return nw
+        w3 = Part.Line(w1.Vertexes[0].Point,w2.Vertexes[0].Point).toShape()
+        w4 = Part.Line(w1.Vertexes[-1].Point,w2.Vertexes[-1].Point).toShape()
+        return Part.Face(Part.Wire(w1.Edges+[w3]+w2.Edges+[w4]))
 
 def cleanFaces(shape):
         "removes inner edges from coplanar faces"
