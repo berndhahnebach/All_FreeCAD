@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?><!--
    (c) Juergen Riegel (juergen.riegel@web.de) 2011                       
                                                                         
    This file is part of the FreeCAD CAx development system.             
@@ -53,6 +53,7 @@
 				<File Id="StartPage20" Name="LoadMRU0.py"   />
 				<File Id="StartPage21" Name="LoadMRU1.py"   />
 				<File Id="StartPage22" Name="LoadMRU2.py"   />
+				<File Id="StartPage23" Name="ArchExample.png"   />
 			</Component>			
 		</Directory>
     </Directory>

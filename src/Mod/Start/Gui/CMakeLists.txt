@@ -48,6 +48,7 @@ SET(StartPage_Resources
     StartPage/LoadMRU1.py
     StartPage/LoadMRU2.py
     StartPage/PartDesignExample.png
+    StartPage/ArchExample.png
     StartPage/web.png
 )
 

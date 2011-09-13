@@ -6,8 +6,6 @@ def translate(context,text):
         "convenience function for the Qt translator"
         return str(QtGui.QApplication.translate(context, text, None, QtGui.QApplication.UnicodeUTF8).toUtf8())
 
-# http://gdata.youtube.com/feeds/base/users/salceson2/uploads?alt=rss&v=2&orderby=published
-
 # texts to be translated
 
 text01 = translate("StartPage","FreeCAD Start Center")
@@ -51,6 +49,7 @@ text38 = translate("StartPage","http://sourceforge.net/apps/mediawiki/free-cad/i
 text39 = translate("StartPage","Tutorials")
 text40 = translate("StartPage","Python resources")
 text41 = translate("StartPage","File not found")
+text42 = translate("StartPage","follow <a href=http://twitter.com/FreeCADNews>@FreeCADNews</a>")
 
 # here is the html page skeleton
 
@@ -100,9 +99,15 @@ page = """
       function loadFeeds() {
         ddiv = document.getElementById("youtube");
         ddiv.innerHTML = "Fetching data from the web...";
-        var obj=new JSONscriptRequest('http://gdata.youtube.com/feeds/base/users/salceson2/uploads?alt=json-in-script&v=2&orderby=published&callback=showLinks');
+        var obj=new JSONscriptRequest('http://gdata.youtube.com/feeds/base/users/FreeCADNews/favorites?alt=json-in-script&v=2&orderby=published&callback=showLinks');
         obj.buildScriptTag(); // Build the script tag
         obj.addScriptTag(); // Execute (add) the script tag
+        ddiv.innerHTML = "Done fetching";
+        ddiv = document.getElementById("news");
+        ddiv.innerHTML = "Fetching data from the web...";
+        var tobj=new JSONscriptRequest('http://twitter.com/status/user_timeline/FreeCADNews.json?count=10&callback=showTweets');
+        tobj.buildScriptTag(); // Build the script tag
+        tobj.addScriptTag(); // Execute (add) the script tag
         ddiv.innerHTML = "Done fetching";
       }
 
@@ -114,6 +119,18 @@ page = """
         var html = ['<ul>'];
         for (var i = 0; i < 5; i++) {
           html.push('<li><a href="',entries[i].link[0].href,'">', entries[i].title.$t, '</a></li>');
+        }
+        html.push('</ul>');
+        ddiv.innerHTML = html.join('');
+      }
+      function showTweets(data) {
+        ddiv = document.getElementById('news');
+        ddiv.innerHTML = "Received";
+        var html = ['<ul>'];
+        for (var i = 0; i < Math.min(5,data.length); i++) {
+          html.push('<li>');
+		  html.push(data[i].text);
+		  html.push('</li>');
         }
         html.push('</ul>');
         ddiv.innerHTML = html.join('');
@@ -191,15 +208,14 @@ page = """
 
       <div class="block">
         <h2>""" + text04 + """</h2>
-        <div id="youtube">youtube</div>
+        <div id="youtube">youtube videos</div>
       </div>
 
-      <!--
       <div class="block">
         <h2>""" + text05 + """</h2>
-        <div id="news">To be implemented</div>
+        <small>""" + text42 + """</small>
+        <div id="news">news feed</div>
       </div>
-      -->
 
     </div>
 
@@ -219,6 +235,8 @@ page = """
         <h2>""" + text14 + """</h2>
             webexamples
       </div>
+
+      customblocks
 
     </div>
 
@@ -287,7 +305,8 @@ def getWorkbenches():
                  href="PartDesign.py">""" + text22 + """</a></li>
           <li><img src="ArchDesign.png">&nbsp;
               <a onMouseover="show('<h3>""" + text23 + """</h3> \
-                              <p>""" + text24 + """</p>')" 
+                              <p>""" + text24 + """</p><p><small>""" + text21 + """ \
+                 :</small></p><img src=ArchExample.png>')" 
                  onMouseout="show('')"
                  href="ArchDesign.py">""" + text25 + """</a></li>
           <li><img src="Mesh.png">&nbsp;
@@ -405,7 +424,12 @@ def getFeed(url,numitems=3):
                 resp += '</a></li>'
         resp += '</ul>'
         print resp
-        return resp                
+        return resp
+
+def getCustomBlocks():
+        "fetches custom html files in FreeCAD user dir"
+        output = ""
+        return output
 
 def handle():
         "returns the complete html startpage"
@@ -425,6 +449,9 @@ def handle():
 
         # add web examples
         html = html.replace("webexamples",getWebExamples())
+
+        # add custom blocks
+        html = html.replace("customblocks",getCustomBlocks())
         
         return html
 	
