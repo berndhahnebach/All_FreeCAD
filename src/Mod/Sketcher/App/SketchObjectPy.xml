@@ -66,12 +66,15 @@
     <Methode Name="movePoint">
       <Documentation>
         <UserDocu>
-          movePoint(GeoIndex,PointPos,Vector) - move a given point to another location.
-          It solves the sketch that way the point stays at the given location or fails.
-          This method is somewhat tricky. If the move is to big it can fail to find a valid
-          solution. It can work if you move the point over some
-          iterations to the target. This method is mostly used to allow the user to drag
-          some portions of the sketch in real time by e.g. the mouse.
+          movePoint(GeoIndex,PointPos,Vector,[relative]) - move a given point (or curve)
+          to another location.
+          It moves the specified point (or curve) to the given location by adding some
+          temporary weak constraints and solve the sketch.
+          This method is mostly used to allow the user to drag some portions of the sketch
+          in real time by e.g. the mouse and it works only for underconstrained portions of
+          the sketch.
+          The argument 'relative', if present, states if the new location is given
+          relatively to the current one.
         </UserDocu>
       </Documentation>
     </Methode>

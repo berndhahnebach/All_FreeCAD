@@ -100,12 +100,12 @@ public:
       */
     int initMove(int geoIndex, PointPos pos);
 
-    /** move this point to a new location and solve
-      * this will introduce a fix constraint on the moved point
-      * to ensure its stay on the right position. But this can cause
-      * the solving to fail!
+    /** move this point (or curve) to a new location and solve.
+      * This will introduce some additional weak constraints expressing
+      * a condition for satisfying the new point location!
+      * The relative flag permits moving relatively to the current position
       */
-    int movePoint(int geoIndex, PointPos pos, Base::Vector3d toPoint);
+    int movePoint(int geoIndex, PointPos pos, Base::Vector3d toPoint, bool relative=false);
 
     /// add dedicated geometry
     //@{
@@ -207,7 +207,7 @@ protected:
     // solving parameters
     std::vector<double*> Parameters;    // with memory allocation
     std::vector<double*> FixParameters; // with memory allocation
-    std::vector<double> MoveParameters;
+    std::vector<double> MoveParameters, InitParameters;
     std::vector<GCS::Point>  Points;
     std::vector<GCS::Line>   Lines;
     std::vector<GCS::Arc>    Arcs;

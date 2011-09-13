@@ -82,7 +82,7 @@ public:
     /// set the datum of a Distance or Angle constraint and solve 
     int setDatum(double Datum, int ConstrNbr);
     /// move this point to a new location and solve
-    int movePoint(int geoIndex1, PointPos Pos1, const Base::Vector3d& toPoint);
+    int movePoint(int geoIndex1, PointPos Pos1, const Base::Vector3d& toPoint, bool relative=false);
     /// retrieves the coordinates of a point
     Base::Vector3d getPoint(int geoIndex1, PointPos Pos1);
 
