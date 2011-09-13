@@ -27,6 +27,7 @@ data_DATA = \
 		Mesh.png \
 		Complete.png \
 		PartDesignExample.png \
+		ArchExample.png \
 		web.png
 
 EXTRA_DIST = \
