@@ -132,14 +132,14 @@ public:
     /// get the pointer to the sketch document object
     Sketcher::SketchObject *getSketchObject(void) const;
 
-    /// Snap Points X,Y (Mouse Coordinates) onto Snap Grid if enabled
-    void snapToGrid(double& x, double& y);
+    /// snap points x,y (mouse coordinates) onto grid if enabled
+    void snapToGrid(double &x, double &y);
 
-    /// Moves a selected constraint
+    /// moves a selected constraint
     void moveConstraint(int constNum, const Base::Vector2D &toPos);
-    /// Checks if there is a constraint object at position vector
+    /// checks if there is a constraint object at position vector
     bool isConstraintAtPosition(const Base::Vector3d &constrPos, const SoNode *constraint);
-    /// Finds a free position for placing a constraint icon
+    /// finds a free position for placing a constraint icon
     Base::Vector3d seekConstraintPosition(const Base::Vector3d &suggestedPos,
                                           const Base::Vector3d &dir, int step,
                                           const SoNode *constraint);
@@ -165,9 +165,8 @@ public:
     virtual bool keyPressed(bool pressed, int key);
     /// is called when the Provider is in edit and the mouse is clicked
     virtual bool mouseButtonPressed(int Button, bool pressed, const SbVec3f &point,
-        const SbVec3f &normal, const SoPickedPoint *pp);
+                                    const SbVec3f &normal, const SoPickedPoint *pp);
     //@}
-
 
     friend class DrawSketchHandler;
 
@@ -224,6 +223,10 @@ protected:
     float zHighlight;
     float zText;
     float zEdit;
+
+    // reference coordinates for relative operations
+    double xInit,yInit;
+    bool relative;
 };
 
 } // namespace PartGui
