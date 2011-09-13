@@ -130,11 +130,12 @@ PyObject* SketchPy::movePoint(PyObject *args)
 {
     int index1,index2;
     PyObject *pcObj;
-    if (!PyArg_ParseTuple(args, "iiO!", &index1,&index2,&(Base::VectorPy::Type),&pcObj))
+    int relative=0;
+    if (!PyArg_ParseTuple(args, "iiO!|i", &index1,&index2,&(Base::VectorPy::Type),&pcObj,&relative))
         return 0;
     Base::Vector3d* toPoint = static_cast<Base::VectorPy*>(pcObj)->getVectorPtr();
 
-    return Py::new_reference_to(Py::Int(getSketchPtr()->movePoint(index1,(Sketcher::PointPos)index2,*toPoint)));
+    return Py::new_reference_to(Py::Int(getSketchPtr()->movePoint(index1,(Sketcher::PointPos)index2,*toPoint,(relative>0))));
 }
 
 // +++ attributes implementer ++++++++++++++++++++++++++++++++++++++++++++++++

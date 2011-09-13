@@ -152,7 +152,7 @@ int SketchObject::setDatum(double Datum, int ConstrNbr)
     return 0;
 }
 
-int SketchObject::movePoint(int geoIndex, PointPos PosId, const Base::Vector3d& toPoint)
+int SketchObject::movePoint(int geoIndex, PointPos PosId, const Base::Vector3d& toPoint, bool relative)
 {
     Sketch sketch;
     int dofs = sketch.setUpSketch(Geometry.getValues(), Constraints.getValues());
@@ -162,7 +162,7 @@ int SketchObject::movePoint(int geoIndex, PointPos PosId, const Base::Vector3d& 
         return -1;
 
     // move the point and solve
-    int ret = sketch.movePoint(geoIndex, PosId, toPoint);
+    int ret = sketch.movePoint(geoIndex, PosId, toPoint, relative);
     if (ret == 0) {
         std::vector<Part::Geometry *> geomlist = sketch.getGeometry();
         Geometry.setValues(geomlist);
