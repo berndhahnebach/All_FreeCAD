@@ -213,6 +213,10 @@ ViewProviderSketch::ViewProviderSketch()
     zHighlight=0.05f;
     zText=0.06f;
     zEdit=0.01f;
+
+    xInit=0;
+    yInit=0;
+    relative=false;
 }
 
 ViewProviderSketch::~ViewProviderSketch()
@@ -261,7 +265,7 @@ bool ViewProviderSketch::keyPressed(bool pressed, int key)
     return true; // handle all other key events
 }
 
-void ViewProviderSketch::snapToGrid(double& x, double& y)
+void ViewProviderSketch::snapToGrid(double &x, double &y)
 {
     if (GridSnap.getValue() != false) {
         // Snap Tolerance in pixels
@@ -279,14 +283,15 @@ void ViewProviderSketch::snapToGrid(double& x, double& y)
         tmpY *= GridSize.getValue();
 
         // Check if x within snap tolerance
-        if(x < tmpX + snapTol && x > tmpX - snapTol)
+        if (x < tmpX + snapTol && x > tmpX - snapTol)
             x = tmpX; // Snap X Mouse Position
 
          // Check if y within snap tolerance
-        if(y < tmpY + snapTol && y > tmpY - snapTol)
+        if (y < tmpY + snapTol && y > tmpY - snapTol)
             y = tmpY; // Snap Y Mouse Position
     }
 }
+
 void ViewProviderSketch::getCoordsOnSketchPlane(double &u, double &v,const SbVec3f &point, const SbVec3f &normal)
 {
     // Plane form
@@ -502,9 +507,9 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                         Sketcher::PointPos PosId;
                         getSketchObject()->getGeoVertexIndex(edit->DragPoint, GeoId, PosId);
                         Gui::Command::openCommand("Drag Point");
-                        Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.movePoint(%i,%i,App.Vector(%f,%f,0))"
+                        Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.movePoint(%i,%i,App.Vector(%f,%f,0),%i)"
                                                ,getObject()->getNameInDocument()
-                                               ,GeoId, PosId, x, y
+                                               ,GeoId, PosId, x-xInit, y-yInit, relative ? 1 : 0
                                                );
                         Gui::Command::commitCommand();
                         Gui::Command::updateActive();
@@ -525,11 +530,10 @@ bool ViewProviderSketch::mouseButtonPressed(int Button, bool pressed, const SbVe
                             geo->getTypeId() == Part::GeomArcOfCircle::getClassTypeId() ||
                             geo->getTypeId() == Part::GeomCircle::getClassTypeId()) {
                             Gui::Command::openCommand("Drag Curve");
-                            Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.movePoint(%i,%i,App.Vector(%f,%f,0))"
+                            Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.movePoint(%i,%i,App.Vector(%f,%f,0),%i)"
                                                    ,getObject()->getNameInDocument()
-                                                   ,edit->DragCurve, none, x, y
+                                                   ,edit->DragCurve, none, x-xInit, y-yInit, relative ? 1 : 0
                                                    );
-
                             Gui::Command::commitCommand();
                             Gui::Command::updateActive();
                         }
@@ -714,8 +718,12 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
     getCoordsOnSketchPlane(x,y,point,normal);
     snapToGrid(x, y);
 
-    int PtIndex,CurvIndex,ConstrIndex,CrossIndex;
-    bool preselectChanged = detectPreselection(pp,PtIndex,CurvIndex,ConstrIndex,CrossIndex);
+    bool preselectChanged;
+    if (Mode!=STATUS_SKETCH_DragPoint && Mode!=STATUS_SKETCH_DragCurve &&
+        Mode!=STATUS_SKETCH_DragConstraint) {
+        int PtIndex,CurvIndex,ConstrIndex,CrossIndex;
+        preselectChanged = detectPreselection(pp,PtIndex,CurvIndex,ConstrIndex,CrossIndex);
+    }
 
     switch (Mode) {
         case STATUS_NONE:
@@ -733,9 +741,12 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
                 Sketcher::PointPos PosId;
                 getSketchObject()->getGeoVertexIndex(edit->DragPoint, GeoId, PosId);
                 edit->ActSketch.initMove(GeoId, PosId);
-            }
-            else
+                relative = false;
+                xInit = 0;
+                yInit = 0;
+            } else {
                 Mode = STATUS_NONE;
+            }
             resetPreselectPoint();
             edit->PreselectCurve = -1;
             edit->PreselectCross = -1;
@@ -747,9 +758,19 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
                 Mode = STATUS_SKETCH_DragCurve;
                 edit->DragCurve = edit->PreselectCurve;
                 edit->ActSketch.initMove(edit->DragCurve, none);
-            }
-            else
+                Part::Geometry *geo = getSketchObject()->Geometry.getValues()[edit->DragCurve];
+                if (geo->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
+                    relative = true;
+                    xInit = x;
+                    yInit = y;
+                } else {
+                    relative = false;
+                    xInit = 0;
+                    yInit = 0;
+                }
+            } else {
                 Mode = STATUS_NONE;
+            }
             resetPreselectPoint();
             edit->PreselectCurve = -1;
             edit->PreselectCross = -1;
@@ -766,10 +787,11 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
         case STATUS_SKETCH_DragPoint:
             if (edit->DragPoint != -1) {
                 //Base::Console().Log("Drag Point:%d\n",edit->DragPoint);
-                int ret, GeoId;
+                int GeoId;
                 Sketcher::PointPos PosId;
                 getSketchObject()->getGeoVertexIndex(edit->DragPoint, GeoId, PosId);
-                if ((ret=edit->ActSketch.movePoint(GeoId, PosId, Base::Vector3d(x,y,0))) == 0) {
+                Base::Vector3d vec(x-xInit,y-yInit,0);
+                if (edit->ActSketch.movePoint(GeoId, PosId, vec, relative) == 0) {
                     setPositionText(Base::Vector2D(x,y));
                     draw(true);
                     signalSolved(0, edit->ActSketch.SolveTime);
@@ -781,8 +803,8 @@ bool ViewProviderSketch::mouseMove(const SbVec3f &point, const SbVec3f &normal, 
             return true;
         case STATUS_SKETCH_DragCurve:
             if (edit->DragCurve != -1) {
-                int ret;
-                if ((ret=edit->ActSketch.movePoint(edit->DragCurve, none, Base::Vector3d(x,y,0))) == 0) {
+                Base::Vector3d vec(x-xInit,y-yInit,0);
+                if (edit->ActSketch.movePoint(edit->DragCurve, none, vec, relative) == 0) {
                     setPositionText(Base::Vector2D(x,y));
                     draw(true);
                     signalSolved(0, edit->ActSketch.SolveTime);
