@@ -158,6 +158,12 @@ def findIntersection(edge1,edge2,infinite1=False,infinite2=False,ex1=False,ex2=F
                                       edge2.Vertexes[1].Point]
 
         if pt1:
+                # first check if we don't already have coincident endpoints
+                if (pt1 in [pt3,pt4]):
+                        return [pt1]
+                elif (pt2 in [pt3,pt4]):
+                        return [pt2]
+                
                 #we have 2 straight lines		  
 		if fcvec.isNull(pt2.sub(pt1).cross(pt3.sub(pt1)).cross(pt2.sub(pt4).cross(pt3.sub(pt4)))):
 			vec1 = pt2.sub(pt1) ; vec2 = pt4.sub(pt3)
@@ -198,8 +204,16 @@ def findIntersection(edge1,edge2,infinite1=False,infinite2=False,ex1=False,ex2=F
 		dirVec = vec(line) ; dirVec.normalize()
 		pt1    = line.Vertexes[0].Point
 		pt2    = line.Vertexes[1].Point
+                pt3    = arc.Vertexes[0].Point
+                pt4    = arc.Vertexes[-1].Point
 		center = arc.Curve.Center
-		
+
+                # first check for coincident endpoints
+                if (pt1 in [pt3,pt4]):
+                        return [pt1]
+                elif (pt2 in [pt3,pt4]):
+                        return [pt2]
+                
 		if fcvec.isNull(pt1.sub(center).cross(pt2.sub(center)).cross(arc.Curve.Axis)) :
 			# Line and Arc are on same plane
 			
@@ -598,6 +612,7 @@ def connect(edges,closed=False):
         nedges = []
         for i in range(len(edges)):
                 curr = edges[i]
+                # print "fcgeo.connect edge ",i," : ",curr.Vertexes[0].Point,curr.Vertexes[-1].Point
                 if i > 0:
                         prev = edges[i-1]
                 else:
@@ -612,17 +627,21 @@ def connect(edges,closed=False):
                         else:
                                 next = None
                 if prev:
+                        # print "debug: fcgeo.connect prev : ",prev.Vertexes[0].Point,prev.Vertexes[-1].Point
                         v1 = findIntersection(curr,prev,True,True)[0]
                 else:
                         v1 = curr.Vertexes[0].Point
                 if next:
+                        # print "debug: fcgeo.connect next : ",next.Vertexes[0].Point,next.Vertexes[-1].Point
                         v2 = findIntersection(curr,next,True,True)[0]
                 else:
                         v2 = curr.Vertexes[-1].Point
                 if isinstance(curr.Curve,Part.Line):
-                        nedges.append(Part.Line(v1,v2).toShape())
+                        if v1 != v2:
+                                nedges.append(Part.Line(v1,v2).toShape())
                 elif isinstance(curr.Curve,Part.Circle):
-                        nedges.append(Part.Arc(v1,findMidPoint(curr),v2))
+                        if v1 != v2:
+                                nedges.append(Part.Arc(v1,findMidPoint(curr),v2))
         return Part.Wire(nedges)
 
 def findDistance(point,edge,strict=False):
