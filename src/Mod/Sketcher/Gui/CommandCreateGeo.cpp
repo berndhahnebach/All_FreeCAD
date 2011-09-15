@@ -1267,9 +1267,16 @@ public:
                         geom2->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
                         const Part::GeomLineSegment *lineSeg1 = dynamic_cast<const Part::GeomLineSegment *>(geom1);
                         const Part::GeomLineSegment *lineSeg2 = dynamic_cast<const Part::GeomLineSegment *>(geom2);
-                        double r1 = (lineSeg1->getStartPoint()-lineSeg1->getEndPoint()).Length();
-                        double r2 = (lineSeg2->getStartPoint()-lineSeg2->getEndPoint()).Length();
-                        radius = (r1 < r2 ? r1 : r2) * 0.2;
+				        Base::Vector3d dir1 = lineSeg1->getEndPoint() - lineSeg1->getStartPoint();
+				        Base::Vector3d dir2 = lineSeg2->getEndPoint() - lineSeg2->getStartPoint();
+                        if (PosIdList[0] == Sketcher::end)
+                            dir1 *= -1;
+                        if (PosIdList[1] == Sketcher::end)
+                            dir2 *= -1;
+                        double l1 = dir1.Length();
+                        double l2 = dir2.Length();
+                        double angle = dir1.GetAngle(dir2);
+                        radius = (l1 < l2 ? l1 : l2) * 0.2 * sin(angle/2);
                     }
                 }
                 if (radius < 0)
