@@ -26,12 +26,12 @@
 
 #include <App/PropertyUnits.h>
 #include <App/PropertyStandard.h>
-#include "FeatureSketchBased.h"
+#include "FeatureAdditive.h"
 
 namespace PartDesign
 {
 
-class Pad : public SketchBased
+class Pad : public Additive
 {
     PROPERTY_HEADER(PartDesign::Pad);
 

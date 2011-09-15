@@ -8,11 +8,13 @@ BUILT_SOURCES=\
 		moc_TaskSketcherGeneral.cpp \
 		moc_TaskDlgEditSketch.cpp \
 		ui_InsertDatum.h \
+		ui_SketchOrientationDialog.h \
 		ui_TaskSketcherConstrains.h \
 		ui_TaskSketcherGeneral.h
 
 libSketcherGui_la_UI=\
 		InsertDatum.ui \
+		SketchOrientationDialog.ui \
 		TaskSketcherConstrains.ui \
 		TaskSketcherGeneral.ui
 
@@ -38,6 +40,8 @@ libSketcherGui_la_SOURCES=\
 		Workbench.h \
 		EditDatumDialog.cpp \
 		EditDatumDialog.h \
+		SketchOrientationDialog.cpp \
+		SketchOrientationDialog.h \
 		TaskDlgEditSketch.cpp \
 		TaskDlgEditSketch.h \
 		ViewProviderPython.cpp \
