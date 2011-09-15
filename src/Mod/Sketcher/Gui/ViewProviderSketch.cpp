@@ -205,13 +205,13 @@ ViewProviderSketch::ViewProviderSketch()
     PointColor.setValue(1,1,1);
     PointSize.setValue(4);
 
-    zCross=0.01f;
-    zLines=0.02f;
-    zPoints=0.03f;
-    zConstr=0.04f;
-    zHighlight=0.05f;
-    zText=0.06f;
-    zEdit=0.01f;
+    zCross=0.001f;
+    zLines=0.002f;
+    zPoints=0.004f;
+    zConstr=0.003f;
+    zHighlight=0.005f;
+    zText=0.006f;
+    zEdit=0.001f;
 
     xInit=0;
     yInit=0;
@@ -1798,8 +1798,9 @@ Restart:
                     } else
                         break;
 
-                    SbVec3f p1(pnt1.x,pnt1.y,0);
-                    SbVec3f p2(pnt2.x,pnt2.y,0);
+
+                    SbVec3f p1(pnt1.x,pnt1.y,zConstr);
+                    SbVec3f p2(pnt2.x,pnt2.y,zConstr);
 
                     SbVec3f dir, norm;
                     if (Constr->Type == Distance)
