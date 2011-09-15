@@ -96,16 +96,15 @@
 using namespace SketcherGui;
 using namespace Sketcher;
 
-SbColor sCurveColor             (1.0f,1.0f,1.0f);
-SbColor sCurveDraftColor        (0.4f,0.4f,0.8f);
-SbColor sPointColor             (0.5f,0.5f,0.5f);
-SbColor sConstraintColor        (0.0f,0.8f,0.0f);
-SbColor sCrossColor             (0.4f,0.4f,0.8f);
-SbColor sConstrIcoColor         (0.918f,0.145f,0.f);
-SbColor sFullyConstrainedColor  (0.6f,0.6f,0.9f);
-
-SbColor ViewProviderSketch::PreselectColor(0.1f, 0.1f, 0.8f);
-SbColor ViewProviderSketch::SelectColor   (0.1f, 0.1f, 0.8f);
+SbColor ViewProviderSketch::VertexColor           (0.5f,0.5f,0.5f);
+SbColor ViewProviderSketch::CurveColor            (1.0f,1.0f,1.0f);
+SbColor ViewProviderSketch::CurveDraftColor       (0.4f,0.4f,0.8f);
+SbColor ViewProviderSketch::CrossColor            (0.4f,0.4f,0.8f);
+SbColor ViewProviderSketch::FullyConstrainedColor (0.6f,0.6f,0.9f);
+SbColor ViewProviderSketch::ConstraintColor       (0.0f,0.8f,0.0f);
+SbColor ViewProviderSketch::ConstrIcoColor        (1.0f,0.125f,0.f);
+SbColor ViewProviderSketch::PreselectColor        (0.1f, 0.1f, 0.8f);
+SbColor ViewProviderSketch::SelectColor           (0.1f, 0.1f, 0.8f);
 
 // Variables for holding previous click
 SbTime  ViewProviderSketch::prvClickTime;
@@ -1287,33 +1286,34 @@ void ViewProviderSketch::updateColor(void)
             pcolor[i] = SelectColor;
         else if (edit->PreselectPoint == i)
             pcolor[i] = PreselectColor;
+        else if (edit->FullyConstrained)
+            pcolor[i] = FullyConstrainedColor;
         else
-            pcolor[i] = sPointColor;
+            pcolor[i] = VertexColor;
     }
 
-    // colors or the curves
+    // colors of the curves
     for (int  i=0; i < CurvNum; i++) {
         if (edit->SelCurvSet.find(i) != edit->SelCurvSet.end())
             color[i] = SelectColor;
         else if (edit->PreselectCurve == i)
             color[i] = PreselectColor;
+        else if (this->getSketchObject()->Geometry.getValues()[i]->Construction)
+            color[i] = CurveDraftColor;
+        else if (edit->FullyConstrained)
+            color[i] = FullyConstrainedColor;
         else
-            if (this->getSketchObject()->Geometry.getValues()[i]->Construction)
-                color[i] = sCurveDraftColor;
-            else if (edit->FullyConstrained)
-                color[i] = sFullyConstrainedColor;
-            else
-                color[i] = sCurveColor;
+            color[i] = CurveColor;
     }
 
-    // colors or the cross
+    // colors of the cross
     for (int  i=0; i < 2; i++) {
         if (edit->SelCrossSet.find(i+1) != edit->SelCrossSet.end())
             ccolor[i] = SelectColor;
         else if (edit->PreselectCross == i+1)
             ccolor[i] = PreselectColor;
         else
-            ccolor[i] = sCrossColor;
+            ccolor[i] = CrossColor;
     }
 
     // colors of the constraints
@@ -1325,7 +1325,7 @@ void ViewProviderSketch::updateColor(void)
         else if (edit->PreselectConstraint == i)
             m->diffuseColor = PreselectColor;
         else
-            m->diffuseColor = sConstraintColor;
+            m->diffuseColor = ConstraintColor;
     }
 
     // end editing
@@ -1400,7 +1400,7 @@ void ViewProviderSketch::drawConstraintIcons()
         // Constants to help create constraint icons
         const int constrImgSize = 16;
 
-        QColor constrIcoColor((int)(sConstrIcoColor [0] * 255.0f), (int)(sConstrIcoColor[1] * 255.0f),(int)(sConstrIcoColor[2] * 255.0f));
+        QColor constrIcoColor((int)(ConstrIcoColor [0] * 255.0f), (int)(ConstrIcoColor[1] * 255.0f),(int)(ConstrIcoColor[2] * 255.0f));
         QColor constrIconSelColor ((int)(SelectColor[0] * 255.0f), (int)(SelectColor[1] * 255.0f),(int)(SelectColor[2] * 255.0f));
         QColor constrIconPreselColor ((int)(PreselectColor[0] * 255.0f), (int)(PreselectColor[1] * 255.0f),(int)(PreselectColor[2] * 255.0f));
 
@@ -1478,8 +1478,6 @@ void ViewProviderSketch::draw(bool temp)
     std::vector<Base::Vector3d> Coords;
     std::vector<Base::Vector3d> Points;
     std::vector<unsigned int> Index;
-    std::vector<unsigned int> Color;
-    std::vector<unsigned int> PtColor;
 
     const std::vector<Part::Geometry *> *geomlist;
     std::vector<Part::Geometry *> tempGeo;
@@ -1498,9 +1496,6 @@ void ViewProviderSketch::draw(bool temp)
             Points.push_back(lineSeg->getStartPoint());
             Points.push_back(lineSeg->getEndPoint());
             Index.push_back(2);
-            Color.push_back(0);
-            PtColor.push_back(0);
-            PtColor.push_back(0);
         }
         else if ((*it)->getTypeId() == Part::GeomCircle::getClassTypeId()) { // add a circle
             const Part::GeomCircle *circle = dynamic_cast<const Part::GeomCircle *>(*it);
@@ -1518,9 +1513,7 @@ void ViewProviderSketch::draw(bool temp)
             Coords.push_back(Base::Vector3d(pnt.X(), pnt.Y(), pnt.Z()));
 
             Index.push_back(countSegments+1);
-            Color.push_back(0);
             Points.push_back(center);
-            PtColor.push_back(0);
         }
         else if ((*it)->getTypeId() == Part::GeomArcOfCircle::getClassTypeId()) { // add an arc
             const Part::GeomArcOfCircle *arc = dynamic_cast<const Part::GeomArcOfCircle *>(*it);
@@ -1551,13 +1544,9 @@ void ViewProviderSketch::draw(bool temp)
             Coords.push_back(Base::Vector3d(pnt.X(), pnt.Y(), pnt.Z()));
 
             Index.push_back(countSegments+1);
-            Color.push_back(0);
             Points.push_back(center);
             Points.push_back(start);
             Points.push_back(end);
-            PtColor.push_back(0);
-            PtColor.push_back(0);
-            PtColor.push_back(0);
         }
         else if ((*it)->getTypeId() == Part::GeomBSplineCurve::getClassTypeId()) { // add a circle
             const Part::GeomBSplineCurve *spline = dynamic_cast<const Part::GeomBSplineCurve *>(*it);
@@ -1585,30 +1574,26 @@ void ViewProviderSketch::draw(bool temp)
             std::vector<Base::Vector3d> poles = spline->getPoles();
             for (std::vector<Base::Vector3d>::iterator it = poles.begin(); it != poles.end(); ++it) {
                 Points.push_back(*it);
-                PtColor.push_back(0);
             }
 
             Index.push_back(countSegments+1);
-            Color.push_back(0);
         }
         else {
             ;
         }
     }
 
-    edit->CurveSet->numVertices.setNum(Index.size());
     edit->CurvesCoordinate->point.setNum(Coords.size());
-    edit->CurvesMaterials->diffuseColor.setNum(Color.size());
+    edit->CurveSet->numVertices.setNum(Index.size());
+    edit->CurvesMaterials->diffuseColor.setNum(Index.size());
     edit->PointsCoordinate->point.setNum(Points.size());
-    edit->PointsMaterials->diffuseColor.setNum(PtColor.size());
+    edit->PointsMaterials->diffuseColor.setNum(Points.size());
 
     SbVec3f *verts = edit->CurvesCoordinate->point.startEditing();
     int32_t *index = edit->CurveSet->numVertices.startEditing();
-    SbColor *color = edit->CurvesMaterials->diffuseColor.startEditing();
     SbVec3f *pverts = edit->PointsCoordinate->point.startEditing();
-    SbColor *pcolor = edit->PointsMaterials->diffuseColor.startEditing();
 
-    // set cross coordiantes
+    // set cross coordinates
     edit->RootCrossCoordinate->point.set1Value(0,SbVec3f((float)MinX - (MaxX-MinX)*0.5,0.0,zCross));
     edit->RootCrossCoordinate->point.set1Value(1,SbVec3f((float)MaxX + (MaxX-MinX)*0.5,0.0,zCross));
     edit->RootCrossCoordinate->point.set1Value(2,SbVec3f(0.0f,(float)MinY - (MaxY-MinY)*0.5f,zCross));
@@ -1622,26 +1607,15 @@ void ViewProviderSketch::draw(bool temp)
     for (std::vector<unsigned int>::const_iterator it = Index.begin(); it != Index.end(); ++it,i++)
         index[i] = *it;
 
-    i=0; // color of the line set
-    for (std::vector<unsigned int>::const_iterator it = Color.begin(); it != Color.end(); ++it,i++)
-        color[i] = (*it == 1 ? sCurveDraftColor : sCurveColor);
 
     i=0; // setting up the point set
     for (std::vector<Base::Vector3d>::const_iterator it = Points.begin(); it != Points.end(); ++it,i++)
         pverts[i].setValue(it->x,it->y,zPoints);
 
-    i=0; // color of the point set
-    for (std::vector<unsigned int>::const_iterator it = PtColor.begin(); it != PtColor.end(); ++it,i++)
-        pcolor[i] = (*it == 1 ? sCurveDraftColor : sPointColor);
-
-    if (edit->PreselectPoint >= 0 && edit->PreselectPoint < int(Points.size()))
-        pcolor[edit->PreselectPoint] = PreselectColor;
 
     edit->CurvesCoordinate->point.finishEditing();
     edit->CurveSet->numVertices.finishEditing();
-    edit->CurvesMaterials->diffuseColor.finishEditing();
     edit->PointsCoordinate->point.finishEditing();
-    edit->PointsMaterials->diffuseColor.finishEditing();
 
     // Render Constraints ===================================================
     const std::vector<Sketcher::Constraint *> &ConStr = getSketchObject()->Constraints.getValues();
@@ -2292,7 +2266,7 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
         sep->renderCaching = SoSeparator::OFF;
         // every constrained visual node gets its own material for preselection and selection
         SoMaterial *Material = new SoMaterial;
-        Material->diffuseColor = sConstraintColor;
+        Material->diffuseColor = ConstraintColor;
         sep->addChild(Material);
 
         // distinguish different constraint types to build up
@@ -2520,6 +2494,29 @@ bool ViewProviderSketch::setEdit(int ModNum)
 
     ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/View");
     float transparency;
+
+    // set the point color
+    unsigned long color = (unsigned long)(VertexColor.getPackedValue());
+    color = hGrp->GetUnsigned("EditedVertexColor", color);
+    VertexColor.setPackedValue((uint32_t)color, transparency);
+    // set the curve color
+    color = (unsigned long)(CurveColor.getPackedValue());
+    color = hGrp->GetUnsigned("EditedEdgeColor", color);
+    CurveColor.setPackedValue((uint32_t)color, transparency);
+    // set the construction curve color
+    color = (unsigned long)(CurveDraftColor.getPackedValue());
+    color = hGrp->GetUnsigned("ConstructionColor", color);
+    CurveDraftColor.setPackedValue((uint32_t)color, transparency);
+    // set the cross lines color
+    CrossColor.setPackedValue((uint32_t)color, transparency);
+    // set the fully constrained color
+    color = (unsigned long)(FullyConstrainedColor.getPackedValue());
+    color = hGrp->GetUnsigned("FullyConstrainedColor", color);
+    FullyConstrainedColor.setPackedValue((uint32_t)color, transparency);
+    // constraints dimensions and icons colors are hard coded
+    // ConstraintColor;
+    // ConstrIcoColor;
+
     // set the highlight color
     unsigned long highlight = (unsigned long)(PreselectColor.getPackedValue());
     highlight = hGrp->GetUnsigned("HighlightColor", highlight);
@@ -2592,8 +2589,8 @@ void ViewProviderSketch::createEditInventorNodes(void)
 
     // stuff for the RootCross lines +++++++++++++++++++++++++++++++++++++++
     edit->RootCrossMaterials = new SoMaterial;
-    edit->RootCrossMaterials->diffuseColor.set1Value(0,sCrossColor);
-    edit->RootCrossMaterials->diffuseColor.set1Value(1,sCrossColor);
+    edit->RootCrossMaterials->diffuseColor.set1Value(0,CrossColor);
+    edit->RootCrossMaterials->diffuseColor.set1Value(1,CrossColor);
     edit->EditRoot->addChild(edit->RootCrossMaterials);
 
     MtlBind = new SoMaterialBinding;

@@ -404,7 +404,7 @@
          </widget>
         </item>
         <item row="2" column="1">
-         <widget class="Gui::PrefColorButton" name="gui::prefcolorbutton">
+         <widget class="Gui::PrefColorButton" name="ConstructionColor">
           <property name="toolTip">
            <string>The color of construction geometry in editmode</string>
           </property>
@@ -424,7 +424,7 @@
          </widget>
         </item>
         <item row="3" column="1">
-         <widget class="Gui::PrefColorButton" name="gui::prefcolorbutton_2">
+         <widget class="Gui::PrefColorButton" name="FullyConstrainedColor">
           <property name="toolTip">
            <string>The color of fully constrained geometry in editmode</string>
           </property>
@@ -444,7 +444,7 @@
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="Gui::PrefColorButton" name="gui::prefcolorbutton_3">
+         <widget class="Gui::PrefColorButton" name="EditedVertexColor">
           <property name="toolTip">
            <string>The color of vertices being edited</string>
           </property>
@@ -464,7 +464,7 @@
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="Gui::PrefColorButton" name="gui::prefcolorbutton_4">
+         <widget class="Gui::PrefColorButton" name="EditedEdgeColor">
           <property name="toolTip">
            <string>The color of edges being edited</string>
           </property>

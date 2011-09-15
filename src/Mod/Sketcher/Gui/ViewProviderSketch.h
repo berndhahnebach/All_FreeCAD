@@ -209,7 +209,14 @@ protected:
     // modes while sketching
     SketchMode Mode;
 
-    // colors for selection and preselection
+    // colors
+    static SbColor VertexColor;
+    static SbColor CurveColor;
+    static SbColor CurveDraftColor;
+    static SbColor CrossColor;
+    static SbColor FullyConstrainedColor;
+    static SbColor ConstraintColor;
+    static SbColor ConstrIcoColor;
     static SbColor PreselectColor;
     static SbColor SelectColor;
 
