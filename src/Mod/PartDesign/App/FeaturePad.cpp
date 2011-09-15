@@ -33,6 +33,7 @@
 //# include <Geom_Plane.hxx>
 # include <Handle_Geom_Surface.hxx>
 # include <TopoDS.hxx>
+# include <TopoDS_Solid.hxx>
 # include <TopoDS_Face.hxx>
 # include <TopoDS_Wire.hxx>
 # include <TopExp_Explorer.hxx>
@@ -49,7 +50,7 @@ using namespace PartDesign;
 
 const char* Pad::SideEnums[]= {"Positive","Negative",NULL};
 
-PROPERTY_SOURCE(PartDesign::Pad, PartDesign::SketchBased)
+PROPERTY_SOURCE(PartDesign::Pad, PartDesign::Additive)
 
 Pad::Pad()
 {
@@ -113,45 +114,7 @@ App::DocumentObjectExecReturn *Pad::execute(void)
     if (SupportLink && SupportLink->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()))
         SupportObject = static_cast<Part::Feature*>(SupportLink);
 
-	/* Version from the blog
-	Handle(Geom_Surface) aSurf = new Geom_Plane (gp::XOY());
-	//anti-clockwise circles if too look from surface normal
-	Handle(Geom_Curve) anExtC = new Geom_Circle (gp::XOY(), 10.);
-	Handle(Geom_Curve) anIntC = new Geom_Circle (gp::XOY(), 5.);
-	TopoDS_Edge anExtE = BRepBuilderAPI_MakeEdge (anExtC);
-	TopoDS_Edge anIntE = BRepBuilderAPI_MakeEdge (anExtC);
-	TopoDS_Wire anExtW = BRepBuilderAPI_MakeWire (anExtE);
-	TopoDS_Wire anIntW = BRepBuilderAPI_MakeWire (anIntE);
-	BRep_Builder aB;
-	TopoDS_Face aFace;
-	aB.MakeFace (aFace, aSurf, Precision::Confusion());
-	//aB. (aFace, aSurf);
-	aB.Add (aFace, anExtW);
-	//aB.Add (aFace, anIntW.Reversed()); //material should lie on the right of the inner wire
 
-	this->Shape.setValue(aFace);
-	*/
-
-	/* Version from First Application
-    Base::Vector3f v = Dir.getValue();
-    gp_Vec vec(v.x,v.y,v.z);
-	gp_Pln Pln(gp_Pnt(0,0,0),gp_Dir(0,0,1));
-
-    // Now, let's get the TopoDS_Shape
-	TopoDS_Wire theWire = TopoDS::Wire(Shape.getShape()._Shape);
-	BRepBuilderAPI_MakeFace FaceBuilder = BRepBuilderAPI_MakeFace(Pln,theWire);
-	if(FaceBuilder.IsDone()){
-		TopoDS_Face FaceProfile = FaceBuilder.Face();
-		// Make a solid out of the face
-		BRepPrimAPI_MakePrism PrismMaker = BRepPrimAPI_MakePrism(FaceProfile , vec);
-		if(PrismMaker.IsDone()){
-			this->Shape.setValue(PrismMaker.Shape());
-		}
-	}
-	*/
-
-    //Handle(Geom_Surface) aSurf = new Geom_Plane (gp_Pln(gp_Pnt(0,0,0),gp_Dir(0,0,1)));
-    //anti-clockwise circles if too look from surface normal
 #if 0
     //TopoDS_Wire theWire = TopoDS::Wire(shape);
     //TopoDS_Face aFace = BRepBuilderAPI_MakeFace(theWire);
@@ -167,7 +130,9 @@ App::DocumentObjectExecReturn *Pad::execute(void)
     gp_Vec vec(SketchOrientationVector.x,SketchOrientationVector.y,SketchOrientationVector.z);
     BRepPrimAPI_MakePrism PrismMaker(aFace,vec,0,1);
     if (PrismMaker.IsDone()) {
-        TopoDS_Shape result = PrismMaker.Shape();
+        TopoDS_Shape result = TopoDS::Solid(PrismMaker.Shape());
+        // set the additive shape property for later usage in e.g. pattern
+        this->AddShape.setValue(result);
         // if the sketch has a support fuse them to get one result object (PAD!)
         if (SupportObject) {
             const TopoDS_Shape& support = SupportObject->Shape.getValue();
@@ -176,12 +141,28 @@ App::DocumentObjectExecReturn *Pad::execute(void)
                 BRepAlgoAPI_Fuse mkFuse(support, result);
                 // Let's check if the fusion has been successful
                 if (!mkFuse.IsDone()) 
-                    throw Base::Exception("Fusion with support failed");
+                    return new App::DocumentObjectExecReturn("Fusion with support failed");
                 result = mkFuse.Shape();
-            }
-        }
+                // we have to get the solids (fuse create seldomly compounds)
+                TopExp_Explorer anExplorer;
+                anExplorer.Init(result,TopAbs_SOLID);
+                //if(
+                // get the first
+                TopoDS_Solid solRes = TopoDS::Solid(anExplorer.Current());
 
-        this->Shape.setValue(result);
+                //TopoDS_Solid solRes = TopoDS::Solid(result);
+                // lets check if the result is a solid
+                //if (result.ShapeType() != TopAbs_SOLID)
+                //    return new App::DocumentObjectExecReturn("Resulting shape is not a solid");
+                if (solRes.IsNull())
+                    return new App::DocumentObjectExecReturn("Resulting shape is not a solid");
+                this->Shape.setValue(solRes);
+                //this->Shape.setValue(result);
+            }else
+                return new App::DocumentObjectExecReturn("Support is not a solid");
+        }else
+
+            this->Shape.setValue(result);
     }
     else
         return new App::DocumentObjectExecReturn("Could not extrude the sketch!");

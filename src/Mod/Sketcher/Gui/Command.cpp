@@ -43,6 +43,7 @@
 #include <Mod/Sketcher/App/SketchObject.h>
 #include <Mod/Part/App/Part2DObject.h>
 
+#include "SketchOrientationDialog.h"
 #include "ViewProviderSketch.h"
 
 using namespace std;
@@ -119,15 +120,32 @@ void CmdSketcherNewSketch::activated(int iMsg)
         doCommand(Gui,"Gui.activeDocument().setEdit('%s')",FeatName.c_str());
     }
     else {
-        // do the standard Z+ new Sketch
-        const char camstring[] = "#Inventor V2.1 ascii \\n OrthographicCamera { \\n viewportMapping ADJUST_CAMERA \\n position 0 0 87 \\n orientation 0 0 1  0 \\n nearDistance 37 \\n farDistance 137 \\n aspectRatio 1 \\n focalDistance 87 \\n height 119 }";
-        std::string FeatName = getUniqueObjectName("Sketch");
+        // ask user for orientation
+        SketchOrientationDialog Dlg;
 
-        std::string cam(camstring);
+        Dlg.exec();
+        Base::Vector3d p = Dlg.Pos.getPosition();
+        Base::Rotation r = Dlg.Pos.getRotation();
+
+        // do the right view direction
+        std::string camstring;
+        switch(Dlg.DirType){
+            case 0:
+                camstring = "#Inventor V2.1 ascii \\n OrthographicCamera { \\n viewportMapping ADJUST_CAMERA \\n position 0 0 87 \\n orientation 0 0 1  0 \\n nearDistance 37 \\n farDistance 137 \\n aspectRatio 1 \\n focalDistance 87 \\n height 119 }";
+                break;
+            case 1:
+                camstring = "#Inventor V2.1 ascii \\n OrthographicCamera {\\n  viewportMapping ADJUST_CAMERA\\n  position 0 87 0 \\n  orientation 0 0.70710683 0.70710683  3.1415927\\n  nearDistance -112.88701\\n  farDistance 287.28702\\n  aspectRatio 1\\n  focalDistance 87\\n  height 143.52005\\n\\n}";
+                break;
+            case 2:
+                camstring = "#Inventor V2.1 ascii \\n OrthographicCamera {\\n  viewportMapping ADJUST_CAMERA\\n  position 87 0 0 \\n  orientation 0.70538187 -0.020238321 0.70853853  3.1094475 \\n  nearDistance -112.887\\n  farDistance 287.28699\\n  aspectRatio 1\\n  focalDistance 87\\n  height 143.52005\\n\\n}";
+                break;
+        }
+        std::string FeatName = getUniqueObjectName("Sketch");
 
         openCommand("Create a new Sketch");
         doCommand(Doc,"App.activeDocument().addObject('Sketcher::SketchObject','%s')",FeatName.c_str());
-        doCommand(Gui,"Gui.activeDocument().activeView().setCamera('%s')",cam.c_str());
+        doCommand(Doc,"App.activeDocument().%s.Placement = App.Placement(App.Vector(%f,%f,%f),App.Rotation(%f,%f,%f,%f))",FeatName.c_str(),p.x,p.y,p.z,r[0],r[1],r[2],r[3]);
+        doCommand(Gui,"Gui.activeDocument().activeView().setCamera('%s')",camstring.c_str());
         doCommand(Gui,"Gui.activeDocument().setEdit('%s')",FeatName.c_str());
     }
  
@@ -269,48 +287,8 @@ bool CmdSketcherLeaveSketch::isActive(void)
     return false;
 }
 
-// Sketchflat integration ++++++++++++++++++++++++++++++++++++++++++++++++
 
-DEF_STD_CMD_A(CmdSketcherNewSketchSF);
 
-CmdSketcherNewSketchSF::CmdSketcherNewSketchSF()
-	:Command("Sketcher_NewSketchSF")
-{
-    sAppModule      = "Sketcher";
-    sGroup          = QT_TR_NOOP("Sketcher");
-    sMenuText       = QT_TR_NOOP("Sketchflat sketch");
-    sToolTipText    = QT_TR_NOOP("Create a new sketchflat sketch by starting externel editor");
-    sWhatsThis      = sToolTipText;
-    sStatusTip      = sToolTipText;
-    sPixmap         = "Sketcher_NewSketch";
-}
-
-void CmdSketcherNewSketchSF::activated(int iMsg)
-{
-
-    std::string FeatName = getUniqueObjectName("Sketch");
-
-    openCommand("Create a new Sketch");
-    doCommand(Doc,"App.activeDocument().addObject('Sketcher::SketchObjectSF','%s')",FeatName.c_str());
-    doCommand(Doc,"App.activeDocument().%s.SketchFlatFile = App.getResourceDir()+'Mod/Sketcher/Templates/Sketch.skf'",FeatName.c_str());
-  
-    Sketcher::SketchObjectSF *obj = static_cast<Sketcher::SketchObjectSF *>(getDocument()->getObject( FeatName.c_str() ));
-
-    Gui::Dialog::DlgEditFileIncludePropertyExternal dlg((obj->SketchFlatFile),Gui::getMainWindow());
-    dlg.ProcName = QString::fromUtf8((App::Application::Config()["AppHomePath"] + "bin/sketchflat.exe").c_str());
-    dlg.Do();
-
-    commitCommand();
-    getDocument()->recompute();
-}
-
-bool CmdSketcherNewSketchSF::isActive(void)
-{
-    if (getActiveGuiDocument())
-        return true;
-    else
-        return false;
-}
 
 
 void CreateSketcherCommands(void)
@@ -320,6 +298,5 @@ void CreateSketcherCommands(void)
     rcCmdMgr.addCommand(new CmdSketcherNewSketch());
     rcCmdMgr.addCommand(new CmdSketcherMapSketch());
     rcCmdMgr.addCommand(new CmdSketcherLeaveSketch());
-    rcCmdMgr.addCommand(new CmdSketcherNewSketchSF());
 
  }

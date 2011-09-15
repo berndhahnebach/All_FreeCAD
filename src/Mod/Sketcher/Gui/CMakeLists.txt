@@ -31,6 +31,7 @@ set(SketcherGui_MOC_HDRS
     TaskSketcherCreateCommands.h
     TaskSketcherGeneral.h
     TaskDlgEditSketch.h
+    SketchOrientationDialog.h
 )
 fc_wrap_cpp(SketcherGui_MOC_SRCS ${SketcherGui_MOC_HDRS})
 SOURCE_GROUP("Moc" FILES ${SketcherGui_MOC_SRCS})
@@ -41,6 +42,7 @@ set(SketcherGui_UIC_SRCS
     TaskSketcherConstrains.ui
     TaskSketcherGeneral.ui
     InsertDatum.ui
+    SketchOrientationDialog.ui
 )
 qt4_wrap_ui(SketcherGui_UIC_HDRS ${SketcherGui_UIC_SRCS})
 
@@ -72,6 +74,8 @@ SET(SketcherGui_SRCS
     Workbench.h
     EditDatumDialog.cpp
     EditDatumDialog.h
+    SketchOrientationDialog.cpp
+    SketchOrientationDialog.h
     TaskDlgEditSketch.cpp
     TaskDlgEditSketch.h
     ViewProviderPython.cpp

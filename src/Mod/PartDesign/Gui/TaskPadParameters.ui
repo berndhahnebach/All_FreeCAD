@@ -63,6 +63,9 @@
    </item>
    <item>
     <widget class="QCheckBox" name="checkBoxMirrored">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="text">
       <string>Mirrored extent</string>
      </property>
