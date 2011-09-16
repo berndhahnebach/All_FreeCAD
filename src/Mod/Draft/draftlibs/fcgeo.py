@@ -426,8 +426,15 @@ def sortEdges(lEdges, aVertex=None):
                         if isSameVertex(aVertex,result[3].Vertexes[0]):
                                 olEdges += [result[3]] + next
                         else:
-                                newedge = Part.Line(aVertex.Point,result[3].Vertexes[0].Point).toShape()
-                                olEdges += [newedge] + next
+                                if isinstance(result[3].Curve,Part.Line):
+                                        newedge = Part.Line(aVertex.Point,result[3].Vertexes[0].Point).toShape()
+                                        olEdges += [newedge] + next
+                                elif isinstance(result[3].Curve,Part.Circle):
+                                        mp = findMidpoint(result[3])
+                                        newedge = Part.Arc(aVertex.Point,mp,result[3].Vertexes[0].Point).toShape()
+                                        olEdges += [newedge] + next
+                                else:
+                                        olEdges += [result[3]] + next                                        
 			return olEdges
 		else :
 			return []
