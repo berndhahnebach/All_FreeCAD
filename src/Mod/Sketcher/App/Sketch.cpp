@@ -1257,6 +1257,12 @@ int Sketch::addPointOnObjectConstraint(int geoId1, PointPos pos1, int geoId2)
             GCSsys.addConstraintPointOnLine(p1, l2, tag);
             return ConstraintsCounter;
         }
+        else if (Geoms[geoId2].type == Arc) {
+            GCS::Arc &a = Arcs[Geoms[geoId2].index];
+            int tag = ++ConstraintsCounter;
+            GCSsys.addConstraintPointOnArc(p1, a, tag);
+            return ConstraintsCounter;
+        }
         else if (Geoms[geoId2].type == Circle) {
             GCS::Circle &c = Circles[Geoms[geoId2].index];
             int tag = ++ConstraintsCounter;

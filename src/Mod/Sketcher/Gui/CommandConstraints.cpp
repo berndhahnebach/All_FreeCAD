@@ -646,7 +646,8 @@ void CmdSketcherConstrainPointOnObject::activated(int iMsg)
 
         // Currently only accepts line segments and circles
         if (geom->getTypeId() == Part::GeomLineSegment::getClassTypeId() ||
-            geom->getTypeId() == Part::GeomCircle::getClassTypeId() ) {
+            geom->getTypeId() == Part::GeomCircle::getClassTypeId() ||
+            geom->getTypeId() == Part::GeomArcOfCircle::getClassTypeId() ) {
 
             openCommand("add point on object constraint");
             Gui::Command::doCommand(
