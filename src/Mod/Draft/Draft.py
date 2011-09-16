@@ -846,7 +846,6 @@ def offset(obj,delta,copy=False,bind=False,sym=False,occ=False):
                         newobj.DrawMode = obj.DrawMode
                         newobj.Placement = pl
                 elif getType(obj) == "Part":
-                        print "part shape"
                         newobj = makeWire(p)
                         newobj.Closed = obj.Shape.isClosed()                      
                 formatObject(newobj,obj)

@@ -53,6 +53,7 @@ try: draftui = FreeCADGui.draftToolBar
 except: draftui = None
 
 pythonopen = open # to distinguish python built-in open function from the one declared here
+prec = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("precision")
 
 def decodeName(name):
 	"decodes encoded strings"
@@ -268,11 +269,15 @@ class fcformat:
 							if (l.color == 7) and self.brightbg: return [0.0,0.0,0.0]
 							else: return dxfColorMap.color_map[l.color]
 
+def vec(pt):
+        "returns a rounded Vector from a dxf point"
+        return FreeCAD.Vector(round(pt[0],prec),round(pt[1],prec),round(pt[2],prec))
+
 def drawLine(line,shapemode=False):
 	"returns a Part shape from a dxf line"
 	if (len(line.points) > 1):
-		v1=FreeCAD.Vector(line.points[0][0],line.points[0][1],line.points[0][2])
-		v2=FreeCAD.Vector(line.points[1][0],line.points[1][1],line.points[1][2])
+		v1=vec(line.points[0])
+		v2=vec(line.points[1])
 		if not fcvec.equals(v1,v2):
 			try:
                                 if (fmt.paramstyle == 4) and (not fmt.makeBlocks) and (not shapemode):
@@ -292,8 +297,8 @@ def drawPolyline(polyline,shapemode=False):
 		for p in range(len(polyline.points)-1):
 			p1 = polyline.points[p]
 			p2 = polyline.points[p+1]
-			v1 = FreeCAD.Vector(p1[0],p1[1],p2[2])
-			v2 = FreeCAD.Vector(p2[0],p2[1],p2[2])
+			v1 = FreeCAD.Vector(round(p1[0],prec),round(p1[1],prec),round(p2[2],prec))
+			v2 = FreeCAD.Vector(round(p2[0],prec),round(p2[1],prec),round(p2[2],prec))
                         verts.append(v1)
 			if not fcvec.equals(v1,v2):
 				if polyline.points[p].bulge:
@@ -312,8 +317,8 @@ def drawPolyline(polyline,shapemode=False):
 		if polyline.closed:
 			p1 = polyline.points[len(polyline.points)-1]
 			p2 = polyline.points[0]
-			v1 = FreeCAD.Vector(p1[0],p1[1],p2[2])
-			v2 = FreeCAD.Vector(p2[0],p2[1],p2[2])
+			v1 = FreeCAD.Vector(round(p1[0],prec),round(p1[1],prec),round(p2[2],prec))
+			v2 = FreeCAD.Vector(round(p2[0],prec),round(p2[1],prec),round(p2[2],prec))
 			if not fcvec.equals(v1,v2):
 				try: edges.append(Part.Line(v1,v2).toShape())
 				except: warn(polyline)
@@ -335,28 +340,28 @@ def drawPolyline(polyline,shapemode=False):
 
 def drawArc(arc,shapemode=False):
 	"returns a Part shape from a dxf arc"
-	v=FreeCAD.Vector(arc.loc[0],arc.loc[1],arc.loc[2])
-        firstangle=(arc.start_angle/180)*math.pi
-	lastangle=(arc.end_angle/180)*math.pi
+	v=vec(arc.loc)
+        firstangle=round(arc.start_angle,prec)
+	lastangle=round(arc.end_angle,prec)
 	circle=Part.Circle()
 	circle.Center=v
-	circle.Radius=arc.radius
+	circle.Radius=round(arc.radius,prec)
 	try:
                 if (fmt.paramstyle == 4) and (not fmt.makeBlocks) and (not shapemode):
                         pl = FreeCAD.Placement()
                         pl.move(v)
-                        return Draft.makeCircle(arc.radius,pl,False,math.degrees(firstangle),math.degrees(lastangle))
+                        return Draft.makeCircle(arc.radius,pl,False,firstangle,lastangle)
                 else:
-                        return circle.toShape(firstangle,lastangle)
+                        return circle.toShape(math.radians(firstangle),math.radians(lastangle))
 	except:
                 warn(arc)
 	return None
 
 def drawCircle(circle,shapemode=False):
 	"returns a Part shape from a dxf circle"
-	v = FreeCAD.Vector(circle.loc[0],circle.loc[1],circle.loc[2])
+	v = vec(circle.loc)
 	curve = Part.Circle()
-	curve.Radius = circle.radius
+	curve.Radius = round(circle.radius,prec)
 	curve.Center = v
 	try:
                 if (fmt.paramstyle == 4) and (not fmt.makeBlocks) and (not shapemode):
@@ -373,9 +378,9 @@ def drawFace(face):
         "returns a Part face from a list of points"
         pl = []
         for p in face.points:
-                pl.append(FreeCAD.Vector(p[0],p[1],p[2]))
+                pl.append(vec(p))
         p1 = face.points[0]
-        pl.append(FreeCAD.Vector(p1[0],p1[1],p1[2]))
+        pl.append(vec(p1))
         try:
                 pol = Part.makePolygon(pl)
                 return Part.Face(pol)
@@ -502,11 +507,11 @@ def drawInsert(insert):
                 for a in attrs:
                         addText(a,attrib=True)
 	if shape:
-		pos = FreeCAD.Vector(insert.loc[0],insert.loc[1],insert.loc[2])
+		pos = vec(insert.loc)
 		rot = math.radians(insert.rotation)
 		scale = insert.scale
 		tsf = FreeCAD.Matrix()
-		tsf.scale(FreeCAD.Vector(scale[0],scale[1],scale[2]))
+		tsf.scale(vec(scale))
 		tsf.rotateZ(rot)
 		shape = shape.transformGeometry(tsf)
 		shape.translate(pos)

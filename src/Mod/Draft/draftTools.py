@@ -844,14 +844,14 @@ class PlaneTracker(Tracker):
                 self.trans = coin.SoTransform()
 		self.trans.translation.setValue([0,0,0])
                 m1 = coin.SoMaterial()
-                m1.transparency.setValue(0.8)
+                # m1.transparency.setValue(0.8)
                 m1.diffuseColor.setValue([0.4,0.4,0.6])
                 c1 = coin.SoCoordinate3()
                 c1.point.setValues([[-1,-1,0],[1,-1,0],[1,1,0],[-1,1,0]])
-                f = coin.SoIndexedFaceSet()
-                f.coordIndex.setValues([0,1,2,3])
+                # f = coin.SoIndexedFaceSet()
+                # f.coordIndex.setValues([0,1,2,3])
                 m2 = coin.SoMaterial()
-                m2.transparency.setValue(0.7)
+                # m2.transparency.setValue(0.7)
                 m2.diffuseColor.setValue([0.2,0.2,0.3])
                 c2 = coin.SoCoordinate3()
                 c2.point.setValues([[0,1,0],[0,0,0],[1,0,0],[-.05,.95,0],[0,1,0],[.05,.95,0],[.95,.05,0],[1,0,0],[.95,-.05,0]])
@@ -859,9 +859,9 @@ class PlaneTracker(Tracker):
                 l.numVertices.setValues([3,3,3])
                 s = coin.SoSeparator()
                 s.addChild(self.trans)
-                s.addChild(m1)
-                s.addChild(c1)
-                s.addChild(f)
+                # s.addChild(m1)
+                # s.addChild(c1)
+                # s.addChild(f)
                 s.addChild(m2)
                 s.addChild(c2)
                 s.addChild(l)
@@ -2394,7 +2394,7 @@ class Modifier:
 
         def commit(self,name,func):
                 "stores partial actions to be committed to the FreeCAD document"
-                print "committing"
+                # print "committing"
                 self.commitList.append((name,func))
 			
 class Move(Modifier):
@@ -3044,7 +3044,9 @@ class Upgrade(Modifier):
                                 for e in ob.Shape.Edges:
                                         edges.append(e)
                         newob = None
-                        w = Part.Wire(fcgeo.sortEdges(edges[:]))
+                        nedges = fcgeo.sortEdges(edges[:])
+                        # for e in nedges: print "debug: ",e.Curve,e.Vertexes[0].Point,e.Vertexes[-1].Point
+                        w = Part.Wire(nedges)
                         if len(w.Edges) == len(edges):
                                 msg(translate("draft", "Found several edges: wiring them\n"))
                                 if not curves:
