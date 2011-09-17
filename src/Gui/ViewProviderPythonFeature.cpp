@@ -25,6 +25,7 @@
 
 #ifndef _PreComp_
 # include <sstream>
+# include <QFileInfo>
 # include <QPixmap>
 # include <boost/signals.hpp>
 # include <boost/bind.hpp>
@@ -213,10 +214,10 @@ QIcon ViewProviderPythonFeatureImp::getIcon() const
                 Py::String str(method.apply(args));
                 std::string content = str.as_std_string();
                 QPixmap icon;
-                // Check if the passed string is an svg filename, otherwise treat as xpm data
-                if (content.substr(content.rfind("."),4).c_str() == std::string(".svg")) {
-                    QString filename = QString::fromAscii(content.c_str());
-                    icon.load(filename);
+                // Check if the passed string is a filename, otherwise treat as xpm data
+                QFileInfo fi(QString::fromAscii(content.c_str()));
+                if (fi.isFile() && fi.exists()) {
+                    icon.load(fi.absoluteFilePath());
                 } else {
                     QByteArray ary;
                     int strlen = (int)content.size();
