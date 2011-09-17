@@ -162,9 +162,14 @@ the underlying geometry.</UserDocu>
         <UserDocu>Apply scaling with point and factor to this shape.</UserDocu>
       </Documentation>
     </Methode>
-    <Methode Name="makeFillet">
+    <Methode Name="makeFillet" Const="true">
       <Documentation>
         <UserDocu>Make fillet.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="makeChamfer" Const="true">
+      <Documentation>
+        <UserDocu>Make chamfer.</UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="makeThickness">
