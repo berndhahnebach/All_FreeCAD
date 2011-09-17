@@ -24,6 +24,7 @@
 #ifndef APP_DOCUMENTOBJECTGROUP_H
 #define APP_DOCUMENTOBJECTGROUP_H
 
+#include "FeaturePython.h"
 #include "DocumentObject.h"
 #include "PropertyLinks.h"
 #include <vector>
@@ -97,6 +98,9 @@ public:
 private:
     void removeObjectFromDocument(DocumentObject*);
 };
+
+typedef App::FeaturePythonT<DocumentObjectGroup> DocumentObjectGroupPython;
+
 
 } //namespace App
 
