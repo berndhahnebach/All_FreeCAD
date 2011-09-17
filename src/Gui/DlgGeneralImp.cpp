@@ -51,6 +51,10 @@ DlgGeneralImp::DlgGeneralImp( QWidget* parent )
   : PreferencePage( parent ), watched(0)
 {
     this->setupUi(this);
+    // hide to fix 0000375: Mac Interface window style setting not saved
+    windowStyleLabel->hide();
+    WindowStyle->hide();
+    
     // fills the combo box with all available workbenches
     // sorted by their menu text
     QStringList work = Application::Instance->workbenches();
