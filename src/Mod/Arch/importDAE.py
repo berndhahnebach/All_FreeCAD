@@ -21,7 +21,7 @@
 #*                                                                         *
 #***************************************************************************
 
-import FreeCAD, collada, Mesh, os
+import FreeCAD, collada, Mesh, os, numpy
 
 __title__="FreeCAD Collada importer"
 __author__ = "Yorik van Havre"
@@ -73,3 +73,54 @@ def read(filename):
             print newmesh
             obj = FreeCAD.ActiveDocument.addObject("Mesh::Feature","Mesh")
             obj.Mesh = newmesh
+
+def export(exportList,filename):
+    "called when freecad exports a file"
+    colmesh = collada.Collada()
+    effect = collada.material.Effect("effect0", [], "phong", diffuse=(.7,.7,.7), specular=(1,1,1))
+    mat = collada.material.Material("material0", "mymaterial", effect)
+    colmesh.effects.append(effect)
+    colmesh.materials.append(mat)
+    objind = 0
+    scenenodes = []
+    for obj in exportList:
+        if obj.isDerivedFrom("Mesh::Feature"):
+            print "exporting object ",obj.Name, obj.Mesh
+            m = obj.Mesh
+            vindex = []
+            nindex = []
+            findex = []
+            # vertex indices
+            for v in m.Topology[0]:
+                vindex.extend([v.x,v.y,v.z])
+            # normals
+            for f in m.Facets:
+                n = f.Normal
+                nindex.extend([n.x,n.y,n.z])
+            # face indices
+            for i in range(len(m.Topology[1])):
+                f = m.Topology[1][i]
+                findex.extend([f[0],i,f[1],i,f[2],i])
+            print len(vindex), " vert indices, ", len(nindex), " norm indices, ", len(findex), " face indices."
+            vert_src = collada.source.FloatSource("cubeverts-array"+str(objind), numpy.array(vindex), ('X', 'Y', 'Z'))
+            normal_src = collada.source.FloatSource("cubenormals-array"+str(objind), numpy.array(nindex), ('X', 'Y', 'Z'))
+            geom = collada.geometry.Geometry(colmesh, "geometry"+str(objind), obj.Name, [vert_src, normal_src])
+            input_list = collada.source.InputList()
+            input_list.addInput(0, 'VERTEX', "#cubeverts-array"+str(objind))
+            input_list.addInput(1, 'NORMAL', "#cubenormals-array"+str(objind))
+            triset = geom.createTriangleSet(numpy.array(findex), input_list, "materialref")
+            geom.primitives.append(triset)
+            colmesh.geometries.append(geom)
+            matnode = collada.scene.MaterialNode("materialref", mat, inputs=[])
+            geomnode = collada.scene.GeometryNode(geom, [matnode])
+            node = collada.scene.Node("node"+str(objind), children=[geomnode])
+            scenenodes.append(node)
+            objind += 1
+    myscene = collada.scene.Scene("myscene", scenenodes)
+    colmesh.scenes.append(myscene)
+    colmesh.scene = myscene
+    myscene = collada.scene.Scene("myscene", [node])
+    colmesh.scenes.append(myscene)
+    colmesh.scene = myscene
+    colmesh.write(filename)
+    print "file ",filename," successfully created."

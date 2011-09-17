@@ -61,6 +61,7 @@ class ArchWorkbench(Workbench):
                         Log("pycollada not found, no collada support\n")
                 else:
                         FreeCAD.addImportType("Collada (*.dae)","importDAE")
+                        FreeCAD.addExportType("Collada (*.dae)","importDAE")
 		Log ('Loading Arch module... done\n')
 	def Activated(self):
                 FreeCADGui.draftToolBar.Activated()
