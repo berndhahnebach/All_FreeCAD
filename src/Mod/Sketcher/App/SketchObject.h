@@ -70,8 +70,8 @@ public:
     int addConstraint(const Constraint *constraint);
     /// delete constraint
     int delConstraint(int ConstrNbr);
-    int delConstraintOnPoint(int GeoId, PointPos PosId);
-    int delConstraintOnPoint(int VertexId);
+    int delConstraintOnPoint(int GeoId, PointPos PosId, bool onlyCoincident=true);
+    int delConstraintOnPoint(int VertexId, bool onlyCoincident=true);
     /// add an external geometry reference
     int addExternal(App::DocumentObject *Obj, const char* SubName);
     /// returns a list of projected external geoms

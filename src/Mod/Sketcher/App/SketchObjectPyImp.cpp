@@ -267,7 +267,7 @@ PyObject* SketchObjectPy::trim(PyObject *args)
 
     if (this->getSketchObjectPtr()->trim(GeoId,v1)) {
         std::stringstream str;
-        str << "Not able to trim curve with id : (" << GeoId << ")";
+        str << "Not able to trim curve with the given index: " << GeoId;
         PyErr_SetString(PyExc_ValueError, str.str().c_str());
         return 0;
     }
