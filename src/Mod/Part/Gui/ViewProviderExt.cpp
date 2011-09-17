@@ -286,10 +286,11 @@ void ViewProviderPartExt::attach(App::DocumentObject *pcFeat)
     // call parent attach method
     ViewProviderGeometryObject::attach(pcFeat);
 
-    SoGroup* pcNormalRoot = new SoGroup();
-    SoGroup* pcFlatRoot = new SoGroup();
-    SoGroup* pcWireframeRoot = new SoGroup();
-    SoGroup* pcPointsRoot = new SoGroup();
+    // Workaround for #0000433, i.e. use SoSeparator instead of SoGroup
+    SoGroup* pcNormalRoot = new SoSeparator();
+    SoGroup* pcFlatRoot = new SoSeparator();
+    SoGroup* pcWireframeRoot = new SoSeparator();
+    SoGroup* pcPointsRoot = new SoSeparator();
 
     // enable two-side rendering
     pShapeHints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE;
