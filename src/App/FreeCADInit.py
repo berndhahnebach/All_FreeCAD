@@ -109,7 +109,10 @@ def InitApplications():
 	Log("System path after init:\n")
 	for i in path:
 		Log("   " + i + "\n")
-
+	# add special path for MacOSX (bug #0000307)
+	import platform
+	if len(platform.mac_ver()[0]) > 0:
+		sys.path.append(os.path.expanduser('~/Library/Application Support/FreeCAD/Mod'))
 
 # some often used shortcuts (for lazy people like me ;-)
 App = FreeCAD
