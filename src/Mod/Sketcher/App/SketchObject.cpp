@@ -293,28 +293,72 @@ int SketchObject::delConstraint(int ConstrNbr)
     return 0;
 }
 
-int SketchObject::delConstraintOnPoint(int VertexId)
+int SketchObject::delConstraintOnPoint(int VertexId, bool onlyCoincident)
 {
     int GeoId;
     PointPos PosId;
     getGeoVertexIndex(VertexId, GeoId, PosId);
-    return delConstraintOnPoint(GeoId, PosId);
+    return delConstraintOnPoint(GeoId, PosId, onlyCoincident);
 }
 
-int SketchObject::delConstraintOnPoint(int GeoId, PointPos PosId)
+int SketchObject::delConstraintOnPoint(int GeoId, PointPos PosId, bool onlyCoincident)
 {
-    const std::vector< Constraint * > &vals = this->Constraints.getValues();
+    const std::vector<Constraint *> &vals = this->Constraints.getValues();
 
-    std::vector< Constraint * > newVals(0);
+    // check if constraints can be redirected to some other point
+    int replaceGeoId=-1;
+    PointPos replacePosId=Sketcher::none;
+    if (!onlyCoincident) {
+        for (std::vector<Constraint *>::const_iterator it = vals.begin(); it != vals.end(); ++it) {
+            if ((*it)->Type == Sketcher::Coincident) {
+                if ((*it)->First == GeoId && (*it)->FirstPos == PosId) {
+                    replaceGeoId = (*it)->Second;
+                    replacePosId = (*it)->SecondPos;
+                    break;
+                }
+                else if ((*it)->Second == GeoId && (*it)->SecondPos == PosId) {
+                    replaceGeoId = (*it)->First;
+                    replacePosId = (*it)->FirstPos;
+                    break;
+                }
+            }
+        }
+    }
+
+    // remove or redirect any constraints associated with the given point
+    std::vector<Constraint *> newVals(0);
     for (std::vector<Constraint *>::const_iterator it = vals.begin(); it != vals.end(); ++it) {
         if ((*it)->Type == Sketcher::Coincident) {
-            if (((*it)->First == GeoId && (*it)->FirstPos == PosId) ||
-                ((*it)->Second == GeoId && (*it)->SecondPos == PosId))
-               continue;
+            if ((*it)->First == GeoId && (*it)->FirstPos == PosId) {
+                if (replaceGeoId != -1 &&
+                    (replaceGeoId != (*it)->Second || replacePosId != (*it)->SecondPos)) { // redirect this constraint
+                    (*it)->First = replaceGeoId;
+                    (*it)->FirstPos = replacePosId;
+                }
+                else
+                    continue; // skip this constraint
+            }
+            else if ((*it)->Second == GeoId && (*it)->SecondPos == PosId) {
+                if (replaceGeoId != -1 &&
+                    (replaceGeoId != (*it)->First || replacePosId != (*it)->FirstPos)) { // redirect this constraint
+                    (*it)->Second = replaceGeoId;
+                    (*it)->SecondPos = replacePosId;
+                }
+                else
+                    continue; // skip this constraint
+            }
         }
-        else if ((*it)->Type == Sketcher::PointOnObject) {
-            if ((*it)->First == GeoId && (*it)->FirstPos == PosId)
-               continue;
+        else if (!onlyCoincident) {
+            if ((*it)->Type == Sketcher::PointOnObject) {
+                if ((*it)->First == GeoId && (*it)->FirstPos == PosId) {
+                    if (replaceGeoId != -1) { // redirect this constraint
+                        (*it)->First = replaceGeoId;
+                        (*it)->FirstPos = replacePosId;
+                    }
+                    else
+                        continue; // skip this constraint
+                }
+            }
         }
         newVals.push_back(*it);
     }
@@ -401,8 +445,8 @@ int SketchObject::fillet(int GeoId1, int GeoId2,
             PointPos PosId1 = (filletCenter-intersection)*dir1 > 0 ? start : end;
             PointPos PosId2 = (filletCenter-intersection)*dir2 > 0 ? start : end;
 
-            delConstraintOnPoint(GeoId1, PosId1);
-            delConstraintOnPoint(GeoId2, PosId2);
+            delConstraintOnPoint(GeoId1, PosId1, false);
+            delConstraintOnPoint(GeoId2, PosId2, false);
             Sketcher::Constraint *tangent1 = new Sketcher::Constraint();
             Sketcher::Constraint *tangent2 = new Sketcher::Constraint();
 
@@ -459,8 +503,7 @@ int SketchObject::trim(int GeoId, const Base::Vector3d& point)
         Base::Vector3d startPnt = lineSeg->getStartPoint();
         Base::Vector3d endPnt = lineSeg->getEndPoint();
         Base::Vector3d dir = (endPnt - startPnt).Normalize();
-        double xmin = 0;
-        double xmax = (endPnt - startPnt)*dir;
+        double length = (endPnt - startPnt)*dir;
         double x0 = (point - startPnt)*dir;
         if (GeoId1 >= 0 && GeoId2 >= 0) {
             double x1 = (point1 - startPnt)*dir;
@@ -470,7 +513,7 @@ int SketchObject::trim(int GeoId, const Base::Vector3d& point)
                 std::swap(point1,point2);
                 std::swap(x1,x2);
             }
-            if (x1 > xmin && x2 < xmax) {
+            if (x1 >= 0.001*length && x2 <= 0.999*length) {
                 if (x1 < x0 && x2 > x0) {
                     int newGeoId = addGeometry(geo);
                     // go through all constraints and replace the point (GeoId,end) with (newGeoId,end)
@@ -511,10 +554,10 @@ int SketchObject::trim(int GeoId, const Base::Vector3d& point)
                     delete newConstr;
                     return 0;
                 }
-            } else if (x1 <= xmin) { // drop the first intersection point
+            } else if (x1 < 0.001*length) { // drop the first intersection point
                 std::swap(GeoId1,GeoId2);
                 std::swap(point1,point2);
-            } else if (x2 >= xmax) { // drop the second intersection point
+            } else if (x2 > 0.999*length) { // drop the second intersection point
             }
             else
               return -1;
@@ -522,9 +565,9 @@ int SketchObject::trim(int GeoId, const Base::Vector3d& point)
 
         if (GeoId1 >= 0) {
             double x1 = (point1 - startPnt)*dir;
-            if (x1 > xmin && x1 < xmax) {
+            if (x1 >= 0.001*length && x1 <= 0.999*length) {
                 if (x1 > x0) { // trim line start
-                    delConstraintOnPoint(GeoId, start);
+                    delConstraintOnPoint(GeoId, start, false);
                     movePoint(GeoId, start, point1);
                     // constrain the trimming point on the corresponding geometry
                     Sketcher::Constraint *newConstr = new Sketcher::Constraint();
@@ -537,7 +580,7 @@ int SketchObject::trim(int GeoId, const Base::Vector3d& point)
                     return 0;
                 }
                 else if (x1 < x0) { // trim line end
-                    delConstraintOnPoint(GeoId, end);
+                    delConstraintOnPoint(GeoId, end, false);
                     movePoint(GeoId, end, point1);
                     Sketcher::Constraint *newConstr = new Sketcher::Constraint();
                     newConstr->Type = Sketcher::PointOnObject;

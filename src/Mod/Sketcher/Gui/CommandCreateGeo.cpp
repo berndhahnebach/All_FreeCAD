@@ -25,6 +25,8 @@
 #ifndef _PreComp_
 #endif
 
+#include <Base/Console.h>
+
 #include <Gui/Application.h>
 #include <Gui/Document.h>
 #include <Gui/Command.h>
@@ -1459,6 +1461,7 @@ public:
 
     virtual void activated(ViewProviderSketch *sketchgui)
     {
+        Gui::Selection().clearSelection();
         Gui::Selection().rmvSelectionGate();
         Gui::Selection().addSelectionGate(new TrimmingSelection(sketchgui->getObject()));
         setCursor(QPixmap(cursor_trimming),7,7);
@@ -1480,14 +1483,17 @@ public:
             const std::vector<Part::Geometry *> &geo = sketchgui->getSketchObject()->Geometry.getValues();
             const Part::Geometry *geom = geo[GeoId];
             if (geom->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
-                Gui::Command::openCommand("Trim edge");
-                Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.trim(%d,App.Vector(%f,%f,0))",
-                          sketchgui->getObject()->getNameInDocument(),
-                          GeoId, onSketchPos.fX, onSketchPos.fY);
-                Gui::Command::commitCommand();
-                Gui::Command::updateActive();
-
-                Gui::Selection().clearSelection();
+                try {
+                    Gui::Command::openCommand("Trim edge");
+                    Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.trim(%d,App.Vector(%f,%f,0))",
+                              sketchgui->getObject()->getNameInDocument(),
+                              GeoId, onSketchPos.fX, onSketchPos.fY);
+                    Gui::Command::commitCommand();
+                    Gui::Command::updateActive();
+                }
+                catch (const Base::Exception& e) {
+                    Base::Console().Error("%s\n", e.what());
+                }
             }
         }
         else // exit the trimming tool if the user clicked on empty space

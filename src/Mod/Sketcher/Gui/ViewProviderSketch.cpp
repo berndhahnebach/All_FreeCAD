@@ -1798,7 +1798,6 @@ Restart:
                     } else
                         break;
 
-
                     SbVec3f p1(pnt1.x,pnt1.y,zConstr);
                     SbVec3f p2(pnt2.x,pnt2.y,zConstr);
 
