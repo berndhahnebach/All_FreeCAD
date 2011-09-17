@@ -29,6 +29,7 @@
 # include <BRepBuilderAPI_Sewing.hxx>
 # include <BRepClass3d_SolidClassifier.hxx>
 # include <BRepFilletAPI_MakeFillet.hxx>
+# include <BRepFilletAPI_MakeChamfer.hxx>
 # include <BRepOffsetAPI_MakePipe.hxx>
 # include <BRepOffsetAPI_MakePipeShell.hxx>
 # include <BRepTools.hxx>
@@ -42,6 +43,7 @@
 # include <TopoDS_Iterator.hxx>
 # include <TopTools_IndexedMapOfShape.hxx>
 # include <TopLoc_Location.hxx>
+# include <TopExp.hxx>
 # include <Precision.hxx>
 #endif
 
@@ -852,6 +854,76 @@ PyObject* TopoShapePy::makeFillet(PyObject *args)
                 }
             }
             return new TopoShapePy(new TopoShape(mkFillet.Shape()));
+        }
+        catch (Standard_Failure) {
+            Handle_Standard_Failure e = Standard_Failure::Caught();
+            PyErr_SetString(PyExc_Exception, e->GetMessageString());
+            return NULL;
+        }
+    }
+
+    PyErr_SetString(PyExc_TypeError, "This method accepts:\n"
+        "-- one radius and a list of edges\n"
+        "-- two radii and a list of edges");
+    return NULL;
+}
+
+PyObject* TopoShapePy::makeChamfer(PyObject *args)
+{
+    // use one radius for all edges
+    double radius;
+    PyObject *obj;
+    if (PyArg_ParseTuple(args, "dO!", &radius, &(PyList_Type), &obj)) {
+        try {
+            const TopoDS_Shape& shape = this->getTopoShapePtr()->_Shape;
+            BRepFilletAPI_MakeChamfer mkChamfer(shape);
+            TopTools_IndexedMapOfShape mapOfEdges;
+            TopTools_IndexedDataMapOfShapeListOfShape mapEdgeFace;
+            TopExp::MapShapesAndAncestors(shape, TopAbs_EDGE, TopAbs_FACE, mapEdgeFace);
+            TopExp::MapShapes(shape, TopAbs_EDGE, mapOfEdges);
+            Py::List list(obj);
+            for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+                if (PyObject_TypeCheck((*it).ptr(), &(Part::TopoShapePy::Type))) {
+                    const TopoDS_Shape& edge = static_cast<TopoShapePy*>((*it).ptr())->getTopoShapePtr()->_Shape;
+                    if (edge.ShapeType() == TopAbs_EDGE) {
+                        //Add edge to fillet algorithm
+                        const TopoDS_Face& face = TopoDS::Face(mapEdgeFace.FindFromKey(edge).First());
+                        mkChamfer.Add(radius, TopoDS::Edge(edge), face);
+                    }
+                }
+            }
+            return new TopoShapePy(new TopoShape(mkChamfer.Shape()));
+        }
+        catch (Standard_Failure) {
+            Handle_Standard_Failure e = Standard_Failure::Caught();
+            PyErr_SetString(PyExc_Exception, e->GetMessageString());
+            return NULL;
+        }
+    }
+
+    // use two radii for all edges
+    PyErr_Clear();
+    double radius1, radius2;
+    if (PyArg_ParseTuple(args, "ddO!", &radius1, &radius2, &(PyList_Type), &obj)) {
+        try {
+            const TopoDS_Shape& shape = this->getTopoShapePtr()->_Shape;
+            BRepFilletAPI_MakeChamfer mkChamfer(shape);
+            TopTools_IndexedMapOfShape mapOfEdges;
+            TopTools_IndexedDataMapOfShapeListOfShape mapEdgeFace;
+            TopExp::MapShapesAndAncestors(shape, TopAbs_EDGE, TopAbs_FACE, mapEdgeFace);
+            TopExp::MapShapes(shape, TopAbs_EDGE, mapOfEdges);
+            Py::List list(obj);
+            for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
+                if (PyObject_TypeCheck((*it).ptr(), &(Part::TopoShapePy::Type))) {
+                    const TopoDS_Shape& edge = static_cast<TopoShapePy*>((*it).ptr())->getTopoShapePtr()->_Shape;
+                    if (edge.ShapeType() == TopAbs_EDGE) {
+                        //Add edge to fillet algorithm
+                        const TopoDS_Face& face = TopoDS::Face(mapEdgeFace.FindFromKey(edge).First());
+                        mkChamfer.Add(radius1, radius2, TopoDS::Edge(edge), face);
+                    }
+                }
+            }
+            return new TopoShapePy(new TopoShape(mkChamfer.Shape()));
         }
         catch (Standard_Failure) {
             Handle_Standard_Failure e = Standard_Failure::Caught();
