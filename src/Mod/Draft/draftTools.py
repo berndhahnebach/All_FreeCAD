@@ -226,10 +226,13 @@ def snapPoint(target,point,cursor,ctrl=False):
                                                 if pt:
                                                         for p in pt:
                                                                 snapArray.append([p,3,p])
-                                elif ("Vertex" in comp) or (comp == ''):
-                                        # workaround for the new view provider
+                                elif ("Vertex" in comp):
                                         p = Vector(snapped['x'],snapped['y'],snapped['z'])
                                         snapArray.append([p,0,p])
+                                elif (comp == ''):
+                                        # workaround for the new view provider
+                                        p = Vector(snapped['x'],snapped['y'],snapped['z'])
+                                        snapArray.append([p,2,p])
                                 else:
                                         snapArray = [getPassivePoint(snapped)]
                         elif Draft.getType(obj) == "Dimension":
