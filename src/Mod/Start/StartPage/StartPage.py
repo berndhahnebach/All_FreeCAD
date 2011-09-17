@@ -49,7 +49,13 @@ text38 = translate("StartPage","http://sourceforge.net/apps/mediawiki/free-cad/i
 text39 = translate("StartPage","Tutorials")
 text40 = translate("StartPage","Python resources")
 text41 = translate("StartPage","File not found")
-text42 = translate("StartPage","follow <a href=http://twitter.com/FreeCADNews>@FreeCADNews</a>")
+text42 = translate("StartPage","from <a href=http://twitter.com/FreeCADNews>@FreeCADNews</a>")
+text43 = translate("StartPage","The FreeCAD-tutorial blog")
+text44 = translate("StartPage","from <a href=http://www.youtube.com/user/FreeCADNews?feature=mhee>FreeCADNews channel</a>")
+text45 = translate("StartPage","This is the official user manual of FreeCAD, built, maintained and translated by the FreeCAD community.")
+text46 = translate("StartPage","The tutorials section on the FreeCAD website")
+text47 = translate("StartPage","The section of the FreeCAd website dedicate dto python scripting, with examples, explanations, and API commands.")
+text48 = translate("StartPage","A blog dedicated to teaching FreeCAD, maintained by members of the FreeCAD community")
 
 # here is the html page skeleton
 
@@ -128,13 +134,16 @@ page = """
         ddiv.innerHTML = "Received";
         var html = ['<ul>'];
         for (var i = 0; i < Math.min(5,data.length); i++) {
-          html.push('<li>');
-		  html.push(data[i].text);
-		  html.push('</li>');
+          tf = placeLinks(data[i].text);
+          html.push('<li>',tf,'</li>');
         }
         html.push('</ul>');
         ddiv.innerHTML = html.join('');
-      } 
+      }
+      function placeLinks(text) {
+        result=text.replace(/(https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/g,'<a href="$1">$1</a>');
+        return result;
+      }
     </script>
     <style type="text/css">
       body {
@@ -187,6 +196,10 @@ page = """
       .options {
         clear: both;
       }
+      .from {
+        font-size: 0.7em;
+        font-weight: normal;
+      }
     </style>
   </head>
 
@@ -207,13 +220,12 @@ page = """
       </div>
 
       <div class="block">
-        <h2>""" + text04 + """</h2>
+        <h2>""" + text04 + """ <span class="from">""" + text44 + """</span></h2>
         <div id="youtube">youtube videos</div>
       </div>
 
       <div class="block">
-        <h2>""" + text05 + """</h2>
-        <small>""" + text42 + """</small>
+        <h2>""" + text05 + """ <span class="from">""" + text42 + """</span></h2>
         <div id="news">news feed</div>
       </div>
 
@@ -281,17 +293,21 @@ def getLinks():
                  onMouseout="show('')"
                  href="http://free-cad.sf.net/">""" + text08 + """</a></li>
           <li><img src="web.png">&nbsp;
-              <a onMouseover="show('<p>""" + text37 + """</p>')" 
+              <a onMouseover="show('<p>""" + text45 + """</p>')" 
                  onMouseout="show('')"
                  href=""" + text38 + """>""" + text37 + """</a></li>
           <li><img src="web.png">&nbsp;
-              <a onMouseover="show('<p>""" + text39 + """</p>')" 
+              <a onMouseover="show('<p>""" + text46 + """</p>')" 
                  onMouseout="show('')"
                  href="http://sourceforge.net/apps/mediawiki/free-cad/index.php?title=Tutorials">""" + text39 + """</a></li>
           <li><img src="web.png">&nbsp;
-              <a onMouseover="show('<p>""" + text40 + """</p>')" 
+              <a onMouseover="show('<p>""" + text47 + """</p>')" 
                  onMouseout="show('')"
                  href="http://sourceforge.net/apps/mediawiki/free-cad/index.php?title=Power_users_hub">""" + text40 + """</a></li>
+          <li><img src="web.png">&nbsp;
+              <a onMouseover="show('<p>""" + text48 + """</p>')" 
+                 onMouseout="show('')"
+                 href="http://freecad-tutorial.blogspot.com/">""" + text43 + """</a></li>
         </ul>"""
 
 def getWorkbenches():
