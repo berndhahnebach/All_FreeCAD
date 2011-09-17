@@ -451,7 +451,7 @@ def makeBSpline(pointslist,closed=False,placement=None,face=True,support=None):
                 for v in pointslist.Vertexes:
                         nlist.append(v.Point)
                 pointslist = nlist
-        if placement: typecheck([(placement,FreeCAD.Placement)], "makeRectangle")
+        if placement: typecheck([(placement,FreeCAD.Placement)], "makeBSpline")
         if len(pointslist) == 2: fname = "Line"
         else: fname = "BSpline"
         obj = FreeCAD.ActiveDocument.addObject("Part::Part2DObjectPython",fname)

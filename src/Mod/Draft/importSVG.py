@@ -389,6 +389,8 @@ class svgHandler(xml.sax.ContentHandler):
 							pathdata.append(d[0])
 							pathdata.append(d[1:])
 
+                        # print "debug: pathdata:",pathdata
+
 			for d in pathdata:
 				if (d == "M"):
 					command = "move"
@@ -515,7 +517,6 @@ class svgHandler(xml.sax.ContentHandler):
 					lastvec = currentvec
 					path.append(seg)
 					point = []
-					command = None
 				elif (command == "close"):
 					if not fcvec.equals(lastvec,firstvec):
 						seg = Part.Line(lastvec,firstvec).toShape()
@@ -533,10 +534,26 @@ class svgHandler(xml.sax.ContentHandler):
 				elif (len(point)==6) and (command=="curve"):
 					if relative:
 						currentvec = lastvec.add(Vector(point[4],-point[5],0))
+                                                pole1 = lastvec.add(Vector(point[0],-point[1],0))
+                                                pole2 = lastvec.add(Vector(point[2],-point[3],0))
 					else:
 						currentvec = Vector(point[4],-point[5],0)
+                                                pole1 = Vector(point[0],point[1],0)
+                                                pole2 = Vector(point[2],point[3],0)
 					if not fcvec.equals(currentvec,lastvec):
-						seg = Part.Line(lastvec,currentvec).toShape()
+                                                mainv = currentvec.sub(lastvec)
+                                                pole1v = lastvec.add(pole1)
+                                                pole2v = currentvec.add(pole2)
+                                                print "curve data:",mainv.normalize(),pole1v.normalize(),pole2v.normalize()
+                                                if (round(mainv.getAngle(pole1v),4) in [0,round(math.pi,4)]) \
+                                                            and (round(mainv.getAngle(pole2v),4) in [0,round(math.pi,4)]):
+                                                        print "straight segment"
+                                                        seg = Part.Line(lastvec,currentvec).toShape()
+                                                else:
+                                                        print "bezier segment"
+                                                        b = Part.BezierCurve()
+                                                        b.setPoles([lastvec,pole1,pole2,currentvec])
+                                                        seg = b.toShape()
 						print "connect ",lastvec,currentvec
 						lastvec = currentvec
 						path.append(seg)
