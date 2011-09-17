@@ -198,6 +198,14 @@ void SoBrepFaceSet::GLRender(SoGLRenderAction *action)
         pindices, numparts, normals, nindices, &mb, mindices, &tb, tindices, nbind, mbind, doTextures?1:0);
     // Disable caching for this node
     SoGLCacheContextElement::shouldAutoCache(state, SoGLCacheContextElement::DONT_AUTO_CACHE);
+
+    // Workaround for #0000433
+#if !defined(FC_OS_WIN32)
+    if (this->highlightIndex.getValue() >= 0)
+        renderHighlight(action);
+    if (this->selectionIndex.getNum() > 0)
+        renderSelection(action);
+#endif
 }
 
 void SoBrepFaceSet::GLRenderBelowPath(SoGLRenderAction * action)
@@ -618,6 +626,14 @@ void SoBrepEdgeSet::GLRender(SoGLRenderAction *action)
     if (this->highlightIndex.getValue() >= 0)
         renderHighlight(action);
     inherited::GLRender(action);
+
+    // Workaround for #0000433
+#if !defined(FC_OS_WIN32)
+    if (this->highlightIndex.getValue() >= 0)
+        renderHighlight(action);
+    if (this->selectionIndex.getNum() > 0)
+        renderSelection(action);
+#endif
 }
 
 void SoBrepEdgeSet::GLRenderBelowPath(SoGLRenderAction * action)
@@ -876,6 +892,14 @@ void SoBrepPointSet::GLRender(SoGLRenderAction *action)
     if (this->highlightIndex.getValue() >= 0)
         renderHighlight(action);
     inherited::GLRender(action);
+
+    // Workaround for #0000433
+#if !defined(FC_OS_WIN32)
+    if (this->highlightIndex.getValue() >= 0)
+        renderHighlight(action);
+    if (this->selectionIndex.getNum() > 0)
+        renderSelection(action);
+#endif
 }
 
 void SoBrepPointSet::GLRenderBelowPath(SoGLRenderAction * action)
