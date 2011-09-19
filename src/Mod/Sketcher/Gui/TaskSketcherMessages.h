@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2009 Jürgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) 2011 Jürgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,51 +21,47 @@
  ***************************************************************************/
 
 
-#ifndef GUI_TASKVIEW_TaskSketcherGerneral_H
-#define GUI_TASKVIEW_TaskSketcherGerneral_H
+#ifndef GUI_TASKVIEW_TaskSketcherMessages_H
+#define GUI_TASKVIEW_TaskSketcherMessages_H
 
 #include <Gui/TaskView/TaskView.h>
 #include <Gui/Selection.h>
+#include <boost/signals.hpp>
 
-class Ui_TaskSketcherGeneral;
+class Ui_TaskSketcherMessages;
+typedef boost::signals::connection Connection;
 
 namespace App {
 class Property;
 }
 
-namespace SketcherGui {
+namespace SketcherGui { 
 
 class ViewProviderSketch;
 
-class TaskSketcherGeneral : public Gui::TaskView::TaskBox, public Gui::SelectionSingleton::ObserverType
+class TaskSketcherMessages : public Gui::TaskView::TaskBox
 {
     Q_OBJECT
 
 public:
-    TaskSketcherGeneral(ViewProviderSketch *sketchView);
-    ~TaskSketcherGeneral();
-    /// Observer message from the Selection
-    void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,
-                  Gui::SelectionSingleton::MessageType Reason);
+    TaskSketcherMessages(ViewProviderSketch *sketchView);
+    ~TaskSketcherMessages();
 
-Q_SIGNALS:
-    void setGridSnap(int Type);
+    void slotSetUp(int type, int dofs, const std::string &msg);
+    void slotSolved(int type, float time);
 
-public Q_SLOTS:
-    void setGridSize(const QString& val);
-    void toggleGridSnap(int state);
-    void toggleAutoconstraints(int state);
-
+private Q_SLOTS:
+    
 protected:
-    void changeEvent(QEvent *e);
-
     ViewProviderSketch *sketchView;
+    Connection connectionSetUp;
+    Connection connectionSolved;
 
 private:
     QWidget* proxy;
-    Ui_TaskSketcherGeneral* ui;
+    Ui_TaskSketcherMessages* ui;
 };
 
 } //namespace SketcherGui
 
-#endif // GUI_TASKVIEW_TaskSketcherGerneral_H
+#endif // GUI_TASKVIEW_TaskSketcherMessages_H

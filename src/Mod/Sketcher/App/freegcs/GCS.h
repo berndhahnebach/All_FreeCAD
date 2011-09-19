@@ -103,8 +103,8 @@ namespace GCS
         int addConstraintPointOnArc(Point &p, Arc &a, int tagId=0);
         int addConstraintTangent(Line &l, Circle &c, int tagId=0);
         int addConstraintTangent(Line &l, Arc &a, int tagId=0);
-        int addConstraintLine2Arc(Point &p1, Point &p2, Arc &a, int tagId=0);
-        int addConstraintArc2Line(Arc &a, Point &p1, Point &p2, int tagId=0);
+        int addConstraintTangentLine2Arc(Point &p1, Point &p2, Arc &a, int tagId=0);
+        int addConstraintTangentArc2Line(Arc &a, Point &p1, Point &p2, int tagId=0);
         int addConstraintCircleRadius(Circle &c, double *radius, int tagId=0);
         int addConstraintArcRadius(Arc &a, double *radius, int tagId=0);
         int addConstraintEqualLength(Line &l1, Line &l2, double *length, int tagId=0);

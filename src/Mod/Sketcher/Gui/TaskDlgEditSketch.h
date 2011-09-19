@@ -29,6 +29,7 @@
 #include "ViewProviderSketch.h"
 #include "TaskSketcherConstrains.h"
 #include "TaskSketcherGeneral.h"
+#include "TaskSketcherMessages.h"
 
 namespace SketcherGui {
 
@@ -67,11 +68,11 @@ protected:
 
     TaskSketcherConstrains  *Constraints;
     TaskSketcherGeneral     *General;
-
+    TaskSketcherMessages    *Messages;
 };
 
 
 
-} //namespace RobotGui
+} //namespace SketcherGui
 
 #endif // SKETCHERGUI_TaskDlgEditSketch_H

@@ -953,12 +953,12 @@ int Sketch::addTangentConstraint(int geoId1, PointPos pos1, int geoId2, PointPos
             if (pos2 == start) {
                 if (pos1 == start) {
                     int tag = ++ConstraintsCounter;
-                    GCSsys.addConstraintLine2Arc(l1.p2, l1.p1, a2, tag);
+                    GCSsys.addConstraintTangentLine2Arc(l1.p2, l1.p1, a2, tag);
                     return ConstraintsCounter;
                 }
                 else if (pos1 == end) {
                     int tag = ++ConstraintsCounter;
-                    GCSsys.addConstraintLine2Arc(l1.p1, l1.p2, a2, tag);
+                    GCSsys.addConstraintTangentLine2Arc(l1.p1, l1.p2, a2, tag);
                     return ConstraintsCounter;
                 }
                 else if (pos1 == mid) {
@@ -971,12 +971,12 @@ int Sketch::addTangentConstraint(int geoId1, PointPos pos1, int geoId2, PointPos
             else if (pos2 == end) {
                 if (pos1 == start) {
                     int tag = ++ConstraintsCounter;
-                    GCSsys.addConstraintArc2Line(a2, l1.p1, l1.p2, tag);
+                    GCSsys.addConstraintTangentArc2Line(a2, l1.p1, l1.p2, tag);
                     return ConstraintsCounter;
                 }
                 else if (pos1 == end) {
                     int tag = ++ConstraintsCounter;
-                    GCSsys.addConstraintArc2Line(a2, l1.p2, l1.p1, tag);
+                    GCSsys.addConstraintTangentArc2Line(a2, l1.p2, l1.p1, tag);
                     return ConstraintsCounter;
                 }
                 else if (pos1 == mid) {

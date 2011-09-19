@@ -2391,26 +2391,35 @@ void ViewProviderSketch::updateData(const App::Property *prop)
         edit->FullyConstrained = false;
         int dofs = edit->ActSketch.setUpSketch(getSketchObject()->Geometry.getValues(),
                                                getSketchObject()->Constraints.getValues());
-        if (dofs < 0) { // over-constrained sketch
-            std::string msg="This sketch is overconstrained!\n";
+        std::string msg;
+        if (getSketchObject()->Geometry.getSize() == 0) {
+            signalSetUp(-1, 0, msg);
+            signalSolved(-1, 0);
+        }
+        else if (dofs < 0) { // over-constrained sketch
             SketchObject::appendConflictMsg(edit->ActSketch.getConflicting(), msg);
-            Base::Console().Warning(msg.c_str());
+            Base::Console().Warning("Over-constrained sketch\n%s",msg.c_str());
+            signalSetUp(3, 0, msg);
+            signalSolved(-1,0);
         }
         else if (edit->ActSketch.hasConflicts()) { // conflicting constraints
-            std::string msg="This sketch contains conflicting constraints!\n";
             SketchObject::appendConflictMsg(edit->ActSketch.getConflicting(), msg);
-            Base::Console().Warning(msg.c_str());
+            Base::Console().Warning("Sketch with conflicting constraints\n%s",msg.c_str());
+            signalSetUp(2, dofs, msg);
+            signalSolved(-1,0);
         }
         else if (edit->ActSketch.solve() == 0) { // solving the sketch
-            signalSolved(0,edit->ActSketch.SolveTime);
             if (dofs == 0) {
                 // color the sketch as fully constrained
                 edit->FullyConstrained = true;
-                Base::Console().Message("This sketch is fully constrained\n");
+                //Base::Console().Message("Fully constrained sketch\n");
+                signalSetUp(0, 0, msg);
             }
             else {
-                Base::Console().Message("This sketch is underconstrained with %d degrees of freedom\n", dofs);
+                //Base::Console().Message("Under-constrained sketch with %d degrees of freedom\n", dofs);
+                signalSetUp(1, dofs, msg);
             }
+            signalSolved(0,edit->ActSketch.SolveTime);
         }
         else {
             signalSolved(1,edit->ActSketch.SolveTime);
@@ -2469,24 +2478,6 @@ bool ViewProviderSketch::setEdit(int ModNum)
     assert(!edit);
     edit = new EditData();
 
-    // set up the sketch and diagnose possible conflicts
-    int dofs = edit->ActSketch.setUpSketch(getSketchObject()->Geometry.getValues(),
-                                           getSketchObject()->Constraints.getValues());
-    if (dofs < 0) { // over-constrained sketch
-        std::string msg="The sketch is overconstrained!\n";
-        SketchObject::appendConflictMsg(edit->ActSketch.getConflicting(), msg);
-        Base::Console().Warning(msg.c_str());
-    }
-    else if (edit->ActSketch.hasConflicts()) { // conflicting constraints
-        std::string msg="This sketch contains conflicting constraints!\n";
-        SketchObject::appendConflictMsg(edit->ActSketch.getConflicting(), msg);
-        Base::Console().Warning(msg.c_str());
-    }
-    else if (dofs==0) {
-        // color the sketch as fully constrained
-        edit->FullyConstrained = true;
-    }
-
     createEditInventorNodes();
     this->hide(); // avoid that the wires interfere with the edit lines
 
@@ -2526,8 +2517,6 @@ bool ViewProviderSketch::setEdit(int ModNum)
     highlight = hGrp->GetUnsigned("SelectionColor", highlight);
     SelectColor.setPackedValue((uint32_t)highlight, transparency);
 
-    draw();
-
     // start the edit dialog
     if (sketchDlg)
         Gui::Control().showDialog(sketchDlg);
@@ -2538,6 +2527,45 @@ bool ViewProviderSketch::setEdit(int ModNum)
     if (mdi) {
         mdi->getViewer()->setEditing(TRUE);
     }
+
+    // set up the sketch and diagnose possible conflicts
+    int dofs = edit->ActSketch.setUpSketch(getSketchObject()->Geometry.getValues(),
+                                           getSketchObject()->Constraints.getValues());
+    std::string msg;
+    if (getSketchObject()->Geometry.getSize() == 0) {
+        signalSetUp(-1, 0, msg);
+        signalSolved(-1, 0);
+    }
+    else if (dofs < 0) { // over-constrained sketch
+        SketchObject::appendConflictMsg(edit->ActSketch.getConflicting(), msg);
+        Base::Console().Warning("Over-constrained sketch\n%s",msg.c_str());
+        signalSetUp(3, 0, msg);
+        signalSolved(-1, 0);
+    }
+    else if (edit->ActSketch.hasConflicts()) { // conflicting constraints
+        SketchObject::appendConflictMsg(edit->ActSketch.getConflicting(), msg);
+        Base::Console().Warning("Sketch with conflicting constraints\n%s",msg.c_str());
+        signalSetUp(2, dofs, msg);
+        signalSolved(-1, 0);
+    }
+    else if (edit->ActSketch.solve() == 0) { // solving the sketch
+        if (dofs == 0) {
+            // color the sketch as fully constrained
+            edit->FullyConstrained = true;
+            //Base::Console().Message("Fully constrained sketch\n");
+            signalSetUp(0, 0, msg);
+        }
+        else {
+            //Base::Console().Message("Under-constrained sketch with %d degrees of freedom\n", dofs);
+            signalSetUp(1, dofs, msg);
+        }
+        signalSolved(0, edit->ActSketch.SolveTime);
+    }
+    else {
+        signalSolved(1, edit->ActSketch.SolveTime);
+    }
+
+    draw();
 
     return true;
 }
