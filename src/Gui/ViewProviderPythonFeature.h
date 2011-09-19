@@ -126,10 +126,10 @@ public:
         return ViewProviderT::useNewSelectionModel();
     }
     virtual std::string getElement(const SoPickedPoint *pp) const {
-        return imp->getElement(pp);
+        return ViewProviderT::getElement(pp);
     }
     virtual std::vector<Base::Vector3d> getSelectionShape(const char* Element) const {
-        return imp->getSelectionShape(Element);
+        return ViewProviderT::getSelectionShape(Element);
     };
     //@}
 
