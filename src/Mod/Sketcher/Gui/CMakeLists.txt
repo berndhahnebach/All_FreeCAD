@@ -30,6 +30,7 @@ set(SketcherGui_MOC_HDRS
     TaskSketcherConstrains.h
     TaskSketcherCreateCommands.h
     TaskSketcherGeneral.h
+    TaskSketcherMessages.h
     TaskDlgEditSketch.h
     SketchOrientationDialog.h
 )
@@ -41,6 +42,7 @@ qt4_add_resources(SketcherGui_SRCS Resources/Sketcher.qrc)
 set(SketcherGui_UIC_SRCS
     TaskSketcherConstrains.ui
     TaskSketcherGeneral.ui
+    TaskSketcherMessages.ui
     InsertDatum.ui
     SketchOrientationDialog.ui
 )
@@ -66,6 +68,9 @@ SET(SketcherGui_SRCS
     TaskSketcherGeneral.ui
     TaskSketcherGeneral.cpp
     TaskSketcherGeneral.h
+    TaskSketcherMessages.ui
+    TaskSketcherMessages.cpp
+    TaskSketcherMessages.h
     ViewProviderSketch.cpp
     ViewProviderSketch.h
     DrawSketchHandler.cpp

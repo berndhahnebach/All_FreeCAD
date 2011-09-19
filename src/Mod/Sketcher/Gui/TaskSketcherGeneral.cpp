@@ -33,9 +33,7 @@
 #include <Gui/BitmapFactory.h>
 #include <Gui/ViewProvider.h>
 #include <Gui/WaitCursor.h>
-#include <Base/Console.h>
 #include <Base/UnitsApi.h>
-#include <boost/bind.hpp>
 
 #include "ViewProviderSketch.h"
 
@@ -54,9 +52,7 @@ TaskSketcherGeneral::TaskSketcherGeneral(ViewProviderSketch *sketchView)
 
     this->groupLayout()->addWidget(proxy);
 
-    connectionSolved = sketchView->signalSolved.connect(boost::bind(&SketcherGui::TaskSketcherGeneral::slotSolved, this,_1,_2));
-
-     // connecting the needed signals
+    // connecting the needed signals
     QObject::connect(
         ui->checkBoxGridSnap, SIGNAL(stateChanged(int)),
         this              , SLOT  (toggleGridSnap(int))
@@ -77,7 +73,6 @@ TaskSketcherGeneral::TaskSketcherGeneral(ViewProviderSketch *sketchView)
 
 TaskSketcherGeneral::~TaskSketcherGeneral()
 {
-    connectionSolved.disconnect();
     delete ui;
     Gui::Selection().Detach(this);
 }
@@ -99,22 +94,6 @@ void TaskSketcherGeneral::toggleAutoconstraints(int state)
     sketchView->Autoconstraints.setValue(state == Qt::Checked);
 }
 
-void TaskSketcherGeneral::slotSolved(int type,float time)
-{
-    QPalette palette;
-    switch(type){
-        case 0: 
-            ui->labelSolverStatus->setText(QString::fromLatin1("Solved (%1)").arg(time));
-            palette.setBrush(QPalette::Base,QColor(200,250,200));
-            break;
-        case 1: 
-            ui->labelSolverStatus->setText(QString::fromLatin1("Unsolved (%1)").arg(time));
-            palette.setBrush(QPalette::Base,QColor(200,250,200));
-            break;
-    }
-    ui->labelSolverStatus->setPalette(palette);
-}
-
 void TaskSketcherGeneral::changeEvent(QEvent *e)
 {
     TaskBox::changeEvent(e);
@@ -134,8 +113,5 @@ void TaskSketcherGeneral::OnChange(Gui::SelectionSingleton::SubjectType &rCaller
     //}
 }
 /// @endcond DOXERR
-
-
-
 
 #include "moc_TaskSketcherGeneral.cpp"

@@ -347,14 +347,14 @@ int System::addConstraintTangent(Line &l, Arc &a, int tagId)
     return addConstraintP2LDistance(a.center, l, a.rad, tagId);
 }
 
-int System::addConstraintLine2Arc(Point &p1, Point &p2, Arc &a, int tagId)
+int System::addConstraintTangentLine2Arc(Point &p1, Point &p2, Arc &a, int tagId)
 {
     addConstraintP2PCoincident(p2, a.start, tagId);
     double incr_angle = *(a.startAngle) < *(a.endAngle) ? M_PI/2 : -M_PI/2;
     return addConstraintP2PAngle(p1, p2, a.startAngle, incr_angle, tagId);
 }
 
-int System::addConstraintArc2Line(Arc &a, Point &p1, Point &p2, int tagId)
+int System::addConstraintTangentArc2Line(Arc &a, Point &p1, Point &p2, int tagId)
 {
     addConstraintP2PCoincident(p1, a.end, tagId);
     double incr_angle = *(a.startAngle) < *(a.endAngle) ? M_PI/2 : -M_PI/2;
@@ -809,6 +809,9 @@ int System::diagnose(VEC_pD &params, VEC_I &conflicting)
             tags_set.erase(0); // exclude constraints tagged with zero
             conflicting.resize(tags_set.size());
             std::copy(tags_set.begin(), tags_set.end(), conflicting.begin());
+
+            if (params_num == rank) // over-constrained
+                return params_num - constr_num;
         }
 
         return params_num - rank;

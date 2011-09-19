@@ -67,7 +67,7 @@ class DrawSketchHandler;
   * It uses the class DrawSketchHandler to facilitade the creation
   * of new geometry while editing.
   */
-class SketcherGuiExport ViewProviderSketch :  public PartGui::ViewProvider2DObject, public Gui::SelectionObserver
+class SketcherGuiExport ViewProviderSketch : public PartGui::ViewProvider2DObject, public Gui::SelectionObserver
 {
     PROPERTY_HEADER(PartGui::ViewProviderSketch);
 
@@ -172,8 +172,10 @@ public:
 
     /// signals if the constraints list has changed
     boost::signal<void ()> signalConstraintsChanged;
+    /// signals if the sketch has been set up
+    boost::signal<void (int type, int dofs, std::string &msg)> signalSetUp;
     /// signals if the sketch has been solved
-    boost::signal<void (int type,float time)> signalSolved;
+    boost::signal<void (int type, float time)> signalSolved;
 
     void setGridSnap(bool status);
     void setGridSize(float size);

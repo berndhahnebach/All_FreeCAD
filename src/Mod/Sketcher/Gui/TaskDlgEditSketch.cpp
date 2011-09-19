@@ -44,7 +44,9 @@ TaskDlgEditSketch::TaskDlgEditSketch(ViewProviderSketch *sketchView)
     assert(sketchView);
     Constraints  = new TaskSketcherConstrains(sketchView);
     General  = new TaskSketcherGeneral(sketchView);
+    Messages  = new TaskSketcherMessages(sketchView);
     
+    Content.push_back(Messages);
     Content.push_back(General);
     Content.push_back(Constraints);
 }

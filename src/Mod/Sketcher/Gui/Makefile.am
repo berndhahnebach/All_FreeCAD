@@ -6,17 +6,20 @@ BUILT_SOURCES=\
 		moc_TaskSketcherConstrains.cpp \
 		moc_TaskSketcherCreateCommands.cpp \
 		moc_TaskSketcherGeneral.cpp \
+		moc_TaskSketcherMessages.cpp \
 		moc_TaskDlgEditSketch.cpp \
 		ui_InsertDatum.h \
 		ui_SketchOrientationDialog.h \
 		ui_TaskSketcherConstrains.h \
-		ui_TaskSketcherGeneral.h
+		ui_TaskSketcherGeneral.h \
+		ui_TaskSketcherMessages.h
 
 libSketcherGui_la_UI=\
 		InsertDatum.ui \
 		SketchOrientationDialog.ui \
 		TaskSketcherConstrains.ui \
-		TaskSketcherGeneral.ui
+		TaskSketcherGeneral.ui \
+		TaskSketcherMessages.ui
 
 libSketcherGui_la_SOURCES=\
 		AppSketcherGuiPy.cpp \
@@ -32,6 +35,8 @@ libSketcherGui_la_SOURCES=\
 		TaskSketcherCreateCommands.h \
 		TaskSketcherGeneral.cpp \
 		TaskSketcherGeneral.h \
+		TaskSketcherMessages.cpp \
+		TaskSketcherMessages.h \
 		ViewProviderSketch.cpp \
 		ViewProviderSketch.h \
 		DrawSketchHandler.cpp \
