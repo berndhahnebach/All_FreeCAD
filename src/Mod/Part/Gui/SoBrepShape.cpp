@@ -217,7 +217,6 @@ void SoBrepFaceSet::renderHighlight(SoGLRenderAction *action)
 {
     SoState * state = action->getState();
     state->push();
-    SoColorPacker colorpacker;
 
     SoLazyElement::setEmissive(state, &this->highlightColor);
     SoOverrideElement::setEmissiveColorOverride(state, this, TRUE);
@@ -292,7 +291,6 @@ void SoBrepFaceSet::renderSelection(SoGLRenderAction *action)
 
     SoState * state = action->getState();
     state->push();
-    SoColorPacker colorpacker;
 
     SoLazyElement::setEmissive(state, &this->selectionColor);
     SoOverrideElement::setEmissiveColorOverride(state, this, TRUE);
@@ -674,6 +672,7 @@ void SoBrepEdgeSet::renderHighlight(SoGLRenderAction *action)
     SoOverrideElement::setEmissiveColorOverride(state, this, TRUE);
     SoLazyElement::setDiffuse(state, this,1, &this->highlightColor,&this->colorpacker);
     SoOverrideElement::setDiffuseColorOverride(state, this, TRUE);
+    SoLazyElement::setLightModel(state, SoLazyElement::BASE_COLOR);
 
     const SoCoordinateElement * coords;
     const SbVec3f * normals;
@@ -710,6 +709,7 @@ void SoBrepEdgeSet::renderSelection(SoGLRenderAction *action)
     SoOverrideElement::setEmissiveColorOverride(state, this, TRUE);
     SoLazyElement::setDiffuse(state, this,1, &this->selectionColor,&this->colorpacker);
     SoOverrideElement::setDiffuseColorOverride(state, this, TRUE);
+    SoLazyElement::setLightModel(state, SoLazyElement::BASE_COLOR);
 
     const SoCoordinateElement * coords;
     const SbVec3f * normals;
