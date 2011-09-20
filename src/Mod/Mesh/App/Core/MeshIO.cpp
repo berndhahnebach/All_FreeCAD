@@ -359,12 +359,15 @@ bool MeshInput::LoadSTL (std::istream &rstrIn)
     std::streambuf* buf = rstrIn.rdbuf();
     if (!buf) return false;
     buf->pubseekoff(80, std::ios::beg, std::ios::in);
-    uint32_t ulCt;
+    uint32_t ulCt, ulBytes=50;
     rstrIn.read((char*)&ulCt, sizeof(ulCt));
+    // if we have a binary STL with a single triangle we can only read-in 50 bytes
+    if (ulCt > 1)
+        ulBytes = 100;
     // Either it's really an invalid STL file or it's just empty. In this case the number of facets must be 0.
-    if (rstrIn.read(szBuf, 100) == false)
+    if (rstrIn.read(szBuf, ulBytes) == false)
         return (ulCt==0);
-    szBuf[100] = 0;
+    szBuf[ulBytes] = 0;
     upper(szBuf);
 
     try {
