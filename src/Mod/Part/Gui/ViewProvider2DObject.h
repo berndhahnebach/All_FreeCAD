@@ -42,7 +42,7 @@ namespace Gui {
 namespace PartGui {
 
 
-	class AppPartGuiExport ViewProvider2DObject: public PartGui::ViewProviderPart
+class AppPartGuiExport ViewProvider2DObject: public PartGui::ViewProviderPart
 {
   PROPERTY_HEADER(PartGui::ViewProvider2DObject);
 
@@ -65,7 +65,7 @@ public:
   virtual std::vector<std::string> getDisplayModes(void) const;
   virtual const char* getDefaultDisplayMode() const;
 
-  /// creats the grid
+  /// creates the grid
   SoSeparator* createGrid(void); 
 
 protected:
