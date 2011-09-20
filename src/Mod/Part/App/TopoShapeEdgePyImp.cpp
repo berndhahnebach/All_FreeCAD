@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <BRep_Builder.hxx>
 # include <BRep_Tool.hxx>
 # include <BRepAdaptor_Curve.hxx>
 # include <BRepBuilderAPI_MakeEdge.hxx>
@@ -58,6 +59,7 @@
 
 #include "TopoShape.h"
 #include "TopoShapeFacePy.h"
+#include "TopoShapeVertexPy.h"
 #include "TopoShapeEdgePy.h"
 #include "TopoShapeEdgePy.cpp"
 
@@ -91,7 +93,7 @@ PyObject *TopoShapeEdgePy::PyMake(struct _typeobject *, PyObject *, PyObject *) 
 // constructor method
 int TopoShapeEdgePy::PyInit(PyObject* args, PyObject* /*kwd*/)
 {
-    PyObject *pcObj;
+    PyObject *pcObj, *pcObj2;
     double first=DBL_MAX, last=DBL_MAX;
     if (PyArg_ParseTuple(args, "O!|dd", &(Part::GeometryPy::Type), &pcObj, &first, &last)) {
         Geometry* geom = static_cast<GeometryPy*>(pcObj)->getGeometryPtr();
@@ -127,6 +129,26 @@ int TopoShapeEdgePy::PyInit(PyObject* args, PyObject* /*kwd*/)
         }
         else {
             PyErr_SetString(PyExc_TypeError, "Shape is not an edge");
+            return -1;
+        }
+    }
+
+    PyErr_Clear();
+    if (PyArg_ParseTuple(args, "O!O!", &(Part::TopoShapeVertexPy::Type), &pcObj,
+                                       &(Part::TopoShapeVertexPy::Type), &pcObj2)) {
+        TopoShape* shape1 = static_cast<TopoShapePy*>(pcObj)->getTopoShapePtr();
+        TopoShape* shape2 = static_cast<TopoShapePy*>(pcObj2)->getTopoShapePtr();
+        const TopoDS_Vertex& v1 = TopoDS::Vertex(shape1->_Shape);
+        const TopoDS_Vertex& v2 = TopoDS::Vertex(shape2->_Shape);
+
+        try {
+            BRepBuilderAPI_MakeEdge mkEdge(v1, v2);
+            getTopoShapePtr()->_Shape = mkEdge.Edge();
+            return 0;
+        }
+        catch (Standard_Failure) {
+            Handle_Standard_Failure e = Standard_Failure::Caught();
+            PyErr_SetString(PyExc_Exception, e->GetMessageString());
             return -1;
         }
     }
@@ -372,6 +394,17 @@ PyObject* TopoShapeEdgePy::derivative3At(PyObject *args)
         PyErr_SetString(PyExc_Exception, e->GetMessageString());
         return 0;
     }
+}
+
+PyObject* TopoShapeEdgePy::setTolerance(PyObject *args)
+{
+    double tol;
+    if (!PyArg_ParseTuple(args, "d", &tol))
+        return 0;
+    BRep_Builder aBuilder;
+    const TopoDS_Edge& e = TopoDS::Edge(getTopoShapePtr()->_Shape);
+    aBuilder.UpdateEdge(e, tol);
+    Py_Return;
 }
 
 // ====== Attributes ======================================================================

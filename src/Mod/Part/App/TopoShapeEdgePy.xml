@@ -54,7 +54,12 @@
 			  <UserDocu>Vector = centerOfCurvatureAt(float pos) - Get the center of curvature at the given parameter [0|Length] if defined</UserDocu>
 		  </Documentation>
 	  </Methode>
-	  <Attribute Name="Length" ReadOnly="true">
+		<Methode Name="setTolerance">
+			<Documentation>
+				<UserDocu>Set the tolerance for the edge.</UserDocu>
+			</Documentation>
+		</Methode>
+		<Attribute Name="Length" ReadOnly="true">
 		  <Documentation>
 			  <UserDocu>Returns the length of the edge</UserDocu>
 		  </Documentation>

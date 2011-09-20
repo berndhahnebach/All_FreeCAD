@@ -38,6 +38,11 @@
 		  </Documentation>
 		  <Parameter Name="Point" Type="Object"/>
 	  </Attribute>
+		<Methode Name="setTolerance">
+			<Documentation>
+				<UserDocu>Set the tolerance for the vertex.</UserDocu>
+			</Documentation>
+		</Methode>
 
-  </PythonExport>
+	</PythonExport>
 </GenerateModel>
