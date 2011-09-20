@@ -1525,8 +1525,7 @@ void ViewProviderSketch::draw(bool temp)
                 std::swap(startangle, endangle);
 
             double range = endangle-startangle;
-            double factor = range / (2 * M_PI);
-            int countSegments = int(50.0 * factor);
+            int countSegments = std::max(6, int(50.0 * range / (2 * M_PI)));
             double segment = range / countSegments;
 
             Base::Vector3d center = arc->getCenter();
@@ -1558,7 +1557,7 @@ void ViewProviderSketch::draw(bool temp)
                 std::swap(first, last);
 
             double range = last-first;
-            int countSegments = 50.0;
+            int countSegments = 50;
             double segment = range / countSegments;
 
             for (int i=0; i < countSegments; i++) {
@@ -2105,7 +2104,7 @@ Restart:
                     else
                         range = std::min(0.2*range, range + textBB[0]/(2*r));
 
-                    int countSegments = std::max(4,abs(int(25.0 * range / (2 * M_PI))));
+                    int countSegments = std::max(6, abs(int(50.0 * range / (2 * M_PI))));
                     double segment = range / (2*countSegments-2);
 
                     // set position and rotation of Datums Text
@@ -2861,16 +2860,31 @@ void ViewProviderSketch::delSelected(void)
         this->blockConnection(true);
         std::set<int>::const_reverse_iterator rit;
         for (rit = edit->SelConstraintSet.rbegin(); rit != edit->SelConstraintSet.rend(); rit++) {
-            Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.delConstraint(%i)"
-                                   ,getObject()->getNameInDocument(), *rit);
+            try {
+                Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.delConstraint(%i)"
+                                       ,getObject()->getNameInDocument(), *rit);
+            }
+            catch (const Base::Exception& e) {
+                Base::Console().Error("%s\n", e.what());
+            }
         }
         for (rit = edit->SelCurvSet.rbegin(); rit != edit->SelCurvSet.rend(); rit++) {
-            Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.delGeometry(%i)"
-                                   ,getObject()->getNameInDocument(), *rit);
+            try {
+                Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.delGeometry(%i)"
+                                       ,getObject()->getNameInDocument(), *rit);
+            }
+            catch (const Base::Exception& e) {
+                Base::Console().Error("%s\n", e.what());
+            }
         }
         for (rit = edit->SelPointSet.rbegin(); rit != edit->SelPointSet.rend(); rit++) {
-            Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.delConstraintOnPoint(%i)"
-                                   ,getObject()->getNameInDocument(), *rit);
+            try {
+                Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.delConstraintOnPoint(%i)"
+                                       ,getObject()->getNameInDocument(), *rit);
+            }
+            catch (const Base::Exception& e) {
+                Base::Console().Error("%s\n", e.what());
+            }
         }
 
         this->blockConnection(false);
