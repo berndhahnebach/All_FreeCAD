@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <BRep_Builder.hxx>
 # include <BRep_Tool.hxx>
 # include <BRepTools.hxx>
 # include <BRepBuilderAPI_MakeFace.hxx>
@@ -409,6 +410,17 @@ PyObject* TopoShapeFacePy::makeHalfSpace(PyObject *args)
         PyErr_SetString(PyExc_Exception, e->GetMessageString());
         return 0;
     }
+}
+
+PyObject* TopoShapeFacePy::setTolerance(PyObject *args)
+{
+    double tol;
+    if (!PyArg_ParseTuple(args, "d", &tol))
+        return 0;
+    BRep_Builder aBuilder;
+    const TopoDS_Face& f = TopoDS::Face(getTopoShapePtr()->_Shape);
+    aBuilder.UpdateFace(f, tol);
+    Py_Return;
 }
 
 Py::Object TopoShapeFacePy::getSurface() const

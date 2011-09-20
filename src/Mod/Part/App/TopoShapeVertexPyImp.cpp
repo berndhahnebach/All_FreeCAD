@@ -29,6 +29,7 @@
 # include <BRep_Tool.hxx>
 # include <TopoDS.hxx>
 # include <TopoDS_Vertex.hxx>
+# include <BRep_Builder.hxx>
 # include <BRepBuilderAPI_MakeVertex.hxx>
 #endif
 
@@ -116,6 +117,17 @@ int TopoShapeVertexPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     ptr->_Shape = s;
 
     return 0;
+}
+
+PyObject* TopoShapeVertexPy::setTolerance(PyObject *args)
+{
+    double tol;
+    if (!PyArg_ParseTuple(args, "d", &tol))
+        return 0;
+    BRep_Builder aBuilder;
+    const TopoDS_Vertex& v = TopoDS::Vertex(getTopoShapePtr()->_Shape);
+    aBuilder.UpdateVertex(v, tol);
+    Py_Return;
 }
 
 Py::Float TopoShapeVertexPy::getX(void) const
