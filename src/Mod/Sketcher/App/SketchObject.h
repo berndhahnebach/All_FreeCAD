@@ -69,7 +69,7 @@ public:
     /// add constraint
     int addConstraint(const Constraint *constraint);
     /// delete constraint
-    int delConstraint(int ConstrNbr);
+    int delConstraint(int ConstrId);
     int delConstraintOnPoint(int GeoId, PointPos PosId, bool onlyCoincident=true);
     int delConstraintOnPoint(int VertexId, bool onlyCoincident=true);
     /// add an external geometry reference
@@ -77,10 +77,13 @@ public:
     /// returns a list of projected external geoms
     std::vector<Part::Geometry *> getExternalGeometry(void);
     /// delete external
-    int delExternal(int ConstrNbr);
+    int delExternal(int ConstrId);
+
+    /// returns non zero if the sketch contains conflicting constraints 
+    int hasConflicts(void) const;
 
     /// set the datum of a Distance or Angle constraint and solve 
-    int setDatum(double Datum, int ConstrNbr);
+    int setDatum(int ConstrId, double Datum);
     /// move this point to a new location and solve
     int movePoint(int geoIndex1, PointPos Pos1, const Base::Vector3d& toPoint, bool relative=false);
     /// retrieves the coordinates of a point

@@ -84,19 +84,19 @@ App::DocumentObjectExecReturn *SketchObject::execute(void)
     Sketch sketch;
     int dofs = sketch.setUpSketch(Geometry.getValues(), Constraints.getValues());
     if (dofs < 0) { // over-constrained sketch
-        std::string msg="The sketch is overconstrained!\n";
+        std::string msg="Over-constrained sketch\n";
         appendConflictMsg(sketch.getConflicting(), msg);
         return new App::DocumentObjectExecReturn(msg.c_str(),this);
     }
     if (sketch.hasConflicts()) { // conflicting constraints
-        std::string msg="This sketch contains conflicting constraints!\n";
+        std::string msg="Sketch with conflicting constraints\n";
         appendConflictMsg(sketch.getConflicting(), msg);
         return new App::DocumentObjectExecReturn(msg.c_str(),this);
     }
     
     // solve the sketch
     if (sketch.solve() != 0)
-        return new App::DocumentObjectExecReturn("Solving the sketch failed!",this);
+        return new App::DocumentObjectExecReturn("Solving the sketch failed",this);
 
     std::vector<Part::Geometry *> geomlist = sketch.getGeometry();
     Geometry.setValues(geomlist);
@@ -108,13 +108,26 @@ App::DocumentObjectExecReturn *SketchObject::execute(void)
     return App::DocumentObject::StdReturn;
 }
 
-int SketchObject::setDatum(double Datum, int ConstrNbr)
+int SketchObject::hasConflicts(void) const
+{
+    // set up a sketch (including dofs counting and diagnosing of conflicts)
+    Sketch sketch;
+    int dofs = sketch.setUpSketch(Geometry.getValues(), Constraints.getValues());
+    if (dofs < 0) // over-constrained sketch
+        return -2;
+    if (sketch.hasConflicts()) // conflicting constraints
+        return -1;
+
+    return 0;
+}
+
+int SketchObject::setDatum(int ConstrId, double Datum)
 {
     // set the changed value for the constraint
     const std::vector<Constraint *> &vals = this->Constraints.getValues();
-    if (ConstrNbr < 0 || ConstrNbr >= (int)vals.size())
+    if (ConstrId < 0 || ConstrId >= (int)vals.size())
         return -1;
-    ConstraintType type = vals[ConstrNbr]->Type;
+    ConstraintType type = vals[ConstrId]->Type;
     if (type != Distance &&
         type != DistanceX &&
         type != DistanceY &&
@@ -125,9 +138,9 @@ int SketchObject::setDatum(double Datum, int ConstrNbr)
     // copy the list
     std::vector<Constraint *> newVals(vals);
     // clone the changed Constraint
-    Constraint *constNew = vals[ConstrNbr]->clone();
+    Constraint *constNew = vals[ConstrId]->clone();
     constNew->Value = Datum;
-    newVals[ConstrNbr] = constNew;
+    newVals[ConstrId] = constNew;
     this->Constraints.setValues(newVals);
     delete constNew;
 
@@ -135,13 +148,12 @@ int SketchObject::setDatum(double Datum, int ConstrNbr)
     Sketch sketch;
     int dofs = sketch.setUpSketch(Geometry.getValues(), Constraints.getValues());
     if (dofs < 0) // over-constrained sketch
-        return -1;
+        return -3;
     if (sketch.hasConflicts()) // conflicting constraints
-        return -1;
-
+        return -3;
     // solving
     if (sketch.solve() != 0)
-        return -1;
+        return -2;
 
     // set the newly solved geometry
     std::vector<Part::Geometry *> geomlist = sketch.getGeometry();
@@ -281,14 +293,14 @@ int SketchObject::addConstraint(const Constraint *constraint)
     return this->Constraints.getSize()-1;
 }
 
-int SketchObject::delConstraint(int ConstrNbr)
+int SketchObject::delConstraint(int ConstrId)
 {
     const std::vector< Constraint * > &vals = this->Constraints.getValues();
-    if (ConstrNbr < 0 || ConstrNbr >= (int)vals.size())
+    if (ConstrId < 0 || ConstrId >= (int)vals.size())
         return -1;
 
     std::vector< Constraint * > newVals(vals);
-    newVals.erase(newVals.begin()+ConstrNbr);
+    newVals.erase(newVals.begin()+ConstrId);
     this->Constraints.setValues(newVals);
     return 0;
 }
@@ -621,7 +633,7 @@ int SketchObject::addExternal(App::DocumentObject *Obj, const char* SubName)
     return ExternalConstraints.getValues().size()-1;
 }
 
-int SketchObject::delExternal(int ConstrNbr)
+int SketchObject::delExternal(int ConstrId)
 {
     // FIXME: still to implement
     return 0;

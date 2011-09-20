@@ -24,14 +24,13 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <QLocale>
 # include <QRegExp>
 # include <QString>
 #endif
 
 #include "ui_TaskSketcherConstrains.h"
-#include "ui_InsertDatum.h"
 #include "TaskSketcherConstrains.h"
+#include "EditDatumDialog.h"
 #include "ViewProviderSketch.h"
 
 #include <Mod/Sketcher/App/SketchObject.h>
@@ -40,13 +39,8 @@
 #include <Gui/Document.h>
 #include <Gui/BitmapFactory.h>
 #include <Gui/ViewProvider.h>
-#include <Gui/WaitCursor.h>
 #include <Gui/BitmapFactory.h>
-#include <Gui/Command.h>
-#include <Base/Console.h>
 #include <boost/bind.hpp>
-
-
 
 using namespace SketcherGui;
 using namespace Gui::TaskView;
@@ -175,36 +169,10 @@ void TaskSketcherConstrains::on_listWidgetConstraints_itemActivated(QListWidgetI
     if (it->Type == Sketcher::Distance ||
         it->Type == Sketcher::DistanceX || it->Type == Sketcher::DistanceY ||
         it->Type == Sketcher::Radius || it->Type == Sketcher::Angle) {
-        const std::vector< Sketcher::Constraint * > &vals = sketchView->getSketchObject()->Constraints.getValues();
-        Sketcher::Constraint *Const = vals[it->ConstraintNbr];
-        assert(Const->Type == it->Type);
-        double datum = Const->Value;
-        if (it->Type == Sketcher::Angle)
-            datum = datum * 180./M_PI;
 
-        QDialog dlg(this);
-        Ui::InsertDatum ui_ins_datum;
-        ui_ins_datum.setupUi(&dlg);
-
-        ui_ins_datum.lineEdit->setText(QLocale::system().toString(datum,'g',6));
-        ui_ins_datum.lineEdit->selectAll(); 
-        if (dlg.exec()) {
-            bool ok;
-            double newDatum = ui_ins_datum.lineEdit->text().toDouble(&ok);
-            if (ok) {
-                if (it->Type == Sketcher::Angle)
-                    newDatum = newDatum * M_PI/180.;
-                try {
-                    Gui::Command::openCommand("Add sketch constraints");
-                    Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.setDatum(%f,%i)",
-                              sketchView->getObject()->getNameInDocument(),
-                              newDatum,it->ConstraintNbr);
-                }
-                catch (const Base::Exception& e) {
-                    QMessageBox::critical(this, tr("Distance constraint"), QString::fromUtf8(e.what()));
-                }
-            }
-        }
+		EditDatumDialog *editDatumDialog = new EditDatumDialog(this->sketchView, it->ConstraintNbr);
+		editDatumDialog->exec(false);
+		delete editDatumDialog;
     }
 }
 

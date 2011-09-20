@@ -2398,13 +2398,13 @@ void ViewProviderSketch::updateData(const App::Property *prop)
         }
         else if (dofs < 0) { // over-constrained sketch
             SketchObject::appendConflictMsg(edit->ActSketch.getConflicting(), msg);
-            Base::Console().Warning("Over-constrained sketch\n%s",msg.c_str());
+            //Base::Console().Warning("Over-constrained sketch\n%s",msg.c_str());
             signalSetUp(3, 0, msg);
             signalSolved(-1,0);
         }
         else if (edit->ActSketch.hasConflicts()) { // conflicting constraints
             SketchObject::appendConflictMsg(edit->ActSketch.getConflicting(), msg);
-            Base::Console().Warning("Sketch with conflicting constraints\n%s",msg.c_str());
+            //Base::Console().Warning("Sketch with conflicting constraints\n%s",msg.c_str());
             signalSetUp(2, dofs, msg);
             signalSolved(-1,0);
         }
@@ -2538,13 +2538,13 @@ bool ViewProviderSketch::setEdit(int ModNum)
     }
     else if (dofs < 0) { // over-constrained sketch
         SketchObject::appendConflictMsg(edit->ActSketch.getConflicting(), msg);
-        Base::Console().Warning("Over-constrained sketch\n%s",msg.c_str());
+        //Base::Console().Warning("Over-constrained sketch\n%s",msg.c_str());
         signalSetUp(3, 0, msg);
         signalSolved(-1, 0);
     }
     else if (edit->ActSketch.hasConflicts()) { // conflicting constraints
         SketchObject::appendConflictMsg(edit->ActSketch.getConflicting(), msg);
-        Base::Console().Warning("Sketch with conflicting constraints\n%s",msg.c_str());
+        //Base::Console().Warning("Sketch with conflicting constraints\n%s",msg.c_str());
         signalSetUp(2, dofs, msg);
         signalSolved(-1, 0);
     }

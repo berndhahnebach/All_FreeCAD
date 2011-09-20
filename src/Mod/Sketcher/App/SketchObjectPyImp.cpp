@@ -186,12 +186,20 @@ PyObject* SketchObjectPy::setDatum(PyObject *args)
 {
     double Datum;
     int    Index;
-    if (!PyArg_ParseTuple(args, "di", &Datum, &Index))
+    if (!PyArg_ParseTuple(args, "id", &Index, &Datum))
         return 0;
 
-    if (this->getSketchObjectPtr()->setDatum(Datum, Index)) {
+    int err=this->getSketchObjectPtr()->setDatum(Index, Datum);
+    if (err) {
         std::stringstream str;
-        str << "Datum " << Datum << " of constraint with index " << Index << " is invalid";
+        if (err == -1)
+            str << "Invalid constraint index: " << Index;
+        else if (err == -3)
+            str << "Cannot set the datum because the sketch contains conflicting constraints";
+        else if (err == -2)
+            str << "Datum " << Datum << " for the constraint with index " << Index << " is invalid";
+        else
+            str << "Unexpected problem at setting datum " << Datum << " for the constraint with index " << Index;
         PyErr_SetString(PyExc_ValueError, str.str().c_str());
         return 0;
     }

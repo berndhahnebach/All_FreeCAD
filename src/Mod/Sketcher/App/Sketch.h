@@ -93,7 +93,7 @@ public:
     /** set the datum of a distance or angle constraint to a certain value and solve
       * This can cause the solving to fail!
       */
-    int setDatum(int constraintIndex, double value);
+    int setDatum(int constrId, double value);
 
     /** initializes a point (or curve) drag by setting the current
       * sketch status as a reference

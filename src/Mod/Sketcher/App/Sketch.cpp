@@ -1511,7 +1511,7 @@ int Sketch::movePoint(int geoId, PointPos pos, Base::Vector3d toPoint, bool rela
     return solve();
 }
 
-int Sketch::setDatum(int constraintIndex, double value)
+int Sketch::setDatum(int constrId, double value)
 {
     return -1;
 }

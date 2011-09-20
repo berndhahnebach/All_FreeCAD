@@ -37,7 +37,7 @@ public:
     ~EditDatumDialog();
 
     static void run(void * data, SoSensor * sensor);   
-    void exec();
+    void exec(bool atCursor=true);
 
 private:
     ViewProviderSketch* vp;

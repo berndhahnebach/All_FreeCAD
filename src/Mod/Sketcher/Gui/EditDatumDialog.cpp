@@ -60,13 +60,19 @@ void EditDatumDialog::run(void * data, SoSensor * sensor)
     delete sensor;
 }
 
-void EditDatumDialog::exec()
+void EditDatumDialog::exec(bool atCursor)
 {
     // Return if constraint doesn't have editable value
     if (Constr->Type == Sketcher::Distance ||
         Constr->Type == Sketcher::DistanceX || Constr->Type == Sketcher::DistanceY ||
         Constr->Type == Sketcher::Radius || Constr->Type == Sketcher::Angle) {
-  
+
+        if (vp->getSketchObject()->hasConflicts()) {
+            QMessageBox::critical(qApp->activeWindow(), QObject::tr("Distance constraint"),
+                                  QObject::tr("Not allowed to edit the datum because the sketch contains conflicting constraints"));
+            return;
+		}
+
         double datum = Constr->Value;
         if (Constr->Type == Sketcher::Angle)
             datum = datum * 180./M_PI;
@@ -82,7 +88,8 @@ void EditDatumDialog::exec()
         ui_ins_datum.lineEdit->setText(QLocale::system().toString(datum,'g',6));
         ui_ins_datum.lineEdit->selectAll();
 
-        dlg.setGeometry(QCursor::pos().x() - dlg.geometry().width() / 2, QCursor::pos().y(), dlg.geometry().width(), dlg.geometry().height());
+        if (atCursor)
+            dlg.setGeometry(QCursor::pos().x() - dlg.geometry().width() / 2, QCursor::pos().y(), dlg.geometry().width(), dlg.geometry().height());
 
         if (dlg.exec()) {
             bool ok;
@@ -92,9 +99,9 @@ void EditDatumDialog::exec()
                     newDatum = newDatum * M_PI/180.;
                 try {
                     Gui::Command::openCommand("Modify sketch constraints");
-                    Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.setDatum(%f,%i)",
+                    Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.setDatum(%i,%f)",
                                 vp->getObject()->getNameInDocument(),
-                                newDatum,ConstrNbr);
+                                ConstrNbr, newDatum);
                 }
                 catch (const Base::Exception& e) {
                     QMessageBox::critical(qApp->activeWindow(), QObject::tr("Distance constraint"), QString::fromUtf8(e.what()));
