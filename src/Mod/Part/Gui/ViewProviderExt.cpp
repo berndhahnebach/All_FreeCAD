@@ -551,6 +551,7 @@ void ViewProviderPartExt::updateVisual(const TopoDS_Shape& inputShape)
     // time measurement and book keeping
     Base::TimeInfo start_time;
     int nbrTriangles=0,nbrNodes=0,nbrNorms=0,nbrFaces=0,nbrEdges=0,nbrLines=0;
+    std::set<int> faceEdges;
 
     try {
         // calculating the deflection value
@@ -579,6 +580,10 @@ void ViewProviderPartExt::updateVisual(const TopoDS_Shape& inputShape)
                 nbrNodes     += mesh->NbNodes();
                 nbrNorms     += mesh->NbNodes();
             }
+
+            TopExp_Explorer xp;
+            for (xp.Init(Ex.Current(),TopAbs_EDGE);xp.More();xp.Next())
+                faceEdges.insert(xp.Current().HashCode(INT_MAX));
             nbrFaces++;
         }
 
@@ -599,10 +604,19 @@ void ViewProviderPartExt::updateVisual(const TopoDS_Shape& inputShape)
             TopLoc_Location aLoc;
 
             // handling of the free edge that are not associated to a face
-            Handle(Poly_Polygon3D) aPoly = BRep_Tool::Polygon3D(aEdge, aLoc);
-            if (!aPoly.IsNull()) {
-                int nbNodesInEdge = aPoly->NbNodes();
-                nbrNodes += nbNodesInEdge;
+            // Note: The assumption that if for an edge BRep_Tool::Polygon3D
+            // returns a valid object is wrong. This e.g. happens for ruled
+            // surfaces which gets created by two edges or wires.
+            // So, we have to store the hashes of the edges associated to a face.
+            // If the hash of a given edge is not in this list we know it's really
+            // a free edge.
+            int hash = aEdge.HashCode(INT_MAX);
+            if (faceEdges.find(hash) == faceEdges.end()) {
+                Handle(Poly_Polygon3D) aPoly = BRep_Tool::Polygon3D(aEdge, aLoc);
+                if (!aPoly.IsNull()) {
+                    int nbNodesInEdge = aPoly->NbNodes();
+                    nbrNodes += nbNodesInEdge;
+                }
             }
         }
         // reserve some memory
@@ -753,27 +767,30 @@ void ViewProviderPartExt::updateVisual(const TopoDS_Shape& inputShape)
             TopLoc_Location aLoc;
 
             // handling of the free edge that are not associated to a face
-            Handle(Poly_Polygon3D) aPoly = BRep_Tool::Polygon3D(aEdge, aLoc);
-            if (!aPoly.IsNull()) {
-                if (!aLoc.IsIdentity()) {
-                    identity = false;
-                    myTransf = aLoc.Transformation();
+            int hash = aEdge.HashCode(INT_MAX);
+            if (faceEdges.find(hash) == faceEdges.end()) {
+                Handle(Poly_Polygon3D) aPoly = BRep_Tool::Polygon3D(aEdge, aLoc);
+                if (!aPoly.IsNull()) {
+                    if (!aLoc.IsIdentity()) {
+                        identity = false;
+                        myTransf = aLoc.Transformation();
+                    }
+
+                    const TColgp_Array1OfPnt& aNodes = aPoly->Nodes();
+                    int nbNodesInEdge = aPoly->NbNodes();
+
+                    gp_Pnt pnt;
+                    for (Standard_Integer j=1;j <= nbNodesInEdge;j++) {
+                        pnt = aNodes(j);
+                        if (!identity)
+                            pnt.Transform(myTransf);
+                        verts[FaceNodeOffset+j-1].setValue((float)(pnt.X()),(float)(pnt.Y()),(float)(pnt.Z()));
+                        indxVector.push_back(FaceNodeOffset+j-1);
+                    }
+
+                    indxVector.push_back(-1);
+                    FaceNodeOffset += nbNodesInEdge;
                 }
-
-                const TColgp_Array1OfPnt& aNodes = aPoly->Nodes();
-                int nbNodesInEdge = aPoly->NbNodes();
-
-                gp_Pnt pnt;
-                for (Standard_Integer j=1;j <= nbNodesInEdge;j++) {
-                    pnt = aNodes(j);
-                    if (!identity)
-                        pnt.Transform(myTransf);
-                    verts[FaceNodeOffset+j-1].setValue((float)(pnt.X()),(float)(pnt.Y()),(float)(pnt.Z()));
-                    indxVector.push_back(FaceNodeOffset+j-1);
-                }
-
-                indxVector.push_back(-1);
-                FaceNodeOffset += nbNodesInEdge;
             }
         }
 
