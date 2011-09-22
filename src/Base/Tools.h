@@ -109,13 +109,13 @@ inline T sgn (T t)
 #endif
 
 template<class T>
-inline T radians(T d)
+inline T toRadians(T d)
 {
     return static_cast<T>((d*M_PI)/180.0);
 }
 
 template<class T>
-inline T degrees(T r)
+inline T toDegrees(T r)
 {
     return static_cast<T>((r/M_PI)*180.0);
 }

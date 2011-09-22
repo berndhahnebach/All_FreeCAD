@@ -71,7 +71,7 @@ int RotationPy::PyInit(PyObject* args, PyObject* /*kwd*/)
     double angle;
     if (PyArg_ParseTuple(args, "O!d", &(Base::VectorPy::Type), &o, &angle)) {
         // NOTE: The last parameter defines the rotation angle in degree.
-        getRotationPtr()->setValue(static_cast<Base::VectorPy*>(o)->value(), Base::radians<double>(angle));
+        getRotationPtr()->setValue(static_cast<Base::VectorPy*>(o)->value(), Base::toRadians<double>(angle));
         return 0;
     }
 
