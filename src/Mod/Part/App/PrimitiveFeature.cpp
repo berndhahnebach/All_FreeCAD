@@ -488,7 +488,7 @@ App::DocumentObjectExecReturn *Helix::execute(void)
             surf = new Geom_CylindricalSurface(cylAx2, myRadius);
         }
         else {
-            myAngle = Base::degrees(myAngle);
+            myAngle = Base::radians(myAngle);
             surf = new Geom_ConicalSurface(gp_Ax3(cylAx2), myAngle, myRadius);
         }
 
