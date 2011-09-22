@@ -1140,7 +1140,7 @@ double PropertyPlacementItem::getAngle() const
     val.getRotation().getValue(dir, angle);
     if (dir * this->rot_axis < 0.0)
         angle = -angle;
-    return Base::degrees<double>(angle);
+    return Base::toDegrees<double>(angle);
 }
 
 void PropertyPlacementItem::setAngle(double angle)
@@ -1151,7 +1151,7 @@ void PropertyPlacementItem::setAngle(double angle)
 
     Base::Placement val = value.value<Base::Placement>();
     Base::Rotation rot;
-    rot.setValue(this->rot_axis, Base::radians<double>(angle));
+    rot.setValue(this->rot_axis, Base::toRadians<double>(angle));
     val.setRotation(rot);
     changed_value = true;
     setValue(QVariant::fromValue(val));

@@ -121,7 +121,7 @@ void DemoMode::on_angleSlider_valueChanged(int v)
     if (view) {
         SoCamera* cam = view->getViewer()->getCamera();
         if (!cam) return;
-        float angle = Base::radians<float>(/*90-v*/v-this->oldvalue);
+        float angle = Base::toRadians<float>(/*90-v*/v-this->oldvalue);
         SbRotation rot(SbVec3f(-1,0,0),angle);
         reorientCamera(cam ,rot);
         this->oldvalue = v;

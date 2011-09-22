@@ -337,7 +337,7 @@ void ProjectionAlgos::printEllipse(const BRepAdaptor_Curve& c, int id, std::ostr
         // See also https://developer.mozilla.org/en/SVG/Tutorial/Paths
         gp_Dir xaxis = ellp.XAxis().Direction();
         Standard_Real angle = xaxis.Angle(gp_Dir(1,0,0));
-        angle = Base::degrees<double>(angle);
+        angle = Base::toDegrees<double>(angle);
         char las = (l-f > D_PI) ? '1' : '0'; // large-arc-flag
         char swp = (a < 0) ? '1' : '0'; // sweep-flag, i.e. clockwise (0) or counter-clockwise (1)
         out << "<path d=\"M" << s.X() <<  " " << s.Y()
