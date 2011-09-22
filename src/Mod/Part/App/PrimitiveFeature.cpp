@@ -498,7 +498,7 @@ App::DocumentObjectExecReturn *Helix::execute(void)
 
         Handle(Geom2d_Line) line = new Geom2d_Line(aAx2d);
         gp_Pnt2d beg = line->Value(0);
-        gp_Pnt2d end = line->Value(2.0*PI*(myHeight/myPitch));
+        gp_Pnt2d end = line->Value(sqrt(4.0*PI*PI+myPitch*myPitch)*(myHeight/myPitch));
         Handle(Geom2d_TrimmedCurve) segm = GCE2d_MakeSegment(beg , end);
 
         TopoDS_Edge edgeOnSurf = BRepBuilderAPI_MakeEdge(segm , surf);
