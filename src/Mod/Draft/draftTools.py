@@ -149,10 +149,9 @@ def snapPoint(target,point,cursor,ctrl=False):
 
         def getGridSnap(target,point):
                 "returns a grid snap point if available"
+                if target.grid:
+                        return target.grid.getClosestNode(point)
                 return None
-                # if not target.grid: return None
-                # gp = target.grid.getNodes()
-                # return gp[fcgeo.findClosest(point,gp)]
 
 	# checking if alwaySnap setting is on
         extractrl = False
@@ -977,17 +976,6 @@ class gridTracker(Tracker):
                 self.coords1.point.setValues(pts)
                 self.coords2.point.setValues(mpts)
 
-                rot = FreeCAD.Rotation()
-                rot.Q = self.trans.rotation.getValue().getValue()
-                bound = (self.numlines/2)*self.space
-                self.nodes = []
-                for i in range(self.numlines+1):
-                        currx = -bound + i*self.space
-                        for j in range(self.numlines+1):
-                                curry = -bound + j*self.space
-                                p = Vector(currx,curry,0)
-                                self.nodes.append(rot.multVec(p))
-
         def setSpacing(self,space):
                 self.space = space
                 self.update()
@@ -1001,9 +989,26 @@ class gridTracker(Tracker):
                 self.trans.rotation.setValue([Q[0],Q[1],Q[2],Q[3]])
                 self.on()
 
-        def getNodes(self):
-                "returns a list of vectors from the grid nodes"
-                return self.nodes
+        def getClosestNode(self,point):
+                "returns the closest node from the given point"
+                # get the 2D coords.
+                point = plane.projectPoint(point)
+                u = fcvec.project(point,plane.u)
+                lu = u.Length
+                if u.getAngle(plane.u) > 1.5:
+                        lu  = -lu
+                v = fcvec.project(point,plane.v)
+                lv = v.Length
+                if v.getAngle(plane.v) > 1.5:
+                        lv = -lv
+                # print "u = ",u," v = ",v
+                # find nearest grid node
+                pu = (round(lu/self.space,0))*self.space
+                pv = (round(lv/self.space,0))*self.space
+                rot = FreeCAD.Rotation()
+                rot.Q = self.trans.rotation.getValue().getValue()
+                return rot.multVec(Vector(pu,pv,0))
+
                 
 #---------------------------------------------------------------------------
 # Helper tools
@@ -1207,6 +1212,7 @@ class Line(Creator):
 			self.linetrack = lineTracker()
 			self.constraintrack = lineTracker(dotted=True)
                         self.obj=self.doc.addObject("Part::Feature",self.featureName)
+                        # self.obj.ViewObject.Selectable = False
                         Draft.formatObject(self.obj)
 			self.call = self.view.addEventCallback("SoEvent",self.action)
 			msg(translate("draft", "Pick first point:\n"))
@@ -3735,6 +3741,9 @@ class Edit(Modifier):
                                 self.obj = Draft.getSelection()
                                 if self.obj:
                                         self.obj = self.obj[0]
+                                        # store selectable state of the object
+                                        self.selectstate = self.obj.ViewObject.Selectable
+                                        self.obj.ViewObject.Selectable = False
                                         if not Draft.getType(self.obj) in ["Wire","BSpline"]:
                                                 self.ui.addButton.setEnabled(False)
                                                 self.ui.delButton.setEnabled(False)
@@ -3805,6 +3814,7 @@ class Edit(Modifier):
                                         t.finalize()
                         if self.constraintrack:
                                 self.constraintrack.finalize()
+                self.obj.ViewObject.Selectable = self.selectstate
 		Modifier.finish(self)
                 plane.restore()
                 self.running = False
