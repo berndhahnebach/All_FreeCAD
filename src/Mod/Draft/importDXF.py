@@ -897,7 +897,6 @@ def insert(filename,docname):
 
 def getSplineSegs(edge):
 	"returns an array of vectors from a bSpline edge"
-	curve = edge.Curve
 	params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
 	seglength = params.GetInt("maxsplinesegment")
 	points = []
@@ -905,16 +904,15 @@ def getSplineSegs(edge):
 		points.append(edge.Vertexes[0].Point)
 		points.append(edge.Vertexes[-1].Point)
 	else:
-		l = curve.toShape().Length
-		points.append(curve.value(0))
+		l = edge.Length
+		points.append(edge.valueAt(0))
 		if l > seglength:
-			nbverts = int(math.floor(l/seglength))
-			step = seglength/l
-			for nv in range(nbverts):
-				u = step+step*nv
-				v = curve.value(u)
+			nbsegs = int(math.ceil(l/seglength))
+			step = l/nbsegs
+			for nv in range(1,nbsegs):
+				v = edge.valueAt(nv*step)
 				points.append(v)
-		points.append(curve.value(1))
+		points.append(edge.valueAt(edge.Length))
 	return points
 
 def getWire(wire,nospline=False):
