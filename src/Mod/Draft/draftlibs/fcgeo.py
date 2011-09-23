@@ -439,6 +439,61 @@ def sortEdges(lEdges, aVertex=None):
 		else :
 			return []
 
+                
+def superWire(edgeslist,closed=False):
+        '''superWire(edges,[closed]): forces a wire between edges that don't necessarily
+        have coincident endpoints. If closed=True, wire will always be closed'''
+        def median(v1,v2):
+                vd = v2.sub(v1)
+                vd.scale(.5,.5,.5)
+                return v1.add(vd)
+        edges = sortEdges(edgeslist)
+        print edges
+        newedges = []
+        for i in range(len(edges)):
+                curr = edges[i]
+                if i == 0:
+                        if closed:
+                                prev = edges[-1]
+                        else:
+                                prev = None
+                else:
+                        prev = edges[i-1]
+                if i == (len(edges)-1):
+                        if closed:
+                                next = edges[0]
+                        else:
+                                next = None
+                else:
+                        next = edges[i+1]
+                print i,prev,curr,next
+                if prev:
+                        if curr.Vertexes[0].Point == prev.Vertexes[-1].Point:
+                                p1 = curr.Vertexes[0].Point
+                        else:
+                                p1 = median(curr.Vertexes[0].Point,prev.Vertexes[-1].Point)
+                else:
+                        p1 = curr.Vertexes[0].Point
+                if next:
+                        if curr.Vertexes[-1].Point == next.Vertexes[0].Point:
+                                p2 = next.Vertexes[0].Point
+                        else:
+                                p2 = median(curr.Vertexes[-1].Point,next.Vertexes[0].Point)
+                else:
+                        p2 = curr.Vertexes[-1].Point
+                if isinstance(curr.Curve,Part.Line):
+                        print "line",p1,p2
+                        newedges.append(Part.Line(p1,p2).toShape())
+                elif isinstance(curr.Curve,Part.Circle):
+                        p3 = findMidpoint(curr)
+                        print "arc",p1,p3,p2
+                        newedges.append(Part.Arc(p1,p3,p2).toShape())
+                else:
+                        print "Cannot superWire edges that are not lines or arcs"
+                        return None
+        print newedges
+        return Part.Wire(newedges)
+
 def findMidpoint(edge):
 	"calculates the midpoint of an edge"
 	first = edge.Vertexes[0].Point
