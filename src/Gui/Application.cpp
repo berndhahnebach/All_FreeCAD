@@ -1576,11 +1576,13 @@ void Application::runApplication(void)
     it = cfg.find("ProgramLogo");
     if (it != cfg.end()) {
         QString path = QString::fromUtf8(it->second.c_str());
-        QLabel* logo = new QLabel();
         QPixmap px(path);
-        logo->setPixmap(px.scaledToHeight(32));
-        mw.statusBar()->addPermanentWidget(logo, 0);
-        logo->setFrameShape(QFrame::NoFrame);
+        if (!px.isNull()) {
+            QLabel* logo = new QLabel();
+            logo->setPixmap(px.scaledToHeight(32));
+            mw.statusBar()->addPermanentWidget(logo, 0);
+            logo->setFrameShape(QFrame::NoFrame);
+        }
     }
 
     // show splasher while initializing the GUI
