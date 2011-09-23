@@ -833,13 +833,13 @@ def cleanFaces(shape):
                                 lut[edge.hashCode()].append(face.hashCode())
                         else:
                                 lut[edge.hashCode()] = [face.hashCode()]
-        print "lut:",lut
+        # print "lut:",lut
         # take edges shared by 2 faces
         sharedhedges = []
         for k,v in lut.iteritems():
                 if len(v) == 2:
                         sharedhedges.append(k)
-        print len(sharedhedges)," shared edges:",sharedhedges
+        # print len(sharedhedges)," shared edges:",sharedhedges
         # find those with same normals
         targethedges = []
         for hedge in sharedhedges:
@@ -848,7 +848,7 @@ def cleanFaces(shape):
                 n2 = find(faces[1]).normalAt(0.5,0.5)
                 if n1 == n2:
                         targethedges.append(hedge)
-        print len(targethedges)," target edges:",targethedges
+        # print len(targethedges)," target edges:",targethedges
         # get target faces
         hfaces = []
         for hedge in targethedges:
@@ -856,7 +856,7 @@ def cleanFaces(shape):
                         if not f in hfaces:
                                 hfaces.append(f)
 
-        print len(hfaces)," target faces:",hfaces
+        # print len(hfaces)," target faces:",hfaces
         # sort islands
         islands = [[hfaces.pop(0)]]
         currentisle = 0
@@ -878,7 +878,7 @@ def cleanFaces(shape):
                                 islands[currentisle].append(hfaces.pop(f))
                         else:
                                 found = False
-        print len(islands)," islands:",islands
+        # print len(islands)," islands:",islands
         # make new faces from islands
         newfaces = []
         treated = []
@@ -892,12 +892,12 @@ def cleanFaces(shape):
                 if shp.normalAt(0.5,0.5) != find(isle[0]).normalAt(0.5,0.5):
                         shp.reverse()
                 newfaces.append(shp)
-        print "new faces:",newfaces
+        # print "new faces:",newfaces
         # add remaining faces
         for f in faceset:
                 if not f.hashCode() in treated:
                         newfaces.append(f)
-        print "final faces"
+        # print "final faces"
         # finishing
         fshape = Part.makeShell(newfaces)
         if shape.isClosed():
@@ -960,7 +960,7 @@ def getCubicDimensions(shape):
         for e in shape.Faces[i].Edges:
             if basepoint in [e.Vertexes[0].Point,e.Vertexes[1].Point]:
                 vtemp = vec(e)
-                print vtemp
+                # print vtemp
                 if round(vtemp.getAngle(vx),precision) == rpi:
                     if round(vtemp.getAngle(vy),precision) == rpi:
                         vz = vtemp
