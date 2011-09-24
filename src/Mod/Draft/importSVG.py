@@ -671,9 +671,10 @@ class svgHandler(xml.sax.ContentHandler):
 
         def applyTrans(self,sh):
                 if self.transform:
-                        print "applying transform: ",self.transform
+                        print "applying object transform: ",self.transform
                         sh = sh.transformGeometry(self.transform)
                 for i in range(len(self.grouptransform)):
+                        print "applying group transform: ",self.grouptransform[-i-1]
                         sh = sh.transformGeometry(self.grouptransform[-i-1])
                 '''
                 if 'scale' in self.transform:
