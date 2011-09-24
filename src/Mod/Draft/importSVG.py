@@ -506,7 +506,14 @@ class svgHandler(xml.sax.ContentHandler):
 					else:
 						currentvec = Vector(point[-2],-point[-1],0)
 					chord = currentvec.sub(lastvec)
-					perp = chord.cross(Vector(0,0,-1))
+					# perp = chord.cross(Vector(0,0,-1))
+                                        # here is a better way to find the perpendicular
+                                        if point[4] == 1:
+                                                # clockwise
+                                                perp = fcvec.rotate2D(chord,-math.pi/2)
+                                        else:
+                                                # anticlockwise
+                                                perp = fcvec.rotate2D(chord,math.pi/2)
 					chord = fcvec.scale(chord,.5)
 					if chord.Length > point[0]: a = 0
 					else: a = math.sqrt(point[0]**2-chord.Length**2)
