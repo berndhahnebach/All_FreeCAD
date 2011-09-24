@@ -37,6 +37,7 @@ class ArchWorkbench(Workbench):
                 import draftTools,draftGui,Arch_rc,Arch
                 archtools = ["Arch_Wall","Arch_Structure","Arch_Cell",
                              "Arch_Floor","Arch_Building","Arch_Site",
+                             "Arch_Window",
                              "Arch_SectionPlane","Arch_Add","Arch_Remove"]
                 drafttools = ["Draft_Line","Draft_Wire","Draft_Rectangle",
                               "Draft_Polygon","Draft_Arc",
