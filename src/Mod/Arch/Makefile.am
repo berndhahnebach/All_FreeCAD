@@ -24,6 +24,7 @@ data_DATA = \
 		Structure.py \
 		Wall.py \
 		SectionPlane.py \
+		Window.py \
 		Commands.py
 
 CLEANFILES = $(BUILT_SOURCES)
@@ -46,5 +47,6 @@ EXTRA_DIST = \
 		Resources/icons/Arch_SplitMesh.svg \
 		Resources/icons/Arch_RemoveShape.svg \
 		Resources/icons/Arch_SectionPlane.svg \
+		Resources/icons/Arch_Window.svg \
 		Resources/ui/archprefs-base.ui
 

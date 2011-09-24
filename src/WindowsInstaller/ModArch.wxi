@@ -41,6 +41,7 @@
             <File Id="ArchWallPy" Name="Wall.py" DiskId="1" />
             <File Id="ArchFloorPy" Name="Floor.py" DiskId="1" />
             <File Id="ArchSectionPlanePy" Name="SectionPlane.py" DiskId="1" />
+            <File Id="ArchWindowPy" Name="Window.py" DiskId="1" />
         </Component>
     </Directory>
 </Include>
