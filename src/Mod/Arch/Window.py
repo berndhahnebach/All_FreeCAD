@@ -75,9 +75,10 @@ class Window(Component.Component):
         #                "The support object (wall usually) of this window")
         #obj.addProperty("App::PropertyLength","Jamb","Base",
         #                "The distance between the window and the exterior face of its supporting object")
-        obj.addProperty("Part::PropertyPartShape","Subvolume","Base",
-                        "the volume to be subtracted when inserting this window into its support")
+        #obj.addProperty("Part::PropertyPartShape","Subvolume","Base",
+        #                "the volume to be subtracted when inserting this window into its support")
         self.Type = "Window"
+        obj.Thickness = .1
         
     def execute(self,obj):
         self.createGeometry(obj)
@@ -101,8 +102,10 @@ class Window(Component.Component):
                         obj.Shape = sh
                         f1.translate(Vector(0,0,-.5))
                         svol = f1.extrude(Vector(0,0,1))
-                        #obj.Subvolume = svol
-        if not fcgeo.isNull(pl): obj.Placement = pl
+                        self.Subvolume = svol
+        if not fcgeo.isNull(pl):
+            obj.Placement = pl
+            self.Subvolume.Placement = pl
 
 class ViewProviderWindow(Component.ViewProviderComponent):
     "A View Provider for the Window object"
