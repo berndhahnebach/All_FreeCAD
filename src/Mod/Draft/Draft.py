@@ -73,7 +73,7 @@ How it works / how to extend:
 
 # import FreeCAD modules
 
-import FreeCAD, FreeCADGui, Part, math, sys, os, Image
+import FreeCAD, FreeCADGui, Part, math, sys, os, Image, Drawing
 from FreeCAD import Vector
 from draftlibs import fcvec, fcgeo
 from pivy import coin
@@ -1089,7 +1089,21 @@ def makeDrawingView(obj,page,lwmod=None,tmod=None):
         if lwmod: viewobj.LineweightModifier = lwmod
         if tmod: viewobj.TextModifier = tmod
         return viewobj
-				
+
+def makeShape2DView(baseobj,projectionVector=None):
+        '''
+        makeShape2DView(object,[projectionVector]) - adds a 2D shape to the document, which is a
+        2D projection of the given object. A specific projection vector can also be given.
+        '''
+        obj = FreeCAD.ActiveDocument.addObject("Part::Part2DObjectPython","Shape2DView")
+        Shape2DView(obj)
+        ViewProviderDraft(obj.ViewObject)
+        obj.Base = baseobj
+        if projectionVector:
+                obj.Projection = projectionVector
+        select(obj)
+        return obj
+			
 #---------------------------------------------------------------------------
 # Python Features definitions
 #---------------------------------------------------------------------------
@@ -1985,3 +1999,34 @@ class ViewProviderBlock(ViewProviderDraft):
 
         def claimChildren(self):
                 return self.Object.Components
+
+class Shape2DView:
+        "The Shape2DView object"
+
+        def __init__(self,obj):
+                obj.addProperty("App::PropertyLink","Base","Base",
+                                "The base object this 2D view must represent")
+                obj.addProperty("App::PropertyVector","Projection","Base",
+                                "The projection vector of this object")
+                obj.Projection = Vector(0,0,-1)
+		obj.Proxy = self
+                self.Type = "2DShapeView"
+
+        def execute(self,obj):
+                self.createGeometry(obj)
+
+        def onChanged(self,obj,prop):
+                if prop in ["Projection","Base"]:
+                        print "changing",prop
+                        self.createGeometry(obj)
+
+        def createGeometry(self,obj):
+                pl = obj.Placement
+                if obj.Base:
+                        if obj.Base.isDerivedFrom("Part::Feature"):
+                                [visibleG0,visibleG1,hiddenG0,hiddenG1] = Drawing.project(obj.Base.Shape,obj.Projection)
+                                print visibleG0.Edges
+                                if visibleG0:
+                                        obj.Shape = visibleG0
+                if not fcgeo.isNull(pl):
+                        obj.Placement = pl
