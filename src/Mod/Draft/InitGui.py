@@ -192,7 +192,7 @@ class DraftWorkbench (Workbench):
                 self.modList = ["Draft_Move","Draft_Rotate","Draft_Offset",
 				"Draft_Trimex", "Draft_Upgrade", "Draft_Downgrade", "Draft_Scale",
                                 "Draft_Drawing","Draft_Edit","Draft_WireToBSpline","Draft_AddPoint",
-                                "Draft_DelPoint"]
+                                "Draft_DelPoint","Draft_Shape2DView"]
                 self.treecmdList = ["Draft_ApplyStyle","Draft_ToggleDisplayMode","Draft_AddToGroup","Draft_SelectGroup"]
                 self.lineList = ["Draft_UndoLine","Draft_FinishLine","Draft_CloseLine"]
                 self.appendToolbar("Draft tools",self.cmdList+self.modList)

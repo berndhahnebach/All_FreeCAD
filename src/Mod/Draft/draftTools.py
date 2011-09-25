@@ -4159,8 +4159,26 @@ class SelectGroup():
                         for parent in ob.InList:
                                 FreeCADGui.Selection.addSelection(parent)
                                 for child in parent.OutList:
-                                        FreeCADGui.Selection.addSelection(child)                        
+                                        FreeCADGui.Selection.addSelection(child)
 
+class Shape2DView():
+        "The Shape2DView FreeCAD command definition"
+	def GetResources(self):
+		return {'Pixmap'  : 'Draft_2DShapeView',
+                        'MenuText': QtCore.QT_TRANSLATE_NOOP("Draft_Shape2DView", "Shape 2D view"),
+			'ToolTip': QtCore.QT_TRANSLATE_NOOP("Draft_Shape2DView", "Creates Shape 2D views of selected objects")}
+
+        def IsActive(self):
+                if Draft.getSelection():
+                        return True
+                else:
+                        return False
+        
+	def Activated(self):
+                sellist = []
+                for ob in Draft.getSelection():
+                        Draft.makeShape2DView(ob)
+        
 #---------------------------------------------------------------------------
 # Adds the icons & commands to the FreeCAD command manager, and sets defaults
 #---------------------------------------------------------------------------
@@ -4201,6 +4219,7 @@ FreeCADGui.addCommand('Draft_ApplyStyle',ApplyStyle())
 FreeCADGui.addCommand('Draft_ToggleDisplayMode',ToggleDisplayMode())
 FreeCADGui.addCommand('Draft_AddToGroup',AddToGroup())
 FreeCADGui.addCommand('Draft_SelectGroup',SelectGroup())
+FreeCADGui.addCommand('Draft_Shape2DView',Shape2DView())
 
 # a global place to look for active draft Command
 FreeCAD.activeDraftCommand = None
