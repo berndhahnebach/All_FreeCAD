@@ -29,6 +29,8 @@ libSketcherGui_la_SOURCES=\
 		CommandAlterGeometry.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \
+		SoDatumLabel.cpp \
+		SoDatumLabel.h \
 		TaskSketcherConstrains.cpp \
 		TaskSketcherConstrains.h \
 		TaskSketcherCreateCommands.cpp \
