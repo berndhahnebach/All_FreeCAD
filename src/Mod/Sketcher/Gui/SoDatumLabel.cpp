@@ -37,6 +37,7 @@
 # include <QGLWidget>
 # include <QPainter>
 # include <QPen>
+# include <Inventor/SoPrimitiveVertex.h>
 # include <Inventor/actions/SoGLRenderAction.h>
 # include <Inventor/misc/SoState.h>
 # include <math.h>
@@ -51,7 +52,7 @@
 #include <Inventor/elements/SoViewportRegionElement.h>
 
 #include "SoDatumLabel.h"
-#include "BitmapFactory.h"
+#include <Gui/BitmapFactory.h>
 
 using namespace Gui;
 
