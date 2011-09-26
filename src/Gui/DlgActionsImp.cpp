@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <QDir>
+# include <QFileDialog>
 # include <QFileInfo>
 # include <QHeaderView>
 # include <QImageReader>
