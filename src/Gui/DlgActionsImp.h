@@ -26,6 +26,7 @@
 
 #include "ui_DlgActions.h"
 #include "PropertyPage.h"
+#include <QDialog>
 
 
 namespace Gui {
@@ -81,6 +82,24 @@ private:
 private:
     bool bShown; /**< For internal use only*/
     QString m_sPixmap; /**< Name of the specified pixmap */
+};
+
+class Ui_DlgChooseIcon;
+class IconDialog : public QDialog
+{
+    Q_OBJECT
+
+public:
+    IconDialog(QWidget* parent);
+    ~IconDialog();
+    void resizeEvent(QResizeEvent*);
+    QListWidgetItem* currentItem() const;
+
+private Q_SLOTS:
+    void onAddIconPath();
+
+private:
+    Ui_DlgChooseIcon *ui;
 };
 
 } // namespace Dialog

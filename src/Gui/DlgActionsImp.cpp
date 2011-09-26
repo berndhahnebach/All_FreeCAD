@@ -26,7 +26,9 @@
 # include <QDir>
 # include <QFileInfo>
 # include <QHeaderView>
+# include <QImageReader>
 # include <QMessageBox>
+# include <QTextStream>
 #endif
 
 #include "DlgActionsImp.h"
@@ -367,50 +369,77 @@ void DlgCustomActionsImp::on_buttonRemoveAction_clicked()
     }
 }
 
-namespace Gui { namespace Dialog {
-class IconDialog : public QDialog
+IconDialog::IconDialog(QWidget* parent)
+  : QDialog(parent), ui(new Ui_DlgChooseIcon)
 {
-public:
-    IconDialog(Ui_DlgChooseIcon* ui, QWidget* parent) : QDialog(parent), _ui(ui) {
+    ui->setupUi(this);
+    ui->listWidget->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    // signals and slots connections
+    connect(ui->listWidget, SIGNAL(itemClicked (QListWidgetItem *)),
+            this, SLOT(accept()));
+    connect(ui->addButton, SIGNAL(clicked()),
+            this, SLOT(onAddIconPath()));
+
+    QListWidgetItem* item;
+    QStringList names = BitmapFactory().findIconFiles();
+    for (QStringList::Iterator it = names.begin(); it != names.end(); ++it) {
+        item = new QListWidgetItem(ui->listWidget);
+        item->setIcon(QIcon(*it));
+        item->setText(QFileInfo(*it).baseName());
+        item->setToolTip(*it);
     }
-    ~IconDialog() {
-    }
-    void resizeEvent(QResizeEvent*) {
-        _ui->listWidget->setFlow(QListView::LeftToRight);
-    }
-private:
-    Ui_DlgChooseIcon *_ui;
-};
 }
+
+IconDialog::~IconDialog()
+{
+    delete ui;
+}
+
+QListWidgetItem* IconDialog::currentItem() const
+{
+    return ui->listWidget->currentItem();
+}
+
+void IconDialog::resizeEvent(QResizeEvent*)
+{
+    ui->listWidget->setFlow(QListView::LeftToRight);
+}
+
+void IconDialog::onAddIconPath()
+{
+    QString dir = QFileDialog::getExistingDirectory(this, IconDialog::tr("Add icon"), QString());
+    if (!dir.isEmpty()) {
+        QStringList filters;
+        QList<QByteArray> formats = QImageReader::supportedImageFormats();
+        for (QList<QByteArray>::iterator it = formats.begin(); it != formats.end(); ++it)
+            filters << QString::fromAscii("*.%1").arg(QString::fromAscii(*it).toLower());
+        QDir d(dir);
+        d.setNameFilters(filters);
+        QFileInfoList fi = d.entryInfoList();
+        for (QFileInfoList::iterator it = fi.begin(); it != fi.end(); ++it) {
+            QListWidgetItem* item;
+            QString file = it->absoluteFilePath();
+            item = new QListWidgetItem(ui->listWidget);
+            item->setIcon(QIcon(file));
+            item->setText(it->baseName());
+            item->setToolTip(file);
+        }
+
+        BitmapFactory().addPath(dir);
+    }
 }
 
 void DlgCustomActionsImp::on_buttonChoosePixmap_clicked()
 {
     // create a dialog showing all pixmaps
-    Gui::Dialog::Ui_DlgChooseIcon ui;
-    Gui::Dialog::IconDialog dlg(&ui, this);
+    Gui::Dialog::IconDialog dlg(this);
     dlg.setModal(true);
-    ui.setupUi(&dlg);
-    ui.listWidget->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    // signals and slots connections
-    connect(ui.listWidget, SIGNAL(itemClicked (QListWidgetItem *)),
-            &dlg, SLOT(accept()));
-
-    QListWidgetItem* item;
-    QStringList names = BitmapFactory().findIconFiles();
-    for (QStringList::Iterator it = names.begin(); it != names.end(); ++it) {
-        item = new QListWidgetItem(ui.listWidget);
-        item->setIcon(QIcon(*it));
-        item->setText(QFileInfo(*it).baseName());
-        item->setToolTip(*it);
-    }
-
     dlg.exec();
 
     pixmapLabel->clear();
     m_sPixmap = QString::null;
     if (dlg.result() == QDialog::Accepted) {
-        QListWidgetItem* item = ui.listWidget->currentItem();
+        QListWidgetItem* item = dlg.currentItem();
         if (item) {
             m_sPixmap = item->text();
             pixmapLabel->setPixmap(item->icon().pixmap(QSize(32,32)));
