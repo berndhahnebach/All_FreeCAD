@@ -88,6 +88,7 @@
 #include <Mod/Sketcher/App/SketchObject.h>
 #include <Mod/Sketcher/App/Sketch.h>
 
+#include "SoDatumLabel.h"
 #include "EditDatumDialog.h"
 #include "ViewProviderSketch.h"
 #include "DrawSketchHandler.h"
@@ -1818,7 +1819,7 @@ Restart:
                     SbVec3f p1_ = p1 + normproj12 * norm;
                     SbVec3f midpos = (p1_ + p2)/2;
 
-                    SoAsciiText *asciiText = dynamic_cast<SoAsciiText *>(sep->getChild(4));
+                    Gui::SoDatumLabel *asciiText = dynamic_cast<Gui::SoDatumLabel *>(sep->getChild(4));
                     asciiText->string = SbString().sprintf("%.2f",Constr->Value);
 
                     // Get Bounding box dimensions for Datum text
@@ -1854,8 +1855,8 @@ Restart:
 
                     // set position and rotation of Datums Text
                     SoTransform *transform = dynamic_cast<SoTransform *>(sep->getChild(2));
-                    transform->translation.setValue(textpos);
                     transform->rotation.setValue(SbVec3f(0, 0, 1), (float)angle);
+                    transform->translation.setValue(textpos);
 
                     // Get the datum nodes
                     SoSeparator *sepDatum = dynamic_cast<SoSeparator *>(sep->getChild(1));
@@ -1873,8 +1874,8 @@ Restart:
 
                     // Calculate the coordinates for the parallel datum lines
                     datumCord->point.set1Value(4,p1_    + norm * length);
-                    datumCord->point.set1Value(5,midpos + norm * length - dir * (1+textBB[0]/4) );
-                    datumCord->point.set1Value(6,midpos + norm * length + dir * (1+textBB[0]/4) );
+                    datumCord->point.set1Value(5,midpos + norm * length - dir * (textBB[0]/1.7) );
+                    datumCord->point.set1Value(6,midpos + norm * length + dir * (textBB[0]/1.7) );
                     datumCord->point.set1Value(7,p2     + norm * length);
 
                     // Use the coordinates calculated earlier to the lineset
@@ -2075,7 +2076,7 @@ Restart:
                     } else
                         break;
 
-                    SoAsciiText *asciiText = dynamic_cast<SoAsciiText *>(sep->getChild(4));
+                    Gui::SoDatumLabel *asciiText = dynamic_cast<Gui::SoDatumLabel *>(sep->getChild(4));
                     asciiText->string = SbString().sprintf("%.2f",Constr->Value * 180./M_PI);
 
                     // Get Bounding box dimensions for Datum text
@@ -2177,7 +2178,7 @@ Restart:
                     float length = Constr->LabelDistance;
                     SbVec3f pos = p2 + length*dir;
 
-                    SoAsciiText *asciiText = dynamic_cast<SoAsciiText *>(sep->getChild(4));
+                    Gui::SoDatumLabel *asciiText = dynamic_cast<Gui::SoDatumLabel *>(sep->getChild(4));
                     asciiText->string = SbString().sprintf("%.2f",Constr->Value);
 
                     // Get Bounding box dimensions for Datum text
@@ -2205,25 +2206,25 @@ Restart:
                         flip = true;
                     }
 
-                    SbVec3f textpos = pos + norm * ( (flip ? 1:-1) * textBBCenter[1] / 4);
+                    SbVec3f textpos = pos + norm * ( (flip ? 1:-1) * textBBCenter[1] / 1.7);
 
                     // set position and rotation of Datums Text
                     SoTransform *transform = dynamic_cast<SoTransform *>(sep->getChild(2));
-                    transform->translation.setValue(textpos);
                     transform->rotation.setValue(SbVec3f(0, 0, 1), (float)angle);
+                    transform->translation.setValue(textpos);
 
                     // Get the datum nodes
                     SoSeparator *sepDatum = dynamic_cast<SoSeparator *>(sep->getChild(1));
                     SoCoordinate3 *datumCord = dynamic_cast<SoCoordinate3 *>(sepDatum->getChild(0));
 
-                    SbVec3f p3 = pos + dir * (6+textBB[0]/4);
+                    SbVec3f p3 = pos + dir * (6+textBB[0]/1.7);
                     if ((p3-p1).length() > (p2-p1).length())
                         p2 = p3;
 
                     // Calculate the coordinates for the parallel datum lines
                     datumCord->point.set1Value(0,p1);
-                    datumCord->point.set1Value(1,pos - dir * (1+textBB[0]/4) );
-                    datumCord->point.set1Value(2,pos + dir * (1+textBB[0]/4) );
+                    datumCord->point.set1Value(1,pos - dir * (1+textBB[0]/1.7) );
+                    datumCord->point.set1Value(2,pos + dir * (1+textBB[0]/1.7) );
                     datumCord->point.set1Value(3,p2);
 
                     // Use the coordinates calculated earlier to the lineset
@@ -2288,12 +2289,13 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
 
                     // add font for the datum text
                     SoFont *font = new SoFont();
-                    font->size = 5;
-                    font->name = "Helvetica, Arial, FreeSans:bold";
+                    font->size = 8.f;
+                    font->name = "FreeSans:bold, Helvetica, Arial, FreeSans:bold";
 
                     sep->addChild(font);
-                    SoAsciiText *text = new SoAsciiText();
-                    text->justification =  SoAsciiText::CENTER;
+                    
+                    Gui::SoDatumLabel *text = new Gui::SoDatumLabel();
+                    //text->justification =  Gui::SoDatumLabel::CENTER;
                     text->string = "";
                     sep->addChild(text);
 
@@ -2679,7 +2681,7 @@ void ViewProviderSketch::createEditInventorNodes(void)
 
     // add font for the text shown constraints
     font = new SoFont();
-    font->size = 15.0;
+    font->size = 8.0;
     edit->EditRoot->addChild(font);
 
     // use small line width for the Constraints
