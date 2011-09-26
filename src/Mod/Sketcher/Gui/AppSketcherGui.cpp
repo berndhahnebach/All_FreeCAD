@@ -33,6 +33,7 @@
 #include "Workbench.h"
 #include "ViewProviderSketch.h"
 #include "ViewProviderPython.h"
+#include "SoDatumLabel.h"
 
 
 // create the commands
@@ -80,11 +81,12 @@ void SketcherGuiExport initSketcherGui()
 
     SketcherGui::Workbench::init();
 
-	// init objects
-	SketcherGui::ViewProviderSketch         ::init();
+    // init objects
+    SketcherGui::ViewProviderSketch         ::init();
     SketcherGui::ViewProviderPython         ::init();
     SketcherGui::ViewProviderCustom         ::init();
     SketcherGui::ViewProviderCustomPython   ::init();
+    Gui::SoDatumLabel                       ::initClass();
 
      // add resources and reloads the translators
     loadSketcherResource();
