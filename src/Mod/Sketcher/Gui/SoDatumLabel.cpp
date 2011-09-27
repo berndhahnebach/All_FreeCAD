@@ -96,10 +96,11 @@ void SoDatumLabel::drawImage()
     int h = fm.height();
 
     // No Valid text
-    if(!w) {
+    if (!w) {
         this->image = SoSFImage();
         return;
     }
+
     const SbColor& t = textColor.getValue();
     QColor front;
     front.setRgbF(t[0],t[1], t[2]);
@@ -122,14 +123,15 @@ void SoDatumLabel::drawImage()
 
 void SoDatumLabel::computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center)
 {
-
     SbVec2s size;
     int nc;
 
-
     const unsigned char * dataptr = this->image.getValue(size, nc);
-    if(dataptr == NULL)
+    if (dataptr == NULL) {
+        box.setBounds(SbVec3f(0,0,0), SbVec3f(0,0,0));
+        center.setValue(0.0f,0.0f,0.0f);
         return;
+    }
 
     float srcw = size[0];
     float srch = size[1];
@@ -144,11 +146,11 @@ void SoDatumLabel::computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center)
 
     float height = scale / (float) srcw;
     float width  = aspectRatio * (float) height;
-    if(action->getTypeId() != SoGLRenderAction::getClassTypeId()) {
+    if (action->getTypeId() != SoGLRenderAction::getClassTypeId()) {
         width = this->bbx;
         height = this->bby;
-    
     }
+
     SbVec3f min (-width / 2, -height / 2, 0.f);
     SbVec3f max (width  / 2, height  / 2, 0.f);
     box.setBounds(min, max);
@@ -157,7 +159,6 @@ void SoDatumLabel::computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center)
 
 void SoDatumLabel::generatePrimitives(SoAction * action)
 {
-    
     SoPrimitiveVertex pv;
     SoState *state =  action->getState();
 
@@ -166,7 +167,7 @@ void SoDatumLabel::generatePrimitives(SoAction * action)
     int nc;
 
     const unsigned char * dataptr = this->image.getValue(size, nc);
-    if(dataptr == NULL)
+    if (dataptr == NULL)
         return;
     
     float srcw = size[0];
@@ -186,8 +187,6 @@ void SoDatumLabel::generatePrimitives(SoAction * action)
 
     }
 
-
-    
     beginShape(action, QUADS);
     
     pv.setNormal( SbVec3f(0.f, 0.f, 1.f) );
@@ -211,7 +210,7 @@ void SoDatumLabel::generatePrimitives(SoAction * action)
 void SoDatumLabel::GLRender(SoGLRenderAction * action)
 {
     SoState *state = action->getState();
-    if(!shouldGLRender(action))
+    if (!shouldGLRender(action))
         return;
 
     drawImage();
@@ -276,4 +275,3 @@ void SoDatumLabel::GLRender(SoGLRenderAction * action)
     glDisable(GL_BLEND);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 }
- 
