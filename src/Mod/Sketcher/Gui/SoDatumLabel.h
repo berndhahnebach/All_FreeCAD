@@ -20,8 +20,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef GUI_SODATUMLABEL_H
-#define GUI_SODATUMLABEL_H
+#ifndef SKETCHERGUI_SODATUMLABEL_H
+#define SKETCHERGUI_SODATUMLABEL_H
 
 #include <Inventor/fields/SoSubField.h>
 #include <Inventor/nodes/SoSubNode.h>
@@ -36,9 +36,9 @@
 #include <Inventor/SbBox3f.h>
 #include <Inventor/fields/SoSFImage.h>
 
-namespace Gui {
+namespace SketcherGui {
  
-class GuiExport SoDatumLabel  : public SoShape {
+class SketcherGuiExport SoDatumLabel  : public SoShape {
     typedef SoNode inherited;
 
 
@@ -68,8 +68,7 @@ private:
     float bby;
 };
 
-    
 }
 
 
-#endif // GUI_SODATUMLABEL_H
+#endif // SKETCHERGUI_SODATUMLABEL_H

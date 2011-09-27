@@ -86,7 +86,7 @@ void SketcherGuiExport initSketcherGui()
     SketcherGui::ViewProviderPython         ::init();
     SketcherGui::ViewProviderCustom         ::init();
     SketcherGui::ViewProviderCustomPython   ::init();
-    Gui::SoDatumLabel                       ::initClass();
+    SketcherGui::SoDatumLabel               ::initClass();
 
      // add resources and reloads the translators
     loadSketcherResource();

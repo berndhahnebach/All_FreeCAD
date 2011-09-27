@@ -1819,7 +1819,7 @@ Restart:
                     SbVec3f p1_ = p1 + normproj12 * norm;
                     SbVec3f midpos = (p1_ + p2)/2;
 
-                    Gui::SoDatumLabel *asciiText = dynamic_cast<Gui::SoDatumLabel *>(sep->getChild(4));
+                    SoDatumLabel *asciiText = dynamic_cast<SoDatumLabel *>(sep->getChild(4));
                     asciiText->string = SbString().sprintf("%.2f",Constr->Value);
 
                     // Get Bounding box dimensions for Datum text
@@ -1874,8 +1874,8 @@ Restart:
 
                     // Calculate the coordinates for the parallel datum lines
                     datumCord->point.set1Value(4,p1_    + norm * length);
-                    datumCord->point.set1Value(5,midpos + norm * length - dir * (textBB[0]/1.7) );
-                    datumCord->point.set1Value(6,midpos + norm * length + dir * (textBB[0]/1.7) );
+                    datumCord->point.set1Value(5,midpos + norm * length - dir * (textBB[0]/1.7f) );
+                    datumCord->point.set1Value(6,midpos + norm * length + dir * (textBB[0]/1.7f) );
                     datumCord->point.set1Value(7,p2     + norm * length);
 
                     // Use the coordinates calculated earlier to the lineset
@@ -2076,7 +2076,7 @@ Restart:
                     } else
                         break;
 
-                    Gui::SoDatumLabel *asciiText = dynamic_cast<Gui::SoDatumLabel *>(sep->getChild(4));
+                    SoDatumLabel *asciiText = dynamic_cast<SoDatumLabel *>(sep->getChild(4));
                     asciiText->string = SbString().sprintf("%.2f",Constr->Value * 180./M_PI);
 
                     // Get Bounding box dimensions for Datum text
@@ -2178,7 +2178,7 @@ Restart:
                     float length = Constr->LabelDistance;
                     SbVec3f pos = p2 + length*dir;
 
-                    Gui::SoDatumLabel *asciiText = dynamic_cast<Gui::SoDatumLabel *>(sep->getChild(4));
+                    SoDatumLabel *asciiText = dynamic_cast<SoDatumLabel *>(sep->getChild(4));
                     asciiText->string = SbString().sprintf("%.2f",Constr->Value);
 
                     // Get Bounding box dimensions for Datum text
@@ -2206,7 +2206,7 @@ Restart:
                         flip = true;
                     }
 
-                    SbVec3f textpos = pos + norm * ( (flip ? 1:-1) * textBBCenter[1] / 1.7);
+                    SbVec3f textpos = pos + norm * ( (flip ? 1:-1) * textBBCenter[1] / 1.7f);
 
                     // set position and rotation of Datums Text
                     SoTransform *transform = dynamic_cast<SoTransform *>(sep->getChild(2));
@@ -2217,14 +2217,14 @@ Restart:
                     SoSeparator *sepDatum = dynamic_cast<SoSeparator *>(sep->getChild(1));
                     SoCoordinate3 *datumCord = dynamic_cast<SoCoordinate3 *>(sepDatum->getChild(0));
 
-                    SbVec3f p3 = pos + dir * (6+textBB[0]/1.7);
+                    SbVec3f p3 = pos + dir * (6+textBB[0]/1.7f);
                     if ((p3-p1).length() > (p2-p1).length())
                         p2 = p3;
 
                     // Calculate the coordinates for the parallel datum lines
                     datumCord->point.set1Value(0,p1);
-                    datumCord->point.set1Value(1,pos - dir * (1+textBB[0]/1.7) );
-                    datumCord->point.set1Value(2,pos + dir * (1+textBB[0]/1.7) );
+                    datumCord->point.set1Value(1,pos - dir * (1+textBB[0]/1.7f) );
+                    datumCord->point.set1Value(2,pos + dir * (1+textBB[0]/1.7f) );
                     datumCord->point.set1Value(3,p2);
 
                     // Use the coordinates calculated earlier to the lineset
@@ -2294,8 +2294,8 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
 
                     sep->addChild(font);
                     
-                    Gui::SoDatumLabel *text = new Gui::SoDatumLabel();
-                    //text->justification =  Gui::SoDatumLabel::CENTER;
+                    SoDatumLabel *text = new SoDatumLabel();
+                    //text->justification =  SoDatumLabel::CENTER;
                     text->string = "";
                     sep->addChild(text);
 
