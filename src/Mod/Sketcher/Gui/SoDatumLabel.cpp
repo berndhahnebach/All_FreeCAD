@@ -25,6 +25,8 @@
 #ifndef _PreComp_
 # ifdef FC_OS_WIN32
 # include <windows.h>
+# undef min
+# undef max
 # endif
 # ifdef FC_OS_MACOSX
 # include <OpenGL/gl.h>
@@ -54,7 +56,7 @@
 #include "SoDatumLabel.h"
 #include <Gui/BitmapFactory.h>
 
-using namespace Gui;
+using namespace SketcherGui;
 
 // ------------------------------------------------------
 
