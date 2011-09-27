@@ -136,17 +136,27 @@ void SoDatumLabel::computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center)
     float srcw = size[0];
     float srch = size[1];
 
-    
-    SoState *state =  action->getState();
-    
-    const SbViewVolume & vv = SoViewVolumeElement::get(state);
-    float scale = vv.getWorldToScreenScale(SbVec3f(0.f,0.f,0.f), 1.f);
+    float height, width;
 
-    float aspectRatio =  (float) srcw / (float) srch;
+    if(action->getTypeId() == SoGLRenderAction::getClassTypeId()) {
+         // Update using the GL state
+        SoState *state =  action->getState();
+        float srcw = size[0];
+        float srch = size[1];
 
-    float height = scale / (float) srcw;
-    float width  = aspectRatio * (float) height;
-    if (action->getTypeId() != SoGLRenderAction::getClassTypeId()) {
+        const SbViewVolume & vv = SoViewVolumeElement::get(state);
+        float scale = vv.getWorldToScreenScale(SbVec3f(0.f,0.f,0.f), 1.f);
+
+        float aspectRatio =  (float) srcw / (float) srch;
+
+        height = scale / (float) srcw;
+        width  = aspectRatio * (float) height;
+
+        // Update stored values
+        this->bbx = width;
+        this->bby = height;
+    } else {
+        // Update Primitives using stored dimensions
         width = this->bbx;
         height = this->bby;
     }
@@ -159,9 +169,6 @@ void SoDatumLabel::computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center)
 
 void SoDatumLabel::generatePrimitives(SoAction * action)
 {
-    SoPrimitiveVertex pv;
-    SoState *state =  action->getState();
-
     // Get the size
     SbVec2s size;
     int nc;
@@ -170,25 +177,35 @@ void SoDatumLabel::generatePrimitives(SoAction * action)
     if (dataptr == NULL)
         return;
     
-    float srcw = size[0];
-    float srch = size[1];
+    float width, height;
 
-    const SbViewVolume & vv = SoViewVolumeElement::get(state);
-    float scale = vv.getWorldToScreenScale(SbVec3f(0.f,0.f,0.f), 1.f);
+    if(action->getTypeId() == SoGLRenderAction::getClassTypeId()) {
+         // Update using the GL state
+        SoState *state =  action->getState();
+        float srcw = size[0];
+        float srch = size[1];
 
-    float aspectRatio =  (float) srcw / (float) srch;
+        const SbViewVolume & vv = SoViewVolumeElement::get(state);
+        float scale = vv.getWorldToScreenScale(SbVec3f(0.f,0.f,0.f), 1.f);
 
-    float height = scale / (float) srcw;
-    float width  = aspectRatio * (float) height;
+        float aspectRatio =  (float) srcw / (float) srch;
 
-    if(action->getTypeId() != SoGLRenderAction::getClassTypeId()) {
+        height = scale / (float) srcw;
+        width  = aspectRatio * (float) height;
+
+        // Update stored dimensions
+        this->bbx = width;
+        this->bby = height;
+    } else {
+        // Update Primitives using stored dimensions
         width = this->bbx;
         height = this->bby;
-
     }
 
+    SoPrimitiveVertex pv;
+
     beginShape(action, QUADS);
-    
+
     pv.setNormal( SbVec3f(0.f, 0.f, 1.f) );
 
     // Set coordinates
@@ -222,21 +239,21 @@ void SoDatumLabel::GLRender(SoGLRenderAction * action)
 
     int srcw = size[0];
     int srch = size[1];
-    int skipx = 0;
-    int skipy = 0;
 
-//     glDisable(GL_LIGHTING);
+    state->push();
+    
     glPixelStorei(GL_UNPACK_ROW_LENGTH, srcw);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
+    glPushAttrib(GL_ENABLE_BIT);
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_TEXTURE_2D); // Enable Textures
+    glEnable(GL_BLEND); 
+    
     // Copy the text bitmap into memory and bind
     GLuint myTexture;
     // generate a texture
     glGenTextures(1, &myTexture);
-
-    glDisable(GL_DEPTH_TEST);
-    // enable texturing
-    glEnable(GL_TEXTURE_2D);
 
     glBindTexture(GL_TEXTURE_2D, myTexture);
 
@@ -244,9 +261,6 @@ void SoDatumLabel::GLRender(SoGLRenderAction * action)
     glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
     glTexImage2D(GL_TEXTURE_2D, 0, nc, srcw, srch, 0, GL_RGBA, GL_UNSIGNED_BYTE,(const GLvoid*)  dataptr);
-
-    // Use Stored Texture
-    glEnable(GL_BLEND);
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         // Create the quad to hold texture
@@ -266,12 +280,11 @@ void SoDatumLabel::GLRender(SoGLRenderAction * action)
     glTexCoord2f(0.f, 0.f); glVertex2f(-width / 2,-height / 2);
     glTexCoord2f(1.f, 0.f); glVertex2f( width/ 2,-height / 2);
     glTexCoord2f(1.f, 1.f); glVertex2f( width / 2, height / 2);
-    
+
     glEnd();
 
     // Reset the Mode
-    glDisable(GL_DEPTH_TEST);
-    glDisable(GL_TEXTURE_2D);
-    glDisable(GL_BLEND);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+    glPopAttrib();
+    state->pop();
 }
