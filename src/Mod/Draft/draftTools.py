@@ -69,6 +69,7 @@ if os.path.isdir(altpat):
 
 # sets the default working plane
 plane = WorkingPlane.plane()
+FreeCAD.DraftWorkingPlane = plane
 defaultWP = Draft.getParam("defaultWP")
 if defaultWP == 1: plane.alignToPointAndAxis(Vector(0,0,0), Vector(0,0,1), 0)
 elif defaultWP == 2: plane.alignToPointAndAxis(Vector(0,0,0), Vector(0,1,0), 0)
@@ -285,41 +286,43 @@ def constrainPoint (target,pt,mobile=False,sym=False):
         point = Vector(pt)
 	if len(target.node) > 0:
 		last = target.node[-1]
-		maxx = abs(point.x - last.x)
-		maxy = abs(point.y - last.y)
-		if target.ui.zValue.isEnabled():
-			maxz = abs(point.z - last.z)
-		else:
-			maxz = 0
+                dvec = point.sub(last)
+                affinity = plane.getClosestAxis(dvec)
 		if ((target.constrain == None) or mobile):
-			if ((maxx > maxy) and (maxx > maxz)):
-				point.y = last.y
-				point.z = last.z
+                        if affinity == "x":
+                                dv = fcvec.project(dvec,plane.u)
+                                point = last.add(dv)
 				if sym:
-					point.y = last.y+(point.x-last.x)
-					point.z = last.z+(point.x-last.x)
+                                        l = dv.Length
+                                        if dv.getAngle(plane.u) > 1:
+                                                l = -l
+                                        point = last.add(plane.getGlobalCoords(Vector(l,l,l)))
 				target.constrain = 0 #x direction
 				target.ui.xValue.setEnabled(True)
 				target.ui.yValue.setEnabled(False)
 				target.ui.zValue.setEnabled(False)
                                 target.ui.xValue.setFocus()
-			elif ((maxy > maxx) and (maxy > maxz)):
-				point.x = last.x
-				point.z = last.z
+                        elif affinity == "y":
+                                dv = fcvec.project(dvec,plane.v)
+                                point = last.add(dv)
 				if sym:
-					point.x = last.x+(point.y-last.y)
-					point.z = last.z+(point.y-last.y)
+                                        l = dv.Length
+                                        if dv.getAngle(plane.v) > 1:
+                                                l = -l
+                                        point = last.add(plane.getGlobalCoords(Vector(l,l,l)))
 				target.constrain = 1 #y direction
 				target.ui.xValue.setEnabled(False)
 				target.ui.yValue.setEnabled(True)
 				target.ui.zValue.setEnabled(False)
                                 target.ui.yValue.setFocus()
-			elif ((maxz > maxx) and (maxz > maxy)):
-				point.x = last.x
-				point.y = last.y
+                        elif affinity == "z":
+                                dv = fcvec.project(dvec,plane.axis)
+                                point = last.add(dv)
 				if sym:
-					point.x = last.x+(point.z-last.z)
-					point.y = last.y+(point.z-last.z)
+                                        l = dv.Length
+                                        if dv.getAngle(plane.axis) > 1:
+                                                l = -l
+                                        point = last.add(plane.getGlobalCoords(Vector(l,l,l)))
 				target.constrain = 2 #z direction
 				target.ui.xValue.setEnabled(False)
 				target.ui.yValue.setEnabled(False)
@@ -327,24 +330,29 @@ def constrainPoint (target,pt,mobile=False,sym=False):
                                 target.ui.zValue.setFocus()
 			else: target.constrain = 3
 		elif (target.constrain == 0):
-			point.y = last.y
-			point.z = last.z
-			if sym:
-				point.y = last.y+(point.x-last.x)
-				point.z = last.z+(point.x-last.x)
+                        dv = fcvec.project(dvec,plane.u)
+                        point = last.add(dv)
+                        if sym:
+                                l = dv.Length
+                                if dv.getAngle(plane.u) > 1:
+                                        l = -l
+                                point = last.add(plane.getGlobalCoords(Vector(l,l,l)))
 		elif (target.constrain == 1):
-			point.x = last.x
-			point.z = last.z
-			if sym:
-				point.x = last.x+(point.y-last.y)
-				point.z = last.z+(point.y-last.y)
+                        dv = fcvec.project(dvec,plane.v)
+                        point = last.add(dv)
+                        if sym:
+                                l = dv.Length
+                                if dv.getAngle(plane.u) > 1:
+                                        l = -l
+                                point = last.add(plane.getGlobalCoords(Vector(l,l,l)))
 		elif (target.constrain == 2):
-			point.x = last.x
-			point.y = last.y
-			if sym:
-				point.x = last.x+(point.z-last.z)
-				point.y = last.y+(point.z-last.z)
-			
+                        dv = fcvec.project(dvec,plane.axis)
+                        point = last.add(dv)
+                        if sym:
+                                l = dv.Length
+                                if dv.getAngle(plane.u) > 1:
+                                        l = -l
+                                point = last.add(plane.getGlobalCoords(Vector(l,l,l)))			
 	return point
 
 def selectObject(arg):
@@ -406,10 +414,10 @@ def getPoint(target,args,mobile=False,sym=False,workingplane=True):
 		ui.zValue.setEnabled(True)
 	if target.node:
 		if target.featureName == "Rectangle":
-			ui.displayPoint(point, target.node[0])
+			ui.displayPoint(point, target.node[0], plane=plane)
 		else:
-			ui.displayPoint(point, target.node[-1])
-	else: ui.displayPoint(point)
+			ui.displayPoint(point, target.node[-1], plane=plane)
+	else: ui.displayPoint(point, plane=plane)
 	return point,ctrlPoint
 
 def getSupport(args):

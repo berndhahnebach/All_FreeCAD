@@ -747,6 +747,12 @@ class DraftToolBar:
                                                         numx = last.x + numx
                                                         numy = last.y + numy
                                                         numz = last.z + numz
+                                                        if FreeCAD.DraftWorkingPlane:
+                                                                v = FreeCAD.Vector(numx,numy,numz)
+                                                                v = FreeCAD.DraftWorkingPlane.getGlobalCoords(v)
+                                                                numx = v.x
+                                                                numy = v.y
+                                                                numz = v.z
                                         self.sourceCmd.numericInput(numx,numy,numz)
 
         def finish(self):
@@ -839,11 +845,14 @@ class DraftToolBar:
                                 self.textline -= 1
                                 self.textValue.setText(self.textbuffer[self.textline])
 
-        def displayPoint(self, point, last=None):
+        def displayPoint(self, point, last=None, plane=None):
                 "this function displays the passed coords in the x, y, and z widgets"
                 dp = point
                 if self.isRelative.isChecked() and (last != None):
-                        dp = FreeCAD.Vector(point.x-last.x, point.y-last.y, point.z-last.z)
+                        if plane:
+                                dp = plane.getLocalCoords(FreeCAD.Vector(point.x-last.x, point.y-last.y, point.z-last.z))
+                        else:
+                                dp = FreeCAD.Vector(point.x-last.x, point.y-last.y, point.z-last.z)
                 self.xValue.setText("%.2f" % dp.x)
                 self.yValue.setText("%.2f" % dp.y)
                 if self.zValue.isEnabled(): self.zValue.setText("%.2f" % dp.z)
@@ -958,6 +967,7 @@ class DraftToolBar:
                 p.save(b,"XPM")
                 b.close()
                 return str(a)
+
 
 #---------------------------------------------------------------------------
 # TaskView operations
