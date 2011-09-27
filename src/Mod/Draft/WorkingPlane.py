@@ -188,6 +188,44 @@ class plane:
                         self.position = self.stored[3]
                         self.weak = self.stored[4]
                         self.stored = None
+
+        def getLocalCoords(self,point):
+                "returns the coordinates of a given point on the working plane"
+                xv = fcvec.project(point,self.u)
+                x = xv.Length
+                if xv.getAngle(self.u) > 1:
+                        x = -x
+                yv = fcvec.project(point,self.v)
+                y = yv.Length
+                if yv.getAngle(self.v) > 1:
+                        y = -y
+                zv = fcvec.project(point,self.axis)
+                z = zv.Length
+                if zv.getAngle(self.axis) > 1:
+                        z = -z
+                return Vector(x,y,z)
+
+        def getGlobalCoords(self,point):
+                "returns the global coordinates of the given point, taken relatively to this working plane"
+                vx = fcvec.scale(self.u,point.x)
+                vy = fcvec.scale(self.v,point.y)
+                vz = fcvec.scale(self.axis,point.z)
+                return (vx.add(vy)).add(vz)
+
+        def getClosestAxis(self,point):
+                "returns which of the workingplane axes is closest from the given vector"
+                ax = point.getAngle(self.u)
+                ay = point.getAngle(self.v)
+                az = point.getAngle(self.axis)
+                b = min(ax,ay,az)
+                if b == ax:
+                        return "x"
+                elif b == ay:
+                        return "y"
+                elif b == az:
+                        return "z"
+                else:
+                        return None
                 
 def getPlacementFromPoints(points):
         "returns a placement from a list of 3 or 4 vectors"
