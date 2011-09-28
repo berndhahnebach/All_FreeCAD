@@ -31,7 +31,7 @@
 
 using namespace App;
 
-PROPERTY_SOURCE(App::InventorObject, App::DocumentObject)
+PROPERTY_SOURCE(App::InventorObject, App::GeoFeature)
 
 
 InventorObject::InventorObject() 

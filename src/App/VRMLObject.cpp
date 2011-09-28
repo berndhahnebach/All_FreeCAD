@@ -31,7 +31,7 @@
 
 using namespace App;
 
-PROPERTY_SOURCE(App::VRMLObject, App::DocumentObject)
+PROPERTY_SOURCE(App::VRMLObject, App::GeoFeature)
 
 
 VRMLObject::VRMLObject() 

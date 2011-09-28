@@ -24,14 +24,14 @@
 #ifndef APP_VRMLOROBJECT_H
 #define APP_VRMLOROBJECT_H
 
-#include "DocumentObject.h"
+#include "GeoFeature.h"
 #include "PropertyFile.h"
 
 
 namespace App
 {
 
-class AppExport VRMLObject : public DocumentObject
+class AppExport VRMLObject : public GeoFeature
 {
     PROPERTY_HEADER(App::VRMLObject);
 
