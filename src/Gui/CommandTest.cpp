@@ -23,13 +23,16 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <QApplication>
 # include <QEventLoop>
+# include <QFileDialog>
 # include <QMutex>
 # include <QThread>
 # include <QTimer>
 # include <QMdiArea>
 # include <QMdiSubWindow>
 # include <QWaitCondition>
+# include <QTranslator>
 #endif
 
 #include <Base/Console.h>
@@ -37,6 +40,7 @@
 #include "MainWindow.h"
 #include "MDIView.h"
 #include "Command.h"
+#include "Language/Translator.h"
 
 #include "ProgressBar.h"
 
@@ -44,6 +48,43 @@
 using namespace Gui;
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+//===========================================================================
+// Std_TestQM
+//===========================================================================
+DEF_STD_CMD(Std_TestQM);
+
+Std_TestQM::Std_TestQM()
+  : Command("Std_TestQM")
+{
+    sGroup        = "Standard-Test";
+    sMenuText     = "Test translation files...";
+    sToolTipText  = "Test function to check .qm translation files";
+    sWhatsThis    = sToolTipText;
+    sStatusTip    = sToolTipText;
+}
+
+void Std_TestQM::activated(int iMsg)
+{
+    QStringList files = QFileDialog::getOpenFileNames(getMainWindow(),
+        QString::fromAscii("Test translation"), QString(),
+        QString::fromAscii("Translation (*.qm)"));
+    if (!files.empty()) {
+        Translator::instance()->activateLanguage("English");
+        QList<QTranslator*> i18n = qApp->findChildren<QTranslator*>();
+        for (QList<QTranslator*>::Iterator it = i18n.begin(); it != i18n.end(); ++it)
+            qApp->removeTranslator(*it);
+        for (QStringList::Iterator it = files.begin(); it != files.end(); ++it) {
+            QTranslator* translator = new QTranslator(qApp);
+            if (translator->load(*it)) {
+                qApp->installTranslator(translator);
+            }
+            else {
+                delete translator;
+            }
+        }
+    }
+}
 
 //===========================================================================
 // Std_Test1
@@ -584,6 +625,7 @@ void CreateTestCommands(void)
 {
     CommandManager &rcCmdMgr = Application::Instance->commandManager();
 
+    rcCmdMgr.addCommand(new Std_TestQM());
     rcCmdMgr.addCommand(new FCCmdTest1());
     rcCmdMgr.addCommand(new FCCmdTest2());
     rcCmdMgr.addCommand(new FCCmdTest3());
