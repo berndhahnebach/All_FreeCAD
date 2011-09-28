@@ -88,6 +88,8 @@ public:
 protected:
     bool setEdit(int ModNum);
     void unsetEdit(int ModNum);
+    void setEditViewer(View3DInventorViewer*, int ModNum);
+    void unsetEditViewer(View3DInventorViewer*);
     //@}
 
 protected:

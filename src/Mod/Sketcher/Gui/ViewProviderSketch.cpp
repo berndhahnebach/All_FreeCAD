@@ -308,6 +308,8 @@ void ViewProviderSketch::getCoordsOnSketchPlane(double &u, double &v,const SbVec
 
     // line
     Base::Vector3d R1(point[0],point[1],point[2]),RA(normal[0],normal[1],normal[2]);
+    if (fabs(RN*RA) < FLT_EPSILON)
+        throw Base::Exception("View direction is parallel to sketch plane");
     // intersection point on plane
     Base::Vector3d S = R1 + ((RN * (R0-R1))/(RN*RA))*RA;
 
@@ -2524,11 +2526,6 @@ bool ViewProviderSketch::setEdit(int ModNum)
     else
         Gui::Control().showDialog(new TaskDlgEditSketch(this));
 
-    Gui::View3DInventor *mdi = qobject_cast<Gui::View3DInventor*>(this->getActiveView());
-    if (mdi) {
-        mdi->getViewer()->setEditing(TRUE);
-    }
-
     // set up the sketch and diagnose possible conflicts
     int dofs = edit->ActSketch.setUpSketch(getSketchObject()->Geometry.getValues(),
                                            getSketchObject()->Constraints.getValues());
@@ -2721,10 +2718,27 @@ void ViewProviderSketch::unsetEdit(int ModNum)
 
     // when pressing ESC make sure to close the dialog
     Gui::Control().closeDialog();
-    Gui::View3DInventor *mdi = qobject_cast<Gui::View3DInventor*>(this->getActiveView());
-    if (mdi) {
-        mdi->getViewer()->setEditing(FALSE);
+}
+
+void ViewProviderSketch::setEditViewer(Gui::View3DInventorViewer* viewer, int ModNum)
+{
+    Base::Placement plm = getSketchObject()->Placement.getValue();
+    Base::Rotation tmp(plm.getRotation());
+
+    SbRotation rot((float)tmp[0],(float)tmp[1],(float)tmp[2],(float)tmp[3]);
+    SbVec3f axis(0,0,1);
+    rot.multVec(axis,axis);
+    SbVec3f normal = viewer->getViewDirection();
+    if (fabs(axis.dot(normal)) < FLT_EPSILON) {
+        viewer->setCameraOrientation(rot);
     }
+
+    viewer->setEditing(TRUE);
+}
+
+void ViewProviderSketch::unsetEditViewer(Gui::View3DInventorViewer* viewer)
+{
+    viewer->setEditing(FALSE);
 }
 
 void ViewProviderSketch::setPositionText(const Base::Vector2D &Pos)

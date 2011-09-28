@@ -34,6 +34,7 @@
 
 #include <Inventor/nodes/SoSubNode.h>
 #include <Inventor/nodes/SoSeparator.h>
+#include <Inventor/fields/SoSFBool.h>
 #include <Inventor/fields/SoSFColor.h>
 #include <Inventor/fields/SoSFEnum.h>
 #include <Inventor/fields/SoSFString.h>
@@ -69,27 +70,13 @@ public:
         AUTO, ON, OFF
     };
 
-    enum SelectionModes {
-        SEL_ON, SEL_OFF
-    };
-
-    enum Selected {
-        NOTSELECTED, SELECTED
-    };
-
-    enum Styles {
-        EMISSIVE, EMISSIVE_DIFFUSE, BOX
-    };
-
     const char* getFileFormatName(void) const;
-    SbBool isHighlighted(void) const {return highlighted;}
 
     SoSFColor colorHighlight;
     SoSFColor colorSelection;
-    SoSFEnum style;
-    SoSFEnum selected;
     SoSFEnum highlightMode;
     SoSFEnum selectionMode;
+    SoSFBool selectionRole;
 
     virtual void doAction(SoAction *action);
     //virtual void GLRender(SoGLRenderAction * action);

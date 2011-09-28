@@ -194,6 +194,10 @@ public:
     bool startEditing(int ModNum = 0);
     bool isEditing() const;
     void finishEditing();
+    /// adjust viewer settings when editing a view provider
+    virtual void setEditViewer(View3DInventorViewer*, int ModNum);
+    /// restores viewer settings when leaving editing mode
+    virtual void unsetEditViewer(View3DInventorViewer*);
     //@}
 
     /** @name Task panel 
