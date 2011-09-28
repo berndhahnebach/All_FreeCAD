@@ -24,14 +24,14 @@
 #ifndef APP_INVENTOROBJECT_H
 #define APP_INVENTOROBJECT_H
 
-#include "DocumentObject.h"
+#include "GeoFeature.h"
 #include "PropertyStandard.h"
 
 
 namespace App
 {
 
-class AppExport InventorObject : public DocumentObject
+class AppExport InventorObject : public GeoFeature
 {
     PROPERTY_HEADER(App::InventorObject);
 
