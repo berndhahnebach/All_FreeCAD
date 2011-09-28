@@ -36,7 +36,6 @@ using namespace SketcherGui;
 
 SketchOrientationDialog::SketchOrientationDialog(void) 
 {
-    
 
 }
 
@@ -44,8 +43,6 @@ SketchOrientationDialog::~SketchOrientationDialog()
 {
 
 }
-
-
 
 int SketchOrientationDialog::exec()
 {
@@ -57,23 +54,22 @@ int SketchOrientationDialog::exec()
     Ui::SketchOrientationDialog ui_SketchOrientationDialog;
     ui_SketchOrientationDialog.setupUi(&dlg);
 
-
     int res;
     if (res=dlg.exec()) {
-        if(ui_SketchOrientationDialog.XY_radioButton->isChecked() ){
-            Pos = Base::Placement(Base::Vector3d(0,0,ui_SketchOrientationDialog.Offset_doubleSpinBox->value()),Base::Rotation());
+        double offset = ui_SketchOrientationDialog.Offset_doubleSpinBox->value();
+        if (ui_SketchOrientationDialog.XY_radioButton->isChecked() ){
+            Pos = Base::Placement(Base::Vector3d(0,0,offset),Base::Rotation());
             DirType = 0;
-        }else
-        if(ui_SketchOrientationDialog.XZ_radioButton->isChecked() ){
-            Pos = Base::Placement(Base::Vector3d(0,ui_SketchOrientationDialog.Offset_doubleSpinBox->value(),0),Base::Rotation(Base::Vector3d(1,0,0),-M_PI/2));
+        }
+        else if (ui_SketchOrientationDialog.XZ_radioButton->isChecked() ){
+            Pos = Base::Placement(Base::Vector3d(0,offset,0),Base::Rotation(Base::Vector3d(-1,0,0),1.5*M_PI));
             DirType = 1;
-        }else
-        if(ui_SketchOrientationDialog.YZ_radioButton->isChecked() ){
-            Pos = Base::Placement(Base::Vector3d(ui_SketchOrientationDialog.Offset_doubleSpinBox->value(),0,0),Base::Rotation(Base::Vector3d(0,1,0),M_PI/2));
+        }
+        else if (ui_SketchOrientationDialog.YZ_radioButton->isChecked() ){
+            Pos = Base::Placement(Base::Vector3d(offset,0,0),Base::Rotation(0.5,0.5,0.5,0.5));
             DirType = 2;
         }
     }
 
     return res;
-
 }
