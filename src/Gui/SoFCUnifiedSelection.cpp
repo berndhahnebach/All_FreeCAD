@@ -95,34 +95,17 @@ SoFCUnifiedSelection::SoFCUnifiedSelection() : viewer(0)
 
     SO_NODE_ADD_FIELD(colorHighlight, (SbColor(1.0f, 0.6f, 0.0f)));
     SO_NODE_ADD_FIELD(colorSelection, (SbColor(0.1f, 0.8f, 0.1f)));
-    SO_NODE_ADD_FIELD(style,          (EMISSIVE));
     SO_NODE_ADD_FIELD(highlightMode,  (AUTO));
-    SO_NODE_ADD_FIELD(selectionMode,  (SEL_ON));
-    SO_NODE_ADD_FIELD(selected,       (NOTSELECTED));
-
-    SO_NODE_DEFINE_ENUM_VALUE(Styles, EMISSIVE);
-    SO_NODE_DEFINE_ENUM_VALUE(Styles, EMISSIVE_DIFFUSE);
-    SO_NODE_DEFINE_ENUM_VALUE(Styles, BOX);
-    SO_NODE_SET_SF_ENUM_TYPE(style,   Styles);
+    SO_NODE_ADD_FIELD(selectionRole,  (TRUE));
 
     SO_NODE_DEFINE_ENUM_VALUE(HighlightModes, AUTO);
     SO_NODE_DEFINE_ENUM_VALUE(HighlightModes, ON);
     SO_NODE_DEFINE_ENUM_VALUE(HighlightModes, OFF);
     SO_NODE_SET_SF_ENUM_TYPE (highlightMode, HighlightModes);
 
-    SO_NODE_DEFINE_ENUM_VALUE(SelectionModes, SEL_ON);
-    SO_NODE_DEFINE_ENUM_VALUE(SelectionModes, SEL_OFF);
-    SO_NODE_SET_SF_ENUM_TYPE (selectionMode,  SelectionModes);
-
-    SO_NODE_DEFINE_ENUM_VALUE(Selected, NOTSELECTED);
-    SO_NODE_DEFINE_ENUM_VALUE(Selected, SELECTED);
-    SO_NODE_SET_SF_ENUM_TYPE(selected,  Selected);
-
     highlighted = FALSE;
     bShift      = FALSE;
     bCtrl       = FALSE;
-
-    selected = NOTSELECTED;
 }
 
 /*!
@@ -168,7 +151,7 @@ void SoFCUnifiedSelection::applySettings()
         this->colorHighlight.setValue(highlightColor);
     }
     if (!enableSel) {
-        this->selectionMode = SoFCUnifiedSelection::SEL_OFF;
+        this->selectionMode = SoFCUnifiedSelection::OFF;
     }
     else {
         // Do the same with the selection color
@@ -240,13 +223,10 @@ void SoFCUnifiedSelection::doAction(SoAction *action)
     if (action->getTypeId() == SoFCEnableSelectionAction::getClassTypeId()) {
         SoFCEnableSelectionAction *selaction = (SoFCEnableSelectionAction*)action;
         if (selaction->selection) {
-            this->selectionMode = SoFCUnifiedSelection::SEL_ON;
+            this->selectionMode = SoFCUnifiedSelection::ON;
         }
         else {
-            this->selectionMode = SoFCUnifiedSelection::SEL_OFF;
-            if (selected.getValue() == SELECTED) {
-                this->selected = NOTSELECTED;
-            }
+            this->selectionMode = SoFCUnifiedSelection::OFF;
         }
     }
 
@@ -260,7 +240,7 @@ void SoFCUnifiedSelection::doAction(SoAction *action)
         this->colorHighlight = colaction->highlightColor;
     }
 
-    if (selectionMode.getValue() == SEL_ON && action->getTypeId() == SoFCSelectionAction::getClassTypeId()) {
+    if (selectionMode.getValue() == ON && action->getTypeId() == SoFCSelectionAction::getClassTypeId()) {
         SoFCSelectionAction *selaction = static_cast<SoFCSelectionAction*>(action);
         if (selaction->SelChange.Type == SelectionChanges::AddSelection || 
             selaction->SelChange.Type == SelectionChanges::RmvSelection) {
@@ -310,6 +290,12 @@ void SoFCUnifiedSelection::doAction(SoAction *action)
 void
 SoFCUnifiedSelection::handleEvent(SoHandleEventAction * action)
 {
+    // If off then don't handle this event
+    if (!selectionRole.getValue()) {
+        inherited::handleEvent(action);
+        return;
+    }
+
     static char buf[513];
     HighlightModes mymode = (HighlightModes) this->highlightMode.getValue();
     const SoEvent * event = action->getEvent();
@@ -419,7 +405,7 @@ SoFCUnifiedSelection::handleEvent(SoHandleEventAction * action)
     }
     // mouse press events for (de)selection
     else if (event->isOfType(SoMouseButtonEvent::getClassTypeId()) && 
-             selectionMode.getValue() == SoFCUnifiedSelection::SEL_ON) {
+             selectionMode.getValue() == SoFCUnifiedSelection::ON) {
         const SoMouseButtonEvent* e = static_cast<const SoMouseButtonEvent *>(event);
         if (SoMouseButtonEvent::isButtonReleaseEvent(e,SoMouseButtonEvent::BUTTON1)) {
             // check to see if the mouse is over a geometry...

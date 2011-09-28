@@ -183,6 +183,8 @@ public:
 protected:
     virtual bool setEdit(int ModNum);
     virtual void unsetEdit(int ModNum);
+    virtual void setEditViewer(Gui::View3DInventorViewer*, int ModNum);
+    virtual void unsetEditViewer(Gui::View3DInventorViewer*);
     /// helper to detect whether the picked point lies on the sketch
     bool isPointOnSketch(const SoPickedPoint *pp) const;
     /// get called by the container whenever a property has been changed

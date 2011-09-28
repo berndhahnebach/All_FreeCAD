@@ -59,6 +59,7 @@
 #include <Inventor/nodes/SoDepthBuffer.h>
 #endif
 #include "SoNavigationDragger.h"
+#include "SoFCUnifiedSelection.h"
 
 using namespace Gui;
 
@@ -196,7 +197,7 @@ void ViewProviderGeometryObject::updateData(const App::Property* prop)
 
 bool ViewProviderGeometryObject::doubleClicked(void)
 {
-    Gui::Application::Instance->activeDocument()->setEdit(this);
+    Gui::Application::Instance->activeDocument()->setEdit(this, (int)ViewProvider::Transform);
     return true;
 }
 
@@ -299,6 +300,23 @@ void ViewProviderGeometryObject::unsetEdit(int ModNum)
 #else
 	pcRoot->removeChild(0);
 #endif 
+}
+
+void ViewProviderGeometryObject::setEditViewer(Gui::View3DInventorViewer* viewer, int ModNum)
+{
+    if (ModNum == (int)ViewProvider::Transform) {
+        SoNode* root = viewer->getSceneGraph();
+        static_cast<SoFCUnifiedSelection*>(root)->selectionRole.setValue(FALSE);
+    }
+}
+
+void ViewProviderGeometryObject::unsetEditViewer(Gui::View3DInventorViewer* viewer)
+{
+    int ModNum = this->getEditingMode();
+    if (ModNum == (int)ViewProvider::Transform) {
+        SoNode* root = viewer->getSceneGraph();
+        static_cast<SoFCUnifiedSelection*>(root)->selectionRole.setValue(TRUE);
+    }
 }
 
 void ViewProviderGeometryObject::sensorCallback(void * data, SoSensor * s)

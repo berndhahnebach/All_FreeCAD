@@ -121,6 +121,14 @@ void ViewProvider::unsetEdit(int ModNum)
 {
 }
 
+void ViewProvider::setEditViewer(View3DInventorViewer*, int ModNum)
+{
+}
+
+void ViewProvider::unsetEditViewer(View3DInventorViewer*)
+{
+}
+
 bool ViewProvider::isUpdatesEnabled () const
 {
     return _updateData;
