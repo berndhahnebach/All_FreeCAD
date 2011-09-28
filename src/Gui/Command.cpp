@@ -443,7 +443,7 @@ const std::string Command::strToPython(const char* Str)
 void Command::updateActive(void)
 {
     WaitCursor wc;
-    Gui::Application::Instance->activeDocument()->getDocument()->recompute();
+    doCommand(Gui,"App.ActiveDocument.recompute()");
 }
 
 bool Command::isActiveObjectValid(void)
