@@ -96,6 +96,7 @@ SoFCUnifiedSelection::SoFCUnifiedSelection() : viewer(0)
     SO_NODE_ADD_FIELD(colorHighlight, (SbColor(1.0f, 0.6f, 0.0f)));
     SO_NODE_ADD_FIELD(colorSelection, (SbColor(0.1f, 0.8f, 0.1f)));
     SO_NODE_ADD_FIELD(highlightMode,  (AUTO));
+    SO_NODE_ADD_FIELD(selectionMode,  (ON));
     SO_NODE_ADD_FIELD(selectionRole,  (TRUE));
 
     SO_NODE_DEFINE_ENUM_VALUE(HighlightModes, AUTO);
