@@ -102,6 +102,8 @@ DlgPrimitives::DlgPrimitives(QWidget* parent, Qt::WFlags fl)
     ui.helixPitch->setMaximum(INT_MAX);
     ui.helixHeight->setMaximum(INT_MAX);
     ui.helixRadius->setMaximum(INT_MAX);
+    // circle
+    ui.circleRadius->setMaximum(INT_MAX);
 }
 
 /*  
@@ -349,7 +351,22 @@ void DlgPrimitives::accept()
                 .arg(ui.helixAngle->value(),0,'f',2)
                 .arg(this->toPlacement());
         }
+        else if (ui.comboBox1->currentIndex() == 9) {  // circle
+            name = QString::fromAscii(doc->getUniqueObjectName("Circle").c_str());
+            cmd = QString::fromAscii(
+                "App.ActiveDocument.addObject(\"Part::Circle\",\"%1\")\n"
+                "App.ActiveDocument.%1.Radius=%2\n"
+                "App.ActiveDocument.%1.Angle0=%3\n"
+                "App.ActiveDocument.%1.Angle1=%4\n"
+                "App.ActiveDocument.%1.Placement=%5\n")
+                .arg(name)
+                .arg(ui.circleRadius->value(),0,'f',2)
+                .arg(ui.circleAngle0->value(),0,'f',2)
+                .arg(ui.circleAngle1->value(),0,'f',2)
+                .arg(this->toPlacement());
+        }
 
+        
         // Execute the Python block
         QString prim = tr("Create %1").arg(ui.comboBox1->currentText());
         Gui::Application::Instance->activeDocument()->openCommand(prim.toUtf8());
