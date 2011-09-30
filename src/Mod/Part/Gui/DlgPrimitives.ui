@@ -1171,7 +1171,7 @@
                   <double>0.000000000000000</double>
                  </property>
                  <property name="maximum">
-                  <double>89.989999999999995</double>
+                  <double>89.99</double>
                  </property>
                  <property name="singleStep">
                   <double>1.000000000000000</double>
@@ -1182,6 +1182,90 @@
                 </widget>
                </item>
               </layout>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="page_4circle">
+            <layout class="QGridLayout" name="gridLayout_3">
+             <item row="0" column="0">
+              <layout class="QGridLayout" name="circleParameters">
+               <property name="margin">
+                <number>0</number>
+               </property>
+               <property name="spacing">
+                <number>6</number>
+               </property>
+               <item row="0" column="0">
+                <widget class="QLabel" name="Radius">
+                 <property name="text">
+                  <string>Radius:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QDoubleSpinBox" name="circleRadius">
+                 <property name="maximum">
+                  <double>1000000000.000000000000000</double>
+                 </property>
+                 <property name="value">
+                  <double>2.000000000000000</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="Angle0">
+                 <property name="text">
+                  <string>Angle0</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QDoubleSpinBox" name="circleAngle0">
+                 <property name="maximum">
+                  <double>360.000000000000000</double>
+                 </property>
+                 <property name="value">
+                  <double>0.000000000000000</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <widget class="QLabel" name="Angle1">
+                 <property name="text">
+                  <string>Angle1</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QDoubleSpinBox" name="circleAngle1">
+                 <property name="minimum">
+                  <double>0.000000000000000</double>
+                 </property>
+                 <property name="maximum">
+                  <double>360.000000000000000</double>
+                 </property>
+                 <property name="singleStep">
+                  <double>1.000000000000000</double>
+                 </property>
+                 <property name="value">
+                  <double>360.000000000000000</double>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item row="1" column="0">
+              <spacer name="verticalSpacer">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>95</height>
+                </size>
+               </property>
+              </spacer>
              </item>
             </layout>
            </widget>
@@ -1248,6 +1332,11 @@
         <item>
          <property name="text">
           <string>Helix</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Circle</string>
          </property>
         </item>
        </widget>
