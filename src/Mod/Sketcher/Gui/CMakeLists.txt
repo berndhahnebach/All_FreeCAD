@@ -60,6 +60,8 @@ SET(SketcherGui_SRCS
     Resources/Sketcher.qrc
     PreCompiled.cpp
     PreCompiled.h
+    SoZoomTranslation.cpp
+    SoZoomTranslation.h
     SoDatumLabel.cpp
     SoDatumLabel.h
     TaskSketcherConstrains.ui

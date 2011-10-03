@@ -34,7 +34,7 @@
 #include "ViewProviderSketch.h"
 #include "ViewProviderPython.h"
 #include "SoDatumLabel.h"
-
+#include "SoZoomTranslation.h"
 
 // create the commands
 void CreateSketcherCommands(void);
@@ -87,6 +87,7 @@ void SketcherGuiExport initSketcherGui()
     SketcherGui::ViewProviderCustom         ::init();
     SketcherGui::ViewProviderCustomPython   ::init();
     SketcherGui::SoDatumLabel               ::initClass();
+    SketcherGui::SoZoomTranslation          ::initClass();
 
      // add resources and reloads the translators
     loadSketcherResource();

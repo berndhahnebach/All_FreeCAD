@@ -227,6 +227,7 @@ protected:
     static SbTime prvClickTime;
     static SbVec3f prvClickPoint;
 
+    float sf;
     float zCross;
     float zLines;
     float zPoints;
