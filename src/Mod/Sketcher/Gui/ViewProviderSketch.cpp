@@ -88,6 +88,7 @@
 #include <Mod/Sketcher/App/SketchObject.h>
 #include <Mod/Sketcher/App/Sketch.h>
 
+#include "SoZoomTranslation.h"
 #include "SoDatumLabel.h"
 #include "EditDatumDialog.h"
 #include "ViewProviderSketch.h"
@@ -214,6 +215,7 @@ ViewProviderSketch::ViewProviderSketch()
     zText=0.006f;
     zEdit=0.001f;
 
+    sf = -1;
     xInit=0;
     yInit=0;
     relative=false;
@@ -1477,6 +1479,13 @@ void ViewProviderSketch::draw(bool temp)
 {
     assert(edit);
 
+    // Get Bounding box dimensions for Datum text
+    Gui::MDIView *mdi = Gui::Application::Instance->activeDocument()->getActiveView();
+    if (mdi && mdi->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+        Gui::View3DInventorViewer *viewer = static_cast<Gui::View3DInventor *>(mdi)->getViewer();
+        this->sf = viewer->getCamera()->getViewVolume(viewer->getCamera()->aspectRatio.getValue()).getWorldToScreenScale(SbVec3f(0.f, 0.f, 0.f), 0.1f) / 3;
+    }
+                    
     // Render Geometry ===================================================
     std::vector<Base::Vector3d> Coords;
     std::vector<Base::Vector3d> Points;
@@ -1664,10 +1673,21 @@ Restart:
                     //Get a set of vectors perpendicular and tangential to these
                     Base::Vector3d dir = (lineSeg->getEndPoint()-lineSeg->getStartPoint()).Normalize();
                     Base::Vector3d norm(-dir.y,dir.x,0);
-                    Base::Vector3d constrPos = midpos + (norm * 5);
-                    constrPos = seekConstraintPosition(constrPos, dir, 5, edit->constrGroup->getChild(i));
 
-                    dynamic_cast<SoTranslation *>(sep->getChild(1))->translation = SbVec3f(constrPos.x, constrPos.y, zConstr);
+                    float scale = dynamic_cast<SoZoomTranslation *>(sep->getChild(1))->getScaleFactor();
+                    Base::Vector3d constrPos = midpos + (norm * 2.5 * scale);
+
+                    constrPos = seekConstraintPosition(constrPos, dir, 2.5 * scale, edit->constrGroup->getChild(i));
+
+                    // Translate the Icon based on calculated position
+                    Base::Vector3d relPos = constrPos - midpos; // Relative Position of Icons to Midpoint
+                    relPos = relPos / scale; // Must Divide by Scale Factor
+
+                    dynamic_cast<SoZoomTranslation *>(sep->getChild(1))->abPos = SbVec3f(midpos.x, midpos.y, zConstr); //Absolute Reference
+
+                    //Reference Position that is scaled according to zoom                    
+                    dynamic_cast<SoZoomTranslation *>(sep->getChild(1))->translation = SbVec3f(relPos.x, relPos.y, 0);
+
                 }
                 break;
             case Parallel:
@@ -1739,16 +1759,32 @@ Restart:
                         norm2 = Base::Vector3d(-dir2.y,dir2.x,0.);
                     }
 
-                    Base::Vector3d constrPos1 = midpos1 + (norm1 * 5);
-                    constrPos1 = seekConstraintPosition(constrPos1, dir1, 5, edit->constrGroup->getChild(i));
+                    // Get Current Scale Factor
+                    float scale = dynamic_cast<SoZoomTranslation *>(sep->getChild(1))->getScaleFactor();
 
-                    Base::Vector3d constrPos2 = midpos2 + (norm2 * 5);
-                    constrPos2 = seekConstraintPosition(constrPos2, dir2, 5, edit->constrGroup->getChild(i));
+                    Base::Vector3d constrPos1 = midpos1 + (norm1 * scale * 2.5 );
+                    constrPos1 = seekConstraintPosition(constrPos1, dir1, scale * 2.5, edit->constrGroup->getChild(i));
 
-                    constrPos2 = constrPos2 - constrPos1;
+                    Base::Vector3d constrPos2 = midpos2 + (norm2 * scale * 2.5);
+                    constrPos2 = seekConstraintPosition(constrPos2, dir2, scale * 2.5, edit->constrGroup->getChild(i));
 
-                    dynamic_cast<SoTranslation *>(sep->getChild(1))->translation =  SbVec3f(constrPos1.x, constrPos1.y, zConstr);
-                    dynamic_cast<SoTranslation *>(sep->getChild(3))->translation =  SbVec3f(constrPos2.x, constrPos2.y, zConstr);
+                    // Translate the Icon based on calculated position
+                    Base::Vector3d relPos1 = constrPos1 - midpos1 ; // Relative Position of Icons to Midpoint1
+                    Base::Vector3d relPos2 = constrPos2 - midpos2 ; // Relative Position of Icons to Midpoint2
+
+                    relPos1 = relPos1 / scale;
+                    relPos2 = relPos2 / scale;
+
+                    dynamic_cast<SoZoomTranslation *>(sep->getChild(1))->abPos = SbVec3f(midpos1.x, midpos1.y, zConstr); //Absolute Reference
+
+                    //Reference Position that is scaled according to zoom
+                    dynamic_cast<SoZoomTranslation *>(sep->getChild(1))->translation = SbVec3f(relPos1.x, relPos1.y, 0);
+
+                    Base::Vector3d secondPos = midpos2 - midpos1;
+                    dynamic_cast<SoZoomTranslation *>(sep->getChild(3))->abPos = SbVec3f(secondPos.x, secondPos.y, zConstr); //Absolute Reference
+
+                    //Reference Position that is scaled according to zoom
+                    dynamic_cast<SoZoomTranslation *>(sep->getChild(3))->translation = SbVec3f(relPos2.x -relPos1.x, relPos2.y -relPos1.y, 0);
 
                 }
                 break;
@@ -1881,7 +1917,7 @@ Restart:
                     datumCord->point.set1Value(7,p2     + norm * length);
 
                     // Use the coordinates calculated earlier to the lineset
-                    SoLineSet *datumLineSet = dynamic_cast<SoLineSet *>(sepDatum->getChild(1));
+                    SoLineSet *datumLineSet = dynamic_cast<SoLineSet *>(sepDatum->getChild(2));
                     datumLineSet->numVertices.set1Value(0,2);
                     datumLineSet->numVertices.set1Value(1,2);
                     datumLineSet->numVertices.set1Value(2,2);
@@ -1894,10 +1930,11 @@ Restart:
                     assert(Constr->First < int(geomlist->size()));
                     assert(Constr->Second < int(geomlist->size()));
 
-                    Base::Vector3d pos;
+                    Base::Vector3d pos, relPos;
                     if (Constr->Type == PointOnObject) {
                         pos = edit->ActSketch.getPoint(Constr->First, Constr->FirstPos);
-                        pos += Base::Vector3d(0,5,0);
+                        relPos = Base::Vector3d(0.f, 1.f, 0.f);
+
                     }
                     else if (Constr->Type == Tangent) {
                         // get the geometry
@@ -1913,19 +1950,37 @@ Restart:
                             Base::Vector3d midpos2 = ((lineSeg2->getEndPoint()+lineSeg2->getStartPoint())/2);
                             Base::Vector3d dir1 = (lineSeg1->getEndPoint()-lineSeg1->getStartPoint()).Normalize();
                             Base::Vector3d dir2 = (lineSeg2->getEndPoint()-lineSeg2->getStartPoint()).Normalize();
-                            Base::Vector3d norm1 = Base::Vector3d(-dir1.y,dir1.x,0.);
-                            Base::Vector3d norm2 = Base::Vector3d(-dir2.y,dir2.x,0.);
+                            Base::Vector3d norm1 = Base::Vector3d(-dir1.y,dir1.x,0.f);
+                            Base::Vector3d norm2 = Base::Vector3d(-dir2.y,dir2.x,0.f);
 
-                            Base::Vector3d constrPos1 = midpos1 + (norm1 * 5);
-                            constrPos1 = seekConstraintPosition(constrPos1, dir1, 5, edit->constrGroup->getChild(i));
+                            // Get Current Scale Factor
+                            float scale = dynamic_cast<SoZoomTranslation *>(sep->getChild(1))->getScaleFactor();
+                            
+                            Base::Vector3d constrPos1 = midpos1 + (norm1 * scale * 2.5);
+                            constrPos1 = seekConstraintPosition(constrPos1, dir1, scale * 2.5, edit->constrGroup->getChild(i));
 
-                            Base::Vector3d constrPos2 = midpos2 + (norm2 * 5);
-                            constrPos2 = seekConstraintPosition(constrPos2, dir2, 5, edit->constrGroup->getChild(i));
+                            Base::Vector3d constrPos2 = midpos2 + (norm2 * scale * 2.5);
+                            constrPos2 = seekConstraintPosition(constrPos2, dir2, scale * 2.5, edit->constrGroup->getChild(i));
 
                             constrPos2 = constrPos2 - constrPos1;
 
-                            dynamic_cast<SoTranslation *>(sep->getChild(1))->translation =  SbVec3f(constrPos1.x, constrPos1.y, zConstr);
-                            dynamic_cast<SoTranslation *>(sep->getChild(3))->translation =  SbVec3f(constrPos2.x, constrPos2.y, zConstr);
+                            Base::Vector3d relPos1 = midpos1 - constrPos1;
+                            Base::Vector3d relPos2 = midpos2 - constrPos2;
+
+                            relPos1 = relPos1 / scale;
+                            relPos2 = relPos2 / scale;
+
+                            // Translate the Icon based on calculated position
+                            dynamic_cast<SoZoomTranslation *>(sep->getChild(1))->abPos = SbVec3f(midpos1.x, midpos1.y, zConstr); //Absolute Reference
+
+                            //Reference Position that is scaled according to zoom
+                            dynamic_cast<SoZoomTranslation *>(sep->getChild(1))->translation = SbVec3f(relPos1.x, relPos1.y, 0);
+
+                            // Translate the Icon based on calculated position
+                            dynamic_cast<SoZoomTranslation *>(sep->getChild(3))->abPos = SbVec3f(midpos2.x, midpos2.y, zConstr); //Absolute Reference
+
+                            //Reference Position that is scaled according to zoom
+                            dynamic_cast<SoZoomTranslation *>(sep->getChild(3))->translation = SbVec3f(relPos2.x, relPos2.y, 0);
                             break;
                         }
                         else if (geo2->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
@@ -1940,13 +1995,17 @@ Restart:
                                 const Part::GeomCircle *circle = dynamic_cast<const Part::GeomCircle *>(geo2);
                                 // tangency between a line and a circle
                                 float length = (circle->getCenter() - lineSeg->getStartPoint())*dir;
-                                pos = lineSeg->getStartPoint() + dir * length + norm * 5;
+
+                                pos = lineSeg->getStartPoint() + dir * length;
+                                relPos = norm * 1;
                             }
                             else if (geo2->getTypeId()== Part::GeomArcOfCircle::getClassTypeId()) {
                                 const Part::GeomArcOfCircle *arc = dynamic_cast<const Part::GeomArcOfCircle *>(geo2);
                                 // tangency between a line and an arc
                                 float length = (arc->getCenter() - lineSeg->getStartPoint())*dir;
-                                pos = lineSeg->getStartPoint() + dir * length + norm * 5;
+
+                                pos = lineSeg->getStartPoint() + dir * length;
+                                relPos = norm * 1;
                             }
                         }
 
@@ -1974,9 +2033,9 @@ Restart:
                             const Part::GeomArcOfCircle *arc2 = dynamic_cast<const Part::GeomArcOfCircle *>(geo2);
                             // tangency between two arcs
                         }
-
+                        dynamic_cast<SoZoomTranslation *>(sep->getChild(1))->abPos = SbVec3f(pos.x, pos.y, zConstr); //Absolute Reference
+                        dynamic_cast<SoZoomTranslation *>(sep->getChild(1))->translation = SbVec3f(relPos.x, relPos.y, 0);
                     }
-                    dynamic_cast<SoTranslation *>(sep->getChild(1))->translation =  SbVec3f(pos.x, pos.y, zConstr);
                 }
                 break;
             case Symmetric:
@@ -2180,7 +2239,7 @@ Restart:
                     float length = Constr->LabelDistance;
                     SbVec3f pos = p2 + length*dir;
 
-                    SoDatumLabel *asciiText = dynamic_cast<SoDatumLabel *>(sep->getChild(4));
+                    SoDatumLabel *asciiText = dynamic_cast<SoDatumLabel *>(sep->getChild(3));
                     asciiText->string = SbString().sprintf("%.2f",Constr->Value);
 
                     // Get Bounding box dimensions for Datum text
@@ -2189,7 +2248,7 @@ Restart:
 
                     // [FIX ME] Its an attempt to find the height of the text using the bounding box, but is in correct.
                     SoGetBoundingBoxAction bbAction(viewer->getViewportRegion());
-                    bbAction.apply(sep->getChild(4));
+                    bbAction.apply(sep->getChild(3));
 
                     float bx,by,bz;
                     bbAction.getBoundingBox().getSize(bx,by,bz);
@@ -2248,7 +2307,6 @@ Restart:
     for (std::vector<Part::Geometry *>::iterator it = tempGeo.begin(); it != tempGeo.end(); ++it)
         if (*it) delete *it;
 
-    Gui::MDIView *mdi = Gui::Application::Instance->activeDocument()->getActiveView();
     if (mdi && mdi->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
         static_cast<Gui::View3DInventor *>(mdi)->getViewer()->render();
     }
@@ -2283,7 +2341,7 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
                     sepDatum->addChild(new SoCoordinate3());
                     SoLineSet *lineSet = new SoLineSet;
                     sepDatum->addChild(lineSet);
-
+                    
                     sep->addChild(sepDatum);
 
                     // Add the datum text
@@ -2307,9 +2365,9 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
             case Horizontal:
             case Vertical:
                 {
-                    sep->addChild(new SoTranslation()); // 1.
+                    sep->addChild(new SoZoomTranslation()); // 1.          
                     sep->addChild(new SoImage());       // 2. constraint icon
-
+          
                     // remember the type of this constraint node
                     edit->vConstrType.push_back((*it)->Type);
                 }
@@ -2322,11 +2380,11 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
             case Equal:
                 {
                     // Add new nodes to Constraint Seperator
-                    sep->addChild(new SoTranslation()); // 1.
+                    sep->addChild(new SoZoomTranslation()); // 1.
                     sep->addChild(new SoImage());       // 2. first constraint icon
-                    sep->addChild(new SoTranslation()); // 3.
+                    sep->addChild(new SoZoomTranslation()); // 3.
                     sep->addChild(new SoImage());       // 4. second constraint icon
-
+                
                     // remember the type of this constraint node
                     edit->vConstrType.push_back((*it)->Type);
                 }
@@ -2344,7 +2402,7 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
                     }
 
                     // Add new nodes to Constraint Seperator
-                    sep->addChild(new SoTranslation());
+                    sep->addChild(new SoZoomTranslation());
                     sep->addChild(new SoImage()); // constraint icon
 
                     if ((*it)->Type == Tangent) {
@@ -2352,7 +2410,7 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
                         Part::Geometry *geo2 = getSketchObject()->Geometry.getValues()[(*it)->Second];
                         if (geo1->getTypeId() == Part::GeomLineSegment::getClassTypeId() &&
                             geo2->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
-                            sep->addChild(new SoTranslation());
+                            sep->addChild(new SoZoomTranslation());
                             sep->addChild(new SoImage()); // second constraint icon
                         }
                     }
