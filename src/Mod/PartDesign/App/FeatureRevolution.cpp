@@ -58,6 +58,8 @@ Revolution::Revolution()
 short Revolution::mustExecute() const
 {
     if (Sketch.isTouched() ||
+        Axis.isTouched() ||
+        Base.isTouched() ||
         Angle.isTouched())
         return 1;
     return 0;
@@ -89,7 +91,7 @@ App::DocumentObjectExecReturn *Revolution::execute(void)
     for (ex.Init(shape, TopAbs_WIRE); ex.More(); ex.Next()) {
         wires.push_back(TopoDS::Wire(ex.Current()));
     }
-    if (/*shape.ShapeType() != TopAbs_WIRE*/wires.empty()) // there can be several wires
+    if (wires.empty()) // there can be several wires
         return new App::DocumentObjectExecReturn("Linked shape object is not a wire");
 
     Base::Vector3f b = Base.getValue();
