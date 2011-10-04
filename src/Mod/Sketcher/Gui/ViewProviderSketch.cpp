@@ -1861,7 +1861,6 @@ Restart:
                     asciiText->string = SbString().sprintf("%.2f",Constr->Value);
 
                     // Get Bounding box dimensions for Datum text
-                    Gui::MDIView *mdi = Gui::Application::Instance->activeDocument()->getActiveView();
                     Gui::View3DInventorViewer *viewer = static_cast<Gui::View3DInventor *>(mdi)->getViewer();
 
                     // [FIX ME] Its an attempt to find the height of the text using the bounding box, but is in correct.
@@ -1917,7 +1916,7 @@ Restart:
                     datumCord->point.set1Value(7,p2     + norm * length);
 
                     // Use the coordinates calculated earlier to the lineset
-                    SoLineSet *datumLineSet = dynamic_cast<SoLineSet *>(sepDatum->getChild(2));
+                    SoLineSet *datumLineSet = dynamic_cast<SoLineSet *>(sepDatum->getChild(1));
                     datumLineSet->numVertices.set1Value(0,2);
                     datumLineSet->numVertices.set1Value(1,2);
                     datumLineSet->numVertices.set1Value(2,2);
