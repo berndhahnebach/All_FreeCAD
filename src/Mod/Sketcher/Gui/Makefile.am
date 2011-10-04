@@ -31,6 +31,8 @@ libSketcherGui_la_SOURCES=\
 		PreCompiled.h \
 		SoDatumLabel.cpp \
 		SoDatumLabel.h \
+		SoZoomTranslation.cpp \
+		SoZoomTranslation.h \
 		TaskSketcherConstrains.cpp \
 		TaskSketcherConstrains.h \
 		TaskSketcherCreateCommands.cpp \
