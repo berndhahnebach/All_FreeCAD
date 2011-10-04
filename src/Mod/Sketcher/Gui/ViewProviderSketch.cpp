@@ -1906,9 +1906,10 @@ Restart:
                     SoCoordinate3 *datumCord = dynamic_cast<SoCoordinate3 *>(sepDatum->getChild(0));
 
                     // [Fixme] This should be made neater - compute the vertical datum line length
-                    float offset1 = (length + normproj12 < 0) ? -2  : 2;
-                    float offset2 = (length < 0) ? -2  : 2;
-
+                    float offset1 = (length + normproj12 < 0) ? -0.5  : 0.5;
+                    float offset2 = (length < 0) ? -0.5  : 0.5;
+                    offset1 *= getScaleFactor();
+                    offset2 *= getScaleFactor();
                     // Calculate coordinates for perpendicular datum lines
                     datumCord->point.set1Value(0,p1);
                     datumCord->point.set1Value(1,p1_ + norm * (length + offset1));
@@ -2146,7 +2147,6 @@ Restart:
                     asciiText->string = SbString().sprintf("%.2f",Constr->Value * 180./M_PI);
 
                     // Get Bounding box dimensions for Datum text
-                    Gui::MDIView *mdi = Gui::Application::Instance->activeDocument()->getActiveView();
                     Gui::View3DInventorViewer *viewer = static_cast<Gui::View3DInventor *>(mdi)->getViewer();
 
                     // [FIX ME] Its an attempt to find the height of the text using the bounding box, but is in correct.
@@ -2193,10 +2193,11 @@ Restart:
                     }
                     SbVec3f v1(cos(startangle),sin(startangle),0);
                     SbVec3f v2(cos(endangle),sin(endangle),0);
-                    datumCord->point.set1Value(2*countSegments  ,p0+(r-2)*v1);
-                    datumCord->point.set1Value(2*countSegments+1,p0+(r+2)*v1);
-                    datumCord->point.set1Value(2*countSegments+2,p0+(r-2)*v2);
-                    datumCord->point.set1Value(2*countSegments+3,p0+(r+2)*v2);
+                    float sf = getScaleFactor();
+                    datumCord->point.set1Value(2*countSegments  ,p0+(r-0.5 * sf)*v1);
+                    datumCord->point.set1Value(2*countSegments+1,p0+(r+0.5 * sf)*v1);
+                    datumCord->point.set1Value(2*countSegments+2,p0+(r-0.5 * sf)*v2);
+                    datumCord->point.set1Value(2*countSegments+3,p0+(r+0.5 * sf)*v2);
 
                     // Use the coordinates calculated earlier to the lineset
                     SoLineSet *datumLineSet = dynamic_cast<SoLineSet *>(sepDatum->getChild(1));
