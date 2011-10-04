@@ -215,7 +215,6 @@ ViewProviderSketch::ViewProviderSketch()
     zText=0.006f;
     zEdit=0.001f;
 
-    sf = -1;
     xInit=0;
     yInit=0;
     relative=false;
@@ -1475,17 +1474,23 @@ void ViewProviderSketch::drawConstraintIcons()
     }
 }
 
+float ViewProviderSketch::getScaleFactor()
+{
+    Gui::MDIView *mdi = Gui::Application::Instance->activeDocument()->getActiveView();
+    if (mdi && mdi->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+        Gui::View3DInventorViewer *viewer = static_cast<Gui::View3DInventor *>(mdi)->getViewer();
+        return viewer->getCamera()->getViewVolume(viewer->getCamera()->aspectRatio.getValue()).getWorldToScreenScale(SbVec3f(0.f, 0.f, 0.f), 0.1f) / 3;
+    } else {
+        return 1.f;
+    }
+}
 void ViewProviderSketch::draw(bool temp)
 {
     assert(edit);
 
     // Get Bounding box dimensions for Datum text
     Gui::MDIView *mdi = Gui::Application::Instance->activeDocument()->getActiveView();
-    if (mdi && mdi->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
-        Gui::View3DInventorViewer *viewer = static_cast<Gui::View3DInventor *>(mdi)->getViewer();
-        this->sf = viewer->getCamera()->getViewVolume(viewer->getCamera()->aspectRatio.getValue()).getWorldToScreenScale(SbVec3f(0.f, 0.f, 0.f), 0.1f) / 3;
-    }
-                    
+
     // Render Geometry ===================================================
     std::vector<Base::Vector3d> Coords;
     std::vector<Base::Vector3d> Points;
@@ -1655,6 +1660,7 @@ Restart:
         // root separator for this constraint
         SoSeparator *sep = dynamic_cast<SoSeparator *>(edit->constrGroup->getChild(i));
         const Constraint *Constr = *it;
+
         // distinquish different constraint types to build up
         switch (Constr->Type) {
             case Horizontal: // write the new position of the Horizontal constraint Same as vertical position.
@@ -2238,7 +2244,7 @@ Restart:
                     float length = Constr->LabelDistance;
                     SbVec3f pos = p2 + length*dir;
 
-                    SoDatumLabel *asciiText = dynamic_cast<SoDatumLabel *>(sep->getChild(3));
+                    SoDatumLabel *asciiText = dynamic_cast<SoDatumLabel *>(sep->getChild(4));
                     asciiText->string = SbString().sprintf("%.2f",Constr->Value);
 
                     // Get Bounding box dimensions for Datum text
@@ -2340,7 +2346,7 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
                     sepDatum->addChild(new SoCoordinate3());
                     SoLineSet *lineSet = new SoLineSet;
                     sepDatum->addChild(lineSet);
-                    
+
                     sep->addChild(sepDatum);
 
                     // Add the datum text
@@ -2352,7 +2358,7 @@ void ViewProviderSketch::rebuildConstraintsVisual(void)
                     font->name = "FreeSans:bold, Helvetica, Arial, FreeSans:bold";
 
                     sep->addChild(font);
-                    
+
                     SoDatumLabel *text = new SoDatumLabel();
                     //text->justification =  SoDatumLabel::CENTER;
                     text->string = "";

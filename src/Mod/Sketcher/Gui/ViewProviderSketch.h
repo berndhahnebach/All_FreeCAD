@@ -143,7 +143,8 @@ public:
     Base::Vector3d seekConstraintPosition(const Base::Vector3d &suggestedPos,
                                           const Base::Vector3d &dir, int step,
                                           const SoNode *constraint);
-
+    
+    float getScaleFactor();
     int getPreselectPoint(void) const;
     int getPreselectCurve(void) const;
     int getPreselectConstraint(void) const;
@@ -227,7 +228,6 @@ protected:
     static SbTime prvClickTime;
     static SbVec3f prvClickPoint;
 
-    float sf;
     float zCross;
     float zLines;
     float zPoints;
