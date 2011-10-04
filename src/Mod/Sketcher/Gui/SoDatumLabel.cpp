@@ -145,12 +145,11 @@ void SoDatumLabel::computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center)
         float srch = size[1];
 
         const SbViewVolume & vv = SoViewVolumeElement::get(state);
-        float scale = vv.getWorldToScreenScale(SbVec3f(0.f,0.f,0.f), 1.f);
+        float scale = vv.getWorldToScreenScale(SbVec3f(0.f,0.f,0.f), 0.5f);
 
         float aspectRatio =  (float) srcw / (float) srch;
-
-        height = scale / (float) srcw;
-        width  = aspectRatio * (float) height;
+        float height = scale / (float) srch;
+        float width  = aspectRatio * (float) height;
 
         // Update stored values
         this->bbx = width;
@@ -186,12 +185,11 @@ void SoDatumLabel::generatePrimitives(SoAction * action)
         float srch = size[1];
 
         const SbViewVolume & vv = SoViewVolumeElement::get(state);
-        float scale = vv.getWorldToScreenScale(SbVec3f(0.f,0.f,0.f), 1.f);
+        float scale = vv.getWorldToScreenScale(SbVec3f(0.f,0.f,0.f), 0.5f);
 
         float aspectRatio =  (float) srcw / (float) srch;
-
-        height = scale / (float) srcw;
-        width  = aspectRatio * (float) height;
+        float height = scale / (float) srch;
+        float width  = aspectRatio * (float) height;
 
         // Update stored dimensions
         this->bbx = width;
@@ -267,11 +265,13 @@ void SoDatumLabel::GLRender(SoGLRenderAction * action)
     glBegin(GL_QUADS);
 
     const SbViewVolume & vv = SoViewVolumeElement::get(state);
-    float scale = vv.getWorldToScreenScale(SbVec3f(0.f,0.f,0.f), 1.f);
+    float scale = vv.getWorldToScreenScale(SbVec3f(0.f,0.f,0.f), 0.5f);
                     
     float aspectRatio =  (float) srcw / (float) srch;
-    float height = scale / (float) srcw;
+    float height = scale / (float) srch;
     float width  = aspectRatio * (float) height;
+
+    
 
     this->bbx = width;
     this->bby = height;
