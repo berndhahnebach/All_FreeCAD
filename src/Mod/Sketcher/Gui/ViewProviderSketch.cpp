@@ -2194,10 +2194,10 @@ Restart:
                     SbVec3f v1(cos(startangle),sin(startangle),0);
                     SbVec3f v2(cos(endangle),sin(endangle),0);
                     float sf = getScaleFactor();
-                    datumCord->point.set1Value(2*countSegments  ,p0+(r-0.5 * sf)*v1);
-                    datumCord->point.set1Value(2*countSegments+1,p0+(r+0.5 * sf)*v1);
-                    datumCord->point.set1Value(2*countSegments+2,p0+(r-0.5 * sf)*v2);
-                    datumCord->point.set1Value(2*countSegments+3,p0+(r+0.5 * sf)*v2);
+                    datumCord->point.set1Value(2*countSegments  ,p0+(r-0.5f * sf)*v1);
+                    datumCord->point.set1Value(2*countSegments+1,p0+(r+0.5f * sf)*v1);
+                    datumCord->point.set1Value(2*countSegments+2,p0+(r-0.5f * sf)*v2);
+                    datumCord->point.set1Value(2*countSegments+3,p0+(r+0.5f * sf)*v2);
 
                     // Use the coordinates calculated earlier to the lineset
                     SoLineSet *datumLineSet = dynamic_cast<SoLineSet *>(sepDatum->getChild(1));
