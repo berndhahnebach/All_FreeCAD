@@ -1276,7 +1276,9 @@ TopoDS_Shape TopoShape::makePipe(const TopoDS_Shape& profile) const
     return mkPipe.Shape();
 }
 
-TopoDS_Shape TopoShape::makePipeShell(const TopTools_ListOfShape& profiles, const Standard_Boolean make_solid) const
+TopoDS_Shape TopoShape::makePipeShell(const TopTools_ListOfShape& profiles,
+                                      const Standard_Boolean make_solid,
+                                      const Standard_Boolean isFrenet) const
 {
     if (this->_Shape.IsNull())
         Standard_Failure::Raise("Cannot sweep along empty spine");
@@ -1284,6 +1286,7 @@ TopoDS_Shape TopoShape::makePipeShell(const TopTools_ListOfShape& profiles, cons
         Standard_Failure::Raise("Spine shape is not a wire");
 
     BRepOffsetAPI_MakePipeShell mkPipeShell(TopoDS::Wire(this->_Shape));
+    mkPipeShell.SetMode(isFrenet);
     TopTools_ListIteratorOfListOfShape it;
     for (it.Initialize(profiles); it.More(); it.Next()) {
         mkPipeShell.Add(TopoDS_Shape(it.Value()));
