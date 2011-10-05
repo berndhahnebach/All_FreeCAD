@@ -171,8 +171,9 @@ PyObject* TopoShapeWirePy::makePipeShell(PyObject *args)
 {
     PyObject *obj;
     int make_solid = 0;
+    int is_Frenet = 0;
 
-    if (PyArg_ParseTuple(args, "O!|i", &(PyList_Type), &obj, &make_solid)) {
+    if (PyArg_ParseTuple(args, "O!|ii", &(PyList_Type), &obj, &make_solid, &is_Frenet)) {
         try {
             TopTools_ListOfShape sections;
             Py::List list(obj);
@@ -182,7 +183,7 @@ PyObject* TopoShapeWirePy::makePipeShell(PyObject *args)
                     sections.Append(shape);
                 }
             }
-            TopoDS_Shape shape = this->getTopoShapePtr()->makePipeShell(sections, make_solid);
+            TopoDS_Shape shape = this->getTopoShapePtr()->makePipeShell(sections, make_solid, is_Frenet);
             return new TopoShapePy(new TopoShape(shape));
         }
         catch (Standard_Failure) {
