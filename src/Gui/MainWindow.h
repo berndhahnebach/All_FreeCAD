@@ -209,6 +209,7 @@ public Q_SLOTS:
     void whatsThis();
     void switchToTopLevelMode();
     void switchToDockedMode();
+    void showMessage (const QString & message, int timeout = 0);
 
 protected:
     /**
