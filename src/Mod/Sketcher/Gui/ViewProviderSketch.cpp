@@ -1940,7 +1940,8 @@ Restart:
                     if (Constr->Type == PointOnObject) {
                         pos = edit->ActSketch.getPoint(Constr->First, Constr->FirstPos);
                         relPos = Base::Vector3d(0.f, 1.f, 0.f);
-
+                        dynamic_cast<SoZoomTranslation *>(sep->getChild(1))->abPos = SbVec3f(pos.x, pos.y, zConstr); //Absolute Reference
+                        dynamic_cast<SoZoomTranslation *>(sep->getChild(1))->translation = SbVec3f(relPos.x, relPos.y, 0);
                     }
                     else if (Constr->Type == Tangent) {
                         // get the geometry
