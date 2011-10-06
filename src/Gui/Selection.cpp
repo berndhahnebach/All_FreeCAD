@@ -474,7 +474,7 @@ bool SelectionSingleton::setPreselect(const char* pDocName, const char* pObjectN
                                                        );
 
                     if (getMainWindow()){
-                        getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
+                        getMainWindow()->showMessage(QString::fromAscii(buf),3000);
                         Gui::MDIView* mdi = Gui::Application::Instance->activeDocument()->getActiveView();
                         if (mdi && mdi->isDerivedFrom(View3DInventor::getClassTypeId())) {
                             static_cast<View3DInventor*>(mdi)->setCursor(Qt::ForbiddenCursor);
@@ -516,7 +516,7 @@ bool SelectionSingleton::setPreselect(const char* pDocName, const char* pObjectN
                                                        ,x,y,z);
 
     if (getMainWindow()){
-        getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
+        getMainWindow()->showMessage(QString::fromAscii(buf),3000);
         Gui::MDIView* mdi = Gui::Application::Instance->activeDocument()->getActiveView();
         if (mdi && mdi->isDerivedFrom(View3DInventor::getClassTypeId())) {
             static_cast<View3DInventor*>(mdi)->setCursor(Qt::ArrowCursor);
@@ -549,7 +549,7 @@ void SelectionSingleton::setPreselectCoord( float x, float y, float z)
                                                        ,x,y,z);
 
     if (getMainWindow())
-        getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
+        getMainWindow()->showMessage(QString::fromAscii(buf),3000);
 }
 
 void SelectionSingleton::rmvPreselect()
@@ -645,7 +645,7 @@ bool SelectionSingleton::addSelection(const char* pDocName, const char* pObjectN
         {
             if(! ActiveGate->allow(temp.pDoc,temp.pObject,pSubName)){
                 if (getMainWindow()){
-                    getMainWindow()->statusBar()->showMessage(QString::fromAscii("Selection not allowed by filter"),5000);
+                    getMainWindow()->showMessage(QString::fromAscii("Selection not allowed by filter"),5000);
                     Gui::MDIView* mdi = Gui::Application::Instance->activeDocument()->getActiveView();
                     if (mdi && mdi->isDerivedFrom(View3DInventor::getClassTypeId())) {
                         static_cast<View3DInventor*>(mdi)->setCursor(Qt::ForbiddenCursor);

@@ -344,7 +344,7 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
                                            ,pp->getPoint()[1]
                                            ,pp->getPoint()[2]);
 
-                getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
+                getMainWindow()->showMessage(QString::fromAscii(buf),3000);
             }
             else { // picked point
                 if (highlighted) {
@@ -403,7 +403,7 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
                                                        ,pp->getPoint()[1]
                                                        ,pp->getPoint()[2]);
 
-                            getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
+                            getMainWindow()->showMessage(QString::fromAscii(buf),3000);
                         }
                     }
                 }
@@ -437,7 +437,7 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
                                                    ,pp->getPoint()[1]
                                                    ,pp->getPoint()[2]);
 
-                        getMainWindow()->statusBar()->showMessage(QString::fromAscii(buf),3000);
+                        getMainWindow()->showMessage(QString::fromAscii(buf),3000);
                     }
                 }
 

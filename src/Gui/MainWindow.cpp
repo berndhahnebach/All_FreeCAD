@@ -32,6 +32,7 @@
 # include <QContextMenuEvent>
 # include <QDesktopWidget>
 # include <QDockWidget>
+# include <QFontMetrics>
 # include <QLabel>
 # include <QMdiSubWindow>
 # include <QMessageBox>
@@ -1466,6 +1467,13 @@ void MainWindow::changeEvent(QEvent *e)
     else {
         QMainWindow::changeEvent(e);
     }
+}
+
+void MainWindow::showMessage (const QString& message, int timeout)
+{
+    QFontMetrics fm(statusBar()->font());
+    QString msg = fm.elidedText(message, Qt::ElideMiddle, this->width()/2);
+    this->statusBar()->showMessage(msg, timeout);
 }
 
 // -------------------------------------------------------------
