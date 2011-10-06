@@ -185,15 +185,22 @@ void CmdSketcherConstrainHorizontal::activated(int iMsg)
     const std::vector<std::string> &SubNames = selection[0].getSubNames();
     Sketcher::SketchObject* Obj = dynamic_cast<Sketcher::SketchObject*>(selection[0].getObject());
     const std::vector< Sketcher::Constraint * > &vals = Obj->Constraints.getValues();
+    const std::vector<Part::Geometry *> &geomlist = Obj->Geometry.getValues();
 
-    // undo command open
-    openCommand("add horizontal constraint");
-
+    std::vector<int> ids;
     // go through the selected subelements
     for(std::vector<std::string>::const_iterator it=SubNames.begin();it!=SubNames.end();++it){
         // only handle edges
         if (it->size() > 4 && it->substr(0,4) == "Edge") {
             int index=std::atoi(it->substr(4,4000).c_str());
+
+            Part::Geometry *geo = geomlist[index];
+            if (geo->getTypeId() != Part::GeomLineSegment::getClassTypeId()) {
+                QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Impossible constraint"),
+                                     QObject::tr("The selected edge is not a line segment"));
+                return;
+            }
+
             // check if the edge has already a Horizontal or Vertical constraint
             for (std::vector< Sketcher::Constraint * >::const_iterator it= vals.begin();
                  it != vals.end(); ++it) {
@@ -204,14 +211,20 @@ void CmdSketcherConstrainHorizontal::activated(int iMsg)
                 }
                 if ((*it)->Type == Sketcher::Vertical && (*it)->First == index) {
                     QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Impossible constraint"),
-                        QObject::tr("The selected edge has already a vertical constraint!"));
+                                         QObject::tr("The selected edge has already a vertical constraint!"));
                     return;
                 }
             }
-            // issue the actual commands to create the constraint
-            doCommand(Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Horizontal',%d)) "
-                         ,selection[0].getFeatName(),index);
+            ids.push_back(index);
         }
+    }
+        // undo command open
+    openCommand("add horizontal constraint");
+
+    for(std::vector<int>::iterator it = ids.begin(); it!=ids.end();it++) {
+        // issue the actual commands to create the constraint
+        doCommand(Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Horizontal',%d)) "
+                        ,selection[0].getFeatName(),*it);
     }
     // finish the transaction and update
     commitCommand();
@@ -259,15 +272,23 @@ void CmdSketcherConstrainVertical::activated(int iMsg)
     const std::vector<std::string> &SubNames = selection[0].getSubNames();
     Sketcher::SketchObject* Obj = dynamic_cast<Sketcher::SketchObject*>(selection[0].getObject());
     const std::vector< Sketcher::Constraint * > &vals = Obj->Constraints.getValues();
+    const std::vector<Part::Geometry *> &geomlist = Obj->Geometry.getValues();
 
-    // undo command open
-    openCommand("add vertical constraint");
+     std::vector<int> ids;
 
     // go through the selected subelements
     for(std::vector<std::string>::const_iterator it=SubNames.begin();it!=SubNames.end();++it){
         // only handle edges
         if (it->size() > 4 && it->substr(0,4) == "Edge") {
             int index=std::atoi(it->substr(4,4000).c_str());
+
+            Part::Geometry *geo = geomlist[index];
+            if (geo->getTypeId() != Part::GeomLineSegment::getClassTypeId()) {
+                QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Impossible constraint"),
+                                     QObject::tr("The selected edge is not a line segment"));
+                return;
+            }
+
             // check if the edge has already a Horizontal or Vertical constraint
             for (std::vector< Sketcher::Constraint * >::const_iterator it= vals.begin();
                  it != vals.end(); ++it) {
@@ -282,10 +303,16 @@ void CmdSketcherConstrainVertical::activated(int iMsg)
                     return;
                 }
             }
-            // issue the actual command to create the constraint
-            doCommand(Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Vertical',%d))"
-                         ,selection[0].getFeatName(),index);
+            ids.push_back(index);
         }
+    }
+
+    // undo command open
+    openCommand("add vertical constraint");
+    for(std::vector<int>::iterator it = ids.begin(); it!=ids.end();it++) {
+     // issue the actual command to create the constraint
+        doCommand(Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Vertical',%d))"
+                        ,selection[0].getFeatName(),*it);
     }
     // finish the transaction and update
     commitCommand();
@@ -1000,42 +1027,59 @@ void CmdSketcherConstrainParallel::activated(int iMsg)
     // only one sketch with its subelements are allowed to be selected
     if (selection.size() != 1) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
-            QObject::tr("Select two lines from the sketch."));
+            QObject::tr("Select an edge from the sketch."));
         return;
     }
 
     // get the needed lists and objects
     const std::vector<std::string> &SubNames = selection[0].getSubNames();
+    Sketcher::SketchObject* Obj = dynamic_cast<Sketcher::SketchObject*>(selection[0].getObject());
+    const std::vector< Sketcher::Constraint * > &vals = Obj->Constraints.getValues();
+    const std::vector<Part::Geometry *> &geomlist = Obj->Geometry.getValues();
 
-    if (SubNames.size() != 2) {
+   
+    // go through the selected subelements
+
+    if (SubNames.size() < 2) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
-            QObject::tr("Select exactly two lines from the sketch."));
+            QObject::tr("Select atleast two lines from the sketch."));
         return;
     }
 
-    int GeoId1,GeoId2;
-    if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge")
-        GeoId1 = std::atoi(SubNames[0].substr(4,4000).c_str());
-    else {
-        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
-            QObject::tr("Select exactly two lines from the sketch."));
-        return;
-    }
+    std::vector<int> ids;
+    for(std::vector<std::string>::const_iterator it=SubNames.begin();it!=SubNames.end();++it) {
+        int index;
+        std::string subName = *it;
+        if (subName.size() > 4 && subName.substr(0,4) == "Edge")
+            index = std::atoi(subName.substr(4,4000).c_str());
+        else {
+            QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+                                 QObject::tr("Select a valid line"));
+            return;
+        }
 
-    if (SubNames[1].size() > 4 && SubNames[1].substr(0,4) == "Edge")
-        GeoId2 = std::atoi(SubNames[1].substr(4,4000).c_str());
-    else {
-        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
-            QObject::tr("Select exactly two lines from the sketch."));
-        return;
+        // Check that the curve is a line segment
+        Part::Geometry *geo = geomlist[index];
+        if (geo->getTypeId() != Part::GeomLineSegment::getClassTypeId()) {
+            QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+                                QObject::tr("The selected edge is not a valid line"));
+            return;
+        }
+        ids.push_back(index);
     }
 
     // undo command open
     openCommand("add parallel constraint");
-    Gui::Command::doCommand(
-        Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Parallel',%d,%d)) ",
-        selection[0].getFeatName(),GeoId1,GeoId2);
+    int i = 0;
+    for(std::vector<int>::iterator it = ids.begin(); it!=ids.end();++it, i++) {
+        if(i == ids.size() - 1)
+            break;
 
+        Gui::Command::doCommand(
+            Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Parallel',%d,%d)) ",
+            selection[0].getFeatName(),ids[i],ids[i+1]);
+    }
+    
     // finish the transaction and update
     commitCommand();
     updateActive();
@@ -1080,6 +1124,9 @@ void CmdSketcherConstrainPerpendicular::activated(int iMsg)
 
     // get the needed lists and objects
     const std::vector<std::string> &SubNames = selection[0].getSubNames();
+    Sketcher::SketchObject* Obj = dynamic_cast<Sketcher::SketchObject*>(selection[0].getObject());
+    const std::vector< Sketcher::Constraint * > &vals = Obj->Constraints.getValues();
+    const std::vector<Part::Geometry *> &geomlist = Obj->Geometry.getValues();
 
     if (SubNames.size() != 2) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
@@ -1087,6 +1134,7 @@ void CmdSketcherConstrainPerpendicular::activated(int iMsg)
         return;
     }
 
+    
     int GeoId1,GeoId2;
     if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge")
         GeoId1 = std::atoi(SubNames[0].substr(4,4000).c_str());
@@ -1104,6 +1152,17 @@ void CmdSketcherConstrainPerpendicular::activated(int iMsg)
         return;
     }
 
+    Part::Geometry *geo1 = geomlist[GeoId1];
+    Part::Geometry *geo2 = geomlist[GeoId2];
+    
+    if (geo1->getTypeId() != Part::GeomLineSegment::getClassTypeId() ||
+        geo2->getTypeId() != Part::GeomLineSegment::getClassTypeId()) {
+        
+        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+        QObject::tr("Select exactly two lines from the sketch."));
+        return;
+    }
+            
     // undo command open
     openCommand("add perpendicular constraint");
     Gui::Command::doCommand(
@@ -1482,36 +1541,63 @@ void CmdSketcherConstrainEqual::activated(int iMsg)
 
     // get the needed lists and objects
     const std::vector<std::string> &SubNames = selection[0].getSubNames();
+    Sketcher::SketchObject* Obj = dynamic_cast<Sketcher::SketchObject*>(selection[0].getObject());
+    const std::vector< Sketcher::Constraint * > &vals = Obj->Constraints.getValues();
+    const std::vector<Part::Geometry *> &geomlist = Obj->Geometry.getValues();
 
-    if (SubNames.size() != 2) {
+
+    // go through the selected subelements
+
+    if (SubNames.size() < 2) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
-            QObject::tr("Select exactly two edges from the sketch."));
+            QObject::tr("Select atleast two lines from the sketch."));
         return;
     }
 
-    int GeoId1,GeoId2;
-    if (SubNames[0].size() > 4 && SubNames[0].substr(0,4) == "Edge")
-        GeoId1 = std::atoi(SubNames[0].substr(4,4000).c_str());
-    else {
-        QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
-            QObject::tr("Select exactly two edges from the sketch."));
-        return;
+    std::vector<int> ids;
+    bool lineSel = false, arcSel = false, circSel = false;
+    
+    for(std::vector<std::string>::const_iterator it=SubNames.begin();it!=SubNames.end();++it) {
+        int index;
+        std::string subName = *it;
+        if (subName.size() > 4 && subName.substr(0,4) == "Edge")
+            index = std::atoi(subName.substr(4,4000).c_str());
+        else {
+            QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+                                 QObject::tr("Select exactly two same geometries"));
+            return;
+        }
+
+        Part::Geometry *geo = geomlist[index];
+        if (geo->getTypeId() != Part::GeomLineSegment::getClassTypeId()) {
+            lineSel = true;
+        } else if (geo->getTypeId() != Part::GeomArcOfCircle::getClassTypeId()) {
+            arcSel = true;
+        } else if (geo->getTypeId() != Part::GeomCircle::getClassTypeId()) {
+            circSel = true;
+        } else {
+            QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
+            QObject::tr("Select valid geometries"));
+            return;
+        }
+
+        ids.push_back(index);
     }
 
-    if (SubNames[1].size() > 4 && SubNames[1].substr(0,4) == "Edge")
-        GeoId2 = std::atoi(SubNames[1].substr(4,4000).c_str());
-    else {
+    if(lineSel && (arcSel || circSel)) {
         QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"),
-            QObject::tr("Select exactly two edges from the sketch."));
+        QObject::tr("Select geometry of similar type"));
         return;
     }
-
     // undo command open
     openCommand("add equality constraint");
-    Gui::Command::doCommand(
-        Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Equal',%d,%d)) ",
-        selection[0].getFeatName(),GeoId1,GeoId2);
-
+    int i = 0;
+    for(std::vector<int>::iterator it = ids.begin(); it!=ids.end();it++, i++) {
+        if( i == ids.size() - 1)
+            break;
+        Gui::Command::doCommand(Doc,"App.ActiveDocument.%s.addConstraint(Sketcher.Constraint('Equal',%d,%d)) ",
+            selection[0].getFeatName(),ids[i],ids[i+1]);
+    }
     // finish the transaction and update
     commitCommand();
     updateActive();
