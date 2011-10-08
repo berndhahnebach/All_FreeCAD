@@ -148,7 +148,7 @@ void CmdPartDesignPad::activated(int iMsg)
     }
     doCommand(Gui,"Gui.activeDocument().setEdit('%s')",FeatName.c_str());
 
-    commitCommand();
+    //commitCommand();
     adjustCameraPosition();
 
     if (support) {
