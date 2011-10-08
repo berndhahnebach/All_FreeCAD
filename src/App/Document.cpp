@@ -1246,12 +1246,15 @@ DocumentObject * Document::addObject(const char* sType, const char* pObjectName)
     App::DocumentObject* pcObject = static_cast<App::DocumentObject*>(base);
     pcObject->setDocument(this);
 
-    // Transaction stuff
-    if (d->activeTransaction)
-        d->activeTransaction->addObjectNew(pcObject);
-    // Undo stuff
-    if (d->activeUndoTransaction)
-        d->activeUndoTransaction->addObjectDel(pcObject);
+    // do no transactions if we do a rollback!
+    if(!d->rollback){
+        // Transaction stuff
+        if (d->activeTransaction)
+            d->activeTransaction->addObjectNew(pcObject);
+        // Undo stuff
+        if (d->activeUndoTransaction)
+            d->activeUndoTransaction->addObjectDel(pcObject);
+    }
 
     // get Unique name
     if (pObjectName && pObjectName[0] != '\0')
@@ -1289,13 +1292,15 @@ void Document::_addObject(DocumentObject* pcObject, const char* pObjectName)
     // cache the pointer to the name string in the Object (for performance of DocumentObject::getNameInDocument())
     pcObject->pcNameInDocument = &(d->objectMap.find(pObjectName)->first);
 
-    // Transaction stuff
-    if (d->activeTransaction)
-        d->activeTransaction->addObjectNew(pcObject);
-    // Undo stuff
-    if (d->activeUndoTransaction)
-        d->activeUndoTransaction->addObjectDel(pcObject);
-
+    // do no transactions if we do a rollback!
+    if(!d->rollback){
+        // Transaction stuff
+        if (d->activeTransaction)
+            d->activeTransaction->addObjectNew(pcObject);
+        // Undo stuff
+        if (d->activeUndoTransaction)
+            d->activeUndoTransaction->addObjectDel(pcObject);
+    }
     // send the signal
     signalNewObject(*pcObject);
 }
@@ -1326,21 +1331,24 @@ void Document::remObject(const char* sName)
     // Before deleting we must nullify all dependant objects
     breakDependency(pos->second, true);
 
-    // Transaction stuff
-    if (d->activeTransaction)
-        d->activeTransaction->addObjectDel(pos->second);
+    // do no transactions if we do a rollback!
+    if(!d->rollback){
 
-    // Undo stuff
-    if (d->activeUndoTransaction) {
-        // in this case transaction delete or save the object
-        d->activeUndoTransaction->addObjectNew(pos->second);
-        // set name cache false
-        //pos->second->pcNameInDocument = 0;
+        // Transaction stuff
+        if (d->activeTransaction)
+            d->activeTransaction->addObjectDel(pos->second);
+
+        // Undo stuff
+        if (d->activeUndoTransaction) {
+            // in this case transaction delete or save the object
+            d->activeUndoTransaction->addObjectNew(pos->second);
+            // set name cache false
+            //pos->second->pcNameInDocument = 0;
+        }
+        else
+            // if not saved in undo -> delete object
+            delete pos->second;
     }
-    else
-        // if not saved in undo -> delete object
-        delete pos->second;
-
 
     for (std::vector<DocumentObject*>::iterator obj = d->objectArray.begin(); obj != d->objectArray.end(); ++obj) {
         if (*obj == pos->second) {
@@ -1364,14 +1372,16 @@ void Document::_remObject(DocumentObject* pcObject)
 
     signalDeletedObject(*pcObject);
 
-    // Transaction stuff
-    if (d->activeTransaction)
-        d->activeTransaction->addObjectDel(pcObject);
+    // do no transactions if we do a rollback!
+    if(!d->rollback){
+        // Transaction stuff
+        if (d->activeTransaction)
+            d->activeTransaction->addObjectDel(pcObject);
 
-    // Undo stuff
-    if (d->activeUndoTransaction)
-        d->activeUndoTransaction->addObjectNew(pcObject);
-
+        // Undo stuff
+        if (d->activeUndoTransaction)
+            d->activeUndoTransaction->addObjectNew(pcObject);
+    }
     // remove from map
     d->objectMap.erase(pos);
     //// set name cache false

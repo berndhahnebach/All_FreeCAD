@@ -132,7 +132,7 @@ bool TaskDlgPadParameters::accept()
 {
     std::string name = PadView->getObject()->getNameInDocument();
 
-    Gui::Command::openCommand("Pad changed");
+    //Gui::Command::openCommand("Pad changed");
     Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.Length = %f",name.c_str(),parameter->getLength());
     Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.Reversed = %i",name.c_str(),parameter->getReversed()?1:0);
     Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.MirroredExtent = %i",name.c_str(),parameter->getMirroredExtent()?1:0);
@@ -145,8 +145,14 @@ bool TaskDlgPadParameters::accept()
 
 bool TaskDlgPadParameters::reject()
 {
-    //Gui::Command::openCommand("Pad changed");
+    std::string name = PadView->getObject()->getNameInDocument();
+    // role back the done things
+    Gui::Command::abortCommand();
     Gui::Command::doCommand(Gui::Command::Gui,"Gui.activeDocument().resetEdit()");
+    
+    // if abort command deleted the object the support is visible again
+    
+
     //Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.recompute()");
     //Gui::Command::commitCommand();
 
