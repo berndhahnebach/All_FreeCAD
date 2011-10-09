@@ -28,10 +28,10 @@
 
 // Importing of App classes
 #ifdef FC_OS_WIN32
-# define PointsAppExport __declspec(dllimport)
+# define PointsExport __declspec(dllimport)
 # define PointsGuiExport __declspec(dllexport)
 #else // for Linux
-# define PointsAppExport
+# define PointsExport
 # define PointsGuiExport
 #endif
 

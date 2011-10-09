@@ -35,7 +35,7 @@
 namespace Robot
 {
 
-class AppRobotExport TrajectoryCompound : public TrajectoryObject
+class RobotExport TrajectoryCompound : public TrajectoryObject
 {
     PROPERTY_HEADER(Robot::TrajectoryObject);
 

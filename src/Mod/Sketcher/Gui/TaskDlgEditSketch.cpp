@@ -76,10 +76,10 @@ bool TaskDlgEditSketch::accept()
 
 bool TaskDlgEditSketch::reject()
 {
-    Gui::Command::openCommand("Sketch changed");
+//    Gui::Command::openCommand("Sketch changed");
     Gui::Command::doCommand(Gui::Command::Gui,"Gui.activeDocument().resetEdit()");
     Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.recompute()");
-    Gui::Command::commitCommand();
+//    Gui::Command::commitCommand();
 
     return true;
 }

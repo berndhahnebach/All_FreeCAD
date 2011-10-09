@@ -41,7 +41,7 @@ namespace Robot
 
 /** The representation of a Trajectory
  */
-class AppRobotExport Trajectory : public Base::Persistence
+class RobotExport Trajectory : public Base::Persistence
 {
     TYPESYSTEM_HEADER();
 

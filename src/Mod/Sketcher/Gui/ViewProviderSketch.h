@@ -157,7 +157,7 @@ public:
 
     virtual void setupContextMenu(QMenu *menu, QObject *receiver, const char *member);
     /// is called when the Provider is in edit and a deletion request occurs
-    void delSelected(void);
+    virtual bool onDelete(const std::vector<std::string> &);
     /// is called by the tree if the user double click on the object
     virtual bool doubleClicked(void);
     /// is called when the Provider is in edit and the mouse is moved

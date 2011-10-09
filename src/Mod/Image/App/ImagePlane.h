@@ -31,7 +31,7 @@
 namespace Image
 {
 
-class ImageAppExport ImagePlane : public App::GeoFeature
+class ImageExport ImagePlane : public App::GeoFeature
 {
     PROPERTY_HEADER(Image::ImagePlane);
 

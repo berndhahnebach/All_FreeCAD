@@ -36,7 +36,7 @@ namespace Robot
 
 /** The representation of a waypoint in a trajectory
  */
-class AppRobotExport Waypoint : public Base::Persistence
+class RobotExport Waypoint : public Base::Persistence
 {
     TYPESYSTEM_HEADER();
 

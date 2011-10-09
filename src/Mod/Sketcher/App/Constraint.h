@@ -51,7 +51,7 @@ enum ConstraintType {
 /// define if you want to use the end or start point
 enum PointPos { none, start, end, mid };
 
-class AppSketcherExport Constraint :public Base::Persistence
+class SketcherExport Constraint :public Base::Persistence
 {
     TYPESYSTEM_HEADER();
 

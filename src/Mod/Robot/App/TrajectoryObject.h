@@ -34,7 +34,7 @@
 namespace Robot
 {
 
-class AppRobotExport TrajectoryObject : public App::GeoFeature
+class RobotExport TrajectoryObject : public App::GeoFeature
 {
     PROPERTY_HEADER(Robot::TrajectoryObject);
 

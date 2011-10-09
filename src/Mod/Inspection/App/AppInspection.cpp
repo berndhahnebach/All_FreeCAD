@@ -39,7 +39,7 @@ PyDoc_STRVAR(module_Inspection_doc,
 
 /* Python entry */
 extern "C" {
-void InspectionAppExport initInspection() {
+void InspectionExport initInspection() {
 
     // ADD YOUR CODE HERE
     //

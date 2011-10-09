@@ -24,12 +24,12 @@
 #ifndef PARTGUI_ViewProviderPocket_H
 #define PARTGUI_ViewProviderPocket_H
 
-#include <Mod/Part/Gui/ViewProvider.h>
+#include "ViewProvider.h"
 
 
 namespace PartDesignGui {
 
-class PartDesignGuiExport ViewProviderPocket : public PartGui::ViewProviderPart
+class PartDesignGuiExport ViewProviderPocket : public ViewProvider
 {
     PROPERTY_HEADER(PartGui::ViewProviderPocket);
 

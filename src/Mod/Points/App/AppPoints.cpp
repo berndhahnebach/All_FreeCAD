@@ -44,7 +44,7 @@ extern struct PyMethodDef Points_Import_methods[];
 
 /* Python entry */
 extern "C" {
-void PointsAppExport initPoints()
+void PointsExport initPoints()
 {
     PyObject* pointsModule =  Py_InitModule("Points", Points_Import_methods);   /* mod name, table ptr */
     Base::Console().Log("Loading Points module... done\n");

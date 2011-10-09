@@ -29,7 +29,7 @@
 
 namespace PartGui {
 
-class AppPartGuiExport ViewProviderExtrusion : public ViewProviderPart
+class PartGuiExport ViewProviderExtrusion : public ViewProviderPart
 {
     PROPERTY_HEADER(PartGui::ViewProviderExtrusion);
 

@@ -35,7 +35,7 @@ namespace Robot
 /** The part shape property class.
  * @author Werner Mayer
  */
-class AppRobotExport PropertyTrajectory : public App::Property
+class RobotExport PropertyTrajectory : public App::Property
 {
     TYPESYSTEM_HEADER();
 

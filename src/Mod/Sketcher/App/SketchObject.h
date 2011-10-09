@@ -36,7 +36,7 @@
 namespace Sketcher
 {
 
-class AppSketcherExport SketchObject : public Part::Part2DObject
+class SketcherExport SketchObject : public Part::Part2DObject
 {
     PROPERTY_HEADER(Sketcher::SketchObject);
 

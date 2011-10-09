@@ -29,8 +29,10 @@
 #include "ViewProviderPad.h"
 #include "TaskPadParameters.h"
 #include <Mod/PartDesign/App/FeaturePad.h>
+#include <Mod/Sketcher/App/SketchObject.h>
 #include <Gui/Control.h>
 #include <Gui/Command.h>
+#include <Gui/Application.h>
 
 using namespace PartDesignGui;
 
@@ -85,7 +87,8 @@ bool ViewProviderPad::setEdit(int ModNum)
 
     // clear the selection (convenience)
     Gui::Selection().clearSelection();
-    Gui::Command::openCommand("Change pad parameters");
+    if(ModNum == 1)
+        Gui::Command::openCommand("Change pad parameters");
 
     // start the edit dialog
     if (padDlg)
@@ -109,3 +112,24 @@ void ViewProviderPad::unsetEdit(int ModNum)
         PartGui::ViewProviderPart::unsetEdit(ModNum);
     }
 }
+
+bool ViewProviderPad::onDelete(const std::vector<std::string> &)
+{
+    // get the support and Sketch
+    PartDesign::Pad* pcPad = static_cast<PartDesign::Pad*>(getObject()); 
+    Sketcher::SketchObject *pcSketch;
+    App::DocumentObject    *pcSupport;
+    if(pcPad->Sketch.getValue() ){
+        pcSketch = static_cast<Sketcher::SketchObject*>(pcPad->Sketch.getValue()); 
+        pcSupport = pcSketch->Support.getValue();
+    }
+
+    // if abort command deleted the object the support is visible again
+    if(pcSketch && Gui::Application::Instance->getViewProvider(pcSketch))
+        Gui::Application::Instance->getViewProvider(pcSketch)->show();
+    if(pcPad && Gui::Application::Instance->getViewProvider(pcSupport))
+        Gui::Application::Instance->getViewProvider(pcSupport)->show();
+
+    return true;
+}
+

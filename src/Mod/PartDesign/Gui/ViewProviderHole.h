@@ -24,12 +24,12 @@
 #ifndef PARTGUI_ViewProviderHole_H
 #define PARTGUI_ViewProviderHole_H
 
-#include <Mod/Part/Gui/ViewProvider.h>
+#include "ViewProvider.h"
 
 
 namespace PartDesignGui {
 
-class PartDesignGuiExport ViewProviderHole : public PartGui::ViewProviderPart
+class PartDesignGuiExport ViewProviderHole : public ViewProvider
 {
     PROPERTY_HEADER(PartGui::ViewProviderHole);
 

@@ -34,6 +34,7 @@
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "ViewProviderDocumentObjectGroup.h"
 #include "Application.h"
+#include "Command.h"
 #include "BitmapFactory.h"
 #include "Document.h"
 #include "Tree.h"
@@ -128,6 +129,13 @@ std::vector<std::string> ViewProviderDocumentObjectGroup::getDisplayModes(void) 
     // empty
     return std::vector<std::string>();
 }
+bool ViewProviderDocumentObjectGroup::onDelete(const std::vector<std::string> &)
+{
+    Gui::Command::doCommand(Gui::Command::Doc,"App.getDocument(\"%s\").getObject(\"%s\").removeObjectsFromDocument()"
+                                     ,getObject()->getDocument()->getName(), getObject()->getNameInDocument());
+    return true;
+}
+
 
 void ViewProviderDocumentObjectGroup::hide(void)
 {

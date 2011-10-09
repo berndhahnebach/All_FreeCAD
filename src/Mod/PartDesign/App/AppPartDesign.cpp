@@ -51,7 +51,7 @@ PyDoc_STRVAR(module_PartDesign_doc,
 
 /* Python entry */
 extern "C" {
-void AppPartDesignExport initPartDesign()
+void PartDesignExport initPartDesign()
 {
     // load dependent module
     try {

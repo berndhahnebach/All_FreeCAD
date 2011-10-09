@@ -48,7 +48,7 @@ struct AxisDefinition {
 
 /** The representation for a 6-Axis industry grade robot
  */
-class AppRobotExport Robot6Axis : public Base::Persistence
+class RobotExport Robot6Axis : public Base::Persistence
 {
     TYPESYSTEM_HEADER();
 

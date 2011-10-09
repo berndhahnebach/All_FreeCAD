@@ -28,10 +28,8 @@
 
 // Importing of App classes
 #ifdef FC_OS_WIN32
-# define WebAppExport __declspec(dllimport)
 # define WebGuiExport __declspec(dllexport)
 #else // for Linux
-# define WebAppExport
 # define WebGuiExport
 #endif
 

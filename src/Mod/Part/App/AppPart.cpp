@@ -83,7 +83,7 @@ PyDoc_STRVAR(module_part_doc,
 "This is a module working with shapes.");
 
 extern "C" {
-void AppPartExport initPart()
+void PartExport initPart()
 {
     PyObject* partModule = Py_InitModule3("Part", Part_methods, module_part_doc);   /* mod name, table ptr */
     Base::Console().Log("Loading Part module... done\n");

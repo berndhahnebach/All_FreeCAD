@@ -46,7 +46,7 @@ class PointsGrid;
  * Grids can be used within algorithms to avoid to iterate through all elements, so grids can speed up algorithms dramatically.
  * @author Werner Mayer
  */
-class PointsAppExport PointsGrid
+class PointsExport PointsGrid
 {
 public:
   /** @name Construction */
@@ -171,7 +171,7 @@ protected:
  * The PointsGridIterator class provides an interface to walk through
  * all grid elements of a point grid.
  */
-class PointsAppExport PointsGridIterator
+class PointsExport PointsGridIterator
 {
 public:
   /// Construction

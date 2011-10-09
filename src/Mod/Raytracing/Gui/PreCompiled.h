@@ -28,11 +28,11 @@
 
 // Importing of App classes
 #ifdef FC_OS_WIN32
-# define AppPartExport          __declspec(dllimport)
+# define PartExport          __declspec(dllimport)
 # define AppRaytracingExport    __declspec(dllimport)
 # define AppRaytracingGuiExport __declspec(dllexport)
 #else // for Linux
-# define AppPartExport
+# define PartExport
 # define AppRaytracingExport
 # define AppRaytracingGuiExport
 #endif

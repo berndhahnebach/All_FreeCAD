@@ -32,7 +32,7 @@
 
 namespace PartGui {
 
-class AppPartGuiExport SoFCControlPoints : public SoShape {
+class PartGuiExport SoFCControlPoints : public SoShape {
     typedef SoShape inherited;
 
     SO_NODE_HEADER(SoFCControlPoints);

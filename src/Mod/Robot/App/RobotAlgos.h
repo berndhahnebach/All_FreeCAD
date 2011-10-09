@@ -38,7 +38,7 @@ namespace Robot
 
 /** Algo class for projecting shapes and creating SVG output of it
  */
-class AppRobotExport RobotAlgos
+class RobotExport RobotAlgos
 {
 
 public:

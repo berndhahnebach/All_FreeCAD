@@ -29,7 +29,7 @@
 namespace PartGui {
 
 
-class AppPartGuiExport ViewProviderMirror : public ViewProviderPart
+class PartGuiExport ViewProviderMirror : public ViewProviderPart
 {
     PROPERTY_HEADER(PartGui::ViewProviderMirror);
 
@@ -53,7 +53,7 @@ private:
     SoSeparator* pcEditNode;
 };
 
-class AppPartGuiExport ViewProviderFillet : public ViewProviderPart
+class PartGuiExport ViewProviderFillet : public ViewProviderPart
 {
     PROPERTY_HEADER(PartGui::ViewProviderFillet);
 

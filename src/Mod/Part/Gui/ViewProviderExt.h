@@ -57,7 +57,7 @@ class SoBrepFaceSet;
 class SoBrepEdgeSet;
 class SoBrepPointSet;
 
-class AppPartGuiExport ViewProviderPartExt : public Gui::ViewProviderGeometryObject
+class PartGuiExport ViewProviderPartExt : public Gui::ViewProviderGeometryObject
 {
     PROPERTY_HEADER(PartGui::ViewProviderPartExt);
 

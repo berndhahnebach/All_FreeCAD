@@ -38,7 +38,7 @@ PyDoc_STRVAR(module_MeshPart_doc,
 
 /* Python entry */
 extern "C" {
-void AppMeshPartExport initMeshPart()
+void MeshPartExport initMeshPart()
 {
     // load dependent module
     try {

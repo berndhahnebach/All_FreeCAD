@@ -42,7 +42,7 @@ namespace Points
 
 /** Greyvalue property.
  */
-class PointsAppExport PropertyGreyValue : public App::PropertyFloat
+class PointsExport PropertyGreyValue : public App::PropertyFloat
 {
     TYPESYSTEM_HEADER();
 
@@ -58,7 +58,7 @@ public:
 /**
  * Own class to distinguish from real float list
  */
-class PointsAppExport PropertyGreyValueList : public App::PropertyFloatList
+class PointsExport PropertyGreyValueList : public App::PropertyFloatList
 {
     TYPESYSTEM_HEADER();
 
@@ -79,7 +79,7 @@ public:
 /**
  * Own class to distinguish from real vector list
  */
-class PointsAppExport PropertyNormalList : public App::PropertyVectorList
+class PointsExport PropertyNormalList : public App::PropertyVectorList
 {
     TYPESYSTEM_HEADER();
 
@@ -99,7 +99,7 @@ public:
 };
 
 /** Curvature information. */
-struct PointsAppExport CurvatureInfo
+struct PointsExport CurvatureInfo
 {
     float fMaxCurvature, fMinCurvature;
     Base::Vector3f cMaxCurvDir, cMinCurvDir;
@@ -107,7 +107,7 @@ struct PointsAppExport CurvatureInfo
 
 /** The Curvature property class.
  */
-class PointsAppExport PropertyCurvatureList: public App::PropertyLists
+class PointsExport PropertyCurvatureList: public App::PropertyLists
 {
     TYPESYSTEM_HEADER();
 

@@ -24,12 +24,11 @@
 #ifndef PARTGUI_ViewProviderPad_H
 #define PARTGUI_ViewProviderPad_H
 
-#include <Mod/Part/Gui/ViewProvider.h>
-
+#include "ViewProvider.h"
 
 namespace PartDesignGui {
 
-class PartDesignGuiExport ViewProviderPad : public PartGui::ViewProviderPart
+class PartDesignGuiExport ViewProviderPad : public ViewProvider
 {
     PROPERTY_HEADER(PartGui::ViewProviderPad);
 
@@ -42,6 +41,8 @@ public:
     /// grouping handling 
     std::vector<App::DocumentObject*> claimChildren(void)const;
     void setupContextMenu(QMenu*, QObject*, const char*);
+
+    virtual bool onDelete(const std::vector<std::string> &);
 
 protected:
     virtual bool setEdit(int ModNum);

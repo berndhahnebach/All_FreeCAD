@@ -24,12 +24,12 @@
 #ifndef PARTGUI_ViewProviderRevolution_H
 #define PARTGUI_ViewProviderRevolution_H
 
-#include <Mod/Part/Gui/ViewProvider.h>
+#include "ViewProvider.h"
 
 
 namespace PartDesignGui {
 
-class PartDesignGuiExport ViewProviderRevolution : public PartGui::ViewProviderPart
+class PartDesignGuiExport ViewProviderRevolution : public ViewProvider
 {
     PROPERTY_HEADER(PartGui::ViewProviderRevolution);
 

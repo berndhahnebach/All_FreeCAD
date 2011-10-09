@@ -28,6 +28,7 @@
 
 #include "ui_TaskPadParameters.h"
 #include "TaskPadParameters.h"
+#include <App/Application.h>
 #include <Gui/Application.h>
 #include <Gui/Document.h>
 #include <Gui/BitmapFactory.h>
@@ -37,6 +38,7 @@
 #include <Gui/Selection.h>
 #include <Gui/Command.h>
 #include <Mod/PartDesign/App/FeaturePad.h>
+#include <Mod/Sketcher/App/SketchObject.h>
 
 
 using namespace PartDesignGui;
@@ -55,14 +57,28 @@ TaskPadParameters::TaskPadParameters(ViewProviderPad *PadView,QWidget *parent)
 
     this->groupLayout()->addWidget(proxy);
 
-    PartDesign::Pad* pad = static_cast<PartDesign::Pad*>(PadView->getObject());
-    double l = pad->Length.getValue();
-    bool mirrored = pad->MirroredExtent.getValue();
-    bool reversed = pad->Reversed.getValue();
+    PartDesign::Pad* pcPad = static_cast<PartDesign::Pad*>(PadView->getObject());
+    double l = pcPad->Length.getValue();
+    bool mirrored = pcPad->MirroredExtent.getValue();
+    bool reversed = pcPad->Reversed.getValue();
 
     ui->doubleSpinBox->setValue(l);
     ui->doubleSpinBox->selectAll();
     ui->checkBoxMirrored->setChecked(mirrored);
+
+    // check if the sketch has support
+    Sketcher::SketchObject *pcSketch;
+    if(pcPad->Sketch.getValue() ){
+        pcSketch = static_cast<Sketcher::SketchObject*>(pcPad->Sketch.getValue()); 
+        if(pcSketch->Support.getValue() )
+            // in case of sketch with support, reverse makes no sense (goes into the part)
+            ui->checkBoxReversed->setEnabled(0);
+        else
+            ui->checkBoxReversed->setChecked(reversed);
+
+    }
+
+
     ui->checkBoxReversed->setChecked(reversed);
 
     setFocus ();
@@ -145,13 +161,27 @@ bool TaskDlgPadParameters::accept()
 
 bool TaskDlgPadParameters::reject()
 {
-    std::string name = PadView->getObject()->getNameInDocument();
+    // get the support and Sketch
+    PartDesign::Pad* pcPad = static_cast<PartDesign::Pad*>(PadView->getObject()); 
+    Sketcher::SketchObject *pcSketch;
+    App::DocumentObject    *pcSupport;
+    if(pcPad->Sketch.getValue() ){
+        pcSketch = static_cast<Sketcher::SketchObject*>(pcPad->Sketch.getValue()); 
+        pcSupport = pcSketch->Support.getValue();
+    }
+
     // role back the done things
     Gui::Command::abortCommand();
     Gui::Command::doCommand(Gui::Command::Gui,"Gui.activeDocument().resetEdit()");
     
     // if abort command deleted the object the support is visible again
-    
+    if( ! Gui::Application::Instance->getViewProvider(pcPad) ){
+        if(pcSketch && Gui::Application::Instance->getViewProvider(pcSketch))
+            Gui::Application::Instance->getViewProvider(pcSketch)->show();
+        if(pcPad && Gui::Application::Instance->getViewProvider(pcSupport))
+            Gui::Application::Instance->getViewProvider(pcSupport)->show();
+
+    }
 
     //Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.recompute()");
     //Gui::Command::commitCommand();
