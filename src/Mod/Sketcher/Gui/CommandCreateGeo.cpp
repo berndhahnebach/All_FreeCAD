@@ -1403,7 +1403,9 @@ namespace SketcherGui {
                 Sketcher::SketchObject *Sketch = static_cast<Sketcher::SketchObject*>(object);
                 const std::vector<Part::Geometry *> &geo = Sketch->Geometry.getValues();
                 const Part::Geometry *geom = geo[index];
-                if (geom->getTypeId() == Part::GeomLineSegment::getClassTypeId())
+                if (geom->getTypeId() == Part::GeomLineSegment::getClassTypeId() ||
+                    geom->getTypeId() == Part::GeomCircle::getClassTypeId()||
+                    geom->getTypeId() == Part::GeomArcOfCircle::getClassTypeId())
                     return true;
             }
             return  false;
@@ -1482,7 +1484,10 @@ public:
         if (GeoId > -1) {
             const std::vector<Part::Geometry *> &geo = sketchgui->getSketchObject()->Geometry.getValues();
             const Part::Geometry *geom = geo[GeoId];
-            if (geom->getTypeId() == Part::GeomLineSegment::getClassTypeId()) {
+            if (geom->getTypeId() == Part::GeomLineSegment::getClassTypeId() ||
+                geom->getTypeId() == Part::GeomArcOfCircle::getClassTypeId() ||
+                geom->getTypeId() == Part::GeomCircle::getClassTypeId()
+            ) {
                 try {
                     Gui::Command::openCommand("Trim edge");
                     Gui::Command::doCommand(Gui::Command::Doc,"App.ActiveDocument.%s.trim(%d,App.Vector(%f,%f,0))",
