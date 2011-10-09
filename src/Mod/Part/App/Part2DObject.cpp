@@ -172,7 +172,7 @@ bool Part2DObject::seekTrimPoints(const std::vector<Geometry *> &geomlist,
 
     // find the parameter of the picked point on the primary curve
     Projector.Init(gp_Pnt2d(point.x, point.y), primaryCurve);
-    double pickedParam = Projector.Parameter(1);
+    double pickedParam = Projector.LowerDistanceParameter();
 
     // find intersection points
     GeoId1 = -1;
@@ -192,7 +192,7 @@ bool Part2DObject::seekTrimPoints(const std::vector<Geometry *> &geomlist,
                     gp_Pnt2d p = Intersector.Point(i);
                     // get the parameter of the intersection point on the primary curve
                     Projector.Init(p, primaryCurve);
-                    double param = Projector.Parameter(1);
+                    double param = Projector.LowerDistanceParameter();
                     if (periodic) {
                         // transfer param into the interval (pickedParam-period pickedParam]
                         param = param - period * ceil((param-pickedParam) / period);
