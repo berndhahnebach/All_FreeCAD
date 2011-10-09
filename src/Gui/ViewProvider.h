@@ -107,7 +107,9 @@ public:
     /// return the higlight lines for a given element or the whole shape
     virtual std::vector<Base::Vector3d> getSelectionShape(const char* Element) const
     { return std::vector<Base::Vector3d>(); };
-
+    /// get called if the object is about to get deleted. Here you can delete other objects to or switch visibility of others.
+    virtual bool onDelete(const std::vector<std::string> &)
+    { return true;}
     //@}
 
 
@@ -222,9 +224,6 @@ public:
     { return false; }
     /// set up the context-menu with the supported edit modes
     virtual void setupContextMenu(QMenu*, QObject*, const char*) {}
-
-    /// is called when the Provider is in edit and a deletion request occurs
-    virtual void delSelected() {}
 
     /** @name direct handling methods
      *  This group of methods is to direct influence the 

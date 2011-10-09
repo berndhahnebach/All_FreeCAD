@@ -30,11 +30,11 @@
 #ifdef FC_OS_WIN32
 //# define DrawingAppExport __declspec(dllimport)
 # define AppDrawingExport __declspec(dllimport)
-# define AppPartExport    __declspec(dllimport)
+# define PartExport    __declspec(dllimport)
 # define DrawingGuiExport __declspec(dllexport)
 #else // for Linux
 # define AppDrawingExport
-# define AppPartExport
+# define PartExport
 # define DrawingGuiExport
 #endif
 

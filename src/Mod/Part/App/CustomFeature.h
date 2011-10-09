@@ -32,7 +32,7 @@ namespace Part
 /** Base class of all custom feature classes which are almost used as base
  * for python feature classes.
  */
-class AppPartExport CustomFeature : public Part::Feature
+class PartExport CustomFeature : public Part::Feature
 {
     PROPERTY_HEADER(Part::UserFeature);
 

@@ -84,7 +84,6 @@
 #include <Gui/DlgEditFileIncludeProptertyExternal.h>
 
 #include <Mod/Part/App/Geometry.h>
-#include <Mod/Sketcher/App/SketchFlatInterface.h>
 #include <Mod/Sketcher/App/SketchObject.h>
 #include <Mod/Sketcher/App/Sketch.h>
 
@@ -2933,8 +2932,10 @@ Sketcher::SketchObject *ViewProviderSketch::getSketchObject(void) const
     return dynamic_cast<Sketcher::SketchObject *>(pcObject);
 }
 
-void ViewProviderSketch::delSelected(void)
+
+bool ViewProviderSketch::onDelete(const std::vector<std::string> &subList)
 {
+    //FIXME use the selection subelements instead of the Sel Sets...
     if (edit) {
         // We must tmp. block the signaling because otherwise we empty the sets while
         // looping through them which may cause a crash
@@ -2976,5 +2977,9 @@ void ViewProviderSketch::delSelected(void)
         edit->PreselectConstraint = -1;
         this->drawConstraintIcons();
         this->updateColor();
+        // if in edit not delet the object
+        return false;
     }
+    // if not in edit delete the whole object
+    return true;
 }

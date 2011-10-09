@@ -53,7 +53,7 @@ namespace MeshPart
 
 /** The father of all projection algorithems
  */
-class AppMeshPartExport CurveProjector
+class MeshPartExport CurveProjector
 {
 public:
   CurveProjector(const TopoDS_Shape &aShape, const MeshKernel &pMesh);
@@ -90,7 +90,7 @@ protected:
 
 /** Project by intersection face planes with the curve
  */
-class AppMeshPartExport CurveProjectorShape: public CurveProjector
+class MeshPartExport CurveProjectorShape: public CurveProjector
 {
 public:
   CurveProjectorShape(const TopoDS_Shape &aShape, const MeshKernel &pMesh);
@@ -111,7 +111,7 @@ protected:
 
 /** Project by projecting a sampled curve to the mesh
  */
-class AppMeshPartExport CurveProjectorSimple: public CurveProjector
+class MeshPartExport CurveProjectorSimple: public CurveProjector
 {
 public:
   CurveProjectorSimple(const TopoDS_Shape &aShape, const MeshKernel &pMesh);
@@ -135,7 +135,7 @@ protected:
 
 /** Project by projecting a sampled curve to the mesh
  */
-class AppMeshPartExport CurveProjectorWithToolMesh: public CurveProjector
+class MeshPartExport CurveProjectorWithToolMesh: public CurveProjector
 {
 public:
   struct LineSeg {

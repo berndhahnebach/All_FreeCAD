@@ -48,7 +48,7 @@ class Geometry;
   * geometry as its descend Sketcher::SketchObject .
   */
 
-class AppPartExport Part2DObject : public Part::Feature
+class PartExport Part2DObject : public Part::Feature
 {
     PROPERTY_HEADER(Part::Part2DObject);
 

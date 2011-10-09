@@ -39,7 +39,7 @@ class SoTextureCoordinateBundle;
 
 namespace PartGui {
 
-class AppPartGuiExport SoBrepFaceSet : public SoIndexedFaceSet {
+class PartGuiExport SoBrepFaceSet : public SoIndexedFaceSet {
     typedef SoIndexedFaceSet inherited;
 
     SO_NODE_HEADER(SoBrepFaceSet);
@@ -102,7 +102,7 @@ private:
 
 // ---------------------------------------------------------------------
 
-class AppPartGuiExport SoBrepEdgeSet : public SoIndexedLineSet {
+class PartGuiExport SoBrepEdgeSet : public SoIndexedLineSet {
     typedef SoIndexedLineSet inherited;
 
     SO_NODE_HEADER(SoBrepEdgeSet);
@@ -140,7 +140,7 @@ private:
 
 // ---------------------------------------------------------------------
 
-class AppPartGuiExport SoBrepPointSet : public SoPointSet {
+class PartGuiExport SoBrepPointSet : public SoPointSet {
     typedef SoPointSet inherited;
 
     SO_NODE_HEADER(SoBrepPointSet);

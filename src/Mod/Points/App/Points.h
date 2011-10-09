@@ -41,7 +41,7 @@ namespace Points
 
 /** Point kernel
  */
-class PointsAppExport PointKernel : public Data::ComplexGeoData
+class PointsExport PointKernel : public Data::ComplexGeoData
 {
     TYPESYSTEM_HEADER();
 
@@ -129,7 +129,7 @@ public:
         _Points.push_back(transformToInside(point));
     }
 
-    class PointsAppExport const_point_iterator
+    class PointsExport const_point_iterator
     {
     public:
         typedef std::vector<Base::Vector3f>::const_iterator iter_type;

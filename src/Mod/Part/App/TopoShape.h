@@ -76,7 +76,7 @@ private:
 namespace Part
 {
 
-class AppPartExport ShapeSegment : public Data::Segment
+class PartExport ShapeSegment : public Data::Segment
 {
     TYPESYSTEM_HEADER();
 
@@ -92,7 +92,7 @@ public:
 
 /** The representation for a CAD Shape
  */
-class AppPartExport TopoShape : public Data::ComplexGeoData
+class PartExport TopoShape : public Data::ComplexGeoData
 {
     TYPESYSTEM_HEADER();
 

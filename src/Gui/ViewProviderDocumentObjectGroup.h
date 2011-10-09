@@ -51,6 +51,8 @@ public:
     void show(void);
     bool isShow(void) const;
 
+    virtual bool onDelete(const std::vector<std::string> &);
+
 protected:
     /// get called by the container whenever a property has been changed
     void onChanged(const App::Property* prop);

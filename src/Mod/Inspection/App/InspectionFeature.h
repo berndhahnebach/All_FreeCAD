@@ -47,7 +47,7 @@ namespace Inspection
 {
 
 /** Delivers the number of points to be checked and returns the appropriate point to an index. */
-class InspectionAppExport InspectActualGeometry
+class InspectionExport InspectActualGeometry
 {
 public:
     InspectActualGeometry() {}
@@ -57,7 +57,7 @@ public:
     virtual Base::Vector3f getPoint(unsigned long) = 0;
 };
 
-class InspectionAppExport InspectActualMesh : public InspectActualGeometry
+class InspectionExport InspectActualMesh : public InspectActualGeometry
 {
 public:
     InspectActualMesh(const Mesh::MeshObject& rMesh);
@@ -70,7 +70,7 @@ private:
     unsigned long _count;
 };
 
-class InspectionAppExport InspectActualPoints : public InspectActualGeometry
+class InspectionExport InspectActualPoints : public InspectActualGeometry
 {
 public:
     InspectActualPoints(const Points::PointKernel&);
@@ -81,7 +81,7 @@ private:
     const Points::PointKernel& _rKernel;
 };
 
-class InspectionAppExport InspectActualShape : public InspectActualGeometry
+class InspectionExport InspectActualShape : public InspectActualGeometry
 {
 public:
     InspectActualShape(const Part::TopoShape&);
@@ -94,7 +94,7 @@ private:
 };
 
 /** Calculates the shortest distance of the underlying geometry to a given point. */
-class InspectionAppExport InspectNominalGeometry
+class InspectionExport InspectNominalGeometry
 {
 public:
     InspectNominalGeometry() {}
@@ -102,7 +102,7 @@ public:
     virtual float getDistance(const Base::Vector3f&) = 0;
 };
 
-class InspectionAppExport InspectNominalMesh : public InspectNominalGeometry
+class InspectionExport InspectNominalMesh : public InspectNominalGeometry
 {
 public:
     InspectNominalMesh(const Mesh::MeshObject& rMesh, float offset);
@@ -115,7 +115,7 @@ private:
     Base::BoundBox3f _box;
 };
 
-class InspectionAppExport InspectNominalFastMesh : public InspectNominalGeometry
+class InspectionExport InspectNominalFastMesh : public InspectNominalGeometry
 {
 public:
     InspectNominalFastMesh(const Mesh::MeshObject& rMesh, float offset);
@@ -129,7 +129,7 @@ protected:
     unsigned long max_level;
 };
 
-class InspectionAppExport InspectNominalPoints : public InspectNominalGeometry
+class InspectionExport InspectNominalPoints : public InspectNominalGeometry
 {
 public:
     InspectNominalPoints(const Points::PointKernel&, float offset);
@@ -141,7 +141,7 @@ private:
     Points::PointsGrid* _pGrid;
 };
 
-class InspectionAppExport InspectNominalShape : public InspectNominalGeometry
+class InspectionExport InspectNominalShape : public InspectNominalGeometry
 {
 public:
     InspectNominalShape(const TopoDS_Shape&, float offset);
@@ -158,7 +158,7 @@ private:
 /** The inspection feature.
  * \author Werner Mayer
  */
-class InspectionAppExport Feature : public App::DocumentObject
+class InspectionExport Feature : public App::DocumentObject
 {
     PROPERTY_HEADER(Inspection::Feature);
 
@@ -188,7 +188,7 @@ public:
     { return "InspectionGui::ViewProviderInspection"; }
 };
 
-class InspectionAppExport Group : public App::DocumentObjectGroup
+class InspectionExport Group : public App::DocumentObjectGroup
 {
     PROPERTY_HEADER(Inspection::Group);
 

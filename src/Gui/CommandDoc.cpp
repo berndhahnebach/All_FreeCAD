@@ -916,13 +916,10 @@ void StdCmdDelete::activated(int iMsg)
             (*it)->openTransaction("Delete");
             for (std::vector<Gui::SelectionObject>::iterator ft = sel.begin(); ft != sel.end(); ++ft) {
                 Gui::ViewProvider* vp = pGuiDoc->getViewProvider(ft->getObject());
-                if (vp && vp->isEditing())
-                    vp->delSelected();
-                else {
-                    if (ft->isObjectTypeOf(App::DocumentObjectGroup::getClassTypeId()))
-                        doCommand(Doc,"App.getDocument(\"%s\").getObject(\"%s\").removeObjectsFromDocument()"
-                                     ,(*it)->getName(), ft->getFeatName());
-                    doCommand(Doc,"App.getDocument(\"%s\").removeObject(\"%s\")"
+                if (vp) {
+                    // ask the ViewProvider if its want to do some clean up
+                    if(vp->onDelete(ft->getSubNames()) )
+                        doCommand(Doc,"App.getDocument(\"%s\").removeObject(\"%s\")"
                                  ,(*it)->getName(), ft->getFeatName());
                 }
             }

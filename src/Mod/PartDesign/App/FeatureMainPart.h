@@ -25,12 +25,12 @@
 #define PARTDESIGN_MainPart_H
 
 #include <App/PropertyStandard.h>
-#include <Mod/Part/App/PartFeature.h>
+#include "Feature.h"
 
 namespace PartDesign
 {
 
-class MainPart : public Part::Feature
+class MainPart : public PartDesign::Feature
 {
     PROPERTY_HEADER(PartDesign::MainPart);
 

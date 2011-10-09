@@ -46,7 +46,7 @@ PyDoc_STRVAR(module_Sketcher_doc,
 
 /* Python entry */
 extern "C" {
-void AppSketcherExport initSketcher()
+void SketcherExport initSketcher()
 {
     // load dependent module
     try {

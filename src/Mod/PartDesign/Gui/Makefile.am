@@ -41,6 +41,8 @@ libPartDesignGui_la_SOURCES=\
 		TaskRevolutionParameters.h \
 		TaskHoleParameters.cpp \
 		TaskHoleParameters.h \
+		ViewProvider.cpp \
+		ViewProvider.h \
 		ViewProviderHole.cpp \
 		ViewProviderHole.h \
 		ViewProviderPad.cpp \

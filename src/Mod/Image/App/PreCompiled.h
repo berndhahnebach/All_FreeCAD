@@ -28,9 +28,9 @@
 
 // Exporting of App classes
 #ifdef FC_OS_WIN32
-# define ImageAppExport __declspec(dllexport)
+# define ImageExport __declspec(dllexport)
 #else // for Linux
-# define ImageAppExport
+# define ImageExport
 #endif
 
 #ifdef _PreComp_

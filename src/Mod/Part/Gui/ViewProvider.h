@@ -61,7 +61,7 @@ public:
     void createShape(const App::Property*, SoSeparator*) const;
 };
 
-class AppPartGuiExport ViewProviderPartBase : public Gui::ViewProviderGeometryObject
+class PartGuiExport ViewProviderPartBase : public Gui::ViewProviderGeometryObject
 {
     PROPERTY_HEADER(PartGui::ViewProviderPartBase);
 
@@ -129,7 +129,7 @@ private:
     std::map<SoVertexShape*, TopoDS_Shape> vertexShapeMap;
 };
 
-class AppPartGuiExport ViewProviderEllipsoid : public ViewProviderPartBase
+class PartGuiExport ViewProviderEllipsoid : public ViewProviderPartBase
 {
     PROPERTY_HEADER(PartGui::ViewProviderEllipsoid);
 
@@ -147,7 +147,7 @@ private:
 };
 
 #if defined(FC_USE_FAST_SHAPE_RENDERING)
-class AppPartGuiExport ViewProviderPart : public ViewProviderPartExt
+class PartGuiExport ViewProviderPart : public ViewProviderPartExt
 {
     PROPERTY_HEADER(PartGui::ViewProviderPart);
 
@@ -158,7 +158,7 @@ public:
     virtual ~ViewProviderPart();
 };
 #else
-class AppPartGuiExport ViewProviderPart : public ViewProviderPartBase
+class PartGuiExport ViewProviderPart : public ViewProviderPartBase
 {
     PROPERTY_HEADER(PartGui::ViewProviderPart);
 

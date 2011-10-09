@@ -29,13 +29,11 @@
 // Exporting of App classes
 #ifdef FC_OS_WIN32
 # define AppCompleteExport __declspec(dllexport)
-# define AppPartExport  __declspec(dllimport)
-# define PartExport     __declspec(dllimport)
+# define PartExport  __declspec(dllimport)
 # define MeshExport     __declspec(dllimport)
 #else // for Linux
 # define AppCompleteExport
-# define AppPartExport 
-# define PartExport   
+# define PartExport 
 # define MeshExport   
 #endif
 

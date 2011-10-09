@@ -36,7 +36,7 @@ class Property;
 /** The part shape property class.
  * @author Werner Mayer
  */
-class AppPartExport PropertyPartShape : public App::PropertyComplexGeoData
+class PartExport PropertyPartShape : public App::PropertyComplexGeoData
 {
     TYPESYSTEM_HEADER();
 
@@ -98,12 +98,12 @@ private:
 /** A property class to store hash codes and two radii for the fillet algorithm.
  * @author Werner Mayer
  */
-struct AppPartExport FilletElement {
+struct PartExport FilletElement {
     int edgeid;
     double radius1, radius2;
 };
 
-class AppPartExport PropertyFilletEdges : public App::PropertyLists
+class PartExport PropertyFilletEdges : public App::PropertyLists
 {
     TYPESYSTEM_HEADER();
 

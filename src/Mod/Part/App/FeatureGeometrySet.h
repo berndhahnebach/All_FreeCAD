@@ -33,7 +33,7 @@ namespace Part
 {
 
 
-class AppPartExport FeatureGeometrySet :public Part::Feature
+class PartExport FeatureGeometrySet :public Part::Feature
 {
     PROPERTY_HEADER(Part::FeatureGeometrySet);
 

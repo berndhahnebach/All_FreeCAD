@@ -31,7 +31,7 @@ namespace PartGui {
 /**
  * @author Werner Mayer
  */
-class AppPartGuiExport Workbench : public Gui::StdWorkbench
+class PartGuiExport Workbench : public Gui::StdWorkbench
 {
     TYPESYSTEM_HEADER();
 

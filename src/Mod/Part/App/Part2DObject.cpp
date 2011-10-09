@@ -254,6 +254,6 @@ namespace App {
 /// @endcond
 
 // explicit template instantiation
-  template class AppPartExport FeaturePythonT<Part::Part2DObject>;
+  template class PartExport FeaturePythonT<Part::Part2DObject>;
 }
 

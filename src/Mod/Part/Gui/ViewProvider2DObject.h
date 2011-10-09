@@ -42,7 +42,7 @@ namespace Gui {
 namespace PartGui {
 
 
-class AppPartGuiExport ViewProvider2DObject: public PartGui::ViewProviderPart
+class PartGuiExport ViewProvider2DObject: public PartGui::ViewProviderPart
 {
   PROPERTY_HEADER(PartGui::ViewProvider2DObject);
 

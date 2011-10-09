@@ -28,15 +28,15 @@
 
 // Exporting of App classes
 #ifdef FC_OS_WIN32
-# define InspectionAppExport __declspec(dllexport)
+# define InspectionExport __declspec(dllexport)
 # define MeshExport          __declspec(dllimport)
-# define PointsAppExport     __declspec(dllimport)
-# define AppPartExport       __declspec(dllimport)
+# define PointsExport     __declspec(dllimport)
+# define PartExport       __declspec(dllimport)
 #else // for Linux
-# define InspectionAppExport
+# define InspectionExport
 # define MeshExport
-# define PointsAppExport
-# define AppPartExport
+# define PointsExport
+# define PartExport
 #endif
 
 #ifdef _MSC_VER

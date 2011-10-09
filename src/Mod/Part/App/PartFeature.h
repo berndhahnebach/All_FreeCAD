@@ -37,7 +37,7 @@ class PartFeaturePy;
 
 /** Base class of all shape feature classes in FreeCAD
  */
-class AppPartExport Feature : public App::GeoFeature
+class PartExport Feature : public App::GeoFeature
 {
     PROPERTY_HEADER(Part::Feature);
 
@@ -73,7 +73,7 @@ typedef App::FeaturePythonT<Feature> FeaturePython;
 
 /** Base class of all shape feature classes in FreeCAD
  */
-class AppPartExport FeatureExt : public Feature
+class PartExport FeatureExt : public Feature
 {
     PROPERTY_HEADER(Part::FeatureExt);
 

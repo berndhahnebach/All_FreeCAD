@@ -35,7 +35,7 @@
 namespace Robot
 {
 
-class AppRobotExport Edge2TracObject : public TrajectoryObject
+class RobotExport Edge2TracObject : public TrajectoryObject
 {
     PROPERTY_HEADER(Robot::TrajectoryObject);
 

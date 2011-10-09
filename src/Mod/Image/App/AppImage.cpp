@@ -25,7 +25,7 @@ static struct PyMethodDef Image_methods[] = {
 
 /* Python entry */
 extern "C" {
-void ImageAppExport initImage() {
+void ImageExport initImage() {
     (void) Py_InitModule("Image", Image_methods);   /* mod name, table ptr */
     Base::Console().Log("Loading Image module... done\n");
 

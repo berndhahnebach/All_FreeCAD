@@ -41,7 +41,7 @@ namespace Gui {
 namespace PartGui {
 
 
-class AppPartGuiExport ViewProviderImport : public ViewProviderPart
+class PartGuiExport ViewProviderImport : public ViewProviderPart
 {
     PROPERTY_HEADER(PartGui::ViewProviderImport);
 

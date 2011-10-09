@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel	        <FreeCAD@juergen-riegel.net    *
+ *   Copyright (c) 2011 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,62 +21,31 @@
  ***************************************************************************/
 
 
-#ifndef SKETCHER_SKETCHFLATINTERFACE_H
-#define SKETCHER_SKETCHFLATINTERFACE_H
+#ifndef PARTGUI_ViewProvider_H
+#define PARTGUI_ViewProvider_H
 
-// Std. configurations
-
-
-#include <string>
-
-#include <Base/Vector3D.h>
-#include <Mod/Part/App/TopoShape.h>
+#include <Mod/Part/Gui/ViewProvider.h>
 
 
-namespace Sketcher
+namespace PartDesignGui {
+
+class PartDesignGuiExport ViewProvider : public PartGui::ViewProviderPart
 {
+    PROPERTY_HEADER(PartGui::ViewProvider);
 
-
-/** Interface to the sketch flat constraint solver.
- */
-class AppSketcherExport SketchFlatInterface
-{
 public:
-    /// Construction
-    SketchFlatInterface();
-    /// Destruction
-    virtual ~SketchFlatInterface();
-    static bool isAlive();
+    /// constructor
+    ViewProvider();
+    /// destructor
+    virtual ~ViewProvider();
 
-    bool save(const char* FileName);
-    bool load(const char* FileName);
+    virtual bool doubleClicked(void);
 
-    unsigned int addLine(double x, double y);
-
-
-	void setUpRendering(void);
-	int nbrOfCurves(void);
-	int nbrOfPoints(void);
-	void getPoint(int Nbr,double &x,double &y);
-	int getPoint(int Nbr);
-	int nbrOfLines(void);
-	void getLine(int Nbr,double &x0, double &y0, double &dx, double &dy);
-	void getCurvePoints(std::vector<Base::Vector3d> &coords,bool &Construction ,int curve);
-	void forcePoint(int point, double x, double y);
-
-	// derive the data
-	std::string getGeo(void);
-
-	Part::TopoShape getGeoAsShape(void);
-    void getLineSet(std::vector<Base::Vector3d> &coords,std::vector<unsigned int> &index,std::vector<unsigned int> &color);
-
-	void solve(void);
-
-private:
-	static bool bAlive;
 };
 
-} //namespace Base
 
-#endif // SKETCHER_SKETCHFLATINTERFACE_H
 
+} // namespace PartDesignGui
+
+
+#endif // PARTGUI_ViewProviderHole_H

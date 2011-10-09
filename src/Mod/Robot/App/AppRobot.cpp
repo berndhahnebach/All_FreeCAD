@@ -51,7 +51,7 @@ PyDoc_STRVAR(module_Robot_doc,
 
 /* Python entry */
 extern "C" {
-void AppRobotExport initRobot()
+void RobotExport initRobot()
 {
     // load dependent module
     try {

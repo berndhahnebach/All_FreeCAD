@@ -28,17 +28,15 @@
 
 // Exporting of App classes
 #ifdef FC_OS_WIN32
-# define AppRobotExport __declspec(dllexport)
 # define RobotExport __declspec(dllexport)
-# define AppPartExport  __declspec(dllimport)
-# define PartExport     __declspec(dllimport)
+# define RobotExport __declspec(dllexport)
+# define PartExport  __declspec(dllimport)
 # define MeshExport     __declspec(dllimport)
 # define BaseExport     __declspec(dllimport)
 #else // for Linux
-# define AppRobotExport
 # define RobotExport
-# define AppPartExport 
-# define PartExport   
+# define RobotExport
+# define PartExport 
 # define MeshExport  
 # define BaseExport  
 #endif

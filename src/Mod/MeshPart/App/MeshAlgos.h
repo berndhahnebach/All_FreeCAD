@@ -49,7 +49,7 @@ namespace MeshPart
 
 /** The mesh algorithems container class
  */
-class AppMeshPartExport MeshAlgos
+class MeshPartExport MeshAlgos
 {
 public:
   /** Calculate per Vertex normales and adds the Normal property bag

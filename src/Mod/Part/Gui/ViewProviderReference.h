@@ -49,7 +49,7 @@ class SoScale;
 namespace PartGui {
 
 
-class AppPartGuiExport ViewProviderPartReference : public Gui::ViewProviderGeometryObject
+class PartGuiExport ViewProviderPartReference : public Gui::ViewProviderGeometryObject
 {
     PROPERTY_HEADER(PartGui::ViewProviderPartReference);
 

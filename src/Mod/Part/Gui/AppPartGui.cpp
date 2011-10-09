@@ -65,7 +65,7 @@ static struct PyMethodDef PartGui_methods[] = {
 };
 
 extern "C" {
-void AppPartGuiExport initPartGui()
+void PartGuiExport initPartGui()
 {
     if (!Gui::Application::Instance) {
         PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");

@@ -36,7 +36,7 @@
 namespace Sketcher
 {
 
-class AppSketcherExport Sketch :public Base::Persistence
+class SketcherExport Sketch :public Base::Persistence
 {
     TYPESYSTEM_HEADER();
 

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008 Jürgen Riegel (juergen.riegel@web.de)              *
+ *   Copyright (c) 2011 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,51 +21,31 @@
  ***************************************************************************/
 
 
-#ifndef FEM_PRECOMPILED_H
-#define FEM_PRECOMPILED_H
+#include "PreCompiled.h"
 
-#include <FCConfig.h>
-
-// Exporting of App classes
-#ifdef FC_OS_WIN32
-# define AppFemExport   __declspec(dllexport)
-# define FemExport      __declspec(dllexport)
-# define PartExport  __declspec(dllimport)
-# define MeshExport     __declspec(dllimport)
-# define BaseExport     __declspec(dllimport)
-#else // for Linux
-# define AppFemExport
-# define FemExport
-# define PartExport 
-# define MeshExport  
-# define BaseExport  
+#ifndef _PreComp_
 #endif
 
-#ifdef _MSC_VER
-# pragma warning(disable : 4290)
-# pragma warning(disable : 4275)
-#endif
+#include "ViewProvider.h"
+#include <Gui/Command.h>
+//#include <Gui/Document.h>
 
-#ifdef _PreComp_
+using namespace PartDesignGui;
 
-// standard
-#include <iostream>
-#include <sstream>
-#include <stdio.h>
-#include <assert.h>
-#include <string>
-#include <map>
-#include <vector>
-#include <set>
-#include <bitset>
-#include <cstdlib>
-#include <sstream>
+PROPERTY_SOURCE(PartDesignGui::ViewProvider,PartGui::ViewProviderPart)
 
-#include <Python.h>
+ViewProvider::ViewProvider()
+{
+}
 
+ViewProvider::~ViewProvider()
+{
+}
 
+bool ViewProvider::doubleClicked(void)
+{
+    Gui::Command::doCommand(Gui::Command::Gui,"Gui.activeDocument().setEdit('%s',2)",this->pcObject->getNameInDocument());
+    return true;
+}
 
-
-#endif // _PreComp_
-#endif
 

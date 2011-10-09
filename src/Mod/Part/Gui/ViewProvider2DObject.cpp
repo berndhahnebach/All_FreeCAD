@@ -262,5 +262,5 @@ PROPERTY_SOURCE_TEMPLATE(PartGui::ViewProvider2DObjectPython, PartGui::ViewProvi
 /// @endcond
 
 // explicit template instantiation
-template class AppPartGuiExport ViewProviderPythonFeatureT<PartGui::ViewProvider2DObject>;
+template class PartGuiExport ViewProviderPythonFeatureT<PartGui::ViewProvider2DObject>;
 }

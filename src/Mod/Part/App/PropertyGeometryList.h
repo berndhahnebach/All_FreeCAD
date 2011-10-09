@@ -40,7 +40,7 @@ namespace Part
 {
 class Geometry;
 
-class AppPartExport PropertyGeometryList: public App::PropertyLists
+class PartExport PropertyGeometryList: public App::PropertyLists
 {
     TYPESYSTEM_HEADER();
 

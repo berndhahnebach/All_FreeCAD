@@ -24,12 +24,12 @@
 #ifndef PARTGUI_ViewProviderPatternRectangular_H
 #define PARTGUI_ViewProviderPatternRectangular_H
 
-#include <Mod/Part/Gui/ViewProvider.h>
+#include "ViewProvider.h"
 
 
 namespace PartDesignGui {
 
-class PartDesignGuiExport ViewProviderPatternRectangular : public PartGui::ViewProviderPart
+class PartDesignGuiExport ViewProviderPatternRectangular : public ViewProvider
 {
     PROPERTY_HEADER(PartGui::ViewProviderPatternRectangular);
 
