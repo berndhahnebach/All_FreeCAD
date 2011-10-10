@@ -37,7 +37,7 @@ namespace Drawing
 
 /** Base class of all View Features in the drawing module
  */
-class AppDrawingExport FeatureProjection : public Part::Feature
+class DrawingExport FeatureProjection : public Part::Feature
 {
     PROPERTY_HEADER(Drawing::FeatureProjection);
 

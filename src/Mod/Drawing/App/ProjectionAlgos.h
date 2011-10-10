@@ -35,7 +35,7 @@ namespace Drawing
 
 /** Algo class for projecting shapes and creating SVG output of it
  */
-class AppDrawingExport ProjectionAlgos
+class DrawingExport ProjectionAlgos
 {
 public:
     /// Constructor

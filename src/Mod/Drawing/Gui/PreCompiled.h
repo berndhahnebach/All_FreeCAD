@@ -29,11 +29,11 @@
 // Importing of App classes
 #ifdef FC_OS_WIN32
 //# define DrawingAppExport __declspec(dllimport)
-# define AppDrawingExport __declspec(dllimport)
-# define PartExport    __declspec(dllimport)
-# define DrawingGuiExport __declspec(dllexport)
+# define DrawingExport      __declspec(dllimport)
+# define PartExport         __declspec(dllimport)
+# define DrawingGuiExport   __declspec(dllexport)
 #else // for Linux
-# define AppDrawingExport
+# define DrawingExport
 # define PartExport
 # define DrawingGuiExport
 #endif

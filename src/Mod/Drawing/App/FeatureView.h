@@ -39,7 +39,7 @@ namespace Drawing
 
 /** Base class of all View Features in the drawing module
  */
-class AppDrawingExport FeatureView : public App::DocumentObject
+class DrawingExport FeatureView : public App::DocumentObject
 {
     PROPERTY_HEADER(Drawing::FeatureView);
 

@@ -31,7 +31,7 @@ PyDoc_STRVAR(module_drawing_doc,
 
 /* Python entry */
 extern "C" {
-void AppDrawingExport initDrawing()
+void DrawingExport initDrawing()
 {
     // load dependent module
     try {
