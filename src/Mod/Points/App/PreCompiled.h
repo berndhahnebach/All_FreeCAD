@@ -29,9 +29,7 @@
 // Exporting of App classes
 #ifdef FC_OS_WIN32
 # define PointsExport __declspec(dllexport)
-# define PointsExport __declspec(dllexport)
 #else // for Linux
-# define PointsExport
 # define PointsExport 
 #endif
 
