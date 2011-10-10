@@ -23,7 +23,7 @@ libDrawing_la_SOURCES=\
 libDrawing_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Mod/Part/App \
 		-L$(OCC_LIB) $(all_libraries) \
 		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
-libDrawing_la_CPPFLAGS = -DDrawingAppExport=
+libDrawing_la_CPPFLAGS = -DDrawingExport=
 
 libDrawing_la_LIBADD   = \
 		@BOOST_REGEX_LIB@ @BOOST_SYSTEM_LIB@ \

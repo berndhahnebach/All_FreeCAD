@@ -10,7 +10,7 @@ libComplete_la_SOURCES=\
 # the library search path.
 libComplete_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -version-info \
 		@LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
-libComplete_la_CPPFLAGS = -DCompleteAppExport=
+libComplete_la_CPPFLAGS = -DCompleteExport=
 
 libComplete_la_LIBADD   = \
 		@BOOST_REGEX_LIB@ @BOOST_SYSTEM_LIB@ \

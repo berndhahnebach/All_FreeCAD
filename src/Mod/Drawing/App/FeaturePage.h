@@ -36,7 +36,7 @@ namespace Drawing
 
 /** Base class of all View Features in the drawing module
  */
-class AppDrawingExport FeaturePage: public App::DocumentObjectGroup
+class DrawingExport FeaturePage: public App::DocumentObjectGroup
 {
     PROPERTY_HEADER(Drawing::FeaturePage);
 

@@ -28,10 +28,10 @@
 
 // Importing of App classes
 #ifdef FC_OS_WIN32
-# define CompleteAppExport __declspec(dllimport)
+# define CompleteExport    __declspec(dllimport)
 # define CompleteGuiExport __declspec(dllexport)
 #else // for Linux
-# define CompleteAppExport
+# define CompleteExport
 # define CompleteGuiExport
 #endif
 
