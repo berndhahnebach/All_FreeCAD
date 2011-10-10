@@ -193,7 +193,7 @@ include_HEADERS=\
 # the library search path.
 libPart_la_LDFLAGS = -L../../../Base -L../../../App -L/usr/X11R6/lib -L$(OCC_LIB) $(all_libraries) \
 		-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
-libPart_la_CPPFLAGS = -DAppPartExport=
+libPart_la_CPPFLAGS = -DPartExport=
 
 libPart_la_LIBADD   = \
 		@BOOST_FILESYSTEM_LIB@ @BOOST_SYSTEM_LIB@ \

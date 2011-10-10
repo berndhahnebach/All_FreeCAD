@@ -101,7 +101,7 @@ include_HEADERS=\
 libPartGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App -L$(OCC_LIB) \
 		$(sim_ac_coin_ldflags) $(sim_ac_coin_libs) $(sim_ac_soqt_ldflags) $(sim_ac_soqt_libs) \
 		$(QT_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
-libPartGui_la_CPPFLAGS = -DAppPartExport= -DAppPartGuiExport=
+libPartGui_la_CPPFLAGS = -DPartExport= -DPartGuiExport=
 
 libPartGui_la_LIBADD   = \
 		@BOOST_SIGNALS_LIB@ \
